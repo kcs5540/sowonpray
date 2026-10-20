@@ -876,7 +876,7 @@ export default function App() {
                   <Coffee className="w-5 h-5 text-[#F5D061]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="block text-[11px] text-[#F5D061] font-semibold whitespace-nowrap">
+                  <span className="block text-[11px] text-[#F5D061] font-semibold break-keep">
                     전날 예약 시 차(茶) · 사찰 공양(식사) 무료 대접
                   </span>
                   <h3 className="font-serif-kr text-base sm:text-lg font-bold mt-0.5 break-keep">
@@ -924,9 +924,9 @@ export default function App() {
                     )}
                   </div>
 
-                  {/* 1열 가로줄 배치: 모든 입력/선택창 좌우 끝선 100% 칼정렬 (grid-cols-[72px_minmax(0,1fr)]) */}
+                  {/* 1열 가로줄 배치: 모든 입력/선택창 좌우 끝선 100% 칼정렬 (grid-cols-[80px_minmax(0,1fr)]) */}
                   <div className="space-y-2 w-full">
-                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2 w-full">
+                    <div className="grid grid-cols-[80px_minmax(0,1fr)] items-center gap-2 w-full">
                       <label className="text-xs text-[#E8DFD1] font-bold whitespace-nowrap">
                         방문 예정일
                       </label>
@@ -938,7 +938,7 @@ export default function App() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2 w-full">
+                    <div className="grid grid-cols-[80px_minmax(0,1fr)] items-center gap-2 w-full">
                       <label className="text-xs text-[#E8DFD1] font-bold whitespace-nowrap">
                         방문 인원수
                       </label>
@@ -955,7 +955,7 @@ export default function App() {
                       </select>
                     </div>
 
-                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2 w-full">
+                    <div className="grid grid-cols-[80px_minmax(0,1fr)] items-center gap-2 w-full">
                       <label className="text-xs text-[#E8DFD1] font-bold whitespace-nowrap">
                         방문 시간대
                       </label>
@@ -971,7 +971,7 @@ export default function App() {
                       </select>
                     </div>
 
-                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2 w-full">
+                    <div className="grid grid-cols-[80px_minmax(0,1fr)] items-center gap-2 w-full">
                       <label className="text-xs text-[#E8DFD1] font-bold whitespace-nowrap">
                         식사 · 차담
                       </label>
@@ -990,7 +990,7 @@ export default function App() {
 
                   {/* 신청자 정보 입력 영역 구분 (동일한 좌우 끝선 칼정렬) */}
                   <div className="pt-2.5 border-t border-white/10 space-y-2 w-full">
-                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2 w-full">
+                    <div className="grid grid-cols-[80px_minmax(0,1fr)] items-center gap-2 w-full">
                       <label className="text-xs text-[#F5D061] font-bold whitespace-nowrap">
                         방문자 성함
                       </label>
@@ -1003,7 +1003,7 @@ export default function App() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2 w-full">
+                    <div className="grid grid-cols-[80px_minmax(0,1fr)] items-center gap-2 w-full">
                       <label className="text-xs text-[#F5D061] font-bold whitespace-nowrap">
                         연락처 번호
                       </label>
@@ -1016,7 +1016,7 @@ export default function App() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2 w-full">
+                    <div className="grid grid-cols-[80px_minmax(0,1fr)] items-center gap-2 w-full">
                       <label className="text-xs text-[#D6CEC2] font-semibold whitespace-nowrap">
                         요청 메모
                       </label>
