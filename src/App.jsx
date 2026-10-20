@@ -658,6 +658,67 @@ export default function App() {
   const [quizSelectedOption, setQuizSelectedOption] = useState(null)
   const [solvedQuizIds, setSolvedQuizIds] = useState([])
 
+  // 한국어 음성 낭독(TTS) 상태 및 헬퍼
+  const [speakingId, setSpeakingId] = useState(null)
+
+  const stopSpeech = () => {
+    try {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel()
+      }
+    } catch (e) {
+      // 무시
+    }
+    setSpeakingId(null)
+  }
+
+  const toggleSpeech = (id, rawText) => {
+    try {
+      if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+        showToast('현재 브라우저에서는 음성 낭독 기능을 지원하지 않습니다.')
+        return
+      }
+      if (speakingId === id) {
+        stopSpeech()
+        return
+      }
+      window.speechSynthesis.cancel()
+
+      // 괄호 안 한자 제거 및 자연스러운 한국어 낭독용 정제
+      const cleanText = String(rawText)
+        .replace(/\([一-龥\s·,]+\)/g, '')
+        .replace(/[《》“”"']/g, ' ')
+        .replace(/[①②③④⑤]/g, '')
+        .replace(/·/g, ', ')
+        .replace(/\s+/g, ' ')
+        .trim()
+
+      const utterance = new SpeechSynthesisUtterance(cleanText)
+      utterance.lang = 'ko-KR'
+      utterance.rate = 0.92
+      utterance.pitch = 1.0
+
+      const voices = window.speechSynthesis.getVoices()
+      const koVoice = voices.find((v) => v.lang && (v.lang.includes('ko') || v.lang.includes('KR')))
+      if (koVoice) {
+        utterance.voice = koVoice
+      }
+
+      utterance.onend = () => setSpeakingId(null)
+      utterance.onerror = () => setSpeakingId(null)
+
+      setSpeakingId(id)
+      window.speechSynthesis.speak(utterance)
+    } catch (e) {
+      setSpeakingId(null)
+    }
+  }
+
+  // 탭 전환 시 낭독 자동 정지
+  useEffect(() => {
+    stopSpeech()
+  }, [activeTab, sutraSubTab])
+
   // 로그인/회원가입 전환 상태 ('login' | 'signup')
   const [authMode, setAuthMode] = useState('login')
   const [loginIdInput, setLoginIdInput] = useState('')
@@ -1175,20 +1236,41 @@ export default function App() {
 
             {/* 오늘의 부처님 말씀 */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] relative overflow-hidden">
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between gap-1.5 mb-3">
                 <span className="text-xs font-bold text-[#9A7418] bg-[#FAF3DF] px-2.5 py-1 rounded-full border border-[#E5D399] whitespace-nowrap">
                   오늘의 부처님 말씀
                 </span>
-                <button
-                  onClick={() => {
-                    playSingingBowlSound()
-                    setQuoteIdx((prev) => (prev + 1) % DAILY_QUOTES.length)
-                  }}
-                  className="text-xs text-[#786E63] hover:text-[#231F1C] flex items-center gap-1 whitespace-nowrap shrink-0"
-                >
-                  <RefreshCw className="w-3.5 h-3.5 shrink-0" />
-                  <span>다른 말씀 보기</span>
-                </button>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      toggleSpeech(
+                        'home-quote',
+                        `오늘의 부처님 말씀입니다. ${currentQuote.verse}. ${currentQuote.source}. ${currentQuote.commentary}`
+                      )
+                    }
+                    className={`px-2.5 py-1 rounded-full text-[11px] font-bold border flex items-center gap-1 whitespace-nowrap transition ${
+                      speakingId === 'home-quote'
+                        ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
+                        : 'bg-[#FAF5E6] text-[#8A6510] border-[#E5D399]'
+                    }`}
+                  >
+                    <Volume2 className="w-3.5 h-3.5 shrink-0" />
+                    <span>{speakingId === 'home-quote' ? '낭독 중지' : '음성 듣기'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      stopSpeech()
+                      playSingingBowlSound()
+                      setQuoteIdx((prev) => (prev + 1) % DAILY_QUOTES.length)
+                    }}
+                    className="text-xs text-[#786E63] hover:text-[#231F1C] flex items-center gap-1 whitespace-nowrap shrink-0 px-1"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5 shrink-0" />
+                    <span>다음</span>
+                  </button>
+                </div>
               </div>
 
               <blockquote className="font-serif-kr text-[16px] sm:text-[17px] font-bold text-[#231F1C] leading-relaxed mb-2.5 break-keep">
@@ -2183,14 +2265,35 @@ export default function App() {
 
                 {/* 터치식 + 타자식 겸용 황금 사경장 */}
                 <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-4">
-                  <div className="text-center border-b border-[#EFE9DD] pb-3.5">
-                    <span className="text-xs text-[#9A7418] font-bold tracking-widest">
+                  <div className="text-center border-b border-[#EFE9DD] pb-3.5 space-y-1.5">
+                    <span className="block text-xs text-[#9A7418] font-bold tracking-widest">
                       {currentSutra.hanja}
                     </span>
-                    <h3 className="font-serif-kr text-lg font-bold text-[#231F1C] mt-1">
+                    <h3 className="font-serif-kr text-lg font-bold text-[#231F1C]">
                       {currentSutra.title}
                     </h3>
-                    <p className="text-xs text-[#6E655C] mt-1 break-keep">{currentSutra.meaning}</p>
+                    <p className="text-xs text-[#6E655C] break-keep">{currentSutra.meaning}</p>
+                    <div className="pt-1 flex justify-center">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          toggleSpeech(
+                            'sutra-copy',
+                            `${currentSutra.title}. ${currentSutra.text}. 뜻풀이, ${currentSutra.meaning}`
+                          )
+                        }
+                        className={`px-3.5 py-1.5 rounded-full text-[11px] font-extrabold border inline-flex items-center gap-1.5 transition ${
+                          speakingId === 'sutra-copy'
+                            ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow'
+                            : 'bg-[#FAF5E6] text-[#8A6510] border-[#E5D399]'
+                        }`}
+                      >
+                        <Volume2 className="w-3.5 h-3.5 shrink-0" />
+                        <span>
+                          {speakingId === 'sutra-copy' ? '⏹ 경전 낭독 멈추기' : '🔊 경전 구절 & 뜻 음성으로 듣기'}
+                        </span>
+                      </button>
+                    </div>
                   </div>
 
                   {/* 터치 사경 판: 글자 박스를 손가락으로 톡톡 터치해도 목탁 소리와 함께 황금빛으로 채워짐 */}
@@ -2371,9 +2474,23 @@ export default function App() {
                         <span className="px-2.5 py-0.5 rounded-full bg-[#FAF3DF] text-[#9A7418] border border-[#E5D399] text-[10.5px] font-extrabold">
                           {LOTUS_FORTUNES[selectedLotusIdx].badge}
                         </span>
-                        <span className="text-[10.5px] text-[#8C7A5B] font-semibold">
-                          {LOTUS_FORTUNES[selectedLotusIdx].source}
-                        </span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            toggleSpeech(
+                              'lotus-fortune',
+                              `${LOTUS_FORTUNES[selectedLotusIdx].badge}. ${LOTUS_FORTUNES[selectedLotusIdx].quote}. 스님의 풀이, ${LOTUS_FORTUNES[selectedLotusIdx].advice}`
+                            )
+                          }
+                          className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold border inline-flex items-center gap-1 whitespace-nowrap ${
+                            speakingId === 'lotus-fortune'
+                              ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
+                              : 'bg-[#FAF5E6] text-[#8A6510] border-[#E5D399]'
+                          }`}
+                        >
+                          <Volume2 className="w-3 h-3 shrink-0" />
+                          <span>{speakingId === 'lotus-fortune' ? '낭독 중지' : '음성 듣기'}</span>
+                        </button>
                       </div>
                       <p className="font-serif-kr text-base font-bold text-[#1B1815] leading-snug break-keep pt-1">
                         {LOTUS_FORTUNES[selectedLotusIdx].quote}
@@ -2433,11 +2550,25 @@ export default function App() {
                           >
                             <div className="flex items-center justify-between gap-2">
                               <span className="text-[10.5px] font-bold px-2 py-0.5 rounded bg-[#FAF3DF] text-[#9A7418] border border-[#E5D399]">
-                                처방 법문 {idx + 1}
+                                처방 법문 {idx + 1} · {item.author}
                               </span>
-                              <span className="text-[11px] font-bold text-[#786E63]">
-                                — {item.author}
-                              </span>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  toggleSpeech(
+                                    `mood-${idx}`,
+                                    `${item.author}의 말씀입니다. ${item.quote}. ${item.comment}`
+                                  )
+                                }
+                                className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold border inline-flex items-center gap-1 whitespace-nowrap shrink-0 ${
+                                  speakingId === `mood-${idx}`
+                                    ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
+                                    : 'bg-white text-[#8A6510] border-[#E5D399]'
+                                }`}
+                              >
+                                <Volume2 className="w-3 h-3 shrink-0" />
+                                <span>{speakingId === `mood-${idx}` ? '낭독 중지' : '음성 듣기'}</span>
+                              </button>
                             </div>
                             <p className="font-serif-kr text-sm font-bold text-[#231F1C] leading-relaxed break-keep">
                               “{item.quote}”
@@ -2517,14 +2648,37 @@ export default function App() {
                   const isDone = completedLessons.includes(lesson.id)
                   return (
                     <section className="bg-white rounded-2xl p-5 shadow-sm border-2 border-[#C59B27]/50 space-y-4">
-                      <div className="border-b border-[#EFE9DD] pb-3.5">
-                        <span className="text-[11px] font-bold text-[#9A7418]">
-                          {lesson.category}
-                        </span>
-                        <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] mt-0.5 break-keep">
+                      <div className="border-b border-[#EFE9DD] pb-3.5 space-y-2">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[11px] font-bold text-[#9A7418]">
+                            {lesson.category}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              toggleSpeech(
+                                `lesson-${lesson.id}`,
+                                `${lesson.title}. 핵심 구절, ${lesson.keyPhrase}. ${lesson.content.join(' ')}`
+                              )
+                            }
+                            className={`px-3 py-1.5 rounded-full text-[11px] font-extrabold border inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 transition ${
+                              speakingId === `lesson-${lesson.id}`
+                                ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow'
+                                : 'bg-[#FAF5E6] text-[#8A6510] border-[#E5D399]'
+                            }`}
+                          >
+                            <Volume2 className="w-3.5 h-3.5 shrink-0" />
+                            <span>
+                              {speakingId === `lesson-${lesson.id}`
+                                ? '⏹ 강의 낭독 멈추기'
+                                : '🔊 강의 전체 음성으로 듣기'}
+                            </span>
+                          </button>
+                        </div>
+                        <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
                           {lesson.title}
                         </h3>
-                        <p className="text-xs text-[#6E655C] mt-1 break-keep">{lesson.summary}</p>
+                        <p className="text-xs text-[#6E655C] break-keep">{lesson.summary}</p>
                       </div>
 
                       <div className="p-3.5 rounded-xl bg-[#FAF5E6] border border-[#E5D399] text-center">
