@@ -115,9 +115,9 @@ export default function App() {
   // 탭 상태: 'home' | 'lantern' | 'sutra' | 'agent' | 'admin' | 'profile'
   const [activeTab, setActiveTab] = useState('home')
 
-  // 전체 통합 회원 DB 상태 (신도 + 포교사 + 본부 + 총괄대표)
+  // 전체 통합 회원 DB 상태 (신도 + 포교사 + 본부 + 관리자)
   const [members, setMembers] = useState(() => {
-    const saved = localStorage.getItem('sowonpray_members_v3')
+    const saved = localStorage.getItem('sowonpray_members_v4')
     return saved ? JSON.parse(saved) : INITIAL_MEMBERS
   })
 
@@ -201,7 +201,7 @@ export default function App() {
 
   // 상태 변경 시 로컬스토리지 자동 동기화
   useEffect(() => {
-    localStorage.setItem('sowonpray_members_v3', JSON.stringify(members))
+    localStorage.setItem('sowonpray_members_v4', JSON.stringify(members))
   }, [members])
 
   useEffect(() => {
@@ -720,7 +720,7 @@ export default function App() {
                     {currentUser.dharma_name ? `(${currentUser.dharma_name})` : ''}
                   </strong>
                   {currentUser.role === 'master'
-                    ? ' 총괄대표님'
+                    ? ' 관리자님'
                     : currentUser.role === 'temple_admin'
                     ? ' 회장님'
                     : currentUser.role === 'agent'
@@ -1914,7 +1914,7 @@ export default function App() {
                   type="button"
                   onClick={() => {
                     setCurrentUserCode('33065540')
-                    showToast('👑 총괄대표 [김철수 대표님] 본인 계정으로 접속되었습니다.')
+                    showToast('👑 관리자 [김철수] 계정으로 접속되었습니다.')
                   }}
                   className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
                     currentUser?.code === '33065540'
@@ -1922,7 +1922,7 @@ export default function App() {
                       : 'bg-white/5 text-[#E8DFD1] border-white/10'
                   }`}
                 >
-                  총괄대표(김철수)
+                  관리자(김철수)
                 </button>
               </div>
             </section>
@@ -2126,7 +2126,7 @@ export default function App() {
                     <div>
                       <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/40 font-bold">
                         {currentUser.role === 'master'
-                          ? '총괄관리자 계정'
+                          ? '관리자 계정'
                           : currentUser.role === 'temple_admin'
                           ? '소원사 본부 계정'
                           : currentUser.role === 'agent'
@@ -2504,13 +2504,13 @@ export default function App() {
           </main>
         )}
 
-        {/* ==================== 6. 총괄정산 & 회원관리 (김철수 대표님 센터) 탭 ==================== */}
+        {/* ==================== 6. 총괄정산 & 회원관리 (관리자 센터) 탭 ==================== */}
         {activeTab === 'admin' && isAdmin && (
           <main className="flex-1 flex flex-col gap-5 p-4">
             <section className="rounded-2xl bg-gradient-to-br from-[#1C1814] to-[#2C241C] text-white p-5 border border-[#C59B27]/50 shadow-md">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 text-[#F5D061] border border-[#F5D061]/40 font-bold">
-                  MASTER ADMIN · 김철수 대표님 총괄 센터
+                  ADMIN · 관리자 센터
                 </span>
                 <Settings className="w-4 h-4 text-[#F5D061]" />
               </div>
@@ -2625,7 +2625,7 @@ export default function App() {
                       <option value="believer">일반신도</option>
                       <option value="agent">포교사</option>
                       <option value="temple_admin">사찰본부</option>
-                      <option value="master">총괄대표</option>
+                      <option value="master">관리자</option>
                     </select>
                   </div>
                 ))}
@@ -2695,7 +2695,7 @@ export default function App() {
 
                 <div className="p-3 rounded-xl bg-[#FFF9E6] border border-[#E5D399]">
                   <div className="flex justify-between text-xs font-bold mb-1 text-[#7D5B0E]">
-                    <span>④ 플랫폼 총괄 오버라이딩 · 김철수 대표 ({commissionRules.ratePlatform}%)</span>
+                    <span>④ 관리자 ({commissionRules.ratePlatform}%)</span>
                     <span>
                       {((2000000 * commissionRules.ratePlatform) / 100).toLocaleString()}원
                     </span>
@@ -2847,7 +2847,7 @@ export default function App() {
                           <strong className="text-[#231F1C]">{amt3.toLocaleString()}원</strong>
                         </div>
                         <div>
-                          <span className="text-[#9A7418] font-semibold">플랫폼총괄(김철수): </span>
+                          <span className="text-[#9A7418] font-semibold">관리자(김철수): </span>
                           <strong className="text-[#9A7418]">{amtPlatform.toLocaleString()}원</strong>
                         </div>
                       </div>
