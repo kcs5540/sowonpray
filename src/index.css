@@ -6,10 +6,13 @@
   body {
     font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     -webkit-tap-highlight-color: transparent;
+    word-break: keep-all;
+    overflow-wrap: break-word;
   }
 
-  h1, h2, h3, .font-serif-kr {
+  h1, h2, h3, h4, .font-serif-kr {
     font-family: 'Noto Serif KR', serif;
+    word-break: keep-all;
   }
 }
 

@@ -649,22 +649,22 @@ export default function App() {
       <div className="w-full max-w-[480px] min-h-screen bg-[#FAF8F5] text-[#231F1C] flex flex-col relative shadow-[0_0_50px_rgba(0,0,0,0.8)] border-x border-[#E8DFD1]/30 pb-24">
         
         {/* 상단 고정 헤더: 제주 소원사 공식 모바일 법당 */}
-        <header className="sticky top-0 z-30 bg-[#1B1815]/95 backdrop-blur-md text-[#FAF8F5] px-4 py-3.5 border-b-2 border-[#C59B27]/50 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#B6861C] flex items-center justify-center shadow-[0_0_15px_rgba(245,208,97,0.4)] border border-[#FFF3B8]/60 font-serif-kr font-black text-lg text-[#1B1815]">
+        <header className="sticky top-0 z-30 bg-[#1B1815]/95 backdrop-blur-md text-[#FAF8F5] px-3.5 py-3 border-b-2 border-[#C59B27]/50 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#B6861C] flex items-center justify-center shadow-[0_0_15px_rgba(245,208,97,0.4)] border border-[#FFF3B8]/60 font-serif-kr font-black text-base text-[#1B1815] shrink-0">
               卍
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-serif-kr font-extrabold text-lg tracking-tight text-[#F5D061]">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <span className="font-serif-kr font-extrabold text-base sm:text-lg tracking-tight text-[#F5D061] whitespace-nowrap">
                   제주 소원사
                 </span>
-                <span className="text-[11px] px-2 py-0.5 rounded-md bg-[#C59B27]/25 text-[#FAF8F5] border border-[#C59B27]/50 font-semibold">
-                  소원기도 모바일 법당
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#C59B27]/25 text-[#FAF8F5] border border-[#C59B27]/50 font-semibold whitespace-nowrap">
+                  소원기도 법당
                 </span>
               </div>
-              <p className="text-[11px] text-[#D6CEC2]">
-                간절한 한 가지 소원이 이루어지는 기도·불공의 성지
+              <p className="text-[10.5px] text-[#D6CEC2] truncate">
+                간절한 소원이 이루어지는 기도·불공의 성지
               </p>
             </div>
           </div>
@@ -674,24 +674,24 @@ export default function App() {
               playSingingBowlSound()
               showToast('🔔 맑은 법종(싱잉볼) 소리와 함께 마음을 정화합니다.')
             }}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-[#2A2520] hover:bg-[#38312A] border border-[#C59B27]/40 text-[#F5D061] text-xs transition"
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-[#2A2520] hover:bg-[#38312A] border border-[#C59B27]/40 text-[#F5D061] text-[11px] font-semibold whitespace-nowrap shrink-0 transition"
             title="법종 소리 듣기"
           >
-            <Volume2 className="w-3.5 h-3.5" />
+            <Volume2 className="w-3.5 h-3.5 shrink-0" />
             <span>법종</span>
           </button>
         </header>
 
         {/* 상단 본인 계정 접속 상태 바 (언제든 내 정보 확인 및 계정 전환 가능) */}
-        <div className="bg-gradient-to-r from-[#26211C] via-[#302922] to-[#26211C] px-4 py-2 text-xs text-[#E8DFD1] flex items-center justify-between border-b border-[#C59B27]/25">
+        <div className="bg-gradient-to-r from-[#26211C] via-[#302922] to-[#26211C] px-3.5 py-2 text-xs text-[#E8DFD1] flex items-center justify-between gap-2 border-b border-[#C59B27]/25">
           {currentUser ? (
             <>
-              <div className="flex items-center gap-1.5 truncate">
+              <div className="flex items-center gap-1.5 min-w-0">
                 <UserCheck className="w-3.5 h-3.5 text-[#F5D061] shrink-0" />
-                <span className="truncate">
+                <span className="truncate text-[11.5px]">
                   <strong className="text-[#F5D061]">
                     {currentUser.name}
-                    {currentUser.dharma_name ? ` (${currentUser.dharma_name})` : ''}
+                    {currentUser.dharma_name ? `(${currentUser.dharma_name})` : ''}
                   </strong>
                   {currentUser.role === 'master'
                     ? ' 총괄대표님'
@@ -700,29 +700,29 @@ export default function App() {
                     : currentUser.role === 'agent'
                     ? ' 포교사님'
                     : ' 불자님'}{' '}
-                  본인 계정 접속중
+                  접속중
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setActiveTab('profile')}
-                className="text-[11px] bg-[#C59B27]/25 hover:bg-[#C59B27]/40 text-[#F5D061] border border-[#F5D061]/30 px-2.5 py-0.5 rounded-full font-semibold shrink-0 transition"
+                className="text-[10.5px] bg-[#C59B27]/25 hover:bg-[#C59B27]/40 text-[#F5D061] border border-[#F5D061]/30 px-2.5 py-0.5 rounded-full font-semibold whitespace-nowrap shrink-0 transition"
               >
-                내정보 · 계정전환
+                내정보 · 전환
               </button>
             </>
           ) : (
             <>
-              <div className="flex items-center gap-1.5 truncate">
+              <div className="flex items-center gap-1.5 min-w-0">
                 <Sparkles className="w-3.5 h-3.5 text-[#F5D061] shrink-0" />
-                <span className="truncate">
-                  로그인하시면 내 소원등과 사경 공덕이 내 계정에 기록됩니다
+                <span className="truncate text-[11.5px]">
+                  로그인하시면 소원등·사경 공덕이 내 계정에 기록됩니다
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setActiveTab('profile')}
-                className="text-[11px] bg-[#F5D061] text-[#1B1815] px-2.5 py-0.5 rounded-full font-bold shrink-0"
+                className="text-[10.5px] bg-[#F5D061] text-[#1B1815] px-2.5 py-0.5 rounded-full font-bold whitespace-nowrap shrink-0"
               >
                 로그인 / 가입
               </button>
@@ -748,27 +748,27 @@ export default function App() {
                 alt="제주 소원사 도량"
                 className="w-full h-56 object-cover brightness-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#161310] via-[#161310]/45 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#161310] via-[#161310]/55 to-transparent" />
 
               <div className="absolute top-3 left-3 right-3 flex justify-between items-center">
-                <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-sm text-[#F5D061] text-[11px] font-medium border border-[#F5D061]/30 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-sm text-[#F5D061] text-[11px] font-medium border border-[#F5D061]/30 flex items-center gap-1.5 whitespace-nowrap">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
                   대웅전 부처님 전 소원 축원 진행중
                 </span>
               </div>
 
               <div className="absolute bottom-4 left-4 right-4 text-white">
-                <p className="text-xs text-[#F5D061] font-medium mb-1">
+                <p className="text-[11.5px] text-[#F5D061] font-medium mb-1 whitespace-nowrap">
                   간절한 한 가지 소원이 이루어지는 영험 도량
                 </p>
-                <h1 className="font-serif-kr text-2xl font-bold leading-snug mb-2">
+                <h1 className="font-serif-kr text-xl sm:text-2xl font-bold leading-snug mb-1.5 break-keep">
                   간절한 기도가 응답받는 곳,{' '}
-                  <span className="text-[#F5D061] underline decoration-[#F5D061]/50 underline-offset-4">
+                  <span className="text-[#F5D061] underline decoration-[#F5D061]/50 underline-offset-4 whitespace-nowrap">
                     제주 소원사
                   </span>
                 </h1>
-                <p className="text-xs text-[#E8DFD1] leading-relaxed">
-                  거리가 멀어 직접 오시지 못하는 날에도, 소원기도 모바일 법당에 올리신 한 줄 소원을 제주 소원사 대웅전 부처님 전에 정성껏 축원 올립니다.
+                <p className="text-xs text-[#E8DFD1] leading-relaxed break-keep">
+                  거리가 멀어 직접 오시지 못하는 날에도, 모바일 법당에 올리신 한 줄 소원을 제주 소원사 대웅전 부처님 전에 정성껏 축원 올립니다.
                 </p>
               </div>
             </div>
@@ -776,7 +776,7 @@ export default function App() {
             {/* 오늘의 부처님 말씀 */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] relative overflow-hidden">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-[#9A7418] bg-[#FAF3DF] px-2.5 py-1 rounded-full border border-[#E5D399]">
+                <span className="text-xs font-bold text-[#9A7418] bg-[#FAF3DF] px-2.5 py-1 rounded-full border border-[#E5D399] whitespace-nowrap">
                   오늘의 부처님 말씀
                 </span>
                 <button
@@ -784,37 +784,41 @@ export default function App() {
                     playSingingBowlSound()
                     setQuoteIdx((prev) => (prev + 1) % DAILY_QUOTES.length)
                   }}
-                  className="text-xs text-[#786E63] hover:text-[#231F1C] flex items-center gap-1"
+                  className="text-xs text-[#786E63] hover:text-[#231F1C] flex items-center gap-1 whitespace-nowrap shrink-0"
                 >
-                  <RefreshCw className="w-3.5 h-3.5" />
+                  <RefreshCw className="w-3.5 h-3.5 shrink-0" />
                   <span>다른 말씀 보기</span>
                 </button>
               </div>
 
-              <blockquote className="font-serif-kr text-[17px] font-bold text-[#231F1C] leading-relaxed mb-2.5">
+              <blockquote className="font-serif-kr text-[16px] sm:text-[17px] font-bold text-[#231F1C] leading-relaxed mb-2.5 break-keep">
                 “{currentQuote.verse}”
               </blockquote>
               <p className="text-xs font-semibold text-[#8C7A5B] mb-2">— {currentQuote.source}</p>
-              <p className="text-xs text-[#575049] bg-[#FAF8F5] p-3 rounded-xl border border-[#EFE9DD] leading-relaxed">
+              <p className="text-xs text-[#575049] bg-[#FAF8F5] p-3 rounded-xl border border-[#EFE9DD] leading-relaxed break-keep">
                 💡 {currentQuote.commentary}
               </p>
             </section>
 
             {/* 퀵 액션 배너 3종: 소원등 켜기 · 불사/위패 안내 · 온라인 사경 */}
-            <div className="grid grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-3 gap-2">
               <button
                 onClick={() => {
                   playSingingBowlSound()
                   setActiveTab('lantern')
                 }}
-                className="bg-gradient-to-br from-[#2B241D] to-[#1A1612] text-white p-3.5 rounded-2xl text-left border border-[#C59B27]/50 shadow-md hover:scale-[1.01] transition flex flex-col justify-between h-32"
+                className="bg-gradient-to-br from-[#2B241D] to-[#1A1612] text-white px-2.5 py-3 rounded-2xl text-left border border-[#C59B27]/50 shadow-md hover:scale-[1.01] transition flex flex-col justify-between h-28"
               >
-                <div className="w-9 h-9 rounded-xl bg-[#C59B27]/20 border border-[#F5D061]/40 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-[#C59B27]/20 border border-[#F5D061]/40 flex items-center justify-center">
                   <Flame className="w-4 h-4 text-[#F5D061]" />
                 </div>
                 <div>
-                  <span className="text-[10px] text-[#F5D061] font-medium">무료 대웅전 축원</span>
-                  <h3 className="font-serif-kr font-bold text-sm mt-0.5">소원등 켜기</h3>
+                  <span className="block text-[10px] text-[#F5D061] font-medium whitespace-nowrap">
+                    대웅전 무료축원
+                  </span>
+                  <h3 className="font-serif-kr font-bold text-[13px] sm:text-sm mt-0.5 whitespace-nowrap">
+                    소원등 켜기
+                  </h3>
                 </div>
               </button>
 
@@ -823,14 +827,18 @@ export default function App() {
                   playSingingBowlSound()
                   setActiveTab('bulsa')
                 }}
-                className="bg-gradient-to-br from-[#FFFDF7] to-[#F6E8BE] text-[#231F1C] p-3.5 rounded-2xl text-left border-2 border-[#D4AF37] shadow-md hover:scale-[1.01] transition flex flex-col justify-between h-32"
+                className="bg-gradient-to-br from-[#FFFDF7] to-[#F6E8BE] text-[#231F1C] px-2.5 py-3 rounded-2xl text-left border-2 border-[#D4AF37] shadow-md hover:scale-[1.01] transition flex flex-col justify-between h-28"
               >
-                <div className="w-9 h-9 rounded-xl bg-[#D4AF37]/25 border border-[#B8860B]/40 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-[#D4AF37]/25 border border-[#B8860B]/40 flex items-center justify-center">
                   <Award className="w-4 h-4 text-[#8A6510]" />
                 </div>
                 <div>
-                  <span className="text-[10px] text-[#8A6510] font-bold">생전예수재·위패</span>
-                  <h3 className="font-serif-kr font-bold text-sm mt-0.5">불사 안내·신청</h3>
+                  <span className="block text-[10px] text-[#8A6510] font-bold whitespace-nowrap">
+                    예수재·영가위패
+                  </span>
+                  <h3 className="font-serif-kr font-bold text-[13px] sm:text-sm mt-0.5 whitespace-nowrap">
+                    불사 안내
+                  </h3>
                 </div>
               </button>
 
@@ -839,37 +847,39 @@ export default function App() {
                   playSingingBowlSound()
                   setActiveTab('sutra')
                 }}
-                className="bg-gradient-to-br from-[#F6F1E4] to-[#EAE0C8] text-[#231F1C] p-3.5 rounded-2xl text-left border border-[#D5C59B] shadow-md hover:scale-[1.01] transition flex flex-col justify-between h-32"
+                className="bg-gradient-to-br from-[#F6F1E4] to-[#EAE0C8] text-[#231F1C] px-2.5 py-3 rounded-2xl text-left border border-[#D5C59B] shadow-md hover:scale-[1.01] transition flex flex-col justify-between h-28"
               >
-                <div className="w-9 h-9 rounded-xl bg-[#9A7418]/15 border border-[#9A7418]/30 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-[#9A7418]/15 border border-[#9A7418]/30 flex items-center justify-center">
                   <BookOpen className="w-4 h-4 text-[#8A6510]" />
                 </div>
                 <div>
-                  <span className="text-[10px] text-[#8A6510] font-semibold">
+                  <span className="block text-[10px] text-[#8A6510] font-semibold whitespace-nowrap">
                     공덕 {currentMeritCount}회
                   </span>
-                  <h3 className="font-serif-kr font-bold text-sm mt-0.5">한 줄 사경</h3>
+                  <h3 className="font-serif-kr font-bold text-[13px] sm:text-sm mt-0.5 whitespace-nowrap">
+                    한 줄 사경
+                  </h3>
                 </div>
               </button>
             </div>
 
             {/* 따뜻한 차와 사찰 공양(식사) 대접 온라인 사전예약 카드 */}
-            <section className="rounded-2xl bg-gradient-to-br from-[#29231E] to-[#1C1814] text-white p-5 border-2 border-[#C59B27]/60 shadow-lg space-y-4">
-              <div className="flex items-start gap-3">
-                <div className="w-11 h-11 rounded-full bg-[#C59B27]/20 border border-[#F5D061]/40 flex items-center justify-center shrink-0 mt-0.5">
+            <section className="rounded-2xl bg-gradient-to-br from-[#29231E] to-[#1C1814] text-white p-4 sm:p-5 border-2 border-[#C59B27]/60 shadow-lg space-y-4">
+              <div className="flex items-start gap-2.5">
+                <div className="w-10 h-10 rounded-full bg-[#C59B27]/20 border border-[#F5D061]/40 flex items-center justify-center shrink-0 mt-0.5">
                   <Coffee className="w-5 h-5 text-[#F5D061]" />
                 </div>
-                <div className="flex-1">
-                  <span className="text-[11px] text-[#F5D061] font-semibold">
-                    전날 방문 예약 시 차(茶) & 사찰 공양(식사) 무료 대접
+                <div className="flex-1 min-w-0">
+                  <span className="block text-[11px] text-[#F5D061] font-semibold whitespace-nowrap">
+                    전날 예약 시 차(茶) · 사찰 공양(식사) 무료 대접
                   </span>
-                  <h3 className="font-serif-kr text-lg font-bold mt-0.5">
-                    “도량에 오셔서 따뜻한 차 한 잔 나누세요”
+                  <h3 className="font-serif-kr text-base sm:text-lg font-bold mt-0.5 break-keep">
+                    “도량에서 따뜻한 차 한 잔 나누세요”
                   </h3>
-                  <p className="text-xs text-[#D6CEC2] mt-1.5 leading-relaxed">
+                  <p className="text-xs text-[#D6CEC2] mt-1.5 leading-relaxed break-keep">
                     제주 소원사는 모든 불자님께 언제나 열려 있습니다.{' '}
                     <strong className="text-[#F5D061]">
-                      오시기 전날 미리 아래 온라인 방문 예약(또는 전화 예약)을 남겨주시면 따뜻한 차와 정성스러운 사찰 공양(식사)을 무료로 준비해 드립니다.
+                      오시기 전날 미리 온라인(또는 전화) 방문 예약을 남겨주시면 따뜻한 차와 정성스러운 사찰 공양(식사)을 무료로 준비해 드립니다.
                     </strong>
                   </p>
                 </div>
@@ -878,40 +888,40 @@ export default function App() {
               {/* 온라인 전날 방문 & 식사(공양) 예약 폼 */}
               <form
                 onSubmit={handleVisitSubmit}
-                className="bg-[#181411] rounded-xl p-4 border border-[#C59B27]/40 space-y-3"
+                className="bg-[#181411] rounded-xl p-3.5 sm:p-4 border border-[#C59B27]/40 space-y-3"
               >
-                <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#F5D061]">
-                    <Calendar className="w-4 h-4" />
-                    <span>전날 방문 · 차담 & 사찰 공양(식사) 온라인 예약</span>
+                <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2.5">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#F5D061] whitespace-nowrap">
+                    <Calendar className="w-3.5 h-3.5 shrink-0" />
+                    <span>전날 방문 · 사찰 공양(식사) 예약</span>
                   </div>
                   {currentUser && (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061]">
-                      {currentUser.name}님 자동연동
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] whitespace-nowrap shrink-0">
+                      {currentUser.name}님 연동
                     </span>
                   )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
-                    <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1">
-                      방문 예정일 (전날 예약 권장)
+                    <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1 whitespace-nowrap">
+                      방문 예정일 (전날 예약)
                     </label>
                     <input
                       type="date"
                       value={visitDate}
                       onChange={(e) => setVisitDate(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/40 text-white text-xs focus:outline-none focus:border-[#F5D061]"
+                      className="w-full px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/40 text-white text-xs focus:outline-none focus:border-[#F5D061]"
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1">
-                      방문 인원수 (식사 준비용)
+                    <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1 whitespace-nowrap">
+                      방문 인원 (식사 준비)
                     </label>
                     <select
                       value={visitHeadcount}
                       onChange={(e) => setVisitHeadcount(Number(e.target.value))}
-                      className="w-full px-3 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/40 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
+                      className="w-full px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/40 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
                     >
                       <option value={1}>1명 방문</option>
                       <option value={2}>2명 방문 (부부/동반)</option>
@@ -924,7 +934,7 @@ export default function App() {
 
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
-                    <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1">
+                    <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1 whitespace-nowrap">
                       방문 시간대 선택
                     </label>
                     <select
@@ -939,18 +949,18 @@ export default function App() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1">
-                      방문 및 대접 구분
+                    <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1 whitespace-nowrap">
+                      방문 · 공양 선택
                     </label>
                     <select
                       value={visitPurpose}
                       onChange={(e) => setVisitPurpose(e.target.value)}
                       className="w-full px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/40 text-white text-xs focus:outline-none focus:border-[#F5D061]"
                     >
-                      <option value="따뜻한 차 & 사찰 공양(식사) 대접 예약">차 & 사찰 공양(식사) 예약</option>
-                      <option value="도량 참배 및 따뜻한 차담 예약">도량 참배 & 차담 예약</option>
-                      <option value="생전예수재 황금위패 방문 상담">생전예수재 황금위패 상담</option>
-                      <option value="조상 영가 영구위패 방문 상담">조상 영가 영구위패 상담</option>
+                      <option value="따뜻한 차 & 사찰 공양(식사) 대접 예약">차 & 사찰 공양(식사)</option>
+                      <option value="도량 참배 및 따뜻한 차담 예약">도량 참배 & 차담</option>
+                      <option value="생전예수재 황금위패 방문 상담">생전예수재 위패 상담</option>
+                      <option value="조상 영가 영구위패 방문 상담">조상 영가 위패 상담</option>
                     </select>
                   </div>
                 </div>
@@ -976,40 +986,42 @@ export default function App() {
                   type="text"
                   value={visitMemo}
                   onChange={(e) => setVisitMemo(e.target.value)}
-                  placeholder="요청사항 (예: 점심 사찰 공양 2인 부탁드립니다 / 어머님 동행)"
+                  placeholder="요청사항 (예: 점심 사찰 공양 2인 부탁드립니다)"
                   className="w-full px-3 py-2 rounded-lg bg-[#26211C] border border-white/15 text-white text-xs"
                 />
 
                 <button
                   type="submit"
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#C59B27] text-[#1B1815] font-extrabold text-xs shadow hover:brightness-105 transition flex items-center justify-center gap-1.5"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#C59B27] text-[#1B1815] font-extrabold text-xs shadow hover:brightness-105 transition flex items-center justify-center gap-1.5 whitespace-nowrap"
                 >
-                  <Calendar className="w-4 h-4" />
-                  <span>전날 방문 · 차담 & 사찰 공양(식사) 예약 신청하기</span>
+                  <Calendar className="w-4 h-4 shrink-0" />
+                  <span>방문 · 사찰 공양(식사) 사전예약 신청하기</span>
                 </button>
               </form>
 
               {/* 접수된 최근 방문·공양 예약 현황 */}
               <div className="space-y-2 pt-1">
-                <div className="flex items-center justify-between text-[11px] text-[#F5D061] font-semibold">
-                  <span>🍵 최근 접수된 도량 방문 & 사찰 공양 예약 ({visits.length}건)</span>
-                  <span>공양간 실시간 연동</span>
+                <div className="flex items-center justify-between gap-2 text-[11px] text-[#F5D061] font-semibold">
+                  <span className="whitespace-nowrap">🍵 최근 방문 · 사찰 공양 예약 ({visits.length}건)</span>
+                  <span className="whitespace-nowrap shrink-0">공양간 연동</span>
                 </div>
                 {visits.slice(0, 2).map((v) => (
                   <div
                     key={v.id}
-                    className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between text-xs"
+                    className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between gap-2 text-xs"
                   >
-                    <div className="truncate pr-2">
-                      <span className="font-bold text-white">{v.visitor_name}님</span>
-                      <span className="text-[#F5D061] ml-1.5 font-semibold">
-                        ({v.visit_date} · {v.headcount}명)
-                      </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate">
+                        <span className="font-bold text-white">{v.visitor_name}님</span>
+                        <span className="text-[#F5D061] ml-1.5 font-semibold">
+                          ({v.visit_date} · {v.headcount}명)
+                        </span>
+                      </div>
                       <div className="text-[11px] text-[#BFB6AA] truncate mt-0.5">
                         {v.visit_time} · {v.visit_purpose}
                       </div>
                     </div>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F5D061]/20 text-[#F5D061] border border-[#F5D061]/40 font-bold shrink-0">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F5D061]/20 text-[#F5D061] border border-[#F5D061]/40 font-bold whitespace-nowrap shrink-0">
                       {v.status === 'confirmed' ? '공양준비확정' : '예약접수됨'}
                     </span>
                   </div>
@@ -1017,19 +1029,19 @@ export default function App() {
               </div>
 
               {/* 전화 예약 바로가기 버튼 2종 */}
-              <div className="grid grid-cols-2 gap-2.5 pt-1">
+              <div className="grid grid-cols-2 gap-2 pt-1">
                 <a
                   href="tel:010-4912-1083"
-                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/15 text-[#F5D061] font-bold text-xs border border-[#F5D061]/40 hover:bg-white/20 transition"
+                  className="flex items-center justify-center gap-1 py-2.5 px-2 rounded-xl bg-white/15 text-[#F5D061] font-bold text-[11px] border border-[#F5D061]/40 hover:bg-white/20 transition whitespace-nowrap"
                 >
-                  <Phone className="w-3.5 h-3.5 fill-current" />
-                  <span>전화예약 010-4912-1083</span>
+                  <Phone className="w-3.5 h-3.5 fill-current shrink-0" />
+                  <span>예약 010-4912-1083</span>
                 </a>
                 <a
                   href="tel:064-805-2007"
-                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/10 text-white font-semibold text-xs border border-white/20 hover:bg-white/15 transition"
+                  className="flex items-center justify-center gap-1 py-2.5 px-2 rounded-xl bg-white/10 text-white font-semibold text-[11px] border border-white/20 hover:bg-white/15 transition whitespace-nowrap"
                 >
-                  <Phone className="w-3.5 h-3.5" />
+                  <Phone className="w-3.5 h-3.5 shrink-0" />
                   <span>종무소 064-805-2007</span>
                 </a>
               </div>
@@ -1037,12 +1049,16 @@ export default function App() {
 
             {/* 실시간 대웅전 소원등 축원 현황 */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8]">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-[#C59B27]" />
-                  <h2 className="font-serif-kr font-bold text-base">실시간 소원사 축원 등불</h2>
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <Sparkles className="w-4 h-4 text-[#C59B27] shrink-0" />
+                  <h2 className="font-serif-kr font-bold text-base whitespace-nowrap">
+                    실시간 소원사 축원 등불
+                  </h2>
                 </div>
-                <span className="text-xs text-[#8C7A5B]">총 {prayers.length}분 점등중</span>
+                <span className="text-xs text-[#8C7A5B] whitespace-nowrap shrink-0">
+                  총 {prayers.length}분 점등중
+                </span>
               </div>
 
               <div className="space-y-2.5">
@@ -1051,11 +1067,11 @@ export default function App() {
                     key={item.id}
                     className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EDE6D8] flex flex-col gap-1"
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[#231F1C]">
-                        🕯️ {item.believer_name} 불자님 ({item.wish_category})
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-bold text-[#231F1C] truncate">
+                        🕯️ {item.believer_name} ({item.wish_category})
                       </span>
-                      <span className="text-[11px] text-[#9A7418] font-medium">
+                      <span className="text-[10.5px] text-[#9A7418] font-semibold whitespace-nowrap shrink-0">
                         {item.prayed_at}
                       </span>
                     </div>
@@ -1071,8 +1087,8 @@ export default function App() {
                 <span className="text-[11px] font-bold text-[#9A7418]">
                   OFFICIAL CHANNELS
                 </span>
-                <h2 className="font-serif-kr font-bold text-base text-[#231F1C] mt-0.5">
-                  제주 소원사 공식 사이트 & 소식 바로가기
+                <h2 className="font-serif-kr font-bold text-base text-[#231F1C] mt-0.5 whitespace-nowrap">
+                  제주 소원사 공식 사이트 · 채널
                 </h2>
               </div>
 
@@ -1142,29 +1158,29 @@ export default function App() {
           <main className="flex-1 flex flex-col gap-5 p-4">
             {/* 상단 불사안내 헤더 */}
             <section className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-5 border border-[#C59B27]/50 shadow-md">
-              <span className="text-[11px] text-[#F5D061] font-bold">
-                제주 소원사 위패 봉안 · 특별 기도 · 불사 동참 안내
+              <span className="block text-[11px] text-[#F5D061] font-bold whitespace-nowrap">
+                제주 소원사 위패 봉안 · 특별 기도 · 불사 동참
               </span>
-              <h2 className="font-serif-kr text-xl font-bold mt-1">
+              <h2 className="font-serif-kr text-lg sm:text-xl font-bold mt-1 break-keep">
                 현세의 복덕과 조상님의 안식을 발원합니다
               </h2>
-              <p className="text-xs text-[#D6CEC2] mt-1.5 leading-relaxed">
+              <p className="text-xs text-[#D6CEC2] mt-1.5 leading-relaxed break-keep">
                 원하시는 불사 항목을 선택하시고 아래 신청란에 남겨주시면 제주 소원사 종무소에서 정성껏 안내 및 축원을 도와드립니다.
               </p>
             </section>
 
             {/* 대표 위패 2종 실물 비교 */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-[11px] font-bold text-[#9A7418]">
+              <div className="flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <span className="block text-[11px] font-bold text-[#9A7418] whitespace-nowrap">
                     1. 명당 위패 봉안 불사 (2종)
                   </span>
-                  <h3 className="font-serif-kr text-lg font-bold text-[#231F1C]">
-                    생전예수재 황금위패 & 조상 영구위패
+                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] whitespace-nowrap">
+                    생전예수재 황금위패 · 조상 영구위패
                   </h3>
                 </div>
-                <Award className="w-6 h-6 text-[#C59B27]" />
+                <Award className="w-6 h-6 text-[#C59B27] shrink-0" />
               </div>
 
               <div className="rounded-xl overflow-hidden border border-[#D8CBB8]">
@@ -1173,41 +1189,45 @@ export default function App() {
                   alt="생전예수재 황금위패와 조상 흑색 위패 실물"
                   className="w-full h-44 object-cover"
                 />
-                <div className="bg-[#1B1815] text-white px-3.5 py-2 flex justify-between text-[11px] font-bold">
-                  <span className="text-[#F5D061]">◀ 좌측: 생전예수재 황금빛 위패</span>
-                  <span className="text-[#E2DAD0]">우측: 조상 영가 품격 흑색 위패 ▶</span>
+                <div className="bg-[#1B1815] text-white px-3 py-2 flex justify-between gap-2 text-[10.5px] font-bold">
+                  <span className="text-[#F5D061] whitespace-nowrap">◀ 좌측: 생전예수재 황금위패</span>
+                  <span className="text-[#E2DAD0] whitespace-nowrap">우측: 조상 영가 흑색위패 ▶</span>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 gap-3">
                 {/* ① 생전예수재 황금위패 */}
                 <div className="rounded-xl border-2 border-[#D4AF37] bg-gradient-to-br from-[#FFFDF7] to-[#F9F1D8] p-4 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#D4AF37] text-[#1B1815]">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#D4AF37] text-[#1B1815] whitespace-nowrap">
                       살아계신 분 · 현세 복덕과 무병장수
                     </span>
-                    <span className="text-xs font-extrabold text-[#8A6510]">영구 봉안</span>
+                    <span className="text-xs font-extrabold text-[#8A6510] whitespace-nowrap shrink-0">
+                      영구 봉안
+                    </span>
                   </div>
-                  <h4 className="font-serif-kr font-bold text-base text-[#231F1C]">
+                  <h4 className="font-serif-kr font-bold text-base text-[#231F1C] whitespace-nowrap">
                     ① 생전예수재(生前預修齋) 황금빛 위패
                   </h4>
-                  <p className="text-xs text-[#575049] leading-relaxed">
+                  <p className="text-xs text-[#575049] leading-relaxed break-keep">
                     살아생전에 미리 선업과 공덕을 닦아 삼재팔난과 액난을 소멸하고, 부모님과 가족의 무병장수·수복증장을 기원하는 찬란한 황금 위패입니다.
                   </p>
                 </div>
 
                 {/* ② 조상 영가 흑색 위패 */}
                 <div className="rounded-xl border border-[#3A352F] bg-gradient-to-br from-[#231F1C] to-[#161311] text-white p-4 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/40">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/40 whitespace-nowrap">
                       돌아가신 조상님 · 극락왕생 천도
                     </span>
-                    <span className="text-xs font-extrabold text-[#F5D061]">영구 봉안</span>
+                    <span className="text-xs font-extrabold text-[#F5D061] whitespace-nowrap shrink-0">
+                      영구 봉안
+                    </span>
                   </div>
-                  <h4 className="font-serif-kr font-bold text-base text-[#FAF8F5]">
+                  <h4 className="font-serif-kr font-bold text-base text-[#FAF8F5] whitespace-nowrap">
                     ② 조상 영가 품격 흑색 영구위패
                   </h4>
-                  <p className="text-xs text-[#C8C0B7] leading-relaxed">
+                  <p className="text-xs text-[#C8C0B7] leading-relaxed break-keep">
                     중후한 흑색 바탕에 순금빛 존함을 새겨 후손들의 제사 부담을 덜어드리고, 사찰에서 영구히 독경과 합동 차례·천도 축원을 올립니다.
                   </p>
                 </div>
@@ -1217,10 +1237,10 @@ export default function App() {
             {/* 그 외 주요 기도·불사 종목 모음 */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-3">
               <div>
-                <span className="text-[11px] font-bold text-[#9A7418]">
+                <span className="block text-[11px] font-bold text-[#9A7418] whitespace-nowrap">
                   2. 상시 기도 및 공덕 불사 종목
                 </span>
-                <h3 className="font-serif-kr text-lg font-bold text-[#231F1C]">
+                <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] whitespace-nowrap">
                   인등 · 천도재 · 기일제사 · 공양미 불사
                 </h3>
               </div>
@@ -1229,20 +1249,20 @@ export default function App() {
                 {[
                   {
                     key: '대웅전 1년 인등(가족등)',
-                    badge: '365일 상시 점등',
+                    badge: '365일 점등',
                     title: '③ 대웅전 1년 가족 인등(연등) 불사',
                     desc: '대웅전 부처님 전에 1년 365일 꺼지지 않는 등불을 밝혀 가족의 건강, 자녀 학업·취업, 사업 번창을 매일 축원합니다.',
                   },
                   {
                     key: '49재/천도재/기일제사',
                     badge: '극락왕생 천도',
-                    title: '④ 49재 · 개인/합동 천도재 · 기일제사 봉행',
+                    title: '④ 49재 · 천도재 · 기일제사 봉행',
                     desc: '돌아가신 부모·조상님, 수자령(태아령)의 극락왕생을 발원하는 천도재 및 가정에서 모시기 어려운 기일 제사를 정성껏 봉행합니다.',
                   },
                   {
                     key: '대웅전 공양미/불전시주',
                     badge: '무량 공덕 보시',
-                    title: '⑤ 대웅전 공양미(불전공양) · 초 · 향 시주 불사',
+                    title: '⑤ 대웅전 공양미 · 초 · 향 시주 불사',
                     desc: '부처님 전에 올리는 맑은 공양미와 황초·향 시주 및 제주 소원사 도량 수호 불사에 동참하실 수 있습니다.',
                   },
                 ].map((item) => (
@@ -1255,13 +1275,15 @@ export default function App() {
                         : 'bg-[#FAF8F5] border-[#EAE2D3] hover:border-[#C59B27]'
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-bold text-[#231F1C]">{item.title}</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-white text-[#8A6510] border border-[#E5D399] font-bold">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <span className="text-xs font-bold text-[#231F1C] whitespace-nowrap">
+                        {item.title}
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-white text-[#8A6510] border border-[#E5D399] font-bold whitespace-nowrap shrink-0">
                         {item.badge}
                       </span>
                     </div>
-                    <p className="text-xs text-[#575049] leading-relaxed">{item.desc}</p>
+                    <p className="text-xs text-[#575049] leading-relaxed break-keep">{item.desc}</p>
                   </div>
                 ))}
               </div>
@@ -1270,34 +1292,34 @@ export default function App() {
             {/* 불사·위패·기도 통합 신청란 */}
             <form
               onSubmit={handlePrayerSubmit}
-              className="bg-white rounded-2xl p-5 shadow-md border-2 border-[#C59B27] space-y-4"
+              className="bg-white rounded-2xl p-4 sm:p-5 shadow-md border-2 border-[#C59B27] space-y-4"
             >
-              <div className="border-b border-[#EFE9DD] pb-3 flex items-center justify-between">
-                <div>
-                  <span className="text-[11px] font-bold text-[#9A7418]">
+              <div className="border-b border-[#EFE9DD] pb-3 flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <span className="block text-[10.5px] font-bold text-[#9A7418] whitespace-nowrap">
                     ONLINE APPLICATION
                   </span>
-                  <h3 className="font-serif-kr text-lg font-bold text-[#231F1C]">
+                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] whitespace-nowrap">
                     불사 · 위패 · 기도 동참 신청란
                   </h3>
                 </div>
                 {currentUser && (
-                  <span className="text-[11px] px-2.5 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] font-bold border border-[#E5D399]">
+                  <span className="text-[10.5px] px-2 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] font-bold border border-[#E5D399] whitespace-nowrap shrink-0">
                     내 계정 연동됨
                   </span>
                 )}
               </div>
 
               {/* STEP 1. 종목 선택 영역 */}
-              <div className="p-3.5 rounded-2xl bg-[#FAF5E6] border border-[#E5D399]">
-                <div className="flex items-center justify-between mb-2.5">
-                  <label className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C]">
-                    <span className="px-2 py-0.5 rounded-md bg-[#231F1C] text-[#F5D061] text-[10px] font-extrabold">
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF5E6] border border-[#E5D399]">
+                <div className="flex items-center justify-between gap-2 mb-2.5">
+                  <label className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C] whitespace-nowrap">
+                    <span className="px-2 py-0.5 rounded-md bg-[#231F1C] text-[#F5D061] text-[10px] font-extrabold shrink-0">
                       1단계
                     </span>
-                    신청하실 불사 / 기도 종목 선택 (터치)
+                    <span>불사 / 기도 종목 선택</span>
                   </label>
-                  <span className="text-[11px] font-bold text-[#9A7418]">
+                  <span className="text-[11px] font-bold text-[#9A7418] whitespace-nowrap shrink-0">
                     1개 선택
                   </span>
                 </div>
@@ -1316,7 +1338,7 @@ export default function App() {
                         type="button"
                         key={cat}
                         onClick={() => setWishCategory(cat)}
-                        className={`py-2.5 px-3 rounded-xl text-xs font-bold border text-left transition flex items-center gap-2 ${
+                        className={`py-2.5 px-2.5 rounded-xl text-[11.5px] font-bold border text-left transition flex items-center gap-1.5 ${
                           isSelected
                             ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-md ring-2 ring-[#C59B27]/40'
                             : 'bg-white/80 text-[#575049] border-[#DFD3B8] hover:bg-white'
@@ -1331,7 +1353,7 @@ export default function App() {
                         >
                           ✓
                         </span>
-                        <span className="truncate">{cat}</span>
+                        <span className="truncate whitespace-nowrap">{cat}</span>
                       </button>
                     )
                   })}
@@ -1342,16 +1364,16 @@ export default function App() {
               <div className="border-t border-dashed border-[#DFD6C7]" />
 
               {/* STEP 2. 신청자 정보 및 발원 내용 입력 영역 */}
-              <div className="p-4 rounded-2xl bg-[#F4F1EA] border border-[#DDD4C4] space-y-3.5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C]">
-                    <span className="px-2 py-0.5 rounded-md bg-[#8A6510] text-white text-[10px] font-extrabold">
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-[#F4F1EA] border border-[#DDD4C4] space-y-3.5">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C] whitespace-nowrap">
+                    <span className="px-2 py-0.5 rounded-md bg-[#8A6510] text-white text-[10px] font-extrabold shrink-0">
                       2단계
                     </span>
-                    신청자 인적사항 및 발원문 작성
+                    <span>신청자 성함 · 발원문 작성</span>
                   </div>
-                  <span className="text-[11px] text-[#7A7065] font-medium">
-                    ✎ 터치하여 수정 가능
+                  <span className="text-[10.5px] text-[#7A7065] font-medium whitespace-nowrap shrink-0">
+                    ✎ 직접 입력
                   </span>
                 </div>
 
@@ -1398,9 +1420,9 @@ export default function App() {
 
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-extrabold text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-extrabold text-xs sm:text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-1.5 whitespace-nowrap"
               >
-                <Award className="w-4 h-4" />
+                <Award className="w-4 h-4 shrink-0" />
                 <span>[{wishCategory}] 온라인 신청 접수하기</span>
               </button>
             </form>
@@ -1415,7 +1437,7 @@ export default function App() {
               <div className="text-xs text-[#F5D061] font-medium mb-1">
                 제주 소원사 대웅전 실시간 연동
               </div>
-              <h2 className="font-serif-kr text-xl font-bold mb-5">
+              <h2 className="font-serif-kr text-xl font-bold mb-5 whitespace-nowrap">
                 마음의 소원등(願燈)을 밝혀보세요
               </h2>
 
@@ -1452,7 +1474,7 @@ export default function App() {
                 {/* 연등 아래 매달린 제주 소원사 황금 축원 명패 */}
                 <div className="w-0.5 h-4 bg-[#D4AF37]" />
                 <div className="px-5 py-2.5 rounded-xl bg-gradient-to-b from-[#2E251A] to-[#1B1610] border-2 border-[#D4AF37] shadow-lg text-center min-w-[220px]">
-                  <div className="text-[10px] text-[#F5D061] font-bold tracking-widest border-b border-[#D4AF37]/30 pb-1 mb-1">
+                  <div className="text-[10px] text-[#F5D061] font-bold tracking-widest border-b border-[#D4AF37]/30 pb-1 mb-1 whitespace-nowrap">
                     卍 제주 소원사 대웅전 축원 명패
                   </div>
                   <div className="font-serif-kr text-sm font-bold text-white">
@@ -1469,7 +1491,7 @@ export default function App() {
                 </div>
               </div>
 
-              <p className="text-xs text-[#D6CEC2] max-w-xs mx-auto leading-relaxed mt-3">
+              <p className="text-xs text-[#D6CEC2] max-w-xs mx-auto leading-relaxed mt-3 break-keep">
                 소원등을 밝히고 아래 발원문을 남겨주시면 제주 소원사 스님께서 아침 사시예불마다 축원해 드립니다.
               </p>
             </div>
@@ -1477,34 +1499,34 @@ export default function App() {
             {/* 무료 소원 축원 및 위패 상담 신청 폼 */}
             <form
               onSubmit={handlePrayerSubmit}
-              className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-4"
+              className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-4"
             >
-              <div className="border-b border-[#EFE9DD] pb-3 flex items-center justify-between">
-                <div>
-                  <span className="text-[11px] font-bold text-[#9A7418]">
-                    100% 무료 사시예불 축원 & 위패 봉안 상담
+              <div className="border-b border-[#EFE9DD] pb-3 flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <span className="block text-[10.5px] font-bold text-[#9A7418] whitespace-nowrap">
+                    100% 무료 사시예불 축원 & 위패 상담
                   </span>
-                  <h3 className="font-serif-kr text-lg font-bold text-[#231F1C] mt-0.5">
+                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] mt-0.5 whitespace-nowrap">
                     대웅전 축원 발원문 접수
                   </h3>
                 </div>
                 {currentUser && (
-                  <span className="text-[11px] px-2.5 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] font-bold border border-[#E5D399]">
-                    내 계정 자동입력됨
+                  <span className="text-[10.5px] px-2 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] font-bold border border-[#E5D399] whitespace-nowrap shrink-0">
+                    내 계정 연동됨
                   </span>
                 )}
               </div>
 
               {/* STEP 1. 기원 분야 선택 영역 */}
-              <div className="p-3.5 rounded-2xl bg-[#FAF5E6] border border-[#E5D399]">
-                <div className="flex items-center justify-between mb-2.5">
-                  <label className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C]">
-                    <span className="px-2 py-0.5 rounded-md bg-[#231F1C] text-[#F5D061] text-[10px] font-extrabold">
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF5E6] border border-[#E5D399]">
+                <div className="flex items-center justify-between gap-2 mb-2.5">
+                  <label className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C] whitespace-nowrap">
+                    <span className="px-2 py-0.5 rounded-md bg-[#231F1C] text-[#F5D061] text-[10px] font-extrabold shrink-0">
                       1단계
                     </span>
-                    기원 분야 선택 (터치)
+                    <span>기원 분야 선택 (터치)</span>
                   </label>
-                  <span className="text-[11px] font-bold text-[#9A7418]">
+                  <span className="text-[11px] font-bold text-[#9A7418] whitespace-nowrap shrink-0">
                     1개 선택
                   </span>
                 </div>
@@ -1523,7 +1545,7 @@ export default function App() {
                         type="button"
                         key={cat}
                         onClick={() => setWishCategory(cat)}
-                        className={`py-2.5 px-3 rounded-xl text-xs font-bold border text-left transition flex items-center gap-2 ${
+                        className={`py-2.5 px-2.5 rounded-xl text-[11.5px] font-bold border text-left transition flex items-center gap-1.5 ${
                           isSelected
                             ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-md ring-2 ring-[#C59B27]/40'
                             : 'bg-white/80 text-[#575049] border-[#DFD3B8] hover:bg-white'
@@ -1538,7 +1560,7 @@ export default function App() {
                         >
                           ✓
                         </span>
-                        <span className="truncate">{cat}</span>
+                        <span className="truncate whitespace-nowrap">{cat}</span>
                       </button>
                     )
                   })}
@@ -1549,16 +1571,16 @@ export default function App() {
               <div className="border-t border-dashed border-[#DFD6C7]" />
 
               {/* STEP 2. 신청자 정보 및 발원문 입력 영역 */}
-              <div className="p-4 rounded-2xl bg-[#F4F1EA] border border-[#DDD4C4] space-y-3.5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C]">
-                    <span className="px-2 py-0.5 rounded-md bg-[#8A6510] text-white text-[10px] font-extrabold">
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-[#F4F1EA] border border-[#DDD4C4] space-y-3.5">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C] whitespace-nowrap">
+                    <span className="px-2 py-0.5 rounded-md bg-[#8A6510] text-white text-[10px] font-extrabold shrink-0">
                       2단계
                     </span>
-                    신청자 인적사항 및 발원문 작성
+                    <span>신청자 성함 · 발원문 작성</span>
                   </div>
-                  <span className="text-[11px] text-[#7A7065] font-medium">
-                    ✎ 터치하여 수정 가능
+                  <span className="text-[10.5px] text-[#7A7065] font-medium whitespace-nowrap shrink-0">
+                    ✎ 직접 입력
                   </span>
                 </div>
 
@@ -1605,16 +1627,16 @@ export default function App() {
 
               <div className="p-3 rounded-xl bg-[#FAF3DF] border border-[#E5D399] text-[11px] text-[#6E5617] flex items-start gap-2">
                 <Sparkles className="w-4 h-4 text-[#9A7418] shrink-0 mt-0.5" />
-                <div>
+                <div className="break-keep">
                   <strong>제주 소원사 대웅전 매일 축원:</strong> 소원등을 밝히고 남겨주신 발원문은 매일 오전 10시 30분 사시예불마다 부처님 전에 정성껏 축원 올립니다.
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-bold text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-bold text-xs sm:text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-2 whitespace-nowrap"
               >
-                <Flame className="w-4 h-4 fill-current" />
+                <Flame className="w-4 h-4 fill-current shrink-0" />
                 <span>대웅전 소원등 켜고 사시예불 축원 올리기</span>
               </button>
             </form>
@@ -1630,18 +1652,18 @@ export default function App() {
                     key={p.id}
                     className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-1.5"
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[#231F1C]">
-                        🕯️ {p.believer_name} 불자님 ({p.wish_category})
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-bold text-[#231F1C] truncate">
+                        🕯️ {p.believer_name} ({p.wish_category})
                       </span>
-                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#EFE7D6] text-[#7D6320] font-medium">
+                      <span className="text-[10.5px] px-2 py-0.5 rounded-full bg-[#EFE7D6] text-[#7D6320] font-medium whitespace-nowrap shrink-0">
                         {p.member_code === currentUser?.code ? '★ 내 소원등' : '대웅전 점등중'}
                       </span>
                     </div>
-                    <p className="text-xs text-[#4A433C] leading-relaxed">“{p.wish_text}”</p>
-                    <div className="flex items-center justify-between text-[11px] text-[#8C7A5B] pt-1">
-                      <span>✓ {p.prayed_at}</span>
-                      <span>{p.created_at}</span>
+                    <p className="text-xs text-[#4A433C] leading-relaxed break-keep">“{p.wish_text}”</p>
+                    <div className="flex items-center justify-between gap-2 text-[11px] text-[#8C7A5B] pt-1">
+                      <span className="whitespace-nowrap">✓ {p.prayed_at}</span>
+                      <span className="whitespace-nowrap shrink-0">{p.created_at}</span>
                     </div>
                   </div>
                 ))}
@@ -1788,8 +1810,8 @@ export default function App() {
           <main className="flex-1 flex flex-col gap-5 p-4">
             {/* 대표님 테스트용 원클릭 계정 전환 스위치 바 */}
             <section className="rounded-2xl bg-[#26211C] text-white p-4 border border-[#C59B27]/40 space-y-2.5">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] text-[#F5D061] font-bold">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[11px] text-[#F5D061] font-bold whitespace-nowrap">
                   ⚡ 역할별 계정 빠른 전환 (테스트용)
                 </span>
                 {currentUser && (
@@ -1799,10 +1821,10 @@ export default function App() {
                       setCurrentUserCode('')
                       showToast('로그아웃되었습니다. 로그인/회원가입 화면이 표시됩니다.')
                     }}
-                    className="text-[11px] text-[#D6CEC2] hover:text-white flex items-center gap-1 underline"
+                    className="text-[11px] text-[#D6CEC2] hover:text-white flex items-center gap-1 underline whitespace-nowrap shrink-0"
                   >
-                    <LogOut className="w-3 h-3" />
-                    <span>로그아웃(가입화면 보기)</span>
+                    <LogOut className="w-3 h-3 shrink-0" />
+                    <span>로그아웃(가입화면)</span>
                   </button>
                 )}
               </div>
@@ -1813,7 +1835,7 @@ export default function App() {
                     setCurrentUserCode('82341088')
                     showToast('🙏 일반신도 [이정숙(무량화)] 본인 계정으로 접속되었습니다.')
                   }}
-                  className={`py-2 px-2 rounded-xl text-[11px] font-bold border transition ${
+                  className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
                     currentUser?.code === '82341088'
                       ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
                       : 'bg-white/5 text-[#E8DFD1] border-white/10'
@@ -1827,7 +1849,7 @@ export default function App() {
                     setCurrentUserCode('52148821')
                     showToast('🪷 포교사 [김연화(연화심)] 본인 계정으로 접속되었습니다.')
                   }}
-                  className={`py-2 px-2 rounded-xl text-[11px] font-bold border transition ${
+                  className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
                     currentUser?.code === '52148821'
                       ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
                       : 'bg-white/5 text-[#E8DFD1] border-white/10'
@@ -1841,7 +1863,7 @@ export default function App() {
                     setCurrentUserCode('33065540')
                     showToast('👑 총괄대표 [김철수 대표님] 본인 계정으로 접속되었습니다.')
                   }}
-                  className={`py-2 px-2 rounded-xl text-[11px] font-bold border transition ${
+                  className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
                     currentUser?.code === '33065540'
                       ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
                       : 'bg-white/5 text-[#E8DFD1] border-white/10'
@@ -2271,34 +2293,34 @@ export default function App() {
                 )}
               </div>
 
-              <div className="grid grid-cols-3 gap-2.5 pt-1">
-                <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center">
-                  <div className="text-[11px] text-[#BFB6AA]">인연 신도수</div>
-                  <div className="text-lg font-bold text-[#F5D061] mt-0.5">
+              <div className="grid grid-cols-3 gap-2 pt-1">
+                <div className="bg-white/5 border border-white/10 rounded-xl p-2.5 text-center">
+                  <div className="text-[10.5px] text-[#BFB6AA] whitespace-nowrap">인연 신도수</div>
+                  <div className="text-base sm:text-lg font-bold text-[#F5D061] mt-0.5 whitespace-nowrap">
                     {activeAgent.believers_count || 0}명
                   </div>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center">
-                  <div className="text-[11px] text-[#BFB6AA]">위패 봉안 누적</div>
-                  <div className="text-lg font-bold text-white mt-0.5">
+                <div className="bg-white/5 border border-white/10 rounded-xl p-2.5 text-center">
+                  <div className="text-[10.5px] text-[#BFB6AA] whitespace-nowrap">위패 봉안 누적</div>
+                  <div className="text-base sm:text-lg font-bold text-white mt-0.5 whitespace-nowrap">
                     {activeAgent.wipae_count || 0}기
                   </div>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center">
-                  <div className="text-[11px] text-[#BFB6AA]">1차 포교 수당율</div>
-                  <div className="text-lg font-bold text-emerald-400 mt-0.5">
+                <div className="bg-white/5 border border-white/10 rounded-xl p-2.5 text-center">
+                  <div className="text-[10.5px] text-[#BFB6AA] whitespace-nowrap">1차 포교 수당</div>
+                  <div className="text-base sm:text-lg font-bold text-emerald-400 mt-0.5 whitespace-nowrap">
                     {commissionRules.rate1st}%
                   </div>
                 </div>
               </div>
 
               <div className="p-3.5 rounded-xl bg-[#181512] border border-[#C59B27]/30 flex flex-col gap-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#D6CEC2] font-medium">
-                    나의 전용 포교 링크 (휴대폰 뒤 8자리)
+                <div className="flex items-center justify-between gap-2 text-xs">
+                  <span className="text-[#D6CEC2] font-medium whitespace-nowrap">
+                    전용 포교 링크 (뒤 8자리)
                   </span>
-                  <span className="text-[11px] text-[#F5D061] font-bold">
-                    고유코드: {activeAgent.code}
+                  <span className="text-[11px] text-[#F5D061] font-bold whitespace-nowrap shrink-0">
+                    코드: {activeAgent.code}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -2306,14 +2328,14 @@ export default function App() {
                     type="text"
                     readOnly
                     value={`https://sowonpray.vercel.app/?ref=${activeAgent.code}`}
-                    className="flex-1 bg-[#26211C] text-[#E8DFD1] text-xs px-3 py-2 rounded-lg border border-white/10 focus:outline-none"
+                    className="flex-1 bg-[#26211C] text-[#E8DFD1] text-xs px-3 py-2 rounded-lg border border-white/10 focus:outline-none min-w-0"
                   />
                   <button
                     type="button"
                     onClick={() => handleCopyRefLink(activeAgent.code)}
-                    className="px-3.5 py-2 rounded-lg bg-[#F5D061] text-[#1B1815] font-bold text-xs flex items-center gap-1 shrink-0 hover:brightness-105 transition"
+                    className="px-3.5 py-2 rounded-lg bg-[#F5D061] text-[#1B1815] font-bold text-xs flex items-center gap-1 whitespace-nowrap shrink-0 hover:brightness-105 transition"
                   >
-                    <Copy className="w-3.5 h-3.5" />
+                    <Copy className="w-3.5 h-3.5 shrink-0" />
                     <span>복사</span>
                   </button>
                 </div>
@@ -2322,14 +2344,14 @@ export default function App() {
 
             {/* 나의 인연 신도 도량 방문 & 사찰 공양(식사) 예약 현황 */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8]">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-1.5">
-                  <Coffee className="w-4 h-4 text-[#9A7418]" />
-                  <h3 className="font-serif-kr font-bold text-base">
-                    인연 신도 방문 · 사찰 공양(식사) 예약 현황
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <Coffee className="w-4 h-4 text-[#9A7418] shrink-0" />
+                  <h3 className="font-serif-kr font-bold text-sm sm:text-base whitespace-nowrap">
+                    인연 신도 방문 · 공양(식사) 예약 현황
                   </h3>
                 </div>
-                <span className="text-xs text-[#9A7418] font-semibold">
+                <span className="text-xs text-[#9A7418] font-semibold whitespace-nowrap shrink-0">
                   총 {visits.filter((v) => isAdmin || v.agent_code === activeAgent.code).length}건
                 </span>
               </div>
