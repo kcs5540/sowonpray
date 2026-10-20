@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1, h2, h3, .font-serif-kr {
+    font-family: 'Noto Serif KR', serif;
+  }
+}
+
+/* Custom Scrollbar for horizontal cards */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(245, 194, 66, 0.35), inset 0 0 15px rgba(245, 194, 66, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 48px rgba(245, 194, 66, 0.75), inset 0 0 25px rgba(245, 194, 66, 0.45);
+  }
+}
+
+.lantern-active {
+  animation: pulseGlow 3s infinite ease-in-out;
+}

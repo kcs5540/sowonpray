@@ -1,0 +1,329 @@
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
+
+export const supabase = (supabaseUrl && supabaseAnonKey)
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null
+
+// 휴대폰 번호에서 뒤 8자리 고유코드 추출 헬퍼 (예: '010-5214-8821' -> '52148821')
+export function extractPhone8Code(input = '') {
+  const digits = String(input).replace(/[^0-9]/g, '')
+  if (digits.length === 11 && digits.startsWith('010')) {
+    return digits.slice(3)
+  }
+  if (digits.length >= 8) {
+    return digits.slice(-8)
+  }
+  return String(input).trim()
+}
+
+// 휴대폰 번호 표준 하이픈 포맷터 (예: '52148821' -> '010-5214-8821')
+export function formatPhone11(input = '') {
+  const digits = String(input).replace(/[^0-9]/g, '')
+  const code8 = digits.length === 11 && digits.startsWith('010') ? digits.slice(3) : digits.slice(-8)
+  if (code8.length === 8) {
+    return `010-${code8.slice(0, 4)}-${code8.slice(4)}`
+  }
+  return input
+}
+
+// 통합 회원 초기 시드 데이터 (총괄대표 + 소원사본부 + 포교사 + 일반신도)
+// 기본 간편 비밀번호(password_pin): '0000'
+export const INITIAL_MEMBERS = [
+  {
+    code: '33065540',
+    phone: '010-3306-5540',
+    password_pin: '0000',
+    name: '김철수',
+    dharma_name: '총괄대표',
+    birth_date: '1970-01-01',
+    lunar_solar: '음력',
+    address: '제주특별자치도 제주시',
+    family_memo: '제주 소원사 모바일 법당 & 포교 정산 총괄',
+    role: 'master',
+    parent_code: null,
+    bank_name: '농협',
+    bank_account: '301-0000-0000-01',
+    account_holder: '김철수',
+    merit_count: 108,
+    believers_count: 142,
+    wipae_count: 12,
+    extra_data: {},
+  },
+  {
+    code: '49121083',
+    phone: '010-4912-1083',
+    password_pin: '0000',
+    name: '양영문',
+    dharma_name: '신도회장',
+    birth_date: '1960-03-15',
+    lunar_solar: '음력',
+    address: '제주특별자치도 제주시 죽성서길 75 (제주 소원사)',
+    family_memo: '제주 소원사 신도회장 · 방문 차담 및 위패 봉안 총괄',
+    role: 'temple_admin',
+    parent_code: '33065540',
+    bank_name: '농협',
+    bank_account: '301-0024-41',
+    account_holder: '소원사',
+    merit_count: 320,
+    believers_count: 85,
+    wipae_count: 8,
+    extra_data: {},
+  },
+  {
+    code: '52148821',
+    phone: '010-5214-8821',
+    password_pin: '0000',
+    name: '김연화',
+    dharma_name: '연화심',
+    birth_date: '1963-04-08',
+    lunar_solar: '음력',
+    address: '제주특별자치도 제주시 노형동',
+    family_memo: '남편(박건우), 장남(박진호) 무병장수 발원',
+    role: 'agent',
+    parent_code: '49121083',
+    bank_name: '제주은행',
+    bank_account: '401-12-882100',
+    account_holder: '김연화',
+    merit_count: 215,
+    believers_count: 34,
+    wipae_count: 4,
+    extra_data: {},
+  },
+  {
+    code: '88321920',
+    phone: '010-8832-1920',
+    password_pin: '0000',
+    name: '이자비',
+    dharma_name: '자비행',
+    birth_date: '1965-09-12',
+    lunar_solar: '음력',
+    address: '제주특별자치도 제주시 연동',
+    family_memo: '가족 화목 및 사업 번창 발원',
+    role: 'agent',
+    parent_code: '52148821',
+    bank_name: '농협',
+    bank_account: '352-8832-1920-13',
+    account_holder: '이자비',
+    merit_count: 144,
+    believers_count: 27,
+    wipae_count: 3,
+    extra_data: {},
+  },
+  {
+    code: '39110944',
+    phone: '010-3911-0944',
+    password_pin: '0000',
+    name: '고청정',
+    dharma_name: '청정월',
+    birth_date: '1968-11-20',
+    lunar_solar: '음력',
+    address: '제주특별자치도 서귀포시 중문동',
+    family_memo: '부모님 생전예수재 공덕 발원',
+    role: 'agent',
+    parent_code: '88321920',
+    bank_name: '국민은행',
+    bank_account: '110-391-109440',
+    account_holder: '고청정',
+    merit_count: 96,
+    believers_count: 19,
+    wipae_count: 2,
+    extra_data: {},
+  },
+  {
+    code: '77123301',
+    phone: '010-7712-3301',
+    password_pin: '0000',
+    name: '강무량',
+    dharma_name: '무량수',
+    birth_date: '1961-07-03',
+    lunar_solar: '음력',
+    address: '제주특별자치도 제주시 아라동',
+    family_memo: '조상 영가 극락왕생 발원',
+    role: 'agent',
+    parent_code: '49121083',
+    bank_name: '수협',
+    bank_account: '1010-7712-3301',
+    account_holder: '강무량',
+    merit_count: 112,
+    believers_count: 22,
+    wipae_count: 2,
+    extra_data: {},
+  },
+  {
+    code: '82341088',
+    phone: '010-8234-1088',
+    password_pin: '0000',
+    name: '이정숙',
+    dharma_name: '무량화',
+    birth_date: '1964-02-19',
+    lunar_solar: '음력',
+    address: '제주특별자치도 제주시 애월읍',
+    family_memo: '배우자 김성수(59년생), 장녀 김미영(90년생) 건강 발원',
+    role: 'believer',
+    parent_code: '52148821',
+    bank_name: '',
+    bank_account: '',
+    account_holder: '',
+    merit_count: 108,
+    believers_count: 0,
+    wipae_count: 0,
+    extra_data: {},
+  },
+  {
+    code: '33217745',
+    phone: '010-3321-7745',
+    password_pin: '0000',
+    name: '박성훈',
+    dharma_name: '청산',
+    birth_date: '1967-08-25',
+    lunar_solar: '양력',
+    address: '제주특별자치도 제주시 일도이동',
+    family_memo: '부친(박영길)·모친(한순자) 생전예수재 황금위패 봉안',
+    role: 'believer',
+    parent_code: '52148821',
+    bank_name: '',
+    bank_account: '',
+    account_holder: '',
+    merit_count: 54,
+    believers_count: 0,
+    wipae_count: 1,
+    extra_data: {},
+  },
+]
+
+// 하위 호환용 INITIAL_AGENTS 별칭
+export const INITIAL_AGENTS = INITIAL_MEMBERS
+
+// 초기 신도 축원 데이터
+export const INITIAL_PRAYERS = [
+  {
+    id: 'p-101',
+    member_code: '82341088',
+    believer_name: '이정숙 (무량화)',
+    believer_phone: '010-8234-1088',
+    agent_code: '52148821',
+    wish_category: '가족건강',
+    wish_text: '우리 가족 올 한 해 무병장수하고 마음 평안하기를 발원합니다.',
+    status: 'prayed',
+    prayed_at: '오늘 오전 10:30 사시예불 축원완료',
+    created_at: '2026-10-20 08:15',
+  },
+  {
+    id: 'p-102',
+    member_code: '33217745',
+    believer_name: '박성훈 (청산)',
+    believer_phone: '010-3321-7745',
+    agent_code: '52148821',
+    wish_category: '생전예수재(황금위패)',
+    wish_text: '부모님 생전예수재 황금위패 봉안으로 건강과 복덕을 발원합니다.',
+    status: 'completed',
+    prayed_at: '위패전 명당 봉안 및 축원 진행중',
+    created_at: '2026-10-19 14:20',
+  },
+  {
+    id: 'p-103',
+    member_code: '91204412',
+    believer_name: '김영희 (보현행)',
+    believer_phone: '010-9120-4412',
+    agent_code: '88321920',
+    wish_category: '조상영구위패(흑색)',
+    wish_text: '선망 부모님 극락왕생을 발원하며 소원사 위패전에 영구 봉안 희망합니다.',
+    status: 'consulting',
+    prayed_at: '종무소 봉안 상담 예약됨',
+    created_at: '2026-10-18 16:40',
+  },
+  {
+    id: 'p-104',
+    member_code: '45102910',
+    believer_name: '최민준',
+    believer_phone: '010-4510-2910',
+    agent_code: '52148821',
+    wish_category: '사업번창',
+    wish_text: '새로 시작하는 제주 사업장이 순조롭게 번창하길 기도합니다.',
+    status: 'prayed',
+    prayed_at: '오늘 오전 10:30 사시예불 축원완료',
+    created_at: '2026-09-12 11:05',
+  },
+]
+
+// 초기 위패 봉안 및 수당 정산 내역
+export const INITIAL_SETTLEMENTS = [
+  {
+    id: 's-201',
+    believer_name: '박성훈 (청산)',
+    item_name: '생전예수재 황금위패 (1기)',
+    total_amount: 2000000,
+    agent_1st_code: '52148821',
+    agent_1st_name: '김연화(연화심) 포교사',
+    agent_2nd_code: '49121083',
+    agent_2nd_name: '양영문 회장',
+    agent_3rd_code: null,
+    agent_3rd_name: '-',
+    payment_status: 'settled',
+    created_at: '2026-10-19',
+  },
+  {
+    id: 's-202',
+    believer_name: '강동원 (법우)',
+    item_name: '조상 영가 흑색 영구위패 (1기)',
+    total_amount: 2000000,
+    agent_1st_code: '39110944',
+    agent_1st_name: '고청정(청정월) 포교사',
+    agent_2nd_code: '88321920',
+    agent_2nd_name: '이자비(자비행) 포교사',
+    agent_3rd_code: '52148821',
+    agent_3rd_name: '김연화(연화심) 포교사',
+    payment_status: 'confirmed',
+    created_at: '2026-10-17',
+  },
+  {
+    id: 's-203',
+    believer_name: '오순자 (자비화)',
+    item_name: '조상 영가 부부 영구위패 (2기)',
+    total_amount: 4000000,
+    agent_1st_code: '88321920',
+    agent_1st_name: '이자비(자비행) 포교사',
+    agent_2nd_code: '52148821',
+    agent_2nd_name: '김연화(연화심) 포교사',
+    agent_3rd_code: '49121083',
+    agent_3rd_name: '양영문 회장',
+    payment_status: 'settled',
+    created_at: '2026-10-14',
+  },
+]
+
+// 초기 도량 방문 & 차담·사찰 공양(식사) 사전 예약 데이터
+export const INITIAL_VISITS = [
+  {
+    id: 'v-301',
+    member_code: '82341088',
+    visitor_name: '이정숙 (무량화)',
+    visitor_phone: '010-8234-1088',
+    agent_code: '52148821',
+    visit_date: '2026-10-22',
+    visit_time: '오전 11:30 (점심 공양 및 차담)',
+    headcount: 2,
+    visit_purpose: '따뜻한 차 & 사찰 공양(식사) 대접 예약',
+    memo: '남편과 함께 대웅전 참배 후 점심 공양 올리고 싶습니다.',
+    status: 'confirmed',
+    created_at: '오늘 오전 09:30',
+  },
+  {
+    id: 'v-302',
+    member_code: '33217745',
+    visitor_name: '박성훈 (청산)',
+    visitor_phone: '010-3321-7745',
+    agent_code: '52148821',
+    visit_date: '2026-10-23',
+    visit_time: '오후 02:00 (오후 차담 및 위패전 참배)',
+    headcount: 3,
+    visit_purpose: '생전예수재 황금위패 봉안 방문 상담',
+    memo: '어머님 모시고 위패전 직접 둘러보고 차 한 잔 나누고 싶습니다.',
+    status: 'reserved',
+    created_at: '어제 오후 04:15',
+  },
+]
+
