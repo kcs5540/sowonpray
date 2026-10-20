@@ -1258,8 +1258,8 @@ export default function App() {
                       영구 봉안
                     </span>
                   </div>
-                  <h4 className="font-serif-kr font-bold text-base text-[#231F1C] whitespace-nowrap">
-                    ① 생전예수재(生前預修齋) 황금빛 위패
+                  <h4 className="font-serif-kr font-bold text-base text-[#231F1C] break-keep">
+                    ① 생전예수재 황금빛 위패
                   </h4>
                   <p className="text-xs text-[#575049] leading-relaxed break-keep">
                     살아생전에 미리 선업과 공덕을 닦아 삼재팔난과 액난을 소멸하고, 부모님과 가족의 무병장수·수복증장을 기원하는 찬란한 황금 위패입니다.
