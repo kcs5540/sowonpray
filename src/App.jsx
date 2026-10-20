@@ -923,108 +923,108 @@ export default function App() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2.5">
-                    <div>
-                      <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1 whitespace-nowrap">
-                        1. 방문 예정일
+                  {/* 1열 가로줄 배치: 왼쪽 라벨 + 오른쪽 넓은 선택/입력창 */}
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2.5">
+                      <label className="w-20 text-xs text-[#E8DFD1] font-bold shrink-0 whitespace-nowrap">
+                        방문 예정일
                       </label>
                       <input
                         type="date"
                         value={visitDate}
                         onChange={(e) => setVisitDate(e.target.value)}
-                        className="w-full px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
+                        className="flex-1 px-3 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
                       />
                     </div>
-                    <div>
-                      <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1 whitespace-nowrap">
-                        2. 방문 인원 (식사)
+
+                    <div className="flex items-center gap-2.5">
+                      <label className="w-20 text-xs text-[#E8DFD1] font-bold shrink-0 whitespace-nowrap">
+                        방문 인원수
                       </label>
                       <select
                         value={visitHeadcount}
                         onChange={(e) => setVisitHeadcount(Number(e.target.value))}
-                        className="w-full px-2 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
+                        className="flex-1 px-3 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
                       >
                         <option value={1}>1명 방문</option>
-                        <option value={2}>2명 (부부/동반)</option>
-                        <option value={3}>3명 (가족)</option>
-                        <option value={4}>4명 (가족/모임)</option>
-                        <option value={5}>5명 이상 (단체)</option>
+                        <option value={2}>2명 방문 (부부 · 동반)</option>
+                        <option value={3}>3명 방문 (가족)</option>
+                        <option value={4}>4명 방문 (가족 · 모임)</option>
+                        <option value={5}>5명 이상 (단체 참배)</option>
                       </select>
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-2 gap-2.5">
-                    <div>
-                      <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1 whitespace-nowrap">
-                        3. 방문 시간대
+                    <div className="flex items-center gap-2.5">
+                      <label className="w-20 text-xs text-[#E8DFD1] font-bold shrink-0 whitespace-nowrap">
+                        방문 시간대
                       </label>
                       <select
                         value={visitTime}
                         onChange={(e) => setVisitTime(e.target.value)}
-                        className="w-full px-2 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
+                        className="flex-1 px-3 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
                       >
-                        <option value="오전 10:30 (오전 참배 및 차담)">오전 10:30 (참배)</option>
-                        <option value="오전 11:30 (점심 공양 및 차담)">오전 11:30 (점심공양)</option>
-                        <option value="오후 02:00 (오후 차담 및 참배)">오후 02:00 (오후차담)</option>
-                        <option value="오후 04:00 (오후 참배 및 상담)">오후 04:00 (오후참배)</option>
+                        <option value="오전 10:30 (오전 참배 및 차담)">오전 10:30 (오전 참배 · 차담)</option>
+                        <option value="오전 11:30 (점심 공양 및 차담)">오전 11:30 (점심 공양 · 차담)</option>
+                        <option value="오후 02:00 (오후 차담 및 참배)">오후 02:00 (오후 차담 · 참배)</option>
+                        <option value="오후 04:00 (오후 참배 및 상담)">오후 04:00 (오후 참배 · 상담)</option>
                       </select>
                     </div>
-                    <div>
-                      <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1 whitespace-nowrap">
-                        4. 식사 · 차담 구분
+
+                    <div className="flex items-center gap-2.5">
+                      <label className="w-20 text-xs text-[#E8DFD1] font-bold shrink-0 whitespace-nowrap">
+                        식사 · 차담
                       </label>
                       <select
                         value={visitPurpose}
                         onChange={(e) => setVisitPurpose(e.target.value)}
-                        className="w-full px-2 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
+                        className="flex-1 px-3 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
                       >
-                        <option value="따뜻한 차 & 사찰 공양(식사) 대접 예약">사찰 공양(점심식사)</option>
-                        <option value="도량 참배 및 따뜻한 차담 예약">도량 참배 & 차담</option>
-                        <option value="스님 신행 상담 및 차담 예약">스님 신행 상담</option>
-                        <option value="가족 기도 및 도량 참배 예약">가족 기도 참배</option>
+                        <option value="따뜻한 차 & 사찰 공양(식사) 대접 예약">따뜻한 차 & 사찰 공양(점심식사)</option>
+                        <option value="도량 참배 및 따뜻한 차담 예약">도량 참배 & 따뜻한 차담</option>
+                        <option value="스님 신행 상담 및 차담 예약">스님 신행 상담 & 차담</option>
+                        <option value="가족 기도 및 도량 참배 예약">가족 기도 & 도량 참배</option>
                       </select>
                     </div>
                   </div>
 
-                  {/* 신청자 정보 입력 영역 구분 */}
-                  <div className="pt-2 border-t border-white/10 space-y-2.5">
-                    <div className="grid grid-cols-2 gap-2.5">
-                      <div>
-                        <label className="block text-[11px] text-[#F5D061] font-semibold mb-1 whitespace-nowrap">
-                          방문자 성함 (법명)
-                        </label>
-                        <input
-                          type="text"
-                          value={wishName}
-                          onChange={(e) => setWishName(e.target.value)}
-                          placeholder="방문자 성함"
-                          className="w-full px-3 py-2 rounded-lg bg-[#FFFDF9] border-2 border-[#C59B27] text-[#1B1815] font-bold text-xs"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[11px] text-[#F5D061] font-semibold mb-1 whitespace-nowrap">
-                          연락처 (안내용)
-                        </label>
-                        <input
-                          type="tel"
-                          value={wishPhone}
-                          onChange={(e) => setWishPhone(e.target.value)}
-                          placeholder="010-0000-0000"
-                          className="w-full px-3 py-2 rounded-lg bg-[#FFFDF9] border-2 border-[#C59B27] text-[#1B1815] font-bold text-xs"
-                        />
-                      </div>
+                  {/* 신청자 정보 입력 영역 구분 (가로 1줄 배치) */}
+                  <div className="pt-2.5 border-t border-white/10 space-y-2">
+                    <div className="flex items-center gap-2.5">
+                      <label className="w-20 text-xs text-[#F5D061] font-bold shrink-0 whitespace-nowrap">
+                        방문자 성함
+                      </label>
+                      <input
+                        type="text"
+                        value={wishName}
+                        onChange={(e) => setWishName(e.target.value)}
+                        placeholder="예: 홍길동 (무량심)"
+                        className="flex-1 px-3 py-2 rounded-lg bg-[#FFFDF9] border-2 border-[#C59B27] text-[#1B1815] font-bold text-xs"
+                      />
                     </div>
 
-                    <div>
-                      <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1 whitespace-nowrap">
-                        요청 메모 (선택)
+                    <div className="flex items-center gap-2.5">
+                      <label className="w-20 text-xs text-[#F5D061] font-bold shrink-0 whitespace-nowrap">
+                        연락처 번호
+                      </label>
+                      <input
+                        type="tel"
+                        value={wishPhone}
+                        onChange={(e) => setWishPhone(e.target.value)}
+                        placeholder="010-0000-0000"
+                        className="flex-1 px-3 py-2 rounded-lg bg-[#FFFDF9] border-2 border-[#C59B27] text-[#1B1815] font-bold text-xs"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2.5">
+                      <label className="w-20 text-xs text-[#D6CEC2] font-semibold shrink-0 whitespace-nowrap">
+                        요청 메모
                       </label>
                       <input
                         type="text"
                         value={visitMemo}
                         onChange={(e) => setVisitMemo(e.target.value)}
-                        placeholder="예: 점심 사찰 공양 2인 부탁드립니다"
-                        className="w-full px-3 py-2 rounded-lg bg-[#FFFDF9] border border-[#C59B27]/60 text-[#1B1815] text-xs"
+                        placeholder="예: 점심 공양 2인 부탁드립니다"
+                        className="flex-1 px-3 py-2 rounded-lg bg-[#FFFDF9] border border-[#C59B27]/60 text-[#1B1815] text-xs"
                       />
                     </div>
                   </div>
