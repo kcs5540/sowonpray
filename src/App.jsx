@@ -909,7 +909,7 @@ export default function App() {
               {showVisitForm && (
                 <form
                   onSubmit={handleVisitSubmit}
-                  className="bg-[#181411] rounded-xl p-3.5 sm:p-4 border border-[#C59B27]/40 space-y-3"
+                  className="bg-[#181411] rounded-xl p-3.5 sm:p-4 border border-[#C59B27]/40 space-y-3 overflow-hidden"
                 >
                   <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2.5">
                     <div className="flex items-center gap-1.5 text-xs font-bold text-[#F5D061] whitespace-nowrap">
@@ -924,8 +924,8 @@ export default function App() {
                   </div>
 
                   {/* 1열 가로줄 배치: 모든 입력/선택창 좌우 끝선 100% 칼정렬 (grid-cols-[72px_minmax(0,1fr)]) */}
-                  <div className="space-y-2">
-                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2">
+                  <div className="space-y-2 w-full">
+                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2 w-full">
                       <label className="text-xs text-[#E8DFD1] font-bold whitespace-nowrap">
                         방문 예정일
                       </label>
@@ -933,18 +933,18 @@ export default function App() {
                         type="date"
                         value={visitDate}
                         onChange={(e) => setVisitDate(e.target.value)}
-                        className="w-full min-w-0 px-3 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
+                        className="block w-full max-w-full min-w-0 box-border px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
                       />
                     </div>
 
-                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2">
+                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2 w-full">
                       <label className="text-xs text-[#E8DFD1] font-bold whitespace-nowrap">
                         방문 인원수
                       </label>
                       <select
                         value={visitHeadcount}
                         onChange={(e) => setVisitHeadcount(Number(e.target.value))}
-                        className="w-full min-w-0 px-3 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
+                        className="block w-full max-w-full min-w-0 box-border px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061] truncate"
                       >
                         <option value={1}>1명 방문</option>
                         <option value={2}>2명 방문 (부부·동반)</option>
@@ -954,14 +954,14 @@ export default function App() {
                       </select>
                     </div>
 
-                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2">
+                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2 w-full">
                       <label className="text-xs text-[#E8DFD1] font-bold whitespace-nowrap">
                         방문 시간대
                       </label>
                       <select
                         value={visitTime}
                         onChange={(e) => setVisitTime(e.target.value)}
-                        className="w-full min-w-0 px-3 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
+                        className="block w-full max-w-full min-w-0 box-border px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061] truncate"
                       >
                         <option value="오전 10:30 (오전 참배 및 차담)">오전 10:30 (참배·차담)</option>
                         <option value="오전 11:30 (점심 공양 및 차담)">오전 11:30 (점심공양)</option>
@@ -970,14 +970,14 @@ export default function App() {
                       </select>
                     </div>
 
-                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2">
+                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2 w-full">
                       <label className="text-xs text-[#E8DFD1] font-bold whitespace-nowrap">
                         식사 · 차담
                       </label>
                       <select
                         value={visitPurpose}
                         onChange={(e) => setVisitPurpose(e.target.value)}
-                        className="w-full min-w-0 px-3 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
+                        className="block w-full max-w-full min-w-0 box-border px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061] truncate"
                       >
                         <option value="따뜻한 차 & 사찰 공양(식사) 대접 예약">차 & 사찰 공양(식사)</option>
                         <option value="도량 참배 및 따뜻한 차담 예약">도량 참배 & 차담</option>
@@ -988,8 +988,8 @@ export default function App() {
                   </div>
 
                   {/* 신청자 정보 입력 영역 구분 (동일한 좌우 끝선 칼정렬) */}
-                  <div className="pt-2.5 border-t border-white/10 space-y-2">
-                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2">
+                  <div className="pt-2.5 border-t border-white/10 space-y-2 w-full">
+                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2 w-full">
                       <label className="text-xs text-[#F5D061] font-bold whitespace-nowrap">
                         방문자 성함
                       </label>
@@ -998,11 +998,11 @@ export default function App() {
                         value={wishName}
                         onChange={(e) => setWishName(e.target.value)}
                         placeholder="예: 홍길동 (무량심)"
-                        className="w-full min-w-0 px-3 py-2 rounded-lg bg-[#FFFDF9] border-2 border-[#C59B27] text-[#1B1815] font-bold text-xs"
+                        className="block w-full max-w-full min-w-0 box-border px-2.5 py-2 rounded-lg bg-[#FFFDF9] border-2 border-[#C59B27] text-[#1B1815] font-bold text-xs"
                       />
                     </div>
 
-                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2">
+                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2 w-full">
                       <label className="text-xs text-[#F5D061] font-bold whitespace-nowrap">
                         연락처 번호
                       </label>
@@ -1011,11 +1011,11 @@ export default function App() {
                         value={wishPhone}
                         onChange={(e) => setWishPhone(e.target.value)}
                         placeholder="010-0000-0000"
-                        className="w-full min-w-0 px-3 py-2 rounded-lg bg-[#FFFDF9] border-2 border-[#C59B27] text-[#1B1815] font-bold text-xs"
+                        className="block w-full max-w-full min-w-0 box-border px-2.5 py-2 rounded-lg bg-[#FFFDF9] border-2 border-[#C59B27] text-[#1B1815] font-bold text-xs"
                       />
                     </div>
 
-                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2">
+                    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2 w-full">
                       <label className="text-xs text-[#D6CEC2] font-semibold whitespace-nowrap">
                         요청 메모
                       </label>
@@ -1024,7 +1024,7 @@ export default function App() {
                         value={visitMemo}
                         onChange={(e) => setVisitMemo(e.target.value)}
                         placeholder="예: 점심 공양 2인 부탁드립니다"
-                        className="w-full min-w-0 px-3 py-2 rounded-lg bg-[#FFFDF9] border border-[#C59B27]/60 text-[#1B1815] text-xs"
+                        className="block w-full max-w-full min-w-0 box-border px-2.5 py-2 rounded-lg bg-[#FFFDF9] border border-[#C59B27]/60 text-[#1B1815] text-xs"
                       />
                     </div>
                   </div>
