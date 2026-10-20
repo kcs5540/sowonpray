@@ -758,9 +758,11 @@ export default function App() {
 
         {/* 토스트 알림 */}
         {toast && (
-          <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-[440px] bg-[#1E1A16]/95 text-[#FAF8F5] border border-[#F5D061] px-4 py-3 rounded-xl shadow-2xl text-xs leading-relaxed flex items-center gap-2.5 animate-bounce">
-            <Sparkles className="w-4 h-4 text-[#F5D061] shrink-0" />
-            <span>{toast}</span>
+          <div className="fixed top-16 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
+            <div className="w-full max-w-[440px] bg-[#1E1A16]/95 text-[#FAF8F5] border border-[#F5D061] px-4 py-3 rounded-xl shadow-2xl text-xs leading-relaxed flex items-center gap-2.5 animate-bounce pointer-events-auto break-keep">
+              <Sparkles className="w-4 h-4 text-[#F5D061] shrink-0" />
+              <span>{toast}</span>
+            </div>
           </div>
         )}
 
