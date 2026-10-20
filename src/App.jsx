@@ -678,9 +678,23 @@ export default function App() {
   const [quizSelectedOption, setQuizSelectedOption] = useState(null)
   const [solvedQuizIds, setSolvedQuizIds] = useState([])
 
-  // 한국어 음성 낭독(TTS) 상태 및 헬퍼 (autoVoiceEnabled가 켜져 있으면 '다음' 이동 시에도 자동 낭독)
+  // 한국어 음성 낭독(TTS) 상태 및 헬퍼 — 중후한 스님 톤 기본 적용 (autoVoiceEnabled가 켜져 있으면 '다음' 이동 시에도 자동 낭독)
   const [speakingId, setSpeakingId] = useState(null)
   const [autoVoiceEnabled, setAutoVoiceEnabled] = useState(false)
+
+  // 모바일 브라우저 음성 목록 사전 로드
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.getVoices()
+        window.speechSynthesis.onvoiceschanged = () => {
+          window.speechSynthesis.getVoices()
+        }
+      }
+    } catch (e) {
+      // 무시
+    }
+  }, [])
 
   const stopSpeech = (disableAuto = false) => {
     try {
@@ -704,24 +718,34 @@ export default function App() {
       }
       window.speechSynthesis.cancel()
 
-      // 괄호 안 한자 제거 및 자연스러운 한국어 낭독용 정제
+      // 괄호 안 한자 제거 및 스님 법문처럼 차분한 호흡(쉼표·여백) 정제
       const cleanText = String(rawText)
         .replace(/\([一-龥\s·,]+\)/g, '')
         .replace(/[《》“”"']/g, ' ')
         .replace(/[①②③④⑤]/g, '')
         .replace(/·/g, ', ')
+        .replace(/\.\s*/g, '. ... ')
         .replace(/\s+/g, ' ')
         .trim()
 
       const utterance = new SpeechSynthesisUtterance(cleanText)
       utterance.lang = 'ko-KR'
-      utterance.rate = 0.92
-      utterance.pitch = 1.0
+      // 중후한 스님 톤: 낮고 묵직한 음높이(0.62)와 차분하고 여유로운 독송 속도(0.82)
+      utterance.pitch = 0.62
+      utterance.rate = 0.82
 
       const voices = window.speechSynthesis.getVoices()
-      const koVoice = voices.find((v) => v.lang && (v.lang.includes('ko') || v.lang.includes('KR')))
-      if (koVoice) {
-        utterance.voice = koVoice
+      const koVoices = voices.filter(
+        (v) => v.lang && (v.lang.toLowerCase().includes('ko') || v.lang.toLowerCase().includes('kr'))
+      )
+      // 기기에 남성 한국어 음성이 있으면 우선 선택, 없으면 기본 한국어 음성에 저음 피치 적용
+      const maleKoVoice =
+        koVoices.find((v) =>
+          /male|injoon|minsoo|kpb|kod|cjm|nam|man|남성/i.test(`${v.name} ${v.voiceURI}`)
+        ) || koVoices[0]
+
+      if (maleKoVoice) {
+        utterance.voice = maleKoVoice
       }
 
       utterance.onend = () => setSpeakingId(null)
