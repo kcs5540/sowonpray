@@ -1228,8 +1228,8 @@ export default function App() {
                   <span className="block text-[11px] font-bold text-[#9A7418] whitespace-nowrap">
                     1. 명당 위패 봉안 불사 (2종)
                   </span>
-                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] whitespace-nowrap">
-                    생전예수재 황금위패 · 조상 영구위패
+                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
+                    생전 예수재 황금위패 · 조상 영구위패
                   </h3>
                 </div>
                 <Award className="w-6 h-6 text-[#C59B27] shrink-0" />
@@ -1238,17 +1238,17 @@ export default function App() {
               <div className="rounded-xl overflow-hidden border border-[#D8CBB8]">
                 <img
                   src="/images/wipae_product.jpg"
-                  alt="생전예수재 황금위패와 조상 흑색 위패 실물"
+                  alt="생전 예수재 황금위패와 조상 흑색 위패 실물"
                   className="w-full h-44 object-cover"
                 />
                 <div className="bg-[#1B1815] text-white px-3 py-2 flex justify-between gap-2 text-[10.5px] font-bold">
-                  <span className="text-[#F5D061] whitespace-nowrap">◀ 좌측: 생전예수재 황금위패</span>
+                  <span className="text-[#F5D061] whitespace-nowrap">◀ 좌측: 생전 예수재 황금위패</span>
                   <span className="text-[#E2DAD0] whitespace-nowrap">우측: 조상 영가 흑색위패 ▶</span>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 gap-3">
-                {/* ① 생전예수재 황금위패 */}
+                {/* ① 생전 예수재 황금위패 */}
                 <div className="rounded-xl border-2 border-[#D4AF37] bg-gradient-to-br from-[#FFFDF7] to-[#F9F1D8] p-4 space-y-2">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#D4AF37] text-[#1B1815] whitespace-nowrap">
@@ -1259,7 +1259,7 @@ export default function App() {
                     </span>
                   </div>
                   <h4 className="font-serif-kr font-bold text-base text-[#231F1C] break-keep">
-                    ① 생전예수재 황금빛 위패
+                    ① 생전 예수재 황금빛 위패
                   </h4>
                   <p className="text-xs text-[#575049] leading-relaxed break-keep">
                     살아생전에 미리 선업과 공덕을 닦아 삼재팔난과 액난을 소멸하고, 부모님과 가족의 무병장수·수복증장을 기원하는 찬란한 황금 위패입니다.
