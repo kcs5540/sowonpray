@@ -767,30 +767,28 @@ export default function App() {
         {/* ==================== 1. 신행홈 탭 ==================== */}
         {activeTab === 'home' && (
           <main className="flex-1 flex flex-col gap-5 p-4">
-            {/* 히어로 카드: 제주 소원사 대웅전 (상단 중복 배너 제거로 깔끔한 구성) */}
-            <div className="relative rounded-2xl overflow-hidden shadow-lg border border-[#D8CBB8]">
+            {/* 히어로 카드: 제주 소원사 대웅전 (글자 크기를 키워도 절대 겹치지 않는 flex-col 구조) */}
+            <div className="relative rounded-2xl overflow-hidden shadow-lg border border-[#D8CBB8] min-h-[240px] flex flex-col justify-between p-4">
               <img
                 src="/images/sowonsa_real_cover_path.png"
                 alt="제주 소원사 도량"
-                className="w-full h-56 object-cover brightness-105"
+                className="absolute inset-0 w-full h-full object-cover brightness-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#161310] via-[#161310]/55 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#161310]/95 via-[#161310]/45 to-black/20" />
 
-              <div className="absolute top-3 left-3 right-3 flex justify-between items-center">
-                <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-sm text-[#F5D061] text-[11px] font-medium border border-[#F5D061]/30 flex items-center gap-1.5 whitespace-nowrap">
+              <div className="relative z-10 flex justify-between items-center mb-10">
+                <span className="px-3 py-1 rounded-full bg-black/65 backdrop-blur-sm text-[#F5D061] text-[11px] font-semibold border border-[#F5D061]/35 flex items-center gap-1.5 whitespace-nowrap">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
                   대웅전 부처님 전 소원 축원 진행중
                 </span>
               </div>
 
-              <div className="absolute bottom-4 left-4 right-4 text-white">
-                <p className="text-[11.5px] text-[#F5D061] font-medium mb-1 whitespace-nowrap">
-                  간절한 한 가지 소원이 이루어지는 영험 도량
-                </p>
+              <div className="relative z-10 text-white pt-4">
                 <h1 className="font-serif-kr text-xl sm:text-2xl font-bold leading-snug mb-1.5 break-keep">
-                  간절한 기도가 응답받는 곳,{' '}
+                  간절한 기도가 응답받는 곳,
+                  <br />
                   <span className="text-[#F5D061] underline decoration-[#F5D061]/50 underline-offset-4 whitespace-nowrap">
-                    제주 소원사
+                    대한불교 본원종 제주 소원사
                   </span>
                 </h1>
                 <p className="text-xs text-[#E8DFD1] leading-relaxed break-keep">
