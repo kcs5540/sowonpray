@@ -121,7 +121,7 @@ export default function App() {
   })
 
   const [prayers, setPrayers] = useState(() => {
-    const saved = localStorage.getItem('sowonpray_prayers_v3')
+    const saved = localStorage.getItem('sowonpray_prayers_v4')
     return saved ? JSON.parse(saved) : INITIAL_PRAYERS
   })
 
@@ -204,7 +204,7 @@ export default function App() {
   }, [members])
 
   useEffect(() => {
-    localStorage.setItem('sowonpray_prayers_v3', JSON.stringify(prayers))
+    localStorage.setItem('sowonpray_prayers_v4', JSON.stringify(prayers))
   }, [prayers])
 
   useEffect(() => {
@@ -235,8 +235,33 @@ export default function App() {
   const [wishText, setWishText] = useState('')
   const [showSuccessModal, setShowSuccessModal] = useState(false)
 
-  // 도량 방문 & 차담·사찰 공양(식사) 사전 예약 폼 상태 (기본값: 내일 날짜)
-  const [showVisitForm, setShowVisitForm] = useState(true)
+  // 탭 이동 시 해당 탭에 맞는 기본 종목 자동 세팅
+  useEffect(() => {
+    const bulsaCats = [
+      '생전예수재(황금위패)',
+      '조상영구위패(흑색)',
+      '대웅전 1년 인등(가족등)',
+      '49재/천도재/기일제사',
+      '대웅전 공양미/불전시주',
+      '기타 특별기도 상담',
+    ]
+    const lanternCats = [
+      '가족건강',
+      '사업번창',
+      '학업/시험합격',
+      '마음평안/소원성취',
+      '자녀축복/취업성취',
+      '액운소멸/무병장수',
+    ]
+    if (activeTab === 'bulsa' && !bulsaCats.includes(wishCategory)) {
+      setWishCategory('생전예수재(황금위패)')
+    } else if (activeTab === 'lantern' && !lanternCats.includes(wishCategory)) {
+      setWishCategory('가족건강')
+    }
+  }, [activeTab])
+
+  // 도량 방문 & 차담·사찰 공양(식사) 사전 예약 폼 상태 (첫 화면 부담을 줄이기 위해 기본 접힘)
+  const [showVisitForm, setShowVisitForm] = useState(false)
   const [visitDate, setVisitDate] = useState(() => {
     const tomorrow = new Date(Date.now() + 86400000)
     return tomorrow.toISOString().split('T')[0]
@@ -800,44 +825,24 @@ export default function App() {
               </p>
             </section>
 
-            {/* 퀵 액션 배너 3종: 소원등 켜기 · 불사/위패 안내 · 온라인 사경 */}
-            <div className="grid grid-cols-3 gap-2">
+            {/* 퀵 액션 배너 2종: 소원등 켜기 · 온라인 한줄 사경 (불사안내는 하단 탭으로 분리하여 첫 화면 부담 제거) */}
+            <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={() => {
                   playSingingBowlSound()
                   setActiveTab('lantern')
                 }}
-                className="bg-gradient-to-br from-[#2B241D] to-[#1A1612] text-white px-2.5 py-3 rounded-2xl text-left border border-[#C59B27]/50 shadow-md hover:scale-[1.01] transition flex flex-col justify-between h-28"
+                className="bg-gradient-to-br from-[#2B241D] to-[#1A1612] text-white p-4 rounded-2xl text-left border border-[#C59B27]/50 shadow-md hover:scale-[1.01] transition flex items-center gap-3"
               >
-                <div className="w-8 h-8 rounded-xl bg-[#C59B27]/20 border border-[#F5D061]/40 flex items-center justify-center">
-                  <Flame className="w-4 h-4 text-[#F5D061]" />
+                <div className="w-11 h-11 rounded-xl bg-[#C59B27]/20 border border-[#F5D061]/40 flex items-center justify-center shrink-0">
+                  <Flame className="w-5 h-5 text-[#F5D061]" />
                 </div>
-                <div>
-                  <span className="block text-[10px] text-[#F5D061] font-medium whitespace-nowrap">
-                    대웅전 무료축원
+                <div className="min-w-0">
+                  <span className="block text-[10.5px] text-[#F5D061] font-medium whitespace-nowrap">
+                    100% 무료 대웅전 축원
                   </span>
-                  <h3 className="font-serif-kr font-bold text-[13px] sm:text-sm mt-0.5 whitespace-nowrap">
+                  <h3 className="font-serif-kr font-bold text-sm sm:text-base mt-0.5 whitespace-nowrap">
                     소원등 켜기
-                  </h3>
-                </div>
-              </button>
-
-              <button
-                onClick={() => {
-                  playSingingBowlSound()
-                  setActiveTab('bulsa')
-                }}
-                className="bg-gradient-to-br from-[#FFFDF7] to-[#F6E8BE] text-[#231F1C] px-2.5 py-3 rounded-2xl text-left border-2 border-[#D4AF37] shadow-md hover:scale-[1.01] transition flex flex-col justify-between h-28"
-              >
-                <div className="w-8 h-8 rounded-xl bg-[#D4AF37]/25 border border-[#B8860B]/40 flex items-center justify-center">
-                  <Award className="w-4 h-4 text-[#8A6510]" />
-                </div>
-                <div>
-                  <span className="block text-[10px] text-[#8A6510] font-bold whitespace-nowrap">
-                    예수재·영가위패
-                  </span>
-                  <h3 className="font-serif-kr font-bold text-[13px] sm:text-sm mt-0.5 whitespace-nowrap">
-                    불사 안내
                   </h3>
                 </div>
               </button>
@@ -847,24 +852,24 @@ export default function App() {
                   playSingingBowlSound()
                   setActiveTab('sutra')
                 }}
-                className="bg-gradient-to-br from-[#F6F1E4] to-[#EAE0C8] text-[#231F1C] px-2.5 py-3 rounded-2xl text-left border border-[#D5C59B] shadow-md hover:scale-[1.01] transition flex flex-col justify-between h-28"
+                className="bg-gradient-to-br from-[#F6F1E4] to-[#EAE0C8] text-[#231F1C] p-4 rounded-2xl text-left border border-[#D5C59B] shadow-md hover:scale-[1.01] transition flex items-center gap-3"
               >
-                <div className="w-8 h-8 rounded-xl bg-[#9A7418]/15 border border-[#9A7418]/30 flex items-center justify-center">
-                  <BookOpen className="w-4 h-4 text-[#8A6510]" />
+                <div className="w-11 h-11 rounded-xl bg-[#9A7418]/15 border border-[#9A7418]/30 flex items-center justify-center shrink-0">
+                  <BookOpen className="w-5 h-5 text-[#8A6510]" />
                 </div>
-                <div>
-                  <span className="block text-[10px] text-[#8A6510] font-semibold whitespace-nowrap">
-                    공덕 {currentMeritCount}회
+                <div className="min-w-0">
+                  <span className="block text-[10.5px] text-[#8A6510] font-semibold whitespace-nowrap">
+                    나의 공덕 {currentMeritCount}회
                   </span>
-                  <h3 className="font-serif-kr font-bold text-[13px] sm:text-sm mt-0.5 whitespace-nowrap">
+                  <h3 className="font-serif-kr font-bold text-sm sm:text-base mt-0.5 whitespace-nowrap">
                     한 줄 사경
                   </h3>
                 </div>
               </button>
             </div>
 
-            {/* 따뜻한 차와 사찰 공양(식사) 대접 온라인 사전예약 카드 */}
-            <section className="rounded-2xl bg-gradient-to-br from-[#29231E] to-[#1C1814] text-white p-4 sm:p-5 border-2 border-[#C59B27]/60 shadow-lg space-y-4">
+            {/* 따뜻한 차와 사찰 공양(식사) 대접 온라인 사전예약 카드 (평소에는 깔끔하게 접혀 있고 버튼 터치 시 열림) */}
+            <section className="rounded-2xl bg-gradient-to-br from-[#29231E] to-[#1C1814] text-white p-4 sm:p-5 border border-[#C59B27]/50 shadow-lg space-y-3.5">
               <div className="flex items-start gap-2.5">
                 <div className="w-10 h-10 rounded-full bg-[#C59B27]/20 border border-[#F5D061]/40 flex items-center justify-center shrink-0 mt-0.5">
                   <Coffee className="w-5 h-5 text-[#F5D061]" />
@@ -876,160 +881,148 @@ export default function App() {
                   <h3 className="font-serif-kr text-base sm:text-lg font-bold mt-0.5 break-keep">
                     “도량에서 따뜻한 차 한 잔 나누세요”
                   </h3>
-                  <p className="text-xs text-[#D6CEC2] mt-1.5 leading-relaxed break-keep">
+                  <p className="text-xs text-[#D6CEC2] mt-1 leading-relaxed break-keep">
                     제주 소원사는 모든 불자님께 언제나 열려 있습니다.{' '}
-                    <strong className="text-[#F5D061]">
-                      오시기 전날 미리 온라인(또는 전화) 방문 예약을 남겨주시면 따뜻한 차와 정성스러운 사찰 공양(식사)을 무료로 준비해 드립니다.
-                    </strong>
+                    <span className="text-[#F5D061] font-semibold">
+                      오시기 전날 미리 방문 예약을 남겨주시면 따뜻한 차와 정성스러운 사찰 공양(식사)을 무료로 준비해 드립니다.
+                    </span>
                   </p>
                 </div>
               </div>
 
-              {/* 온라인 전날 방문 & 식사(공양) 예약 폼 */}
-              <form
-                onSubmit={handleVisitSubmit}
-                className="bg-[#181411] rounded-xl p-3.5 sm:p-4 border border-[#C59B27]/40 space-y-3"
+              {/* 예약창 열기/닫기 버튼 */}
+              <button
+                type="button"
+                onClick={() => setShowVisitForm((prev) => !prev)}
+                className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#C59B27] text-[#1B1815] font-extrabold text-xs shadow hover:brightness-105 transition flex items-center justify-between whitespace-nowrap"
               >
-                <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2.5">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#F5D061] whitespace-nowrap">
-                    <Calendar className="w-3.5 h-3.5 shrink-0" />
-                    <span>전날 방문 · 사찰 공양(식사) 예약</span>
-                  </div>
-                  {currentUser && (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] whitespace-nowrap shrink-0">
-                      {currentUser.name}님 연동
-                    </span>
-                  )}
-                </div>
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="w-4 h-4 shrink-0" />
+                  <span>전날 방문 · 사찰 공양(식사) 온라인 예약하기</span>
+                </span>
+                <span className="text-[11px] font-bold">
+                  {showVisitForm ? '접기 ▲' : '열기 ▼'}
+                </span>
+              </button>
 
-                <div className="grid grid-cols-2 gap-2.5">
-                  <div>
-                    <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1 whitespace-nowrap">
-                      방문 예정일 (전날 예약)
-                    </label>
+              {/* 버튼 클릭 시에만 펼쳐지는 온라인 전날 방문 & 식사(공양) 예약 폼 */}
+              {showVisitForm && (
+                <form
+                  onSubmit={handleVisitSubmit}
+                  className="bg-[#181411] rounded-xl p-3.5 sm:p-4 border border-[#C59B27]/40 space-y-3"
+                >
+                  <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2.5">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-[#F5D061] whitespace-nowrap">
+                      <Calendar className="w-3.5 h-3.5 shrink-0" />
+                      <span>방문 · 사찰 공양(식사) 예약 정보 입력</span>
+                    </div>
+                    {currentUser && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] whitespace-nowrap shrink-0">
+                        {currentUser.name}님 연동
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div>
+                      <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1 whitespace-nowrap">
+                        방문 예정일 (전날 예약)
+                      </label>
+                      <input
+                        type="date"
+                        value={visitDate}
+                        onChange={(e) => setVisitDate(e.target.value)}
+                        className="w-full px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/40 text-white text-xs focus:outline-none focus:border-[#F5D061]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1 whitespace-nowrap">
+                        방문 인원 (식사 준비)
+                      </label>
+                      <select
+                        value={visitHeadcount}
+                        onChange={(e) => setVisitHeadcount(Number(e.target.value))}
+                        className="w-full px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/40 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
+                      >
+                        <option value={1}>1명 방문</option>
+                        <option value={2}>2명 방문 (부부/동반)</option>
+                        <option value={3}>3명 방문 (가족)</option>
+                        <option value={4}>4명 방문 (가족/모임)</option>
+                        <option value={5}>5명 이상 (단체 참배)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div>
+                      <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1 whitespace-nowrap">
+                        방문 시간대 선택
+                      </label>
+                      <select
+                        value={visitTime}
+                        onChange={(e) => setVisitTime(e.target.value)}
+                        className="w-full px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/40 text-white text-xs focus:outline-none focus:border-[#F5D061]"
+                      >
+                        <option value="오전 10:30 (오전 참배 및 차담)">오전 10:30 (참배/차담)</option>
+                        <option value="오전 11:30 (점심 공양 및 차담)">오전 11:30 (점심공양/차담)</option>
+                        <option value="오후 02:00 (오후 차담 및 참배)">오후 02:00 (오후 차담)</option>
+                        <option value="오후 04:00 (오후 참배 및 상담)">오후 04:00 (오후 참배)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1 whitespace-nowrap">
+                        방문 · 공양 선택
+                      </label>
+                      <select
+                        value={visitPurpose}
+                        onChange={(e) => setVisitPurpose(e.target.value)}
+                        className="w-full px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/40 text-white text-xs focus:outline-none focus:border-[#F5D061]"
+                      >
+                        <option value="따뜻한 차 & 사찰 공양(식사) 대접 예약">차 & 사찰 공양(식사)</option>
+                        <option value="도량 참배 및 따뜻한 차담 예약">도량 참배 & 차담</option>
+                        <option value="스님 신행 상담 및 차담 예약">스님 신행 상담 & 차담</option>
+                        <option value="가족 기도 및 도량 참배 예약">가족 기도 & 도량 참배</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2.5">
                     <input
-                      type="date"
-                      value={visitDate}
-                      onChange={(e) => setVisitDate(e.target.value)}
-                      className="w-full px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/40 text-white text-xs focus:outline-none focus:border-[#F5D061]"
+                      type="text"
+                      value={wishName}
+                      onChange={(e) => setWishName(e.target.value)}
+                      placeholder="방문자 성함 (법명)"
+                      className="w-full px-3 py-2 rounded-lg bg-[#26211C] border border-white/15 text-white text-xs"
+                    />
+                    <input
+                      type="tel"
+                      value={wishPhone}
+                      onChange={(e) => setWishPhone(e.target.value)}
+                      placeholder="연락처 (010-0000-0000)"
+                      className="w-full px-3 py-2 rounded-lg bg-[#26211C] border border-white/15 text-white text-xs"
                     />
                   </div>
-                  <div>
-                    <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1 whitespace-nowrap">
-                      방문 인원 (식사 준비)
-                    </label>
-                    <select
-                      value={visitHeadcount}
-                      onChange={(e) => setVisitHeadcount(Number(e.target.value))}
-                      className="w-full px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/40 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
-                    >
-                      <option value={1}>1명 방문</option>
-                      <option value={2}>2명 방문 (부부/동반)</option>
-                      <option value={3}>3명 방문 (가족)</option>
-                      <option value={4}>4명 방문 (가족/모임)</option>
-                      <option value={5}>5명 이상 (단체 참배)</option>
-                    </select>
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-2.5">
-                  <div>
-                    <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1 whitespace-nowrap">
-                      방문 시간대 선택
-                    </label>
-                    <select
-                      value={visitTime}
-                      onChange={(e) => setVisitTime(e.target.value)}
-                      className="w-full px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/40 text-white text-xs focus:outline-none focus:border-[#F5D061]"
-                    >
-                      <option value="오전 10:30 (오전 참배 및 차담)">오전 10:30 (참배/차담)</option>
-                      <option value="오전 11:30 (점심 공양 및 차담)">오전 11:30 (점심공양/차담)</option>
-                      <option value="오후 02:00 (오후 차담 및 위패전 참배)">오후 02:00 (오후 차담)</option>
-                      <option value="오후 04:00 (오후 참배 및 상담)">오후 04:00 (오후 참배)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-[11px] text-[#D6CEC2] font-semibold mb-1 whitespace-nowrap">
-                      방문 · 공양 선택
-                    </label>
-                    <select
-                      value={visitPurpose}
-                      onChange={(e) => setVisitPurpose(e.target.value)}
-                      className="w-full px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/40 text-white text-xs focus:outline-none focus:border-[#F5D061]"
-                    >
-                      <option value="따뜻한 차 & 사찰 공양(식사) 대접 예약">차 & 사찰 공양(식사)</option>
-                      <option value="도량 참배 및 따뜻한 차담 예약">도량 참배 & 차담</option>
-                      <option value="생전예수재 황금위패 방문 상담">생전예수재 위패 상담</option>
-                      <option value="조상 영가 영구위패 방문 상담">조상 영가 위패 상담</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2.5">
                   <input
                     type="text"
-                    value={wishName}
-                    onChange={(e) => setWishName(e.target.value)}
-                    placeholder="방문자 성함 (법명)"
+                    value={visitMemo}
+                    onChange={(e) => setVisitMemo(e.target.value)}
+                    placeholder="요청사항 (예: 점심 사찰 공양 2인 부탁드립니다)"
                     className="w-full px-3 py-2 rounded-lg bg-[#26211C] border border-white/15 text-white text-xs"
                   />
-                  <input
-                    type="tel"
-                    value={wishPhone}
-                    onChange={(e) => setWishPhone(e.target.value)}
-                    placeholder="연락처 (010-0000-0000)"
-                    className="w-full px-3 py-2 rounded-lg bg-[#26211C] border border-white/15 text-white text-xs"
-                  />
-                </div>
 
-                <input
-                  type="text"
-                  value={visitMemo}
-                  onChange={(e) => setVisitMemo(e.target.value)}
-                  placeholder="요청사항 (예: 점심 사찰 공양 2인 부탁드립니다)"
-                  className="w-full px-3 py-2 rounded-lg bg-[#26211C] border border-white/15 text-white text-xs"
-                />
-
-                <button
-                  type="submit"
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#C59B27] text-[#1B1815] font-extrabold text-xs shadow hover:brightness-105 transition flex items-center justify-center gap-1.5 whitespace-nowrap"
-                >
-                  <Calendar className="w-4 h-4 shrink-0" />
-                  <span>방문 · 사찰 공양(식사) 사전예약 신청하기</span>
-                </button>
-              </form>
-
-              {/* 접수된 최근 방문·공양 예약 현황 */}
-              <div className="space-y-2 pt-1">
-                <div className="flex items-center justify-between gap-2 text-[11px] text-[#F5D061] font-semibold">
-                  <span className="whitespace-nowrap">🍵 최근 방문 · 사찰 공양 예약 ({visits.length}건)</span>
-                  <span className="whitespace-nowrap shrink-0">공양간 연동</span>
-                </div>
-                {visits.slice(0, 2).map((v) => (
-                  <div
-                    key={v.id}
-                    className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between gap-2 text-xs"
+                  <button
+                    type="submit"
+                    className="w-full py-3 rounded-xl bg-[#F5D061] text-[#1B1815] font-extrabold text-xs shadow hover:brightness-105 transition flex items-center justify-center gap-1.5 whitespace-nowrap"
                   >
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate">
-                        <span className="font-bold text-white">{v.visitor_name}님</span>
-                        <span className="text-[#F5D061] ml-1.5 font-semibold">
-                          ({v.visit_date} · {v.headcount}명)
-                        </span>
-                      </div>
-                      <div className="text-[11px] text-[#BFB6AA] truncate mt-0.5">
-                        {v.visit_time} · {v.visit_purpose}
-                      </div>
-                    </div>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F5D061]/20 text-[#F5D061] border border-[#F5D061]/40 font-bold whitespace-nowrap shrink-0">
-                      {v.status === 'confirmed' ? '공양준비확정' : '예약접수됨'}
-                    </span>
-                  </div>
-                ))}
-              </div>
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <span>방문 · 사찰 공양(식사) 예약 접수 완료하기</span>
+                  </button>
+                </form>
+              )}
 
               {/* 전화 예약 바로가기 버튼 2종 */}
-              <div className="grid grid-cols-2 gap-2 pt-1">
+              <div className="grid grid-cols-2 gap-2">
                 <a
                   href="tel:010-4912-1083"
                   className="flex items-center justify-center gap-1 py-2.5 px-2 rounded-xl bg-white/15 text-[#F5D061] font-bold text-[11px] border border-[#F5D061]/40 hover:bg-white/20 transition whitespace-nowrap"
@@ -1047,7 +1040,7 @@ export default function App() {
               </div>
             </section>
 
-            {/* 실시간 대웅전 소원등 축원 현황 */}
+            {/* 실시간 대웅전 소원등 축원 현황 (첫 화면에는 순수 소원 기도만 노출하여 부담 제거) */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8]">
               <div className="flex items-center justify-between gap-2 mb-3">
                 <div className="flex items-center gap-1.5 min-w-0">
@@ -1057,27 +1050,36 @@ export default function App() {
                   </h2>
                 </div>
                 <span className="text-xs text-[#8C7A5B] whitespace-nowrap shrink-0">
-                  총 {prayers.length}분 점등중
+                  대웅전 상시 축원중
                 </span>
               </div>
 
               <div className="space-y-2.5">
-                {prayers.slice(0, 3).map((item) => (
-                  <div
-                    key={item.id}
-                    className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EDE6D8] flex flex-col gap-1"
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-bold text-[#231F1C] truncate">
-                        🕯️ {item.believer_name} ({item.wish_category})
-                      </span>
-                      <span className="text-[10.5px] text-[#9A7418] font-semibold whitespace-nowrap shrink-0">
-                        {item.prayed_at}
-                      </span>
+                {prayers
+                  .filter(
+                    (item) =>
+                      !item.wish_category.includes('위패') &&
+                      !item.wish_category.includes('인등') &&
+                      !item.wish_category.includes('천도재') &&
+                      !item.wish_category.includes('시주')
+                  )
+                  .slice(0, 3)
+                  .map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EDE6D8] flex flex-col gap-1"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-bold text-[#231F1C] truncate">
+                          🕯️ {item.believer_name} ({item.wish_category})
+                        </span>
+                        <span className="text-[10.5px] text-[#9A7418] font-semibold whitespace-nowrap shrink-0">
+                          {item.prayed_at}
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#575049] line-clamp-1">“{item.wish_text}”</p>
                     </div>
-                    <p className="text-xs text-[#575049] line-clamp-1">“{item.wish_text}”</p>
-                  </div>
-                ))}
+                  ))}
               </div>
             </section>
 
@@ -1496,7 +1498,7 @@ export default function App() {
               </p>
             </div>
 
-            {/* 무료 소원 축원 및 위패 상담 신청 폼 */}
+            {/* 무료 소원 축원 신청 폼 */}
             <form
               onSubmit={handlePrayerSubmit}
               className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-4"
@@ -1504,10 +1506,10 @@ export default function App() {
               <div className="border-b border-[#EFE9DD] pb-3 flex items-center justify-between gap-2">
                 <div className="min-w-0">
                   <span className="block text-[10.5px] font-bold text-[#9A7418] whitespace-nowrap">
-                    100% 무료 사시예불 축원 & 위패 상담
+                    100% 무료 매일 사시예불 축원
                   </span>
                   <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] mt-0.5 whitespace-nowrap">
-                    대웅전 축원 발원문 접수
+                    대웅전 소원등 발원문 접수
                   </h3>
                 </div>
                 {currentUser && (
@@ -1536,8 +1538,8 @@ export default function App() {
                     '사업번창',
                     '학업/시험합격',
                     '마음평안/소원성취',
-                    '생전예수재(황금위패)',
-                    '조상영구위패(흑색)',
+                    '자녀축복/취업성취',
+                    '액운소멸/무병장수',
                   ].map((cat) => {
                     const isSelected = wishCategory === cat
                     return (
