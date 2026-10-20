@@ -686,7 +686,7 @@ export default function App() {
                   제주 소원사
                 </span>
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#C59B27]/25 text-[#FAF8F5] border border-[#C59B27]/50 font-semibold whitespace-nowrap">
-                  소원기도 법당
+                  모바일 법당
                 </span>
               </div>
               <p className="text-[10.5px] text-[#D6CEC2] truncate">
@@ -2892,7 +2892,7 @@ export default function App() {
 
         {/* 하단 푸터 */}
         <footer className="px-4 py-6 text-center text-[11px] text-[#8C8275] border-t border-[#E6DEC8]/60 space-y-1.5">
-          <div>제주 소원사 · 소원기도 모바일 법당</div>
+          <div>제주 소원사 · 모바일 법당</div>
           <div className="flex items-center justify-center gap-3">
             <span>종무소 064-805-2007</span>
             <span>·</span>
