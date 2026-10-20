@@ -894,14 +894,14 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setShowVisitForm((prev) => !prev)}
-                className="w-full py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#C59B27] text-[#1B1815] font-extrabold text-xs shadow hover:brightness-105 transition flex items-center justify-between gap-2"
+                className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#C59B27] text-[#1B1815] font-extrabold text-xs shadow hover:brightness-105 transition flex items-center justify-between gap-1.5"
               >
                 <span className="flex items-center gap-1.5 whitespace-nowrap">
                   <Calendar className="w-4 h-4 shrink-0" />
                   <span>전날 방문 · 사찰 공양(식사) 예약</span>
                 </span>
-                <span className="px-2.5 py-1 rounded-lg bg-[#1B1815] text-[#F5D061] text-[11px] font-bold whitespace-nowrap shrink-0">
-                  {showVisitForm ? '창 닫기 ▲' : '예약창 열기 ▼'}
+                <span className="px-2 py-1 rounded-lg bg-[#1B1815] text-[#F5D061] text-[10.5px] font-bold whitespace-nowrap shrink-0">
+                  {showVisitForm ? '창 닫기 ▲' : '창 열기 ▼'}
                 </span>
               </button>
 
