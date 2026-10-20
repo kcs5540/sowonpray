@@ -768,7 +768,7 @@ export default function App() {
         {activeTab === 'home' && (
           <main className="flex-1 flex flex-col gap-5 p-4">
             {/* 히어로 카드: 제주 소원사 대웅전 (글자 크기를 키워도 절대 겹치지 않는 flex-col 구조) */}
-            <div className="relative rounded-2xl overflow-hidden shadow-lg border border-[#D8CBB8] min-h-[240px] flex flex-col justify-between p-4">
+            <div className="relative rounded-2xl overflow-hidden shadow-lg border border-[#D8CBB8] min-h-[216px] flex flex-col justify-between p-4">
               <img
                 src="/images/sowonsa_real_cover_path.png"
                 alt="제주 소원사 도량"
@@ -776,14 +776,14 @@ export default function App() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#161310]/95 via-[#161310]/45 to-black/20" />
 
-              <div className="relative z-10 flex justify-between items-center mb-10">
+              <div className="relative z-10 flex justify-between items-center mb-6">
                 <span className="px-3 py-1 rounded-full bg-black/65 backdrop-blur-sm text-[#F5D061] text-[11px] font-semibold border border-[#F5D061]/35 flex items-center gap-1.5 whitespace-nowrap">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
                   대웅전 부처님 전 소원 축원 진행중
                 </span>
               </div>
 
-              <div className="relative z-10 text-white pt-4">
+              <div className="relative z-10 text-white pt-1 pb-1">
                 <h1 className="font-serif-kr text-xl sm:text-2xl font-bold leading-tight mb-1.5 break-keep">
                   간절한 기도가 응답받는 곳,
                   <br />
