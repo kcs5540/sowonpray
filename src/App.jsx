@@ -55,7 +55,7 @@ const DAILY_QUOTES = [
   },
 ]
 
-// 사경 구절 목록
+// 사경 구절 목록 (8대 핵심 경전·진언)
 const SUTRA_LIST = [
   {
     id: 'sutra-1',
@@ -66,17 +66,308 @@ const SUTRA_LIST = [
   },
   {
     id: 'sutra-2',
-    title: '법구경 축원게송',
-    hanja: '諸惡莫作 衆善奉行',
-    text: '모든 악을 짓지 말고 온갖 선을 받들어 행하라',
-    meaning: '스스로 그 마음을 맑게 하는 것, 이것이 모든 부처님의 가르침이니라.',
-  },
-  {
-    id: 'sutra-3',
-    title: '관세음보살 본심미묘 육자대명왕진언',
+    title: '관세음보살 육자진언',
     hanja: '唵 嘛 呢 叭 咪 吽',
     text: '옴 마니 반메 훔 옴 마니 반메 훔',
     meaning: '관세음보살님의 한없는 자비와 지혜로 모든 액난이 소멸하고 소원이 성취되기를 발원합니다.',
+  },
+  {
+    id: 'sutra-3',
+    title: '천수경 정구업진언',
+    hanja: '修利修利 摩訶修利',
+    text: '수리수리 마하수리 수수리 사바하',
+    meaning: '입으로 지은 모든 그릇된 업을 맑게 씻어내고 청정한 기도가 하늘에 닿기를 발원합니다.',
+  },
+  {
+    id: 'sutra-4',
+    title: '금강경 사구게',
+    hanja: '凡所有相 皆是虛妄',
+    text: '범소유상 개시허망 약견제상비상 즉견여래',
+    meaning: '무릇 형상이 있는 것은 모두 허망하니, 상이 상 아님을 보면 곧 부처님을 친견하리라.',
+  },
+  {
+    id: 'sutra-5',
+    title: '약사여래 무병장수 기원',
+    hanja: '南無 藥師琉璃光如來',
+    text: '나무 약사여래불 몸과 마음의 병이 소멸하소서',
+    meaning: '대인의 명의이신 약사여래 부처님의 가피로 온 가족이 아픔 없이 건강하기를 발원합니다.',
+  },
+  {
+    id: 'sutra-6',
+    title: '법구경 칠불통계게',
+    hanja: '諸惡莫作 衆善奉行',
+    text: '모든 악을 짓지 말고 온갖 선을 받들어 행하라',
+    meaning: '스스로 그 마음을 맑게 하는 것, 이것이 과거·현재·미래 모든 부처님의 가르침이니라.',
+  },
+  {
+    id: 'sutra-7',
+    title: '화엄경 일체유심조',
+    hanja: '一切唯心造',
+    text: '모든 것은 오직 내 한마음이 짓는 것이니라',
+    meaning: '맑은 마음을 품으면 복덕의 길이 열리고, 감사의 마음을 품으면 극락이 눈앞에 열립니다.',
+  },
+  {
+    id: 'sutra-8',
+    title: '지장보살 극락왕생 발원',
+    hanja: '南無 大願本尊 地藏菩薩',
+    text: '나무 지장보살 마하살 조상님의 극락왕생을 발원합니다',
+    meaning: '지옥이 텅 빌 때까지 성불을 미루신 지장보살님의 원력으로 조상 영가의 안식을 기원합니다.',
+  },
+]
+
+// 오늘 나의 연꽃 말씀 뽑기 (제비뽑기 화두 6선)
+const LOTUS_FORTUNES = [
+  {
+    badge: '제1연꽃 · 만사형통의 지혜',
+    quote: '“급히 먹는 밥이 체하듯, 복도 익을 시간이 필요합니다.”',
+    source: '법구경 · 인연의 가르침',
+    advice:
+      '지금 마음속에 품고 계신 간절한 소원이 이미 씨앗을 틔웠습니다. 조급한 마음을 잠시 내려놓고 오늘 하루 따뜻한 말 한마디의 보시를 실천해 보세요. 생각지 못한 귀인의 도움으로 막혔던 길이 순조롭게 열립니다.',
+  },
+  {
+    badge: '제2연꽃 · 가내평안의 가피',
+    quote: '“연꽃은 진흙 속에서 피어나되 진흙에 물들지 않는다.”',
+    source: '숫타니파타',
+    advice:
+      '주변 상황이 다소 어수선하더라도 불자님의 중심만 흔들리지 않으면 아무런 해를 입지 않습니다. 가족이나 자녀를 향한 걱정을 부처님께 맡기시고 편안한 호흡을 세 번 길게 내쉬어 보세요.',
+  },
+  {
+    badge: '제3연꽃 · 무병장수의 축복',
+    quote: '“마음이 평안하면 몸의 기운이 절로 맑아지고 백병이 물러간다.”',
+    source: '약사여래본원경',
+    advice:
+      '오늘은 나를 먼저 아끼고 돌보아야 하는 날입니다. 따뜻한 차 한 잔으로 몸을 데우고, 내 몸 구석구석에 고맙다는 인사를 건네보세요. 건강의 기운이 한층 회복됩니다.',
+  },
+  {
+    badge: '제4연꽃 · 재물·공덕의 열매',
+    quote: '“한 개의 등불로 천 년의 어둠을 밝히고, 한 줌의 베풂으로 만석의 복을 짓는다.”',
+    source: '현우경 · 빈자일등',
+    advice:
+      '내가 먼저 베푼 작은 친절과 기도가 부메랑처럼 큰 복덕이 되어 돌아오는 시기입니다. 눈앞의 작은 손해에 연연하지 마시고 넓은 마음을 쓰시면 더 큰 재물과 인연이 찾아옵니다.',
+  },
+  {
+    badge: '제5연꽃 · 인연화합의 등불',
+    quote: '“옷깃만 스쳐도 오백 겁의 인연이니, 눈앞의 사람을 부처님처럼 대하라.”',
+    source: '화엄경 · 보현행원품',
+    advice:
+      '가까운 가족이나 지인에게 먼저 따뜻한 안부를 건네보세요. 서운했던 감정이 눈 녹듯 풀리고, 오랜만에 반가운 소식이 들려올 징조입니다.',
+  },
+  {
+    badge: '제6연꽃 · 소원성취의 서광',
+    quote: '“지극한 정성으로 부르면 관세음보살님은 즉시 그 소리를 살피신다.”',
+    source: '묘법연화경 관세음보살보문품',
+    advice:
+      '혼자서 끙끙 앓던 고민이 해결의 실마리를 찾게 됩니다. 대웅전 부처님 전에 밝힌 불자님의 소원등이 어두운 밤길을 비추는 등대가 되어 줄 것입니다.',
+  },
+]
+
+// 상황별 불교 명언 & 마음 처방전
+const WISDOM_BY_MOOD = [
+  {
+    id: 'anxious',
+    label: '🌿 불안·걱정될 때',
+    title: '불안하고 앞일이 걱정될 때의 처방',
+    items: [
+      {
+        quote: '지나간 과거를 쫓지 말고, 아직 오지 않은 미래를 앞당겨 근심하지 말라. 오직 지금 이 순간에 깨어 있으라.',
+        author: '부처님 (중아함경)',
+        comment: '우리가 하는 걱정의 90%는 일어나지 않을 일입니다. 지금 숨 쉬고 있는 이 순간의 평안에 마음을 머물러 보세요.',
+      },
+      {
+        quote: '산은 산이요 물은 물이로다. 구름이 끼어도 태양은 그 자리에 늘 빛나고 있다.',
+        author: '성철 대종사',
+        comment: '근심이라는 먹구름이 잠시 마음을 가렸을 뿐, 불자님 안의 지혜와 복덕은 조금도 사라지지 않았습니다.',
+      },
+      {
+        quote: '두려움은 마음이 만들어낸 그림자일 뿐입니다. 등불을 켜면 그림자는 스스로 사라집니다.',
+        author: '원효 대사',
+        comment: '관세음보살 명호를 열 번만 나직이 불러보세요. 마음의 등불이 켜지면 불안은 저절로 물러갑니다.',
+      },
+    ],
+  },
+  {
+    id: 'family',
+    label: '👨‍👩‍👧 가족·자녀 기도',
+    title: '자녀와 가족 일로 애가 탈 때의 처방',
+    items: [
+      {
+        quote: '부모가 자식을 사랑하듯 모든 생명을 자비로 감싸면, 그 자비의 기운이 다시 내 자식을 지켜주는 가장 튼튼한 갑옷이 된다.',
+        author: '숫타니파타 (자비경)',
+        comment: '자녀를 향한 조바심 대신 축복의 기도를 보내주세요. 부모의 불안보다 부모의 평안한 기도가 자녀에게 훨씬 큰 힘이 됩니다.',
+      },
+      {
+        quote: '꽃마다 피어나는 계절이 다르듯, 사람마다 복이 만개하는 시절인연이 따로 있다.',
+        author: '법정 스님',
+        comment: '자녀의 시험·취업·혼사가 남보다 조금 늦더라도 걱정하지 마세요. 더 깊고 단단한 뿌리를 내리는 중입니다.',
+      },
+      {
+        quote: '가정이 화목하면 가난해도 극락이요, 마음이 맞지 않으면 만석꾼이라도 고해(苦海)니라.',
+        author: '불설부모은중경',
+        comment: '오늘 가족에게 조언 대신 “늘 고맙고 믿는다”는 한마디를 건네보세요. 집안의 기운이 즉시 밝아집니다.',
+      },
+    ],
+  },
+  {
+    id: 'angry',
+    label: '🔥 화나고 답답할 때',
+    title: '억울하고 화가 가라앉지 않을 때의 처방',
+    items: [
+      {
+        quote: '성내는 마음은 타오르는 숯불을 손에 쥐고 남에게 던지려는 것과 같아서, 남을 맞추기 전에 내 손부터 먼저 태운다.',
+        author: '법구경 (분노품)',
+        comment: '미운 사람 때문에 내 소중한 마음밭을 태우지 마세요. 숯불을 내려놓는 것은 상대를 위한 것이 아니라 나를 지키는 일입니다.',
+      },
+      {
+        quote: '누군가 나에게 욕이라는 선물을 주었을 때, 내가 받지 않으면 그 선물은 누구의 것이 되겠느냐.',
+        author: '부처님 (잡아함경)',
+        comment: '남의 무례한 말이나 행동을 내 마음 방 안에 들여놓지 마세요. “그럴 수도 있겠구나” 하고 흘려보내면 내 마음은 고요해집니다.',
+      },
+      {
+        quote: '물이 깊으면 소리가 나지 않고, 마음이 넓으면 작은 돌멩이 하나에 출렁이지 않는다.',
+        author: '경허 선사',
+        comment: '잠시 눈을 감고 싱잉볼(법종) 소리를 들으며 세 번만 깊게 숨을 내쉬어 보세요.',
+      },
+    ],
+  },
+  {
+    id: 'wish',
+    label: '🌅 새출발·소원성취',
+    title: '간절한 소원과 새로운 시작을 앞둘 때',
+    items: [
+      {
+        quote: '방울물이 끊임없이 떨어져 마침내 큰 바위를 뚫듯, 매일 쌓은 작은 기도와 정성은 반드시 큰 소원을 이룬다.',
+        author: '법구경',
+        comment: '오늘 밝힌 소원등 하나, 오늘 읽은 경전 한 줄이 모여 불자님의 소원을 이루는 결정적인 인연이 됩니다.',
+      },
+      {
+        quote: '간절히 원하고 바른 씨앗을 심으면, 하늘과 땅과 부처님이 함께 그 길을 돕는다.',
+        author: '화엄경',
+        comment: '흔들리지 않는 믿음(信)이 모든 공덕의 어머니입니다. 제주 소원사 대웅전 부처님께서 늘 함께하십니다.',
+      },
+      {
+        quote: '오늘 내딛는 한 걸음이 곧 천 리 길의 시작이니, 두려워 말고 기쁜 마음으로 나아가라.',
+        author: '보조국사 지눌',
+        comment: '시작할 수 있다는 것 자체가 이미 큰 복입니다. 밝은 얼굴로 새 날을 맞이해 보세요.',
+      },
+    ],
+  },
+]
+
+// 어르신 눈높이 쉬운 3분 경전 & 불교 상식 공부 (5강)
+const SUTRA_STUDY_LESSONS = [
+  {
+    id: 'lesson-1',
+    category: '경전 핵심 풀이 1강',
+    title: '《반야심경》 260자, 왜 모든 예불마다 외울까요?',
+    summary: '불교 경전 8만 4천 법문 중 가장 핵심만 응축한 지혜의 결정체입니다.',
+    keyPhrase: '색즉시공 공즉시색 (色卽是空 空卽是色)',
+    content: [
+      '절에 가면 가장 많이 듣고 외우는 경전이 바로 《마하반야바라밀다심경》, 줄여서 《반야심경》입니다. 팔만대장경 중에서도 부처님의 지혜(반야)의 심장(心)만 추려 놓아 단 260자로 이루어져 있습니다.',
+      '가장 유명한 “색즉시공 공즉시색”에서 ‘색(色)’은 내 몸, 재물, 환경처럼 눈에 보이는 모든 것이고, ‘공(空)’은 영원히 고정된 것은 없으며 인연 따라 변한다는 뜻입니다.',
+      '즉 “지금 겪는 괴로움이나 병고도 영원히 묶여 있는 것이 아니니 집착하거나 낙심하지 말라”는 부처님의 가장 큰 위로이자 희망의 선언입니다.',
+      '마지막 구절 “아제아제 바라아제 바라승아제 모지 사바하”는 “가자, 가자, 괴로움 없는 지혜의 언덕으로 함께 건너가자!”라는 축원의 주문입니다.',
+    ],
+  },
+  {
+    id: 'lesson-2',
+    category: '경전 핵심 풀이 2강',
+    title: '《천수경》의 “수리수리 마하수리”는 무슨 뜻인가요?',
+    summary: '천 개의 손과 천 개의 눈으로 중생을 구원하시는 관세음보살님의 경전입니다.',
+    keyPhrase: '수리수리 마하수리 수수리 사바하',
+    content: [
+      '우리나라 불자님들이 가장 사랑하는 경전이 바로 《천수경(千手經)》입니다. 고통받는 중생을 한 사람도 빠짐없이 건지시려고 천 개의 손과 천 개의 눈을 나투신 관세음보살님의 자비를 담고 있습니다.',
+      '첫머리에 외우는 “수리수리 마하수리 수수리 사바하”는 ‘정구업진언(淨口業眞言)’, 즉 “우리가 살아오며 입으로 지은 미운 말, 거짓말, 원망의 업을 깨끗이 씻어내고 맑은 입으로 기도하겠습니다”라는 뜻입니다.',
+      '천수경을 한 편 읽거나 듣기만 해도 집안의 우환이 물러가고 관세음보살님의 따스한 보살핌이 머문다고 전해집니다.',
+    ],
+  },
+  {
+    id: 'lesson-3',
+    category: '경전 핵심 풀이 3강',
+    title: '《금강경》이 말하는 “복을 가장 크게 받는 비결”',
+    summary: '다이아몬드(금강석)처럼 단단하여 어떤 시련에도 깨지지 않는 마음 공부입니다.',
+    keyPhrase: '응무소주 이생기심 (應無所住 而生其心)',
+    content: [
+      '조계종을 비롯한 한국 불교의 소의경전(가장 중심이 되는 경전)이 바로 《금강반야바라밀경》입니다.',
+      '금강경의 핵심 구절인 “응무소주 이생기심”은 “마음을 어느 한 곳에 집착해 묶어두지 말고, 자유롭고 맑은 마음을 내라”는 뜻입니다.',
+      '특히 남에게 베풀거나 기도를 올릴 때 ‘무주상보시(바라는 집착 없이 순수하게 베푸는 마음)’로 행하면, 그 복덕이 하늘과 땅처럼 헤아릴 수 없이 커진다고 부처님께서 약속하셨습니다.',
+    ],
+  },
+  {
+    id: 'lesson-4',
+    category: '사찰 불사 상식 4강',
+    title: '‘생전 예수재(황금위패)’와 ‘조상 영구위패’는 어떻게 다른가요?',
+    summary: '살아계신 분의 수명장수 복덕을 짓는 예수재와, 조상님 극락왕생을 모시는 영구위패의 의미입니다.',
+    keyPhrase: '생전 수복증장 · 사후 극락왕생',
+    content: [
+      '① 생전 예수재(生前預修齋) 황금위패: ‘미리 예(預), 닦을 수(修)’ 자를 씁니다. 즉 돌아가신 뒤에 치르는 재가 아니라, 살아생전에 내 몫의 공덕과 선업을 미리 닦아 두어 삼재팔난과 액운을 소멸하고 부모님·본인의 무병장수와 현세 복덕을 넓히는 가장 수승한 불사입니다.',
+      '② 조상 영가 흑색 영구위패: 돌아가신 부모·조상님이나 수자령(태아령)의 위패를 대웅전 법당에 영구히 모셔, 바쁜 후손들을 대신해 사찰에서 매일 아침 예불과 명절 합동 차례·천도 축원을 끊임없이 올려드리는 효(孝)의 불사입니다.',
+      '조상님이 편안하셔야 후손의 가정이 화목하고 자손이 번창한다는 것이 불교 인연법의 핵심입니다.',
+    ],
+  },
+  {
+    id: 'lesson-5',
+    category: '불교 예화 & 예절 5강',
+    title: '가난한 여인의 꺼지지 않는 등불 — ‘빈자일등(貧者一燈)’ 이야기',
+    summary: '부처님 전에 소원등 하나를 밝히는 공덕이 왜 그렇게 큰지 알려주는 감동 실화입니다.',
+    keyPhrase: '지극한 정성으로 밝힌 등불 하나는 결코 꺼지지 않는다',
+    content: [
+      '부처님 당시 왕과 부자들이 수만 개의 화려한 기름등을 밝혔고, 가난한 여인 ‘난타’는 끼니를 아껴 마련한 동전 두 닢으로 작은 등불 하나를 정성껏 밝혔습니다.',
+      '밤이 깊어 거센 바람이 불자 왕과 부자들의 화려한 등불은 모두 꺼졌지만, 가난한 여인이 간절한 서원으로 밝힌 작은 등불 하나만은 밤새도록 꺼지지 않고 빛났습니다.',
+      '부처님께서는 “재물의 많고 적음이 아니라, 간절하고 청정한 마음으로 밝힌 등불 하나가 온 우주를 밝히는 무량한 공덕이 된다”고 말씀하셨습니다. 모바일 법당에서 매일 정성껏 켜시는 소원등도 이와 똑같은 광명의 공덕이 됩니다.',
+    ],
+  },
+]
+
+// 재미로 푸는 불교 지혜 퀴즈 (7선)
+const BUDDHIST_QUIZZES = [
+  {
+    id: 'q1',
+    question: 'Q1. 살아생전에 미리 공덕을 닦아 액운을 소멸하고 무병장수와 현세의 복을 짓는 불교 의식의 이름은 무엇일까요?',
+    options: ['① 생전 예수재 (황금위패)', '② 출가 수계식', '③ 동안거 해제'],
+    answerIdx: 0,
+    explanation: '정답은 ① 생전 예수재(生前預修齋)입니다! ‘미리(預) 공덕을 닦는다(修)’는 뜻으로, 살아생전 나와 부모님의 수명장수와 복덕을 짓는 전통 불사입니다.',
+  },
+  {
+    id: 'q2',
+    question: 'Q2. 《반야심경》에서 “형상 있는 것이 곧 비어 있음이요, 집착할 실체가 없다”는 뜻의 가장 유명한 네 글자는?',
+    options: ['① 동문서답', '② 색즉시공 (色卽是空)', '③ 대기만성'],
+    answerIdx: 1,
+    explanation: '정답은 ② 색즉시공(色卽是空)입니다! 모든 것은 인연 따라 변하므로 지금의 괴로움에 얽매이지 말라는 부처님의 지혜입니다.',
+  },
+  {
+    id: 'q3',
+    question: 'Q3. 세상의 모든 괴로운 소리를 다 살펴 들으시고 천 개의 손과 눈으로 구원해 주시는 보살님은 누구실까요?',
+    options: ['① 관세음보살님', '② 사천왕님', '③ 달마대사님'],
+    answerIdx: 0,
+    explanation: '정답은 ① 관세음보살(觀世音菩薩)님입니다! 자비의 화신으로 우리가 “관세음보살” 하고 부르면 즉시 응답해 주십니다.',
+  },
+  {
+    id: 'q4',
+    question: 'Q4. 사찰 대웅전에 들어가 부처님께 기본으로 올리는 큰절은 보통 몇 배를 올릴까요?',
+    options: ['① 1배', '② 3배 (삼배)', '③ 5배'],
+    answerIdx: 1,
+    explanation: '정답은 ② 3배(삼배)입니다! 불법승(佛法僧) 삼보(부처님·가르침·스님)께 귀의하고 공경한다는 뜻으로 세 번 절을 올립니다.',
+  },
+  {
+    id: 'q5',
+    question: 'Q5. 몸과 마음의 질병을 고쳐주시고 가족의 건강과 무병장수를 관장하시는 부처님의 명호는?',
+    options: ['① 미륵보살님', '② 약사여래 부처님', '③ 나한님'],
+    answerIdx: 1,
+    explanation: '정답은 ② 약사여래(藥師如來) 부처님입니다! 손에 약합(약그릇)을 들고 중생의 모든 아픔을 치유해 주시는 부처님이십니다.',
+  },
+  {
+    id: 'q6',
+    question: 'Q6. 《화엄경》의 핵심 가르침으로, “세상의 모든 일은 오직 내 한마음 먹기에 달려 있다”는 뜻의 사자성어는?',
+    options: ['① 일체유심조 (一切唯心造)', '② 오비이락', '③ 금상첨화'],
+    answerIdx: 0,
+    explanation: '정답은 ① 일체유심조입니다! 신라 원효대사께서 해골바가지 물을 마시고 깨달으신 구절로도 매우 유명합니다.',
+  },
+  {
+    id: 'q7',
+    question: 'Q7. 부처님 전에 등불(소원등·연등)을 밝히는 공덕이 상징하는 가장 큰 의미는 무엇일까요?',
+    options: ['① 어리석음(무명)을 밝히는 지혜와 자비의 빛', '② 방을 따뜻하게 하는 난방', '③ 시간을 재는 시계'],
+    answerIdx: 0,
+    explanation: '정답은 ① 지혜와 자비의 빛입니다! 등불 하나를 밝히면 마음의 어둠이 물러가고 앞길에 밝은 지혜와 복덕이 열립니다.',
   },
 ]
 
@@ -105,6 +396,39 @@ function playSingingBowlSound() {
       gain.connect(ctx.destination)
       osc.start(now)
       osc.stop(now + 4.3)
+    })
+  } catch (e) {
+    // 오디오 컨텍스트 제한 시 무시
+  }
+}
+
+// Web Audio API 목탁(木鐸) 청아한 타격음 합성기
+function playMoktakSound() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext
+    if (!AudioCtx) return
+    const ctx = new AudioCtx()
+    const now = ctx.currentTime
+
+    // 목탁 특유의 공명 주파수 (맑은 나무 울림)
+    const freqs = [740, 1480]
+    const gains = [0.35, 0.1]
+
+    freqs.forEach((freq, i) => {
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.type = 'triangle'
+      osc.frequency.setValueAtTime(freq, now)
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.92, now + 0.12)
+
+      gain.gain.setValueAtTime(0.001, now)
+      gain.gain.linearRampToValueAtTime(gains[i], now + 0.008)
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18)
+
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.start(now)
+      osc.stop(now + 0.2)
     })
   } catch (e) {
     // 오디오 컨텍스트 제한 시 무시
@@ -313,10 +637,26 @@ export default function App() {
     }
   }, [currentUser])
 
-  // 사경/명상 탭 상태
+  // 사경/법문/경전공부/지혜퀴즈 탭 상태
+  const [sutraSubTab, setSutraSubTab] = useState('copy') // 'copy' | 'wisdom' | 'study' | 'quiz'
   const [selectedSutraIdx, setSelectedSutraIdx] = useState(0)
   const [sutraInput, setSutraInput] = useState('')
   const [sutraCompleted, setSutraCompleted] = useState(false)
+  const [moktakCount, setMoktakCount] = useState(0)
+  const [guestMeritBonus, setGuestMeritBonus] = useState(0)
+
+  // 불교명언 & 연꽃 말씀 뽑기 상태
+  const [selectedLotusIdx, setSelectedLotusIdx] = useState(null)
+  const [selectedMoodId, setSelectedMoodId] = useState('anxious')
+
+  // 쉬운 3분 경전공부 상태
+  const [selectedLessonIdx, setSelectedLessonIdx] = useState(0)
+  const [completedLessons, setCompletedLessons] = useState([])
+
+  // 재미로 푸는 불교 지혜 퀴즈 상태
+  const [quizIndex, setQuizIndex] = useState(0)
+  const [quizSelectedOption, setQuizSelectedOption] = useState(null)
+  const [solvedQuizIds, setSolvedQuizIds] = useState([])
 
   // 로그인/회원가입 전환 상태 ('login' | 'signup')
   const [authMode, setAuthMode] = useState('login')
@@ -541,25 +881,60 @@ export default function App() {
     )
   }
 
-  // 사경 입력 체크 (본인 계정 공덕 횟수에 누적)
+  // 사경 입력 체크 및 공덕 적립 헬퍼 (본인 계정 공덕 횟수에 누적)
   const currentSutra = SUTRA_LIST[selectedSutraIdx]
-  const currentMeritCount = currentUser ? currentUser.merit_count || 0 : 108
+  const currentMeritCount = currentUser
+    ? currentUser.merit_count || 0
+    : 108 + guestMeritBonus
+
+  const addMerit = (amount = 1) => {
+    if (currentUser) {
+      setMembers((prev) =>
+        prev.map((m) =>
+          m.code === currentUser.code
+            ? { ...m, merit_count: (m.merit_count || 0) + amount }
+            : m
+        )
+      )
+    } else {
+      setGuestMeritBonus((prev) => prev + amount)
+    }
+  }
 
   const handleSutraChange = (val) => {
     setSutraInput(val)
     if (val.trim() === currentSutra.text.trim() && !sutraCompleted) {
       playSingingBowlSound()
       setSutraCompleted(true)
-      if (currentUser) {
-        setMembers((prev) =>
-          prev.map((m) =>
-            m.code === currentUser.code
-              ? { ...m, merit_count: (m.merit_count || 0) + 1 }
-              : m
-          )
-        )
-      }
+      addMerit(1)
       showToast('✨ 한 줄 사경 공덕이 내 계정에 원만히 회향되었습니다. (공덕 +1)')
+    }
+  }
+
+  // 글자 터치식 사경: 한 번 터치할 때마다 다음 한 어절(또는 글자)씩 목탁 소리와 함께 점등
+  const handleTouchStepSutra = () => {
+    if (sutraCompleted) return
+    playMoktakSound()
+    const target = currentSutra.text
+    const currentLen = sutraInput.length
+    // 공백 포함 다음 2~3글자(또는 한 단어)씩 시원하게 채워지도록 처리
+    let nextLen = Math.min(target.length, currentLen + 2)
+    while (nextLen < target.length && target[nextLen] === ' ') {
+      nextLen++
+    }
+    const nextVal = target.slice(0, nextLen)
+    handleSutraChange(nextVal)
+  }
+
+  // 온라인 목탁 & 108 염주 타격 핸들러
+  const handleMoktakTap = () => {
+    playMoktakSound()
+    const next = moktakCount + 1
+    setMoktakCount(next)
+    if (next % 9 === 0) {
+      playSingingBowlSound()
+      addMerit(1)
+      showToast(`📿 목탁 ${next}타 정진 회향! 청정 공덕이 +1회 적립되었습니다.`)
     }
   }
 
@@ -1724,136 +2099,616 @@ export default function App() {
           </main>
         )}
 
-        {/* ==================== 3. 사경/명상 탭 ==================== */}
+        {/* ==================== 3. 사경 · 불교명언 · 경전공부 · 지혜퀴즈 탭 ==================== */}
         {activeTab === 'sutra' && (
-          <main className="flex-1 flex flex-col gap-5 p-4">
-            <div className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-5 border border-[#C59B27]/40 shadow-md flex items-center justify-between">
-              <div>
-                <span className="text-xs text-[#F5D061] font-medium">
+          <main className="flex-1 flex flex-col gap-4 p-4">
+            {/* 상단 나의 공덕장 & 싱잉볼/목탁 버튼 */}
+            <div className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-4 sm:p-5 border border-[#C59B27]/40 shadow-md flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <span className="block text-[11px] text-[#F5D061] font-semibold truncate">
                   {currentUser
                     ? `${currentUser.name}${currentUser.dharma_name ? `(${currentUser.dharma_name})` : ''}님의 신행 공덕장`
                     : '나의 온라인 신행 공덕장'}
                 </span>
-                <h2 className="font-serif-kr text-2xl font-bold mt-0.5">
-                  누적 사경 공덕 <span className="text-[#F5D061]">{currentMeritCount}</span>회
+                <h2 className="font-serif-kr text-xl sm:text-2xl font-bold mt-0.5 whitespace-nowrap">
+                  누적 수행 공덕 <span className="text-[#F5D061]">{currentMeritCount}</span>회
                 </h2>
-                <p className="text-xs text-[#BFB6AA] mt-1">
-                  한 글자 한 글자 정성껏 따라 쓰며 마음을 맑게 비워보세요.
+                <p className="text-[11px] text-[#BFB6AA] mt-0.5 break-keep">
+                  사경·명언·경전공부·지혜퀴즈로 매일 맑은 복덕을 쌓아보세요.
                 </p>
               </div>
               <button
-                onClick={playSingingBowlSound}
-                className="w-16 h-16 rounded-2xl bg-[#C59B27]/20 border border-[#F5D061]/50 flex flex-col items-center justify-center gap-1 hover:bg-[#C59B27]/30 transition shrink-0"
+                type="button"
+                onClick={() => {
+                  playSingingBowlSound()
+                  showToast('🔔 맑은 법종(싱잉볼) 소리로 마음을 정화합니다.')
+                }}
+                className="w-15 h-15 px-3 py-2.5 rounded-2xl bg-[#C59B27]/20 border border-[#F5D061]/50 flex flex-col items-center justify-center gap-1 hover:bg-[#C59B27]/30 transition shrink-0"
               >
-                <Volume2 className="w-6 h-6 text-[#F5D061]" />
-                <span className="text-[10px] text-[#F5D061] font-semibold">싱잉볼 타종</span>
+                <Volume2 className="w-5 h-5 text-[#F5D061]" />
+                <span className="text-[10px] text-[#F5D061] font-semibold whitespace-nowrap">싱잉볼 타종</span>
               </button>
             </div>
 
-            <div className="flex gap-2 overflow-x-auto no-scrollbar">
-              {SUTRA_LIST.map((item, idx) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setSelectedSutraIdx(idx)
-                    setSutraInput('')
-                    setSutraCompleted(false)
-                  }}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap border transition ${
-                    selectedSutraIdx === idx
-                      ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
-                      : 'bg-white text-[#6E655C] border-[#E4DDD0]'
-                  }`}
-                >
-                  {item.title}
-                </button>
-              ))}
+            {/* 4대 코너 선택 미니 탭 (① 사경·목탁 / ② 불교명언 / ③ 경전공부 / ④ 지혜퀴즈) */}
+            <div className="grid grid-cols-4 gap-1.5 p-1.5 rounded-2xl bg-[#231F1C] border border-[#C59B27]/40 shadow-sm">
+              {[
+                { id: 'copy', label: '✍️ 한줄사경' },
+                { id: 'wisdom', label: '🪷 불교명언' },
+                { id: 'study', label: '📖 경전공부' },
+                { id: 'quiz', label: '🎯 지혜퀴즈' },
+              ].map((sub) => {
+                const isSelected = sutraSubTab === sub.id
+                return (
+                  <button
+                    key={sub.id}
+                    type="button"
+                    onClick={() => setSutraSubTab(sub.id)}
+                    className={`py-2.5 px-1 rounded-xl text-[11px] font-extrabold transition whitespace-nowrap text-center ${
+                      isSelected
+                        ? 'bg-[#F5D061] text-[#1B1815] shadow-md'
+                        : 'text-[#D6CEC2] hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    {sub.label}
+                  </button>
+                )
+              })}
             </div>
 
-            <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-4">
-              <div className="text-center border-b border-[#EFE9DD] pb-4">
-                <span className="text-xs text-[#9A7418] font-bold tracking-widest">
-                  {currentSutra.hanja}
-                </span>
-                <h3 className="font-serif-kr text-lg font-bold text-[#231F1C] mt-1">
-                  {currentSutra.title}
-                </h3>
-                <p className="text-xs text-[#6E655C] mt-1">{currentSutra.meaning}</p>
-              </div>
+            {/* ==================== [코너 1] 터치식 황금 사경 & 목탁 수행 ==================== */}
+            {sutraSubTab === 'copy' && (
+              <>
+                {/* 8대 경전 구절 선택 가로 스크롤 */}
+                <div className="flex gap-2 overflow-x-auto no-scrollbar pb-0.5">
+                  {SUTRA_LIST.map((item, idx) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedSutraIdx(idx)
+                        setSutraInput('')
+                        setSutraCompleted(false)
+                      }}
+                      className={`px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap border transition ${
+                        selectedSutraIdx === idx
+                          ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
+                          : 'bg-white text-[#6E655C] border-[#E4DDD0]'
+                      }`}
+                    >
+                      {idx + 1}. {item.title}
+                    </button>
+                  ))}
+                </div>
 
-              <div className="p-4 rounded-xl bg-[#FAF6EC] border border-[#E6D9B8] text-center">
-                <p className="text-[11px] text-[#8C7A5B] mb-2">
-                  아래 경전 구절을 그대로 따라 입력해 보세요
-                </p>
-                <div className="font-serif-kr text-lg font-bold tracking-wide leading-relaxed flex flex-wrap justify-center gap-0.5">
-                  {currentSutra.text.split('').map((char, i) => {
-                    const typedChar = sutraInput[i]
-                    const isMatched = typedChar === char
-                    const isWrong = typedChar !== undefined && typedChar !== char
+                {/* 터치식 + 타자식 겸용 황금 사경장 */}
+                <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-4">
+                  <div className="text-center border-b border-[#EFE9DD] pb-3.5">
+                    <span className="text-xs text-[#9A7418] font-bold tracking-widest">
+                      {currentSutra.hanja}
+                    </span>
+                    <h3 className="font-serif-kr text-lg font-bold text-[#231F1C] mt-1">
+                      {currentSutra.title}
+                    </h3>
+                    <p className="text-xs text-[#6E655C] mt-1 break-keep">{currentSutra.meaning}</p>
+                  </div>
+
+                  {/* 터치 사경 판: 글자 박스를 손가락으로 톡톡 터치해도 목탁 소리와 함께 황금빛으로 채워짐 */}
+                  <div
+                    onClick={handleTouchStepSutra}
+                    className="p-4 rounded-2xl bg-gradient-to-b from-[#26211B] to-[#1A1612] border-2 border-[#C59B27]/60 text-center cursor-pointer select-none shadow-inner active:scale-[0.99] transition"
+                  >
+                    <div className="flex items-center justify-between text-[10.5px] text-[#F5D061] font-semibold mb-2.5 px-1">
+                      <span>👆 글자판을 터치하면 목탁 소리와 함께 사경됩니다</span>
+                      <span className="shrink-0">
+                        {Math.min(100, Math.round((sutraInput.length / currentSutra.text.length) * 100))}%
+                      </span>
+                    </div>
+                    <div className="font-serif-kr text-lg font-bold tracking-wide leading-relaxed flex flex-wrap justify-center gap-0.5 py-1">
+                      {currentSutra.text.split('').map((char, i) => {
+                        const typedChar = sutraInput[i]
+                        const isMatched = typedChar === char
+                        const isWrong = typedChar !== undefined && typedChar !== char
+                        return (
+                          <span
+                            key={i}
+                            className={`px-1 py-0.5 rounded transition-all duration-200 ${
+                              isMatched
+                                ? 'text-[#1B1815] bg-[#F5D061] font-extrabold shadow-[0_0_10px_rgba(245,208,97,0.6)] scale-105'
+                                : isWrong
+                                ? 'text-red-300 bg-red-900/60'
+                                : 'text-[#8E8377]'
+                            }`}
+                          >
+                            {char === ' ' ? '\u00A0' : char}
+                          </span>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 직접 타자 입력창 */}
+                  <div>
+                    <input
+                      type="text"
+                      value={sutraInput}
+                      onChange={(e) => handleSutraChange(e.target.value)}
+                      placeholder="직접 입력하거나 위 글자판을 터치해 보세요"
+                      className="w-full px-3.5 py-3 rounded-xl bg-[#FAF8F5] border-2 border-[#D5C59B] font-serif-kr text-sm text-center focus:outline-none focus:border-[#9A7418]"
+                    />
+                  </div>
+
+                  {/* 터치 사경 / 원클릭 완독 / 다시 쓰기 버튼 */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={handleTouchStepSutra}
+                      className="py-2.5 px-3 rounded-xl bg-[#231F1C] text-[#F5D061] border border-[#C59B27] text-xs font-extrabold hover:bg-[#302A24] transition whitespace-nowrap"
+                    >
+                      🪵 목탁 치며 한마디씩 사경
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSutraChange(currentSutra.text)}
+                      className="py-2.5 px-3 rounded-xl bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] text-xs font-extrabold hover:bg-[#F3E7C6] transition whitespace-nowrap"
+                    >
+                      ✨ 한 번에 사경 완독
+                    </button>
+                  </div>
+
+                  {sutraCompleted && (
+                    <div className="p-4 rounded-xl bg-gradient-to-r from-[#231F1C] to-[#2E2822] text-white flex items-center justify-between gap-2 border border-[#F5D061]">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <Sparkles className="w-5 h-5 text-[#F5D061] shrink-0" />
+                        <div className="min-w-0">
+                          <div className="text-xs font-bold text-[#F5D061]">
+                            사경 1독 회향 완료! (+1 공덕 적립)
+                          </div>
+                          <div className="text-[11px] text-[#D6CEC2] break-keep">
+                            이 공덕이 불자님과 가족의 평안으로 회향되기를 발원합니다.
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const nextIdx = (selectedSutraIdx + 1) % SUTRA_LIST.length
+                          setSelectedSutraIdx(nextIdx)
+                          setSutraInput('')
+                          setSutraCompleted(false)
+                        }}
+                        className="px-3 py-2 rounded-lg bg-[#F5D061] text-[#1B1815] text-[11px] font-extrabold whitespace-nowrap shrink-0"
+                      >
+                        다음 구절 ▶
+                      </button>
+                    </div>
+                  )}
+                </section>
+
+                {/* 온라인 목탁 · 9배 염주 정진 코너 */}
+                <section className="rounded-2xl bg-gradient-to-br from-[#29231E] to-[#1A1612] text-white p-4 sm:p-5 border border-[#C59B27]/50 shadow-md flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <span className="inline-block text-[10.5px] px-2 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/30 font-bold mb-1">
+                      📿 온라인 목탁 · 염불 정진 (9타마다 +1공덕)
+                    </span>
+                    <h4 className="font-serif-kr text-base font-bold text-white">
+                      “관세음보살” 부르며 목탁 치기
+                    </h4>
+                    <p className="text-[11px] text-[#D6CEC2] mt-0.5 break-keep">
+                      오늘 친 목탁: <strong className="text-[#F5D061]">{moktakCount}타</strong> (다음 공덕까지{' '}
+                      <strong className="text-[#F5D061]">{9 - (moktakCount % 9)}타</strong>)
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleMoktakTap}
+                    className="w-20 h-20 rounded-2xl bg-gradient-to-b from-[#F5D061] to-[#B88619] text-[#1B1815] font-extrabold shadow-[0_0_20px_rgba(245,208,97,0.35)] border-2 border-[#FFF3B8] flex flex-col items-center justify-center gap-0.5 active:scale-90 transition shrink-0"
+                  >
+                    <span className="text-2xl leading-none">🪵</span>
+                    <span className="text-[11px] font-black whitespace-nowrap mt-0.5">목탁 탁!</span>
+                  </button>
+                </section>
+              </>
+            )}
+
+            {/* ==================== [코너 2] 불교명언 & 오늘 나의 연꽃 말씀 뽑기 ==================== */}
+            {sutraSubTab === 'wisdom' && (
+              <>
+                {/* A. 오늘 나의 연꽃 제비뽑기 (화두 카드 뽑기) */}
+                <section className="rounded-2xl bg-gradient-to-br from-[#26201A] to-[#171310] text-white p-4 sm:p-5 border-2 border-[#C59B27]/60 shadow-md space-y-3.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <div>
+                      <span className="text-[10.5px] text-[#F5D061] font-bold">
+                        🪷 매일 한 번 마음으로 뽑는 부처님 화두
+                      </span>
+                      <h3 className="font-serif-kr text-base sm:text-lg font-bold mt-0.5">
+                        오늘 나에게 주시는 연꽃 말씀 뽑기
+                      </h3>
+                    </div>
+                    {selectedLotusIdx !== null && (
+                      <button
+                        type="button"
+                        onClick={() => setSelectedLotusIdx(null)}
+                        className="px-2.5 py-1 rounded-lg bg-white/10 text-[#F5D061] text-[11px] font-bold whitespace-nowrap shrink-0"
+                      >
+                        다시 뽑기 ↻
+                      </button>
+                    )}
+                  </div>
+
+                  {selectedLotusIdx === null ? (
+                    <>
+                      <p className="text-xs text-[#D6CEC2] break-keep">
+                        마음속으로 소원을 떠올리신 뒤, 아래 6송이 황금 연꽃 중 가장 마음이 가는 연꽃 하나를 터치해 보세요.
+                      </p>
+                      <div className="grid grid-cols-3 gap-2.5 pt-1">
+                        {LOTUS_FORTUNES.map((lotus, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => {
+                              playSingingBowlSound()
+                              setSelectedLotusIdx(idx)
+                              addMerit(1)
+                              showToast('🪷 오늘의 연꽃 법문이 열렸습니다! (+1 공덕)')
+                            }}
+                            className="p-3 rounded-2xl bg-gradient-to-b from-[#332B22] to-[#1E1914] border border-[#F5D061]/50 hover:border-[#F5D061] flex flex-col items-center justify-center gap-1.5 shadow active:scale-95 transition"
+                          >
+                            <span className="text-2xl">🪷</span>
+                            <span className="text-[11px] font-bold text-[#F5D061] whitespace-nowrap">
+                              제{idx + 1}연꽃
+                            </span>
+                            <span className="text-[10px] text-[#BFB6AA] whitespace-nowrap">
+                              터치하여 열기
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="p-4 rounded-2xl bg-[#FFFDF8] text-[#231F1C] border-2 border-[#F5D061] space-y-2.5 shadow-lg">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="px-2.5 py-0.5 rounded-full bg-[#FAF3DF] text-[#9A7418] border border-[#E5D399] text-[10.5px] font-extrabold">
+                          {LOTUS_FORTUNES[selectedLotusIdx].badge}
+                        </span>
+                        <span className="text-[10.5px] text-[#8C7A5B] font-semibold">
+                          {LOTUS_FORTUNES[selectedLotusIdx].source}
+                        </span>
+                      </div>
+                      <p className="font-serif-kr text-base font-bold text-[#1B1815] leading-snug break-keep pt-1">
+                        {LOTUS_FORTUNES[selectedLotusIdx].quote}
+                      </p>
+                      <div className="p-3 rounded-xl bg-[#FAF6EC] border border-[#EAE0C8] text-xs text-[#4A433C] leading-relaxed break-keep">
+                        🙏 <strong>스님의 풀이:</strong> {LOTUS_FORTUNES[selectedLotusIdx].advice}
+                      </div>
+                    </div>
+                  )}
+                </section>
+
+                {/* B. 지금 내 마음 상태별 불교 명언 처방전 */}
+                <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-3.5">
+                  <div>
+                    <span className="text-[10.5px] font-bold text-[#9A7418]">
+                      MIND PRESCRIPTION · 마음 처방전
+                    </span>
+                    <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] mt-0.5">
+                      지금 불자님의 마음은 어떠신가요?
+                    </h3>
+                  </div>
+
+                  {/* 4가지 마음 상태 버튼 (2x2 그리드) */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {WISDOM_BY_MOOD.map((m) => {
+                      const isSel = selectedMoodId === m.id
+                      return (
+                        <button
+                          key={m.id}
+                          type="button"
+                          onClick={() => {
+                            playMoktakSound()
+                            setSelectedMoodId(m.id)
+                          }}
+                          className={`py-2.5 px-3 rounded-xl text-xs font-extrabold border text-left transition whitespace-nowrap ${
+                            isSel
+                              ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow'
+                              : 'bg-[#FAF8F5] text-[#575049] border-[#E4DDD0]'
+                          }`}
+                        >
+                          {m.label}
+                        </button>
+                      )
+                    })}
+                  </div>
+
+                  {/* 선택된 마음 상태의 명언 3선 */}
+                  {(() => {
+                    const activeMood =
+                      WISDOM_BY_MOOD.find((m) => m.id === selectedMoodId) || WISDOM_BY_MOOD[0]
                     return (
-                      <span
-                        key={i}
-                        className={`px-0.5 rounded transition ${
-                          isMatched
-                            ? 'text-[#9A7418] bg-[#F5D061]/25'
-                            : isWrong
-                            ? 'text-red-600 bg-red-100'
-                            : 'text-[#8C8275]'
+                      <div className="space-y-3 pt-1">
+                        {activeMood.items.map((item, idx) => (
+                          <div
+                            key={idx}
+                            className="p-4 rounded-xl bg-[#FAF8F5] border border-[#E6DEC8] space-y-2"
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[10.5px] font-bold px-2 py-0.5 rounded bg-[#FAF3DF] text-[#9A7418] border border-[#E5D399]">
+                                처방 법문 {idx + 1}
+                              </span>
+                              <span className="text-[11px] font-bold text-[#786E63]">
+                                — {item.author}
+                              </span>
+                            </div>
+                            <p className="font-serif-kr text-sm font-bold text-[#231F1C] leading-relaxed break-keep">
+                              “{item.quote}”
+                            </p>
+                            <p className="text-xs text-[#575049] bg-white p-2.5 rounded-lg border border-[#EFE9DD] leading-relaxed break-keep">
+                              💡 {item.comment}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  })()}
+                </section>
+              </>
+            )}
+
+            {/* ==================== [코너 3] 어르신 눈높이 쉬운 3분 경전공부 ==================== */}
+            {sutraSubTab === 'study' && (
+              <>
+                {/* 5강 선택 버튼 리스트 */}
+                <div className="grid grid-cols-1 gap-2">
+                  {SUTRA_STUDY_LESSONS.map((lesson, idx) => {
+                    const isSelected = selectedLessonIdx === idx
+                    const isDone = completedLessons.includes(lesson.id)
+                    return (
+                      <button
+                        key={lesson.id}
+                        type="button"
+                        onClick={() => {
+                          playMoktakSound()
+                          setSelectedLessonIdx(idx)
+                        }}
+                        className={`p-3.5 rounded-2xl border text-left transition flex items-center justify-between gap-2 ${
+                          isSelected
+                            ? 'bg-[#231F1C] text-white border-[#C59B27] shadow-md'
+                            : 'bg-white text-[#231F1C] border-[#E6DEC8]'
                         }`}
                       >
-                        {char === ' ' ? '\u00A0' : char}
-                      </span>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span
+                              className={`text-[10px] font-extrabold px-2 py-0.5 rounded ${
+                                isSelected
+                                  ? 'bg-[#F5D061] text-[#1B1815]'
+                                  : 'bg-[#FAF3DF] text-[#9A7418]'
+                              }`}
+                            >
+                              {lesson.category}
+                            </span>
+                            {isDone && (
+                              <span className="text-[10px] text-emerald-400 font-bold">
+                                ✓ 독송완료
+                              </span>
+                            )}
+                          </div>
+                          <div
+                            className={`font-serif-kr text-xs font-bold mt-1 break-keep ${
+                              isSelected ? 'text-[#F5D061]' : 'text-[#231F1C]'
+                            }`}
+                          >
+                            {lesson.title}
+                          </div>
+                        </div>
+                        <ChevronRight
+                          className={`w-4 h-4 shrink-0 ${
+                            isSelected ? 'text-[#F5D061]' : 'text-[#9A7418]'
+                          }`}
+                        />
+                      </button>
                     )
                   })}
                 </div>
-              </div>
 
-              <div>
-                <input
-                  type="text"
-                  value={sutraInput}
-                  onChange={(e) => handleSutraChange(e.target.value)}
-                  placeholder={currentSutra.text}
-                  className="w-full px-4 py-3.5 rounded-xl bg-[#FAF8F5] border-2 border-[#D5C59B] font-serif-kr text-base text-center focus:outline-none focus:border-[#9A7418]"
-                />
-              </div>
-
-              <div className="flex items-center justify-between gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleSutraChange(currentSutra.text)}
-                  className="flex-1 py-2.5 rounded-xl bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] text-xs font-bold hover:bg-[#F3E7C6] transition"
-                >
-                  ✨ 어르신 간편 원클릭 사경 완독
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSutraInput('')
-                    setSutraCompleted(false)
-                  }}
-                  className="px-4 py-2.5 rounded-xl bg-[#EFECE6] text-[#575049] text-xs font-semibold hover:bg-[#E4DFD7] transition"
-                >
-                  다시 쓰기
-                </button>
-              </div>
-
-              {sutraCompleted && (
-                <div className="p-4 rounded-xl bg-gradient-to-r from-[#231F1C] to-[#2E2822] text-white flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <Sparkles className="w-5 h-5 text-[#F5D061] shrink-0" />
-                    <div>
-                      <div className="text-xs font-bold text-[#F5D061]">
-                        사경 1독 회향 완료! (+1 공덕)
+                {/* 선택된 경전 공부 상세 본문 카드 */}
+                {(() => {
+                  const lesson = SUTRA_STUDY_LESSONS[selectedLessonIdx]
+                  const isDone = completedLessons.includes(lesson.id)
+                  return (
+                    <section className="bg-white rounded-2xl p-5 shadow-sm border-2 border-[#C59B27]/50 space-y-4">
+                      <div className="border-b border-[#EFE9DD] pb-3.5">
+                        <span className="text-[11px] font-bold text-[#9A7418]">
+                          {lesson.category}
+                        </span>
+                        <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] mt-0.5 break-keep">
+                          {lesson.title}
+                        </h3>
+                        <p className="text-xs text-[#6E655C] mt-1 break-keep">{lesson.summary}</p>
                       </div>
-                      <div className="text-[11px] text-[#D6CEC2]">
-                        이 공덕이 불자님과 가족의 평안으로 회향되기를 발원합니다.
+
+                      <div className="p-3.5 rounded-xl bg-[#FAF5E6] border border-[#E5D399] text-center">
+                        <span className="block text-[10px] text-[#9A7418] font-bold mb-0.5">
+                          핵심 구절 · 명호
+                        </span>
+                        <strong className="font-serif-kr text-sm text-[#231F1C] break-keep">
+                          “{lesson.keyPhrase}”
+                        </strong>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </section>
+
+                      <div className="space-y-3 text-xs text-[#3D3630] leading-relaxed break-keep">
+                        {lesson.content.map((para, i) => (
+                          <p
+                            key={i}
+                            className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EFE9DD]"
+                          >
+                            {para}
+                          </p>
+                        ))}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          playSingingBowlSound()
+                          if (!isDone) {
+                            setCompletedLessons((prev) => [...prev, lesson.id])
+                            addMerit(1)
+                            showToast('📖 경전 공부 1강을 완독하여 지혜 공덕이 +1회 적립되었습니다!')
+                          } else {
+                            showToast('🙏 이미 공덕을 적립한 강의입니다. 다음 강의도 읽어보세요!')
+                          }
+                          if (selectedLessonIdx < SUTRA_STUDY_LESSONS.length - 1) {
+                            setSelectedLessonIdx(selectedLessonIdx + 1)
+                          }
+                        }}
+                        className="w-full py-3 rounded-xl bg-[#231F1C] text-[#F5D061] font-extrabold text-xs border border-[#C59B27] hover:bg-[#302A24] transition"
+                      >
+                        {isDone
+                          ? '✓ 공부 완료됨 · 다음 강의로 이동 ▶'
+                          : '📖 오늘 경전 공부 완료 (+1 공덕 적립)'}
+                      </button>
+                    </section>
+                  )
+                })()}
+              </>
+            )}
+
+            {/* ==================== [코너 4] 재미로 푸는 불교 지혜 퀴즈 ==================== */}
+            {sutraSubTab === 'quiz' && (
+              <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-4">
+                {(() => {
+                  const currentQuiz = BUDDHIST_QUIZZES[quizIndex]
+                  const isCorrect = quizSelectedOption === currentQuiz.answerIdx
+                  return (
+                    <>
+                      <div className="flex items-center justify-between gap-2 border-b border-[#EFE9DD] pb-3">
+                        <div>
+                          <span className="text-[10.5px] font-bold text-[#9A7418]">
+                            재미로 배우는 불교 상식 · 정답 시 +1 공덕
+                          </span>
+                          <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] mt-0.5">
+                            불교 지혜 퀴즈 ({quizIndex + 1} / {BUDDHIST_QUIZZES.length})
+                          </h3>
+                        </div>
+                        <span className="px-2.5 py-1 rounded-full bg-[#FAF3DF] text-[#9A7418] border border-[#E5D399] text-[11px] font-extrabold shrink-0">
+                          맞힌 문제 {solvedQuizIds.length}개
+                        </span>
+                      </div>
+
+                      {/* 문제 번호 바로가기 버튼 */}
+                      <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
+                        {BUDDHIST_QUIZZES.map((q, idx) => {
+                          const solved = solvedQuizIds.includes(q.id)
+                          const active = quizIndex === idx
+                          return (
+                            <button
+                              key={q.id}
+                              type="button"
+                              onClick={() => {
+                                setQuizIndex(idx)
+                                setQuizSelectedOption(null)
+                              }}
+                              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition whitespace-nowrap ${
+                                active
+                                  ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
+                                  : solved
+                                  ? 'bg-[#FAF3DF] text-[#8A6510] border-[#E5D399]'
+                                  : 'bg-[#FAF8F5] text-[#786E63] border-[#E4DDD0]'
+                              }`}
+                            >
+                              {idx + 1}번 {solved ? '✓' : ''}
+                            </button>
+                          )
+                        })}
+                      </div>
+
+                      {/* 질문 박스 */}
+                      <div className="p-4 rounded-2xl bg-[#FAF6EC] border border-[#E6D9B8]">
+                        <p className="font-serif-kr text-sm font-bold text-[#231F1C] leading-relaxed break-keep">
+                          {currentQuiz.question}
+                        </p>
+                      </div>
+
+                      {/* 객관식 보기 3개 */}
+                      <div className="space-y-2">
+                        {currentQuiz.options.map((opt, idx) => {
+                          const isChosen = quizSelectedOption === idx
+                          const isAnswer = idx === currentQuiz.answerIdx
+                          let btnStyle =
+                            'bg-[#FAF8F5] text-[#231F1C] border-[#DFD3B8] hover:border-[#C59B27]'
+                          if (quizSelectedOption !== null) {
+                            if (isAnswer) {
+                              btnStyle =
+                                'bg-[#231F1C] text-[#F5D061] border-[#C59B27] ring-2 ring-[#C59B27]/40'
+                            } else if (isChosen) {
+                              btnStyle = 'bg-red-50 text-red-700 border-red-300'
+                            }
+                          }
+                          return (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => {
+                                setQuizSelectedOption(idx)
+                                if (idx === currentQuiz.answerIdx) {
+                                  playSingingBowlSound()
+                                  if (!solvedQuizIds.includes(currentQuiz.id)) {
+                                    setSolvedQuizIds((prev) => [...prev, currentQuiz.id])
+                                    addMerit(1)
+                                    showToast('⭕ 정답입니다! 지혜 공덕이 +1회 적립되었습니다.')
+                                  }
+                                } else {
+                                  playMoktakSound()
+                                }
+                              }}
+                              className={`w-full p-3.5 rounded-xl border text-left text-xs font-extrabold transition flex items-center justify-between gap-2 ${btnStyle}`}
+                            >
+                              <span className="break-keep">{opt}</span>
+                              {quizSelectedOption !== null && isAnswer && (
+                                <span className="text-[10.5px] px-2 py-0.5 rounded bg-[#F5D061] text-[#1B1815] font-black shrink-0">
+                                  정답 ⭕
+                                </span>
+                              )}
+                            </button>
+                          )
+                        })}
+                      </div>
+
+                      {/* 정답 확인 및 해설 박스 */}
+                      {quizSelectedOption !== null && (
+                        <div
+                          className={`p-4 rounded-xl border space-y-2 ${
+                            isCorrect
+                              ? 'bg-[#FAF5E6] border-[#C59B27]'
+                              : 'bg-[#FFF5F5] border-red-200'
+                          }`}
+                        >
+                          <div className="text-xs font-extrabold text-[#231F1C]">
+                            {isCorrect
+                              ? '🎉 정답입니다! 훌륭한 불교 지혜를 갖추셨습니다.'
+                              : '💡 아쉽지만 오답입니다! 아래 해설을 읽어보세요.'}
+                          </div>
+                          <p className="text-xs text-[#4A433C] leading-relaxed break-keep">
+                            {currentQuiz.explanation}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setQuizIndex((prev) => (prev + 1) % BUDDHIST_QUIZZES.length)
+                              setQuizSelectedOption(null)
+                            }}
+                            className="w-full py-2.5 rounded-xl bg-[#231F1C] text-[#F5D061] text-xs font-extrabold mt-1"
+                          >
+                            다음 퀴즈 풀기 ▶
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )
+                })()}
+              </section>
+            )}
           </main>
         )}
 
