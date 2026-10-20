@@ -784,11 +784,10 @@ export default function App() {
               </div>
 
               <div className="relative z-10 text-white pt-4">
-                <h1 className="font-serif-kr text-xl sm:text-2xl font-bold leading-snug mb-1.5 break-keep">
-                  간절한 기도가 응답받는 곳,
-                  <br />
-                  <span className="text-[#F5D061] underline decoration-[#F5D061]/50 underline-offset-4 whitespace-nowrap">
-                    대한불교 본원종 제주 소원사
+                <h1 className="font-serif-kr text-[17.5px] sm:text-2xl font-bold leading-snug mb-1.5 whitespace-nowrap">
+                  간절한 기도가 응답받는 곳,{' '}
+                  <span className="text-[#F5D061] underline decoration-[#F5D061]/50 underline-offset-4">
+                    제주 소원사
                   </span>
                 </h1>
                 <p className="text-xs text-[#E8DFD1] leading-relaxed break-keep">
@@ -2892,7 +2891,7 @@ export default function App() {
 
         {/* 하단 푸터 */}
         <footer className="px-4 py-6 text-center text-[11px] text-[#8C8275] border-t border-[#E6DEC8]/60 space-y-1.5">
-          <div>대한불교 본원종 제주 소원사 · 소원기도 모바일 법당</div>
+          <div>제주 소원사 · 소원기도 모바일 법당</div>
           <div className="flex items-center justify-center gap-3">
             <span>종무소 064-805-2007</span>
             <span>·</span>
