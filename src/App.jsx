@@ -787,8 +787,7 @@ export default function App() {
 
               <div className="relative z-10 text-white pt-1 pb-1">
                 <h1 className="font-serif-kr text-xl sm:text-2xl font-bold leading-tight mb-1.5 break-keep">
-                  간절한 기도가 응답받는 곳,
-                  <br />
+                  간절한 기도가 응답받는 곳,{' '}
                   <span className="text-[#F5D061] underline decoration-[#F5D061]/50 underline-offset-4 whitespace-nowrap">
                     제주 소원사
                   </span>
