@@ -832,14 +832,14 @@ export default function App() {
                   playSingingBowlSound()
                   setActiveTab('lantern')
                 }}
-                className="bg-gradient-to-br from-[#2B241D] to-[#1A1612] text-white p-4 rounded-2xl text-left border border-[#C59B27]/50 shadow-md hover:scale-[1.01] transition flex items-center gap-3"
+                className="bg-gradient-to-br from-[#2B241D] to-[#1A1612] text-white px-3.5 py-3.5 rounded-2xl text-left border border-[#C59B27]/50 shadow-md hover:scale-[1.01] transition flex items-center gap-2.5 overflow-hidden"
               >
-                <div className="w-11 h-11 rounded-xl bg-[#C59B27]/20 border border-[#F5D061]/40 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-[#C59B27]/20 border border-[#F5D061]/40 flex items-center justify-center shrink-0">
                   <Flame className="w-5 h-5 text-[#F5D061]" />
                 </div>
                 <div className="min-w-0">
                   <span className="block text-[10.5px] text-[#F5D061] font-medium whitespace-nowrap">
-                    100% 무료 대웅전 축원
+                    대웅전 무료 축원
                   </span>
                   <h3 className="font-serif-kr font-bold text-sm sm:text-base mt-0.5 whitespace-nowrap">
                     소원등 켜기
@@ -852,9 +852,9 @@ export default function App() {
                   playSingingBowlSound()
                   setActiveTab('sutra')
                 }}
-                className="bg-gradient-to-br from-[#F6F1E4] to-[#EAE0C8] text-[#231F1C] p-4 rounded-2xl text-left border border-[#D5C59B] shadow-md hover:scale-[1.01] transition flex items-center gap-3"
+                className="bg-gradient-to-br from-[#F6F1E4] to-[#EAE0C8] text-[#231F1C] px-3.5 py-3.5 rounded-2xl text-left border border-[#D5C59B] shadow-md hover:scale-[1.01] transition flex items-center gap-2.5 overflow-hidden"
               >
-                <div className="w-11 h-11 rounded-xl bg-[#9A7418]/15 border border-[#9A7418]/30 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-[#9A7418]/15 border border-[#9A7418]/30 flex items-center justify-center shrink-0">
                   <BookOpen className="w-5 h-5 text-[#8A6510]" />
                 </div>
                 <div className="min-w-0">
