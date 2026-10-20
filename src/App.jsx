@@ -2851,13 +2851,13 @@ export default function App() {
           </div>
         </footer>
 
-        {/* 하단 네비게이션 바 (일반 신도에게는 신행홈·소원등·불사안내·한줄사경·내정보 노출) */}
+        {/* 하단 네비게이션 바 (일반 신도에게는 신행홈·소원등켜기·한줄사경·불사안내·내정보 노출) */}
         <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#1B1815]/95 backdrop-blur-md border-t border-[#C59B27]/35 px-1.5 py-2 flex items-center justify-around">
           {[
             { id: 'home', label: '신행홈', icon: Heart },
             { id: 'lantern', label: '소원등켜기', icon: Flame },
-            { id: 'bulsa', label: '불사안내', icon: Award },
             { id: 'sutra', label: '한줄사경', icon: BookOpen },
+            { id: 'bulsa', label: '불사안내', icon: Award },
             ...(isAgentOrAbove
               ? [{ id: 'agent', label: '포교사전산', icon: Users }]
               : []),
