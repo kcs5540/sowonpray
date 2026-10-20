@@ -36,7 +36,7 @@ import {
   formatPhone11,
 } from './lib/supabase'
 
-// 오늘의 부처님 말씀 데이터
+// 오늘의 부처님 말씀 데이터 (7선)
 const DAILY_QUOTES = [
   {
     verse: '마음은 모든 법의 근본이니, 마음이 으뜸이 되어 모든 것을 이룬다.',
@@ -52,6 +52,26 @@ const DAILY_QUOTES = [
     verse: '향기로운 꽃이라도 빛깔만 곱고 향기가 없으면 열매가 없듯, 좋은 말도 실천하지 않으면 공덕이 없다.',
     source: '법구경 (法句經) 제4장 화품',
     commentary: '오늘 소원등 하나를 밝히는 작은 정성이 내일의 큰 광명으로 돌아옵니다.',
+  },
+  {
+    verse: '방울물이 끊임없이 떨어져 마침내 물독을 채우듯, 지혜로운 이는 작은 선행을 꾸준히 쌓아 큰 복덕을 이룬다.',
+    source: '법구경 (法句經) 제9장 악품',
+    commentary: '매일 모바일 법당을 찾아 올리시는 짧은 기도와 사경이 모여 가정의 큰 평안을 이룹니다.',
+  },
+  {
+    verse: '연꽃이 더러운 진흙 속에서 피어나되 진흙에 물들지 않듯, 지혜로운 이는 세상의 근심 속에서도 마음이 흔들리지 않는다.',
+    source: '숫타니파타 (경집)',
+    commentary: '주변 일이 어수선할수록 내 마음의 중심을 부처님께 두고 평온함을 지켜보세요.',
+  },
+  {
+    verse: '성내는 마음을 자비로 이기고, 악한 것을 선한 것으로 이기며, 인색함을 베풂으로 이기고, 거짓을 진실로 이겨라.',
+    source: '법구경 (法句經) 제17장 분노품',
+    commentary: '내가 먼저 베푼 따뜻한 미소와 너그러움이 모든 액난을 물리치는 가장 큰 호신불입니다.',
+  },
+  {
+    verse: '지극한 마음으로 부처님을 생각하고 이름을 부르면, 그 사람은 현세에 마땅히 무량한 복과 안락을 얻으리라.',
+    source: '불설무량수경 (佛說無量壽經)',
+    commentary: '제주 소원사 대웅전 부처님께서 불자님의 간절한 발원을 늘 굽어살피고 계십니다.',
   },
 ]
 
@@ -658,10 +678,11 @@ export default function App() {
   const [quizSelectedOption, setQuizSelectedOption] = useState(null)
   const [solvedQuizIds, setSolvedQuizIds] = useState([])
 
-  // 한국어 음성 낭독(TTS) 상태 및 헬퍼
+  // 한국어 음성 낭독(TTS) 상태 및 헬퍼 (autoVoiceEnabled가 켜져 있으면 '다음' 이동 시에도 자동 낭독)
   const [speakingId, setSpeakingId] = useState(null)
+  const [autoVoiceEnabled, setAutoVoiceEnabled] = useState(false)
 
-  const stopSpeech = () => {
+  const stopSpeech = (disableAuto = false) => {
     try {
       if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
         window.speechSynthesis.cancel()
@@ -670,16 +691,15 @@ export default function App() {
       // 무시
     }
     setSpeakingId(null)
+    if (disableAuto) {
+      setAutoVoiceEnabled(false)
+    }
   }
 
-  const toggleSpeech = (id, rawText) => {
+  const startSpeech = (id, rawText) => {
     try {
       if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
         showToast('현재 브라우저에서는 음성 낭독 기능을 지원하지 않습니다.')
-        return
-      }
-      if (speakingId === id) {
-        stopSpeech()
         return
       }
       window.speechSynthesis.cancel()
@@ -714,9 +734,18 @@ export default function App() {
     }
   }
 
+  const toggleSpeech = (id, rawText) => {
+    if (speakingId === id || (id === 'home-quote' && autoVoiceEnabled)) {
+      stopSpeech(true)
+      return
+    }
+    setAutoVoiceEnabled(true)
+    startSpeech(id, rawText)
+  }
+
   // 탭 전환 시 낭독 자동 정지
   useEffect(() => {
-    stopSpeech()
+    stopSpeech(false)
   }, [activeTab, sutraSubTab])
 
   // 로그인/회원가입 전환 상태 ('login' | 'signup')
@@ -1250,20 +1279,34 @@ export default function App() {
                       )
                     }
                     className={`px-2.5 py-1 rounded-full text-[11px] font-bold border flex items-center gap-1 whitespace-nowrap transition ${
-                      speakingId === 'home-quote'
-                        ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
+                      speakingId === 'home-quote' || autoVoiceEnabled
+                        ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-sm'
                         : 'bg-[#FAF5E6] text-[#8A6510] border-[#E5D399]'
                     }`}
                   >
                     <Volume2 className="w-3.5 h-3.5 shrink-0" />
-                    <span>{speakingId === 'home-quote' ? '낭독 중지' : '음성 듣기'}</span>
+                    <span>
+                      {speakingId === 'home-quote'
+                        ? '낭독 중지'
+                        : autoVoiceEnabled
+                        ? '음성 켜짐'
+                        : '음성 듣기'}
+                    </span>
                   </button>
                   <button
                     type="button"
                     onClick={() => {
-                      stopSpeech()
-                      playSingingBowlSound()
-                      setQuoteIdx((prev) => (prev + 1) % DAILY_QUOTES.length)
+                      const nextIdx = (quoteIdx + 1) % DAILY_QUOTES.length
+                      setQuoteIdx(nextIdx)
+                      const nextQuote = DAILY_QUOTES[nextIdx]
+                      if (autoVoiceEnabled || speakingId === 'home-quote') {
+                        startSpeech(
+                          'home-quote',
+                          `${nextQuote.verse}. ${nextQuote.source}. ${nextQuote.commentary}`
+                        )
+                      } else {
+                        playSingingBowlSound()
+                      }
                     }}
                     className="text-xs text-[#786E63] hover:text-[#231F1C] flex items-center gap-1 whitespace-nowrap shrink-0 px-1"
                   >
@@ -2251,6 +2294,13 @@ export default function App() {
                         setSelectedSutraIdx(idx)
                         setSutraInput('')
                         setSutraCompleted(false)
+                        if (autoVoiceEnabled || speakingId === 'sutra-copy') {
+                          const nextItem = SUTRA_LIST[idx]
+                          startSpeech(
+                            'sutra-copy',
+                            `${nextItem.title}. ${nextItem.text}. 뜻풀이, ${nextItem.meaning}`
+                          )
+                        }
                       }}
                       className={`px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap border transition ${
                         selectedSutraIdx === idx
@@ -2379,6 +2429,13 @@ export default function App() {
                           setSelectedSutraIdx(nextIdx)
                           setSutraInput('')
                           setSutraCompleted(false)
+                          if (autoVoiceEnabled || speakingId === 'sutra-copy') {
+                            const nextItem = SUTRA_LIST[nextIdx]
+                            startSpeech(
+                              'sutra-copy',
+                              `${nextItem.title}. ${nextItem.text}. 뜻풀이, ${nextItem.meaning}`
+                            )
+                          }
                         }}
                         className="px-3 py-2 rounded-lg bg-[#F5D061] text-[#1B1815] text-[11px] font-extrabold whitespace-nowrap shrink-0"
                       >
@@ -2598,8 +2655,15 @@ export default function App() {
                         key={lesson.id}
                         type="button"
                         onClick={() => {
-                          playMoktakSound()
                           setSelectedLessonIdx(idx)
+                          if (autoVoiceEnabled || (speakingId && speakingId.startsWith('lesson-'))) {
+                            startSpeech(
+                              `lesson-${lesson.id}`,
+                              `${lesson.title}. 핵심 구절, ${lesson.keyPhrase}. ${lesson.content.join(' ')}`
+                            )
+                          } else {
+                            playMoktakSound()
+                          }
                         }}
                         className={`p-3.5 rounded-2xl border text-left transition flex items-center justify-between gap-2 ${
                           isSelected
@@ -2713,7 +2777,15 @@ export default function App() {
                             showToast('🙏 이미 공덕을 적립한 강의입니다. 다음 강의도 읽어보세요!')
                           }
                           if (selectedLessonIdx < SUTRA_STUDY_LESSONS.length - 1) {
-                            setSelectedLessonIdx(selectedLessonIdx + 1)
+                            const nextIdx = selectedLessonIdx + 1
+                            setSelectedLessonIdx(nextIdx)
+                            if (autoVoiceEnabled || (speakingId && speakingId.startsWith('lesson-'))) {
+                              const nextLesson = SUTRA_STUDY_LESSONS[nextIdx]
+                              startSpeech(
+                                `lesson-${nextLesson.id}`,
+                                `${nextLesson.title}. 핵심 구절, ${nextLesson.keyPhrase}. ${nextLesson.content.join(' ')}`
+                              )
+                            }
                           }
                         }}
                         className="w-full py-3 rounded-xl bg-[#231F1C] text-[#F5D061] font-extrabold text-xs border border-[#C59B27] hover:bg-[#302A24] transition"
