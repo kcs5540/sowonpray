@@ -169,18 +169,18 @@ function OrganizationTreeView({
         (node.dharma_name && node.dharma_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
         node.code.includes(searchQuery))
 
-    // 역할별 배지 라벨 및 스타일
+    // 역할별 배지 라벨 및 스타일 (마케팅 느낌을 완전히 배제하고 따뜻한 불교 용어로 정제)
     const getRoleBadge = (role) => {
       switch (role) {
         case 'master':
-          return { label: 'D (대표)', bg: 'bg-[#C59B27] text-[#120F0D]' }
+          return { label: '총괄 도량', bg: 'bg-[#C59B27] text-[#120F0D]' }
         case 'temple_admin':
           return { label: '소원사 본부', bg: 'bg-[#8A6510] text-white' }
         case 'agent':
-          return { label: 'AG (포교사)', bg: 'bg-emerald-700 text-white' }
+          return { label: '전법 도반', bg: 'bg-emerald-700 text-white' }
         case 'believer':
         default:
-          return { label: '신도', bg: 'bg-[#2E2822] text-[#D8CFBF]' }
+          return { label: '인연 도반', bg: 'bg-[#2E2822] text-[#D8CFBF]' }
       }
     }
     const roleBadge = getRoleBadge(node.role)
@@ -231,7 +231,7 @@ function OrganizationTreeView({
           <div className="flex items-center gap-1.5 text-[10.5px] text-[#C59B27] shrink-0 font-semibold">
             {hasChildren && (
               <span className="px-1.5 py-0.5 rounded-full bg-white/10 text-[10px] text-[#F5D061]">
-                하위 {children.length}
+                인연 {children.length}분
               </span>
             )}
           </div>
@@ -275,14 +275,14 @@ function OrganizationTreeView({
         </div>
       </div>
 
-      {/* 검색창 (MetaFastest 스타일) */}
+      {/* 검색창 */}
       <div className="flex items-center gap-2">
         <div className="relative flex-1">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="사용자 이름 또는 코드로 검색"
+            placeholder="도반 성함 또는 인연코드로 찾기"
             className="w-full pl-3 pr-8 py-2 rounded-xl bg-[#201B17] border border-[#C59B27]/40 text-xs text-white placeholder-[#786E63] focus:outline-none focus:border-[#F5D061]"
           />
           {searchQuery && (
@@ -3973,24 +3973,24 @@ export default function App() {
                   </div>
                 </section>
 
-                {/* [신규] 일반신도 포함 모든 회원의 전용 초대(권선) 링크 카드 */}
+                {/* 가족·도반과 함께하는 복(福) 전하는 인연 나눔 주소 카드 */}
                 <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-3">
                   <div className="flex items-center justify-between gap-2">
                     <div className="min-w-0">
                       <span className="block text-[11px] font-bold text-[#9A7418]">
-                        MY INVITATION LINK
+                        卍 부처님과의 소중한 불연(佛緣)
                       </span>
                       <h3 className="font-serif-kr text-base font-bold text-[#231F1C] mt-0.5">
-                        나의 모바일 법당 초대 링크
+                        가족 · 도반에게 복(福)을 전하는 주소
                       </h3>
                     </div>
                     <span className="text-xs px-2.5 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] font-bold border border-[#E5D399] whitespace-nowrap shrink-0">
-                      내 코드: {currentUser.code}
+                      인연코드: {currentUser.code}
                     </span>
                   </div>
                   <p className="text-xs text-[#575049] leading-relaxed break-keep">
-                    가족, 친지, 도반에게 아래 링크를 전해보세요. 링크를 통해 접속하여 소원등을 켜거나 가입한 분들은{' '}
-                    <strong className="text-[#8A6510]">‘나의 인연 신도’</strong>로 자동 등록되어 아래 조직도에서 실시간으로 확인하실 수 있습니다.
+                    가족, 친지, 도반에게 따뜻한 소원등과 축원의 공덕을 선물해 보세요. 이 주소로 모바일 법당을 찾아오신 분들은 부처님 전에 함께 복을 짓는{' '}
+                    <strong className="text-[#8A6510]">‘나의 인연 도반’</strong>으로 이어집니다.
                   </p>
                   <div className="flex items-center gap-2">
                     <input
@@ -4005,17 +4005,17 @@ export default function App() {
                       className="px-3.5 py-2.5 rounded-xl bg-[#F5D061] text-[#1B1815] font-extrabold text-xs flex items-center gap-1 whitespace-nowrap shrink-0 hover:brightness-105 transition shadow-sm"
                     >
                       <Copy className="w-3.5 h-3.5 shrink-0" />
-                      <span>링크 복사</span>
+                      <span>주소 복사</span>
                     </button>
                   </div>
                 </section>
 
-                {/* [신규] 일반신도도 본인 산하 인연 회원을 볼 수 있는 조직도 트리 */}
+                {/* 부처님과 맺은 나의 인연 공덕 나무 (계보 트리) */}
                 <OrganizationTreeView
                   members={members}
                   rootCode={currentUser.code}
                   activeAgentCode={currentUser.code}
-                  title="🌳 나의 인연 권선 조직도 (내 산하 회원 계보)"
+                  title="🌿 부처님과 맺은 ‘나의 인연 공덕 나무’"
                   onSelectMember={(m) => {
                     showToast(`[${m.name}] 님의 인연 정보 (코드: ${m.code})`)
                   }}
@@ -4355,7 +4355,7 @@ export default function App() {
                     : 'text-[#D6CEC2] hover:text-white'
                 }`}
               >
-                <span>🌳 포교 추천 조직도 (Tree)</span>
+                <span>🌿 전법 인연 공덕 계보도</span>
               </button>
               <button
                 type="button"
