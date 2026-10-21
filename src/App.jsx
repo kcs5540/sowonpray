@@ -14,6 +14,8 @@ import {
   ShieldCheck,
   RefreshCw,
   ChevronRight,
+  ChevronDown,
+  Search,
   Coffee,
   ExternalLink,
   UserCheck,
@@ -72,6 +74,242 @@ const HERO_SLIDES = [
     ctaLabel: '위패 · 삼성각 불사 안내 ▶',
   },
 ]
+
+// ============================================================================
+// 포교자 회원유치 조직도 트리 뷰 (MetaFastest 스타일 모바일 계층 트리)
+// ============================================================================
+function OrganizationTreeView({
+  members,
+  rootCode = null,
+  activeAgentCode = null,
+  onSelectMember,
+}) {
+  const [searchQuery, setSearchQuery] = useState('')
+  const [expandedCodes, setExpandedCodes] = useState(() => {
+    // 기본적으로 상위 3단계까지 모두 펼쳐둠
+    const topCodes = members
+      .filter((m) => !m.parent_code || m.role === 'master' || m.role === 'temple_admin' || m.role === 'agent')
+      .map((m) => m.code)
+    return new Set(topCodes)
+  })
+
+  // 검색어가 있을 때 매칭되는 멤버 및 상위 부모 노드 자동 펼침
+  useEffect(() => {
+    if (!searchQuery.trim()) return
+    const q = searchQuery.trim().toLowerCase()
+    const matched = members.filter(
+      (m) =>
+        m.name.toLowerCase().includes(q) ||
+        (m.dharma_name && m.dharma_name.toLowerCase().includes(q)) ||
+        m.code.includes(q) ||
+        (m.phone && m.phone.includes(q))
+    )
+    const toExpand = new Set(expandedCodes)
+    matched.forEach((m) => {
+      let curr = m
+      while (curr && curr.parent_code) {
+        toExpand.add(curr.parent_code)
+        curr = members.find((p) => p.code === curr.parent_code)
+      }
+      toExpand.add(m.code)
+    })
+    setExpandedCodes(toExpand)
+  }, [searchQuery])
+
+  const toggleExpand = (code) => {
+    setExpandedCodes((prev) => {
+      const next = new Set(prev)
+      if (next.has(code)) {
+        next.delete(code)
+      } else {
+        next.add(code)
+      }
+      return next
+    })
+  }
+
+  const expandAll = () => {
+    setExpandedCodes(new Set(members.map((m) => m.code)))
+  }
+
+  const collapseAll = () => {
+    setExpandedCodes(new Set())
+  }
+
+  // 자식 노드 맵 (parent_code -> children[])
+  const childrenMap = useMemo(() => {
+    const map = {}
+    members.forEach((m) => {
+      const parent = m.parent_code || '__ROOT__'
+      if (!map[parent]) map[parent] = []
+      map[parent].push(m)
+    })
+    return map
+  }, [members])
+
+  // 렌더링 시작할 루트 노드들
+  const rootNodes = useMemo(() => {
+    if (rootCode) {
+      const found = members.find((m) => m.code === rootCode)
+      return found ? [found] : []
+    }
+    const roots = members.filter((m) => !m.parent_code || m.role === 'master')
+    return roots.length ? roots : [members[0]]
+  }, [members, rootCode])
+
+  // 개별 노드 렌더러
+  const renderNode = (node, depth = 0) => {
+    const children = childrenMap[node.code] || []
+    const hasChildren = children.length > 0
+    const isExpanded = expandedCodes.has(node.code)
+    const isMatched =
+      searchQuery.trim() &&
+      (node.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (node.dharma_name && node.dharma_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        node.code.includes(searchQuery))
+
+    // 역할별 배지 라벨 및 스타일
+    const getRoleBadge = (role) => {
+      switch (role) {
+        case 'master':
+          return { label: 'D (대표)', bg: 'bg-[#C59B27] text-[#120F0D]' }
+        case 'temple_admin':
+          return { label: '소원사 본부', bg: 'bg-[#8A6510] text-white' }
+        case 'agent':
+          return { label: 'AG (포교사)', bg: 'bg-emerald-700 text-white' }
+        case 'believer':
+        default:
+          return { label: '신도', bg: 'bg-[#2E2822] text-[#D8CFBF]' }
+      }
+    }
+    const roleBadge = getRoleBadge(node.role)
+
+    return (
+      <div key={node.code} className="select-none text-left">
+        <div
+          onClick={() => {
+            if (hasChildren) toggleExpand(node.code)
+            if (onSelectMember) onSelectMember(node)
+          }}
+          style={{ paddingLeft: `${depth * 18 + 8}px` }}
+          className={`py-2 pr-2.5 rounded-lg flex items-center justify-between gap-1.5 transition cursor-pointer ${
+            isMatched
+              ? 'bg-[#C59B27]/30 border border-[#F5D061]'
+              : node.code === activeAgentCode
+              ? 'bg-white/10 border border-[#C59B27]/40'
+              : 'hover:bg-white/5'
+          }`}
+        >
+          <div className="flex items-center gap-1.5 min-w-0 flex-1">
+            {hasChildren ? (
+              <span className="w-5 h-5 flex items-center justify-center text-[#F5D061] shrink-0 font-bold text-xs">
+                {isExpanded ? '▼' : '▶'}
+              </span>
+            ) : (
+              <span className="w-5 h-5 flex items-center justify-center text-[#6E6356] shrink-0 text-xs">
+                •
+              </span>
+            )}
+
+            <div className="flex items-center gap-1.5 min-w-0 truncate">
+              <span className="text-xs font-bold text-white truncate">
+                {node.name}
+                {node.dharma_name ? ` (${node.dharma_name})` : ''}
+              </span>
+              <span className="text-[11px] text-[#A69B8D] shrink-0 font-mono">
+                {node.code}
+              </span>
+              <span
+                className={`text-[9.5px] font-extrabold px-1.5 py-0.5 rounded shrink-0 ${roleBadge.bg}`}
+              >
+                {roleBadge.label}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1.5 text-[10.5px] text-[#C59B27] shrink-0 font-semibold">
+            {hasChildren && (
+              <span className="px-1.5 py-0.5 rounded-full bg-white/10 text-[10px] text-[#F5D061]">
+                하위 {children.length}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* 하위 자식 노드 재귀 렌더링 */}
+        {hasChildren && isExpanded && (
+          <div className="border-l border-white/10 ml-4">
+            {children.map((child) => renderNode(child, depth + 1))}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  return (
+    <div className="bg-[#12100E] rounded-2xl p-4 border border-[#C59B27]/40 shadow-xl space-y-3 text-white">
+      {/* 헤더 및 전체 접기/펼치기 컨트롤 */}
+      <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2.5">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#F5D061] shrink-0 animate-pulse" />
+          <h4 className="font-serif-kr text-xs sm:text-sm font-bold text-[#F5D061] truncate">
+            포교자 회원유치 조직도 (Tree View)
+          </h4>
+        </div>
+        <div className="flex items-center gap-1 shrink-0">
+          <button
+            type="button"
+            onClick={expandAll}
+            className="px-2 py-1 rounded bg-white/10 hover:bg-white/15 text-[10px] text-[#E8DFD1] transition whitespace-nowrap"
+          >
+            모두 펼치기
+          </button>
+          <button
+            type="button"
+            onClick={collapseAll}
+            className="px-2 py-1 rounded bg-white/10 hover:bg-white/15 text-[10px] text-[#E8DFD1] transition whitespace-nowrap"
+          >
+            모두 접기
+          </button>
+        </div>
+      </div>
+
+      {/* 검색창 (MetaFastest 스타일) */}
+      <div className="flex items-center gap-2">
+        <div className="relative flex-1">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="사용자 이름 또는 코드로 검색"
+            className="w-full pl-3 pr-8 py-2 rounded-xl bg-[#201B17] border border-[#C59B27]/40 text-xs text-white placeholder-[#786E63] focus:outline-none focus:border-[#F5D061]"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-[#9E9283] hover:text-white"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={() => {}}
+          className="px-4 py-2 rounded-xl bg-[#342D26] hover:bg-[#433A31] border border-[#C59B27]/40 text-xs font-bold text-[#F5D061] transition shrink-0"
+        >
+          검색
+        </button>
+      </div>
+
+      {/* 트리 노드 목록 영역 */}
+      <div className="max-h-[380px] overflow-y-auto pr-1 space-y-0.5 divide-y divide-white/5 scrollbar-thin scrollbar-thumb-white/20">
+        {rootNodes.map((root) => renderNode(root, 0))}
+      </div>
+    </div>
+  )
+}
 
 // 오늘의 부처님 말씀 데이터 (7선)
 const DAILY_QUOTES = [
@@ -804,6 +1042,10 @@ export default function App() {
     bank_account: '',
     account_holder: '',
   })
+
+  // 포교사 전산 및 관리자 뷰 모드 ('tree': MetaFastest 스타일 조직도 트리 / 'list': 목록형)
+  const [agentViewMode, setAgentViewMode] = useState('tree')
+  const [adminMemberViewMode, setAdminMemberViewMode] = useState('tree')
 
   useEffect(() => {
     if (currentUser) {
@@ -4053,50 +4295,90 @@ export default function App() {
               </div>
             </section>
 
-            {/* 나의 인연 신도 리스트 */}
-            <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8]">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-serif-kr font-bold text-base">
-                  나의 인연 신도 축원 및 상담 현황
-                </h3>
-                <span className="text-xs text-[#9A7418] font-semibold">
-                  총 {prayers.filter((p) => isAdmin || p.agent_code === activeAgent.code).length}건
-                </span>
-              </div>
+            {/* 뷰 모드 전환 버튼: 조직도 트리 vs 인연 신도 축원 리스트 */}
+            <div className="flex items-center justify-between gap-2 p-1 bg-[#231F1C] rounded-xl border border-[#C59B27]/40">
+              <button
+                type="button"
+                onClick={() => setAgentViewMode('tree')}
+                className={`flex-1 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                  agentViewMode === 'tree'
+                    ? 'bg-[#F5D061] text-[#1B1815] shadow'
+                    : 'text-[#D6CEC2] hover:text-white'
+                }`}
+              >
+                <span>🌳 포교 추천 조직도 (Tree)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setAgentViewMode('list')}
+                className={`flex-1 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                  agentViewMode === 'list'
+                    ? 'bg-[#F5D061] text-[#1B1815] shadow'
+                    : 'text-[#D6CEC2] hover:text-white'
+                }`}
+              >
+                <span>📋 인연 신도 축원 현황</span>
+              </button>
+            </div>
 
-              <div className="space-y-3">
-                {prayers
-                  .filter((p) => isAdmin || p.agent_code === activeAgent.code)
-                  .map((p) => (
-                    <div
-                      key={p.id}
-                      className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] flex flex-col gap-1.5"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5">
-                          <UserCheck className="w-4 h-4 text-[#9A7418]" />
-                          <span className="text-xs font-bold text-[#231F1C]">
-                            {p.believer_name}
+            {/* [모드 1] 포교 추천 조직도 트리 뷰 */}
+            {agentViewMode === 'tree' && (
+              <OrganizationTreeView
+                members={members}
+                rootCode={isAdmin ? null : activeAgent.code}
+                activeAgentCode={activeAgent.code}
+                onSelectMember={(m) => {
+                  showToast(`[${m.name}] 포교 파트너 (코드: ${m.code}) 선택됨`)
+                }}
+              />
+            )}
+
+            {/* [모드 2] 나의 인연 신도 리스트 */}
+            {agentViewMode === 'list' && (
+              <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8]">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-serif-kr font-bold text-base">
+                    나의 인연 신도 축원 및 상담 현황
+                  </h3>
+                  <span className="text-xs text-[#9A7418] font-semibold">
+                    총 {prayers.filter((p) => isAdmin || p.agent_code === activeAgent.code).length}건
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  {prayers
+                    .filter((p) => isAdmin || p.agent_code === activeAgent.code)
+                    .map((p) => (
+                      <div
+                        key={p.id}
+                        className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] flex flex-col gap-1.5"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <UserCheck className="w-4 h-4 text-[#9A7418]" />
+                            <span className="text-xs font-bold text-[#231F1C]">
+                              {p.believer_name}
+                            </span>
+                            <span className="text-[11px] text-[#786E63]">({p.believer_phone})</span>
+                          </div>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EFE7D6] text-[#7D6320]">
+                            {p.status === 'consulting' ? '위패상담중' : '축원진행중'}
                           </span>
-                          <span className="text-[11px] text-[#786E63]">({p.believer_phone})</span>
                         </div>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EFE7D6] text-[#7D6320]">
-                          {p.status === 'consulting' ? '위패상담중' : '축원진행중'}
-                        </span>
-                      </div>
 
-                      <div className="text-xs text-[#4A433C]">
-                        최근 발원: <strong className="text-[#8A6510]">[{p.wish_category}]</strong> “{p.wish_text}”
-                      </div>
+                        <div className="text-xs text-[#4A433C]">
+                          최근 발원: <strong className="text-[#8A6510]">[{p.wish_category}]</strong> “{p.wish_text}”
+                        </div>
 
-                      <div className="flex items-center justify-between text-[11px] text-[#8C7A5B] pt-1 border-t border-[#EFE9DD]">
-                        <span>접수일시: {p.created_at}</span>
-                        <span>담당코드: {p.agent_code}</span>
+                        <div className="flex items-center justify-between text-[11px] text-[#8C7A5B] pt-1 border-t border-[#EFE9DD]">
+                          <span>접수일시: {p.created_at}</span>
+                          <span>담당코드: {p.agent_code}</span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-              </div>
-            </section>
+                    ))}
+                </div>
+              </section>
+            )}
           </main>
         )}
 
@@ -4189,43 +4471,79 @@ export default function App() {
                 </button>
               </form>
 
-              {/* 등록된 회원 목록 (일반신도 ⇄ 포교사 원클릭 등급 변경 지원) */}
-              <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
-                {members.map((m) => (
-                  <div
-                    key={m.code}
-                    className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] flex items-center justify-between gap-2 text-xs"
-                  >
-                    <div className="min-w-0">
-                      <div className="font-bold text-[#231F1C] truncate">
-                        {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''} ·{' '}
-                        <span className="text-[#8A6510]">{m.code}</span>
-                      </div>
-                      <div className="text-[11px] text-[#786E63] truncate">
-                        {m.phone} {m.address ? `· ${m.address}` : ''}
-                      </div>
-                    </div>
-                    <select
-                      value={m.role}
-                      onChange={(e) => {
-                        const nextRole = e.target.value
-                        setMembers((prev) =>
-                          prev.map((item) =>
-                            item.code === m.code ? { ...item, role: nextRole } : item
-                          )
-                        )
-                        showToast(`${m.name}님의 회원 등급이 변경되었습니다.`)
-                      }}
-                      className="px-2 py-1 rounded-lg bg-white border border-[#D5C59B] text-[11px] font-bold text-[#231F1C] shrink-0"
-                    >
-                      <option value="believer">일반신도</option>
-                      <option value="agent">포교사</option>
-                      <option value="temple_admin">사찰본부</option>
-                      <option value="master">관리자</option>
-                    </select>
-                  </div>
-                ))}
+              <div className="flex items-center justify-between gap-2 p-1 bg-[#231F1C] rounded-xl border border-[#C59B27]/40">
+                <button
+                  type="button"
+                  onClick={() => setAdminMemberViewMode('tree')}
+                  className={`flex-1 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                    adminMemberViewMode === 'tree'
+                      ? 'bg-[#F5D061] text-[#1B1815] shadow'
+                      : 'text-[#D6CEC2] hover:text-white'
+                  }`}
+                >
+                  <span>🌳 전국 포교 계보 조직도 (Tree)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAdminMemberViewMode('list')}
+                  className={`flex-1 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                    adminMemberViewMode === 'list'
+                      ? 'bg-[#F5D061] text-[#1B1815] shadow'
+                      : 'text-[#D6CEC2] hover:text-white'
+                  }`}
+                >
+                  <span>📋 회원 등급 목록형</span>
+                </button>
               </div>
+
+              {adminMemberViewMode === 'tree' ? (
+                <OrganizationTreeView
+                  members={members}
+                  rootCode={null}
+                  activeAgentCode={currentUser?.code}
+                  onSelectMember={(m) => {
+                    showToast(`[${m.name}] 회원 (코드: ${m.code} / 역할: ${m.role}) 선택됨`)
+                  }}
+                />
+              ) : (
+                /* 등록된 회원 목록 (일반신도 ⇄ 포교사 원클릭 등급 변경 지원) */
+                <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+                  {members.map((m) => (
+                    <div
+                      key={m.code}
+                      className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] flex items-center justify-between gap-2 text-xs"
+                    >
+                      <div className="min-w-0">
+                        <div className="font-bold text-[#231F1C] truncate">
+                          {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''} ·{' '}
+                          <span className="text-[#8A6510]">{m.code}</span>
+                        </div>
+                        <div className="text-[11px] text-[#786E63] truncate">
+                          {m.phone} {m.address ? `· ${m.address}` : ''}
+                        </div>
+                      </div>
+                      <select
+                        value={m.role}
+                        onChange={(e) => {
+                          const nextRole = e.target.value
+                          setMembers((prev) =>
+                            prev.map((item) =>
+                              item.code === m.code ? { ...item, role: nextRole } : item
+                            )
+                          )
+                          showToast(`${m.name}님의 회원 등급이 변경되었습니다.`)
+                        }}
+                        className="px-2 py-1 rounded-lg bg-white border border-[#D5C59B] text-[11px] font-bold text-[#231F1C] shrink-0"
+                      >
+                        <option value="believer">일반신도</option>
+                        <option value="agent">포교사</option>
+                        <option value="temple_admin">사찰본부</option>
+                        <option value="master">관리자</option>
+                      </select>
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
 
             {/* 2. 다이나믹 요율 조절 컨트롤러 */}
