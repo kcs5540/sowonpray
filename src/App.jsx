@@ -2056,7 +2056,7 @@ export default function App() {
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-4">
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0">
-                  <span className="block text-[11px] font-bold text-[#9A7418] whitespace-nowrap">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] text-[11.5px] font-extrabold whitespace-nowrap shadow-sm mb-1.5">
                     1. 명당 위패 봉안 불사 (2종)
                   </span>
                   <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
@@ -2141,10 +2141,10 @@ export default function App() {
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-3.5">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <span className="block text-[11px] font-bold text-[#9A7418] whitespace-nowrap">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] text-[11.5px] font-extrabold whitespace-nowrap shadow-sm mb-1.5">
                     2. 천년 도량 성전 건립 대작불사 (3종)
                   </span>
-                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] mt-0.5 break-keep">
+                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
                     제주 소원사 ‘삼성각(三聖閣)’ 건립 불사
                   </h3>
                   <p className="text-xs text-[#575049] mt-1 leading-relaxed break-keep">
@@ -2239,7 +2239,7 @@ export default function App() {
             {/* [큰 항목 3] 상시 기도 및 공덕 불사 종목 (3종) */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-3">
               <div>
-                <span className="block text-[11px] font-bold text-[#9A7418] whitespace-nowrap">
+                <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] text-[11.5px] font-extrabold whitespace-nowrap shadow-sm mb-1.5">
                   3. 상시 기도 및 공덕 불사 종목 (3종)
                 </span>
                 <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] whitespace-nowrap">
