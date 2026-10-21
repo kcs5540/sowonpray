@@ -192,8 +192,8 @@ function OrganizationTreeView({
             if (hasChildren) toggleExpand(node.code)
             if (onSelectMember) onSelectMember(node)
           }}
-          style={{ paddingLeft: `${depth * 18 + 8}px` }}
-          className={`py-2 pr-2.5 rounded-lg flex items-center justify-between gap-1.5 transition cursor-pointer ${
+          style={{ paddingLeft: `${depth * 15 + 6}px` }}
+          className={`py-1.5 pr-2 rounded-lg flex items-center justify-between gap-1.5 transition cursor-pointer ${
             isMatched
               ? 'bg-[#C59B27]/30 border border-[#F5D061]'
               : node.code === activeAgentCode
@@ -203,34 +203,34 @@ function OrganizationTreeView({
         >
           <div className="flex items-center gap-1.5 min-w-0 flex-1">
             {hasChildren ? (
-              <span className="w-5 h-5 flex items-center justify-center text-[#F5D061] shrink-0 font-bold text-xs">
+              <span className="w-4 h-4 flex items-center justify-center text-[#F5D061] shrink-0 font-bold text-[10px]">
                 {isExpanded ? '▼' : '▶'}
               </span>
             ) : (
-              <span className="w-5 h-5 flex items-center justify-center text-[#6E6356] shrink-0 text-xs">
+              <span className="w-4 h-4 flex items-center justify-center text-[#6E6356] shrink-0 text-[10px]">
                 •
               </span>
             )}
 
             <div className="flex items-center gap-1.5 min-w-0 truncate">
-              <span className="text-xs font-bold text-white truncate">
+              <span className="text-[11px] font-bold text-white truncate">
                 {node.name}
                 {node.dharma_name ? ` (${node.dharma_name})` : ''}
               </span>
-              <span className="text-[11px] text-[#A69B8D] shrink-0 font-mono">
+              <span className="text-[10px] text-[#A69B8D] shrink-0 font-mono">
                 {node.code}
               </span>
               <span
-                className={`text-[9.5px] font-extrabold px-1.5 py-0.5 rounded shrink-0 ${roleBadge.bg}`}
+                className={`text-[8.5px] font-extrabold px-1.5 py-0.5 rounded shrink-0 ${roleBadge.bg}`}
               >
                 {roleBadge.label}
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 text-[10.5px] text-[#C59B27] shrink-0 font-semibold">
+          <div className="flex items-center gap-1.5 text-[9.5px] text-[#C59B27] shrink-0 font-semibold">
             {hasChildren && (
-              <span className="px-1.5 py-0.5 rounded-full bg-white/10 text-[10px] text-[#F5D061]">
+              <span className="px-1.5 py-0.5 rounded-full bg-white/10 text-[9px] text-[#F5D061]">
                 인연 {children.length}분
               </span>
             )}
@@ -283,7 +283,7 @@ function OrganizationTreeView({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="도반 성함 또는 인연코드로 찾기"
-            className="w-full pl-3 pr-8 py-2 rounded-xl bg-[#201B17] border border-[#C59B27]/40 text-xs text-white placeholder-[#786E63] focus:outline-none focus:border-[#F5D061]"
+            className="w-full pl-3 pr-8 py-1.5 rounded-xl bg-[#201B17] border border-[#C59B27]/40 text-[11px] text-white placeholder-[#786E63] focus:outline-none focus:border-[#F5D061]"
           />
           {searchQuery && (
             <button
@@ -298,7 +298,7 @@ function OrganizationTreeView({
         <button
           type="button"
           onClick={() => {}}
-          className="px-4 py-2 rounded-xl bg-[#342D26] hover:bg-[#433A31] border border-[#C59B27]/40 text-xs font-bold text-[#F5D061] transition shrink-0"
+          className="px-3.5 py-1.5 rounded-xl bg-[#342D26] hover:bg-[#433A31] border border-[#C59B27]/40 text-[11px] font-bold text-[#F5D061] transition shrink-0"
         >
           검색
         </button>
