@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  
+  <!-- Primary Meta Tags -->
+  <title>제주 소원사 | 간절한 한 가지 소원이 이루어지는 영험도량</title>
+  <meta name="title" content="제주 소원사 | 간절한 한 가지 소원이 이루어지는 도량" />
+  <meta name="description" content="제주 청정 자연 속, 가족의 건강과 행복을 발원하고 조상님을 품격 있게 모시는 안심 위패 봉안 도량 제주 소원사입니다." />
+  
+  <!-- Open Graph / KakaoTalk Preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sowonsa.vercel.app/introcard" />
+  <meta property="og:title" content="제주 소원사 - 간절한 한 가지 소원이 이루어지는 도량" />
+  <meta property="og:description" content="가족의 행복과 조상님의 극락왕생을 정성껏 발원합니다. 지금 소원사의 도량 전경과 방문 소식을 만나보세요." />
+  <meta property="og:image" content="https://sowonsa.vercel.app/images/sowonsa_real_cover_path.png" />
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-gold: #c59b27;
+      --gold-light: #f7eed7;
+      --gold-dark: #8e6d15;
+      --bg-warm: #faf8f5;
+      --text-dark: #232220;
+      --text-sub: #5a5752;
+      --card-border: #eee7dc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      background-color: #292826;
+      color: var(--text-dark);
+      line-height: 1.6;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    /* 모바일 중심 카카오톡 인앱 브라우저 최적화 컨테이너 */
+    .mobile-wrapper {
+      width: 100%;
+      max-width: 480px;
+      background-color: var(--bg-warm);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    /* 헤더 히어로 섹션 (실제 도량 사진이 밝고 화사하게 드러나도록 조정) */
+    .hero-section {
+      position: relative;
+      background: linear-gradient(180deg, rgba(16, 15, 13, 0.35) 0%, rgba(16, 15, 13, 0.68) 100%),
+                  url('./images/sowonsa_real_cover_path.png') center 35%/cover no-repeat;
+      color: #ffffff;
+      padding: 56px 24px 44px 24px;
+      text-align: center;
+      border-radius: 0 0 28px 28px;
+    }
+
+    .temple-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(197, 155, 39, 0.22);
+      border: 1px solid rgba(247, 238, 215, 0.45);
+      color: #f7eed7;
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 18px;
+    }
+
+    .hero-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 21px;
+      line-height: 1.4;
+      font-weight: 600;
+      color: #ede9e1;
+      margin-bottom: 16px;
+      word-break: keep-all;
+    }
+
+    .hero-brand {
+      display: block;
+      font-size: 32px;
+      font-weight: 900;
+      color: #fbd36d;
+      margin-top: 6px;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+    }
+
+    .hero-subtitle {
+      font-size: 14.5px;
+      color: #e0ded9;
+      line-height: 1.65;
+      word-break: keep-all;
+    }
+
+    /* 본문 콘텐츠 */
+    .content-area {
+      padding: 28px 20px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      flex: 1;
+    }
+
+    /* 안내 카드 박스 */
+    .intro-card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 22px 20px;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+    }
+
+    .intro-quote {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #3b362a;
+      border-left: 3.5px solid var(--primary-gold);
+      padding-left: 12px;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .intro-desc {
+      font-size: 14.5px;
+      color: var(--text-sub);
+      line-height: 1.7;
+      word-break: keep-all;
+    }
+
+    /* 주요 안내 그리드 */
+    .features-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .feature-item {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px 14px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      margin: 0 auto 10px;
+      background: #fbf7ed;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-gold);
+      font-size: 18px;
+    }
+
+    .feature-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #2b271d;
+      margin-bottom: 4px;
+    }
+
+    .feature-sub {
+      font-size: 12px;
+      color: #79746b;
+      line-height: 1.4;
+      word-break: keep-all;
+    }
+
+    /* 소원사 공식 링크 목록 섹션 */
+    .links-section {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 22px 18px;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #26231c;
+      margin-bottom: 4px;
+    }
+
+    .section-desc {
+      font-size: 12.5px;
+      color: #8c877e;
+    }
+
+    /* 클릭 버튼 링크 스타일 */
+    .action-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* 모던 프리미엄 링크 리스트 디자인 */
+    .action-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .link-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-radius: 14px;
+      text-decoration: none;
+      background: #ffffff;
+      border: 1px solid #e9e5de;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    /* 마우스 커서 호버 시 역동적이고 부드러운 반응 */
+    .link-btn:hover {
+      transform: translateY(-3px) scale(1.015);
+      border-color: #d1c7b8;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      background: #ffffff;
+    }
+
+    .link-btn:hover .link-arrow {
+      transform: translateX(4px);
+      color: var(--primary-gold);
+    }
+
+    .link-btn:hover .link-icon-box {
+      transform: scale(1.1) rotate(-3deg);
+    }
+
+    .link-btn:active {
+      transform: translateY(0) scale(0.98);
+      background: #faf8f5;
+    }
+
+    .link-left {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .link-icon-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+      transition: transform 0.25s ease;
+    }
+
+    .link-text-wrap {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .link-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #24221e;
+      line-height: 1.35;
+    }
+
+    .link-sub {
+      font-size: 11.5px;
+      color: #8c867a;
+      margin-top: 2px;
+    }
+
+    .link-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .link-badge {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+
+    .link-arrow {
+      color: #bfb8ab;
+      font-size: 13px;
+      transition: transform 0.25s ease, color 0.25s ease;
+    }
+
+    /* 각 버튼별 세련된 포인트 컬러 (배경은 깔끔한 화이트톤 베이스) */
+    .theme-gold .link-icon-box { background: #fdf6e6; color: #b38515; }
+    .theme-gold .link-badge { background: #fdf3d8; color: #9c720e; }
+
+    .theme-brown .link-icon-box { background: #f7f3ee; color: #786249; }
+    .theme-brown .link-badge { background: #efeae2; color: #69533a; }
+
+    .theme-red .link-icon-box { background: #fdf0f0; color: #d93838; }
+    .theme-red .link-badge { background: #fde8e8; color: #c42929; }
+
+    .theme-green .link-icon-box { background: #eef8f2; color: #029443; }
+    .theme-green .link-badge { background: #e2f5e9; color: #027d39; }
+
+    .theme-blue .link-icon-box { background: #f0f4fa; color: #2e62ad; }
+    .theme-blue .link-badge { background: #e5edfa; color: #1f5096; }
+
+    /* 인스타그램 & 스레드 테마 */
+    .theme-instagram .link-icon-box {
+      background: linear-gradient(135deg, rgba(245, 133, 41, 0.12), rgba(221, 42, 123, 0.15), rgba(129, 52, 175, 0.12));
+      color: #d62976;
+    }
+    .theme-instagram .link-badge { background: #fde8ef; color: #c13584; }
+
+    .theme-threads .link-icon-box { background: #f2f2f2; color: #111111; }
+    .theme-threads .link-badge { background: #e8e8e8; color: #111111; }
+
+    .theme-darkgreen .link-icon-box { background: #e9f5ed; color: #106b32; }
+    .theme-darkgreen .link-badge { background: #d7eedf; color: #0d5829; }
+    .theme-highlight {
+      border: 1.5px solid #d4eedb;
+      background: #fbfdfc;
+    }
+
+
+
+    /* 모바일 법당 소원등 켜기 특별 버튼 (다크 골드 프리미엄) */
+    .link-btn.theme-sowonpray {
+      background: linear-gradient(135deg, #221e1a 0%, #161311 100%);
+      border: 1.5px solid #c59b27;
+      box-shadow: 0 4px 16px rgba(197, 155, 39, 0.25);
+    }
+    .link-btn.theme-sowonpray:hover {
+      background: linear-gradient(135deg, #2a2520 0%, #1c1815 100%);
+      border-color: #f5d061;
+      box-shadow: 0 6px 22px rgba(245, 208, 97, 0.35);
+      transform: translateY(-3px) scale(1.015);
+    }
+    .link-btn.theme-sowonpray .link-icon-box {
+      background: #2b251e;
+      border: 1px solid rgba(245, 208, 97, 0.4);
+      color: #f5d061;
+      box-shadow: 0 0 10px rgba(245, 208, 97, 0.2);
+    }
+    .link-btn.theme-sowonpray .link-title {
+      color: #ffffff !important;
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+    }
+    .link-btn.theme-sowonpray .link-sub {
+      color: #f5d061 !important;
+      font-weight: 700;
+      font-size: 11.5px;
+      letter-spacing: 0.02em;
+    }
+    .link-btn.theme-sowonpray .link-badge {
+      background: rgba(197, 155, 39, 0.25);
+      color: #f5d061;
+      border: 1px solid rgba(245, 208, 97, 0.4);
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-weight: 700;
+    }
+    .link-btn.theme-sowonpray .link-arrow {
+      color: #f5d061;
+    }
+
+    /* 푸터 */
+    footer {
+      text-align: center;
+      padding: 24px 20px 36px;
+      font-size: 12px;
+      color: #9c978f;
+      line-height: 1.6;
+      border-top: 1px solid var(--card-border);
+      background: #f5f2ed;
+    }
+
+    footer p {
+      margin-bottom: 4px;
+    }
+
+    /* 토스트 알림 (링크 복사용) */
+    #toast {
+      visibility: hidden;
+      min-width: 200px;
+      background-color: rgba(30, 29, 27, 0.9);
+      color: #fff;
+      text-align: center;
+      border-radius: 24px;
+      padding: 10px 18px;
+      position: fixed;
+      z-index: 1000;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 13px;
+      opacity: 0;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    #toast.show {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="mobile-wrapper">
+    <!-- 헤더 섹션 -->
+    <header class="hero-section">
+      <div class="temple-badge">
+        <i class="fa-solid fa-sun"></i> 청정 자연 속 영험 기도도량
+      </div>
+      <h1 class="hero-title">
+        간절한 한 가지 소원이 이루어지는 곳<br />
+        <span class="hero-brand">제주 소원사</span>
+      </h1>
+      <p class="hero-subtitle">
+        푸르른 숲과 청정 자연 속에서<br />
+        마음의 평안과 정성 어린 기도를 올립니다.
+      </p>
+    </header>
+
+    <!-- 메인 본문 콘텐츠 -->
+    <main class="content-area">
+      
+      <!-- 소개 카드 -->
+      <article class="intro-card">
+        <div class="intro-quote">
+          “살아서 닦는 생전예수재의 공덕, 조상님의 영원한 안식”
+        </div>
+        <p class="intro-desc">
+          제주 소원사는 가족의 건강과 번창을 비는 기도부터, 살아생전 복덕을 짓는 <strong>생전예수재(生前預修齋)</strong>와 조상님을 품격 있게 모시는 <strong>안심 영구위패 봉안</strong>까지 온 정성을 다해 함께하고 있습니다.
+        </p>
+      </article>
+
+      <!-- 핵심 특징 그리드 (4대 핵심 가치) -->
+      <section class="features-list">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <i class="fa-solid fa-hands-praying"></i>
+          </div>
+          <div class="feature-title">소원 성취 기도</div>
+          <div class="feature-sub">가족 건강·행복 발원 매일 사시예불 축원</div>
+        </div>
+
+        <!-- 1. 생전예수재 (황금빛 위패) -->
+        <div class="feature-item" style="border: 1.5px solid #ebd9b5; background: #fffcf5;">
+          <div class="feature-icon" style="background: #fdf2d9; color: #b8860b;">
+            <i class="fa-solid fa-monument"></i>
+          </div>
+          <div class="feature-title" style="color: #8c670a;">생전예수재 위패</div>
+          <div class="feature-sub">살아서 미리 올리는 복덕<br><strong style="color: #b8860b;">눈부신 황금빛 위패</strong></div>
+        </div>
+
+        <!-- 2. 안심 조상영가 위패 (품격 흑색 위패) -->
+        <div class="feature-item" style="border: 1.5px solid #e0ded9; background: #faf9f7;">
+          <div class="feature-icon" style="background: #2b2927; color: #f5eedf;">
+            <i class="fa-solid fa-monument"></i>
+          </div>
+          <div class="feature-title" style="color: #2b2927;">조상 영가 위패</div>
+          <div class="feature-sub">조상님을 영구히 모시는<br><strong style="color: #3b3937;">품격 있는 흑색 위패</strong></div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">
+            <i class="fa-solid fa-tree"></i>
+          </div>
+          <div class="feature-title">청정 힐링도량</div>
+          <div class="feature-sub">지친 일상을 치유하는 평온한 마음 쉼터</div>
+        </div>
+      </section>
+
+      <!-- 도량 방문 안내 & 힐링 포인트 카드 -->
+      <section class="visit-guide-card" style="background: #ffffff; border-radius: 22px; padding: 26px 20px; border: 1.5px solid #ebd9b5; box-shadow: 0 8px 26px rgba(197, 155, 39, 0.08);">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <!-- 감성 초대 뱃지 -->
+          <div style="display: inline-flex; align-items: center; gap: 6px; background: #faf2dc; border: 1px solid #e8cb85; color: #8c670a; padding: 5px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 700; margin-bottom: 10px;">
+            <i class="fa-solid fa-mug-hot" style="color: #b8860b;"></i> 언제든 열려 있는 마음의 쉼터
+          </div>
+          
+          <!-- 강조된 메인 타이틀 -->
+          <h2 style="font-family: 'Noto Serif KR', serif; font-size: 24px; font-weight: 900; color: #231f18; line-height: 1.4; word-break: keep-all; letter-spacing: -0.5px;">
+            “도량에 오셔서<br>
+            <span style="color: #a67c17; text-decoration: underline; text-decoration-color: #ebd9b5; text-underline-offset: 6px;">따뜻한 차 한 잔</span> 나누세요”
+          </h2>
+
+          <p style="font-size: 14px; color: #615b50; margin-top: 10px; line-height: 1.65; word-break: keep-all;">
+            맑은 솔바람과 청아한 풍경 소리가 반기는 소원사는<br>
+            불자님 누구나 편안히 머물다 가실 수 있는 힐링 도량입니다.
+          </p>
+        </div>
+
+        <!-- 소원사 풍경 미니 갤러리 2열 -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+          <div style="border-radius: 12px; overflow: hidden; height: 110px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <img src="./images/sowonsa_real_daewoongjeon.jpg" alt="소원사 큰법당" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          <div style="border-radius: 12px; overflow: hidden; height: 110px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <img src="./images/sowonsa_golden_buddha_path.jpg" alt="황금보살길" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+        </div>
+
+        <!-- 방문 혜택 안내 -->
+        <div style="background: #faf7f2; border-radius: 14px; padding: 15px; font-size: 13.5px; color: #555048; line-height: 1.65; border: 1px solid #ebd9b5;">
+          <!-- 핵심 강조: 전날 예약 방문 시 차 & 식사 준비 -->
+          <div style="background: #fff8ea; border-left: 3.5px solid var(--primary-gold); padding: 10px 12px; border-radius: 8px; margin-bottom: 12px;">
+            <div style="color: #8c670a; font-weight: 700; font-size: 14px; margin-bottom: 3px; display: flex; align-items: center; gap: 6px;">
+              <i class="fa-solid fa-utensils"></i> [사전 예약 방문 특별 대접]
+            </div>
+            <p style="color: #4a4336; font-size: 13px; line-height: 1.55;">
+              <strong>방문 전날 미리 예약 전화</strong>를 주시면, 정성껏 우려낸 <strong>따뜻한 차(茶)</strong>와 함께 정갈한 <strong>사찰 공양(식사)</strong>을 정성껏 준비해 드립니다.
+            </p>
+          </div>
+
+          <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+            <i class="fa-solid fa-mug-hot" style="color: var(--primary-gold); margin-top: 3px;"></i>
+            <span><strong>마음 편한 차담</strong>: 참배객 누구나 도량 쉼터에서 솔바람과 함께 차를 나누실 수 있습니다.</span>
+          </div>
+          <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+            <i class="fa-solid fa-car" style="color: var(--primary-gold); margin-top: 3px;"></i>
+            <span><strong>편리한 접근성</strong>: 제주시 도심 및 공항에서 차량 15분 거리 (대형 주차장 완비)</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <i class="fa-solid fa-heart" style="color: var(--primary-gold); margin-top: 3px;"></i>
+            <span><strong>가족 소원 축원</strong>: 부담 없이 발걸음하시어 평안과 행복을 발원해 보세요.</span>
+          </div>
+        </div>
+
+        <!-- 예약 전화 바로가기 버튼 (직통 휴대폰으로 연결) -->
+        <a href="tel:010-4912-1083" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #a67c17 0%, #c59b27 100%); color: #fff; text-decoration: none; padding: 14px; border-radius: 12px; margin-top: 14px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 14px rgba(197, 155, 39, 0.35); transition: transform 0.2s ease;">
+          <i class="fa-solid fa-mobile-screen-button" style="font-size: 16px;"></i>
+          <span>방문 예약 및 식사 문의 (010-4912-1083)</span>
+        </a>
+
+        <!-- [신규] 모바일 법당 대웅전 무료 축원: 소원등 켜기 특별 배너 -->
+        <a href="https://sowonpray.vercel.app/" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #221e1a 0%, #161311 100%); border: 1.5px solid #c59b27; border-radius: 12px; padding: 13px 16px; margin-top: 10px; text-decoration: none; box-shadow: 0 4px 16px rgba(197, 155, 39, 0.28); transition: all 0.25s ease;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 42px; height: 42px; border-radius: 11px; background: #2b251e; border: 1px solid rgba(245, 208, 97, 0.45); display: flex; align-items: center; justify-content: center; color: #f5d061; box-shadow: 0 0 10px rgba(245, 208, 97, 0.25); flex-shrink: 0;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f5d061" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3.5z"/>
+              </svg>
+            </div>
+            <div style="display: flex; flex-direction: column; text-align: left;">
+              <span style="color: #f5d061; font-weight: 700; font-size: 11px; letter-spacing: 0.02em;">대웅전 무료 축원</span>
+              <span style="color: #ffffff; font-weight: 800; font-size: 16px; letter-spacing: -0.02em;">소원등 켜기</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="background: rgba(197, 155, 39, 0.25); color: #f5d061; border: 1px solid rgba(245, 208, 97, 0.4); font-size: 10.5px; padding: 3px 8px; border-radius: 20px; font-weight: 700;">모바일 법당</span>
+            <i class="fa-solid fa-chevron-right" style="color: #f5d061; font-size: 12px;"></i>
+          </div>
+        </a>
+      </section>
+
+      <!-- 소원사 공식 안내 링크 (요청사항: 하단 위치) -->
+      <section class="links-section">
+        <div class="section-header">
+          <h2 class="section-title">소원사 소식 & 바로가기</h2>
+          <p class="section-desc">평온한 도량 전경과 다양한 기도 소식을 만나보세요.</p>
+        </div>
+
+        <div class="action-links">
+          <!-- 0. [신규] 모바일 법당 소원등 켜기 (대웅전 무료 축원) -->
+          <a href="https://sowonpray.vercel.app/" target="_blank" rel="noopener noreferrer" class="link-btn theme-sowonpray">
+            <div class="link-left">
+              <div class="link-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f5d061" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3.5z"/>
+                </svg>
+              </div>
+              <div class="link-text-wrap">
+                <span class="link-sub">대웅전 무료 축원</span>
+                <span class="link-title">소원등 켜기</span>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="link-badge">모바일 법당</span>
+              <i class="fa-solid fa-chevron-right link-arrow"></i>
+            </div>
+          </a>
+
+          <!-- 1. 소원사 공식 홈페이지 (전체 도량 및 소개 파악) -->
+          <a href="https://sowonsa.vercel.app/" target="_blank" rel="noopener noreferrer" class="link-btn theme-gold">
+            <div class="link-left">
+              <div class="link-icon-box">
+                <i class="fa-solid fa-globe"></i>
+              </div>
+              <div class="link-text-wrap">
+                <span class="link-title">소원사 공식 홈페이지</span>
+                <span class="link-sub">도량 전경과 주요 전각 둘러보기</span>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right link-arrow"></i>
+          </a>
+
+          <!-- 2. 공식 유튜브 (생생한 영상으로 마음의 안식 전달) -->
+          <a href="https://www.youtube.com/@jejusowonsa" target="_blank" rel="noopener noreferrer" class="link-btn theme-red">
+            <div class="link-left">
+              <div class="link-icon-box">
+                <i class="fa-brands fa-youtube"></i>
+              </div>
+              <div class="link-text-wrap">
+                <span class="link-title">소원사 공식 유튜브</span>
+                <span class="link-sub">사계절 도량 풍경과 예불 영상 감상</span>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right link-arrow"></i>
+          </a>
+
+          <!-- 3. 공식 인스타그램 (신규 추가) -->
+          <a href="https://www.instagram.com/jejusowonsa/" target="_blank" rel="noopener noreferrer" class="link-btn theme-instagram">
+            <div class="link-left">
+              <div class="link-icon-box">
+                <i class="fa-brands fa-instagram"></i>
+              </div>
+              <div class="link-text-wrap">
+                <span class="link-title">소원사 공식 인스타그램</span>
+                <span class="link-sub">@jejusowonsa (매일의 사찰 소식)</span>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right link-arrow"></i>
+          </a>
+
+          <!-- 4. 공식 스레드 (신규 추가) -->
+          <a href="https://www.threads.net/@jejusowonsa" target="_blank" rel="noopener noreferrer" class="link-btn theme-threads">
+            <div class="link-left">
+              <div class="link-icon-box">
+                <svg width="18" height="18" viewBox="0 0 192 192" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M141.537 88.9883C140.71 88.5919 139.87 88.2109 139.019 87.8451C137.537 60.5382 122.616 44.905 97.5619 44.745C97.4484 44.7443 97.3355 44.7443 97.222 44.7443C82.2364 44.7443 69.7731 51.1409 62.102 62.7807L75.881 72.2328C81.6145 63.5383 90.5707 60.5386 97.222 60.5386C97.3001 60.5386 97.3789 60.5386 97.4578 60.5393C110.669 60.6232 120.916 69.4589 122.951 84.148C116.892 82.8021 110.147 82.2046 102.825 82.3592C76.0125 82.9254 60.2705 97.0427 60.8527 117.844C61.4087 137.708 77.0121 148.601 96.671 148.601C111.968 148.601 123.635 142.062 131.066 129.288C137.472 143.149 149.261 149.601 166.758 148.601C176.756 148.029 184.811 143.344 190.283 135.031L176.504 125.579C173.284 130.469 168.966 132.887 163.636 133.192C154.551 133.712 147.781 128.536 143.518 117.797C149.721 107.502 153.221 95.8361 153.844 83.3364C154.792 64.3364 148.423 48.0031 135.434 36.1698C123.018 24.8573 105.748 18.7443 84.1136 18.7443C62.0006 18.7443 43.6846 25.4357 29.6896 38.647C15.6946 51.8584 8.69727 69.5807 8.69727 91.8139C8.69727 114.047 15.6946 131.769 29.6896 144.981C43.6846 158.192 62.0006 164.884 84.1136 164.884C100.826 164.884 116.326 160.717 130.613 152.384L122.78 138.895C110.892 145.839 98.0006 149.311 84.1136 149.311C66.558 149.311 52.0163 143.895 40.4883 133.061C28.9603 122.228 23.1963 108.478 23.1963 91.8139C23.1963 75.1498 28.9603 61.4001 40.4883 50.5668C52.0163 39.7334 66.558 34.3175 84.1136 34.3175C101.669 34.3175 115.392 39.123 125.281 48.7341C135.17 58.3453 140.061 71.0119 139.953 86.7341C139.845 102.456 135.281 115.012 126.262 124.401C120.301 130.609 112.518 134.128 102.914 134.958C89.5699 136.103 76.8527 128.734 76.558 117.401C76.2634 106.067 86.8527 97.458 103.114 97.1139C108.971 96.9898 115.114 97.5252 121.544 98.7202C121.284 105.748 119.569 111.968 116.4 117.38C112.781 123.567 106.518 126.969 97.6136 127.584C86.7386 128.341 78.4721 121.712 78.0163 108.825C77.5606 95.9388 86.9721 86.7341 102.721 86.4008C110.147 86.2443 117.38 86.9898 124.421 88.6368C124.781 87.2109 124.966 85.7341 124.972 84.2109C124.972 84.178 124.972 84.1451 124.972 84.1122C124.972 84.0793 124.972 84.0464 124.972 84.0135C124.421 72.8451 116.892 65.7341 102.421 65.6092C97.0006 65.5623 90.722 67.9254 85.722 73.1139L74.881 61.9698C82.5521 53.9698 92.518 50.1409 102.518 50.1409C102.631 50.1409 102.744 50.1409 102.857 50.1416C123.236 50.271 138.825 61.9698 140.236 84.3451C140.71 85.9076 141.147 87.4545 141.537 88.9883Z"/>
+                </svg>
+              </div>
+              <div class="link-text-wrap">
+                <span class="link-title">소원사 공식 스레드</span>
+                <span class="link-sub">실시간 도량 풍경과 따뜻한 소통</span>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right link-arrow"></i>
+          </a>
+
+          <!-- 5. 모바일 팜플렛 (위패/기도 구체적 안내) -->
+          <a href="/pamphlet" target="_blank" rel="noopener noreferrer" class="link-btn theme-brown">
+            <div class="link-left">
+              <div class="link-icon-box">
+                <i class="fa-solid fa-book-open"></i>
+              </div>
+              <div class="link-text-wrap">
+                <span class="link-title">소원사 모바일 팜플렛</span>
+                <span class="link-sub">안심 위패 봉안 및 상세 안내서</span>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right link-arrow"></i>
+          </a>
+
+          <!-- 6. 네이버 지도 길찾기 (방문 의사 결정 후 위치 확인) -->
+          <a href="https://naver.me/GTncELsO" target="_blank" rel="noopener noreferrer" class="link-btn theme-green">
+            <div class="link-left">
+              <div class="link-icon-box">
+                <i class="fa-solid fa-map-location-dot"></i>
+              </div>
+              <div class="link-text-wrap">
+                <span class="link-title">네이버 지도 길찾기</span>
+                <span class="link-sub">제주시 오등동 도량 찾아오시는 길</span>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right link-arrow"></i>
+          </a>
+
+          <!-- 7. 종무소 및 직통 휴대폰 상담 전화 -->
+          <a href="tel:010-4912-1083" class="link-btn theme-blue">
+            <div class="link-left">
+              <div class="link-icon-box">
+                <i class="fa-solid fa-phone-volume"></i>
+              </div>
+              <div class="link-text-wrap">
+                <span class="link-title">종무소 전화 및 직통 상담</span>
+                <span class="link-sub">064-805-2007 · 010-4912-1083</span>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right link-arrow"></i>
+          </a>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 푸터 정보 -->
+    <footer>
+      <p><strong>대한불교조계종 제주 소원사</strong></p>
+      <p>종무소: 064-805-2007 | 직통휴대폰: 010-4912-1083</p>
+      <p style="margin-top: 8px; font-size: 11px; color: #b0aaa0;">
+        Copyright © 제주 소원사. All Rights Reserved.
+      </p>
+    </footer>
+
+    <!-- 복사 완료 안내 토스트 -->
+    <div id="toast">주소가 복사되었습니다. 카톡에 붙여넣어 공유하세요!</div>
+  </div>
+
+  <script>
+    // 카카오톡 공유 및 링크 복사 기능
+    function shareCurrentPage() {
+      // 1. 모바일 브라우저(크롬, 사파리, 삼성인터넷 등)에서 카카오톡 등 앱으로 즉시 공유
+      if (navigator.share) {
+        navigator.share({
+          title: '제주 소원사 | 간절한 한 가지 소원이 이루어지는 도량',
+          text: '제주 청정 자연 속, 가족의 건강과 조상님의 안식을 발원하는 제주 소원사 모바일 안내장입니다.\nhttps://sowonsa.vercel.app/introcard',
+          url: 'https://sowonsa.vercel.app/introcard'
+        }).catch(function(err) {
+          if (err.name !== 'AbortError') {
+            copyToClipboard();
+          }
+        });
+      } else {
+        // 2. PC 등 미지원 환경에서는 원클릭 주소 복사 + 토스트 안내
+        copyToClipboard();
+      }
+    }
+
+    function copyToClipboard() {
+      var dummy = document.createElement("input");
+      document.body.appendChild(dummy);
+      dummy.value = window.location.href;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+
+      showToast();
+    }
+
+    function showToast() {
+      var toast = document.getElementById("toast");
+      toast.className = "show";
+      setTimeout(function() {
+        toast.className = toast.className.replace("show", "");
+      }, 2500);
+    }
+
+    // 마우스 커서 위치에 따른 실시간 3D 인터랙티브 반응
+    document.querySelectorAll('.link-btn').forEach(function(card) {
+      card.addEventListener('mousemove', function(e) {
+        var rect = card.getBoundingClientRect();
+        var x = e.clientX - rect.left; // 마우스 X좌표
+        var y = e.clientY - rect.top;  // 마우스 Y좌표
+        
+        var centerX = rect.width / 2;
+        var centerY = rect.height / 2;
+        
+        // 커서 위치에 따른 회전각 계산 (-5도 ~ +5도)
+        var rotateX = ((y - centerY) / centerY) * -5;
+        var rotateY = ((x - centerX) / centerX) * 5;
+
+        card.style.transform = 'perspective(600px) rotateX(' + rotateX.toFixed(2) + 'deg) rotateY(' + rotateY.toFixed(2) + 'deg) translateY(-3px) scale(1.02)';
+        card.style.boxShadow = (x - centerX) * 0.15 + 'px ' + (y - centerY) * 0.2 + 'px 20px rgba(0, 0, 0, 0.08)';
+      });
+
+      card.addEventListener('mouseleave', function() {
+        card.style.transform = '';
+        card.style.boxShadow = '';
+      });
+    });
+  </script>
+</body>
+</html>
