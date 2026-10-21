@@ -82,6 +82,7 @@ function OrganizationTreeView({
   members,
   rootCode = null,
   activeAgentCode = null,
+  title = '포교자 회원유치 조직도 (Tree View)',
   onSelectMember,
 }) {
   const [searchQuery, setSearchQuery] = useState('')
@@ -253,7 +254,7 @@ function OrganizationTreeView({
         <div className="flex items-center gap-1.5 min-w-0">
           <span className="w-2.5 h-2.5 rounded-full bg-[#F5D061] shrink-0 animate-pulse" />
           <h4 className="font-serif-kr text-xs sm:text-sm font-bold text-[#F5D061] truncate">
-            포교자 회원유치 조직도 (Tree View)
+            {title}
           </h4>
         </div>
         <div className="flex items-center gap-1 shrink-0">
@@ -3971,6 +3972,54 @@ export default function App() {
                     </div>
                   </div>
                 </section>
+
+                {/* [신규] 일반신도 포함 모든 회원의 전용 초대(권선) 링크 카드 */}
+                <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <span className="block text-[11px] font-bold text-[#9A7418]">
+                        MY INVITATION LINK
+                      </span>
+                      <h3 className="font-serif-kr text-base font-bold text-[#231F1C] mt-0.5">
+                        나의 모바일 법당 초대 링크
+                      </h3>
+                    </div>
+                    <span className="text-xs px-2.5 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] font-bold border border-[#E5D399] whitespace-nowrap shrink-0">
+                      내 코드: {currentUser.code}
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#575049] leading-relaxed break-keep">
+                    가족, 친지, 도반에게 아래 링크를 전해보세요. 링크를 통해 접속하여 소원등을 켜거나 가입한 분들은{' '}
+                    <strong className="text-[#8A6510]">‘나의 인연 신도’</strong>로 자동 등록되어 아래 조직도에서 실시간으로 확인하실 수 있습니다.
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      readOnly
+                      value={`https://sowonpray.vercel.app/?ref=${currentUser.code}`}
+                      className="flex-1 bg-[#FAF8F5] text-[#231F1C] text-xs px-3 py-2.5 rounded-xl border border-[#DDD4C4] font-medium min-w-0"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleCopyRefLink(currentUser.code)}
+                      className="px-3.5 py-2.5 rounded-xl bg-[#F5D061] text-[#1B1815] font-extrabold text-xs flex items-center gap-1 whitespace-nowrap shrink-0 hover:brightness-105 transition shadow-sm"
+                    >
+                      <Copy className="w-3.5 h-3.5 shrink-0" />
+                      <span>링크 복사</span>
+                    </button>
+                  </div>
+                </section>
+
+                {/* [신규] 일반신도도 본인 산하 인연 회원을 볼 수 있는 조직도 트리 */}
+                <OrganizationTreeView
+                  members={members}
+                  rootCode={currentUser.code}
+                  activeAgentCode={currentUser.code}
+                  title="🌳 나의 인연 권선 조직도 (내 산하 회원 계보)"
+                  onSelectMember={(m) => {
+                    showToast(`[${m.name}] 님의 인연 정보 (코드: ${m.code})`)
+                  }}
+                />
 
                 {/* 내 정보 & 사찰 축원 상세정보 수정 폼 */}
                 <form
