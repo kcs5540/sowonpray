@@ -273,7 +273,7 @@ const WISDOM_BY_MOOD = [
   },
 ]
 
-// 어르신 눈높이 쉬운 3분 경전 & 불교 상식 공부 (5강)
+// 어르신 눈높이 쉬운 3분 경전 & 불교 상식 공부 (총 15강 · 매일 5강씩 자동 추천 순환)
 const SUTRA_STUDY_LESSONS = [
   {
     id: 'lesson-1',
@@ -334,6 +334,126 @@ const SUTRA_STUDY_LESSONS = [
       '부처님 당시 왕과 부자들이 수만 개의 화려한 기름등을 밝혔고, 가난한 여인 ‘난타’는 끼니를 아껴 마련한 동전 두 닢으로 작은 등불 하나를 정성껏 밝혔습니다.',
       '밤이 깊어 거센 바람이 불자 왕과 부자들의 화려한 등불은 모두 꺼졌지만, 가난한 여인이 간절한 서원으로 밝힌 작은 등불 하나만은 밤새도록 꺼지지 않고 빛났습니다.',
       '부처님께서는 “재물의 많고 적음이 아니라, 간절하고 청정한 마음으로 밝힌 등불 하나가 온 우주를 밝히는 무량한 공덕이 된다”고 말씀하셨습니다. 모바일 법당에서 매일 정성껏 켜시는 소원등도 이와 똑같은 광명의 공덕이 됩니다.',
+    ],
+  },
+  {
+    id: 'lesson-6',
+    category: '경전 핵심 풀이 6강',
+    title: '《지장경》과 지장보살님 — 부모·조상님을 극락으로 모시는 효(孝)의 경전',
+    summary: '지옥의 모든 중생이 다 구원받기 전에는 성불하지 않겠다는 대원력의 보살님입니다.',
+    keyPhrase: '지옥미공 서불성불 (地獄未空 誓不成佛)',
+    content: [
+      '《지장보살본원경(지장경)》은 부처님께서 도리천에 올라가 어머니 마야부인을 위해 설하신 ‘불교 최고의 효도 경전’입니다.',
+      '지장보살님은 “지옥이 텅 비기 전에는 결코 부처가 되지 않겠다”는 눈물겨운 서원을 세우시고, 돌아가신 부모님과 조상님, 그리고 미처 빛을 보지 못한 수자령(태아령)의 손을 잡아 극락으로 인도해 주십니다.',
+      '후손이 지장보살님 전에 조상님의 영구위패를 모시고 정성껏 기도하면, 조상님은 고통을 여의고 후손에게는 가내 평안과 자손 창성의 큰 복이 돌아옵니다.',
+    ],
+  },
+  {
+    id: 'lesson-7',
+    category: '경전 핵심 풀이 7강',
+    title: '《약사경》 약사여래불 — 몸과 마음의 병고를 씻어주시는 치유의 부처님',
+    summary: '왼손에 약합(약병)을 들고 중생의 질병과 우환을 고쳐주시는 부처님입니다.',
+    keyPhrase: '나무 약사유리광여래불 (南無 藥師琉璃光如來佛)',
+    content: [
+      '법당에서 왼손에 동그란 약합(약병)을 들고 계신 부처님을 뵈면 바로 ‘약사여래부처님(약사유리광여래)’이십니다.',
+      '《약사여래본원경》에서는 약사여래부처님의 명호를 지극한 마음으로 부르고 기도하면, 육신의 크고 작은 질병뿐만 아니라 마음의 불안과 액운까지 맑은 유리빛 광명으로 치유해 주신다고 설합니다.',
+      '가족 중에 몸이 편찮으신 분이나 건강 회복, 수술 무사 쾌유를 발원하실 때 약사여래불을 생각하며 소원등을 밝히시면 큰 가피가 함께합니다.',
+    ],
+  },
+  {
+    id: 'lesson-8',
+    category: '경전 핵심 풀이 8강',
+    title: '《법화경》의 핵심 — “누구나 부처가 될 귀한 씨앗을 품고 있습니다”',
+    summary: '진흙 속에서 가장 맑고 향기로운 연꽃이 피어나듯, 우리 모두는 존귀한 존재입니다.',
+    keyPhrase: '일체중생 실유불성 (一切衆生 悉有佛性)',
+    content: [
+      '《묘법연화경》, 줄여서 《법화경》은 경전 중의 왕이라 불리며, ‘진흙탕 속에서도 더러움에 물들지 않고 피어나는 연꽃(蓮華)’에 부처님의 가르침을 비유한 경전입니다.',
+      '법화경의 가장 큰 가르침은 “세상 어떤 사람이라도 가슴속에 부처가 될 씨앗(불성)을 이미 가지고 있다”는 것입니다.',
+      '지금 비록 삶이 고단하고 진흙탕처럼 힘들지라도, 그 아픔이 거름이 되어 머지않아 가장 크고 향기로운 연꽃 같은 행복이 피어날 것임을 믿으라는 희망의 경전입니다.',
+    ],
+  },
+  {
+    id: 'lesson-9',
+    category: '경전 핵심 풀이 9강',
+    title: '《화엄경》 일체유심조 — “세상의 모든 일은 마음먹기에 달려 있습니다”',
+    summary: '원효대사님이 해골바가지 물을 마시고 깨달으신 화엄경의 핵심 지혜입니다.',
+    keyPhrase: '심생즉종종법생 심멸즉종종법멸 (일체유심조)',
+    content: [
+      '신라 시대 원효대사님이 어두운 밤에 달콤하게 마셨던 물이 다음 날 아침 해골에 고인 물임을 알고 구역질을 하다가 큰 깨달음을 얻으신 일화는 매우 유명합니다.',
+      '물 자체는 어제나 오늘이나 똑같았지만, 내 마음이 ‘깨끗한 약수’라고 생각할 때와 ‘해골물’이라고 생각할 때 천지 차이가 났던 것입니다.',
+      '《화엄경》의 ‘일체유심조(一切唯心造)’는 “내 마음을 밝고 감사하게 먹으면 내 주변의 인연과 운명도 밝은 극락으로 바뀐다”는 위대한 진리입니다.',
+    ],
+  },
+  {
+    id: 'lesson-10',
+    category: '경전 핵심 풀이 10강',
+    title: '《부모은중경》 — 부처님께서 길가의 마른 뼈에 절을 올리신 까닭은?',
+    summary: '열 달 동안 품어주시고 평생을 희생하신 부모님의 열 가지 크나큰 은혜를 설한 경전입니다.',
+    keyPhrase: '가없는 부모님의 은혜, 하늘보다 높고 바다보다 깊습니다',
+    content: [
+      '어느 날 부처님께서 제자들과 길을 가시다가 길가에 흩어진 마른 뼈를 보시고는 지극히 공경하며 큰절을 올리셨습니다.',
+      '놀란 제자들이 여쭙자 부처님께서는 “이 뼈는 전생에 나를 낳아 기르며 피와 살을 다 내어주신 부모님의 뼈일지 모른다” 하시며 어머니가 자식을 키우며 겪는 열 가지 은혜(회탐수호은, 임산수고은 등)를 설하셨습니다.',
+      '살아계신 부모님께는 ‘생전예수재 황금위패’로 무병장수를 빌어드리고, 돌아가신 부모님께는 ‘영구위패’로 극락왕생을 발원하는 것이 불자가 행할 수 있는 가장 큰 보은입니다.',
+    ],
+  },
+  {
+    id: 'lesson-11',
+    category: '불교 예화 & 예절 11강',
+    title: '사찰 참배 예절 — 왜 절에 가면 합장(合掌)하고 삼배(三拜)를 올릴까요?',
+    summary: '두 손을 모으는 합장과 세 번 절하는 삼배에 담긴 깊은 수행의 의미를 알아봅니다.',
+    keyPhrase: '나를 낮추고 상대를 부처님처럼 공경하는 하심(下心)',
+    content: [
+      '절에 들어가면 가장 먼저 열 손가락을 가지런히 모아 가슴 앞에 붙이는 ‘합장(合掌)’을 합니다. 흩어진 열 가지 마음을 하나로 모아 오직 정성스럽고 진실한 마음으로 부처님을 뵙겠다는 뜻입니다.',
+      '법당에서 올리는 ‘삼배(세 번 절하기)’는 첫째 불보(부처님), 둘째 법보(가르침), 셋째 승보(스님과 도반)의 삼보(三寶)께 귀의한다는 의미입니다.',
+      '이마와 두 팔꿈치, 두 무릎을 바닥에 대고 가장 낮은 자세로 절을 올릴 때 내 안의 교만함과 욕심이 내려놓아지고, 그 빈자리에 부처님의 지혜와 복덕이 채워집니다.',
+    ],
+  },
+  {
+    id: 'lesson-12',
+    category: '불교 예화 & 예절 12강',
+    title: '부처님께서 알려주신 ‘무재칠시(無財七施)’ — 돈 없이도 짓는 7가지 큰 보시',
+    summary: '재물이 없어도 누구나 지금 당장 실천하여 큰 복을 지을 수 있는 일곱 가지 베풂입니다.',
+    keyPhrase: '따뜻한 눈빛과 미소, 부드러운 말 한마디가 최고의 보시입니다',
+    content: [
+      '어느 가난한 청년이 “저는 가진 재물이 없어 남에게 베풀지 못하니 복을 지을 수 없습니까?”라고 여쭙자, 부처님께서는 누구나 가진 일곱 가지 보물을 알려주셨습니다.',
+      '① 화안시(온화한 미소) ② 언사시(따뜻하고 칭찬하는 말) ③ 심시(진심으로 위하는 마음) ④ 안시(자비로운 눈빛) ⑤ 신시(몸으로 돕는 친절) ⑥ 좌시(자리를 양보하는 배려) ⑦ 찰시(상대의 마음을 헤아림)입니다.',
+      '오늘 가족과 이웃에게 건네는 밝은 미소와 따뜻한 덕담 한마디가 부처님 전에 천금을 올리는 것만큼 귀한 복덕의 씨앗이 됩니다.',
+    ],
+  },
+  {
+    id: 'lesson-13',
+    category: '사찰 불사 상식 13강',
+    title: '인연법과 공덕 — 오늘 내가 올린 한 줄 축원이 내일의 복이 되는 원리',
+    summary: '콩 심은 데 콩 나고 팥 심은 데 팥 나듯, 정성으로 심은 기도는 반드시 좋은 결실로 돌아옵니다.',
+    keyPhrase: '선인선과(善因善果) · 지극한 기도는 결코 헛되지 않습니다',
+    content: [
+      '불교에서는 세상의 모든 일이 원인과 조건이 만나 열매를 맺는 ‘인연과보(因緣果報)’의 법칙으로 이루어진다고 봅니다.',
+      '아무리 비옥한 밭이라도 봄에 씨앗을 뿌리지 않으면 가을에 거둘 곡식이 없듯, 우리 인생의 복밭(복전)에도 매일 기도와 선행, 사경이라는 씨앗을 심어야 복의 열매가 맺힙니다.',
+      '모바일 법당에서 매일 1분씩 소원등을 밝히고 경전 한 줄을 따라 쓰는 작은 정성이 차곡차곡 쌓여 나와 내 가족을 지키는 가장 든든한 수호의 힘이 됩니다.',
+    ],
+  },
+  {
+    id: 'lesson-14',
+    category: '경전 핵심 풀이 14강',
+    title: '《무량수경》과 나무아미타불 — 여섯 글자 염불에 담긴 한없는 빛과 생명',
+    summary: '서방정토 극락세계를 주재하시는 아미타부처님의 끝없는 자비와 광명을 찬탄하는 염불입니다.',
+    keyPhrase: '나무아미타불 (南無阿彌陀佛) — 한없는 빛과 무량한 수명',
+    content: [
+      '불자님들이 가장 친숙하게 외우는 “나무아미타불”에서 ‘나무(南無)’는 귀의한다는 뜻이고, ‘아미타(阿彌陀)’는 산스크리트어로 ‘한량없는 빛(무량광·無量光)’과 ‘한량없는 생명(무량수·無量壽)’이라는 뜻입니다.',
+      '아미타부처님께서는 48가지 큰 서원을 세우시고, 누구든지 지극한 마음으로 내 이름을 부르는 이는 괴로움 없는 평화로운 극락정토로 맞이해 주겠다고 약속하셨습니다.',
+      '마음이 답답하거나 불안할 때 조용히 눈을 감고 “나무아미타불” 여섯 글자를 천천히 염송해 보세요. 한없는 빛이 내 마음을 환하게 밝혀줍니다.',
+    ],
+  },
+  {
+    id: 'lesson-15',
+    category: '사찰 불사 상식 15강',
+    title: '초하루·보름 기도와 백중·동지 불사 — 절기마다 사찰 기도를 올리는 의미',
+    summary: '음력 초하루와 보름, 그리고 불교 4대 명절·절기에 올리는 축원의 뜻깊은 전통입니다.',
+    keyPhrase: '매달 초하루는 새 마음으로 복을 여는 날입니다',
+    content: [
+      '예로부터 불자님들은 음력 1일(초하루)과 15일(보름)이 되면 사찰을 찾아 한 달의 무사안녕과 가족의 건강을 발원하는 기도를 올려왔습니다.',
+      '또한 봄의 부처님오신날(음 4월 8일), 여름의 백중 우란분절(음 7월 15일 · 조상 천도와 효도 불사), 겨울의 동지(작은설 · 새해 액운 소멸 기도), 정초 삼재풀이 기도는 한 해의 액을 막고 복을 부르는 소중한 절기입니다.',
+      '직접 도량에 오시기 어려운 날에도 소원사 모바일 법당을 통해 언제든 소원등과 축원을 올리시면, 대웅전 스님께서 매일 사시예불마다 빠짐없이 명호를 부르며 축원해 드립니다.',
     ],
   },
 ]
@@ -669,9 +789,28 @@ export default function App() {
   const [selectedLotusIdx, setSelectedLotusIdx] = useState(null)
   const [selectedMoodId, setSelectedMoodId] = useState('anxious')
 
-  // 쉬운 3분 경전공부 상태
-  const [selectedLessonIdx, setSelectedLessonIdx] = useState(0)
-  const [completedLessons, setCompletedLessons] = useState([])
+  // 쉬운 3분 경전공부 상태 (날짜에 따라 오늘의 추천 5강이 자동 순환되며 전체 펼치기도 지원)
+  const totalLessonBatches = Math.ceil(SUTRA_STUDY_LESSONS.length / 5)
+  const initialDailyBatch = Math.floor(Date.now() / 86400000) % totalLessonBatches
+  const [lessonBatchIdx, setLessonBatchIdx] = useState(initialDailyBatch)
+  const [showAllLessons, setShowAllLessons] = useState(false)
+  const [selectedLessonIdx, setSelectedLessonIdx] = useState(initialDailyBatch * 5)
+  const [completedLessons, setCompletedLessons] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sowonpray_completed_lessons_v1')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
+  })
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('sowonpray_completed_lessons_v1', JSON.stringify(completedLessons))
+    } catch {
+      // ignore storage errors
+    }
+  }, [completedLessons])
 
   // 재미로 푸는 불교 지혜 퀴즈 상태
   const [quizIndex, setQuizIndex] = useState(0)
@@ -2714,9 +2853,61 @@ export default function App() {
             {/* ==================== [코너 3] 어르신 눈높이 쉬운 3분 경전공부 ==================== */}
             {sutraSubTab === 'study' && (
               <>
-                {/* 5강 선택 버튼 리스트 */}
+                {/* 오늘의 추천 5강 자동 교체 안내 및 다른 5강/전체 15강 전환 바 */}
+                <div className="bg-[#231F1C] text-white rounded-2xl p-3.5 border border-[#C59B27]/50 flex flex-wrap items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className="px-2 py-0.5 rounded-full bg-[#F5D061] text-[#1B1815] text-[10px] font-extrabold whitespace-nowrap">
+                        {showAllLessons
+                          ? `전체 ${SUTRA_STUDY_LESSONS.length}강 목록`
+                          : `오늘의 추천 5강 (${lessonBatchIdx + 1}/${totalLessonBatches}편)`}
+                      </span>
+                      <span className="text-[11px] text-[#E5D399] font-semibold whitespace-nowrap">
+                        독송완료 {completedLessons.length}/{SUTRA_STUDY_LESSONS.length}강
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#D6CEC2] mt-1 break-keep">
+                      매일 새로운 추천 5강이 자동으로 바뀌며, 언제든 다른 강의를 펼쳐 보실 수 있습니다.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {!showAllLessons && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          playMoktakSound()
+                          const nextBatch = (lessonBatchIdx + 1) % totalLessonBatches
+                          setLessonBatchIdx(nextBatch)
+                          setSelectedLessonIdx(nextBatch * 5)
+                        }}
+                        className="px-2.5 py-1.5 rounded-xl bg-[#342E29] text-[#F5D061] border border-[#C59B27]/50 text-[11px] font-bold hover:bg-[#423A33] transition whitespace-nowrap"
+                      >
+                        🔄 다른 5강 추천
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playMoktakSound()
+                        setShowAllLessons((prev) => !prev)
+                      }}
+                      className="px-2.5 py-1.5 rounded-xl bg-[#F5D061] text-[#1B1815] text-[11px] font-extrabold hover:brightness-105 transition whitespace-nowrap"
+                    >
+                      {showAllLessons ? '오늘의 5강만 보기 ▲' : `전체 ${SUTRA_STUDY_LESSONS.length}강 펼치기 ▼`}
+                    </button>
+                  </div>
+                </div>
+
+                {/* 추천 5강 (또는 전체 15강) 선택 버튼 리스트 */}
                 <div className="grid grid-cols-1 gap-2">
-                  {SUTRA_STUDY_LESSONS.map((lesson, idx) => {
+                  {(showAllLessons
+                    ? SUTRA_STUDY_LESSONS.map((lesson, idx) => ({ lesson, idx }))
+                    : SUTRA_STUDY_LESSONS.slice(
+                        lessonBatchIdx * 5,
+                        lessonBatchIdx * 5 + 5
+                      ).map((lesson, i) => ({ lesson, idx: lessonBatchIdx * 5 + i }))
+                  ).map(({ lesson, idx }) => {
                     const isSelected = selectedLessonIdx === idx
                     const isDone = completedLessons.includes(lesson.id)
                     return (
@@ -2777,7 +2968,7 @@ export default function App() {
 
                 {/* 선택된 경전 공부 상세 본문 카드 */}
                 {(() => {
-                  const lesson = SUTRA_STUDY_LESSONS[selectedLessonIdx]
+                  const lesson = SUTRA_STUDY_LESSONS[selectedLessonIdx] || SUTRA_STUDY_LESSONS[0]
                   const isDone = completedLessons.includes(lesson.id)
                   return (
                     <section className="bg-white rounded-2xl p-5 shadow-sm border-2 border-[#C59B27]/50 space-y-4">
@@ -2843,25 +3034,24 @@ export default function App() {
                             addMerit(1)
                             showToast('📖 경전 공부 1강을 완독하여 지혜 공덕이 +1회 적립되었습니다!')
                           } else {
-                            showToast('🙏 이미 공덕을 적립한 강의입니다. 다음 강의도 읽어보세요!')
+                            showToast('🙏 이미 공덕을 적립한 강의입니다. 다음 강의로 이동합니다!')
                           }
-                          if (selectedLessonIdx < SUTRA_STUDY_LESSONS.length - 1) {
-                            const nextIdx = selectedLessonIdx + 1
-                            setSelectedLessonIdx(nextIdx)
-                            if (autoVoiceEnabled || (speakingId && speakingId.startsWith('lesson-'))) {
-                              const nextLesson = SUTRA_STUDY_LESSONS[nextIdx]
-                              startSpeech(
-                                `lesson-${nextLesson.id}`,
-                                `${nextLesson.title}. 핵심 구절, ${nextLesson.keyPhrase}. ${nextLesson.content.join(' ')}`
-                              )
-                            }
+                          const nextIdx = (selectedLessonIdx + 1) % SUTRA_STUDY_LESSONS.length
+                          setSelectedLessonIdx(nextIdx)
+                          setLessonBatchIdx(Math.floor(nextIdx / 5))
+                          if (autoVoiceEnabled || (speakingId && speakingId.startsWith('lesson-'))) {
+                            const nextLesson = SUTRA_STUDY_LESSONS[nextIdx]
+                            startSpeech(
+                              `lesson-${nextLesson.id}`,
+                              `${nextLesson.title}. 핵심 구절, ${nextLesson.keyPhrase}. ${nextLesson.content.join(' ')}`
+                            )
                           }
                         }}
                         className="w-full py-3 rounded-xl bg-[#231F1C] text-[#F5D061] font-extrabold text-xs border border-[#C59B27] hover:bg-[#302A24] transition"
                       >
                         {isDone
                           ? '✓ 공부 완료됨 · 다음 강의로 이동 ▶'
-                          : '📖 오늘 경전 공부 완료 (+1 공덕 적립)'}
+                          : '📖 오늘 경전 공부 완료 (+1 공덕 적립 후 다음 강의 ▶)'}
                       </button>
                     </section>
                   )
