@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>제주 소원사 모바일 카톡 홍보 포스터</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;900&family=Nanum+Pen+Script&display=swap');
+    body {
+      font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .font-brush {
+      font-family: 'Nanum Pen Script', cursive, sans-serif;
+    }
+    .text-stroke-white {
+      -webkit-text-stroke: 1.5px #ffffff;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .brush-ribbon {
+      background: linear-gradient(135deg, #e52d27 0%, #b31217 100%);
+      box-shadow: 0 6px 16px rgba(179, 18, 23, 0.4);
+      clip-path: polygon(3% 0%, 97% 2%, 100% 50%, 98% 98%, 2% 96%, 0% 50%);
+    }
+    .brush-ribbon-gold {
+      background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
+      box-shadow: 0 6px 16px rgba(127, 29, 29, 0.4);
+      clip-path: polygon(3% 0%, 97% 2%, 100% 50%, 98% 98%, 2% 96%, 0% 50%);
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen py-6 px-3 flex flex-col items-center">
+
+  <!-- Controls Bar -->
+  <div class="max-w-md w-full mb-4 bg-white rounded-2xl p-4 shadow-md border border-slate-200">
+    <div class="flex items-center justify-between mb-3">
+      <span class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+        📱 <span id="ctrl-title">카톡 홍보 전단지 테스트</span>
+      </span>
+      <span class="text-xs bg-amber-100 text-amber-800 font-semibold px-2.5 py-1 rounded-full">
+        소원사 맞춤형
+      </span>
+    </div>
+
+    <!-- Theme Switcher -->
+    <div class="grid grid-cols-2 gap-2 mb-3">
+      <button onclick="setTheme('blue')" id="btn-theme-blue" class="py-2 text-xs font-bold rounded-xl border-2 border-blue-600 bg-blue-50 text-blue-800 transition-all flex items-center justify-center gap-1">
+        🔵 원본 스타일 (파워 블루)
+      </button>
+      <button onclick="setTheme('temple')" id="btn-theme-temple" class="py-2 text-xs font-bold rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-600 transition-all flex items-center justify-center gap-1">
+        🏮 사찰 품격형 (로열 골드)
+      </button>
+    </div>
+
+    <!-- Quick Copy Kakao Message Button -->
+    <button onclick="copyKakaoText()" class="w-full py-2.5 bg-yellow-400 hover:bg-yellow-500 active:scale-95 text-slate-900 font-extrabold text-xs rounded-xl shadow transition-all flex items-center justify-center gap-1.5">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-5.52 0-10 3.58-10 8 0 2.84 1.84 5.34 4.64 6.74-.2.72-.73 2.62-.84 3.02-.13.51.19.5.39.37.16-.1 2.21-1.5 3.09-2.11.89.14 1.8.22 2.72.22 5.52 0 10-3.58 10-8s-4.48-8-10-8z"/></svg>
+      카카오톡 전송용 텍스트 복사하기
+    </button>
+    <div id="copy-toast" class="hidden mt-2 text-center text-xs font-bold text-emerald-600">
+      ✅ 카톡 문구가 클립보드에 복사되었습니다! 카톡창에 붙여넣기(Ctrl+V) 하세요.
+    </div>
+  </div>
+
+  <!-- THE POSTER CARD CONTAINER (Mobile 360px ~ 420px optimized) -->
+  <div id="poster" class="max-w-md w-full rounded-3xl overflow-hidden shadow-2xl relative select-none transition-all duration-300">
+    
+    <!-- THEME: BLUE (Default) -->
+    <div id="theme-blue-container" class="bg-gradient-to-b from-[#0a3875] via-[#1565c0] to-[#041e42] text-white p-5 flex flex-col items-center relative overflow-hidden">
+      
+      <!-- Top Decorative Elements -->
+      <div class="absolute -top-12 -right-12 w-48 h-48 bg-sky-400/20 rounded-full blur-2xl pointer-events-none"></div>
+      <div class="absolute top-24 -left-12 w-40 h-40 bg-amber-300/15 rounded-full blur-2xl pointer-events-none"></div>
+      
+      <!-- Upper Sub-badge -->
+      <div class="mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full border border-white/30 text-[11px] font-bold text-amber-300 mb-2 tracking-wide">
+        ✨ 제주 소원사 특별 초청 설명회
+      </div>
+
+      <!-- Main Headline (Bold Gradient Style) -->
+      <h1 class="text-center font-black tracking-tighter leading-tight drop-shadow-md text-white text-[32px] sm:text-[36px] mb-1">
+        제주 소원사
+      </h1>
+      <h2 class="text-center font-black tracking-tight leading-none text-[34px] sm:text-[38px] text-amber-300 drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)] mb-2">
+        전법 포교사 설명회
+      </h2>
+
+      <!-- Subtitle pill badge -->
+      <div class="px-5 py-1 bg-gradient-to-r from-blue-700 to-indigo-800 border-2 border-white/60 rounded-full text-white font-extrabold text-xs shadow-lg mb-4">
+        모바일 스마트 법당 플랫폼
+      </div>
+
+      <!-- RED IMPACT BRUSH BANNER -->
+      <div class="brush-ribbon w-[96%] py-3 px-4 text-center my-2 transform -rotate-1 relative z-10">
+        <p class="text-white font-black text-[13px] tracking-widest leading-none drop-shadow">
+          가문 번창과 복덕을 짓는 최고의 불연(佛緣)!
+        </p>
+        <p class="text-yellow-300 font-black text-[22px] sm:text-[24px] tracking-tight leading-tight mt-0.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+          지금까지 이런 기회는 없었다!
+        </p>
+      </div>
+
+      <!-- Middle Decorative Clouds / Temple Image Badge -->
+      <div class="w-full my-3 px-2 flex items-center justify-center">
+        <div class="w-full bg-white/10 backdrop-blur-sm rounded-2xl p-2.5 border border-white/20 flex items-center gap-3">
+          <div class="w-14 h-14 rounded-xl bg-amber-400/20 border border-amber-300/40 flex-shrink-0 flex items-center justify-center text-2xl">
+            📿
+          </div>
+          <div class="text-left flex-1 min-w-0">
+            <span class="text-[11px] text-amber-300 font-bold block">도량 참배 & 특별 인연 법회</span>
+            <span class="text-xs text-white font-medium block leading-snug">
+              제주 청정 도량 소원사에서 포교사님과 도반 여러분을 정중히 모십니다.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- WHITE ROUNDED INFORMATION CARD -->
+      <div class="w-full bg-white rounded-3xl p-4 sm:p-5 shadow-2xl text-slate-800 border-2 border-sky-300/80 my-2 relative z-10">
+        
+        <!-- Row 1: Date & Time -->
+        <div class="flex items-center gap-3 pb-3 border-b border-slate-100">
+          <div class="w-11 h-11 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-xl flex-shrink-0 shadow-md">
+            📅
+          </div>
+          <div class="flex-1 min-w-0">
+            <span class="text-[11px] font-bold text-blue-600 block leading-tight">설명회 및 법회 일시</span>
+            <span class="text-[17px] font-black text-slate-900 tracking-tight block">
+              10월 28일 (수) 오후 2시
+            </span>
+            <span class="text-[11px] text-slate-500 font-medium">매주 수요일 · 토요일 상시 진행</span>
+          </div>
+        </div>
+
+        <!-- Row 2: Location -->
+        <div class="flex items-start gap-3 py-3 border-b border-slate-100">
+          <div class="w-11 h-11 rounded-2xl bg-sky-500 text-white flex items-center justify-center text-xl flex-shrink-0 shadow-md">
+            📍
+          </div>
+          <div class="flex-1 min-w-0 text-left">
+            <span class="text-[11px] font-bold text-sky-600 block leading-tight">도량 장소</span>
+            <span class="text-[15px] font-black text-slate-900 block">
+              제주 소원사 대웅전 & 종무소
+            </span>
+            <span class="text-xs text-slate-600 block mt-0.5 font-medium leading-relaxed">
+              제주특별자치도 제주시 죽성서길 75<br>
+              <span class="text-[11px] text-slate-400">(소원사 경내 주차장 완비)</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Row 3: Speaker / Guide -->
+        <div class="flex items-center gap-3 py-3 border-b border-slate-100">
+          <div class="w-11 h-11 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl flex-shrink-0 shadow-md">
+            👤
+          </div>
+          <div class="flex-1 min-w-0 text-left">
+            <span class="text-[11px] font-bold text-indigo-600 block leading-tight">진행 및 법문</span>
+            <div class="text-[15px] font-black text-slate-900 flex items-center gap-1.5 flex-wrap">
+              <span>주지스님 특별 축원</span>
+              <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200">
+                & 전법 포교단
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 4: Special Gifts / Benefits -->
+        <div class="flex items-start gap-3 pt-3">
+          <div class="w-11 h-11 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-xl flex-shrink-0 shadow-md">
+            🎁
+          </div>
+          <div class="flex-1 min-w-0 text-left">
+            <span class="text-[11px] font-bold text-amber-700 block leading-tight">참석자 특별 혜택</span>
+            <ul class="text-xs font-semibold text-slate-700 space-y-1 mt-1">
+              <li class="flex items-center gap-1.5">
+                <span class="text-amber-500">✔</span> 정성 가득한 <span class="text-amber-700 font-bold">사찰 공양(식사) 무료 대접</span>
+              </li>
+              <li class="flex items-center gap-1.5">
+                <span class="text-amber-500">✔</span> 가족 평안 <span class="text-amber-700 font-bold">소원등 1좌 무료 축원 점등</span>
+              </li>
+              <li class="flex items-center gap-1.5">
+                <span class="text-amber-500">✔</span> 모바일 법당 포교사 활동 패키지 증정
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- BOTTOM CALL-TO-ACTION FOOTER -->
+      <div class="w-full text-center mt-3 pt-2">
+        <p class="font-brush text-2xl text-yellow-300 tracking-wide drop-shadow mb-0.5">
+          당신의 복된 새로운 시작!
+        </p>
+        <p class="text-white font-extrabold text-base tracking-tight mb-2">
+          지금, <span class="text-amber-300 font-black">제주 소원사</span>와 함께하세요!
+        </p>
+
+        <!-- Direct Contact Badge -->
+        <div class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-black text-xs px-5 py-2.5 rounded-full shadow-lg border border-amber-200">
+          <span>📞 문의 및 접수</span>
+          <span class="text-sm tracking-wider font-extrabold">010-4912-1083</span>
+          <span class="text-slate-700">|</span>
+          <span class="text-xs">064-805-2007</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- THEME: TEMPLE ROYAL GOLD (Hidden by default, toggled via JS) -->
+    <div id="theme-temple-container" class="hidden bg-gradient-to-b from-[#1c1815] via-[#2a221b] to-[#141210] text-white p-5 flex flex-col items-center relative overflow-hidden">
+      
+      <!-- Background subtle lotus ornament glow -->
+      <div class="absolute -top-10 -right-10 w-44 h-44 bg-amber-500/15 rounded-full blur-2xl pointer-events-none"></div>
+      
+      <!-- Upper Sub-badge -->
+      <div class="mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-amber-950/60 rounded-full border border-amber-400/50 text-[11px] font-bold text-amber-300 mb-2 tracking-wide">
+        🪷 대한불교조계종 백운산 소원사
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="text-center font-black tracking-tighter leading-tight drop-shadow-md text-amber-100 text-[32px] sm:text-[36px] mb-1">
+        제주 소원사
+      </h1>
+      <h2 class="text-center font-black tracking-tight leading-none text-[34px] sm:text-[38px] text-amber-400 drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] mb-2">
+        전법 포교사 특별 초청회
+      </h2>
+
+      <!-- Subtitle pill badge -->
+      <div class="px-5 py-1 bg-amber-900/80 border border-amber-400/60 rounded-full text-amber-200 font-extrabold text-xs shadow-lg mb-4">
+        도량 참배 & 인연 공덕 세미나
+      </div>
+
+      <!-- RED/BURGUNDY BRUSH BANNER -->
+      <div class="brush-ribbon-gold w-[96%] py-3 px-4 text-center my-2 transform -rotate-1 relative z-10 border border-amber-400/40">
+        <p class="text-amber-200 font-black text-[13px] tracking-widest leading-none drop-shadow">
+          가문 번창과 업장소멸의 대길상 인연!
+        </p>
+        <p class="text-amber-300 font-black text-[22px] sm:text-[24px] tracking-tight leading-tight mt-0.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+          복을 짓고 공덕을 나누는 지극한 초대
+        </p>
+      </div>
+
+      <!-- Middle Quote Box -->
+      <div class="w-full my-3 px-2 flex items-center justify-center">
+        <div class="w-full bg-amber-950/40 rounded-2xl p-2.5 border border-amber-500/30 flex items-center gap-3">
+          <div class="w-14 h-14 rounded-xl bg-amber-500/20 border border-amber-400/40 flex-shrink-0 flex items-center justify-center text-2xl">
+            ☸
+          </div>
+          <div class="text-left flex-1 min-w-0">
+            <span class="text-[11px] text-amber-400 font-bold block">모바일 법당 전법 도반 모심</span>
+            <span class="text-xs text-amber-100/90 font-medium block leading-snug">
+              누구나 손쉽게 복을 전하고 부처님 법을 널리 펼치는 소원사의 주인공이 되어주십시오.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- WHITE/CREAM INFORMATION CARD -->
+      <div class="w-full bg-[#fcfbf9] rounded-3xl p-4 sm:p-5 shadow-2xl text-slate-800 border-2 border-amber-300 my-2 relative z-10">
+        
+        <!-- Row 1: Date & Time -->
+        <div class="flex items-center gap-3 pb-3 border-b border-amber-100">
+          <div class="w-11 h-11 rounded-2xl bg-amber-700 text-white flex items-center justify-center text-xl flex-shrink-0 shadow-md">
+            📅
+          </div>
+          <div class="flex-1 min-w-0 text-left">
+            <span class="text-[11px] font-bold text-amber-800 block leading-tight">초청 법회 일시</span>
+            <span class="text-[17px] font-black text-slate-900 tracking-tight block">
+              매주 수요일 · 토요일 오후 2시
+            </span>
+            <span class="text-[11px] text-amber-900/60 font-semibold">사전 예약 접수 진행 중</span>
+          </div>
+        </div>
+
+        <!-- Row 2: Location -->
+        <div class="flex items-start gap-3 py-3 border-b border-amber-100">
+          <div class="w-11 h-11 rounded-2xl bg-amber-800 text-white flex items-center justify-center text-xl flex-shrink-0 shadow-md">
+            📍
+          </div>
+          <div class="flex-1 min-w-0 text-left">
+            <span class="text-[11px] font-bold text-amber-800 block leading-tight">참배 및 설명회 장소</span>
+            <span class="text-[15px] font-black text-slate-900 block">
+              제주 소원사 대웅전 & 종무소
+            </span>
+            <span class="text-xs text-slate-700 block mt-0.5 font-medium leading-relaxed">
+              제주특별자치도 제주시 죽성서길 75<br>
+              <span class="text-[11px] text-slate-400">(신도 전용 대형 주차장 완비)</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Row 3: Speaker / Guide -->
+        <div class="flex items-center gap-3 py-3 border-b border-amber-100">
+          <div class="w-11 h-11 rounded-2xl bg-amber-900 text-white flex items-center justify-center text-xl flex-shrink-0 shadow-md">
+            👤
+          </div>
+          <div class="flex-1 min-w-0 text-left">
+            <span class="text-[11px] font-bold text-amber-800 block leading-tight">법문 및 지도</span>
+            <div class="text-[15px] font-black text-slate-900 flex items-center gap-1.5 flex-wrap">
+              <span>주지스님</span>
+              <span class="text-xs font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded-md border border-amber-300">
+                특별 도량 참배 & 전법 축원
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 4: Special Gifts / Benefits -->
+        <div class="flex items-start gap-3 pt-3">
+          <div class="w-11 h-11 rounded-2xl bg-amber-600 text-white flex items-center justify-center text-xl flex-shrink-0 shadow-md">
+            🎁
+          </div>
+          <div class="flex-1 min-w-0 text-left">
+            <span class="text-[11px] font-bold text-amber-800 block leading-tight">참석 불자 특별 공양 및 혜택</span>
+            <ul class="text-xs font-semibold text-slate-700 space-y-1 mt-1">
+              <li class="flex items-center gap-1.5">
+                <span class="text-amber-600">✔</span> 정갈한 <span class="text-amber-800 font-bold">사찰 청정 공양(식사) 무료 대접</span>
+              </li>
+              <li class="flex items-center gap-1.5">
+                <span class="text-amber-600">✔</span> 가족 소원성취 <span class="text-amber-800 font-bold">인등 1좌 특별 축원</span>
+              </li>
+              <li class="flex items-center gap-1.5">
+                <span class="text-amber-600">✔</span> 모바일 법당 포교사 공덕 시스템 안내
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- BOTTOM CALL-TO-ACTION FOOTER -->
+      <div class="w-full text-center mt-3 pt-2">
+        <p class="font-brush text-2xl text-amber-300 tracking-wide drop-shadow mb-0.5">
+          공덕과 복을 짓는 아름다운 인연!
+        </p>
+        <p class="text-white font-extrabold text-base tracking-tight mb-2">
+          지금, <span class="text-amber-400 font-black">제주 소원사</span>와 함께하십시오!
+        </p>
+
+        <!-- Direct Contact Badge -->
+        <div class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-xs px-5 py-2.5 rounded-full shadow-lg border border-amber-300">
+          <span>📞 문의 및 참석 신청</span>
+          <span class="text-sm tracking-wider font-extrabold text-amber-950">010-4912-1083</span>
+          <span class="text-amber-800">|</span>
+          <span class="text-xs">064-805-2007</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Instructions & Tips for User -->
+  <div class="max-w-md w-full mt-4 bg-white rounded-2xl p-4 shadow-sm border border-slate-200 text-xs text-slate-600 space-y-2">
+    <div class="font-bold text-slate-800 flex items-center gap-1">
+      💡 <span>스마트폰/PC에서 이미지로 만드는 방법</span>
+    </div>
+    <p class="leading-relaxed">
+      1. <strong>스마트폰 캡처</strong>: 휴대폰 볼륨 아래 버튼 + 전원 버튼으로 화면을 캡처한 뒤 카톡으로 바로 전송하시면 됩니다.<br>
+      2. <strong>PC 캡처</strong>: 키보드 <kbd class="px-1.5 py-0.5 bg-slate-100 border rounded font-mono font-bold text-slate-700">Win + Shift + S</kbd> 를 눌러 위 포스터 영역만 네모로 드래그하면 즉시 복사됩니다.<br>
+      3. 위의 <strong>[카톡 전송용 텍스트 복사하기]</strong> 버튼을 누르면 사진 아래 함께 보낼 상세 안내글이 바로 복사됩니다!
+    </p>
+  </div>
+
+  <script>
+    function setTheme(type) {
+      const blueContainer = document.getElementById('theme-blue-container');
+      const templeContainer = document.getElementById('theme-temple-container');
+      const btnBlue = document.getElementById('btn-theme-blue');
+      const btnTemple = document.getElementById('btn-theme-temple');
+
+      if (type === 'blue') {
+        blueContainer.classList.remove('hidden');
+        templeContainer.classList.add('hidden');
+        btnBlue.className = "py-2 text-xs font-bold rounded-xl border-2 border-blue-600 bg-blue-50 text-blue-800 transition-all flex items-center justify-center gap-1";
+        btnTemple.className = "py-2 text-xs font-bold rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-600 transition-all flex items-center justify-center gap-1";
+      } else {
+        blueContainer.classList.add('hidden');
+        templeContainer.classList.remove('hidden');
+        btnBlue.className = "py-2 text-xs font-bold rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-600 transition-all flex items-center justify-center gap-1";
+        btnTemple.className = "py-2 text-xs font-bold rounded-xl border-2 border-amber-600 bg-amber-50 text-amber-900 transition-all flex items-center justify-center gap-1";
+      }
+    }
+
+    function copyKakaoText() {
+      const text = `[제주 소원사] 전법 포교사 초청 설명회 & 도량 참배 안내
+
+가문 번창과 복덕을 짓는 최고의 불연!
+지금까지 이런 기회는 없었습니다.
+
+제주 청정 도량 소원사에서 뜻깊은 인연을 맺으실 불자님과 포교사님을 정중히 모십니다.
+
+━━━━━━━━━━━━━━━━━━━━
+■ 일시: 10월 28일 (수) 오후 2시 (매주 수/토 상시 진행)
+■ 장소: 제주 소원사 대웅전 & 종무소
+  (제주특별자치도 제주시 죽성서길 75)
+■ 진행: 주지스님 특별 축원 및 전법 포교단
+
+🎁 참석 불자 특별 혜택:
+1. 정갈한 사찰 청정 공양(식사) 무료 대접
+2. 가족 평안 소원성취등 1좌 무료 축원 점등
+3. 모바일 법당 전법 포교사 활동 패키지 증정
+
+※ 원활한 공양 준비를 위해 사전 예약 접수를 부탁드립니다.
+■ 문의 및 접수: 010-4912-1083 / 064-805-2007
+━━━━━━━━━━━━━━━━━━━━
+소원사 모바일 법당 바로가기:
+https://sowonpray.vercel.app`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById('copy-toast');
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 4000);
+      }).catch(err => {
+        alert('복사되었습니다! 카카오톡에 붙여넣기 하세요.');
+      });
+    }
+  </script>
+</body>
+</html>
