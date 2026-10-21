@@ -169,18 +169,18 @@ function OrganizationTreeView({
         (node.dharma_name && node.dharma_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
         node.code.includes(searchQuery))
 
-    // 역할별 배지 라벨 및 스타일 (마케팅 느낌을 완전히 배제하고 따뜻한 불교 용어로 정제)
+    // 역할별 배지 라벨 및 스타일 (가장 직관적이고 친숙한 불교 호칭 적용)
     const getRoleBadge = (role) => {
       switch (role) {
         case 'master':
-          return { label: '총괄 도량', bg: 'bg-[#C59B27] text-[#120F0D]' }
+          return { label: '총괄', bg: 'bg-[#C59B27] text-[#120F0D]' }
         case 'temple_admin':
           return { label: '소원사 본부', bg: 'bg-[#8A6510] text-white' }
         case 'agent':
-          return { label: '전법 도반', bg: 'bg-emerald-700 text-white' }
+          return { label: '포교사', bg: 'bg-emerald-700 text-white' }
         case 'believer':
         default:
-          return { label: '인연 도반', bg: 'bg-[#2E2822] text-[#D8CFBF]' }
+          return { label: '신도', bg: 'bg-[#2E2822] text-[#D8CFBF]' }
       }
     }
     const roleBadge = getRoleBadge(node.role)
@@ -3990,7 +3990,7 @@ export default function App() {
                   </div>
                   <p className="text-xs text-[#575049] leading-relaxed break-keep">
                     가족, 친지, 도반에게 따뜻한 소원등과 축원의 공덕을 선물해 보세요. 이 주소로 모바일 법당을 찾아오신 분들은 부처님 전에 함께 복을 짓는{' '}
-                    <strong className="text-[#8A6510]">‘나의 인연 도반’</strong>으로 이어집니다.
+                    <strong className="text-[#8A6510]">‘나의 인연 신도’</strong>로 이어집니다.
                   </p>
                   <div className="flex items-center gap-2">
                     <input
@@ -4355,7 +4355,7 @@ export default function App() {
                     : 'text-[#D6CEC2] hover:text-white'
                 }`}
               >
-                <span>🌿 전법 인연 공덕 계보도</span>
+                <span>🌿 포교 인연 계보도 (Tree)</span>
               </button>
               <button
                 type="button"
