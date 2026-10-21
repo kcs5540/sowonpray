@@ -36,6 +36,43 @@ import {
   formatPhone11,
 } from './lib/supabase'
 
+// 신행홈 상단 히어로 3종 경량 캐러셀 슬라이드 (외부 라이브러리 없이 CSS 페이드 전환으로 0KB 초경량 구동)
+const HERO_SLIDES = [
+  {
+    id: 'slide-1',
+    image: '/images/sowonsa_real_cover_path.png',
+    badge: '대웅전 부처님 전 소원 축원 진행중',
+    titlePrefix: '간절한 기도가 응답받는 곳,',
+    titleHighlight: '제주 소원사',
+    description:
+      '거리가 멀어 직접 오시지 못하는 날에도, 모바일 법당에 올리신 한 줄 소원을 제주 소원사 대웅전 부처님 전에 정성껏 축원 올립니다.',
+    targetTab: 'lantern',
+    ctaLabel: '무료 소원등 켜기 ▶',
+  },
+  {
+    id: 'slide-2',
+    image: '/images/sowonsa_daewoongjeon_altar.jpg',
+    badge: '매일 아침 사시예불 스님 축원 도량',
+    titlePrefix: '내 손안의 법당, 꺼지지 않는',
+    titleHighlight: '광명 소원등',
+    description:
+      '불자님께서 정성껏 밝히신 소원등과 한 줄 사경의 공덕이 매일 아침 대웅전 예불 독경 소리와 함께 하늘에 닿습니다.',
+    targetTab: 'sutra',
+    ctaLabel: '한 줄 사경 · 경전공부 ▶',
+  },
+  {
+    id: 'slide-3',
+    image: '/images/sowonsa_real_wipae_hall.jpg',
+    badge: '생전예수재 · 영구위패 · 삼성각 건립불사',
+    titlePrefix: '자손만대 복밭을 일구는',
+    titleHighlight: '명당 불사 도량',
+    description:
+      '살아생전 복을 짓는 황금위패와 조상님 극락왕생 영구위패, 칠성·산신·독성님을 모시는 삼성각 건립 불사에 동참하세요.',
+    targetTab: 'bulsa',
+    ctaLabel: '위패 · 삼성각 불사 안내 ▶',
+  },
+]
+
 // 오늘의 부처님 말씀 데이터 (7선)
 const DAILY_QUOTES = [
   {
@@ -585,6 +622,7 @@ function playMoktakSound() {
 export default function App() {
   // 탭 상태: 'home' | 'lantern' | 'sutra' | 'agent' | 'admin' | 'profile'
   const [activeTab, setActiveTab] = useState('home')
+  const [heroSlideIdx, setHeroSlideIdx] = useState(0)
 
   // 전체 통합 회원 DB 상태 (신도 + 포교사 + 본부 + 관리자)
   const [members, setMembers] = useState(() => {
@@ -730,6 +768,15 @@ export default function App() {
     } else if (activeTab === 'lantern' && !lanternCats.includes(wishCategory)) {
       setWishCategory('가족건강')
     }
+  }, [activeTab])
+
+  // 신행홈 상단 히어로 배너 5.5초 자동 슬라이드 (홈 탭일 때만 가볍게 동작)
+  useEffect(() => {
+    if (activeTab !== 'home') return
+    const timer = setInterval(() => {
+      setHeroSlideIdx((prev) => (prev + 1) % HERO_SLIDES.length)
+    }, 5500)
+    return () => clearInterval(timer)
   }, [activeTab])
 
   // 도량 방문 & 차담·사찰 공양(식사) 사전 예약 폼 상태 (첫 화면 부담을 줄이기 위해 기본 접힘)
@@ -1408,34 +1455,99 @@ export default function App() {
         {/* ==================== 1. 신행홈 탭 ==================== */}
         {activeTab === 'home' && (
           <main className="flex-1 flex flex-col gap-5 p-4">
-            {/* 히어로 카드: 제주 소원사 대웅전 (글자 크기를 키워도 절대 겹치지 않는 flex-col 구조) */}
-            <div className="relative rounded-2xl overflow-hidden shadow-lg border border-[#D8CBB8] min-h-[216px] flex flex-col justify-between p-4">
-              <img
-                src="/images/sowonsa_real_cover_path.png"
-                alt="제주 소원사 도량"
-                className="absolute inset-0 w-full h-full object-cover brightness-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#161310]/95 via-[#161310]/45 to-black/20" />
+            {/* 히어로 3종 경량 캐러셀 카드: 제주 소원사 도량·대웅전·위패/삼성각 불사 */}
+            {(() => {
+              const slide = HERO_SLIDES[heroSlideIdx] || HERO_SLIDES[0]
+              return (
+                <div className="relative rounded-2xl overflow-hidden shadow-lg border border-[#D8CBB8] min-h-[224px] flex flex-col justify-between p-4 bg-[#161310]">
+                  {HERO_SLIDES.map((s, idx) => (
+                    <img
+                      key={s.id}
+                      src={s.image}
+                      alt={s.titleHighlight}
+                      loading={idx === 0 ? 'eager' : 'lazy'}
+                      className={`absolute inset-0 w-full h-full object-cover brightness-105 transition-opacity duration-700 ${
+                        idx === heroSlideIdx ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                      }`}
+                    />
+                  ))}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#161310]/95 via-[#161310]/50 to-black/25" />
 
-              <div className="relative z-10 flex justify-between items-center mb-6">
-                <span className="px-3 py-1 rounded-full bg-black/65 backdrop-blur-sm text-[#F5D061] text-[11px] font-semibold border border-[#F5D061]/35 flex items-center gap-1.5 whitespace-nowrap">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
-                  대웅전 부처님 전 소원 축원 진행중
-                </span>
-              </div>
+                  {/* 상단 배지 + 우측 슬라이드 인디케이터 점 (1/3) */}
+                  <div className="relative z-10 flex justify-between items-center gap-2 mb-5">
+                    <span className="px-3 py-1 rounded-full bg-black/65 backdrop-blur-sm text-[#F5D061] text-[11px] font-semibold border border-[#F5D061]/35 flex items-center gap-1.5 whitespace-nowrap">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
+                      {slide.badge}
+                    </span>
 
-              <div className="relative z-10 text-white pt-1 pb-1">
-                <h1 className="font-serif-kr text-xl sm:text-2xl font-bold leading-tight mb-1.5 break-keep">
-                  간절한 기도가 응답받는 곳,{' '}
-                  <span className="text-[#F5D061] underline decoration-[#F5D061]/50 underline-offset-4 whitespace-nowrap">
-                    제주 소원사
-                  </span>
-                </h1>
-                <p className="text-xs text-[#E8DFD1] leading-relaxed break-keep">
-                  거리가 멀어 직접 오시지 못하는 날에도, 모바일 법당에 올리신 한 줄 소원을 제주 소원사 대웅전 부처님 전에 정성껏 축원 올립니다.
-                </p>
-              </div>
-            </div>
+                    <div className="flex items-center gap-1.5 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-full border border-white/15 shrink-0">
+                      {HERO_SLIDES.map((s, idx) => (
+                        <button
+                          key={s.id}
+                          type="button"
+                          onClick={() => setHeroSlideIdx(idx)}
+                          aria-label={`${idx + 1}번 배너 보기`}
+                          className={`h-2 rounded-full transition-all ${
+                            idx === heroSlideIdx
+                              ? 'w-5 bg-[#F5D061]'
+                              : 'w-2 bg-white/45 hover:bg-white/75'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 하단 타이틀 & 설명 & 바로가기 버튼 */}
+                  <div className="relative z-10 text-white pt-1 pb-0.5">
+                    <h1 className="font-serif-kr text-xl sm:text-2xl font-bold leading-tight mb-1.5 break-keep">
+                      {slide.titlePrefix}{' '}
+                      <span className="text-[#F5D061] underline decoration-[#F5D061]/50 underline-offset-4 whitespace-nowrap">
+                        {slide.titleHighlight}
+                      </span>
+                    </h1>
+                    <p className="text-xs text-[#E8DFD1] leading-relaxed break-keep">
+                      {slide.description}
+                    </p>
+                    <div className="mt-2.5 flex items-center justify-between gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          playMoktakSound()
+                          setActiveTab(slide.targetTab)
+                        }}
+                        className="px-3 py-1 rounded-lg bg-[#F5D061]/20 hover:bg-[#F5D061]/30 text-[#F5D061] border border-[#F5D061]/40 text-[11px] font-bold transition whitespace-nowrap"
+                      >
+                        {slide.ctaLabel}
+                      </button>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setHeroSlideIdx(
+                              (prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length
+                            )
+                          }
+                          className="w-6 h-6 rounded-full bg-black/55 text-[#F5D061] border border-[#F5D061]/30 text-xs font-bold flex items-center justify-center hover:bg-black/80 transition"
+                          aria-label="이전 배너"
+                        >
+                          ‹
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setHeroSlideIdx((prev) => (prev + 1) % HERO_SLIDES.length)
+                          }
+                          className="w-6 h-6 rounded-full bg-black/55 text-[#F5D061] border border-[#F5D061]/30 text-xs font-bold flex items-center justify-center hover:bg-black/80 transition"
+                          aria-label="다음 배너"
+                        >
+                          ›
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            })()}
 
             {/* 오늘의 부처님 말씀 */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] relative overflow-hidden">
