@@ -1132,10 +1132,14 @@ export default function App() {
       agent_code: assignedAgentCode,
       wish_category: wishCategory,
       wish_text: wishText.trim(),
-      status: wishCategory.includes('위패') ? 'consulting' : 'prayed',
-      prayed_at: wishCategory.includes('위패')
-        ? '종무소 위패 봉안 우선 상담 배정됨'
-        : '오늘 제주 소원사 대웅전 축원 접수완료',
+      status:
+        wishCategory.includes('위패') || wishCategory.includes('삼성각')
+          ? 'consulting'
+          : 'prayed',
+      prayed_at:
+        wishCategory.includes('위패') || wishCategory.includes('삼성각')
+          ? '종무소 위패·삼성각 불사 우선 상담 배정됨'
+          : '오늘 제주 소원사 대웅전 축원 접수완료',
       created_at: '방금 전',
     }
 
@@ -2032,23 +2036,23 @@ export default function App() {
           </main>
         )}
 
-        {/* ==================== 1-B. 불사안내 (생전예수재·위패·기도 통합 신청) 탭 ==================== */}
+        {/* ==================== 1-B. 불사안내 (생전예수재·위패·삼성각·기도 통합 신청) 탭 ==================== */}
         {activeTab === 'bulsa' && (
           <main className="flex-1 flex flex-col gap-5 p-4">
             {/* 상단 불사안내 헤더 */}
             <section className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-5 border border-[#C59B27]/50 shadow-md">
               <span className="block text-[11px] text-[#F5D061] font-bold whitespace-nowrap">
-                제주 소원사 위패 봉안 · 특별 기도 · 불사 동참
+                제주 소원사 위패 봉안 · 삼성각 건립 · 특별 기도 동참
               </span>
               <h2 className="font-serif-kr text-lg sm:text-xl font-bold mt-1 break-keep">
-                현세의 복덕과 조상님의 안식을 발원합니다
+                현세의 복덕과 자손만대 번창을 발원합니다
               </h2>
               <p className="text-xs text-[#D6CEC2] mt-1.5 leading-relaxed break-keep">
-                원하시는 불사 항목을 선택하시고 아래 신청란에 남겨주시면 제주 소원사 종무소에서 정성껏 안내 및 축원을 도와드립니다.
+                원하시는 불사 항목을 터치하여 선택하시고 아래 신청란에 남겨주시면 제주 소원사 종무소에서 정성껏 안내 및 축원을 도와드립니다.
               </p>
             </section>
 
-            {/* 대표 위패 2종 실물 비교 */}
+            {/* [큰 항목 1] 명당 위패 봉안 불사 (2종) */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-4">
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0">
@@ -2076,13 +2080,23 @@ export default function App() {
 
               <div className="grid grid-cols-1 gap-3">
                 {/* ① 생전 예수재 황금위패 */}
-                <div className="rounded-xl border-2 border-[#D4AF37] bg-gradient-to-br from-[#FFFDF7] to-[#F9F1D8] p-4 space-y-2">
+                <div
+                  onClick={() => {
+                    playMoktakSound()
+                    setWishCategory('생전예수재(황금위패)')
+                  }}
+                  className={`rounded-xl border-2 p-4 space-y-2 cursor-pointer transition ${
+                    wishCategory === '생전예수재(황금위패)'
+                      ? 'border-[#B8860B] ring-2 ring-[#D4AF37]/40 bg-gradient-to-br from-[#FFFDF7] to-[#F6E8BE]'
+                      : 'border-[#D4AF37] bg-gradient-to-br from-[#FFFDF7] to-[#F9F1D8]'
+                  }`}
+                >
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#D4AF37] text-[#1B1815] whitespace-nowrap">
                       살아계신 분 · 현세 복덕과 무병장수
                     </span>
                     <span className="text-xs font-extrabold text-[#8A6510] whitespace-nowrap shrink-0">
-                      영구 봉안
+                      영구 봉안 (200만 원)
                     </span>
                   </div>
                   <h4 className="font-serif-kr font-bold text-base text-[#231F1C] break-keep">
@@ -2094,13 +2108,23 @@ export default function App() {
                 </div>
 
                 {/* ② 조상 영가 흑색 위패 */}
-                <div className="rounded-xl border border-[#3A352F] bg-gradient-to-br from-[#231F1C] to-[#161311] text-white p-4 space-y-2">
+                <div
+                  onClick={() => {
+                    playMoktakSound()
+                    setWishCategory('조상영구위패(흑색)')
+                  }}
+                  className={`rounded-xl border p-4 space-y-2 cursor-pointer transition bg-gradient-to-br from-[#231F1C] to-[#161311] text-white ${
+                    wishCategory === '조상영구위패(흑색)'
+                      ? 'border-[#F5D061] ring-2 ring-[#F5D061]/40'
+                      : 'border-[#3A352F]'
+                  }`}
+                >
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/40 whitespace-nowrap">
                       돌아가신 조상님 · 극락왕생 천도
                     </span>
                     <span className="text-xs font-extrabold text-[#F5D061] whitespace-nowrap shrink-0">
-                      영구 봉안
+                      영구 봉안 (200만 원)
                     </span>
                   </div>
                   <h4 className="font-serif-kr font-bold text-base text-[#FAF8F5] whitespace-nowrap">
@@ -2113,47 +2137,147 @@ export default function App() {
               </div>
             </section>
 
-            {/* 그 외 주요 기도·불사 종목 모음 */}
+            {/* [큰 항목 2] 삼성각(三聖閣) 성전 건립 대작불사 (3종: 영구축원명패 → 기둥·단청 → 소원기와) */}
+            <section className="rounded-2xl bg-gradient-to-b from-[#251F1A] to-[#181411] text-white p-5 shadow-md border-2 border-[#C59B27]/70 space-y-4">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <span className="inline-block text-[10.5px] font-extrabold px-2.5 py-0.5 rounded-full bg-[#F5D061] text-[#1B1815] whitespace-nowrap">
+                    2. 천년 도량 성전 건립 대작불사 (3종)
+                  </span>
+                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#FAF8F5] mt-1.5 break-keep">
+                    제주 소원사 ‘삼성각(三聖閣)’ 건립 불사
+                  </h3>
+                  <p className="text-xs text-[#D6CEC2] mt-1 leading-relaxed break-keep">
+                    성전을 짓는 불사에 한 번 이름을 올리는 공덕은 전각이 도량에 서 있는 한 <strong className="text-[#F5D061]">자손만대 복밭(福田)</strong>으로 이어집니다.
+                  </p>
+                </div>
+                <Sparkles className="w-6 h-6 text-[#F5D061] shrink-0 mt-1" />
+              </div>
+
+              {/* 삼성각에 모시는 세 분 성인(三聖)의 가피 요약 */}
+              <div className="grid grid-cols-3 gap-2 pt-1">
+                <div className="p-2.5 rounded-xl bg-white/5 border border-[#C59B27]/35 text-center">
+                  <div className="text-[11px] font-extrabold text-[#F5D061] whitespace-nowrap">
+                    칠성님
+                  </div>
+                  <div className="text-[10px] text-[#E8DFD1] mt-0.5 break-keep">
+                    무병장수·자손번창
+                  </div>
+                </div>
+                <div className="p-2.5 rounded-xl bg-white/5 border border-[#C59B27]/35 text-center">
+                  <div className="text-[11px] font-extrabold text-[#F5D061] whitespace-nowrap">
+                    산신님
+                  </div>
+                  <div className="text-[10px] text-[#E8DFD1] mt-0.5 break-keep">
+                    재물성취·사업번창
+                  </div>
+                </div>
+                <div className="p-2.5 rounded-xl bg-white/5 border border-[#C59B27]/35 text-center">
+                  <div className="text-[11px] font-extrabold text-[#F5D061] whitespace-nowrap">
+                    독성(나반존자)
+                  </div>
+                  <div className="text-[10px] text-[#E8DFD1] mt-0.5 break-keep">
+                    빠른 소원·시험합격
+                  </div>
+                </div>
+              </div>
+
+              {/* 삼성각 건립 3단계 동참 항목 (주력 명패 → 기둥·단청 → 대중 기와 순서) */}
+              <div className="grid grid-cols-1 gap-2.5">
+                {[
+                  {
+                    key: '삼성각 영구축원명패',
+                    badge: '100만 ~ 200만 원 (주력 구좌)',
+                    highlight: true,
+                    title: '① 삼성각 가족 영구축원 명패 · 주춧돌 불사',
+                    desc: '위패 봉안과 동일한 주력 대작불사로, 삼성각 내부에 온 가족의 이름과 발원을 담은 영구 축원 명패를 모셔 대대로 칠성·산신·독성님의 수호를 받습니다.',
+                  },
+                  {
+                    key: '삼성각 기둥·단청불사',
+                    badge: '30만 ~ 300만 원 (가문 각인)',
+                    highlight: false,
+                    title: '② 삼성각 대들보 · 기둥 · 오색단청 불사',
+                    desc: '성전을 떠받치는 기둥·서까래와 장엄한 오색 단청에 시주자 가문의 이름을 영구히 각인하여 가내 평안과 사업 번창의 기틀을 세웁니다.',
+                  },
+                  {
+                    key: '삼성각 소원기와(10만원)',
+                    badge: '1장 10만 원 (누구나 동참)',
+                    highlight: false,
+                    title: '③ 삼성각 건립 소원 기와 불사 (1장)',
+                    desc: '부담 없이 누구나 동참할 수 있는 가장 대중적인 불사로, 한식 기와 뒷면에 가족 성함과 간절한 소원을 직접 적어 삼성각 지붕 위에 영구히 올립니다.',
+                  },
+                ].map((item) => {
+                  const isSelected = wishCategory === item.key
+                  return (
+                    <div
+                      key={item.key}
+                      onClick={() => {
+                        playMoktakSound()
+                        setWishCategory(item.key)
+                      }}
+                      className={`p-3.5 rounded-xl border transition cursor-pointer ${
+                        isSelected
+                          ? 'bg-[#362D23] border-[#F5D061] ring-2 ring-[#F5D061]/40'
+                          : item.highlight
+                          ? 'bg-gradient-to-r from-[#33291E] to-[#261F18] border-[#D4AF37]/80 hover:border-[#F5D061]'
+                          : 'bg-white/5 border-white/15 hover:border-[#C59B27]'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <span className="text-xs font-extrabold text-[#F5D061] break-keep">
+                          {item.title}
+                        </span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#181411] text-[#F5D061] border border-[#F5D061]/40 font-bold whitespace-nowrap shrink-0">
+                          {item.badge}
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#E2DAD0] leading-relaxed break-keep">
+                        {item.desc}
+                      </p>
+                    </div>
+                  )
+                })}
+              </div>
+            </section>
+
+            {/* [큰 항목 3] 상시 기도 및 공덕 불사 종목 (3종) */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-3">
               <div>
                 <span className="block text-[11px] font-bold text-[#9A7418] whitespace-nowrap">
-                  2. 대작불사 및 상시 기도 종목
+                  3. 상시 기도 및 공덕 불사 종목 (3종)
                 </span>
                 <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] whitespace-nowrap">
-                  삼성각 건립 · 인등 · 천도재 · 공양미 불사
+                  1년 가족 인등 · 천도재 · 공양미 시주
                 </h3>
               </div>
 
               <div className="grid grid-cols-1 gap-2.5">
                 {[
                   {
-                    key: '삼성각 건립·기와불사',
-                    badge: '자손만대 대작불사',
-                    title: '③ 삼성각(三聖閣) 건립 · 기와 불사 동참',
-                    desc: '무병장수의 칠성님, 재물·수호의 산신님, 빠른 소원성취의 독성(나반존자)님을 모시는 소원사 삼성각 건립에 가족 이름을 영구히 올리는 복덕 불사입니다.',
-                  },
-                  {
                     key: '대웅전 1년 인등(가족등)',
-                    badge: '365일 점등',
-                    title: '④ 대웅전 1년 가족 인등(연등) 불사',
+                    badge: '365일 상시 점등',
+                    title: '① 대웅전 1년 가족 인등(연등) 불사',
                     desc: '대웅전 부처님 전에 1년 365일 꺼지지 않는 등불을 밝혀 가족의 건강, 자녀 학업·취업, 사업 번창을 매일 축원합니다.',
                   },
                   {
                     key: '49재/천도재/기일제사',
                     badge: '극락왕생 천도',
-                    title: '⑤ 49재 · 천도재 · 기일제사 봉행',
+                    title: '② 49재 · 천도재 · 기일제사 봉행',
                     desc: '돌아가신 부모·조상님, 수자령(태아령)의 극락왕생을 발원하는 천도재 및 가정에서 모시기 어려운 기일 제사를 정성껏 봉행합니다.',
                   },
                   {
                     key: '대웅전 공양미/불전시주',
                     badge: '무량 공덕 보시',
-                    title: '⑥ 대웅전 공양미 · 초 · 향 시주 불사',
+                    title: '③ 대웅전 공양미 · 초 · 향 시주 불사',
                     desc: '부처님 전에 올리는 맑은 공양미와 황초·향 시주 및 제주 소원사 도량 수호 불사에 동참하실 수 있습니다.',
                   },
                 ].map((item) => (
                   <div
                     key={item.key}
-                    onClick={() => setWishCategory(item.key)}
+                    onClick={() => {
+                      playMoktakSound()
+                      setWishCategory(item.key)
+                    }}
                     className={`p-3.5 rounded-xl border transition cursor-pointer ${
                       wishCategory === item.key
                         ? 'bg-[#FAF3DF] border-[#C59B27]'
@@ -2212,7 +2336,9 @@ export default function App() {
                   {[
                     '생전예수재(황금위패)',
                     '조상영구위패(흑색)',
-                    '삼성각 건립·기와불사',
+                    '삼성각 영구축원명패',
+                    '삼성각 기둥·단청불사',
+                    '삼성각 소원기와(10만원)',
                     '대웅전 1년 인등(가족등)',
                     '49재/천도재/기일제사',
                     '대웅전 공양미/불전시주',
@@ -4236,16 +4362,26 @@ export default function App() {
               <div className="grid grid-cols-2 gap-2.5">
                 <div>
                   <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                    봉안 품목 구분
+                    봉안 · 불사 품목 구분
                   </label>
                   <select
                     value={simItemType}
-                    onChange={(e) => setSimItemType(e.target.value)}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      setSimItemType(val)
+                      if (val.includes('2기')) setSimAmount(4000000)
+                      else if (val.includes('기둥·단청')) setSimAmount(1000000)
+                      else if (val.includes('소원기와')) setSimAmount(100000)
+                      else setSimAmount(2000000)
+                    }}
                     className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
                   >
                     <option value="생전예수재 황금위패 (1기)">생전예수재 황금위패 (1기)</option>
                     <option value="조상 영가 흑색 영구위패 (1기)">조상 영가 흑색 영구위패 (1기)</option>
                     <option value="조상 영가 부부 영구위패 (2기)">조상 영가 부부 영구위패 (2기)</option>
+                    <option value="삼성각 가족 영구축원 명패 (1구좌)">삼성각 가족 영구축원 명패 (1구좌)</option>
+                    <option value="삼성각 대들보·기둥·단청 불사">삼성각 대들보·기둥·단청 불사</option>
+                    <option value="삼성각 건립 소원기와 (1장)">삼성각 건립 소원기와 (1장)</option>
                   </select>
                 </div>
                 <div>
