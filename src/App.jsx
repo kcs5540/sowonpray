@@ -965,6 +965,7 @@ export default function App() {
   // 전날 도량 방문 & 차담·사찰 공양(식사) 사전 예약 접수 핸들러
   const handleVisitSubmit = (e) => {
     e.preventDefault()
+    const exactHeadcount = Math.max(1, Number(visitHeadcount) || 1)
     if (!wishName.trim() || !wishPhone.trim() || !visitDate) {
       showToast('방문자 성함과 연락처, 방문 예정일을 확인해 주세요.')
       return
@@ -980,18 +981,21 @@ export default function App() {
       agent_code: assignedAgentCode,
       visit_date: visitDate,
       visit_time: visitTime,
-      headcount: Number(visitHeadcount),
+      headcount: exactHeadcount,
       visit_purpose: visitPurpose,
-      memo: visitMemo.trim() || '따뜻한 차와 정성스러운 사찰 공양(식사) 부탁드립니다.',
+      memo:
+        visitMemo.trim() ||
+        `방문 인원 총 ${exactHeadcount}명 따뜻한 차와 사찰 공양(${exactHeadcount}인분) 부탁드립니다.`,
       status: 'reserved',
       created_at: '방금 전',
     }
 
     setVisits((prev) => [newVisit, ...prev])
+    setVisitHeadcount(exactHeadcount)
     setVisitMemo('')
     playSingingBowlSound()
     showToast(
-      `🍵 [${visitDate} ${visitTime.split(' ')[0]}] ${visitHeadcount}분 방문 및 사찰 공양(식사) 예약이 접수되었습니다!`
+      `🍵 [${visitDate} ${visitTime.split(' ')[0]}] 총 ${exactHeadcount}명 방문 및 사찰 공양(${exactHeadcount}인분) 예약이 접수되었습니다!`
     )
   }
 
@@ -1465,17 +1469,58 @@ export default function App() {
                       <label className="text-xs text-[#E8DFD1] font-bold whitespace-nowrap">
                         방문 인원수
                       </label>
-                      <select
-                        value={visitHeadcount}
-                        onChange={(e) => setVisitHeadcount(Number(e.target.value))}
-                        className="block w-full max-w-full min-w-0 box-border px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061] truncate"
-                      >
-                        <option value={1}>1명 방문</option>
-                        <option value={2}>2명 방문 (부부·동반)</option>
-                        <option value={3}>3명 방문 (가족)</option>
-                        <option value={4}>4명 방문 (가족·모임)</option>
-                        <option value={5}>5명 이상 (단체)</option>
-                      </select>
+                      <div className="flex items-center justify-between w-full max-w-full min-w-0 box-border px-1.5 py-1 rounded-lg bg-[#26211C] border border-[#C59B27]/50 focus-within:border-[#F5D061]">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setVisitHeadcount((prev) => Math.max(1, Number(prev || 1) - 1))
+                          }
+                          className="w-7 h-7 rounded-md bg-[#181411] border border-[#C59B27]/40 text-[#F5D061] font-extrabold text-sm flex items-center justify-center shrink-0 active:scale-95 transition"
+                          aria-label="방문 인원 1명 감소"
+                        >
+                          -
+                        </button>
+                        <div className="flex items-center justify-center gap-1 min-w-0 flex-1 px-1">
+                          <input
+                            type="number"
+                            min={1}
+                            max={200}
+                            value={visitHeadcount}
+                            onChange={(e) => {
+                              const val = e.target.value
+                              if (val === '') {
+                                setVisitHeadcount('')
+                              } else {
+                                setVisitHeadcount(
+                                  Math.max(1, Math.min(200, parseInt(val, 10) || 1))
+                                )
+                              }
+                            }}
+                            onBlur={() => {
+                              if (!visitHeadcount || Number(visitHeadcount) < 1) {
+                                setVisitHeadcount(1)
+                              }
+                            }}
+                            className="w-10 text-right bg-transparent text-[#F5D061] text-sm font-extrabold focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          />
+                          <span className="text-xs text-white font-bold whitespace-nowrap">
+                            명 방문{' '}
+                            <span className="text-[11px] text-[#F5D061] font-semibold">
+                              (공양 {visitHeadcount || 1}인분 준비)
+                            </span>
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setVisitHeadcount((prev) => Math.min(200, Number(prev || 1) + 1))
+                          }
+                          className="w-7 h-7 rounded-md bg-[#181411] border border-[#C59B27]/40 text-[#F5D061] font-extrabold text-sm flex items-center justify-center shrink-0 active:scale-95 transition"
+                          aria-label="방문 인원 1명 증가"
+                        >
+                          +
+                        </button>
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-[80px_minmax(0,1fr)] items-center gap-2 w-full">
@@ -1547,7 +1592,7 @@ export default function App() {
                         type="text"
                         value={visitMemo}
                         onChange={(e) => setVisitMemo(e.target.value)}
-                        placeholder="예: 점심 공양 2인 부탁드립니다"
+                        placeholder={`예: 총 ${visitHeadcount || 1}명 점심 공양 부탁드립니다`}
                         className="block w-full max-w-full min-w-0 box-border px-2.5 py-2 rounded-lg bg-[#FFFDF9] border border-[#C59B27]/60 text-[#1B1815] text-xs"
                       />
                     </div>
@@ -1558,7 +1603,7 @@ export default function App() {
                     className="w-full py-3 rounded-xl bg-[#F5D061] text-[#1B1815] font-extrabold text-xs shadow hover:brightness-105 transition flex items-center justify-center gap-1.5 whitespace-nowrap"
                   >
                     <CheckCircle2 className="w-4 h-4 shrink-0" />
-                    <span>방문 · 사찰 공양(식사) 예약 접수 완료하기</span>
+                    <span>총 {visitHeadcount || 1}명 방문 · 사찰 공양(식사) 예약 접수하기</span>
                   </button>
                 </form>
               )}
@@ -3508,8 +3553,13 @@ export default function App() {
                     인연 신도 방문 · 공양(식사) 예약 현황
                   </h3>
                 </div>
-                <span className="text-xs text-[#9A7418] font-semibold whitespace-nowrap shrink-0">
-                  총 {visits.filter((v) => isAdmin || v.agent_code === activeAgent.code).length}건
+                <span className="text-xs text-[#9A7418] font-bold whitespace-nowrap shrink-0">
+                  총 {visits.filter((v) => isAdmin || v.agent_code === activeAgent.code).length}건 ·{' '}
+                  총{' '}
+                  {visits
+                    .filter((v) => isAdmin || v.agent_code === activeAgent.code)
+                    .reduce((acc, cur) => acc + (Number(cur.headcount) || 1), 0)}
+                  명 준비
                 </span>
               </div>
 
@@ -3521,10 +3571,15 @@ export default function App() {
                       key={v.id}
                       className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] flex flex-col gap-1.5"
                     >
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-[#231F1C]">
-                          🍵 {v.visitor_name} ({v.visitor_phone})
-                        </span>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span className="text-xs font-bold text-[#231F1C] truncate">
+                            🍵 {v.visitor_name} ({v.visitor_phone})
+                          </span>
+                          <span className="px-2 py-0.5 rounded-md bg-[#231F1C] text-[#F5D061] text-[11px] font-extrabold whitespace-nowrap shrink-0">
+                            방문 {v.headcount}명 (공양 {v.headcount}인분)
+                          </span>
+                        </div>
                         <button
                           type="button"
                           onClick={() => {
@@ -3541,7 +3596,7 @@ export default function App() {
                             )
                             showToast('방문 및 사찰 공양 준비 상태가 변경되었습니다.')
                           }}
-                          className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+                          className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full whitespace-nowrap shrink-0 ${
                             v.status === 'confirmed'
                               ? 'bg-emerald-100 text-emerald-800'
                               : 'bg-amber-100 text-amber-800'
@@ -3551,7 +3606,7 @@ export default function App() {
                         </button>
                       </div>
                       <div className="text-xs text-[#8A6510] font-semibold">
-                        방문일시: {v.visit_date} · {v.visit_time} ({v.headcount}명)
+                        방문일시: {v.visit_date} · {v.visit_time} · 정확히 {v.headcount}명 방문
                       </div>
                       <div className="text-xs text-[#4A433C]">
                         목적: {v.visit_purpose} / “{v.memo}”
