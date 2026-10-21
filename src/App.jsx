@@ -2096,7 +2096,7 @@ export default function App() {
                       살아계신 분 · 현세 복덕과 무병장수
                     </span>
                     <span className="text-xs font-extrabold text-[#8A6510] whitespace-nowrap shrink-0">
-                      영구 봉안 (200만 원)
+                      영구 봉안
                     </span>
                   </div>
                   <h4 className="font-serif-kr font-bold text-base text-[#231F1C] break-keep">
@@ -2124,7 +2124,7 @@ export default function App() {
                       돌아가신 조상님 · 극락왕생 천도
                     </span>
                     <span className="text-xs font-extrabold text-[#F5D061] whitespace-nowrap shrink-0">
-                      영구 봉안 (200만 원)
+                      영구 봉안
                     </span>
                   </div>
                   <h4 className="font-serif-kr font-bold text-base text-[#FAF8F5] whitespace-nowrap">
@@ -2187,24 +2187,24 @@ export default function App() {
                 {[
                   {
                     key: '삼성각 영구축원명패',
-                    badge: '100만 ~ 200만 원 (주력 구좌)',
+                    badge: '가족 영구 봉안',
                     highlight: true,
                     title: '① 삼성각 가족 영구축원 명패 · 주춧돌 불사',
-                    desc: '위패 봉안과 동일한 주력 대작불사로, 삼성각 내부에 온 가족의 이름과 발원을 담은 영구 축원 명패를 모셔 대대로 칠성·산신·독성님의 수호를 받습니다.',
+                    desc: '삼성각 내부에 온 가족의 이름과 발원을 담은 영구 축원 명패를 모셔 대대로 칠성·산신·독성 세 분 성인의 크신 가피를 받습니다.',
                   },
                   {
                     key: '삼성각 기둥·단청불사',
-                    badge: '30만 ~ 300만 원 (가문 각인)',
+                    badge: '가문 공덕 각인',
                     highlight: false,
                     title: '② 삼성각 대들보 · 기둥 · 오색단청 불사',
-                    desc: '성전을 떠받치는 기둥·서까래와 장엄한 오색 단청에 시주자 가문의 이름을 영구히 각인하여 가내 평안과 사업 번창의 기틀을 세웁니다.',
+                    desc: '성전을 떠받치는 기둥·서까래와 장엄한 오색 단청에 시주자 가문의 이름을 영구히 각인하여 가내 평안과 자손 번창의 기틀을 세웁니다.',
                   },
                   {
-                    key: '삼성각 소원기와(10만원)',
-                    badge: '1장 10만 원 (누구나 동참)',
+                    key: '삼성각 소원기와불사',
+                    badge: '가족 소원 기재',
                     highlight: false,
                     title: '③ 삼성각 건립 소원 기와 불사 (1장)',
-                    desc: '부담 없이 누구나 동참할 수 있는 가장 대중적인 불사로, 한식 기와 뒷면에 가족 성함과 간절한 소원을 직접 적어 삼성각 지붕 위에 영구히 올립니다.',
+                    desc: '한식 기와 뒷면에 온 가족의 성함과 간절한 소원을 직접 적어 삼성각 지붕 위에 영구히 올리는 정성 어린 대중 불사입니다.',
                   },
                 ].map((item) => {
                   const isSelected = wishCategory === item.key
@@ -2338,7 +2338,7 @@ export default function App() {
                     '조상영구위패(흑색)',
                     '삼성각 영구축원명패',
                     '삼성각 기둥·단청불사',
-                    '삼성각 소원기와(10만원)',
+                    '삼성각 소원기와불사',
                     '대웅전 1년 인등(가족등)',
                     '49재/천도재/기일제사',
                     '대웅전 공양미/불전시주',
