@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>제주 소원사 생전예수재 모바일 안내 카드</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .font-serif-kr {
+      font-family: 'Noto Serif KR', serif;
+    }
+    .writing-vertical {
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      letter-spacing: 0.18em;
+    }
+    .lotus-glow {
+      filter: drop-shadow(0 0 25px rgba(254, 240, 138, 0.45));
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen py-6 px-3 flex flex-col items-center">
+
+  <!-- TOP ACTION BAR -->
+  <div class="max-w-md w-full mb-4 bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+    <div class="flex items-center justify-between mb-3">
+      <span class="font-bold text-teal-900 text-sm flex items-center gap-1.5">
+        🪷 <span>생전예수재 모바일 카드</span>
+      </span>
+      <span class="text-xs bg-teal-50 text-teal-700 font-bold px-2.5 py-1 rounded-full border border-teal-200">
+        제주 소원사 맞춤형
+      </span>
+    </div>
+
+    <!-- Quick Kakao Copy Button -->
+    <button onclick="copyYesujaeText()" class="w-full py-2.5 bg-teal-700 hover:bg-teal-800 active:scale-95 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5">
+      <svg class="w-4 h-4 text-yellow-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-5.52 0-10 3.58-10 8 0 2.84 1.84 5.34 4.64 6.74-.2.72-.73 2.62-.84 3.02-.13.51.19.5.39.37.16-.1 2.21-1.5 3.09-2.11.89.14 1.8.22 2.72.22 5.52 0 10-3.58 10-8s-4.48-8-10-8z"/></svg>
+      카카오톡 전송용 텍스트 복사하기
+    </button>
+    <div id="copy-toast" class="hidden mt-2 text-center text-xs font-bold text-emerald-600">
+      ✅ 카톡 안내 문구가 복사되었습니다! 카톡창에 붙여넣기(Ctrl+V) 하세요.
+    </div>
+  </div>
+
+  <!-- THE VERTICAL POSTER CARD (Mirrors uploaded sample layout) -->
+  <div id="poster-card" class="max-w-md w-full rounded-[28px] overflow-hidden shadow-2xl relative select-none bg-gradient-to-b from-[#eaf4ef] via-[#dbeee4] to-[#cbe5d8] border border-[#b8ded0] p-6 sm:p-7 flex flex-col justify-between min-h-[720px]">
+    
+    <!-- Decorative Ambient Lights & Petals -->
+    <div class="absolute -top-10 -left-10 w-44 h-44 bg-emerald-200/40 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute top-1/3 -right-12 w-48 h-48 bg-amber-200/30 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- TOP SECTION: Left Info + Right Vertical Main Title -->
+    <div class="relative z-10 flex justify-between items-start gap-3">
+      
+      <!-- LEFT COLUMN: Date, Subtitle & Info Badges -->
+      <div class="flex-1 pr-2 text-left">
+        
+        <!-- Date & Time (Teal Point Color) -->
+        <div class="mb-2">
+          <p class="font-serif-kr text-[20px] sm:text-[22px] font-black text-teal-800 leading-tight tracking-tight">
+            2026. 11. 15<span class="text-teal-600 font-bold text-base">(일)</span>
+          </p>
+          <p class="font-serif-kr text-[17px] sm:text-[18px] font-black text-teal-700 leading-tight">
+            오전 10시 <span class="text-teal-600/70 font-normal">|</span> 대웅전
+          </p>
+        </div>
+
+        <!-- Subtitle -->
+        <div class="text-[11.5px] sm:text-[12px] text-teal-900/80 leading-relaxed font-medium mb-3">
+          <p>아름다운 회향과 공덕을 위한 불사</p>
+          <p class="font-bold text-teal-950">생전예수재 49일 기도 입재</p>
+        </div>
+
+        <!-- Ornamental Divider -->
+        <div class="flex items-center gap-1.5 my-2.5 text-teal-600/40 w-32">
+          <div class="h-[1px] bg-teal-600/30 flex-1"></div>
+          <span class="text-[10px]">❖</span>
+          <div class="h-[1px] bg-teal-600/30 flex-1"></div>
+        </div>
+
+        <!-- Pill Badges Section (Rounded Teal Tag Buttons) -->
+        <div class="space-y-1.5 text-[11px] sm:text-[11.5px] mt-3">
+          
+          <!-- Badge 1: Prayer/Ceremony -->
+          <div class="flex items-start gap-1.5">
+            <span class="bg-[#115e59] text-white px-2 py-0.5 rounded-full font-bold text-[10px] flex-shrink-0 tracking-wider">
+              동참
+            </span>
+            <span class="text-teal-950 font-bold leading-tight pt-0.5">
+              생전 복덕 구족 · 선망조상 극락왕생
+            </span>
+          </div>
+
+          <!-- Badge 2: Account -->
+          <div class="flex items-start gap-1.5">
+            <span class="bg-[#115e59] text-white px-2 py-0.5 rounded-full font-bold text-[10px] flex-shrink-0 tracking-wider">
+              계좌
+            </span>
+            <div class="text-teal-900 font-semibold leading-tight pt-0.5">
+              <span>농협 301-0287-2007-81</span><br>
+              <span class="text-[10px] text-teal-700">(예금주: 소원사)</span>
+            </div>
+          </div>
+
+          <!-- Badge 3: Inquiry -->
+          <div class="flex items-center gap-1.5">
+            <span class="bg-[#115e59] text-white px-2 py-0.5 rounded-full font-bold text-[10px] flex-shrink-0 tracking-wider">
+              문의
+            </span>
+            <span class="text-teal-950 font-bold tracking-tight">
+              010-4912-1083 / 064-805-2007
+            </span>
+          </div>
+
+          <!-- Badge 4: Location -->
+          <div class="flex items-start gap-1.5">
+            <span class="bg-[#115e59] text-white px-2 py-0.5 rounded-full font-bold text-[10px] flex-shrink-0 tracking-wider">
+              도량
+            </span>
+            <span class="text-teal-900 font-medium leading-tight pt-0.5">
+              제주 소원사 (제주시 죽성서길 75)
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: Vertical Typography (Exact match with reference) -->
+      <div class="flex items-start gap-2.5 pl-1 flex-shrink-0">
+        
+        <!-- Chinese Hanja Vertical: 生 前 預 修 齋 -->
+        <div class="writing-vertical font-serif-kr text-teal-800/40 text-[13px] font-bold tracking-widest pt-1 select-none">
+          生 前 預 修 齋
+        </div>
+
+        <!-- Korean Main Title Vertical: 생 전 예 수 재 -->
+        <div class="writing-vertical font-serif-kr text-teal-900 font-black text-[34px] sm:text-[38px] tracking-[0.14em] drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]">
+          생전예수재
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- CENTER & BOTTOM: Golden Buddha & Blooming Lotus Artwork -->
+    <div class="relative w-full flex flex-col items-center justify-end mt-4">
+      
+      <!-- Halo Light behind Buddha -->
+      <div class="absolute bottom-28 w-44 h-44 rounded-full bg-gradient-to-t from-amber-300/30 to-yellow-100/60 blur-xl pointer-events-none"></div>
+
+      <!-- The Golden Buddha SVG Artwork in Anjali Mudra (합장) -->
+      <div class="relative z-10 w-[200px] sm:w-[220px] h-[210px] flex items-center justify-center filter drop-shadow-[0_12px_24px_rgba(15,76,58,0.25)]">
+        <svg viewBox="0 0 200 220" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- Golden Metallic Shading Gradients -->
+            <linearGradient id="goldHead" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fef08a"/>
+              <stop offset="35%" stop-color="#eab308"/>
+              <stop offset="70%" stop-color="#ca8a04"/>
+              <stop offset="100%" stop-color="#854d0e"/>
+            </linearGradient>
+            <linearGradient id="goldRobe" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fef9c3"/>
+              <stop offset="30%" stop-color="#ca8a04"/>
+              <stop offset="70%" stop-color="#a16207"/>
+              <stop offset="100%" stop-color="#713f12"/>
+            </linearGradient>
+            <radialGradient id="haloGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fef08a" stop-opacity="0.9"/>
+              <stop offset="60%" stop-color="#eab308" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#ca8a04" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <!-- Halo Circle -->
+          <circle cx="100" cy="52" r="42" fill="url(#haloGlow)"/>
+
+          <!-- Buddha Head & Ushnisha -->
+          <circle cx="100" cy="54" r="23" fill="url(#goldHead)"/>
+          <ellipse cx="100" cy="30" rx="9" ry="7" fill="url(#goldHead)"/>
+          <circle cx="100" cy="23" r="3.5" fill="#fef08a"/>
+          <!-- Hair curls / Ushnisha texture -->
+          <circle cx="95" cy="36" r="3" fill="#a16207"/>
+          <circle cx="105" cy="36" r="3" fill="#a16207"/>
+          <circle cx="100" cy="34" r="3" fill="#ca8a04"/>
+          <!-- Long Earlobe -->
+          <ellipse cx="76" cy="57" rx="3.5" ry="9" fill="url(#goldHead)"/>
+          <ellipse cx="124" cy="57" rx="3.5" ry="9" fill="url(#goldHead)"/>
+          <!-- Peaceful Eyes (Meditative half-closed) & Brow -->
+          <path d="M 88,52 Q 93,54 96,52" stroke="#713f12" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <path d="M 104,52 Q 107,54 112,52" stroke="#713f12" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <!-- White Byakugo (Third eye urn dot) -->
+          <circle cx="100" cy="46" r="1.5" fill="#ffffff"/>
+          <!-- Serene Smile -->
+          <path d="M 95,64 Q 100,67 105,64" stroke="#713f12" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <path d="M 98,58 Q 100,60 102,58" stroke="#a16207" stroke-width="1.2" fill="none"/>
+
+          <!-- Robes & Body (Meditating with Anjali Mudra / 합장) -->
+          <path d="M 75,76 C 60,86 42,106 38,135 C 36,150 48,162 65,162 L 135,162 C 152,162 164,150 162,135 C 158,106 140,86 125,76 Z" fill="url(#goldRobe)"/>
+          
+          <!-- Robe folds -->
+          <path d="M 68,95 Q 85,115 100,125 Q 115,115 132,95" stroke="#713f12" stroke-width="2.5" fill="none" opacity="0.6"/>
+          <path d="M 52,125 Q 75,142 100,145 Q 125,142 148,125" stroke="#713f12" stroke-width="2" fill="none" opacity="0.6"/>
+          <path d="M 42,150 Q 100,165 158,150" stroke="#854d0e" stroke-width="2.2" fill="none" opacity="0.5"/>
+
+          <!-- Hands in Anjali Mudra (합장) -->
+          <g transform="translate(0, -2)">
+            <ellipse cx="96" cy="108" rx="6" ry="15" fill="#fef08a" stroke="#a16207" stroke-width="1.5" transform="rotate(-8 96 108)"/>
+            <ellipse cx="104" cy="108" rx="6" ry="15" fill="#fef08a" stroke="#a16207" stroke-width="1.5" transform="rotate(8 104 108)"/>
+            <path d="M 100,95 L 100,122" stroke="#854d0e" stroke-width="1.5"/>
+          </g>
+
+          <!-- Crossing Legs & Foot sole -->
+          <path d="M 40,162 C 40,175 60,185 100,185 C 140,185 160,175 160,162 Z" fill="#92400e"/>
+        </svg>
+      </div>
+
+      <!-- Blooming White & Pink Lotus Pedestal (연화대좌) -->
+      <div class="relative z-20 w-full -mt-10 flex items-center justify-center">
+        <svg class="w-full max-w-[360px] h-[95px] filter drop-shadow-[0_10px_16px_rgba(15,76,58,0.2)]" viewBox="0 0 360 95" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="lotusPink" x1="0%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="60%" stop-color="#fff1f2"/>
+              <stop offset="90%" stop-color="#fbcfe8"/>
+              <stop offset="100%" stop-color="#f472b6"/>
+            </linearGradient>
+            <linearGradient id="lotusPinkDeep" x1="0%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="50%" stop-color="#fce7f3"/>
+              <stop offset="100%" stop-color="#ec4899"/>
+            </linearGradient>
+            <linearGradient id="leafGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#6ee7b7"/>
+              <stop offset="100%" stop-color="#10b981"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Background Green Lotus Leaves -->
+          <ellipse cx="60" cy="55" rx="45" ry="18" fill="url(#leafGreen)" opacity="0.6" transform="rotate(-12 60 55)"/>
+          <ellipse cx="300" cy="55" rx="45" ry="18" fill="url(#leafGreen)" opacity="0.6" transform="rotate(12 300 55)"/>
+
+          <!-- Back Petals -->
+          <path d="M 120,45 C 120,20 135,10 145,20 C 150,28 140,48 120,45 Z" fill="url(#lotusPinkDeep)" opacity="0.8"/>
+          <path d="M 240,45 C 240,20 225,10 215,20 C 210,28 220,48 240,45 Z" fill="url(#lotusPinkDeep)" opacity="0.8"/>
+          <path d="M 180,38 C 170,12 190,12 180,38 Z" fill="url(#lotusPinkDeep)"/>
+
+          <!-- Side Outer Petals -->
+          <path d="M 80,72 C 60,50 65,32 82,38 C 98,44 110,65 105,75 Z" fill="url(#lotusPink)"/>
+          <path d="M 280,72 C 300,50 295,32 278,38 C 262,44 250,65 255,75 Z" fill="url(#lotusPink)"/>
+
+          <!-- Mid Petals -->
+          <path d="M 115,78 C 100,55 112,30 132,40 C 148,48 145,72 135,80 Z" fill="url(#lotusPink)"/>
+          <path d="M 245,78 C 260,55 248,30 228,40 C 212,48 215,72 225,80 Z" fill="url(#lotusPink)"/>
+
+          <!-- Front Center Big White Petals with Rose Tips -->
+          <path d="M 150,85 C 135,52 152,22 180,28 C 172,55 168,85 150,85 Z" fill="url(#lotusPink)"/>
+          <path d="M 210,85 C 225,52 208,22 180,28 C 188,55 192,85 210,85 Z" fill="url(#lotusPink)"/>
+          <path d="M 180,90 C 160,60 170,30 180,30 C 190,30 200,60 180,90 Z" fill="url(#lotusPinkDeep)"/>
+        </svg>
+      </div>
+
+      <!-- Bottom Small Badge: 대한불교조계종 백운산 소원사 -->
+      <div class="relative z-20 mt-1 flex items-center justify-between w-full px-2 pt-2 border-t border-teal-700/20 text-[11px] text-teal-800/80">
+        <span class="font-bold flex items-center gap-1">
+          <span>🪷</span> 대한불교조계종 백운산 소원사
+        </span>
+        <span class="text-[10.5px] font-semibold text-teal-700 bg-white/60 px-2 py-0.5 rounded-md border border-teal-600/20">
+          모바일 법당 sowonpray.vercel.app
+        </span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- INSTRUCTIONS BOX -->
+  <div class="max-w-md w-full mt-4 bg-white rounded-2xl p-4 shadow-sm border border-slate-200 text-xs text-slate-600 space-y-1.5">
+    <div class="font-bold text-teal-900 flex items-center gap-1">
+      💡 <span>안내</span>
+    </div>
+    <p class="leading-relaxed">
+      • <strong>스마트폰 캡처</strong>: 휴대폰 화면을 그대로 캡처하시면 카카오톡이나 밴드에 즉시 올리실 수 있는 최고급 사찰 안내장이 됩니다.<br>
+      • <strong>텍스트 동시 전송</strong>: 상단의 <strong>[카카오톡 전송용 텍스트 복사하기]</strong> 버튼을 누르시면 사진과 함께 보낼 정중한 축원 안내문이 바로 복사됩니다.
+    </p>
+  </div>
+
+  <script>
+    function copyYesujaeText() {
+      const text = `[제주 소원사] 생전예수재(生前預修齋) 49일 기도 동참 안내
+
+살아생전 스스로 짓는 복덕과 지극한 공덕!
+아름다운 회향을 위한 제주 소원사 생전예수재에 불자님들을 정중히 모십니다.
+
+생전예수재는 살아있는 동안 미리 닦는 재(齋)로서, 
+자신의 업장을 소멸하고 가문의 번창과 안녕을 기원하며 
+선망조상님의 극락왕생을 발원하는 가장 수승한 법회입니다.
+
+━━━━━━━━━━━━━━━━━━━━
+■ 입재 일시: 2026년 11월 15일 (일) 오전 10시
+■ 회향 일시: 49일 기도 회향
+■ 도량 장소: 제주 소원사 대웅전
+  (제주특별자치도 제주시 죽성서길 75)
+■ 기도 동참:
+  - 생전 복덕 구족 및 업장소멸 축원
+  - 가족 평안 및 영가 극락왕생 발원
+
+■ 동참 계좌: 농협 301-0287-2007-81 (예금주: 소원사)
+■ 동참 및 접수 문의:
+  - 주지스님 / 종무소: 010-4912-1083 / 064-805-2007
+━━━━━━━━━━━━━━━━━━━━
+제주 소원사 모바일 법당 바로가기:
+https://sowonpray.vercel.app`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById('copy-toast');
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 4000);
+      }).catch(err => {
+        alert('복사되었습니다! 카카오톡에 붙여넣기 하세요.');
+      });
+    }
+  </script>
+</body>
+</html>
