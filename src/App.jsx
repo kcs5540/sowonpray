@@ -989,7 +989,12 @@ export default function App() {
       try {
         const { data: cloudMembers } = await supabase.from('members').select('*')
         if (cloudMembers && cloudMembers.length > 0) {
-          setMembers(cloudMembers)
+          const cloudCodes = new Set(cloudMembers.map((m) => m.code))
+          const merged = [
+            ...cloudMembers,
+            ...INITIAL_MEMBERS.filter((m) => !cloudCodes.has(m.code)),
+          ]
+          setMembers(merged)
         }
         const { data: cloudPrayers } = await supabase
           .from('prayers')
