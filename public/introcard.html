@@ -1135,6 +1135,29 @@
     // =========================================================================
     var currentLanternCategory = '가족평안';
 
+    // =========================================================================
+    // [Supabase 실시간 클라우드 DB 연동 설정]
+    // =========================================================================
+    var SUPABASE_URL = 'https://vmaqsnijfiiymhqmmuic.supabase.co';
+    var SUPABASE_KEY = 'sb_publishable_mqpyqG_37CW8lVIs4FDLXw_0ZzNvSHz';
+
+    function syncToSupabase(table, payload) {
+      try {
+        fetch(SUPABASE_URL + '/rest/v1/' + table, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify(payload)
+        }).catch(function(err) {
+          console.log('Supabase sync note:', err);
+        });
+      } catch(e) {}
+    }
+
     function openLanternModal() {
       var modal = document.getElementById('lanternModal');
       modal.style.display = 'flex';
@@ -1282,7 +1305,7 @@
         var existing = localStorage.getItem('sowonpray_prayers_v4');
         var list = existing ? JSON.parse(existing) : [];
         var cleanPhoneCode = phone.replace(/[^0-9]/g, '').slice(-8) || '00000000';
-        list.unshift({
+        var prayerItem = {
           id: 'p-' + Date.now(),
           member_code: cleanPhoneCode,
           believer_name: name,
@@ -1293,8 +1316,35 @@
           status: 'submitted',
           prayed_at: '사시예불 축원 대기중',
           created_at: new Date().toISOString().replace('T', ' ').slice(0, 16)
-        });
+        };
+        list.unshift(prayerItem);
         localStorage.setItem('sowonpray_prayers_v4', JSON.stringify(list));
+
+        // Supabase 클라우드 실시간 전송
+        syncToSupabase('prayers', {
+          temple_id: 'sowonsa',
+          member_code: cleanPhoneCode,
+          agent_code: '49121083',
+          believer_name: name,
+          believer_phone: phone,
+          wish_category: '대웅전소원등(' + currentLanternCategory + ')',
+          wish_text: wish,
+          status: 'submitted',
+          prayed_at: '사시예불 축원 대기중'
+        });
+
+        // 신규 불자 클라우드 회원 등록
+        syncToSupabase('members', {
+          code: cleanPhoneCode,
+          phone: phone,
+          password_pin: cleanPhoneCode.slice(-4) || '1234',
+          name: name,
+          dharma_name: '',
+          role: 'believer',
+          parent_code: '49121083',
+          merit_count: 1,
+          family_memo: '대웅전 소원등(' + currentLanternCategory + ') 신청'
+        });
       } catch (err) {
         // 2-1. [신규 불자 전산 등록]
         try {
@@ -1525,7 +1575,7 @@
       try {
         var existingVisits = localStorage.getItem('sowonpray_visits_v3');
         var visitList = existingVisits ? JSON.parse(existingVisits) : [];
-        visitList.unshift({
+        var visitItem = {
           id: 'v-' + Date.now(),
           member_code: code8,
           visitor_name: name,
@@ -1538,8 +1588,37 @@
           memo: memo || ('방문 인원 총 ' + currentVisitHeadcount + '명 따뜻한 차와 사찰 공양(' + currentVisitHeadcount + '인분) 부탁드립니다.'),
           status: 'reserved',
           created_at: new Date().toISOString().replace('T', ' ').slice(0, 16)
-        });
+        };
+        visitList.unshift(visitItem);
         localStorage.setItem('sowonpray_visits_v3', JSON.stringify(visitList));
+
+        // Supabase 클라우드 방문예약 실시간 전송
+        syncToSupabase('visits', {
+          temple_id: 'sowonsa',
+          member_code: code8,
+          agent_code: '49121083',
+          visitor_name: name,
+          visitor_phone: phone,
+          visit_date: date,
+          visit_time: time,
+          headcount: currentVisitHeadcount,
+          visit_purpose: purpose,
+          memo: visitItem.memo,
+          status: 'reserved'
+        });
+
+        // 신규 방문자 클라우드 회원 등록
+        syncToSupabase('members', {
+          code: code8,
+          phone: phone,
+          password_pin: code8.slice(-4) || '1234',
+          name: name,
+          dharma_name: '',
+          role: 'believer',
+          parent_code: '49121083',
+          merit_count: 1,
+          family_memo: '도량 방문 및 사찰 공양(' + currentVisitHeadcount + '인분) 예약 (' + date + ')'
+        });
       } catch (err) {
         console.log('Visits DB registration error:', err);
       }

@@ -36,6 +36,7 @@ import {
   INITIAL_VISITS,
   extractPhone8Code,
   formatPhone11,
+  supabase,
 } from './lib/supabase'
 
 // 신행홈 상단 히어로 3종 경량 캐러셀 슬라이드 (외부 라이브러리 없이 CSS 페이드 전환으로 0KB 초경량 구동)
@@ -972,6 +973,56 @@ export default function App() {
     localStorage.setItem('sowonpray_current_user_v3', currentUserCode || '')
   }, [currentUserCode])
 
+  // Supabase 클라우드 실시간 동기화 (전국 스마트폰 & PC 실시간 연동)
+  useEffect(() => {
+    if (!supabase) return
+
+    async function loadCloudData() {
+      try {
+        const { data: cloudMembers } = await supabase.from('members').select('*')
+        if (cloudMembers && cloudMembers.length > 0) {
+          setMembers(cloudMembers)
+        }
+        const { data: cloudPrayers } = await supabase
+          .from('prayers')
+          .select('*')
+          .order('created_at', { ascending: false })
+        if (cloudPrayers && cloudPrayers.length > 0) {
+          setPrayers(cloudPrayers)
+        }
+        const { data: cloudVisits } = await supabase
+          .from('visits')
+          .select('*')
+          .order('created_at', { ascending: false })
+        if (cloudVisits && cloudVisits.length > 0) {
+          setVisits(cloudVisits)
+        }
+      } catch (err) {
+        console.log('Supabase initial fetch note:', err)
+      }
+    }
+
+    loadCloudData()
+
+    // 실시간 DB 변경 감지 (신규 소원등 및 방문예약 자동 갱신)
+    const channel = supabase
+      .channel('realtime-sowonpray-channel')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'prayers' }, (payload) => {
+        setPrayers((prev) => [payload.new, ...prev.filter((p) => p.id !== payload.new.id)])
+      })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'visits' }, (payload) => {
+        setVisits((prev) => [payload.new, ...prev.filter((v) => v.id !== payload.new.id)])
+      })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'members' }, (payload) => {
+        setMembers((prev) => [payload.new, ...prev.filter((m) => m.code !== payload.new.code)])
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [])
+
   // 오늘의 법문 선택
   const [quoteIdx, setQuoteIdx] = useState(0)
   const currentQuote = DAILY_QUOTES[quoteIdx]
@@ -1388,6 +1439,26 @@ export default function App() {
 
     setPrayers((prev) => [newPrayer, ...prev])
 
+    // Supabase 클라우드 실시간 저장
+    if (supabase) {
+      supabase
+        .from('prayers')
+        .insert([
+          {
+            temple_id: 'sowonsa',
+            member_code: writerCode,
+            agent_code: assignedAgentCode,
+            believer_name: wishName.trim(),
+            believer_phone: wishPhone.trim(),
+            wish_category: wishCategory,
+            wish_text: wishText.trim(),
+            status: newPrayer.status,
+            prayed_at: newPrayer.prayed_at,
+          },
+        ])
+        .then()
+    }
+
     // 신규 신청자 전산 자동 등록 처리 (신규 불자 DB 등재)
     const cleanPrayerPhone = wishPhone.replace(/[^0-9]/g, '')
     const prayerCode8 = extractPhone8Code(cleanPrayerPhone)
@@ -1414,6 +1485,9 @@ export default function App() {
         extra_data: { registered_via: 'wish_lantern' },
       }
       setMembers((prev) => [newBeliever, ...prev])
+      if (supabase) {
+        supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
+      }
     }
 
     // 담당 포교사 인연 신도수 업데이트
@@ -1460,6 +1534,28 @@ export default function App() {
 
     setVisits((prev) => [newVisit, ...prev])
 
+    // Supabase 클라우드 실시간 저장
+    if (supabase) {
+      supabase
+        .from('visits')
+        .insert([
+          {
+            temple_id: 'sowonsa',
+            member_code: writerCode,
+            agent_code: assignedAgentCode,
+            visitor_name: wishName.trim(),
+            visitor_phone: wishPhone.trim(),
+            visit_date: visitDate,
+            visit_time: visitTime,
+            headcount: exactHeadcount,
+            visit_purpose: visitPurpose,
+            memo: newVisit.memo,
+            status: 'reserved',
+          },
+        ])
+        .then()
+    }
+
     // 신규 방문자 전산 자동 등록 처리 (신규 불자 DB 등재)
     const cleanVisitPhone = wishPhone.replace(/[^0-9]/g, '')
     const visitCode8 = extractPhone8Code(cleanVisitPhone)
@@ -1486,6 +1582,9 @@ export default function App() {
         extra_data: { registered_via: 'visit_reservation' },
       }
       setMembers((prev) => [newBeliever, ...prev])
+      if (supabase) {
+        supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
+      }
     }
 
     setVisitHeadcount(exactHeadcount)
