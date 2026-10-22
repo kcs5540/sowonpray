@@ -572,22 +572,8 @@
           </div>
         </div>
 
-        <!-- 1. 상단: 예약 전화 바로가기 버튼 (크기 일치 & 화살표 추가) -->
-        <a href="tel:010-4912-1083" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #a67c17 0%, #c59b27 100%); border: 1.5px solid #d4ad39; color: #fff; text-decoration: none; padding: 10px 16px; border-radius: 12px; margin-top: 14px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 14px rgba(197, 155, 39, 0.35); transition: all 0.25s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <div style="width: 42px; height: 42px; border-radius: 11px; background: rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 18px; flex-shrink: 0;">
-              <i class="fa-solid fa-mobile-screen-button"></i>
-            </div>
-            <div style="text-align: left; white-space: nowrap;">
-              <span style="color: #ffffff; font-weight: 800; font-size: 15px; letter-spacing: -0.02em;">방문 예약 및 식사 문의</span>
-              <span style="color: #fef08a; font-weight: 700; font-size: 12px; margin-left: 3px;">(010-4912-1083)</span>
-            </div>
-          </div>
-          <i class="fa-solid fa-chevron-right" style="color: rgba(255,255,255,0.85); font-size: 14px; margin-right: 4px;"></i>
-        </a>
-
-        <!-- 2. 하단: [단독 탑재] 대웅전 무료 축원: 소원등 켜기 특별 배너 (크기 100% 동일) -->
-        <div onclick="openLanternModal()" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #221e1a 0%, #161311 100%); border: 1.5px solid #c59b27; border-radius: 12px; padding: 10px 16px; margin-top: 8px; box-shadow: 0 4px 16px rgba(197, 155, 39, 0.28); transition: all 0.25s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+        <!-- 1. [첫 번째 위치] 대웅전 무료 축원: 소원등 켜기 특별 배너 -->
+        <div onclick="openLanternModal()" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #221e1a 0%, #161311 100%); border: 1.5px solid #c59b27; border-radius: 12px; padding: 10px 16px; margin-top: 14px; box-shadow: 0 4px 16px rgba(197, 155, 39, 0.28); transition: all 0.25s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
           <div style="display: flex; align-items: center; gap: 12px;">
             <div style="width: 42px; height: 42px; border-radius: 11px; background: #2b251e; border: 1px solid rgba(245, 208, 97, 0.45); display: flex; align-items: center; justify-content: center; color: #f5d061; box-shadow: 0 0 10px rgba(245, 208, 97, 0.25); flex-shrink: 0;">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f5d061" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -602,6 +588,20 @@
           </div>
           <i class="fa-solid fa-chevron-right" style="color: #f5d061; font-size: 14px; margin-right: 4px;"></i>
         </div>
+
+        <!-- 2. [두 번째 위치] 방문 예약 및 식사 문의 버튼 -->
+        <a href="tel:010-4912-1083" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #a67c17 0%, #c59b27 100%); border: 1.5px solid #d4ad39; color: #fff; text-decoration: none; padding: 10px 16px; border-radius: 12px; margin-top: 8px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 14px rgba(197, 155, 39, 0.35); transition: all 0.25s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 42px; height: 42px; border-radius: 11px; background: rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 18px; flex-shrink: 0;">
+              <i class="fa-solid fa-mobile-screen-button"></i>
+            </div>
+            <div style="text-align: left; white-space: nowrap;">
+              <span style="color: #ffffff; font-weight: 800; font-size: 15px; letter-spacing: -0.02em;">방문 예약 및 식사 문의</span>
+              <span style="color: #fef08a; font-weight: 700; font-size: 12px; margin-left: 3px;">(010-4912-1083)</span>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="color: rgba(255,255,255,0.85); font-size: 14px; margin-right: 4px;"></i>
+        </a>
       </section>
 
       <!-- 소원사 공식 안내 링크 (요청사항: 하단 위치) -->
