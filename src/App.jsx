@@ -3925,22 +3925,22 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => {
-                    setCurrentUserCode('82341088')
-                    showToast('🙏 일반신도 [이정숙(무량화)] 계정으로 전환되었습니다.')
+                    setCurrentUserCode('33065540')
+                    showToast('👑 [김철수 포교위원장] 계정으로 전환되었습니다. (총괄 마스터 50% 총판)')
                   }}
                   className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
-                    currentUser?.code === '82341088'
+                    currentUser?.code === '33065540'
                       ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
                       : 'bg-white/5 text-[#E8DFD1] border-white/10'
                   }`}
                 >
-                  신도(이정숙)
+                  포교위원장(김철수)
                 </button>
                 <button
                   type="button"
                   onClick={() => {
                     setCurrentUserCode('53872248')
-                    showToast('🪷 포교위원장 [유광수] 계정으로 전환되었습니다. (80만 원 판권)')
+                    showToast('🪷 포교위원장 [유광수] 계정으로 전환되었습니다. (40% 요율)')
                   }}
                   className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
                     currentUser?.code === '53872248'
@@ -3954,7 +3954,7 @@ export default function App() {
                   type="button"
                   onClick={() => {
                     setCurrentUserCode('91010002')
-                    showToast('🌿 포교위원 [이진우(진각심)] 계정으로 전환되었습니다. (60만 원 판권)')
+                    showToast('🌿 포교위원 [이진우(진각심)] 계정으로 전환되었습니다. (30% 요율)')
                   }}
                   className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
                     currentUser?.code === '91010002'
@@ -3967,16 +3967,16 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => {
-                    setCurrentUserCode('33065540')
-                    showToast('👑 [김철수 포교위원장] 계정으로 전환되었습니다. (총괄 마스터 100만 원 총판)')
+                    setCurrentUserCode('82341088')
+                    showToast('🙏 일반신도 [이정숙(무량화)] 계정으로 전환되었습니다.')
                   }}
                   className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
-                    currentUser?.code === '33065540'
+                    currentUser?.code === '82341088'
                       ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
                       : 'bg-white/5 text-[#E8DFD1] border-white/10'
                   }`}
                 >
-                  포교위원장(김철수)
+                  신도(이정숙)
                 </button>
               </div>
             </section>
