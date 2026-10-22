@@ -5,16 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   
   <!-- Primary Meta Tags -->
-  <title>제주 소원사 | 간절한 한 가지 소원이 이루어지는 영험도량</title>
-  <meta name="title" content="제주 소원사 | 간절한 한 가지 소원이 이루어지는 도량" />
-  <meta name="description" content="제주 청정 자연 속, 가족의 건강과 행복을 발원하고 조상님을 품격 있게 모시는 안심 위패 봉안 도량 제주 소원사입니다." />
+  <title>[제주소원사 안내카드] 간절한 한 가지 소원이 이루어지는 도량</title>
+  <meta name="title" content="[제주소원사 안내카드] 간절한 한 가지 소원이 이루어지는 도량" />
+  <meta name="description" content="가족의 평안과 조상님의 극락왕생을 정성껏 발원하는 제주소원사 모바일 안내카드입니다. (대웅전 소원등 켜기 · 사찰 방문 공양 예약)" />
   
   <!-- Open Graph / KakaoTalk Preview -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://sowonsa.vercel.app/introcard" />
-  <meta property="og:title" content="제주 소원사 - 간절한 한 가지 소원이 이루어지는 도량" />
-  <meta property="og:description" content="가족의 행복과 조상님의 극락왕생을 정성껏 발원합니다. 지금 소원사의 도량 전경과 방문 소식을 만나보세요." />
+  <meta property="og:site_name" content="제주소원사 모바일 안내카드" />
+  <meta property="og:title" content="[제주소원사 안내카드] 간절한 한 가지 소원이 이루어지는 도량" />
+  <meta property="og:description" content="가족의 평안과 조상님의 극락왕생을 정성껏 발원하는 제주소원사 모바일 안내카드입니다. 대웅전 무료 소원등 켜기 & 방문 공양 예약" />
   <meta property="og:image" content="https://sowonsa.vercel.app/images/sowonsa_real_cover_path.png" />
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://sowonsa.vercel.app/introcard" />
+  <meta property="twitter:title" content="[제주소원사 안내카드] 간절한 한 가지 소원이 이루어지는 도량" />
+  <meta property="twitter:description" content="가족의 평안과 조상님의 극락왕생을 정성껏 발원하는 제주소원사 모바일 안내카드입니다." />
+  <meta property="twitter:image" content="https://sowonsa.vercel.app/images/sowonsa_real_cover_path.png" />
   
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -453,8 +461,8 @@
   <div class="mobile-wrapper">
     <!-- 헤더 섹션 -->
     <header class="hero-section">
-      <div class="temple-badge">
-        <i class="fa-solid fa-sun"></i> 청정 자연 속 영험 기도도량
+      <div class="temple-badge" style="background: rgba(197, 155, 39, 0.35); border: 1.5px solid #f5d061; color: #ffffff; font-weight: 700; font-size: 13px; padding: 6px 16px; border-radius: 30px; box-shadow: 0 4px 14px rgba(0,0,0,0.3);">
+        <i class="fa-solid fa-id-card" style="color: #f5d061; margin-right: 4px;"></i> 제주소원사 공식 모바일 안내카드
       </div>
       <h1 class="hero-title">
         간절한 한 가지 소원이 이루어지는 곳<br />
@@ -1557,8 +1565,8 @@
       // 1. 모바일 브라우저(크롬, 사파리, 삼성인터넷 등)에서 카카오톡 등 앱으로 즉시 공유
       if (navigator.share) {
         navigator.share({
-          title: '제주 소원사 | 간절한 한 가지 소원이 이루어지는 도량',
-          text: '제주 청정 자연 속, 가족의 건강과 조상님의 안식을 발원하는 제주 소원사 모바일 안내장입니다.\nhttps://sowonsa.vercel.app/introcard',
+          title: '[제주소원사 안내카드] 간절한 한 가지 소원이 이루어지는 도량',
+          text: '제주 청정 자연 속, 가족의 평안과 조상님의 안식을 발원하는 제주소원사 모바일 안내카드입니다.\nhttps://sowonsa.vercel.app/introcard',
           url: 'https://sowonsa.vercel.app/introcard'
         }).catch(function(err) {
           if (err.name !== 'AbortError') {
