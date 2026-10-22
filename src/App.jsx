@@ -4377,6 +4377,61 @@ export default function App() {
                     <span>내 회원정보 저장하기</span>
                   </button>
                 </form>
+
+                {/* 4. 포교위원 및 총괄 관리자 전용 전산 바로가기 (내정보 창 하단 배치) */}
+                {isAgentOrAbove && (
+                  <section className="bg-gradient-to-br from-[#231F1C] to-[#151210] rounded-2xl p-5 border border-[#C59B27]/40 shadow-md space-y-3.5 text-white">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <Users className="w-4 h-4 text-[#F5D061]" />
+                        <h3 className="font-serif-kr font-bold text-sm text-[#F5D061]">
+                          소원사 포교위원회 파트너 전산
+                        </h3>
+                      </div>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#C59B27]/30 text-[#F5D061] border border-[#C59B27]/50 font-bold">
+                        {currentUser?.role === 'committee_member' ? '포교위원 전용' : '포교위원장 전용'}
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-[#D8CFBF] leading-relaxed">
+                      나의 인연 신도 조직도, 위패 봉안 현황, 사찰 방문 차담 예약 및 불사 포교비를 확인하고 관리합니다.
+                    </p>
+
+                    <div className="pt-1 flex flex-col gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveTab('agent')
+                          window.scrollTo({ top: 0, behavior: 'smooth' })
+                        }}
+                        className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#9E7A18] text-[#15120F] font-bold text-xs shadow-md hover:brightness-110 transition flex items-center justify-between"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4" />
+                          <span>🌿 포교위원 파트너 센터 (포교전산) 열기</span>
+                        </div>
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+
+                      {isMaster && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveTab('admin')
+                            window.scrollTo({ top: 0, behavior: 'smooth' })
+                          }}
+                          className="w-full py-3.5 px-4 rounded-xl bg-[#2A231C] border border-[#F5D061]/50 text-[#F5D061] font-bold text-xs shadow hover:bg-[#382E24] transition flex items-center justify-between"
+                        >
+                          <div className="flex items-center gap-2">
+                            <TrendingUp className="w-4 h-4 text-[#F5D061]" />
+                            <span>👑 총괄 판권 & 전국 정산 관제 센터 (총괄정산) 열기</span>
+                          </div>
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </section>
+                )}
               </>
             )}
           </main>
@@ -4385,6 +4440,21 @@ export default function App() {
         {/* ==================== 5. 포교사(파트너 전산) 탭 ==================== */}
         {activeTab === 'agent' && isAgentOrAbove && (
           <main className="flex-1 flex flex-col gap-5 p-4">
+            {/* 상단: 내정보 창으로 돌아가기 바 */}
+            <div className="flex items-center justify-between pb-0.5">
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab('profile')
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                }}
+                className="text-xs font-bold text-[#8A6510] hover:text-[#C59B27] flex items-center gap-1.5 transition py-1 px-2 rounded-lg bg-[#FAF8F5] border border-[#DDD4C4]"
+              >
+                <span>← [내정보] 창으로 돌아가기</span>
+              </button>
+              <span className="text-[11px] text-[#A69B8D] font-medium">포교위원회 전용</span>
+            </div>
+
             <section className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-5 border border-[#C59B27]/40 shadow-md space-y-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -4656,6 +4726,21 @@ export default function App() {
         {/* ==================== 6. 총괄정산 & 회원관리 (김철수 마스터 전산) 탭 ==================== */}
         {activeTab === 'admin' && isMaster && (
           <main className="flex-1 flex flex-col gap-5 p-4">
+            {/* 상단: 내정보 창으로 돌아가기 바 */}
+            <div className="flex items-center justify-between pb-0.5">
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab('profile')
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                }}
+                className="text-xs font-bold text-[#8A6510] hover:text-[#C59B27] flex items-center gap-1.5 transition py-1 px-2 rounded-lg bg-[#FAF8F5] border border-[#DDD4C4]"
+              >
+                <span>← [내정보] 창으로 돌아가기</span>
+              </button>
+              <span className="text-[11px] text-[#A69B8D] font-medium">총괄 마스터 전용</span>
+            </div>
+
             <section className="rounded-2xl bg-gradient-to-br from-[#1C1814] to-[#2C241C] text-white p-5 border border-[#C59B27]/50 shadow-md">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 text-[#F5D061] border border-[#F5D061]/40 font-bold">
@@ -5117,33 +5202,32 @@ export default function App() {
           </div>
         </footer>
 
-        {/* 하단 네비게이션 바 (일반 신도에게는 신행홈·소원등켜기·한줄사경·불사안내·내정보 노출) */}
-        <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#1B1815]/95 backdrop-blur-md border-t border-[#C59B27]/35 px-1.5 py-2 flex items-center justify-around">
+        {/* 하단 네비게이션 바 (일반 신도에게 신행홈·소원등켜기·한줄사경·불사안내·내정보 5개로 큼직하고 시원하게 노출) */}
+        <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#1B1815]/95 backdrop-blur-md border-t border-[#C59B27]/35 px-2 py-2 flex items-center justify-around">
           {[
             { id: 'home', label: '신행홈', icon: Heart },
             { id: 'lantern', label: '소원등켜기', icon: Flame },
             { id: 'sutra', label: '한줄사경', icon: BookOpen },
             { id: 'bulsa', label: '불사안내', icon: Award },
-            ...(isAgentOrAbove
-              ? [{ id: 'agent', label: '포교전산', icon: Users }]
-              : []),
-            ...(isMaster
-              ? [{ id: 'admin', label: '총괄정산', icon: TrendingUp }]
-              : []),
             { id: 'profile', label: '내정보', icon: User },
           ].map((tab) => {
             const Icon = tab.icon
-            const isActive = activeTab === tab.id
+            const isActive =
+              activeTab === tab.id ||
+              (tab.id === 'profile' && (activeTab === 'agent' || activeTab === 'admin'))
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex flex-col items-center justify-center py-1 px-1.5 rounded-xl transition ${
+                onClick={() => {
+                  setActiveTab(tab.id)
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                }}
+                className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition ${
                   isActive ? 'text-[#F5D061]' : 'text-[#9E9488] hover:text-[#D6CEC2]'
                 }`}
               >
                 <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.4px]' : 'stroke-[1.8px]'}`} />
-                <span className="text-[10.5px] font-semibold mt-1 whitespace-nowrap">
+                <span className="text-[11px] font-semibold mt-1 whitespace-nowrap">
                   {tab.label}
                 </span>
               </button>
