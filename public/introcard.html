@@ -578,8 +578,8 @@
           <span>방문 예약 및 식사 문의 (010-4912-1083)</span>
         </a>
 
-        <!-- [신규] 모바일 법당 대웅전 무료 축원: 소원등 켜기 특별 배너 -->
-        <a href="https://sowonpray.vercel.app/" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #221e1a 0%, #161311 100%); border: 1.5px solid #c59b27; border-radius: 12px; padding: 13px 16px; margin-top: 10px; text-decoration: none; box-shadow: 0 4px 16px rgba(197, 155, 39, 0.28); transition: all 0.25s ease;">
+        <!-- [신규 단독 탑재] 대웅전 무료 축원: 소원등 켜기 특별 배너 -->
+        <div onclick="openLanternModal()" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #221e1a 0%, #161311 100%); border: 1.5px solid #c59b27; border-radius: 12px; padding: 13px 16px; margin-top: 10px; box-shadow: 0 4px 16px rgba(197, 155, 39, 0.28); transition: all 0.25s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
           <div style="display: flex; align-items: center; gap: 12px;">
             <div style="width: 42px; height: 42px; border-radius: 11px; background: #2b251e; border: 1px solid rgba(245, 208, 97, 0.45); display: flex; align-items: center; justify-content: center; color: #f5d061; box-shadow: 0 0 10px rgba(245, 208, 97, 0.25); flex-shrink: 0;">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f5d061" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -592,10 +592,10 @@
             </div>
           </div>
           <div style="display: flex; align-items: center; gap: 6px;">
-            <span style="background: rgba(197, 155, 39, 0.25); color: #f5d061; border: 1px solid rgba(245, 208, 97, 0.4); font-size: 10.5px; padding: 3px 8px; border-radius: 20px; font-weight: 700;">모바일 법당</span>
+            <span style="background: rgba(197, 155, 39, 0.25); color: #f5d061; border: 1px solid rgba(245, 208, 97, 0.4); font-size: 10.5px; padding: 3px 8px; border-radius: 20px; font-weight: 700;">지금 축원하기</span>
             <i class="fa-solid fa-chevron-right" style="color: #f5d061; font-size: 12px;"></i>
           </div>
-        </a>
+        </div>
       </section>
 
       <!-- 소원사 공식 안내 링크 (요청사항: 하단 위치) -->
@@ -606,8 +606,8 @@
         </div>
 
         <div class="action-links">
-          <!-- 0. [신규] 모바일 법당 소원등 켜기 (대웅전 무료 축원) -->
-          <a href="https://sowonpray.vercel.app/" target="_blank" rel="noopener noreferrer" class="link-btn theme-sowonpray">
+          <!-- 0. [신규 단독 탑재] 대웅전 무료 축원: 소원등 켜기 (페이지 내 단독 팝업 실행) -->
+          <div onclick="openLanternModal()" class="link-btn theme-sowonpray" style="cursor: pointer;">
             <div class="link-left">
               <div class="link-icon-box">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f5d061" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -620,10 +620,10 @@
               </div>
             </div>
             <div style="display: flex; align-items: center; gap: 6px;">
-              <span class="link-badge">모바일 법당</span>
+              <span class="link-badge">지금 축원하기</span>
               <i class="fa-solid fa-chevron-right link-arrow"></i>
             </div>
-          </a>
+          </div>
 
           <!-- 1. 소원사 공식 홈페이지 (전체 도량 및 소개 파악) -->
           <a href="https://sowonsa.vercel.app/" target="_blank" rel="noopener noreferrer" class="link-btn theme-gold">
@@ -741,6 +741,300 @@
     <!-- 복사 완료 안내 토스트 -->
     <div id="toast">주소가 복사되었습니다. 카톡에 붙여넣어 공유하세요!</div>
   </div>
+
+  <!-- ========================================================================= -->
+  <!-- [단독 탑재] 제주 소원사 대웅전 무료 축원 · 소원등 켜기 인터랙티브 모달 -->
+  <!-- ========================================================================= -->
+  <div id="lanternModal" style="display: none; position: fixed; inset: 0; z-index: 99999; background: rgba(10, 8, 6, 0.82); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 16px; overflow-y: auto;">
+    
+    <div style="position: relative; width: 100%; max-width: 420px; background: linear-gradient(180deg, #1f1912 0%, #15110c 100%); border: 1.5px solid #c59b27; border-radius: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 35px rgba(197, 155, 39, 0.3); color: #fff; padding: 26px 20px 22px; text-align: center; box-sizing: border-box; max-height: 92vh; overflow-y: auto;">
+      
+      <!-- 닫기 버튼 -->
+      <button type="button" onclick="closeLanternModal()" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #ddd; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">
+        ✕
+      </button>
+
+      <!-- 상단 타이틀 & 뱃지 -->
+      <div style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; background: rgba(197, 155, 39, 0.2); border: 1px solid rgba(245, 208, 97, 0.4); color: #f5d061; font-size: 11px; font-weight: 700; margin-bottom: 8px;">
+        <span>🪷</span> 대웅전 무료 축원 · 매일 사시예불
+      </div>
+      <h3 style="margin: 0 0 6px; font-family: 'Noto Serif KR', serif; font-size: 22px; font-weight: 900; color: #faf7f2; letter-spacing: -0.02em;">
+        제주 소원사 소원등 켜기
+      </h3>
+      <p style="margin: 0 0 16px; font-size: 12.5px; color: #c4b9a9; line-height: 1.5;">
+        정성을 다해 밝히신 등불은 부처님 대웅전에 봉안되며,<br>주지스님의 사시예불 축원에 함께 올려집니다.
+      </p>
+
+      <!-- 1. 소원등 입력 폼 뷰 (기본) -->
+      <div id="lanternFormView">
+        
+        <!-- 중앙 연꽃 소원등 비주얼 (점등 전) -->
+        <div style="margin: 10px auto 16px; width: 100px; height: 100px; border-radius: 50%; background: radial-gradient(circle, rgba(197,155,39,0.25) 0%, rgba(22,18,14,0) 70%); border: 1.5px dashed rgba(245, 208, 97, 0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#f5d061" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 8px rgba(245, 208, 97, 0.5));">
+            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3.5z"/>
+          </svg>
+          <span style="font-size: 10px; color: #f5d061; font-weight: 700; margin-top: 3px;">소원 발원</span>
+        </div>
+
+        <!-- 발원 분야 선택 (알약 뱃지 8종) -->
+        <div style="text-align: left; margin-bottom: 12px;">
+          <label style="display: block; font-size: 11.5px; font-weight: 700; color: #f5d061; margin-bottom: 6px;">
+            ✦ 발원 분야 선택
+          </label>
+          <div style="display: grid; grid-cols: 4; grid-template-columns: repeat(4, 1fr); gap: 6px;" id="lanternCatGrid">
+            <button type="button" class="lantern-cat-btn active" onclick="selectLanternCategory('가족평안', this)">가족평안</button>
+            <button type="button" class="lantern-cat-btn" onclick="selectLanternCategory('건강/쾌유', this)">건강/쾌유</button>
+            <button type="button" class="lantern-cat-btn" onclick="selectLanternCategory('사업번창', this)">사업번창</button>
+            <button type="button" class="lantern-cat-btn" onclick="selectLanternCategory('학업성취', this)">학업성취</button>
+            <button type="button" class="lantern-cat-btn" onclick="selectLanternCategory('소원성취', this)">소원성취</button>
+            <button type="button" class="lantern-cat-btn" onclick="selectLanternCategory('인연/화합', this)">인연/화합</button>
+            <button type="button" class="lantern-cat-btn" onclick="selectLanternCategory('업장소멸', this)">업장소멸</button>
+            <button type="button" class="lantern-cat-btn" onclick="selectLanternCategory('마음안정', this)">마음안정</button>
+          </div>
+        </div>
+
+        <!-- 성함 입력 -->
+        <div style="text-align: left; margin-bottom: 12px;">
+          <label style="display: block; font-size: 11.5px; font-weight: 700; color: #f5d061; margin-bottom: 6px;">
+            ✦ 신청자 성함 또는 법명
+          </label>
+          <input type="text" id="lanternNameInput" placeholder="예: 김연화, 홍길동 가족" maxlength="20" style="width: 100%; box-sizing: border-box; background: #282119; border: 1px solid #4a3d2c; border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13.5px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#f5d061'" onblur="this.style.borderColor='#4a3d2c'">
+        </div>
+
+        <!-- 간절한 소원 한 줄 -->
+        <div style="text-align: left; margin-bottom: 16px;">
+          <label style="display: block; font-size: 11.5px; font-weight: 700; color: #f5d061; margin-bottom: 6px;">
+            ✦ 간절한 소원 한 줄
+          </label>
+          <textarea id="lanternWishInput" rows="2" placeholder="부처님께 올리는 간절한 소원을 적어주세요. (예: 온 가족 건강하고 모든 일 원만성취 되기를 발원합니다)" maxlength="100" style="width: 100%; box-sizing: border-box; background: #282119; border: 1px solid #4a3d2c; border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none; resize: none; transition: border-color 0.2s; font-family: inherit; line-height: 1.5;" onfocus="this.style.borderColor='#f5d061'" onblur="this.style.borderColor='#4a3d2c'"></textarea>
+        </div>
+
+        <!-- 점등하기 버튼 -->
+        <button type="button" onclick="lightUpLantern()" style="width: 100%; padding: 14px; border-radius: 12px; background: linear-gradient(135deg, #c59b27 0%, #e6b83c 50%, #9e7616 100%); color: #1c150c; font-size: 15.5px; font-weight: 900; border: none; cursor: pointer; box-shadow: 0 4px 18px rgba(197, 155, 39, 0.4); display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'">
+          <span>🪔</span>
+          <span>대웅전 소원등 켜기 (점등)</span>
+        </button>
+
+      </div>
+
+      <!-- 2. 점등 완료 뷰 (점등 시 나타남) -->
+      <div id="lanternSuccessView" style="display: none;">
+        
+        <!-- 환하게 밝혀진 황금 연꽃 소원등 비주얼 -->
+        <div style="margin: 10px auto 14px; position: relative; display: flex; flex-direction: column; align-items: center;">
+          
+          <!-- 소원등 본체 (황금 광배 효과) -->
+          <div style="width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle, #fde047 0%, #ca8a04 55%, #713f12 90%); box-shadow: 0 0 45px rgba(250, 204, 21, 0.75), 0 0 80px rgba(234, 179, 8, 0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 2.5px solid #fef08a; animation: pulseGlow 2.5s infinite ease-in-out;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="#ffffff" stroke="#eab308" stroke-width="1.5" style="filter: drop-shadow(0 0 10px #ffffff);">
+              <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3.5z"/>
+            </svg>
+            <span style="font-size: 11px; color: #1c150c; font-weight: 900; background: #fef08a; padding: 2px 8px; border-radius: 10px; margin-top: 3px;">
+              점등 완료
+            </span>
+          </div>
+
+          <!-- 소원등 아래 걸린 축원 리본 태그 -->
+          <div style="width: 220px; background: #fffdfa; color: #231f1c; border: 1.5px solid #c59b27; border-radius: 12px; padding: 12px 14px; margin-top: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-align: center; position: relative;">
+            <div style="font-size: 10px; font-weight: 700; color: #9c720e; background: #fef3c7; display: inline-block; padding: 2px 7px; border-radius: 4px; margin-bottom: 4px;" id="litCategoryBadge">
+              가족평안
+            </div>
+            <div style="font-size: 15px; font-weight: 900; color: #1c1917; margin-bottom: 4px;" id="litNameText">
+              홍길동 불자님
+            </div>
+            <div style="font-size: 12px; color: #44403c; line-height: 1.45; word-break: keep-all;" id="litWishText">
+              온 가족이 건강하고 올 한 해 소원성취하기를 발원합니다.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 축원 완료 축하 메시지 -->
+        <div style="background: rgba(197, 155, 39, 0.15); border: 1px solid rgba(245, 208, 97, 0.35); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px;">
+          <p style="margin: 0 0 4px; color: #f5d061; font-weight: 700; font-size: 13.5px;">
+            🙏 나무아미타불 · 축원이 등록되었습니다
+          </p>
+          <p style="margin: 0; font-size: 11.5px; color: #e5ded4; line-height: 1.55;">
+            불자님의 소원등이 제주 소원사 대웅전에 환하게 밝혀졌습니다.<br>
+            <strong>주지스님의 매일 아침 사시예불 축원</strong>에 정성으로 함께 올려집니다.
+          </p>
+        </div>
+
+        <!-- 하단 액션 버튼들 -->
+        <div style="display: flex; gap: 8px;">
+          <button type="button" onclick="showFormViewAgain()" style="flex: 1; padding: 11px; border-radius: 10px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #e5ded4; font-size: 12.5px; font-weight: 700; cursor: pointer;">
+            다른 소원등 켜기
+          </button>
+          <button type="button" onclick="closeLanternModal()" style="flex: 1; padding: 11px; border-radius: 10px; background: #c59b27; color: #1c150c; font-size: 12.5px; font-weight: 900; border: none; cursor: pointer;">
+            확인 (닫기)
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <style>
+    /* 소원등 카테고리 알약 버튼 스타일 */
+    .lantern-cat-btn {
+      background: #282119;
+      border: 1px solid #4a3d2c;
+      color: #c4b9a9;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 7px 4px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    .lantern-cat-btn:hover {
+      border-color: #f5d061;
+      color: #fff;
+    }
+    .lantern-cat-btn.active {
+      background: #c59b27;
+      border-color: #f5d061;
+      color: #1a140b;
+      font-weight: 800;
+      box-shadow: 0 0 10px rgba(245, 208, 97, 0.4);
+    }
+    @keyframes pulseGlow {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 45px rgba(250, 204, 21, 0.75), 0 0 80px rgba(234, 179, 8, 0.4);
+      }
+      50% {
+        transform: scale(1.04);
+        box-shadow: 0 0 60px rgba(250, 204, 21, 0.95), 0 0 100px rgba(234, 179, 8, 0.6);
+      }
+    }
+  </style>
+
+  <script>
+    // =========================================================================
+    // [단독 실행] 소원등 켜기 인터랙티브 기능 및 사찰 청정 종소리 사운드
+    // =========================================================================
+    var currentLanternCategory = '가족평안';
+
+    function openLanternModal() {
+      var modal = document.getElementById('lanternModal');
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+
+      // 기존에 켠 소원등이 있으면 성공 뷰로 보여줌, 없으면 입력 폼
+      var saved = localStorage.getItem('sowonsa_saved_lantern');
+      if (saved) {
+        try {
+          var data = JSON.parse(saved);
+          displayLitLantern(data.cat, data.name, data.wish);
+          return;
+        } catch(e) {}
+      }
+      showFormViewAgain();
+    }
+
+    function closeLanternModal() {
+      var modal = document.getElementById('lanternModal');
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    // 모달 배경 클릭 시 닫기
+    document.getElementById('lanternModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeLanternModal();
+      }
+    });
+
+    function selectLanternCategory(cat, btn) {
+      currentLanternCategory = cat;
+      var buttons = document.querySelectorAll('.lantern-cat-btn');
+      buttons.forEach(function(b) { b.classList.remove('active'); });
+      if (btn) btn.classList.add('active');
+    }
+
+    function showFormViewAgain() {
+      document.getElementById('lanternFormView').style.display = 'block';
+      document.getElementById('lanternSuccessView').style.display = 'none';
+    }
+
+    function displayLitLantern(cat, name, wish) {
+      document.getElementById('litCategoryBadge').innerText = cat || '소원성취';
+      document.getElementById('litNameText').innerText = (name || '불자') + ' 님 소원등';
+      document.getElementById('litWishText').innerText = wish || '부처님 가피로 온 가족의 소원이 원만성취 되기를 발원합니다.';
+
+      document.getElementById('lanternFormView').style.display = 'none';
+      document.getElementById('lanternSuccessView').style.display = 'block';
+    }
+
+    // 웹 오디오 API를 이용한 사찰 청정 싱잉볼/종소리 합성 (외부 파일 없이 즉시 청아하게 울림)
+    function playTempleBellSound() {
+      try {
+        var AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        var ctx = new AudioCtx();
+        if (ctx.state === 'suspended') {
+          ctx.resume();
+        }
+
+        // 사찰 범종/싱잉볼 화음 주파수 (배음 구성)
+        var freqs = [216, 432, 864, 1296];
+        var gains = [0.4, 0.25, 0.12, 0.06];
+
+        freqs.forEach(function(f, i) {
+          var osc = ctx.createOscillator();
+          var gain = ctx.createGain();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(f * 0.998, ctx.currentTime + 3.2);
+
+          gain.gain.setValueAtTime(gains[i], ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 3.2);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start();
+          osc.stop(ctx.currentTime + 3.2);
+        });
+      } catch (e) {
+        console.log('Audio not supported or blocked', e);
+      }
+    }
+
+    function lightUpLantern() {
+      var name = document.getElementById('lanternNameInput').value.trim();
+      var wish = document.getElementById('lanternWishInput').value.trim();
+
+      if (!name) {
+        alert('신청하시는 분의 성함이나 법명을 입력해 주세요.');
+        document.getElementById('lanternNameInput').focus();
+        return;
+      }
+      if (!wish) {
+        alert('부처님께 올리실 간절한 소원을 한 줄 적어주세요.');
+        document.getElementById('lanternWishInput').focus();
+        return;
+      }
+
+      // 사찰 청아한 종소리 재생
+      playTempleBellSound();
+
+      // 로컬스토리지에 저장하여 지속 보존
+      var lanternData = {
+        cat: currentLanternCategory,
+        name: name,
+        wish: wish,
+        litAt: new Date().toISOString()
+      };
+      localStorage.setItem('sowonsa_saved_lantern', JSON.stringify(lanternData));
+
+      // 성공 화면 표시
+      displayLitLantern(currentLanternCategory, name, wish);
+    }
+  </script>
 
   <script>
     // 카카오톡 공유 및 링크 복사 기능
