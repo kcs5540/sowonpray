@@ -587,8 +587,8 @@
               </svg>
             </div>
             <div style="display: flex; flex-direction: column; text-align: left;">
-              <span style="color: #f5d061; font-weight: 700; font-size: 11px; letter-spacing: 0.02em;">대웅전 무료 축원</span>
-              <span style="color: #ffffff; font-weight: 800; font-size: 16px; letter-spacing: -0.02em;">소원등 켜기</span>
+              <span style="color: #f5d061; font-weight: 700; font-size: 11px; letter-spacing: 0.02em;">대웅전 무료 축원 · 직통 문의</span>
+              <span style="color: #ffffff; font-weight: 800; font-size: 15.5px; letter-spacing: -0.02em;">소원등 켜기 <span style="font-size: 12px; font-weight: 600; color: #f5d061; margin-left: 2px;">(010-4912-1083)</span></span>
             </div>
           </div>
           <div style="display: flex; align-items: center; gap: 6px;">
@@ -782,6 +782,14 @@
           <input type="text" id="lanternNameInput" placeholder="예: 김연화, 홍길동 가족" maxlength="20" style="width: 100%; box-sizing: border-box; background: #282119; border: 1px solid #4a3d2c; border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13.5px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#f5d061'" onblur="this.style.borderColor='#4a3d2c'">
         </div>
 
+        <!-- 연락처(휴대폰 번호) 입력 -->
+        <div style="text-align: left; margin-bottom: 12px;">
+          <label style="display: block; font-size: 11.5px; font-weight: 700; color: #f5d061; margin-bottom: 6px;">
+            ✦ 연락처 (휴대폰 번호) <span style="font-size: 10px; color: #b8ac9a; font-weight: 400;">*사시예불 축원 보고용</span>
+          </label>
+          <input type="tel" id="lanternPhoneInput" placeholder="예: 010-4912-1083" maxlength="15" style="width: 100%; box-sizing: border-box; background: #282119; border: 1px solid #4a3d2c; border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13.5px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#f5d061'" onblur="this.style.borderColor='#4a3d2c'">
+        </div>
+
         <!-- 간절한 소원 한 줄 -->
         <div style="text-align: left; margin-bottom: 16px;">
           <label style="display: block; font-size: 11.5px; font-weight: 700; color: #f5d061; margin-bottom: 6px;">
@@ -795,6 +803,12 @@
           <span>🪔</span>
           <span>대웅전 소원등 켜기 (점등)</span>
         </button>
+
+        <!-- 종무소 및 직통 문의 안내 -->
+        <div style="margin-top: 12px; font-size: 11.5px; color: #c4b9a9; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <i class="fa-solid fa-phone" style="color: #f5d061; font-size: 11px;"></i>
+          <span>직통 축원 문의: <a href="tel:010-4912-1083" style="color: #f5d061; text-decoration: none; font-weight: 700;">010-4912-1083</a> (종무소: 064-805-2007)</span>
+        </div>
 
       </div>
 
@@ -816,8 +830,9 @@
 
           <!-- 소원등 아래 걸린 축원 리본 태그 -->
           <div style="width: 220px; background: #fffdfa; color: #231f1c; border: 1.5px solid #c59b27; border-radius: 12px; padding: 12px 14px; margin-top: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-align: center; position: relative;">
-            <div style="font-size: 10px; font-weight: 700; color: #9c720e; background: #fef3c7; display: inline-block; padding: 2px 7px; border-radius: 4px; margin-bottom: 4px;" id="litCategoryBadge">
-              가족평안
+            <div style="display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: 4px;">
+              <span style="font-size: 10px; font-weight: 700; color: #9c720e; background: #fef3c7; display: inline-block; padding: 2px 7px; border-radius: 4px;" id="litCategoryBadge">가족평안</span>
+              <span style="font-size: 10px; color: #78716c;" id="litPhoneText"></span>
             </div>
             <div style="font-size: 15px; font-weight: 900; color: #1c1917; margin-bottom: 4px;" id="litNameText">
               홍길동 불자님
@@ -908,7 +923,7 @@
       if (saved) {
         try {
           var data = JSON.parse(saved);
-          displayLitLantern(data.cat, data.name, data.wish);
+          displayLitLantern(data.cat, data.name, data.wish, data.phone);
           return;
         } catch(e) {}
       }
@@ -940,9 +955,14 @@
       document.getElementById('lanternSuccessView').style.display = 'none';
     }
 
-    function displayLitLantern(cat, name, wish) {
+    function displayLitLantern(cat, name, wish, phone) {
       document.getElementById('litCategoryBadge').innerText = cat || '소원성취';
       document.getElementById('litNameText').innerText = (name || '불자') + ' 님 소원등';
+      if (phone) {
+        document.getElementById('litPhoneText').innerText = '· ' + phone;
+      } else {
+        document.getElementById('litPhoneText').innerText = '';
+      }
       document.getElementById('litWishText').innerText = wish || '부처님 가피로 온 가족의 소원이 원만성취 되기를 발원합니다.';
 
       document.getElementById('lanternFormView').style.display = 'none';
@@ -987,11 +1007,17 @@
 
     function lightUpLantern() {
       var name = document.getElementById('lanternNameInput').value.trim();
+      var phone = document.getElementById('lanternPhoneInput').value.trim();
       var wish = document.getElementById('lanternWishInput').value.trim();
 
       if (!name) {
         alert('신청하시는 분의 성함이나 법명을 입력해 주세요.');
         document.getElementById('lanternNameInput').focus();
+        return;
+      }
+      if (!phone) {
+        alert('사시예불 축원 보고를 받으실 휴대폰 번호를 입력해 주세요.');
+        document.getElementById('lanternPhoneInput').focus();
         return;
       }
       if (!wish) {
@@ -1007,13 +1033,14 @@
       var lanternData = {
         cat: currentLanternCategory,
         name: name,
+        phone: phone,
         wish: wish,
         litAt: new Date().toISOString()
       };
       localStorage.setItem('sowonsa_saved_lantern', JSON.stringify(lanternData));
 
       // 성공 화면 표시
-      displayLitLantern(currentLanternCategory, name, wish);
+      displayLitLantern(currentLanternCategory, name, wish, phone);
     }
   </script>
 
