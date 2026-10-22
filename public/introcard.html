@@ -845,15 +845,21 @@
         </div>
 
         <!-- 축원 완료 축하 메시지 -->
-        <div style="background: rgba(197, 155, 39, 0.15); border: 1px solid rgba(245, 208, 97, 0.35); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px;">
+        <div style="background: rgba(197, 155, 39, 0.15); border: 1px solid rgba(245, 208, 97, 0.35); border-radius: 12px; padding: 12px 14px; margin-bottom: 12px;">
           <p style="margin: 0 0 4px; color: #f5d061; font-weight: 700; font-size: 13.5px;">
-            🙏 나무아미타불 · 축원이 등록되었습니다
+            🙏 나무아미타불 · 관리자 전산 등록 완료
           </p>
           <p style="margin: 0; font-size: 11.5px; color: #e5ded4; line-height: 1.55;">
-            불자님의 소원등이 제주 소원사 대웅전에 환하게 밝혀졌습니다.<br>
-            <strong>주지스님의 매일 아침 사시예불 축원</strong>에 정성으로 함께 올려집니다.
+            불자님의 소원등이 <strong>소원기도 관리자 전산에 안전하게 등록</strong>되었으며,<br>
+            <strong>주지스님의 매일 아침 사시예불 축원 명단</strong>에 함께 올려집니다.
           </p>
         </div>
+
+        <!-- 소원사 담당자(양영문 회장님) 문자 발송 버튼 -->
+        <a id="smsSendBtn" href="#" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; box-sizing: border-box; padding: 12.5px; border-radius: 11px; background: linear-gradient(135deg, #15803d 0%, #166534 100%); color: #ffffff; text-decoration: none; font-size: 13.5px; font-weight: 800; margin-bottom: 12px; box-shadow: 0 4px 14px rgba(22, 101, 52, 0.35); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>소원사 담당자(010-4912-1083)에 문자 전송</span>
+        </a>
 
         <!-- 하단 액션 버튼들 -->
         <div style="display: flex; gap: 8px;">
@@ -965,6 +971,22 @@
       }
       document.getElementById('litWishText').innerText = wish || '부처님 가피로 온 가족의 소원이 원만성취 되기를 발원합니다.';
 
+      // 소원사 담당자(양영문 회장님 010-4912-1083) SMS 링크 생성
+      var smsText = '[제주 소원사 대웅전 소원등 축원 신청]\n' +
+                    '■ 신청자: ' + (name || '') + '\n' +
+                    '■ 연락처: ' + (phone || '') + '\n' +
+                    '■ 발원분야: ' + (cat || '소원성취') + '\n' +
+                    '■ 소원: ' + (wish || '');
+      
+      var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      var smsSep = isIOS ? '&' : '?';
+      var smsUrl = 'sms:01049121083' + smsSep + 'body=' + encodeURIComponent(smsText);
+
+      var smsBtn = document.getElementById('smsSendBtn');
+      if (smsBtn) {
+        smsBtn.href = smsUrl;
+      }
+
       document.getElementById('lanternFormView').style.display = 'none';
       document.getElementById('lanternSuccessView').style.display = 'block';
     }
@@ -1029,7 +1051,7 @@
       // 사찰 청아한 종소리 재생
       playTempleBellSound();
 
-      // 로컬스토리지에 저장하여 지속 보존
+      // 1. 소원등 개인 저장 (로컬스토리지)
       var lanternData = {
         cat: currentLanternCategory,
         name: name,
@@ -1039,8 +1061,40 @@
       };
       localStorage.setItem('sowonsa_saved_lantern', JSON.stringify(lanternData));
 
-      // 성공 화면 표시
+      // 2. [관리자 DB 동기화] 소원기도 전산 prayers DB에 자동 누적
+      try {
+        var existing = localStorage.getItem('sowonpray_prayers_v4');
+        var list = existing ? JSON.parse(existing) : [];
+        var cleanPhoneCode = phone.replace(/[^0-9]/g, '').slice(-8) || '00000000';
+        list.unshift({
+          id: 'p-' + Date.now(),
+          member_code: cleanPhoneCode,
+          believer_name: name,
+          believer_phone: phone,
+          agent_code: '49121083', // 소원사 담당자
+          wish_category: '대웅전소원등(' + currentLanternCategory + ')',
+          wish_text: wish,
+          status: 'submitted',
+          prayed_at: '사시예불 축원 대기중',
+          created_at: new Date().toISOString().replace('T', ' ').slice(0, 16)
+        });
+        localStorage.setItem('sowonpray_prayers_v4', JSON.stringify(list));
+      } catch (err) {
+        console.log('DB sync error:', err);
+      }
+
+      // 3. 성공 화면 표시 및 SMS 링크 세팅
       displayLitLantern(currentLanternCategory, name, wish, phone);
+
+      // 4. 모바일 접속 시 소원사 담당자(010-4912-1083) 문자앱 자동 연결
+      if (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+        setTimeout(function() {
+          var smsBtn = document.getElementById('smsSendBtn');
+          if (smsBtn && smsBtn.href && smsBtn.href.startsWith('sms:')) {
+            window.location.href = smsBtn.href;
+          }
+        }, 700);
+      }
     }
   </script>
 
