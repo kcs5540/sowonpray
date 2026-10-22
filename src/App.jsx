@@ -88,12 +88,44 @@ function OrganizationTreeView({
 }) {
   const [searchQuery, setSearchQuery] = useState('')
   const [expandedCodes, setExpandedCodes] = useState(() => {
-    // 기본적으로 상위 3단계까지 모두 펼쳐둠
+    // 기본적으로 상위 계보 노드(김철수, 양영문, 유광수, 오수미 등)를 모두 펼쳐둠
     const topCodes = members
-      .filter((m) => !m.parent_code || m.role === 'master' || m.role === 'temple_admin' || m.role === 'agent')
+      .filter(
+        (m) =>
+          !m.parent_code ||
+          m.role === 'master' ||
+          m.role === 'temple_admin' ||
+          m.role === 'agent' ||
+          m.code === '33065540' ||
+          m.code === '49121083' ||
+          m.code === '53872248'
+      )
       .map((m) => m.code)
     return new Set(topCodes)
   })
+
+  // 멤버 데이터가 클라우드에서 동기화될 때 상위 계보 노드 자동 펼침 유지
+  useEffect(() => {
+    if (members && members.length > 0) {
+      setExpandedCodes((prev) => {
+        const next = new Set(prev)
+        members.forEach((m) => {
+          if (
+            !m.parent_code ||
+            m.role === 'master' ||
+            m.role === 'temple_admin' ||
+            m.role === 'agent' ||
+            m.code === '33065540' ||
+            m.code === '49121083' ||
+            m.code === '53872248'
+          ) {
+            next.add(m.code)
+          }
+        })
+        return next
+      })
+    }
+  }, [members])
 
   // 검색어가 있을 때 매칭되는 멤버 및 상위 부모 노드 자동 펼침
   useEffect(() => {
@@ -869,7 +901,7 @@ export default function App() {
 
   // 전체 통합 회원 DB 상태 (신도 + 포교사 + 본부 + 관리자)
   const [members, setMembers] = useState(() => {
-    const saved = localStorage.getItem('sowonpray_members_v4')
+    const saved = localStorage.getItem('sowonpray_members_v5')
     return saved ? JSON.parse(saved) : INITIAL_MEMBERS
   })
 
@@ -958,7 +990,7 @@ export default function App() {
 
   // 상태 변경 시 로컬스토리지 자동 동기화
   useEffect(() => {
-    localStorage.setItem('sowonpray_members_v4', JSON.stringify(members))
+    localStorage.setItem('sowonpray_members_v5', JSON.stringify(members))
   }, [members])
 
   useEffect(() => {
