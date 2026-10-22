@@ -589,8 +589,8 @@
           <i class="fa-solid fa-chevron-right" style="color: #f5d061; font-size: 14px; margin-right: 4px;"></i>
         </div>
 
-        <!-- 2. [두 번째 위치] 방문 예약 및 식사 문의 버튼 -->
-        <a href="tel:010-4912-1083" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #a67c17 0%, #c59b27 100%); border: 1.5px solid #d4ad39; color: #fff; text-decoration: none; padding: 10px 16px; border-radius: 12px; margin-top: 8px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 14px rgba(197, 155, 39, 0.35); transition: all 0.25s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+        <!-- 2. [두 번째 위치] 방문 예약 및 식사 문의 버튼 (터치 시 방문 예약 팝업 오픈) -->
+        <div onclick="openVisitModal()" role="button" tabindex="0" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #a67c17 0%, #c59b27 100%); border: 1.5px solid #d4ad39; color: #fff; padding: 10px 16px; border-radius: 12px; margin-top: 8px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 14px rgba(197, 155, 39, 0.35); transition: all 0.25s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
           <div style="display: flex; align-items: center; gap: 12px;">
             <div style="width: 42px; height: 42px; border-radius: 11px; background: rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 18px; flex-shrink: 0;">
               <i class="fa-solid fa-mobile-screen-button"></i>
@@ -601,7 +601,7 @@
             </div>
           </div>
           <i class="fa-solid fa-chevron-right" style="color: rgba(255,255,255,0.85); font-size: 14px; margin-right: 4px;"></i>
-        </a>
+        </div>
       </section>
 
       <!-- 소원사 공식 안내 링크 (요청사항: 하단 위치) -->
@@ -882,6 +882,208 @@
     </div>
   </div>
 
+  <!-- ========================================================================= -->
+  <!-- [단독 탑재] 제주 소원사 도량 방문 & 식사(공양) 사전 예약 인터랙티브 모달 -->
+  <!-- ========================================================================= -->
+  <div id="visitModal" style="display: none; position: fixed; inset: 0; z-index: 99999; background: rgba(10, 8, 6, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 14px; overflow-y: auto;">
+    
+    <div style="position: relative; width: 100%; max-width: 420px; background: linear-gradient(180deg, #1f1912 0%, #15110c 100%); border: 1.5px solid #c59b27; border-radius: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 35px rgba(197, 155, 39, 0.3); color: #fff; padding: 24px 18px 20px; text-align: center; box-sizing: border-box; max-height: 94vh; overflow-y: auto;">
+      
+      <!-- 닫기 버튼 -->
+      <button type="button" onclick="closeVisitModal()" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #ddd; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">
+        ✕
+      </button>
+
+      <!-- 상단 타이틀 & 뱃지 -->
+      <div style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; background: rgba(197, 155, 39, 0.2); border: 1px solid rgba(245, 208, 97, 0.4); color: #f5d061; font-size: 11px; font-weight: 700; margin-bottom: 8px;">
+        <span>🍵</span> 전날 예약 시 사찰 공양(식사) 무료 대접
+      </div>
+      <h3 style="margin: 0 0 6px; font-family: 'Noto Serif KR', serif; font-size: 21px; font-weight: 900; color: #faf7f2; letter-spacing: -0.02em;">
+        도량 방문 & 식사(공양) 예약
+      </h3>
+      <p style="margin: 0 0 14px; font-size: 12px; color: #c4b9a9; line-height: 1.5;">
+        오시기 전날 미리 예약하시면 따뜻한 차와 함께<br>정갈한 사찰 공양(식사)을 무료로 정성껏 준비해 드립니다.
+      </p>
+
+      <!-- 1. 방문 예약 입력 폼 뷰 (기본) -->
+      <div id="visitFormView">
+        <form onsubmit="submitVisitReservation(event)" style="display: flex; flex-direction: column; gap: 9px; text-align: left;">
+          
+          <!-- 상단 4항목 (예정일, 인원수, 시간대, 식사구분) -->
+          <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+            
+            <!-- 방문 예정일 -->
+            <div style="display: grid; grid-template-columns: 82px 1fr; align-items: center; gap: 8px;">
+              <label style="font-size: 12px; color: #e8dfd1; font-weight: 700; white-space: nowrap;">
+                방문 예정일
+              </label>
+              <input type="date" id="modalVisitDate" required style="width: 100%; box-sizing: border-box; padding: 9px 12px; border-radius: 9px; background: #26211c; border: 1px solid rgba(197, 155, 39, 0.5); color: #ffffff; font-size: 13px; font-weight: 700; outline: none;">
+            </div>
+
+            <!-- 방문 인원수 -->
+            <div style="display: grid; grid-template-columns: 82px 1fr; align-items: center; gap: 8px;">
+              <label style="font-size: 12px; color: #e8dfd1; font-weight: 700; white-space: nowrap;">
+                방문 인원수
+              </label>
+              <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; box-sizing: border-box; padding: 4px 8px; border-radius: 9px; background: #26211c; border: 1px solid rgba(197, 155, 39, 0.5);">
+                <button type="button" onclick="adjustVisitHeadcount(-1)" style="width: 28px; height: 28px; border-radius: 6px; background: #181411; border: 1px solid rgba(197, 155, 39, 0.4); color: #f5d061; font-weight: 900; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                  -
+                </button>
+                <div style="flex: 1; text-align: center; font-size: 12.5px; font-weight: 800; color: #f5d061;">
+                  <span id="modalVisitHeadcountText" style="font-size: 15px; margin-right: 4px;">2</span>명 방문 <span style="font-size: 11px; color: #fef08a; font-weight: 600;" id="modalVisitMealText">(공양 2인분 준비)</span>
+                </div>
+                <button type="button" onclick="adjustVisitHeadcount(1)" style="width: 28px; height: 28px; border-radius: 6px; background: #181411; border: 1px solid rgba(197, 155, 39, 0.4); color: #f5d061; font-weight: 900; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                  +
+                </button>
+              </div>
+            </div>
+
+            <!-- 방문 시간대 -->
+            <div style="display: grid; grid-template-columns: 82px 1fr; align-items: center; gap: 8px;">
+              <label style="font-size: 12px; color: #e8dfd1; font-weight: 700; white-space: nowrap;">
+                방문 시간대
+              </label>
+              <select id="modalVisitTime" style="width: 100%; box-sizing: border-box; padding: 9px 12px; border-radius: 9px; background: #26211c; border: 1px solid rgba(197, 155, 39, 0.5); color: #ffffff; font-size: 12.5px; font-weight: 700; outline: none;">
+                <option value="오전 11:30 (점심공양)" selected>오전 11:30 (점심공양)</option>
+                <option value="오후 12:30 (점심공양)">오후 12:30 (점심공양)</option>
+                <option value="오전 10:30 (대웅전 참배)">오전 10:30 (대웅전 참배)</option>
+                <option value="오후 02:00 (오후 차담)">오후 02:00 (오후 차담)</option>
+                <option value="오후 04:00 (도량 참배)">오후 04:00 (도량 참배)</option>
+              </select>
+            </div>
+
+            <!-- 식사 · 차담 -->
+            <div style="display: grid; grid-template-columns: 82px 1fr; align-items: center; gap: 8px;">
+              <label style="font-size: 12px; color: #e8dfd1; font-weight: 700; white-space: nowrap;">
+                식사 · 차담
+              </label>
+              <select id="modalVisitPurpose" onchange="updateVisitSubmitBtn()" style="width: 100%; box-sizing: border-box; padding: 9px 12px; border-radius: 9px; background: #26211c; border: 1px solid rgba(197, 155, 39, 0.5); color: #ffffff; font-size: 12.5px; font-weight: 700; outline: none;">
+                <option value="차 & 사찰 공양(식사)" selected>차 & 사찰 공양(식사)</option>
+                <option value="따뜻한 사찰 차(茶)담만">따뜻한 사찰 차(茶)담만</option>
+                <option value="스님 신행 상담 & 차담">스님 신행 상담 & 차담</option>
+                <option value="도량 참배 및 기도만">도량 참배 및 기도만</option>
+              </select>
+            </div>
+
+          </div>
+
+          <!-- 하단 사용자 정보 입력 영역 (스크린샷과 100% 동일한 화이트 입력창) -->
+          <div style="padding-top: 9px; border-top: 1px solid rgba(255,255,255,0.12); display: flex; flex-direction: column; gap: 8px; width: 100%;">
+            
+            <!-- 방문자 성함 -->
+            <div style="display: grid; grid-template-columns: 82px 1fr; align-items: center; gap: 8px;">
+              <label style="font-size: 12px; color: #f5d061; font-weight: 800; white-space: nowrap;">
+                방문자 성함
+              </label>
+              <input type="text" id="modalVisitName" required placeholder="예: 김연화 (연화심)" maxlength="20" style="width: 100%; box-sizing: border-box; padding: 10px 12px; border-radius: 8px; background: #ffffff; border: 2px solid #c59b27; color: #1b1815; font-size: 13.5px; font-weight: 800; outline: none;">
+            </div>
+
+            <!-- 연락처 번호 -->
+            <div style="display: grid; grid-template-columns: 82px 1fr; align-items: center; gap: 8px;">
+              <label style="font-size: 12px; color: #f5d061; font-weight: 800; white-space: nowrap;">
+                연락처 번호
+              </label>
+              <input type="tel" id="modalVisitPhone" required placeholder="010-0000-0000" maxlength="15" style="width: 100%; box-sizing: border-box; padding: 10px 12px; border-radius: 8px; background: #ffffff; border: 2px solid #c59b27; color: #1b1815; font-size: 13.5px; font-weight: 800; outline: none;">
+            </div>
+
+            <!-- 요청 메모 -->
+            <div style="display: grid; grid-template-columns: 82px 1fr; align-items: center; gap: 8px;">
+              <label style="font-size: 12px; color: #d6cec2; font-weight: 600; white-space: nowrap;">
+                요청 메모
+              </label>
+              <input type="text" id="modalVisitMemo" placeholder="예: 총 2명 점심 공양 부탁드립니다" maxlength="50" style="width: 100%; box-sizing: border-box; padding: 9px 12px; border-radius: 8px; background: #ffffff; border: 1px solid rgba(197, 155, 39, 0.6); color: #1b1815; font-size: 12.5px; outline: none;">
+            </div>
+
+          </div>
+
+          <!-- 제출 버튼 (스크린샷의 황금 노란색 라운드 버튼) -->
+          <button type="submit" id="modalVisitSubmitBtn" style="margin-top: 4px; width: 100%; padding: 13px; border-radius: 11px; background: #f5c84c; color: #1b1815; font-size: 14.5px; font-weight: 900; border: none; cursor: pointer; box-shadow: 0 4px 16px rgba(245, 200, 76, 0.35); display: flex; align-items: center; justify-content: center; gap: 6px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'">
+            <span>✓</span>
+            <span id="modalVisitSubmitBtnText">총 2명 방문 · 사찰 공양(식사) 예약 접수하기</span>
+          </button>
+
+          <!-- 직통 전화 안내 2버튼 -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 2px;">
+            <a href="tel:010-4912-1083" style="display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8.5px; border-radius: 10px; background: rgba(255,255,255,0.12); border: 1px solid rgba(245, 208, 97, 0.4); color: #f5d061; font-size: 11.5px; font-weight: 700; text-decoration: none;">
+              <i class="fa-solid fa-phone"></i>
+              <span>예약 010-4912-1083</span>
+            </a>
+            <a href="tel:064-805-2007" style="display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8.5px; border-radius: 10px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #e5ded4; font-size: 11.5px; font-weight: 600; text-decoration: none;">
+              <i class="fa-solid fa-phone"></i>
+              <span>종무소 064-805-2007</span>
+            </a>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- 2. 예약 완료 뷰 (접수 완료 시 표시) -->
+      <div id="visitSuccessView" style="display: none;">
+        
+        <!-- 체크 아이콘 비주얼 -->
+        <div style="margin: 10px auto 12px; width: 68px; height: 68px; border-radius: 50%; background: radial-gradient(circle, #fde047 0%, #ca8a04 60%, #713f12 90%); box-shadow: 0 0 35px rgba(250, 204, 21, 0.6); display: flex; align-items: center; justify-content: center; border: 2px solid #fef08a;">
+          <i class="fa-solid fa-calendar-check" style="font-size: 30px; color: #1c150c;"></i>
+        </div>
+
+        <h4 style="margin: 0 0 6px; font-size: 18px; font-weight: 900; color: #ffffff;">
+          도량 방문 & 사찰 공양 예약 완료
+        </h4>
+        <p style="margin: 0 0 14px; font-size: 12px; color: #c4b9a9;">
+          소원사 전산에 안전하게 등록되었으며, 정갈하게 공양을 준비합니다.
+        </p>
+
+        <!-- 예약 상세 요약 카드 -->
+        <div style="background: #fffdfa; color: #231f1c; border: 1.5px solid #c59b27; border-radius: 12px; padding: 13px 15px; margin-bottom: 12px; text-align: left; font-size: 12.5px; line-height: 1.65; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #d6cec2; padding-bottom: 5px; margin-bottom: 5px;">
+            <span style="color: #78716c;">방문 예정일</span>
+            <strong id="successVisitDate" style="color: #1c1917;">-</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #d6cec2; padding-bottom: 5px; margin-bottom: 5px;">
+            <span style="color: #78716c;">시간 및 인원</span>
+            <strong id="successVisitTimeHead" style="color: #1c1917;">-</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #d6cec2; padding-bottom: 5px; margin-bottom: 5px;">
+            <span style="color: #78716c;">예약 구분</span>
+            <strong id="successVisitPurpose" style="color: #9c720e;">-</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: #78716c;">방문자</span>
+            <strong id="successVisitBeliever" style="color: #1c1917;">-</strong>
+          </div>
+        </div>
+
+        <!-- 전산 등록 완료 안내 박스 -->
+        <div style="background: rgba(197, 155, 39, 0.15); border: 1px solid rgba(245, 208, 97, 0.35); border-radius: 12px; padding: 11px 13px; margin-bottom: 12px; text-align: left;">
+          <p style="margin: 0 0 3px; color: #f5d061; font-weight: 700; font-size: 12.5px;">
+            🌿 신규 불자 전산 등록 및 공양 접수 완료
+          </p>
+          <p style="margin: 0; font-size: 11px; color: #e5ded4; line-height: 1.5;">
+            방문자 정보가 <strong>소원기도 통합 전산 시스템</strong>에 등록되었습니다.<br>
+            원활한 공양 준비를 위해 담당자(010-4912-1083)에게 예약 내용이 전달됩니다.
+          </p>
+        </div>
+
+        <!-- 담당자 문자 발송 버튼 -->
+        <a id="visitSmsSendBtn" href="#" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; box-sizing: border-box; padding: 12px; border-radius: 11px; background: linear-gradient(135deg, #15803d 0%, #166534 100%); color: #ffffff; text-decoration: none; font-size: 13.5px; font-weight: 800; margin-bottom: 10px; box-shadow: 0 4px 14px rgba(22, 101, 52, 0.35);">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>소원사 담당자(010-4912-1083)에 문자 전송</span>
+        </a>
+
+        <!-- 하단 액션 버튼 -->
+        <div style="display: flex; gap: 8px;">
+          <button type="button" onclick="showVisitFormAgain()" style="flex: 1; padding: 11px; border-radius: 10px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #e5ded4; font-size: 12.5px; font-weight: 700; cursor: pointer;">
+            예약 내용 수정
+          </button>
+          <button type="button" onclick="closeVisitModal()" style="flex: 1; padding: 11px; border-radius: 10px; background: #c59b27; color: #1c150c; font-size: 12.5px; font-weight: 900; border: none; cursor: pointer;">
+            확인 (닫기)
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
   <style>
     /* 소원등 카테고리 알약 버튼 스타일 */
     .lantern-cat-btn {
@@ -1086,6 +1288,38 @@
         });
         localStorage.setItem('sowonpray_prayers_v4', JSON.stringify(list));
       } catch (err) {
+        // 2-1. [신규 불자 전산 등록]
+        try {
+          var existingMembers = localStorage.getItem('sowonpray_members_v4');
+          var memberList = existingMembers ? JSON.parse(existingMembers) : [];
+          var isExisting = memberList.some(function(m) { return m.code === cleanPhoneCode; });
+          if (!isExisting) {
+            memberList.unshift({
+              code: cleanPhoneCode,
+              phone: phone,
+              password_pin: cleanPhoneCode.slice(-4) || '1234',
+              name: name,
+              dharma_name: '',
+              birth_date: '',
+              lunar_solar: '음력',
+              address: '',
+              family_memo: '대웅전 소원등(' + currentLanternCategory + ') 신청으로 전산 자동 등록됨',
+              role: 'believer',
+              parent_code: '49121083',
+              bank_name: '',
+              bank_account: '',
+              account_holder: '',
+              merit_count: 1,
+              believers_count: 0,
+              wipae_count: 0,
+              extra_data: { registered_via: 'wish_lantern' },
+              created_at: new Date().toISOString()
+            });
+            localStorage.setItem('sowonpray_members_v4', JSON.stringify(memberList));
+          }
+        } catch(mErr) {
+          console.log('Member auto register error:', mErr);
+        }
         console.log('DB sync error:', err);
       }
 
@@ -1096,6 +1330,219 @@
       if (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
         setTimeout(function() {
           var smsBtn = document.getElementById('smsSendBtn');
+          if (smsBtn && smsBtn.href && smsBtn.href.startsWith('sms:')) {
+            window.location.href = smsBtn.href;
+          }
+        }, 700);
+      }
+    }
+
+    // =========================================================================
+    // [방문 예약 모달 & 신규 불자 전산 등록 기능]
+    // =========================================================================
+    var currentVisitHeadcount = 2;
+
+    function openVisitModal() {
+      var modal = document.getElementById('visitModal');
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+
+      // 기본 날짜를 내일 또는 오늘로 설정
+      var dateInput = document.getElementById('modalVisitDate');
+      if (!dateInput.value) {
+        var d = new Date();
+        // 기본적으로 방문 전날 예약이므로 내일 날짜 추천
+        d.setDate(d.getDate() + 1);
+        var yyyy = d.getFullYear();
+        var mm = String(d.getMonth() + 1).padStart(2, '0');
+        var dd = String(d.getDate()).padStart(2, '0');
+        dateInput.value = yyyy + '-' + mm + '-' + dd;
+      }
+
+      // 소원등에서 입력했던 성함/연락처가 있으면 자동 채움
+      var nameInput = document.getElementById('modalVisitName');
+      var phoneInput = document.getElementById('modalVisitPhone');
+      if (!nameInput.value) {
+        var savedLantern = localStorage.getItem('sowonsa_saved_lantern');
+        if (savedLantern) {
+          try {
+            var ld = JSON.parse(savedLantern);
+            if (ld.name) nameInput.value = ld.name;
+            if (ld.phone) phoneInput.value = ld.phone;
+          } catch(e) {}
+        }
+      }
+
+      // 기존 예약 내역이 있으면 성공 화면으로 표시
+      var savedVisit = localStorage.getItem('sowonsa_saved_visit');
+      if (savedVisit) {
+        try {
+          var vd = JSON.parse(savedVisit);
+          displaySavedVisit(vd);
+          return;
+        } catch(e) {}
+      }
+
+      showVisitFormAgain();
+    }
+
+    function closeVisitModal() {
+      var modal = document.getElementById('visitModal');
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    // 모달 배경 클릭 시 닫기
+    document.getElementById('visitModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeVisitModal();
+      }
+    });
+
+    function adjustVisitHeadcount(delta) {
+      currentVisitHeadcount = Math.max(1, Math.min(50, currentVisitHeadcount + delta));
+      document.getElementById('modalVisitHeadcountText').innerText = currentVisitHeadcount;
+      document.getElementById('modalVisitMealText').innerText = '(공양 ' + currentVisitHeadcount + '인분 준비)';
+      updateVisitSubmitBtn();
+    }
+
+    function updateVisitSubmitBtn() {
+      var purpose = document.getElementById('modalVisitPurpose').value;
+      var shortPurpose = purpose.indexOf('공양') !== -1 ? '사찰 공양(식사)' : (purpose.indexOf('차담') !== -1 ? '차담' : '참배');
+      document.getElementById('modalVisitSubmitBtnText').innerText = '총 ' + currentVisitHeadcount + '명 방문 · ' + shortPurpose + ' 예약 접수하기';
+    }
+
+    function showVisitFormAgain() {
+      document.getElementById('visitFormView').style.display = 'block';
+      document.getElementById('visitSuccessView').style.display = 'none';
+      updateVisitSubmitBtn();
+    }
+
+    function displaySavedVisit(vd) {
+      document.getElementById('visitFormView').style.display = 'none';
+      document.getElementById('visitSuccessView').style.display = 'block';
+
+      document.getElementById('successVisitDate').innerText = vd.date;
+      document.getElementById('successVisitTimeHead').innerText = vd.time + ' / 총 ' + vd.headcount + '명';
+      document.getElementById('successVisitPurpose').innerText = vd.purpose;
+      document.getElementById('successVisitBeliever').innerText = vd.name + ' (' + vd.phone + ')';
+
+      // SMS 링크 설정
+      var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+      var smsSep = isIOS ? '&' : '?';
+      var smsMsg = '[제주소원사 방문예약]\n' +
+                   '• 예약자: ' + vd.name + ' (' + vd.phone + ')\n' +
+                   '• 방문일시: ' + vd.date + ' ' + vd.time + '\n' +
+                   '• 방문인원: ' + vd.headcount + '명\n' +
+                   '• 구분: ' + vd.purpose +
+                   (vd.memo ? ('\n• 요청메모: ' + vd.memo) : '');
+      document.getElementById('visitSmsSendBtn').href = 'sms:010-4912-1083' + smsSep + 'body=' + encodeURIComponent(smsMsg);
+    }
+
+    function submitVisitReservation(e) {
+      e.preventDefault();
+      var date = document.getElementById('modalVisitDate').value;
+      var time = document.getElementById('modalVisitTime').value;
+      var purpose = document.getElementById('modalVisitPurpose').value;
+      var name = document.getElementById('modalVisitName').value.trim();
+      var phone = document.getElementById('modalVisitPhone').value.trim();
+      var memo = document.getElementById('modalVisitMemo').value.trim();
+
+      if (!date) {
+        alert('방문 예정일을 선택해 주세요.');
+        return;
+      }
+      if (!name) {
+        alert('방문자 성함(또는 법명)을 입력해 주세요.');
+        document.getElementById('modalVisitName').focus();
+        return;
+      }
+      if (!phone) {
+        alert('예약 확인 연락을 받으실 휴대폰 번호를 입력해 주세요.');
+        document.getElementById('modalVisitPhone').focus();
+        return;
+      }
+
+      playTempleBellSound();
+
+      var visitData = {
+        date: date,
+        time: time,
+        headcount: currentVisitHeadcount,
+        purpose: purpose,
+        name: name,
+        phone: phone,
+        memo: memo,
+        reservedAt: new Date().toISOString()
+      };
+      localStorage.setItem('sowonsa_saved_visit', JSON.stringify(visitData));
+
+      var cleanPhone = phone.replace(/[^0-9]/g, '');
+      var code8 = cleanPhone.slice(-8) || '00000000';
+
+      // 1. [핵심] 신규 방문자 전산 자동 등록 (sowonpray_members_v4 DB 등재)
+      try {
+        var existingMembers = localStorage.getItem('sowonpray_members_v4');
+        var memberList = existingMembers ? JSON.parse(existingMembers) : [];
+        var isExisting = memberList.some(function(m) { return m.code === code8; });
+        if (!isExisting) {
+          memberList.unshift({
+            code: code8,
+            phone: phone,
+            password_pin: code8.slice(-4) || '1234',
+            name: name,
+            dharma_name: '',
+            birth_date: '',
+            lunar_solar: '음력',
+            address: '',
+            family_memo: '도량 방문 및 사찰 공양(' + currentVisitHeadcount + '인분) 예약으로 전산 등록됨 (' + date + ')',
+            role: 'believer',
+            parent_code: '49121083', // 소원사 담당자 (양영문 회장님)
+            bank_name: '',
+            bank_account: '',
+            account_holder: '',
+            merit_count: 1,
+            believers_count: 0,
+            wipae_count: 0,
+            extra_data: { registered_via: 'visit_reservation' },
+            created_at: new Date().toISOString()
+          });
+          localStorage.setItem('sowonpray_members_v4', JSON.stringify(memberList));
+        }
+      } catch (err) {
+        console.log('Member DB registration error:', err);
+      }
+
+      // 2. 도량 방문 예약 전산 DB 등록 (sowonpray_visits_v3)
+      try {
+        var existingVisits = localStorage.getItem('sowonpray_visits_v3');
+        var visitList = existingVisits ? JSON.parse(existingVisits) : [];
+        visitList.unshift({
+          id: 'v-' + Date.now(),
+          member_code: code8,
+          visitor_name: name,
+          visitor_phone: phone,
+          agent_code: '49121083', // 소원사 담당자
+          visit_date: date,
+          visit_time: time,
+          headcount: currentVisitHeadcount,
+          visit_purpose: purpose,
+          memo: memo || ('방문 인원 총 ' + currentVisitHeadcount + '명 따뜻한 차와 사찰 공양(' + currentVisitHeadcount + '인분) 부탁드립니다.'),
+          status: 'reserved',
+          created_at: new Date().toISOString().replace('T', ' ').slice(0, 16)
+        });
+        localStorage.setItem('sowonpray_visits_v3', JSON.stringify(visitList));
+      } catch (err) {
+        console.log('Visits DB registration error:', err);
+      }
+
+      // 3. 완료 뷰 표시
+      displaySavedVisit(visitData);
+
+      // 4. 모바일 접속 시 소원사 담당자(010-4912-1083) 문자앱 자동 연결
+      if (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+        setTimeout(function() {
+          var smsBtn = document.getElementById('visitSmsSendBtn');
           if (smsBtn && smsBtn.href && smsBtn.href.startsWith('sms:')) {
             window.location.href = smsBtn.href;
           }

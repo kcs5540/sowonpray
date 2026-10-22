@@ -1388,6 +1388,34 @@ export default function App() {
 
     setPrayers((prev) => [newPrayer, ...prev])
 
+    // 신규 신청자 전산 자동 등록 처리 (신규 불자 DB 등재)
+    const cleanPrayerPhone = wishPhone.replace(/[^0-9]/g, '')
+    const prayerCode8 = extractPhone8Code(cleanPrayerPhone)
+    const existingPrayerMember = members.find((m) => m.code === prayerCode8)
+    if (!existingPrayerMember) {
+      const newBeliever = {
+        code: prayerCode8,
+        phone: formatPhone11(wishPhone),
+        password_pin: prayerCode8.slice(-4) || '1234',
+        name: wishName.trim(),
+        dharma_name: '',
+        birth_date: '',
+        lunar_solar: '음력',
+        address: '',
+        family_memo: `대웅전 소원등(${wishCategory}) 신청으로 전산 자동 등록됨`,
+        role: 'believer',
+        parent_code: assignedAgentCode,
+        bank_name: '',
+        bank_account: '',
+        account_holder: '',
+        merit_count: 1,
+        believers_count: 0,
+        wipae_count: 0,
+        extra_data: { registered_via: 'wish_lantern' },
+      }
+      setMembers((prev) => [newBeliever, ...prev])
+    }
+
     // 담당 포교사 인연 신도수 업데이트
     setMembers((prev) =>
       prev.map((m) =>
@@ -1431,6 +1459,35 @@ export default function App() {
     }
 
     setVisits((prev) => [newVisit, ...prev])
+
+    // 신규 방문자 전산 자동 등록 처리 (신규 불자 DB 등재)
+    const cleanVisitPhone = wishPhone.replace(/[^0-9]/g, '')
+    const visitCode8 = extractPhone8Code(cleanVisitPhone)
+    const existingVisitMember = members.find((m) => m.code === visitCode8)
+    if (!existingVisitMember) {
+      const newBeliever = {
+        code: visitCode8,
+        phone: formatPhone11(wishPhone),
+        password_pin: visitCode8.slice(-4) || '1234',
+        name: wishName.trim(),
+        dharma_name: '',
+        birth_date: '',
+        lunar_solar: '음력',
+        address: '',
+        family_memo: `도량 방문 및 사찰 공양(${exactHeadcount}인분) 예약으로 전산 등록됨 (${visitDate})`,
+        role: 'believer',
+        parent_code: assignedAgentCode,
+        bank_name: '',
+        bank_account: '',
+        account_holder: '',
+        merit_count: 1,
+        believers_count: 0,
+        wipae_count: 0,
+        extra_data: { registered_via: 'visit_reservation' },
+      }
+      setMembers((prev) => [newBeliever, ...prev])
+    }
+
     setVisitHeadcount(exactHeadcount)
     setVisitMemo('')
     playSingingBowlSound()
