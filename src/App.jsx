@@ -4533,43 +4533,46 @@ export default function App() {
                   </div>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-xl p-2.5 text-center">
-                  <div className="text-[10.5px] text-[#BFB6AA] whitespace-nowrap">직접 포교 수당</div>
+                  <div className="text-[10.5px] text-[#BFB6AA] whitespace-nowrap">직접 포교 요율</div>
                   <div className="text-base sm:text-lg font-bold text-emerald-400 mt-0.5 whitespace-nowrap">
-                    {activeAgent.role === 'committee_member' ? '60만 원' : '80만 원'}
+                    {activeAgent.role === 'committee_member' ? '30%' : '40%'}
                   </div>
                 </div>
               </div>
 
-              {/* 판권 및 포교비 집행 안내 카드 (포교위원장/포교위원 화면 맞춤형) */}
+              {/* 판권 및 포교비 집행 안내 카드 (백분율 요율제 & 실입금 정산) */}
               <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#1F1B17] to-[#2A231C] border border-[#C59B27]/35 space-y-2 text-xs">
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-[#F5D061] flex items-center gap-1">
                     <span>📜</span>
                     <span>
                       {activeAgent.role === 'committee_member'
-                        ? '포교위원(60만) 불사 포교비 기준'
-                        : '포교위원장(80만) 불사 포교비 기준'}
+                        ? '포교위원 (30% 요율) 불사 포교비 규정'
+                        : '포교위원장 (40% 요율) 불사 포교비 규정'}
                     </span>
                   </span>
-                  <span className="text-[10.5px] text-[#A69B8D]">위패 1기(200만 원) 기준</span>
+                  <span className="text-[10.5px] text-[#A69B8D]">실입금액 기준 실시간 자동 정산</span>
                 </div>
                 <div className="space-y-1.5 text-[11.5px] text-[#E8DFD1]">
                   <div className="flex items-center justify-between p-2 rounded-lg bg-black/25">
                     <span className="text-[#C59B27] font-semibold">① 본인 직접 유치 성사 포교비</span>
                     <strong className="text-emerald-400 font-bold">
-                      {activeAgent.role === 'committee_member' ? '600,000원' : '800,000원'}
+                      실입금액의 {activeAgent.role === 'committee_member' ? '30%' : '40%'}
                     </strong>
                   </div>
                   {activeAgent.role !== 'committee_member' && (
                     <div className="flex items-center justify-between p-2 rounded-lg bg-black/25">
                       <span className="text-[#C59B27] font-semibold">② 산하 포교위원 성사 시 관리 수당</span>
-                      <strong className="text-[#F5D061] font-bold">200,000원</strong>
+                      <strong className="text-[#F5D061] font-bold">실입금액의 10%</strong>
                     </div>
                   )}
                   <div className="flex items-center justify-between p-2 rounded-lg bg-black/25">
                     <span className="text-[#A69B8D]">③ 제주 소원사 사찰 봉안 불사금</span>
-                    <span className="text-white font-medium">1,000,000원</span>
+                    <span className="text-white font-medium">실입금액의 50%</span>
                   </div>
+                </div>
+                <div className="text-[10px] text-[#8C8071] pt-1 border-t border-white/10 flex justify-between">
+                  <span>※ 분납(할부) 입금 시에도 입금되는 즉시 해당 요율대로 분할 정산됩니다.</span>
                 </div>
               </div>
 
@@ -4947,14 +4950,19 @@ export default function App() {
               )}
             </section>
 
-            {/* 2. 총괄 판권(100만) 및 전국 위원회 배분 정책 */}
+            {/* 2. 총괄 판권(50%) 및 전국 위원회 백분율 요율제 배분 체계 */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-serif-kr font-bold text-base">
-                  2. 총판 라이선스(100만 원) 수익 배분 체계
-                </h3>
-                <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                  위패 1기 200만 원 기준
+                <div>
+                  <h3 className="font-serif-kr font-bold text-base">
+                    2. 실입금액 기준 백분율(%) 배분 체계
+                  </h3>
+                  <span className="text-[11px] text-[#8C8071]">
+                    전액 일시납 · 분납(할부) 완벽 대응 실시간 자동 정산
+                  </span>
+                </div>
+                <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 shrink-0">
+                  실입금액의 100%
                 </span>
               </div>
 
@@ -4966,10 +4974,10 @@ export default function App() {
                       <span>👑</span>
                       <span>① 김철수 총괄 직속 성사 (산하 위원 없는 라인)</span>
                     </span>
-                    <span className="text-base text-[#F5D061]">1,000,000원 (100% 전액)</span>
+                    <span className="text-base text-[#F5D061]">실입금액의 50% (전액)</span>
                   </div>
                   <p className="text-[11px] text-[#C5BBAE]">
-                    산하에 포교위원장/포교위원이 없는 라인에서 성사 시, 100만 원 판권 풀 전액이 김철수 총괄 수당으로 귀속됩니다.
+                    산하에 포교위원장/포교위원이 없는 라인에서 성사 시, 50% 총판 풀 전액이 김철수 총괄 수당으로 귀속됩니다. (예: 200만 입금 시 100만 / 50만 분납 시 25만 원)
                   </p>
                 </div>
 
@@ -4978,22 +4986,24 @@ export default function App() {
                   <div className="flex justify-between items-center font-bold text-[#231F1C]">
                     <span className="text-emerald-800 flex items-center gap-1">
                       <span>🌿</span>
-                      <span>② 포교위원장(80만 판권) 직접 성사 시</span>
+                      <span>② 포교위원장(40%) 직접 성사 시</span>
                     </span>
-                    <span className="text-xs text-[#7A6E5E]">총 100만 원 판권 풀 집행</span>
+                    <span className="text-xs text-[#7A6E5E]">총 50% 판권 풀 집행</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-[11px] pt-1">
                     <div className="p-2.5 rounded-lg bg-white border border-[#E4DDD0]">
                       <span className="text-[#6B6155] block">포교위원장 지급:</span>
-                      <strong className="text-[#1B1815] text-xs">800,000원 (80%)</strong>
+                      <strong className="text-[#1B1815] text-xs">실입금액의 40%</strong>
+                      <span className="text-[10px] text-[#8C8071] block mt-0.5">200만 시 80만 / 50만 시 20만</span>
                     </div>
                     <div className="p-2.5 rounded-lg bg-[#FFF9E6] border border-[#E5D399]">
                       <span className="text-[#8A6510] block font-bold">총괄 오버라이딩 마진:</span>
-                      <strong className="text-[#9A7418] text-xs">+200,000원 (20%)</strong>
+                      <strong className="text-[#9A7418] text-xs">+실입금액의 10%</strong>
+                      <span className="text-[10px] text-[#8A6510] block mt-0.5">200만 시 20만 / 50만 시 5만</span>
                     </div>
                   </div>
                   <p className="text-[10.5px] text-[#8C8071]">
-                    ※ 포교위원장에게는 본인 포교비 80만 원만 표기되며, 총괄 20만 원 마진은 철저히 비공개됩니다.
+                    ※ 포교위원장에게는 본인 포교비 40%만 표기되며, 총괄 10% 마진은 철저히 비공개됩니다.
                   </p>
                 </div>
 
@@ -5002,26 +5012,29 @@ export default function App() {
                   <div className="flex justify-between items-center font-bold text-[#231F1C]">
                     <span className="text-teal-800 flex items-center gap-1">
                       <span>🌱</span>
-                      <span>③ 산하 포교위원(60만 판권) 성사 시</span>
+                      <span>③ 산하 포교위원(30%) 성사 시</span>
                     </span>
-                    <span className="text-xs text-[#7A6E5E]">총 100만 원 판권 풀 집행</span>
+                    <span className="text-xs text-[#7A6E5E]">총 50% 판권 풀 집행</span>
                   </div>
                   <div className="grid grid-cols-3 gap-1.5 text-[11px] pt-1">
                     <div className="p-2 rounded-lg bg-white border border-[#E4DDD0]">
-                      <span className="text-[#6B6155] block">포교위원 지급:</span>
-                      <strong className="text-[#1B1815]">600,000원</strong>
+                      <span className="text-[#6B6155] block">포교위원:</span>
+                      <strong className="text-[#1B1815]">30%</strong>
+                      <span className="text-[9.5px] text-[#8C8071] block">200만시 60만</span>
                     </div>
                     <div className="p-2 rounded-lg bg-white border border-[#E4DDD0]">
-                      <span className="text-[#6B6155] block">상위 위원장 관리:</span>
-                      <strong className="text-[#1B1815]">200,000원</strong>
+                      <span className="text-[#6B6155] block">상위위원장:</span>
+                      <strong className="text-[#1B1815]">10%</strong>
+                      <span className="text-[9.5px] text-[#8C8071] block">200만시 20만</span>
                     </div>
                     <div className="p-2 rounded-lg bg-[#FFF9E6] border border-[#E5D399]">
-                      <span className="text-[#8A6510] block font-bold">총괄 오버라이딩:</span>
-                      <strong className="text-[#9A7418]">+200,000원</strong>
+                      <span className="text-[#8A6510] block font-bold">총괄마진:</span>
+                      <strong className="text-[#9A7418]">+10%</strong>
+                      <span className="text-[9.5px] text-[#8A6510] block">200만시 20만</span>
                     </div>
                   </div>
                   <p className="text-[10.5px] text-[#8C8071]">
-                    ※ 포교위원(60만)과 위원장(20만 관리비)은 80만 원 안에서만 인지하며, 총괄 20만 원 마진은 일절 노출되지 않습니다.
+                    ※ 포교위원(30%)과 위원장(10% 관리비)은 40% 안에서만 인지하며, 총괄 10% 마진은 일절 노출되지 않습니다.
                   </p>
                 </div>
 
@@ -5029,9 +5042,9 @@ export default function App() {
                 <div className="p-3 rounded-xl bg-[#231F1C] text-white flex justify-between items-center text-xs font-bold">
                   <span className="flex items-center gap-1.5">
                     <span>卍</span>
-                    <span>제주 소원사 사찰 봉안 불사금 (50% 고정)</span>
+                    <span>제주 소원사 사찰 봉안 불사금 (소원사 공식 계좌 귀속)</span>
                   </span>
-                  <span className="text-[#F5D061]">1,000,000원</span>
+                  <span className="text-[#F5D061]">실입금액의 50% 고정</span>
                 </div>
               </div>
             </section>
@@ -5160,28 +5173,49 @@ export default function App() {
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-3 gap-1.5 text-[11px] bg-white p-2.5 rounded-lg border border-[#EFE9DD]">
-                        <div>
-                          <span className="text-[#786E63] block">사찰 불사금:</span>
-                          <strong className="text-[#231F1C]">1,000,000원</strong>
-                        </div>
-                        <div>
-                          <span className="text-[#786E63] block">포교단 집행:</span>
-                          <strong className="text-[#231F1C]">
-                            {s.agent_1st_code === '33065540'
-                              ? '총괄 직속'
-                              : s.agent_1st_code === '91010002' || (s.agent_1st_name && s.agent_1st_name.includes('포교위원') && !s.agent_1st_name.includes('위원장'))
-                              ? '60만 + 20만'
-                              : '800,000원'}
-                          </strong>
-                        </div>
-                        <div className="bg-[#FFF9E6] p-1 rounded border border-[#E5D399]/60">
-                          <span className="text-[#8A6510] block font-bold">총괄 마진(김철수):</span>
-                          <strong className="text-[#9A7418]">
-                            {s.agent_1st_code === '33065540' ? '+1,000,000원' : '+200,000원'}
-                          </strong>
-                        </div>
-                      </div>
+                      {(() => {
+                        const is1stKim = s.agent_1st_code === '33065540'
+                        const is1stMember =
+                          s.agent_1st_code === '91010002' ||
+                          (s.agent_1st_name &&
+                            s.agent_1st_name.includes('포교위원') &&
+                            !s.agent_1st_name.includes('위원장'))
+                        const templeAmt = Math.round(s.total_amount * 0.5)
+                        const agent1Amt = is1stKim
+                          ? Math.round(s.total_amount * 0.5)
+                          : is1stMember
+                          ? Math.round(s.total_amount * 0.3)
+                          : Math.round(s.total_amount * 0.4)
+                        const agent2Amt = is1stMember ? Math.round(s.total_amount * 0.1) : 0
+                        const masterAmt = is1stKim
+                          ? Math.round(s.total_amount * 0.5)
+                          : Math.round(s.total_amount * 0.1)
+
+                        return (
+                          <div className="grid grid-cols-3 gap-1.5 text-[11px] bg-white p-2.5 rounded-lg border border-[#EFE9DD]">
+                            <div>
+                              <span className="text-[#786E63] block">사찰 귀속(50%):</span>
+                              <strong className="text-[#231F1C]">{templeAmt.toLocaleString()}원</strong>
+                            </div>
+                            <div>
+                              <span className="text-[#786E63] block">포교단 집행:</span>
+                              <strong className="text-[#231F1C]">
+                                {is1stKim
+                                  ? `직속 ${agent1Amt.toLocaleString()}원`
+                                  : is1stMember
+                                  ? `위원 ${agent1Amt.toLocaleString()}원 + 관리 ${agent2Amt.toLocaleString()}원`
+                                  : `위원장 ${agent1Amt.toLocaleString()}원 (40%)`}
+                              </strong>
+                            </div>
+                            <div className="bg-[#FFF9E6] p-1 rounded border border-[#E5D399]/60">
+                              <span className="text-[#8A6510] block font-bold">총괄 마진(김철수):</span>
+                              <strong className="text-[#9A7418]">
+                                +{masterAmt.toLocaleString()}원 ({is1stKim ? '50%' : '10%'})
+                              </strong>
+                            </div>
+                          </div>
+                        )
+                      })()}
                       <div className="text-[10.5px] text-[#786E63] px-1 flex justify-between">
                         <span>직접유치: {s.agent_1st_name}</span>
                         {s.agent_2nd_name && s.agent_2nd_name !== '-' && (
