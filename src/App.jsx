@@ -170,15 +170,18 @@ function OrganizationTreeView({
         (node.dharma_name && node.dharma_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
         node.code.includes(searchQuery))
 
-    // 역할별 배지 라벨 및 스타일 (가장 직관적이고 친숙한 불교 호칭 적용)
+    // 역할별 배지 라벨 및 스타일 (대외적으로 김철수 총괄도 '포교위원장'으로 동등하게 표기)
     const getRoleBadge = (role) => {
       switch (role) {
         case 'master':
-          return { label: '총괄', bg: 'bg-[#C59B27] text-[#120F0D]' }
+          return { label: '포교위원장', bg: 'bg-[#C59B27] text-[#120F0D]' }
         case 'temple_admin':
           return { label: '소원사 본부', bg: 'bg-[#8A6510] text-white' }
         case 'agent':
-          return { label: '포교사', bg: 'bg-emerald-700 text-white' }
+        case 'committee_head':
+          return { label: '포교위원장', bg: 'bg-emerald-700 text-white' }
+        case 'committee_member':
+          return { label: '포교위원', bg: 'bg-teal-700 text-white' }
         case 'believer':
         default:
           return { label: '신도', bg: 'bg-[#2E2822] text-[#D8CFBF]' }
@@ -924,10 +927,15 @@ export default function App() {
     return members.find((m) => m.code === currentUserCode) || null
   }, [members, currentUserCode])
 
-  // 포교사/관리자 목록만 필터링
+  // 포교위원장/포교위원/본부/관리자 목록 필터링
   const agents = useMemo(() => {
     return members.filter(
-      (m) => m.role === 'agent' || m.role === 'temple_admin' || m.role === 'master'
+      (m) =>
+        m.role === 'agent' ||
+        m.role === 'committee_head' ||
+        m.role === 'committee_member' ||
+        m.role === 'temple_admin' ||
+        m.role === 'master'
     )
   }, [members])
 
@@ -1274,12 +1282,14 @@ export default function App() {
   const [signupAddress, setSignupAddress] = useState('')
   const [signupFamilyMemo, setSignupFamilyMemo] = useState('')
 
-  // 포교사 전산 탭: 총괄관리자일 때는 포교사 선택 가능, 일반 포교사일 때는 본인 고정
+  // 포교위원 전산 탭: 총괄대표(master)일 때는 위원 선택 조회 가능, 일반 포교위원장/위원일 때는 본인 고정
   const [selectedAgentCode, setSelectedAgentCode] = useState('52148821')
   useEffect(() => {
     if (
       currentUser &&
       (currentUser.role === 'agent' ||
+        currentUser.role === 'committee_head' ||
+        currentUser.role === 'committee_member' ||
         currentUser.role === 'temple_admin' ||
         currentUser.role === 'master')
     ) {
@@ -1288,7 +1298,11 @@ export default function App() {
   }, [currentUser])
 
   const activeAgent = useMemo(() => {
-    if (currentUser?.role === 'agent') {
+    if (
+      currentUser?.role === 'agent' ||
+      currentUser?.role === 'committee_head' ||
+      currentUser?.role === 'committee_member'
+    ) {
       return currentUser
     }
     return (
@@ -1743,20 +1757,24 @@ export default function App() {
     setCommissionRules(next)
   }
 
-  // 포교사 추천 링크 복사
+  // 포교위원 추천 링크 복사
   const handleCopyRefLink = (code) => {
     const url = `${window.location.origin}/?ref=${code}`
     navigator.clipboard?.writeText(url)
-    showToast(`📋 포교사 전용 링크가 복사되었습니다: ${url}`)
+    showToast(`📋 포교위원 전용 추천 링크가 복사되었습니다: ${url}`)
   }
 
   // 권한 체크 헬퍼
   const isAgentOrAbove =
     currentUser?.role === 'agent' ||
+    currentUser?.role === 'committee_head' ||
+    currentUser?.role === 'committee_member' ||
     currentUser?.role === 'temple_admin' ||
     currentUser?.role === 'master'
-  const isAdmin =
-    currentUser?.role === 'temple_admin' || currentUser?.role === 'master'
+
+  // 오직 김철수 총괄대표님(master)만 총괄 마진(20만 원) 및 총괄정산 탭에 접근 가능 (포교위원장들에게 절대 비밀)
+  const isMaster = currentUser?.role === 'master'
+  const isAdmin = currentUser?.role === 'master'
 
   return (
     <div className="min-h-screen bg-[#12100E] flex justify-center selection:bg-[#C59B27] selection:text-white">
@@ -1808,12 +1826,12 @@ export default function App() {
                     {currentUser.name}
                     {currentUser.dharma_name ? `(${currentUser.dharma_name})` : ''}
                   </strong>
-                  {currentUser.role === 'master'
-                    ? ' 관리자님'
+                  {currentUser.role === 'master' || currentUser.role === 'agent' || currentUser.role === 'committee_head'
+                    ? ' 포교위원장님'
+                    : currentUser.role === 'committee_member'
+                    ? ' 포교위원님'
                     : currentUser.role === 'temple_admin'
                     ? ' 회장님'
-                    : currentUser.role === 'agent'
-                    ? ' 포교사님'
                     : ' 불자님'}{' '}
                   접속중
                 </span>
@@ -3866,12 +3884,12 @@ export default function App() {
                   </button>
                 )}
               </div>
-              <div className="grid grid-cols-3 gap-1.5">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                 <button
                   type="button"
                   onClick={() => {
                     setCurrentUserCode('82341088')
-                    showToast('🙏 일반신도 [이정숙(무량화)] 본인 계정으로 접속되었습니다.')
+                    showToast('🙏 일반신도 [이정숙(무량화)] 계정으로 전환되었습니다.')
                   }}
                   className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
                     currentUser?.code === '82341088'
@@ -3879,27 +3897,41 @@ export default function App() {
                       : 'bg-white/5 text-[#E8DFD1] border-white/10'
                   }`}
                 >
-                  일반신도(이정숙)
+                  신도(이정숙)
                 </button>
                 <button
                   type="button"
                   onClick={() => {
-                    setCurrentUserCode('52148821')
-                    showToast('🪷 포교사 [김연화(연화심)] 본인 계정으로 접속되었습니다.')
+                    setCurrentUserCode('53872248')
+                    showToast('🪷 포교위원장 [유광수] 계정으로 전환되었습니다. (80만 원 판권)')
                   }}
                   className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
-                    currentUser?.code === '52148821'
+                    currentUser?.code === '53872248'
                       ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
                       : 'bg-white/5 text-[#E8DFD1] border-white/10'
                   }`}
                 >
-                  포교사(연화심)
+                  포교위원장(유광수)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCurrentUserCode('91010002')
+                    showToast('🌿 포교위원 [이진우(진각심)] 계정으로 전환되었습니다. (60만 원 판권)')
+                  }}
+                  className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
+                    currentUser?.code === '91010002'
+                      ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
+                      : 'bg-white/5 text-[#E8DFD1] border-white/10'
+                  }`}
+                >
+                  포교위원(이진우)
                 </button>
                 <button
                   type="button"
                   onClick={() => {
                     setCurrentUserCode('33065540')
-                    showToast('👑 관리자 [김철수] 계정으로 접속되었습니다.')
+                    showToast('👑 [김철수 포교위원장] 계정으로 전환되었습니다. (총괄 마스터 100만 원 총판)')
                   }}
                   className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
                     currentUser?.code === '33065540'
@@ -3907,7 +3939,7 @@ export default function App() {
                       : 'bg-white/5 text-[#E8DFD1] border-white/10'
                   }`}
                 >
-                  관리자(김철수)
+                  포교위원장(김철수)
                 </button>
               </div>
             </section>
@@ -4110,13 +4142,13 @@ export default function App() {
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/40 font-bold">
-                        {currentUser.role === 'master'
-                          ? '관리자 계정'
+                        {currentUser.role === 'master' || currentUser.role === 'agent' || currentUser.role === 'committee_head'
+                          ? '소원사 포교위원장'
+                          : currentUser.role === 'committee_member'
+                          ? '소원사 포교위원'
                           : currentUser.role === 'temple_admin'
-                          ? '소원사 본부 계정'
-                          : currentUser.role === 'agent'
-                          ? '공식 포교사 계정'
-                          : '제주 소원사 신도 계정'}
+                          ? '소원사 본부 (신도회장)'
+                          : '제주 소원사 신도'}
                       </span>
                       <h2 className="font-serif-kr text-xl font-bold mt-1.5">
                         {currentUser.name}
@@ -4299,11 +4331,11 @@ export default function App() {
                     />
                   </div>
 
-                  {/* 3. 포교사/관리자 전용 수당 입금 계좌 정보 */}
+                  {/* 3. 포교위원 전용 수당 입금 계좌 정보 */}
                   {isAgentOrAbove && (
                     <div className="pt-3 border-t border-[#EFE9DD] space-y-2.5">
                       <span className="block text-[11px] font-bold text-[#9A7418]">
-                        [포교사 전용] 불사 수당 정산 계좌 정보
+                        [포교위원 전용] 불사 포교비(수당) 정산 계좌 정보
                       </span>
                       <div className="grid grid-cols-3 gap-2">
                         <input
@@ -4357,14 +4389,15 @@ export default function App() {
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-[11px] text-[#F5D061] font-semibold">
-                    포교사 모바일 파트너 센터
+                    포교위원 모바일 파트너 센터
                   </span>
                   <h2 className="font-serif-kr text-xl font-bold mt-0.5">
                     {activeAgent.name}
-                    {activeAgent.dharma_name ? `(${activeAgent.dharma_name})` : ''}님의 전법 도량
+                    {activeAgent.dharma_name ? `(${activeAgent.dharma_name})` : ''}
+                    {activeAgent.role === 'committee_member' ? ' 포교위원' : ' 포교위원장'}님의 전법 도량
                   </h2>
                 </div>
-                {isAdmin && (
+                {isMaster && (
                   <select
                     value={selectedAgentCode}
                     onChange={(e) => setSelectedAgentCode(e.target.value)}
@@ -4372,7 +4405,7 @@ export default function App() {
                   >
                     {agents.map((ag) => (
                       <option key={ag.code} value={ag.code}>
-                        {ag.name} ({ag.code})
+                        {ag.name} ({ag.role === 'committee_member' ? '포교위원' : '포교위원장'})
                       </option>
                     ))}
                   </select>
@@ -4393,9 +4426,42 @@ export default function App() {
                   </div>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-xl p-2.5 text-center">
-                  <div className="text-[10.5px] text-[#BFB6AA] whitespace-nowrap">1차 포교 수당</div>
+                  <div className="text-[10.5px] text-[#BFB6AA] whitespace-nowrap">직접 포교 수당</div>
                   <div className="text-base sm:text-lg font-bold text-emerald-400 mt-0.5 whitespace-nowrap">
-                    {commissionRules.rate1st}%
+                    {activeAgent.role === 'committee_member' ? '60만 원' : '80만 원'}
+                  </div>
+                </div>
+              </div>
+
+              {/* 판권 및 포교비 집행 안내 카드 (포교위원장/포교위원 화면 맞춤형) */}
+              <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#1F1B17] to-[#2A231C] border border-[#C59B27]/35 space-y-2 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[#F5D061] flex items-center gap-1">
+                    <span>📜</span>
+                    <span>
+                      {activeAgent.role === 'committee_member'
+                        ? '포교위원(60만) 불사 포교비 기준'
+                        : '포교위원장(80만) 불사 포교비 기준'}
+                    </span>
+                  </span>
+                  <span className="text-[10.5px] text-[#A69B8D]">위패 1기(200만 원) 기준</span>
+                </div>
+                <div className="space-y-1.5 text-[11.5px] text-[#E8DFD1]">
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-black/25">
+                    <span className="text-[#C59B27] font-semibold">① 본인 직접 유치 성사 포교비</span>
+                    <strong className="text-emerald-400 font-bold">
+                      {activeAgent.role === 'committee_member' ? '600,000원' : '800,000원'}
+                    </strong>
+                  </div>
+                  {activeAgent.role !== 'committee_member' && (
+                    <div className="flex items-center justify-between p-2 rounded-lg bg-black/25">
+                      <span className="text-[#C59B27] font-semibold">② 산하 포교위원 성사 시 관리 수당</span>
+                      <strong className="text-[#F5D061] font-bold">200,000원</strong>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-black/25">
+                    <span className="text-[#A69B8D]">③ 제주 소원사 사찰 봉안 불사금</span>
+                    <span className="text-white font-medium">1,000,000원</span>
                   </div>
                 </div>
               </div>
@@ -4587,32 +4653,38 @@ export default function App() {
           </main>
         )}
 
-        {/* ==================== 6. 총괄정산 & 회원관리 (관리자 센터) 탭 ==================== */}
-        {activeTab === 'admin' && isAdmin && (
+        {/* ==================== 6. 총괄정산 & 회원관리 (김철수 마스터 전산) 탭 ==================== */}
+        {activeTab === 'admin' && isMaster && (
           <main className="flex-1 flex flex-col gap-5 p-4">
             <section className="rounded-2xl bg-gradient-to-br from-[#1C1814] to-[#2C241C] text-white p-5 border border-[#C59B27]/50 shadow-md">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 text-[#F5D061] border border-[#F5D061]/40 font-bold">
-                  ADMIN · 관리자 센터
+                  MASTER ADMIN · 김철수 총괄 전산
                 </span>
                 <Settings className="w-4 h-4 text-[#F5D061]" />
               </div>
               <h2 className="font-serif-kr text-xl font-bold">
-                통합 회원(포교사·신도) DB & 수당 정산 센터
+                총괄 판권(100만 원) & 전국 위원회 정산 관제 센터
               </h2>
               <p className="text-xs text-[#D6CEC2] mt-1 leading-relaxed">
-                포교사 및 신도 회원 DB를 관리하고, 위패 봉안(기본 200만 원) 시 1·2·3차 포교사 및 플랫폼 총괄(5%) 수당을 자동 정산합니다.
+                김철수 총괄 대표님의 100만 원 판권 기준, 사찰 불사금 100만 원(50%) 및 포교위원장(80만) · 포교위원(60만) 판권 마진을 통합 관제합니다.
               </p>
+              <div className="mt-2.5 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-[#F5D061] flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 shrink-0 text-[#F5D061]" />
+                <span>
+                  <strong>[보안 기밀 보장]</strong> 총괄 200,000원 오버라이딩 마진은 포교위원장/포교위원 화면에 일절 노출되지 않으며 오직 대표님 화면에만 표시됩니다.
+                </span>
+              </div>
             </section>
 
-            {/* 1. 신규 포교사 / 회원 등록 및 등급 관리 */}
+            {/* 1. 신규 포교위원 / 회원 등록 및 등급 관리 */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-serif-kr font-bold text-base">
-                  1. 통합 회원 & 포교사 DB 관리 ({members.length}명)
+                  1. 통합 회원 & 포교위원회 DB 관리 ({members.length}명)
                 </h3>
                 <span className="text-xs text-[#9A7418] font-bold">
-                  포교사 {agents.length}명 · 일반신도 {members.length - agents.length}명
+                  포교위원 {agents.length}명 · 일반신도 {members.length - agents.length}명
                 </span>
               </div>
 
@@ -4622,7 +4694,7 @@ export default function App() {
               >
                 <div className="text-xs font-bold text-[#231F1C] flex items-center gap-1.5">
                   <UserPlus className="w-4 h-4 text-[#9A7418]" />
-                  <span>신규 포교사 / 신도 빠른 등록 (초기비번: 0000)</span>
+                  <span>신규 포교위원 / 신도 빠른 등록 (초기비번: 0000)</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <input
@@ -4653,7 +4725,8 @@ export default function App() {
                     onChange={(e) => setAdminNewRole(e.target.value)}
                     className="px-2 py-2 rounded-lg bg-white border border-[#DDD4C4] text-xs font-semibold"
                   >
-                    <option value="agent">포교사 등록</option>
+                    <option value="agent">포교위원장 등록 (80만)</option>
+                    <option value="committee_member">포교위원 등록 (60만)</option>
                     <option value="believer">일반신도 등록</option>
                   </select>
                   <select
@@ -4741,9 +4814,10 @@ export default function App() {
                         className="px-2 py-1 rounded-lg bg-white border border-[#D5C59B] text-[11px] font-bold text-[#231F1C] shrink-0"
                       >
                         <option value="believer">일반신도</option>
-                        <option value="agent">포교사</option>
-                        <option value="temple_admin">사찰본부</option>
-                        <option value="master">관리자</option>
+                        <option value="committee_member">포교위원 (60만)</option>
+                        <option value="agent">포교위원장 (80만)</option>
+                        <option value="temple_admin">소원사 본부</option>
+                        <option value="master">총괄 (김철수)</option>
                       </select>
                     </div>
                   ))}
@@ -4751,89 +4825,91 @@ export default function App() {
               )}
             </section>
 
-            {/* 2. 다이나믹 요율 조절 컨트롤러 */}
+            {/* 2. 총괄 판권(100만) 및 전국 위원회 배분 정책 */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-serif-kr font-bold text-base">
-                  2. 실시간 수당 배분율 설정 (200만 원 위패 기준)
+                  2. 총판 라이선스(100만 원) 수익 배분 체계
                 </h3>
-                <span className="text-xs font-bold text-[#9A7418]">합계 100%</span>
+                <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                  위패 1기 200만 원 기준
+                </span>
               </div>
 
-              <div className="space-y-3">
-                <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3]">
-                  <div className="flex justify-between text-xs font-bold mb-1">
-                    <span>① 1차 직접 유치 포교사 ({commissionRules.rate1st}%)</span>
-                    <span className="text-[#9A7418]">
-                      {((2000000 * commissionRules.rate1st) / 100).toLocaleString()}원
+              <div className="space-y-2.5 text-xs">
+                {/* 1. 총괄 대표님 직속 성사 */}
+                <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#1F1B17] to-[#2B231A] text-white border border-[#C59B27]/40 space-y-1">
+                  <div className="flex justify-between items-center font-bold">
+                    <span className="text-[#F5D061] flex items-center gap-1">
+                      <span>👑</span>
+                      <span>① 김철수 총괄 직속 성사 (산하 위원 없는 라인)</span>
                     </span>
+                    <span className="text-base text-[#F5D061]">1,000,000원 (100% 전액)</span>
                   </div>
-                  <input
-                    type="range"
-                    min="10"
-                    max="45"
-                    value={commissionRules.rate1st}
-                    onChange={(e) => updateRule('rate1st', e.target.value)}
-                    className="w-full accent-[#C59B27]"
-                  />
+                  <p className="text-[11px] text-[#C5BBAE]">
+                    산하에 포교위원장/포교위원이 없는 라인에서 성사 시, 100만 원 판권 풀 전액이 김철수 총괄 수당으로 귀속됩니다.
+                  </p>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3]">
-                  <div className="flex justify-between text-xs font-bold mb-1">
-                    <span>② 2차 추천 멘토 포교사 ({commissionRules.rate2nd}%)</span>
-                    <span className="text-[#9A7418]">
-                      {((2000000 * commissionRules.rate2nd) / 100).toLocaleString()}원
+                {/* 2. 포교위원장 성사 시 */}
+                <div className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-1.5">
+                  <div className="flex justify-between items-center font-bold text-[#231F1C]">
+                    <span className="text-emerald-800 flex items-center gap-1">
+                      <span>🌿</span>
+                      <span>② 포교위원장(80만 판권) 직접 성사 시</span>
                     </span>
+                    <span className="text-xs text-[#7A6E5E]">총 100만 원 판권 풀 집행</span>
                   </div>
-                  <input
-                    type="range"
-                    min="0"
-                    max="25"
-                    value={commissionRules.rate2nd}
-                    onChange={(e) => updateRule('rate2nd', e.target.value)}
-                    className="w-full accent-[#C59B27]"
-                  />
+                  <div className="grid grid-cols-2 gap-2 text-[11px] pt-1">
+                    <div className="p-2.5 rounded-lg bg-white border border-[#E4DDD0]">
+                      <span className="text-[#6B6155] block">포교위원장 지급:</span>
+                      <strong className="text-[#1B1815] text-xs">800,000원 (80%)</strong>
+                    </div>
+                    <div className="p-2.5 rounded-lg bg-[#FFF9E6] border border-[#E5D399]">
+                      <span className="text-[#8A6510] block font-bold">총괄 오버라이딩 마진:</span>
+                      <strong className="text-[#9A7418] text-xs">+200,000원 (20%)</strong>
+                    </div>
+                  </div>
+                  <p className="text-[10.5px] text-[#8C8071]">
+                    ※ 포교위원장에게는 본인 포교비 80만 원만 표기되며, 총괄 20만 원 마진은 철저히 비공개됩니다.
+                  </p>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3]">
-                  <div className="flex justify-between text-xs font-bold mb-1">
-                    <span>③ 3차 상위 포교 지부장 ({commissionRules.rate3rd}%)</span>
-                    <span className="text-[#9A7418]">
-                      {((2000000 * commissionRules.rate3rd) / 100).toLocaleString()}원
+                {/* 3. 포교위원 성사 시 */}
+                <div className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-1.5">
+                  <div className="flex justify-between items-center font-bold text-[#231F1C]">
+                    <span className="text-teal-800 flex items-center gap-1">
+                      <span>🌱</span>
+                      <span>③ 산하 포교위원(60만 판권) 성사 시</span>
                     </span>
+                    <span className="text-xs text-[#7A6E5E]">총 100만 원 판권 풀 집행</span>
                   </div>
-                  <input
-                    type="range"
-                    min="0"
-                    max="15"
-                    value={commissionRules.rate3rd}
-                    onChange={(e) => updateRule('rate3rd', e.target.value)}
-                    className="w-full accent-[#C59B27]"
-                  />
+                  <div className="grid grid-cols-3 gap-1.5 text-[11px] pt-1">
+                    <div className="p-2 rounded-lg bg-white border border-[#E4DDD0]">
+                      <span className="text-[#6B6155] block">포교위원 지급:</span>
+                      <strong className="text-[#1B1815]">600,000원</strong>
+                    </div>
+                    <div className="p-2 rounded-lg bg-white border border-[#E4DDD0]">
+                      <span className="text-[#6B6155] block">상위 위원장 관리:</span>
+                      <strong className="text-[#1B1815]">200,000원</strong>
+                    </div>
+                    <div className="p-2 rounded-lg bg-[#FFF9E6] border border-[#E5D399]">
+                      <span className="text-[#8A6510] block font-bold">총괄 오버라이딩:</span>
+                      <strong className="text-[#9A7418]">+200,000원</strong>
+                    </div>
+                  </div>
+                  <p className="text-[10.5px] text-[#8C8071]">
+                    ※ 포교위원(60만)과 위원장(20만 관리비)은 80만 원 안에서만 인지하며, 총괄 20만 원 마진은 일절 노출되지 않습니다.
+                  </p>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#FFF9E6] border border-[#E5D399]">
-                  <div className="flex justify-between text-xs font-bold mb-1 text-[#7D5B0E]">
-                    <span>④ 관리자 ({commissionRules.ratePlatform}%)</span>
-                    <span>
-                      {((2000000 * commissionRules.ratePlatform) / 100).toLocaleString()}원
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min="3"
-                    max="15"
-                    value={commissionRules.ratePlatform}
-                    onChange={(e) => updateRule('ratePlatform', e.target.value)}
-                    className="w-full accent-[#9A7418]"
-                  />
-                </div>
-
+                {/* 4. 제주 소원사 사찰 불사금 */}
                 <div className="p-3 rounded-xl bg-[#231F1C] text-white flex justify-between items-center text-xs font-bold">
-                  <span>⑤ 제주 소원사 사찰 불사금 귀속 ({commissionRules.rateTemple}%)</span>
-                  <span className="text-[#F5D061]">
-                    {((2000000 * commissionRules.rateTemple) / 100).toLocaleString()}원
+                  <span className="flex items-center gap-1.5">
+                    <span>卍</span>
+                    <span>제주 소원사 사찰 봉안 불사금 (50% 고정)</span>
                   </span>
+                  <span className="text-[#F5D061]">1,000,000원</span>
                 </div>
               </div>
             </section>
@@ -4862,7 +4938,7 @@ export default function App() {
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                    직접 유치 포교사 (1차)
+                    직접 성사 유치 위원 (1차)
                   </label>
                   <select
                     value={simAgentCode}
@@ -4871,7 +4947,7 @@ export default function App() {
                   >
                     {agents.map((a) => (
                       <option key={a.code} value={a.code}>
-                        {a.name} ({a.code})
+                        {a.name} ({a.role === 'committee_member' ? '포교위원 60만' : a.role === 'master' ? '김철수 총괄' : '포교위원장 80만'})
                       </option>
                     ))}
                   </select>
@@ -4962,23 +5038,33 @@ export default function App() {
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-1.5 text-[11px] bg-white p-2.5 rounded-lg border border-[#EFE9DD]">
+                      <div className="grid grid-cols-3 gap-1.5 text-[11px] bg-white p-2.5 rounded-lg border border-[#EFE9DD]">
                         <div>
-                          <span className="text-[#786E63]">1차 ({s.agent_1st_name}): </span>
-                          <strong className="text-[#231F1C]">{amt1.toLocaleString()}원</strong>
+                          <span className="text-[#786E63] block">사찰 불사금:</span>
+                          <strong className="text-[#231F1C]">1,000,000원</strong>
                         </div>
                         <div>
-                          <span className="text-[#786E63]">2차 ({s.agent_2nd_name}): </span>
-                          <strong className="text-[#231F1C]">{amt2.toLocaleString()}원</strong>
+                          <span className="text-[#786E63] block">포교단 집행:</span>
+                          <strong className="text-[#231F1C]">
+                            {s.agent_1st_code === '33065540'
+                              ? '총괄 직속'
+                              : s.agent_1st_code === '91010002' || (s.agent_1st_name && s.agent_1st_name.includes('포교위원') && !s.agent_1st_name.includes('위원장'))
+                              ? '60만 + 20만'
+                              : '800,000원'}
+                          </strong>
                         </div>
-                        <div>
-                          <span className="text-[#786E63]">3차 ({s.agent_3rd_name}): </span>
-                          <strong className="text-[#231F1C]">{amt3.toLocaleString()}원</strong>
+                        <div className="bg-[#FFF9E6] p-1 rounded border border-[#E5D399]/60">
+                          <span className="text-[#8A6510] block font-bold">총괄 마진(김철수):</span>
+                          <strong className="text-[#9A7418]">
+                            {s.agent_1st_code === '33065540' ? '+1,000,000원' : '+200,000원'}
+                          </strong>
                         </div>
-                        <div>
-                          <span className="text-[#9A7418] font-semibold">관리자(김철수): </span>
-                          <strong className="text-[#9A7418]">{amtPlatform.toLocaleString()}원</strong>
-                        </div>
+                      </div>
+                      <div className="text-[10.5px] text-[#786E63] px-1 flex justify-between">
+                        <span>직접유치: {s.agent_1st_name}</span>
+                        {s.agent_2nd_name && s.agent_2nd_name !== '-' && (
+                          <span>상위관리: {s.agent_2nd_name}</span>
+                        )}
                       </div>
 
                       <div className="flex items-center justify-between text-[11px] text-[#8C7A5B]">
@@ -5039,9 +5125,9 @@ export default function App() {
             { id: 'sutra', label: '한줄사경', icon: BookOpen },
             { id: 'bulsa', label: '불사안내', icon: Award },
             ...(isAgentOrAbove
-              ? [{ id: 'agent', label: '포교사전산', icon: Users }]
+              ? [{ id: 'agent', label: '포교전산', icon: Users }]
               : []),
-            ...(isAdmin
+            ...(isMaster
               ? [{ id: 'admin', label: '총괄정산', icon: TrendingUp }]
               : []),
             { id: 'profile', label: '내정보', icon: User },
