@@ -1611,8 +1611,39 @@ export default function App() {
   const [quoteIdx, setQuoteIdx] = useState(0)
   const currentQuote = DAILY_QUOTES[quoteIdx]
 
-  // 소원등 탭 상태 (로그인 계정 정보로 자동 프리필)
-  const [isLanternLit, setIsLanternLit] = useState(true)
+  // 7일 소원등 축원 상태 (발원문 접수 시 7일간 대웅전에 광명 점등 유지되는 7일 정진 시스템)
+  const [lanternData, setLanternData] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sowonsa_7day_lantern')
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (parsed.expire_at && parsed.expire_at > Date.now()) {
+          return parsed
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+    return null
+  })
+
+  const isLanternLit = Boolean(lanternData && lanternData.expire_at > Date.now())
+  const lanternDaysRemaining = isLanternLit
+    ? Math.max(1, Math.ceil((lanternData.expire_at - Date.now()) / (1000 * 60 * 60 * 24)))
+    : 0
+  const isLanternExpired = Boolean(
+    !isLanternLit && (() => {
+      try {
+        const saved = localStorage.getItem('sowonsa_7day_lantern')
+        if (saved) {
+          const parsed = JSON.parse(saved)
+          return Boolean(parsed.expire_at && parsed.expire_at <= Date.now())
+        }
+      } catch (e) {}
+      return false
+    })()
+  )
+
   const [wishName, setWishName] = useState('')
   const [wishPhone, setWishPhone] = useState('')
   const [wishCategory, setWishCategory] = useState('가족건강')
@@ -1994,7 +2025,23 @@ export default function App() {
     showToast('✅ 내 계정 및 사찰 축원 상세정보가 안전하게 저장되었습니다.')
   }
 
-  // 소원등 점등 및 대웅전 축원 접수 핸들러
+  // 7일 소원등 터치 상호작용 (점등 중이면 축원 안내, 미점등이면 발원문 폼으로 부드러운 스크롤 이동)
+  const handleLanternClick = () => {
+    playSingingBowlSound()
+    if (isLanternLit) {
+      showToast(
+        `✨ ${lanternData?.believer_name || '불자'}님의 소원등이 제주 소원사 대웅전에서 축원 중입니다 (D-${lanternDaysRemaining}일 남음)`
+      )
+    } else {
+      showToast('🙏 아래 발원문을 접수하시면 대웅전 소원등이 7일간 환하게 밝혀집니다.')
+      const formEl = document.getElementById('lantern-prayer-form')
+      if (formEl) {
+        formEl.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
+  }
+
+  // 소원등 점등 및 대웅전 축원 접수 핸들러 (7일간 대웅전 점등 유지)
   const handlePrayerSubmit = (e) => {
     e.preventDefault()
     if (!wishName.trim() || !wishPhone.trim() || !wishText.trim()) {
@@ -2003,7 +2050,20 @@ export default function App() {
     }
 
     playSingingBowlSound()
-    setIsLanternLit(true)
+    const now = Date.now()
+    const expireAt = now + 7 * 24 * 60 * 60 * 1000 // 7일 정진 축원 기간
+    const newLanternInfo = {
+      believer_name: wishName.trim(),
+      believer_phone: wishPhone.trim(),
+      wish_category: wishCategory,
+      wish_text: wishText.trim(),
+      lit_at: now,
+      expire_at: expireAt,
+    }
+    try {
+      localStorage.setItem('sowonsa_7day_lantern', JSON.stringify(newLanternInfo))
+    } catch (err) {}
+    setLanternData(newLanternInfo)
 
     const assignedAgentCode = currentUser?.parent_code || referralCode || '52148821'
     const writerCode = currentUser?.code || extractPhone8Code(wishPhone)
@@ -2608,7 +2668,7 @@ export default function App() {
               </button>
             </section>
 
-            {/* 퀵 액션 배너 2종: 소원등 켜기 · 온라인 한줄 사경 (불사안내는 하단 탭으로 분리하여 첫 화면 부담 제거) */}
+            {/* 퀵 액션 배너 2종: 7일 소원등 켜기 · 온라인 한줄 사경 (불사안내는 하단 탭으로 분리하여 첫 화면 부담 제거) */}
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={() => {
@@ -2617,15 +2677,23 @@ export default function App() {
                 }}
                 className="bg-gradient-to-br from-[#2B241D] to-[#1A1612] text-white px-3.5 py-3.5 rounded-2xl text-left border border-[#C59B27]/50 shadow-md hover:brightness-105 active:scale-95 transition flex items-center gap-2.5 overflow-hidden"
               >
-                <div className="w-10 h-10 rounded-xl bg-[#C59B27]/20 border border-[#F5D061]/40 flex items-center justify-center shrink-0">
-                  <Flame className="w-5 h-5 text-[#F5D061]" />
+                <div
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
+                    isLanternLit
+                      ? 'bg-[#F5D061] text-[#1B1815] border-[#FFF3B8] shadow-[0_0_15px_rgba(245,208,97,0.4)]'
+                      : 'bg-[#C59B27]/20 border-[#F5D061]/40 text-[#F5D061]'
+                  }`}
+                >
+                  <Flame className={`w-5 h-5 ${isLanternLit ? 'fill-current flame-flicker' : ''}`} />
                 </div>
                 <div className="min-w-0">
                   <span className="block text-[10.5px] text-[#F5D061] font-medium whitespace-nowrap">
-                    대웅전 무료 축원
+                    {isLanternLit
+                      ? `7일 점등 축원중 (D-${lanternDaysRemaining})`
+                      : '대웅전 7일 무료 축원'}
                   </span>
                   <h3 className="font-serif-kr font-bold text-sm sm:text-base mt-0.5 whitespace-nowrap">
-                    소원등 켜기
+                    {isLanternLit ? '나의 소원등 보기' : '소원등 켜기'}
                   </h3>
                 </div>
               </button>
@@ -3717,79 +3785,159 @@ export default function App() {
           </main>
         )}
 
-        {/* ==================== 2. 디지털 소원등 탭 ==================== */}
+        {/* ==================== 2. 디지털 소원등 탭 (7일 정진 축원 시스템) ==================== */}
         {activeTab === 'lantern' && (
           <main className="flex-1 flex flex-col gap-5 p-4">
             {/* 인터랙티브 3D 광명 연등 */}
             <div className="rounded-2xl bg-gradient-to-b from-[#16120E] via-[#221C15] to-[#16120E] text-white p-6 text-center relative overflow-hidden border border-[#C59B27]/40 shadow-xl">
-              <div className="text-xs text-[#F5D061] font-medium mb-1">
-                제주 소원사 대웅전 실시간 연동
+              <div className="flex items-center justify-center gap-1.5 text-xs text-[#F5D061] font-semibold mb-1">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
+                <span>제주 소원사 대웅전 실시간 연동</span>
               </div>
-              <h2 className="font-serif-kr text-xl font-bold mb-5 whitespace-nowrap">
-                마음의 소원등(願燈)을 밝혀보세요
+              <h2 className="font-serif-kr text-xl sm:text-2xl font-bold mb-2 whitespace-nowrap">
+                마음의 7일 소원등(願燈)을 밝혀보세요
               </h2>
+              <p className="text-xs text-[#D6CEC2] max-w-xs mx-auto leading-relaxed mb-4 break-keep">
+                {isLanternLit
+                  ? `제주 소원사 스님께서 매일 오전 사시예불마다 ${lanternData?.believer_name} 불자님의 소원을 축원하고 계십니다.`
+                  : '정성으로 발원문을 올리시면 대웅전에 소원등이 밝혀지고 7일간 매일 아침 사시예불에서 축원해 드립니다.'}
+              </p>
 
               {/* 연등 그래픽 + 하단 제주 소원사 축원 명패 (생동감 넘치는 둥실둥실 부유 모션) */}
               <div
                 className={`my-4 flex flex-col items-center transition-transform duration-700 ${
-                  isLanternLit ? 'lantern-floating-unit' : 'opacity-85'
+                  isLanternLit ? 'lantern-floating-unit' : 'opacity-90'
                 }`}
               >
                 <button
                   type="button"
-                  onClick={() => {
-                    playSingingBowlSound()
-                    setIsLanternLit((prev) => !prev)
-                  }}
-                  className={`w-36 h-36 rounded-full flex flex-col items-center justify-center transition-all duration-700 border-2 ${
+                  onClick={handleLanternClick}
+                  className={`w-36 h-36 rounded-full flex flex-col items-center justify-center transition-all duration-700 border-2 cursor-pointer ${
                     isLanternLit
-                      ? 'bg-gradient-to-b from-[#FFE27A] via-[#F2A922] to-[#B86B09] border-[#FFF3B8] lantern-active scale-105'
-                      : 'bg-[#2C2620] border-[#52473B] opacity-70'
+                      ? 'bg-gradient-to-b from-[#FFE27A] via-[#F2A922] to-[#B86B09] border-[#FFF3B8] lantern-active shadow-[0_0_35px_rgba(245,208,97,0.6)]'
+                      : isLanternExpired
+                      ? 'bg-[#241E18] border-[#9E7A32] opacity-80 hover:border-[#D4AF37]'
+                      : 'bg-[#1F1914] border-[#4A3D2F] opacity-85 hover:border-[#C59B27]/60'
                   }`}
+                  title={isLanternLit ? '7일 정진 축원 진행중' : '발원문 작성하고 7일 소원등 밝히기'}
                 >
                   <Flame
                     className={`w-12 h-12 transition-transform duration-500 ${
                       isLanternLit
-                        ? 'text-[#1E1812] fill-[#FFF5C0] flame-flicker'
-                        : 'text-[#8C8275]'
+                        ? 'text-[#1E1812] fill-[#FFF5C0] flame-flicker scale-110'
+                        : isLanternExpired
+                        ? 'text-[#A8883B] opacity-70'
+                        : 'text-[#7A6B59]'
                     }`}
                   />
                   <span
                     className={`mt-1.5 font-serif-kr font-bold text-xs ${
-                      isLanternLit ? 'text-[#1E1812]' : 'text-[#C2B8AB]'
+                      isLanternLit
+                        ? 'text-[#1E1812]'
+                        : isLanternExpired
+                        ? 'text-[#D4AF37]'
+                        : 'text-[#C2B8AB]'
                     }`}
                   >
-                    {isLanternLit ? '광명 점등중' : '터치하여 점등'}
+                    {isLanternLit
+                      ? `7일 광명 점등중`
+                      : isLanternExpired
+                      ? '7일 회향 · 다시 밝히기'
+                      : '터치하여 7일 점등하기'}
                   </span>
+                  {isLanternLit && (
+                    <span className="text-[10px] text-[#1E1812]/90 font-extrabold mt-0.5 bg-[#FFF2B2]/60 px-2 py-0.5 rounded-full">
+                      사시예불 D-{lanternDaysRemaining}
+                    </span>
+                  )}
                 </button>
 
                 {/* 연등 아래 매달린 제주 소원사 황금 축원 명패 */}
                 <div className="w-0.5 h-4 bg-[#D4AF37]" />
-                <div className="px-5 py-2.5 rounded-xl bg-gradient-to-b from-[#2E251A] to-[#1B1610] border-2 border-[#D4AF37] shadow-lg text-center min-w-[220px]">
+                <div
+                  className={`px-5 py-2.5 rounded-xl bg-gradient-to-b text-center min-w-[230px] max-w-[300px] transition-all shadow-lg border-2 ${
+                    isLanternLit
+                      ? 'from-[#3A2D18] to-[#1F170C] border-[#F5D061] shadow-[0_0_20px_rgba(245,208,97,0.25)]'
+                      : 'from-[#241E18] to-[#16120E] border-[#6E5D46]'
+                  }`}
+                >
                   <div className="text-[10px] text-[#F5D061] font-bold tracking-widest border-b border-[#D4AF37]/30 pb-1 mb-1 whitespace-nowrap">
                     卍 제주 소원사 대웅전 축원 명패
                   </div>
-                  <div className="font-serif-kr text-sm font-bold text-white">
-                    {wishName.trim() ? `${wishName.trim()} 불자님` : '소원성취 발원 명패'}
+                  <div className="font-serif-kr text-sm sm:text-base font-bold text-white">
+                    {isLanternLit
+                      ? `${lanternData?.believer_name} 불자님`
+                      : wishName.trim()
+                      ? `${wishName.trim()} 불자님`
+                      : currentUser?.name
+                      ? `${currentUser.name} 불자님`
+                      : '소원성취 발원 대기'}
                   </div>
                   {currentUser?.address && (
-                    <div className="text-[10px] text-[#C8C0B7] mt-0.5 truncate max-w-[200px]">
+                    <div className="text-[10px] text-[#C8C0B7] mt-0.5 truncate max-w-[200px] mx-auto">
                       {currentUser.address}
                     </div>
                   )}
-                  <div className="text-[11px] text-[#F5D061] mt-0.5 font-semibold">
-                    [{wishCategory}]
+                  <div className="text-[11px] mt-0.5 font-semibold flex items-center justify-center gap-1.5">
+                    <span className={isLanternLit ? 'text-[#F5D061]' : 'text-[#A89C8A]'}>
+                      [{isLanternLit ? lanternData?.wish_category : wishCategory}]
+                    </span>
+                    {isLanternLit ? (
+                      <span className="px-1.5 py-0.2 rounded bg-[#F5D061]/25 text-[#FFE58A] text-[10px] font-bold border border-[#F5D061]/50">
+                        7일 정진 D-{lanternDaysRemaining}
+                      </span>
+                    ) : (
+                      <span className="px-1.5 py-0.2 rounded bg-white/10 text-[#C2B8AB] text-[9.5px]">
+                        7일 무료 사시예불 축원
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
 
-              <p className="text-xs text-[#D6CEC2] max-w-xs mx-auto leading-relaxed mt-3 break-keep">
-                소원등을 밝히고 아래 발원문을 남겨주시면 제주 소원사 스님께서 아침 사시예불마다 축원해 드립니다.
-              </p>
+              {/* 하단 상태별 맞춤 안내 및 빠른 동작 버튼 */}
+              <div className="mt-3">
+                {isLanternLit ? (
+                  <div className="bg-[#FAF3DF]/10 border border-[#F5D061]/35 rounded-xl p-3 text-xs text-[#FAF8F5] leading-relaxed break-keep">
+                    <div className="flex items-center justify-center gap-1.5 font-bold text-[#F5D061] mb-1">
+                      <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                      <span>{lanternData?.believer_name} 불자님의 7일 정진 축원이 진행 중입니다</span>
+                    </div>
+                    <p className="text-[11px] text-[#D6CEC2]">
+                      매일 오전 10시 30분 사시예불에서 제주 소원사 스님께서 정성껏 축원해 드리고 있습니다. (D-{lanternDaysRemaining}일 남음)
+                    </p>
+                  </div>
+                ) : isLanternExpired ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const formEl = document.getElementById('lantern-prayer-form')
+                      if (formEl) formEl.scrollIntoView({ behavior: 'smooth' })
+                    }}
+                    className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#AA8010] text-[#1B1815] font-bold text-xs shadow hover:brightness-105 transition flex items-center justify-center gap-1.5"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    <span>지난 7일 기도가 회향되었습니다 · 새 발원으로 다시 밝히기</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const formEl = document.getElementById('lantern-prayer-form')
+                      if (formEl) formEl.scrollIntoView({ behavior: 'smooth' })
+                    }}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#F5D061]/20 text-[#F5D061] border border-[#F5D061]/40 text-xs font-bold hover:bg-[#F5D061]/30 transition"
+                  >
+                    <span>아래에서 발원문 작성하고 7일 소원등 켜기</span>
+                    <ChevronDown className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
             </div>
 
-            {/* 무료 소원 축원 신청 폼 */}
+            {/* 무료 소원 축원 신청 폼 (고유 id 부여로 원터치 스크롤 이동 연동) */}
             <form
+              id="lantern-prayer-form"
               onSubmit={handlePrayerSubmit}
               className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-4"
             >
@@ -3929,7 +4077,11 @@ export default function App() {
                 className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-bold text-xs sm:text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-2 whitespace-nowrap"
               >
                 <Flame className="w-4 h-4 fill-current shrink-0" />
-                <span>대웅전 소원등 켜고 사시예불 축원 올리기</span>
+                <span>
+                  {isLanternLit
+                    ? '대웅전에 7일 소원등 새로 켜고 축원 올리기'
+                    : '대웅전 7일 소원등 켜고 사시예불 축원 올리기'}
+                </span>
               </button>
             </form>
 
@@ -6081,10 +6233,10 @@ export default function App() {
                 <Flame className="w-8 h-8 text-[#F5D061] fill-[#F5D061]" />
               </div>
               <h3 className="font-serif-kr text-xl font-bold text-[#F5D061]">
-                대웅전 소원등 점등 완료
+                대웅전 7일 소원등 점등 완료
               </h3>
-              <p className="text-xs text-[#E2DAD0] leading-relaxed">
-                불자님의 간절한 발원이 <strong>제주 소원사 대웅전</strong>에 접수되었습니다. 매일 오전 사시예불마다 스님께서 정성껏 축원 올립니다.
+              <p className="text-xs text-[#E2DAD0] leading-relaxed break-keep">
+                <strong>{wishName.trim()} 불자님</strong>의 간절한 발원이 <strong>제주 소원사 대웅전</strong>에 봉안되었습니다. 앞으로 <strong>7일 동안 매일 오전 사시예불</strong>마다 스님께서 부처님 전에 정성껏 축원 올립니다.
               </p>
               <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-[11px] text-[#F5D061]">
                 🙏 도량에 오시기 전날 미리 연락 주시면 따뜻한 차와 공양(식사)을 대접해 드립니다. (010-4912-1083)
