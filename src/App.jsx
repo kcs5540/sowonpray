@@ -3246,7 +3246,7 @@ export default function App() {
                     ),
                   },
                   {
-                    title: '소원사 공식 유튜브 채널',
+                    title: '제주 소원사 공식 유튜브 채널',
                     sub: '사계절 도량 풍경과 스님 예불·법문 영상',
                     url: 'https://www.youtube.com/@jejusowonsa',
                     icon: (
@@ -3258,8 +3258,8 @@ export default function App() {
                     ),
                   },
                   {
-                    title: '소원사 공식 인스타그램',
-                    sub: '사진으로 만나는 소원사의 따뜻한 일상',
+                    title: '제주 소원사 공식 인스타그램',
+                    sub: '사진으로 만나는 제주 소원사의 따뜻한 일상',
                     url: 'https://www.instagram.com/jejusowonsa/',
                     icon: (
                       <div
@@ -3276,8 +3276,8 @@ export default function App() {
                     ),
                   },
                   {
-                    title: '소원사 공식 스레드 (Threads)',
-                    sub: '매일 전하는 짧은 마음챙김과 도량 소식',
+                    title: '제주 소원사 공식 스레드 (Threads)',
+                    sub: '매일 전하는 짧은 마음챙김과 제주 도량 소식',
                     url: 'https://www.threads.com/@jejusowonsa',
                     icon: (
                       <div className="w-9 h-9 rounded-xl bg-black flex items-center justify-center shadow-sm shrink-0">
