@@ -3846,8 +3846,8 @@ export default function App() {
                       : '터치하여 7일 점등하기'}
                   </span>
                   {isLanternLit && (
-                    <span className="text-[10px] text-[#1E1812]/90 font-extrabold mt-0.5 bg-[#FFF2B2]/60 px-2 py-0.5 rounded-full">
-                      사시예불 D-{lanternDaysRemaining}
+                    <span className="text-[10px] text-[#1E1812]/90 font-extrabold mt-0.5 bg-[#FFF2B2]/70 px-2.5 py-0.5 rounded-full whitespace-nowrap">
+                      사시예불 축원중
                     </span>
                   )}
                 </button>
