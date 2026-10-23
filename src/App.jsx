@@ -15,6 +15,7 @@ import {
   RefreshCw,
   ChevronRight,
   ChevronDown,
+  ChevronUp,
   Search,
   Coffee,
   ExternalLink,
@@ -1344,6 +1345,7 @@ export default function App() {
   const [healingAudioTrack, setHealingAudioTrack] = useState('prajna_chanting')
   const [isHealingPlaying, setIsHealingPlaying] = useState(false)
   const [isHealingVoiceOn, setIsHealingVoiceOn] = useState(true) // 스님 음성 낭독 기본 켜짐
+  const [isPlayerExpanded, setIsPlayerExpanded] = useState(false) // 홈 화면 대안1: 기본 슬림 바, 터치 시 펼침
   const [sleepTimerMinutes, setSleepTimerMinutes] = useState(null) // null | 15 | 30 | 60
   const [sleepTimerSecondsLeft, setSleepTimerSecondsLeft] = useState(0)
   const [showFullAudioModal, setShowFullAudioModal] = useState(false)
@@ -2649,163 +2651,267 @@ export default function App() {
               </button>
             </div>
 
-            {/* ==================== 24시간 마음 쉼터: 일할 때 & 잘 때 듣는 법음(法音) 플레이어 ==================== */}
-            <section className="rounded-2xl bg-gradient-to-br from-[#1E1914] via-[#2A221A] to-[#16120E] text-white p-4 sm:p-5 border-2 border-[#C59B27]/60 shadow-xl space-y-3.5 relative overflow-hidden">
+            {/* ==================== 24시간 마음 쉼터: 일할 때 & 잘 때 듣는 법음(法音) 플레이어 (대안 1: 슬림 콤팩트 바 + 터치 시 펼침) ==================== */}
+            <section className="rounded-2xl bg-gradient-to-br from-[#1E1914] via-[#2A221A] to-[#16120E] text-white border-2 border-[#C59B27]/60 shadow-xl overflow-hidden transition-all duration-300">
               {/* 은은한 배경 후광 */}
               <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#F5D061]/10 rounded-full blur-2xl pointer-events-none" />
 
-              <div className="flex items-start justify-between gap-2 relative z-10">
-                <div className="flex items-center gap-2.5">
-                  <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border ${
-                    isHealingPlaying
-                      ? 'bg-[#F5D061] text-[#1B1815] border-[#FFF3B8] shadow-[0_0_20px_rgba(245,208,97,0.5)] scale-105'
-                      : 'bg-white/10 text-[#F5D061] border-white/10'
-                  } transition-all duration-500`}>
-                    <Headphones className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-black text-[#F5D061] bg-[#F5D061]/15 px-2 py-0.5 rounded-full border border-[#F5D061]/30">
-                        24시간 마음 쉼터
-                      </span>
-                      {isHealingPlaying && (
-                        <span className="flex items-center gap-1 text-[10px] text-[#4ADE80] font-bold">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-ping" />
-                          마음 치유 중
-                        </span>
-                      )}
-                    </div>
-                    <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white mt-0.5">
-                      일할 때 & 잘 때 듣는 법음(法音)
-                    </h3>
-                  </div>
-                </div>
-
-                {/* 우측 컨트롤: 스님 음성 낭독 토글 & 전체화면 */}
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <button
-                    type="button"
-                    onClick={handleToggleHealingVoice}
-                    className={`px-2.5 py-1.5 rounded-xl text-[10.5px] font-bold border flex items-center gap-1 transition ${
-                      isHealingVoiceOn
-                        ? 'bg-[#F5D061] text-[#1B1815] border-[#FFF3B8] shadow-sm'
-                        : 'bg-white/10 text-[#C2B8AB] border-white/15'
-                    }`}
-                    title="스님 음성 낭독 켜기/끄기"
+              {/* [상태 A] 기본 슬림 콤팩트 바 (평소 화면을 차지하지 않고 1줄로 세련되게 노출) */}
+              {!isPlayerExpanded ? (
+                <div className="p-3 sm:p-3.5 flex items-center justify-between gap-2.5">
+                  <div
+                    className="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer"
+                    onClick={() => setIsPlayerExpanded(true)}
                   >
-                    <Volume2 className="w-3.5 h-3.5" />
-                    <span>{isHealingVoiceOn ? '스님 음성 ON' : '음성 끔'}</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowFullAudioModal(true)}
-                    className="p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-[#E8DFD1] transition"
-                    title="전체 화면 플레이어 열기"
-                  >
-                    <Maximize2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
-              {/* 5대 힐링 트랙 선택 탭 (1번 반야심경 독경은 상단 2칸 확장 추천 배치) */}
-              <div className="grid grid-cols-2 gap-2 relative z-10">
-                {HEALING_AUDIO_TRACKS.map((t, idx) => {
-                  const isSelected = healingAudioTrack === t.id
-                  const isThisPlaying = isSelected && isHealingPlaying
-                  const isFeatured = idx === 0
-                  return (
-                    <button
-                      key={t.id}
-                      type="button"
-                      onClick={() => handleToggleHealingPlay(t.id)}
-                      className={`p-2.5 rounded-xl text-left border transition-all flex items-center gap-2.5 ${
-                        isFeatured ? 'col-span-2' : ''
-                      } ${
-                        isSelected
-                          ? 'bg-gradient-to-r from-[#3D3020] via-[#2D2317] to-[#1F1710] border-[#F5D061] shadow-lg scale-[1.01]'
-                          : 'bg-white/5 border-white/10 hover:bg-white/10'
+                    <div
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border transition-all duration-300 ${
+                        isHealingPlaying
+                          ? 'bg-[#F5D061] text-[#1B1815] border-[#FFF3B8] shadow-[0_0_15px_rgba(245,208,97,0.5)] scale-105'
+                          : 'bg-white/10 text-[#F5D061] border-white/10'
                       }`}
                     >
-                      <span className="text-2xl shrink-0">{t.icon}</span>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-1.5 mb-0.5">
-                          <span className="text-[9.5px] text-[#F5D061] font-bold truncate">
-                            {t.category}
+                      <Headphones className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-black text-[#F5D061] bg-[#F5D061]/15 px-1.5 py-0.2 rounded border border-[#F5D061]/30 whitespace-nowrap">
+                          24시간 법음 쉼터
+                        </span>
+                        {isHealingPlaying && (
+                          <span className="flex items-center gap-1 text-[9.5px] text-[#4ADE80] font-bold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-ping" />
+                            치유중
                           </span>
-                          {t.voiceText && (
-                            <span className="bg-[#F5D061]/20 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/30">
-                              🎙️ 스님 낭독
+                        )}
+                      </div>
+                      <div className="text-xs sm:text-sm font-bold text-white truncate mt-0.5 flex items-center gap-1">
+                        <span>{HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.icon}</span>
+                        <span className="truncate">
+                          {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.title}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 우측 퀵 컨트롤: 재생/정지 + 트랙선택(펼침) + 전체화면 */}
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleToggleHealingPlay()}
+                      className="w-9 h-9 rounded-full bg-[#F5D061] text-[#1B1815] flex items-center justify-center shadow hover:scale-105 active:scale-95 transition"
+                      title="재생 / 일시정지"
+                    >
+                      {isHealingPlaying ? (
+                        <Pause className="w-4 h-4 fill-current" />
+                      ) : (
+                        <Play className="w-4 h-4 fill-current ml-0.5" />
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setIsPlayerExpanded(true)}
+                      className="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-[#F5D061] border border-[#F5D061]/30 text-xs font-bold flex items-center gap-1 transition"
+                      title="5대 불경 트랙 목록 펼치기"
+                    >
+                      <span>트랙 선택</span>
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setShowFullAudioModal(true)}
+                      className="p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-[#C2B8AB] transition"
+                      title="전체 화면 LP 모달 열기"
+                    >
+                      <Maximize2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* [상태 B] 터치 시 시원하게 펼쳐진 상세 5대 트랙 & 타이머 패널 */
+                <div className="p-4 sm:p-5 space-y-3.5 animate-in fade-in duration-200">
+                  <div className="flex items-start justify-between gap-2 relative z-10">
+                    <div className="flex items-center gap-2.5">
+                      <div
+                        className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border ${
+                          isHealingPlaying
+                            ? 'bg-[#F5D061] text-[#1B1815] border-[#FFF3B8] shadow-[0_0_20px_rgba(245,208,97,0.5)] scale-105'
+                            : 'bg-white/10 text-[#F5D061] border-white/10'
+                        } transition-all duration-500`}
+                      >
+                        <Headphones className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-black text-[#F5D061] bg-[#F5D061]/15 px-2 py-0.5 rounded-full border border-[#F5D061]/30">
+                            24시간 마음 쉼터
+                          </span>
+                          {isHealingPlaying && (
+                            <span className="flex items-center gap-1 text-[10px] text-[#4ADE80] font-bold">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-ping" />
+                              마음 치유 중
                             </span>
                           )}
                         </div>
-                        <div className="text-xs font-bold text-white truncate">
-                          {t.title}
-                        </div>
-                        <div className="text-[10px] text-[#A69B8D] truncate">
-                          {t.subtitle}
-                        </div>
+                        <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white mt-0.5">
+                          일할 때 & 잘 때 듣는 법음(法音)
+                        </h3>
                       </div>
-                      {isThisPlaying && (
-                        <span className="flex gap-0.5 items-end h-3.5 shrink-0">
-                          <span className="w-0.5 h-3.5 bg-[#F5D061] animate-pulse" />
-                          <span className="w-0.5 h-2 bg-[#F5D061] animate-pulse delay-75" />
-                          <span className="w-0.5 h-3 bg-[#F5D061] animate-pulse delay-150" />
-                        </span>
-                      )}
-                    </button>
-                  )
-                })}
-              </div>
-
-              {/* 플레이어 조작 바 & 수면 타이머 */}
-              <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between gap-3 relative z-10">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <button
-                    type="button"
-                    onClick={() => handleToggleHealingPlay()}
-                    className="w-10 h-10 rounded-full bg-[#F5D061] text-[#1B1815] flex items-center justify-center shrink-0 shadow-lg hover:scale-105 active:scale-95 transition"
-                  >
-                    {isHealingPlaying ? (
-                      <Pause className="w-5 h-5 fill-current" />
-                    ) : (
-                      <Play className="w-5 h-5 fill-current ml-0.5" />
-                    )}
-                  </button>
-                  <div className="min-w-0">
-                    <div className="text-xs font-extrabold text-[#F5D061] truncate flex items-center gap-1">
-                      <span>{HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.title}</span>
-                      {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.voiceText && isHealingVoiceOn && (
-                        <span className="text-[9px] text-[#4ADE80] font-normal shrink-0">(낭독중)</span>
-                      )}
                     </div>
-                    <div className="text-[10.5px] text-[#C2B8AB] truncate">
-                      {isHealingPlaying
-                        ? sleepTimerSecondsLeft > 0
-                          ? `🌙 ${Math.floor(sleepTimerSecondsLeft / 60)}분 ${sleepTimerSecondsLeft % 60}초 후 자동종료`
-                          : '화면 꺼짐 지원 · 연속 스트리밍 중'
-                        : '재생 버튼을 눌러 스님 음성으로 청취하세요'}
+
+                    {/* 우측 컨트롤: 스님 음성 토글 & 간편 접기 */}
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={handleToggleHealingVoice}
+                        className={`px-2.5 py-1.5 rounded-xl text-[10.5px] font-bold border flex items-center gap-1 transition ${
+                          isHealingVoiceOn
+                            ? 'bg-[#F5D061] text-[#1B1815] border-[#FFF3B8] shadow-sm'
+                            : 'bg-white/10 text-[#C2B8AB] border-white/15'
+                        }`}
+                        title="스님 음성 낭독 켜기/끄기"
+                      >
+                        <Volume2 className="w-3.5 h-3.5" />
+                        <span>{isHealingVoiceOn ? '스님 음성 ON' : '음성 끔'}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setIsPlayerExpanded(false)}
+                        className="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#D6CEC2] border border-white/15 text-xs font-bold flex items-center gap-1 transition"
+                        title="간편 접기"
+                      >
+                        <span>접기</span>
+                        <ChevronUp className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   </div>
-                </div>
 
-                {/* 수면 타이머 퀵 버튼들 */}
-                <div className="flex items-center gap-1 shrink-0">
-                  {[15, 30, 60].map((m) => (
+                  {/* 5대 힐링 트랙 선택 탭 */}
+                  <div className="grid grid-cols-2 gap-2 relative z-10">
+                    {HEALING_AUDIO_TRACKS.map((t, idx) => {
+                      const isSelected = healingAudioTrack === t.id
+                      const isThisPlaying = isSelected && isHealingPlaying
+                      const isFeatured = idx === 0
+                      return (
+                        <button
+                          key={t.id}
+                          type="button"
+                          onClick={() => handleToggleHealingPlay(t.id)}
+                          className={`p-2.5 rounded-xl text-left border transition-all flex items-center gap-2.5 ${
+                            isFeatured ? 'col-span-2' : ''
+                          } ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#3D3020] via-[#2D2317] to-[#1F1710] border-[#F5D061] shadow-lg scale-[1.01]'
+                              : 'bg-white/5 border-white/10 hover:bg-white/10'
+                          }`}
+                        >
+                          <span className="text-2xl shrink-0">{t.icon}</span>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5 mb-0.5">
+                              <span className="text-[9.5px] text-[#F5D061] font-bold truncate">
+                                {t.category}
+                              </span>
+                              {t.voiceText && (
+                                <span className="bg-[#F5D061]/20 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/30">
+                                  🎙️ 스님 낭독
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-xs font-bold text-white truncate">
+                              {t.title}
+                            </div>
+                            <div className="text-[10px] text-[#A69B8D] truncate">
+                              {t.subtitle}
+                            </div>
+                          </div>
+                          {isThisPlaying && (
+                            <span className="flex gap-0.5 items-end h-3.5 shrink-0">
+                              <span className="w-0.5 h-3.5 bg-[#F5D061] animate-pulse" />
+                              <span className="w-0.5 h-2 bg-[#F5D061] animate-pulse delay-75" />
+                              <span className="w-0.5 h-3 bg-[#F5D061] animate-pulse delay-150" />
+                            </span>
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
+
+                  {/* 플레이어 조작 바 & 수면 타이머 */}
+                  <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between gap-3 relative z-10">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <button
+                        type="button"
+                        onClick={() => handleToggleHealingPlay()}
+                        className="w-10 h-10 rounded-full bg-[#F5D061] text-[#1B1815] flex items-center justify-center shrink-0 shadow-lg hover:scale-105 active:scale-95 transition"
+                      >
+                        {isHealingPlaying ? (
+                          <Pause className="w-5 h-5 fill-current" />
+                        ) : (
+                          <Play className="w-5 h-5 fill-current ml-0.5" />
+                        )}
+                      </button>
+                      <div className="min-w-0">
+                        <div className="text-xs font-extrabold text-[#F5D061] truncate flex items-center gap-1">
+                          <span>{HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.title}</span>
+                          {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.voiceText &&
+                            isHealingVoiceOn && (
+                              <span className="text-[9px] text-[#4ADE80] font-normal shrink-0">
+                                (낭독중)
+                              </span>
+                            )}
+                        </div>
+                        <div className="text-[10.5px] text-[#C2B8AB] truncate">
+                          {isHealingPlaying
+                            ? sleepTimerSecondsLeft > 0
+                              ? `🌙 ${Math.floor(sleepTimerSecondsLeft / 60)}분 ${sleepTimerSecondsLeft % 60}초 후 자동종료`
+                              : '화면 꺼짐 지원 · 연속 스트리밍 중'
+                            : '재생 버튼을 눌러 스님 음성으로 청취하세요'}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 수면 타이머 퀵 버튼들 */}
+                    <div className="flex items-center gap-1 shrink-0">
+                      {[15, 30, 60].map((m) => (
+                        <button
+                          key={m}
+                          type="button"
+                          onClick={() => handleSetSleepTimer(m)}
+                          className={`px-2 py-1 rounded-lg text-[10px] font-bold border transition ${
+                            sleepTimerMinutes === m
+                              ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
+                              : 'bg-white/5 text-[#D6CEC2] border-white/10 hover:bg-white/15'
+                          }`}
+                        >
+                          {m}분
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 하단 전체화면 모달 열기 & 접기 바 */}
+                  <div className="flex items-center justify-between pt-1 text-xs text-[#8C8275] border-t border-white/10">
                     <button
-                      key={m}
                       type="button"
-                      onClick={() => handleSetSleepTimer(m)}
-                      className={`px-2 py-1 rounded-lg text-[10px] font-bold border transition ${
-                        sleepTimerMinutes === m
-                          ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
-                          : 'bg-white/5 text-[#D6CEC2] border-white/10 hover:bg-white/15'
-                      }`}
+                      onClick={() => setShowFullAudioModal(true)}
+                      className="hover:text-[#F5D061] flex items-center gap-1 text-[11px] font-medium transition"
                     >
-                      {m}분
+                      <Maximize2 className="w-3.5 h-3.5" />
+                      <span>전체화면 감성 LP 모드</span>
                     </button>
-                  ))}
+                    <button
+                      type="button"
+                      onClick={() => setIsPlayerExpanded(false)}
+                      className="hover:text-white flex items-center gap-1 text-[11px] font-bold transition"
+                    >
+                      <span>위로 접기</span>
+                      <ChevronUp className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </section>
 
             {/* 따뜻한 차와 사찰 공양(식사) 대접 온라인 사전예약 카드 (평소에는 깔끔하게 접혀 있고 버튼 터치 시 열림) */}
