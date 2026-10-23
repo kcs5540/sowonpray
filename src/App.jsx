@@ -3234,6 +3234,18 @@ export default function App() {
                     ),
                   },
                   {
+                    title: '제주 소원사 네이버 플레이스',
+                    sub: '네이버 지도 길찾기 · 도량 위치 · 방문자 리뷰',
+                    url: 'https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%86%8C%EC%9B%90%EC%82%AC',
+                    icon: (
+                      <div className="w-9 h-9 rounded-xl bg-[#03C75A] flex items-center justify-center shadow-sm shrink-0">
+                        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white" aria-hidden="true">
+                          <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z" />
+                        </svg>
+                      </div>
+                    ),
+                  },
+                  {
                     title: '소원사 공식 유튜브 채널',
                     sub: '사계절 도량 풍경과 스님 예불·법문 영상',
                     url: 'https://www.youtube.com/@jejusowonsa',
