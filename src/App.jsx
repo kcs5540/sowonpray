@@ -3323,6 +3323,33 @@ export default function App() {
                 ))}
               </div>
             </section>
+
+            {/* 공식 푸터 & 제주AI파트너 시스템 전산 개발 크레딧 */}
+            <footer className="pt-5 pb-24 border-t border-[#E6DEC8] text-center space-y-3.5">
+              <div className="space-y-1 text-[11px] text-[#786E63] leading-relaxed break-keep">
+                <p className="font-bold text-[#231F1C] text-xs">제주 소원사 (소원성취 기도도량)</p>
+                <p>제주특별자치도 제주시 죽성서길 75 (오등동 935) | 종무소 064-805-2007</p>
+                <p>참배 및 기도 상담 문의: 010-4912-1083</p>
+              </div>
+
+              {/* 제주AI파트너 공식 디지털 전산 파트너십 크레딧 박스 */}
+              <div className="max-w-sm mx-auto p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#E2D8C3] text-center space-y-1.5 shadow-sm">
+                <div className="flex items-center justify-center gap-1.5 text-[11px] font-bold text-[#231F1C]">
+                  <Sparkles className="w-3.5 h-3.5 text-[#C59B27]" />
+                  <span>시스템 개발 및 디지털 전산 총괄</span>
+                </div>
+                <div className="font-serif-kr text-sm font-extrabold text-[#9A7418] tracking-wide">
+                  제주AI파트너
+                </div>
+                <p className="text-[10.5px] text-[#8C8275] leading-relaxed break-keep">
+                  사찰 · 공공 · 기업 맞춤형 모바일 웹 플랫폼 구축 및 AI 솔루션
+                </p>
+              </div>
+
+              <p className="text-[10px] text-[#A69B8D] tracking-wider pt-1">
+                © Jeju Sowonsa. Powered by Jeju AI Partner. All rights reserved.
+              </p>
+            </footer>
           </main>
         )}
 
@@ -3970,6 +3997,33 @@ export default function App() {
                 ))}
               </div>
             </section>
+
+            {/* 공식 푸터 & 제주AI파트너 시스템 전산 개발 크레딧 */}
+            <footer className="pt-5 pb-24 border-t border-[#E6DEC8] text-center space-y-3.5">
+              <div className="space-y-1 text-[11px] text-[#786E63] leading-relaxed break-keep">
+                <p className="font-bold text-[#231F1C] text-xs">제주 소원사 (소원성취 기도도량)</p>
+                <p>제주특별자치도 제주시 죽성서길 75 (오등동 935) | 종무소 064-805-2007</p>
+                <p>참배 및 기도 상담 문의: 010-4912-1083</p>
+              </div>
+
+              {/* 제주AI파트너 공식 디지털 전산 파트너십 크레딧 박스 */}
+              <div className="max-w-sm mx-auto p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#E2D8C3] text-center space-y-1.5 shadow-sm">
+                <div className="flex items-center justify-center gap-1.5 text-[11px] font-bold text-[#231F1C]">
+                  <Sparkles className="w-3.5 h-3.5 text-[#C59B27]" />
+                  <span>시스템 개발 및 디지털 전산 총괄</span>
+                </div>
+                <div className="font-serif-kr text-sm font-extrabold text-[#9A7418] tracking-wide">
+                  제주AI파트너
+                </div>
+                <p className="text-[10.5px] text-[#8C8275] leading-relaxed break-keep">
+                  사찰 · 공공 · 기업 맞춤형 모바일 웹 플랫폼 구축 및 AI 솔루션
+                </p>
+              </div>
+
+              <p className="text-[10px] text-[#A69B8D] tracking-wider pt-1">
+                © Jeju Sowonsa. Powered by Jeju AI Partner. All rights reserved.
+              </p>
+            </footer>
           </main>
         )}
 
