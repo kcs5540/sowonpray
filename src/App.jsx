@@ -959,16 +959,50 @@ function playMoktakAcousticSynth() {
   }
 }
 
-// 24시간 힐링 법음 & 수면 명상 4대 테마 트랙
+// 24시간 힐링 법음 & 수면 명상 5대 테마 트랙 (스님 음성 낭독 탑재)
 const HEALING_AUDIO_TRACKS = [
   {
+    id: 'prajna_chanting',
+    category: '경전독경',
+    icon: '📿',
+    title: '반야심경(般若心經) 스님 음성 독경',
+    subtitle: '실물 목탁 리듬과 함께하는 마하반야바라밀다심경 완독',
+    description: '박달나무 목탁 원음에 맞추어 스님 음성으로 반야심경 전편을 엄숙하고 맑게 독송해 드립니다.',
+    type: 'chant',
+    voiceText:
+      '마하반야바라밀다심경. 관자재보살이 깊은 반야바라밀다를 행할 때 오온이 모두 공함을 비추어보고 온갖 고통과 액난을 건넜느니라. 사리자여, 물질이 공과 다르지 않고 공이 물질과 다르지 않으며, 물질이 곧 공이요 공이 곧 물질이니, 느낌과 생각과 의지와 의식도 또한 그러하니라. 사리자여, 모든 법은 공하여 생겨나지도 않고 없어지지도 않으며, 더럽지도 않고 깨끗하지도 않으며, 늘지도 않고 줄지도 않느니라. 그러므로 공 가운데에는 물질도 없고 느낌과 생각과 행함과 의식도 없으며, 눈과 귀와 코와 혀와 몸과 뜻도 없고, 빛과 소리와 냄새와 맛과 감촉과 법도 없으며, 눈의 경계도 없고 의식의 경계까지도 없느니라. 무명도 없고 또한 무명이 다함도 없으며, 늙고 죽음도 없고 또한 늙고 죽음이 다함까지도 없으며, 고통도 없고 고통의 원인도 없으며 괴로움의 사라짐도 없고 도를 닦는 길도 없으며, 지혜도 없고 얻을 것도 없느니라. 얻을 것이 없는 까닭에 보살은 반야바라밀다에 의지하므로 마음에 걸림이 없고, 걸림이 없으므로 두려움이 없어서 뒤바뀐 헛된 꿈을 영원히 여의고 마침내 열반에 이르느니라. 삼세의 모든 부처님도 반야바라밀다에 의지하므로 가장 높은 위없는 바른 깨달음을 얻느니라. 그러므로 알라. 반야바라밀다는 가장 신성한 주문이며 가장 밝은 주문이며 가장 높은 주문이니, 능히 온갖 괴로움을 없애고 진실하여 헛되지 않느니라. 그러므로 반야바라밀다의 주문을 설하노니 주문은 곧 이러하니라. 아제아제 바라아제 바라승아제 모지사바하. 아제아제 바라아제 바라승아제 모지사바하. 아제아제 바라아제 바라승아제 모지사바하.',
+  },
+  {
     id: 'sleep_meditation',
-    category: '수면·치유',
+    category: '수면유도',
     icon: '🌙',
-    title: '밤에 듣는 숙면 수면 명상',
+    title: '스님의 숙면 수면 유도 낭독',
     subtitle: '부처님의 따뜻한 위로 & 432Hz 힐링 싱잉볼',
-    description: '하루의 번뇌와 긴장을 스르륵 녹여내는 깊고 고요한 숙면 유도 명상음입니다.',
+    description: '자비로운 스님의 차분한 음성으로 하루의 번뇌와 피로를 스르륵 녹여내는 깊고 평안한 수면 명상입니다.',
     type: 'sleep',
+    voiceText:
+      '자리에 편안히 누워 가만히 눈을 감아보세요. 코로 숨을 깊게 들이마시고, 천천히 길게 내쉽니다. 오늘 하루도 참으로 수고 많으셨습니다. 세상의 모든 분주한 일과 무거운 생각들은 잠시 저 문 밖에 내려놓으세요. 부처님의 따뜻한 자비 광명이 온몸을 포근하게 감싸줍니다. 머리의 긴장이 풀리고, 어깨의 짐이 사르르 내려앉으며, 발끝까지 온몸이 고요하고 평안해집니다. 모든 것이 괜찮습니다. 당신은 지금 이 순간 완전히 안전하고 평화롭습니다. 고요한 숨결 속에서 편안히 쉬어가세요. 나무아미타불. 관세음보살.',
+  },
+  {
+    id: 'dhammapada_wisdom',
+    category: '마음치유',
+    icon: '📜',
+    title: '법구경(法句經) 인생 지혜 말씀 낭독',
+    subtitle: '마음을 다스리고 평정심을 찾는 부처님 가르침',
+    description: '복잡한 생각을 비우고 지혜로운 평정심을 되찾아주는 부처님의 보석 같은 말씀 낭독입니다.',
+    type: 'wisdom',
+    voiceText:
+      '부처님께서 말씀하셨습니다. 마음은 모든 일의 근본이요, 마음이 주가 되어 모든 것을 만드나니, 맑고 깨끗한 마음으로 말하고 행동하면, 그림자가 몸을 따르듯 평안과 행복이 언제나 그를 따르리라. 쇠에서 생긴 녹이 스스로 그 쇠를 갉아먹듯이, 마음에서 일어난 탐욕과 분노가 마침내 제 몸을 해치느니라. 남의 허물을 들추지 말고, 내가 행하고 행하지 않은 것만을 살피라. 살아있는 모든 것은 고통을 두려워하고 죽음을 싫어하나니, 나를 미루어 남을 헤아리고 해치지 말라. 원한은 원한으로 갚아서는 결코 풀리지 않나니, 오직 자비와 용서로써만 원한은 영원히 쉬어지느니라. 이것이 변치 않는 진리의 가르침이니라.',
+  },
+  {
+    id: 'rhythmic_moktak',
+    category: '마음정진',
+    icon: '🪷',
+    title: '청정한 전통 박달나무 목탁 정진',
+    subtitle: '박달나무 실물 목탁 규칙적 타격 (사경·호흡 명상)',
+    description: '일정한 리듬으로 울려 퍼지는 청아한 목탁 소리가 복잡한 생각을 끊고 호흡을 고요하게 합니다.',
+    type: 'moktak',
+    voiceText: null,
   },
   {
     id: 'temple_chime_nature',
@@ -978,24 +1012,7 @@ const HEALING_AUDIO_TRACKS = [
     subtitle: '사찰 산들바람 ASMR & 청아한 은방울 풍경',
     description: '일할 때, 독서할 때, 머리를 맑게 식히고 집중력을 극대화해 주는 자연 백색소음입니다.',
     type: 'nature',
-  },
-  {
-    id: 'rhythmic_moktak',
-    category: '마음정진',
-    icon: '🪷',
-    title: '마음이 청정해지는 전통 목탁 정진',
-    subtitle: '박달나무 실물 목탁 규칙적 타격 독경',
-    description: '일정한 리듬으로 울려 퍼지는 청아한 목탁 소리가 복잡한 생각을 끊고 호흡을 고요하게 합니다.',
-    type: 'moktak',
-  },
-  {
-    id: 'prajna_chanting',
-    category: '소원성취',
-    icon: '🔔',
-    title: '반야심경 & 천수경 평화로운 음송',
-    subtitle: '업장 소멸과 마군을 물리치는 지혜의 경전',
-    description: '공간의 나쁜 기운을 정화하고 가정과 일터에 복덕을 불러들이는 신성한 음송입니다.',
-    type: 'chant',
+    voiceText: null,
   },
 ]
 
@@ -1008,6 +1025,8 @@ class HealingAudioEngine {
     this.nodes = []
     this.intervalId = null
     this.htmlAudio = null
+    this.voiceTimeout = null
+    this.voiceEnabled = true
   }
 
   initContext() {
@@ -1036,7 +1055,7 @@ class HealingAudioEngine {
       try {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: track.title,
-          artist: '제주 소원사 (24시간 마음 쉼터)',
+          artist: '제주 소원사 (스님 음성 낭독)',
           album: '제주 소원사 전국 포교위원회',
           artwork: [
             { src: '/images/moktak_icon.png', sizes: '512x512', type: 'image/png' },
@@ -1047,7 +1066,77 @@ class HealingAudioEngine {
     }
   }
 
+  speakTrackVoice(text) {
+    if (!this.voiceEnabled || !text) return
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
+    try {
+      window.speechSynthesis.cancel()
+      const clean = String(text)
+        .replace(/[《》“”"']/g, ' ')
+        .replace(/\.\s*/g, '. ... ')
+        .trim()
+      const u = new SpeechSynthesisUtterance(clean)
+      u.lang = 'ko-KR'
+      u.pitch = 0.62 // 깊고 장엄한 스님 저음
+      u.rate = 0.78 // 여유롭고 차분한 독송 속도
+
+      const voices = window.speechSynthesis.getVoices()
+      const koVoices = voices.filter(
+        (v) => v.lang && (v.lang.toLowerCase().includes('ko') || v.lang.toLowerCase().includes('kr'))
+      )
+      const male =
+        koVoices.find((v) =>
+          /male|injoon|minsoo|kpb|kod|cjm|nam|man|남성/i.test(`${v.name} ${v.voiceURI}`)
+        ) || koVoices[0]
+      if (male) u.voice = male
+
+      u.onend = () => {
+        // 낭독이 끝나고도 아직 재생 중이고 음성이 켜져 있으면, 3.5초 여운 뒤 경건하게 반복 낭독
+        if (this.isPlaying && this.voiceEnabled && this.currentTrack) {
+          this.voiceTimeout = setTimeout(() => {
+            const current = HEALING_AUDIO_TRACKS.find((t) => t.id === this.currentTrack)
+            if (current?.voiceText && this.isPlaying && this.voiceEnabled) {
+              this.speakTrackVoice(current.voiceText)
+            }
+          }, 3500)
+        }
+      }
+      u.onerror = () => {}
+
+      window.speechSynthesis.speak(u)
+    } catch (e) {}
+  }
+
+  setVoiceEnabled(enabled) {
+    this.voiceEnabled = enabled
+    if (!enabled) {
+      if (this.voiceTimeout) {
+        clearTimeout(this.voiceTimeout)
+        this.voiceTimeout = null
+      }
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel()
+        } catch (e) {}
+      }
+    } else if (this.isPlaying && this.currentTrack) {
+      const current = HEALING_AUDIO_TRACKS.find((t) => t.id === this.currentTrack)
+      if (current?.voiceText) {
+        this.speakTrackVoice(current.voiceText)
+      }
+    }
+  }
+
   stopAll() {
+    if (this.voiceTimeout) {
+      clearTimeout(this.voiceTimeout)
+      this.voiceTimeout = null
+    }
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel()
+      } catch (e) {}
+    }
     if (this.intervalId) {
       clearInterval(this.intervalId)
       this.intervalId = null
@@ -1072,20 +1161,24 @@ class HealingAudioEngine {
     }
   }
 
-  playTrack(trackId) {
+  playTrack(trackId, voiceEnabled = true) {
     this.stopAll()
     this.initContext()
     this.isPlaying = true
     this.currentTrack = trackId
+    this.voiceEnabled = voiceEnabled
     this.startSilentAudioKeeper()
 
     const trackInfo = HEALING_AUDIO_TRACKS.find((t) => t.id === trackId)
     if (trackInfo) {
       this.setupMediaSession(trackInfo)
+      if (voiceEnabled && trackInfo.voiceText) {
+        this.speakTrackVoice(trackInfo.voiceText)
+      }
     }
 
     if (trackId === 'rhythmic_moktak') {
-      // 1. 박달나무 목탁 규칙적 정진 음송 (1.6초 간격 규칙적 타격)
+      // 1. 박달나무 목탁 규칙적 정진 (1.6초 간격)
       const playBeat = () => {
         try {
           const a = new Audio('/audio/moktak.mp3')
@@ -1098,7 +1191,7 @@ class HealingAudioEngine {
       playBeat()
       this.intervalId = setInterval(playBeat, 1600)
     } else if (trackId === 'temple_chime_nature') {
-      // 2. 사찰 풍경소리 & 산들바람 ASMR (맑은 풍경소리 + 바람 저음 앰비언스)
+      // 2. 사찰 풍경소리 & 산들바람 ASMR
       if (!this.ctx) return
       const ctx = this.ctx
       const chimeChords = [
@@ -1131,7 +1224,6 @@ class HealingAudioEngine {
       ringChime()
       this.intervalId = setInterval(ringChime, 4200)
 
-      // 부드러운 산들바람 저음 노이즈
       try {
         const bufferSize = Math.floor(ctx.sampleRate * 2)
         const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate)
@@ -1151,7 +1243,7 @@ class HealingAudioEngine {
         this.nodes.push(whiteNoise, filter)
       } catch (e) {}
     } else if (trackId === 'sleep_meditation') {
-      // 3. 밤에 듣는 숙면 수면 명상: 432Hz 치유 주파수 + 깊은 델타파 힐링 톤
+      // 3. 숙면 수면 유도 낭독 배경: 432Hz 치유 톤 + 216Hz 델타파 + 싱잉볼
       if (!this.ctx) return
       const ctx = this.ctx
       const now = ctx.currentTime
@@ -1161,11 +1253,11 @@ class HealingAudioEngine {
       const gain2 = ctx.createGain()
       osc1.type = 'sine'
       osc2.type = 'sine'
-      osc1.frequency.setValueAtTime(432, now) // 치유의 432Hz
-      osc2.frequency.setValueAtTime(216, now) // 깊은 216Hz 기저음
+      osc1.frequency.setValueAtTime(432, now)
+      osc2.frequency.setValueAtTime(216, now)
 
-      gain1.gain.setValueAtTime(0.06, now)
-      gain2.gain.setValueAtTime(0.04, now)
+      gain1.gain.setValueAtTime(0.05, now)
+      gain2.gain.setValueAtTime(0.03, now)
       osc1.connect(gain1)
       osc2.connect(gain2)
       gain1.connect(ctx.destination)
@@ -1174,53 +1266,69 @@ class HealingAudioEngine {
       osc2.start(now)
       this.nodes.push(osc1, osc2, gain1, gain2)
 
-      // 9초 주기 은은한 싱잉볼 타격
       this.intervalId = setInterval(() => {
         playSingingBowlSound()
       }, 9000)
-    } else {
-      // 4. 반야심경 & 천수경 평화로운 음송: 깊은 드론 베이스(136.1Hz 옴 파동) + 목탁 2.4초 주기 + 7.2초 법종음
+    } else if (trackId === 'dhammapada_wisdom') {
+      // 4. 법구경 지혜 낭독 배경: 은은한 216Hz 드론 + 8초 주기 싱잉볼
       if (!this.ctx) return
       const ctx = this.ctx
       const now = ctx.currentTime
-      const droneOsc = ctx.createOscillator()
-      const droneGain = ctx.createGain()
-      droneOsc.type = 'triangle'
-      droneOsc.frequency.setValueAtTime(136.1, now) // 우주의 옴(OM) 주파수 136.1Hz
-      droneGain.gain.setValueAtTime(0.045, now)
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.type = 'sine'
+      osc.frequency.setValueAtTime(216, now)
+      gain.gain.setValueAtTime(0.035, now)
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.start(now)
+      this.nodes.push(osc, gain)
 
-      const subDrone = ctx.createOscillator()
-      const subGain = ctx.createGain()
-      subDrone.type = 'sine'
-      subDrone.frequency.setValueAtTime(68.05, now) // 깊은 옥타브 아래 기저음
-      subGain.gain.setValueAtTime(0.035, now)
+      this.intervalId = setInterval(() => {
+        playSingingBowlSound()
+      }, 8000)
+    } else {
+      // 5. 반야심경 스님 음성 독경 배경: 1.6초 실물 목탁 + 136.1Hz 옴 파동
+      if (this.ctx) {
+        const ctx = this.ctx
+        const now = ctx.currentTime
+        const droneOsc = ctx.createOscillator()
+        const droneGain = ctx.createGain()
+        droneOsc.type = 'triangle'
+        droneOsc.frequency.setValueAtTime(136.1, now)
+        droneGain.gain.setValueAtTime(0.035, now)
 
-      droneOsc.connect(droneGain)
-      subDrone.connect(subGain)
-      droneGain.connect(ctx.destination)
-      subGain.connect(ctx.destination)
-      droneOsc.start(now)
-      subDrone.start(now)
-      this.nodes.push(droneOsc, droneGain, subDrone, subGain)
+        const subDrone = ctx.createOscillator()
+        const subGain = ctx.createGain()
+        subDrone.type = 'sine'
+        subDrone.frequency.setValueAtTime(68.05, now)
+        subGain.gain.setValueAtTime(0.025, now)
+
+        droneOsc.connect(droneGain)
+        subDrone.connect(subGain)
+        droneGain.connect(ctx.destination)
+        subGain.connect(ctx.destination)
+        droneOsc.start(now)
+        subDrone.start(now)
+        this.nodes.push(droneOsc, droneGain, subDrone, subGain)
+      }
 
       let tick = 0
-      this.intervalId = setInterval(() => {
+      const playMoktakBeat = () => {
         tick++
-        // 2.4초마다 은은한 목탁 독경 타격
-        if (tick % 2 === 0) {
-          try {
-            const a = new Audio('/audio/moktak.mp3')
-            a.volume = 0.55
-            a.play().catch(() => playMoktakSound())
-          } catch (e) {
-            playMoktakSound()
-          }
+        try {
+          const a = new Audio('/audio/moktak.mp3')
+          a.volume = 0.65
+          a.play().catch(() => playMoktakSound())
+        } catch (e) {
+          playMoktakSound()
         }
-        // 7.2초마다 영험한 사찰 법종(싱잉볼) 울림
         if (tick % 6 === 0) {
           playSingingBowlSound()
         }
-      }, 1200)
+      }
+      playMoktakBeat()
+      this.intervalId = setInterval(playMoktakBeat, 1600)
     }
   }
 }
@@ -1232,9 +1340,10 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('home')
   const [heroSlideIdx, setHeroSlideIdx] = useState(0)
 
-  // 24시간 힐링 법음 & 수면 명상 오디오 플레이어 상태
-  const [healingAudioTrack, setHealingAudioTrack] = useState('sleep_meditation')
+  // 24시간 힐링 법음 & 수면 명상 오디오 플레이어 상태 (기본: 반야심경 스님 음성 독경)
+  const [healingAudioTrack, setHealingAudioTrack] = useState('prajna_chanting')
   const [isHealingPlaying, setIsHealingPlaying] = useState(false)
+  const [isHealingVoiceOn, setIsHealingVoiceOn] = useState(true) // 스님 음성 낭독 기본 켜짐
   const [sleepTimerMinutes, setSleepTimerMinutes] = useState(null) // null | 15 | 30 | 60
   const [sleepTimerSecondsLeft, setSleepTimerSecondsLeft] = useState(0)
   const [showFullAudioModal, setShowFullAudioModal] = useState(false)
@@ -1267,10 +1376,21 @@ export default function App() {
       setIsHealingPlaying(false)
     } else {
       setHealingAudioTrack(targetTrack)
-      healingAudioEngine.playTrack(targetTrack)
+      healingAudioEngine.playTrack(targetTrack, isHealingVoiceOn)
       setIsHealingPlaying(true)
       playSingingBowlSound()
     }
+  }
+
+  const handleToggleHealingVoice = () => {
+    const next = !isHealingVoiceOn
+    setIsHealingVoiceOn(next)
+    healingAudioEngine.setVoiceEnabled(next)
+    showToast(
+      next
+        ? '🔊 스님 음성 낭독이 켜졌습니다.'
+        : '🔇 스님 음성이 꺼지고 배경 정진음만 재생됩니다.'
+    )
   }
 
   const handleSetSleepTimer = (minutes) => {
@@ -2433,29 +2553,6 @@ export default function App() {
                 <div className="flex items-center gap-1.5 shrink-0">
                   <button
                     type="button"
-                    onClick={() =>
-                      toggleSpeech(
-                        'home-quote',
-                        `오늘의 부처님 말씀입니다. ${currentQuote.verse}. ${currentQuote.source}. ${currentQuote.commentary}`
-                      )
-                    }
-                    className={`px-2.5 py-1 rounded-full text-[11px] font-bold border flex items-center gap-1 whitespace-nowrap transition ${
-                      speakingId === 'home-quote' || autoVoiceEnabled
-                        ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-sm'
-                        : 'bg-[#FAF5E6] text-[#8A6510] border-[#E5D399]'
-                    }`}
-                  >
-                    <Volume2 className="w-3.5 h-3.5 shrink-0" />
-                    <span>
-                      {speakingId === 'home-quote'
-                        ? '낭독 중지'
-                        : autoVoiceEnabled
-                        ? '음성 켜짐'
-                        : '음성 듣기'}
-                    </span>
-                  </button>
-                  <button
-                    type="button"
                     onClick={() => {
                       const nextIdx = (quoteIdx + 1) % DAILY_QUOTES.length
                       setQuoteIdx(nextIdx)
@@ -2469,10 +2566,10 @@ export default function App() {
                         playSingingBowlSound()
                       }
                     }}
-                    className="text-xs text-[#786E63] hover:text-[#231F1C] flex items-center gap-1 whitespace-nowrap shrink-0 px-1"
+                    className="text-xs text-[#786E63] hover:text-[#231F1C] flex items-center gap-1 whitespace-nowrap shrink-0 px-2 py-1 rounded-lg hover:bg-black/5 transition"
                   >
                     <RefreshCw className="w-3.5 h-3.5 shrink-0" />
-                    <span>다음</span>
+                    <span>다른 말씀</span>
                   </button>
                 </div>
               </div>
@@ -2484,6 +2581,29 @@ export default function App() {
               <p className="text-xs text-[#575049] bg-[#FAF8F5] p-3 rounded-xl border border-[#EFE9DD] leading-relaxed break-keep">
                 💡 {currentQuote.commentary}
               </p>
+
+              {/* 스님 음성으로 말씀 듣기 큼직한 황금 버튼 */}
+              <button
+                type="button"
+                onClick={() =>
+                  toggleSpeech(
+                    'home-quote',
+                    `오늘의 부처님 말씀입니다. ${currentQuote.verse}. ${currentQuote.source}. ${currentQuote.commentary}`
+                  )
+                }
+                className={`w-full mt-3 py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border transition shadow-sm ${
+                  speakingId === 'home-quote'
+                    ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] animate-pulse'
+                    : 'bg-gradient-to-r from-[#FAF3DF] via-[#F6EAC9] to-[#FAF3DF] text-[#8A6510] border-[#E5D399] hover:brightness-95'
+                }`}
+              >
+                <Volume2 className="w-4 h-4 shrink-0 text-[#C59B27]" />
+                <span>
+                  {speakingId === 'home-quote'
+                    ? '⏹ 스님 음성 낭독 멈추기'
+                    : '🔊 오늘의 말씀 스님 음성으로 바로 듣기'}
+                </span>
+              </button>
             </section>
 
             {/* 퀵 액션 배너 2종: 소원등 켜기 · 온라인 한줄 사경 (불사안내는 하단 탭으로 분리하여 첫 화면 부담 제거) */}
@@ -2561,46 +2681,75 @@ export default function App() {
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => setShowFullAudioModal(true)}
-                  className="p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-[#E8DFD1] transition"
-                  title="전체 화면 플레이어 열기"
-                >
-                  <Maximize2 className="w-4 h-4" />
-                </button>
+                {/* 우측 컨트롤: 스님 음성 낭독 토글 & 전체화면 */}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={handleToggleHealingVoice}
+                    className={`px-2.5 py-1.5 rounded-xl text-[10.5px] font-bold border flex items-center gap-1 transition ${
+                      isHealingVoiceOn
+                        ? 'bg-[#F5D061] text-[#1B1815] border-[#FFF3B8] shadow-sm'
+                        : 'bg-white/10 text-[#C2B8AB] border-white/15'
+                    }`}
+                    title="스님 음성 낭독 켜기/끄기"
+                  >
+                    <Volume2 className="w-3.5 h-3.5" />
+                    <span>{isHealingVoiceOn ? '스님 음성 ON' : '음성 끔'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowFullAudioModal(true)}
+                    className="p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-[#E8DFD1] transition"
+                    title="전체 화면 플레이어 열기"
+                  >
+                    <Maximize2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
-              {/* 4대 힐링 트랙 선택 탭 (가로 2열 그리드) */}
+              {/* 5대 힐링 트랙 선택 탭 (1번 반야심경 독경은 상단 2칸 확장 추천 배치) */}
               <div className="grid grid-cols-2 gap-2 relative z-10">
-                {HEALING_AUDIO_TRACKS.map((t) => {
+                {HEALING_AUDIO_TRACKS.map((t, idx) => {
                   const isSelected = healingAudioTrack === t.id
                   const isThisPlaying = isSelected && isHealingPlaying
+                  const isFeatured = idx === 0
                   return (
                     <button
                       key={t.id}
                       type="button"
                       onClick={() => handleToggleHealingPlay(t.id)}
-                      className={`p-2.5 rounded-xl text-left border transition-all flex items-center gap-2 ${
+                      className={`p-2.5 rounded-xl text-left border transition-all flex items-center gap-2.5 ${
+                        isFeatured ? 'col-span-2' : ''
+                      } ${
                         isSelected
-                          ? 'bg-gradient-to-r from-[#3D3020] to-[#251D14] border-[#F5D061] shadow-md'
+                          ? 'bg-gradient-to-r from-[#3D3020] via-[#2D2317] to-[#1F1710] border-[#F5D061] shadow-lg scale-[1.01]'
                           : 'bg-white/5 border-white/10 hover:bg-white/10'
                       }`}
                     >
-                      <span className="text-xl shrink-0">{t.icon}</span>
+                      <span className="text-2xl shrink-0">{t.icon}</span>
                       <div className="min-w-0 flex-1">
-                        <span className="block text-[9.5px] text-[#F5D061] font-bold truncate">
-                          {t.category}
-                        </span>
+                        <div className="flex items-center gap-1.5 mb-0.5">
+                          <span className="text-[9.5px] text-[#F5D061] font-bold truncate">
+                            {t.category}
+                          </span>
+                          {t.voiceText && (
+                            <span className="bg-[#F5D061]/20 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/30">
+                              🎙️ 스님 낭독
+                            </span>
+                          )}
+                        </div>
                         <div className="text-xs font-bold text-white truncate">
                           {t.title}
                         </div>
+                        <div className="text-[10px] text-[#A69B8D] truncate">
+                          {t.subtitle}
+                        </div>
                       </div>
                       {isThisPlaying && (
-                        <span className="flex gap-0.5 items-end h-3 shrink-0">
-                          <span className="w-0.5 h-3 bg-[#F5D061] animate-pulse" />
+                        <span className="flex gap-0.5 items-end h-3.5 shrink-0">
+                          <span className="w-0.5 h-3.5 bg-[#F5D061] animate-pulse" />
                           <span className="w-0.5 h-2 bg-[#F5D061] animate-pulse delay-75" />
-                          <span className="w-0.5 h-2.5 bg-[#F5D061] animate-pulse delay-150" />
+                          <span className="w-0.5 h-3 bg-[#F5D061] animate-pulse delay-150" />
                         </span>
                       )}
                     </button>
@@ -2623,15 +2772,18 @@ export default function App() {
                     )}
                   </button>
                   <div className="min-w-0">
-                    <div className="text-xs font-extrabold text-[#F5D061] truncate">
-                      {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.title}
+                    <div className="text-xs font-extrabold text-[#F5D061] truncate flex items-center gap-1">
+                      <span>{HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.title}</span>
+                      {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.voiceText && isHealingVoiceOn && (
+                        <span className="text-[9px] text-[#4ADE80] font-normal shrink-0">(낭독중)</span>
+                      )}
                     </div>
                     <div className="text-[10.5px] text-[#C2B8AB] truncate">
                       {isHealingPlaying
                         ? sleepTimerSecondsLeft > 0
                           ? `🌙 ${Math.floor(sleepTimerSecondsLeft / 60)}분 ${sleepTimerSecondsLeft % 60}초 후 자동종료`
-                          : '연속 평안 스트리밍 중...'
-                        : '재생 버튼을 눌러 청취하세요'}
+                          : '화면 꺼짐 지원 · 연속 스트리밍 중'
+                        : '재생 버튼을 눌러 스님 음성으로 청취하세요'}
                     </div>
                   </div>
                 </div>
@@ -5914,6 +6066,46 @@ export default function App() {
                 <p className="text-[11px] text-[#9E9488] max-w-xs mt-2 px-2 break-keep">
                   {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.description}
                 </p>
+
+                {/* 스님 음성 낭독 토글 버튼 */}
+                {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.voiceText && (
+                  <div className="flex justify-center mt-3">
+                    <button
+                      type="button"
+                      onClick={handleToggleHealingVoice}
+                      className={`px-3 py-1.5 rounded-full text-xs font-bold border flex items-center gap-1.5 transition ${
+                        isHealingVoiceOn
+                          ? 'bg-[#F5D061] text-[#1B1815] border-[#FFF3B8] shadow-md'
+                          : 'bg-white/10 text-[#C2B8AB] border-white/20'
+                      }`}
+                    >
+                      <Volume2 className="w-4 h-4" />
+                      <span>{isHealingVoiceOn ? '🔊 스님 음성 낭독 중' : '🔇 음성 끔 (배경 정진음)'}</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* 트랙 퀵 변경 가로 스크롤 */}
+              <div className="flex gap-1.5 overflow-x-auto no-scrollbar py-1">
+                {HEALING_AUDIO_TRACKS.map((t) => {
+                  const isCur = healingAudioTrack === t.id
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => handleToggleHealingPlay(t.id)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border transition shrink-0 flex items-center gap-1.5 ${
+                        isCur
+                          ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
+                          : 'bg-white/5 text-[#C2B8AB] border-white/10 hover:bg-white/10'
+                      }`}
+                    >
+                      <span>{t.icon}</span>
+                      <span>{t.title.split(' ')[0]}</span>
+                    </button>
+                  )
+                })}
               </div>
 
               {/* 메인 컨트롤러 */}
