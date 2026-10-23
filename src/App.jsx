@@ -2788,51 +2788,73 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* 5대 힐링 트랙 선택 탭 */}
-                  <div className="grid grid-cols-2 gap-2 relative z-10">
-                    {HEALING_AUDIO_TRACKS.map((t, idx) => {
+                  {/* 5대 힐링 트랙 선택 리스트 (한 줄씩 풀 너비로 글자 잘림 없이 시원하게 노출) */}
+                  <div className="flex flex-col gap-2 relative z-10">
+                    {HEALING_AUDIO_TRACKS.map((t) => {
                       const isSelected = healingAudioTrack === t.id
                       const isThisPlaying = isSelected && isHealingPlaying
-                      const isFeatured = idx === 0
                       return (
                         <button
                           key={t.id}
                           type="button"
                           onClick={() => handleToggleHealingPlay(t.id)}
-                          className={`p-2.5 rounded-xl text-left border transition-all flex items-center gap-2.5 ${
-                            isFeatured ? 'col-span-2' : ''
-                          } ${
+                          className={`w-full p-3 sm:p-3.5 rounded-2xl text-left border transition-all flex items-center justify-between gap-3 ${
                             isSelected
-                              ? 'bg-gradient-to-r from-[#3D3020] via-[#2D2317] to-[#1F1710] border-[#F5D061] shadow-lg scale-[1.01]'
+                              ? 'bg-gradient-to-r from-[#3D3020] via-[#2A2015] to-[#1C150E] border-[#F5D061] shadow-lg scale-[1.01]'
                               : 'bg-white/5 border-white/10 hover:bg-white/10'
                           }`}
                         >
-                          <span className="text-2xl shrink-0">{t.icon}</span>
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center gap-1.5 mb-0.5">
-                              <span className="text-[9.5px] text-[#F5D061] font-bold truncate">
-                                {t.category}
-                              </span>
-                              {t.voiceText && (
-                                <span className="bg-[#F5D061]/20 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/30">
-                                  🎙️ 스님 낭독
+                          <div className="flex items-center gap-3 min-w-0 flex-1">
+                            <div
+                              className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 text-2xl border ${
+                                isSelected
+                                  ? 'bg-[#F5D061]/20 border-[#F5D061]/40 shadow-sm'
+                                  : 'bg-white/5 border-white/10'
+                              }`}
+                            >
+                              {t.icon}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-1.5 mb-0.5">
+                                <span className="text-[10px] text-[#F5D061] font-bold">
+                                  {t.category}
                                 </span>
-                              )}
-                            </div>
-                            <div className="text-xs font-bold text-white truncate">
-                              {t.title}
-                            </div>
-                            <div className="text-[10px] text-[#A69B8D] truncate">
-                              {t.subtitle}
+                                {t.voiceText && (
+                                  <span className="bg-[#F5D061]/20 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/30">
+                                    🎙️ 스님 낭독
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-xs sm:text-sm font-bold text-white break-keep">
+                                {t.title}
+                              </div>
+                              <div className="text-[11px] text-[#C2B8AB] break-keep mt-0.5 leading-snug">
+                                {t.subtitle}
+                              </div>
                             </div>
                           </div>
-                          {isThisPlaying && (
-                            <span className="flex gap-0.5 items-end h-3.5 shrink-0">
-                              <span className="w-0.5 h-3.5 bg-[#F5D061] animate-pulse" />
-                              <span className="w-0.5 h-2 bg-[#F5D061] animate-pulse delay-75" />
-                              <span className="w-0.5 h-3 bg-[#F5D061] animate-pulse delay-150" />
-                            </span>
-                          )}
+
+                          {/* 우측 재생 상태 인디케이터 또는 버튼 */}
+                          <div className="shrink-0 flex items-center">
+                            {isThisPlaying ? (
+                              <div className="flex items-center gap-1 bg-[#F5D061] text-[#1B1815] px-2.5 py-1 rounded-full text-[10.5px] font-bold shadow-md">
+                                <span className="flex gap-0.5 items-end h-3">
+                                  <span className="w-0.5 h-3 bg-[#1B1815] animate-pulse" />
+                                  <span className="w-0.5 h-1.5 bg-[#1B1815] animate-pulse delay-75" />
+                                  <span className="w-0.5 h-2.5 bg-[#1B1815] animate-pulse delay-150" />
+                                </span>
+                                <span>재생중</span>
+                              </div>
+                            ) : isSelected ? (
+                              <div className="w-8 h-8 rounded-full bg-[#F5D061]/20 border border-[#F5D061]/40 text-[#F5D061] flex items-center justify-center shadow-sm">
+                                <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+                              </div>
+                            ) : (
+                              <div className="w-7 h-7 rounded-full bg-white/5 border border-white/10 text-[#8C8275] flex items-center justify-center">
+                                <ChevronRight className="w-4 h-4" />
+                              </div>
+                            )}
+                          </div>
                         </button>
                       )
                     })}
