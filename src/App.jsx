@@ -28,6 +28,14 @@ import {
   UserPlus,
   Calendar,
   Globe,
+  Play,
+  Pause,
+  Clock,
+  Headphones,
+  Moon,
+  VolumeX,
+  Maximize2,
+  X,
 } from 'lucide-react'
 import {
   INITIAL_MEMBERS,
@@ -951,10 +959,362 @@ function playMoktakAcousticSynth() {
   }
 }
 
+// 24시간 힐링 법음 & 수면 명상 4대 테마 트랙
+const HEALING_AUDIO_TRACKS = [
+  {
+    id: 'sleep_meditation',
+    category: '수면·치유',
+    icon: '🌙',
+    title: '밤에 듣는 숙면 수면 명상',
+    subtitle: '부처님의 따뜻한 위로 & 432Hz 힐링 싱잉볼',
+    description: '하루의 번뇌와 긴장을 스르륵 녹여내는 깊고 고요한 숙면 유도 명상음입니다.',
+    type: 'sleep',
+  },
+  {
+    id: 'temple_chime_nature',
+    category: '집중·휴식',
+    icon: '🍃',
+    title: '제주 소원사 맑은 풍경과 산새소리',
+    subtitle: '사찰 산들바람 ASMR & 청아한 은방울 풍경',
+    description: '일할 때, 독서할 때, 머리를 맑게 식히고 집중력을 극대화해 주는 자연 백색소음입니다.',
+    type: 'nature',
+  },
+  {
+    id: 'rhythmic_moktak',
+    category: '마음정진',
+    icon: '🪷',
+    title: '마음이 청정해지는 전통 목탁 정진',
+    subtitle: '박달나무 실물 목탁 규칙적 타격 독경',
+    description: '일정한 리듬으로 울려 퍼지는 청아한 목탁 소리가 복잡한 생각을 끊고 호흡을 고요하게 합니다.',
+    type: 'moktak',
+  },
+  {
+    id: 'prajna_chanting',
+    category: '소원성취',
+    icon: '🔔',
+    title: '반야심경 & 천수경 평화로운 음송',
+    subtitle: '업장 소멸과 마군을 물리치는 지혜의 경전',
+    description: '공간의 나쁜 기운을 정화하고 가정과 일터에 복덕을 불러들이는 신성한 음송입니다.',
+    type: 'chant',
+  },
+]
+
+// 24시간 백그라운드 힐링 오디오 합성 및 재생 엔진
+class HealingAudioEngine {
+  constructor() {
+    this.ctx = null
+    this.currentTrack = null
+    this.isPlaying = false
+    this.nodes = []
+    this.intervalId = null
+    this.htmlAudio = null
+  }
+
+  initContext() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext
+      if (AudioCtx) this.ctx = new AudioCtx()
+    }
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume()
+    }
+  }
+
+  startSilentAudioKeeper() {
+    try {
+      if (!this.htmlAudio) {
+        // 백그라운드/잠금화면에서도 브라우저가 오디오 프로세스를 재우지 않도록 무음 오디오 유지
+        this.htmlAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA')
+        this.htmlAudio.loop = true
+      }
+      this.htmlAudio.play().catch(() => {})
+    } catch (e) {}
+  }
+
+  setupMediaSession(track) {
+    if ('mediaSession' in navigator && track) {
+      try {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: track.title,
+          artist: '제주 소원사 (24시간 마음 쉼터)',
+          album: '제주 소원사 전국 포교위원회',
+          artwork: [
+            { src: '/images/moktak_icon.png', sizes: '512x512', type: 'image/png' },
+          ],
+        })
+        navigator.mediaSession.playbackState = 'playing'
+      } catch (e) {}
+    }
+  }
+
+  stopAll() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId)
+      this.intervalId = null
+    }
+    if (this.htmlAudio) {
+      try {
+        this.htmlAudio.pause()
+      } catch (e) {}
+    }
+    this.nodes.forEach((n) => {
+      try {
+        if (n.stop) n.stop()
+        if (n.disconnect) n.disconnect()
+      } catch (e) {}
+    })
+    this.nodes = []
+    this.isPlaying = false
+    if ('mediaSession' in navigator) {
+      try {
+        navigator.mediaSession.playbackState = 'paused'
+      } catch (e) {}
+    }
+  }
+
+  playTrack(trackId) {
+    this.stopAll()
+    this.initContext()
+    this.isPlaying = true
+    this.currentTrack = trackId
+    this.startSilentAudioKeeper()
+
+    const trackInfo = HEALING_AUDIO_TRACKS.find((t) => t.id === trackId)
+    if (trackInfo) {
+      this.setupMediaSession(trackInfo)
+    }
+
+    if (trackId === 'rhythmic_moktak') {
+      // 1. 박달나무 목탁 규칙적 정진 음송 (1.6초 간격 규칙적 타격)
+      const playBeat = () => {
+        try {
+          const a = new Audio('/audio/moktak.mp3')
+          a.volume = 0.85
+          a.play().catch(() => playMoktakSound())
+        } catch (e) {
+          playMoktakSound()
+        }
+      }
+      playBeat()
+      this.intervalId = setInterval(playBeat, 1600)
+    } else if (trackId === 'temple_chime_nature') {
+      // 2. 사찰 풍경소리 & 산들바람 ASMR (맑은 풍경소리 + 바람 저음 앰비언스)
+      if (!this.ctx) return
+      const ctx = this.ctx
+      const chimeChords = [
+        [1560, 2180],
+        [1740, 2620],
+        [2180, 3280],
+        [1320, 1980],
+      ]
+      let chimeIdx = 0
+      const ringChime = () => {
+        if (!this.isPlaying) return
+        const now = ctx.currentTime
+        const freqs = chimeChords[chimeIdx % chimeChords.length]
+        chimeIdx++
+        freqs.forEach((f) => {
+          const osc = ctx.createOscillator()
+          const gain = ctx.createGain()
+          osc.type = 'sine'
+          osc.frequency.setValueAtTime(f, now)
+          gain.gain.setValueAtTime(0.001, now)
+          gain.gain.exponentialRampToValueAtTime(0.05, now + 0.04)
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.8)
+          osc.connect(gain)
+          gain.connect(ctx.destination)
+          osc.start(now)
+          osc.stop(now + 4.0)
+          this.nodes.push(osc, gain)
+        })
+      }
+      ringChime()
+      this.intervalId = setInterval(ringChime, 4200)
+
+      // 부드러운 산들바람 저음 노이즈
+      try {
+        const bufferSize = Math.floor(ctx.sampleRate * 2)
+        const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate)
+        const output = noiseBuffer.getChannelData(0)
+        for (let i = 0; i < bufferSize; i++) {
+          output[i] = (Math.random() * 2 - 1) * 0.012
+        }
+        const whiteNoise = ctx.createBufferSource()
+        whiteNoise.buffer = noiseBuffer
+        whiteNoise.loop = true
+        const filter = ctx.createBiquadFilter()
+        filter.type = 'lowpass'
+        filter.frequency.setValueAtTime(450, ctx.currentTime)
+        whiteNoise.connect(filter)
+        filter.connect(ctx.destination)
+        whiteNoise.start()
+        this.nodes.push(whiteNoise, filter)
+      } catch (e) {}
+    } else if (trackId === 'sleep_meditation') {
+      // 3. 밤에 듣는 숙면 수면 명상: 432Hz 치유 주파수 + 깊은 델타파 힐링 톤
+      if (!this.ctx) return
+      const ctx = this.ctx
+      const now = ctx.currentTime
+      const osc1 = ctx.createOscillator()
+      const osc2 = ctx.createOscillator()
+      const gain1 = ctx.createGain()
+      const gain2 = ctx.createGain()
+      osc1.type = 'sine'
+      osc2.type = 'sine'
+      osc1.frequency.setValueAtTime(432, now) // 치유의 432Hz
+      osc2.frequency.setValueAtTime(216, now) // 깊은 216Hz 기저음
+
+      gain1.gain.setValueAtTime(0.06, now)
+      gain2.gain.setValueAtTime(0.04, now)
+      osc1.connect(gain1)
+      osc2.connect(gain2)
+      gain1.connect(ctx.destination)
+      gain2.connect(ctx.destination)
+      osc1.start(now)
+      osc2.start(now)
+      this.nodes.push(osc1, osc2, gain1, gain2)
+
+      // 9초 주기 은은한 싱잉볼 타격
+      this.intervalId = setInterval(() => {
+        playSingingBowlSound()
+      }, 9000)
+    } else {
+      // 4. 반야심경 & 천수경 평화로운 음송: 깊은 드론 베이스(136.1Hz 옴 파동) + 목탁 2.4초 주기 + 7.2초 법종음
+      if (!this.ctx) return
+      const ctx = this.ctx
+      const now = ctx.currentTime
+      const droneOsc = ctx.createOscillator()
+      const droneGain = ctx.createGain()
+      droneOsc.type = 'triangle'
+      droneOsc.frequency.setValueAtTime(136.1, now) // 우주의 옴(OM) 주파수 136.1Hz
+      droneGain.gain.setValueAtTime(0.045, now)
+
+      const subDrone = ctx.createOscillator()
+      const subGain = ctx.createGain()
+      subDrone.type = 'sine'
+      subDrone.frequency.setValueAtTime(68.05, now) // 깊은 옥타브 아래 기저음
+      subGain.gain.setValueAtTime(0.035, now)
+
+      droneOsc.connect(droneGain)
+      subDrone.connect(subGain)
+      droneGain.connect(ctx.destination)
+      subGain.connect(ctx.destination)
+      droneOsc.start(now)
+      subDrone.start(now)
+      this.nodes.push(droneOsc, droneGain, subDrone, subGain)
+
+      let tick = 0
+      this.intervalId = setInterval(() => {
+        tick++
+        // 2.4초마다 은은한 목탁 독경 타격
+        if (tick % 2 === 0) {
+          try {
+            const a = new Audio('/audio/moktak.mp3')
+            a.volume = 0.55
+            a.play().catch(() => playMoktakSound())
+          } catch (e) {
+            playMoktakSound()
+          }
+        }
+        // 7.2초마다 영험한 사찰 법종(싱잉볼) 울림
+        if (tick % 6 === 0) {
+          playSingingBowlSound()
+        }
+      }, 1200)
+    }
+  }
+}
+
+const healingAudioEngine = new HealingAudioEngine()
+
 export default function App() {
   // 탭 상태: 'home' | 'lantern' | 'sutra' | 'agent' | 'admin' | 'profile'
   const [activeTab, setActiveTab] = useState('home')
   const [heroSlideIdx, setHeroSlideIdx] = useState(0)
+
+  // 24시간 힐링 법음 & 수면 명상 오디오 플레이어 상태
+  const [healingAudioTrack, setHealingAudioTrack] = useState('sleep_meditation')
+  const [isHealingPlaying, setIsHealingPlaying] = useState(false)
+  const [sleepTimerMinutes, setSleepTimerMinutes] = useState(null) // null | 15 | 30 | 60
+  const [sleepTimerSecondsLeft, setSleepTimerSecondsLeft] = useState(0)
+  const [showFullAudioModal, setShowFullAudioModal] = useState(false)
+
+  // 수면 타이머 카운트다운 및 자동 종료
+  useEffect(() => {
+    if (!isHealingPlaying || !sleepTimerMinutes) {
+      setSleepTimerSecondsLeft(0)
+      return
+    }
+    const interval = setInterval(() => {
+      setSleepTimerSecondsLeft((prev) => {
+        if (prev <= 1) {
+          healingAudioEngine.stopAll()
+          setIsHealingPlaying(false)
+          setSleepTimerMinutes(null)
+          showToast('🌙 수면 타이머가 완료되어 법음이 편안하게 종료되었습니다. 편안한 밤 되세요.')
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [isHealingPlaying, sleepTimerMinutes])
+
+  const handleToggleHealingPlay = (trackId = null) => {
+    const targetTrack = trackId || healingAudioTrack
+    if (isHealingPlaying && targetTrack === healingAudioTrack) {
+      healingAudioEngine.stopAll()
+      setIsHealingPlaying(false)
+    } else {
+      setHealingAudioTrack(targetTrack)
+      healingAudioEngine.playTrack(targetTrack)
+      setIsHealingPlaying(true)
+      playSingingBowlSound()
+    }
+  }
+
+  const handleSetSleepTimer = (minutes) => {
+    if (sleepTimerMinutes === minutes) {
+      setSleepTimerMinutes(null)
+      setSleepTimerSecondsLeft(0)
+      showToast('⏰ 수면 타이머가 해제되었습니다. 연속 재생됩니다.')
+    } else {
+      setSleepTimerMinutes(minutes)
+      setSleepTimerSecondsLeft(minutes * 60)
+      if (!isHealingPlaying) {
+        handleToggleHealingPlay(healingAudioTrack)
+      }
+      showToast(`🌙 ${minutes}분 후 자동 종료 수면 타이머가 설정되었습니다.`)
+    }
+  }
+
+  // 모바일 잠금화면 & 알림센터 미디어 세션 컨트롤 바인딩
+  useEffect(() => {
+    if ('mediaSession' in navigator) {
+      try {
+        navigator.mediaSession.setActionHandler('play', () => {
+          if (!isHealingPlaying) handleToggleHealingPlay(healingAudioTrack)
+        })
+        navigator.mediaSession.setActionHandler('pause', () => {
+          if (isHealingPlaying) handleToggleHealingPlay(healingAudioTrack)
+        })
+        navigator.mediaSession.setActionHandler('stop', () => {
+          healingAudioEngine.stopAll()
+          setIsHealingPlaying(false)
+        })
+        navigator.mediaSession.setActionHandler('previoustrack', () => {
+          const idx = HEALING_AUDIO_TRACKS.findIndex((t) => t.id === healingAudioTrack)
+          const prevIdx = (idx - 1 + HEALING_AUDIO_TRACKS.length) % HEALING_AUDIO_TRACKS.length
+          handleToggleHealingPlay(HEALING_AUDIO_TRACKS[prevIdx].id)
+        })
+        navigator.mediaSession.setActionHandler('nexttrack', () => {
+          const idx = HEALING_AUDIO_TRACKS.findIndex((t) => t.id === healingAudioTrack)
+          const nextIdx = (idx + 1) % HEALING_AUDIO_TRACKS.length
+          handleToggleHealingPlay(HEALING_AUDIO_TRACKS[nextIdx].id)
+        })
+      } catch (e) {}
+    }
+  }, [healingAudioTrack, isHealingPlaying])
 
   // 전체 통합 회원 DB 상태 (신도 + 포교사 + 본부 + 관리자)
   const [members, setMembers] = useState(() => {
@@ -2168,6 +2528,133 @@ export default function App() {
                 </div>
               </button>
             </div>
+
+            {/* ==================== 24시간 마음 쉼터: 일할 때 & 잘 때 듣는 법음(法音) 플레이어 ==================== */}
+            <section className="rounded-2xl bg-gradient-to-br from-[#1E1914] via-[#2A221A] to-[#16120E] text-white p-4 sm:p-5 border-2 border-[#C59B27]/60 shadow-xl space-y-3.5 relative overflow-hidden">
+              {/* 은은한 배경 후광 */}
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#F5D061]/10 rounded-full blur-2xl pointer-events-none" />
+
+              <div className="flex items-start justify-between gap-2 relative z-10">
+                <div className="flex items-center gap-2.5">
+                  <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border ${
+                    isHealingPlaying
+                      ? 'bg-[#F5D061] text-[#1B1815] border-[#FFF3B8] shadow-[0_0_20px_rgba(245,208,97,0.5)] scale-105'
+                      : 'bg-white/10 text-[#F5D061] border-white/10'
+                  } transition-all duration-500`}>
+                    <Headphones className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black text-[#F5D061] bg-[#F5D061]/15 px-2 py-0.5 rounded-full border border-[#F5D061]/30">
+                        24시간 마음 쉼터
+                      </span>
+                      {isHealingPlaying && (
+                        <span className="flex items-center gap-1 text-[10px] text-[#4ADE80] font-bold">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-ping" />
+                          마음 치유 중
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white mt-0.5">
+                      일할 때 & 잘 때 듣는 법음(法音)
+                    </h3>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowFullAudioModal(true)}
+                  className="p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-[#E8DFD1] transition"
+                  title="전체 화면 플레이어 열기"
+                >
+                  <Maximize2 className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* 4대 힐링 트랙 선택 탭 (가로 2열 그리드) */}
+              <div className="grid grid-cols-2 gap-2 relative z-10">
+                {HEALING_AUDIO_TRACKS.map((t) => {
+                  const isSelected = healingAudioTrack === t.id
+                  const isThisPlaying = isSelected && isHealingPlaying
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => handleToggleHealingPlay(t.id)}
+                      className={`p-2.5 rounded-xl text-left border transition-all flex items-center gap-2 ${
+                        isSelected
+                          ? 'bg-gradient-to-r from-[#3D3020] to-[#251D14] border-[#F5D061] shadow-md'
+                          : 'bg-white/5 border-white/10 hover:bg-white/10'
+                      }`}
+                    >
+                      <span className="text-xl shrink-0">{t.icon}</span>
+                      <div className="min-w-0 flex-1">
+                        <span className="block text-[9.5px] text-[#F5D061] font-bold truncate">
+                          {t.category}
+                        </span>
+                        <div className="text-xs font-bold text-white truncate">
+                          {t.title}
+                        </div>
+                      </div>
+                      {isThisPlaying && (
+                        <span className="flex gap-0.5 items-end h-3 shrink-0">
+                          <span className="w-0.5 h-3 bg-[#F5D061] animate-pulse" />
+                          <span className="w-0.5 h-2 bg-[#F5D061] animate-pulse delay-75" />
+                          <span className="w-0.5 h-2.5 bg-[#F5D061] animate-pulse delay-150" />
+                        </span>
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
+
+              {/* 플레이어 조작 바 & 수면 타이머 */}
+              <div className="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between gap-3 relative z-10">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <button
+                    type="button"
+                    onClick={() => handleToggleHealingPlay()}
+                    className="w-10 h-10 rounded-full bg-[#F5D061] text-[#1B1815] flex items-center justify-center shrink-0 shadow-lg hover:scale-105 active:scale-95 transition"
+                  >
+                    {isHealingPlaying ? (
+                      <Pause className="w-5 h-5 fill-current" />
+                    ) : (
+                      <Play className="w-5 h-5 fill-current ml-0.5" />
+                    )}
+                  </button>
+                  <div className="min-w-0">
+                    <div className="text-xs font-extrabold text-[#F5D061] truncate">
+                      {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.title}
+                    </div>
+                    <div className="text-[10.5px] text-[#C2B8AB] truncate">
+                      {isHealingPlaying
+                        ? sleepTimerSecondsLeft > 0
+                          ? `🌙 ${Math.floor(sleepTimerSecondsLeft / 60)}분 ${sleepTimerSecondsLeft % 60}초 후 자동종료`
+                          : '연속 평안 스트리밍 중...'
+                        : '재생 버튼을 눌러 청취하세요'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 수면 타이머 퀵 버튼들 */}
+                <div className="flex items-center gap-1 shrink-0">
+                  {[15, 30, 60].map((m) => (
+                    <button
+                      key={m}
+                      type="button"
+                      onClick={() => handleSetSleepTimer(m)}
+                      className={`px-2 py-1 rounded-lg text-[10px] font-bold border transition ${
+                        sleepTimerMinutes === m
+                          ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
+                          : 'bg-white/5 text-[#D6CEC2] border-white/10 hover:bg-white/15'
+                      }`}
+                    >
+                      {m}분
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </section>
 
             {/* 따뜻한 차와 사찰 공양(식사) 대접 온라인 사전예약 카드 (평소에는 깔끔하게 접혀 있고 버튼 터치 시 열림) */}
             <section className="rounded-2xl bg-gradient-to-br from-[#29231E] to-[#1C1814] text-white p-4 sm:p-5 border border-[#C59B27]/50 shadow-lg space-y-3.5">
@@ -5338,6 +5825,182 @@ export default function App() {
             <span>신행/차담예약 010-4912-1083</span>
           </div>
         </footer>
+
+        {/* 하단 백그라운드 미니 플레이어 바 (화면 이동 시에도 끊김 없이 힐링 법음 재생 유지) */}
+        {isHealingPlaying && (
+          <div className="fixed bottom-[58px] left-1/2 -translate-x-1/2 w-full max-w-[480px] z-30 px-3 pb-1 animate-in slide-in-from-bottom-2 duration-300">
+            <div className="p-2.5 rounded-2xl bg-[#1F1914]/95 backdrop-blur-md border border-[#F5D061]/50 shadow-2xl flex items-center justify-between gap-2.5">
+              <button
+                type="button"
+                onClick={() => setShowFullAudioModal(true)}
+                className="flex items-center gap-2 min-w-0 flex-1 text-left"
+              >
+                <div className="w-8 h-8 rounded-xl bg-[#F5D061] text-[#1B1815] flex items-center justify-center shrink-0 shadow">
+                  <Headphones className="w-4 h-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-[11px] font-black text-white truncate flex items-center gap-1.5">
+                    <span>{HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.icon}</span>
+                    <span>{HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.title}</span>
+                  </div>
+                  <div className="text-[9.5px] text-[#F5D061] font-semibold truncate">
+                    {sleepTimerSecondsLeft > 0
+                      ? `🌙 ${Math.floor(sleepTimerSecondsLeft / 60)}분 ${sleepTimerSecondsLeft % 60}초 뒤 꺼짐`
+                      : '화면 꺼짐 모드 지원 · 24시간 스트리밍'}
+                  </div>
+                </div>
+              </button>
+
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => handleToggleHealingPlay()}
+                  className="w-8 h-8 rounded-full bg-[#F5D061] text-[#1B1815] flex items-center justify-center shadow hover:scale-105 active:scale-95 transition"
+                  title="일시 정지 / 재생"
+                >
+                  <Pause className="w-4 h-4 fill-current" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowFullAudioModal(true)}
+                  className="p-1.5 text-[#C8C0B7] hover:text-white transition"
+                  title="전체 플레이어 열기"
+                >
+                  <Maximize2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 24시간 힐링 법음관 전체 화면 모달창 */}
+        {showFullAudioModal && (
+          <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-300">
+            <div className="w-full max-w-md bg-gradient-to-b from-[#2B231B] via-[#1B1611] to-[#120F0C] text-white rounded-t-3xl sm:rounded-3xl p-5 border border-[#C59B27]/40 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+              {/* 헤더 */}
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                <div className="flex items-center gap-2">
+                  <Moon className="w-5 h-5 text-[#F5D061]" />
+                  <span className="font-serif-kr font-bold text-base text-[#F5D061]">
+                    제주 소원사 24시간 법음(法音)관
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowFullAudioModal(false)}
+                  className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#D6CEC2] transition"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* LP/앨범 회전 감성 아트 */}
+              <div className="flex flex-col items-center justify-center py-4 text-center">
+                <div className={`w-36 h-36 rounded-full bg-gradient-to-tr from-[#3D2F20] via-[#F5D061] to-[#785418] p-1 shadow-2xl ${isHealingPlaying ? 'animate-spin [animation-duration:18s]' : ''}`}>
+                  <div className="w-full h-full rounded-full bg-[#1A1510] flex flex-col items-center justify-center p-3 border-4 border-[#2E241A]">
+                    <span className="text-4xl mb-1">
+                      {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.icon}
+                    </span>
+                    <span className="text-[10px] text-[#F5D061] font-bold">JEJU SOWONSA</span>
+                  </div>
+                </div>
+
+                <h4 className="font-serif-kr text-lg font-bold text-white mt-4">
+                  {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.title}
+                </h4>
+                <p className="text-xs text-[#D6CEC2] mt-0.5">
+                  {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.subtitle}
+                </p>
+                <p className="text-[11px] text-[#9E9488] max-w-xs mt-2 px-2 break-keep">
+                  {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.description}
+                </p>
+              </div>
+
+              {/* 메인 컨트롤러 */}
+              <div className="flex items-center justify-center gap-4 py-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const idx = HEALING_AUDIO_TRACKS.findIndex((t) => t.id === healingAudioTrack)
+                    const prevIdx = (idx - 1 + HEALING_AUDIO_TRACKS.length) % HEALING_AUDIO_TRACKS.length
+                    handleToggleHealingPlay(HEALING_AUDIO_TRACKS[prevIdx].id)
+                  }}
+                  className="p-3 text-[#D6CEC2] hover:text-white active:scale-95 transition"
+                  title="이전 곡"
+                >
+                  <ChevronRight className="w-6 h-6 rotate-180" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleToggleHealingPlay()}
+                  className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#F5D061] to-[#D4AF37] text-[#1B1815] flex items-center justify-center shadow-[0_0_25px_rgba(245,208,97,0.5)] active:scale-95 transition"
+                  title="재생 / 일시정지"
+                >
+                  {isHealingPlaying ? (
+                    <Pause className="w-8 h-8 fill-current" />
+                  ) : (
+                    <Play className="w-8 h-8 fill-current ml-1" />
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const idx = HEALING_AUDIO_TRACKS.findIndex((t) => t.id === healingAudioTrack)
+                    const nextIdx = (idx + 1) % HEALING_AUDIO_TRACKS.length
+                    handleToggleHealingPlay(HEALING_AUDIO_TRACKS[nextIdx].id)
+                  }}
+                  className="p-3 text-[#D6CEC2] hover:text-white active:scale-95 transition"
+                  title="다음 곡"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </div>
+
+              {/* 수면 타이머 설정 패널 */}
+              <div className="p-3.5 rounded-2xl bg-black/40 border border-white/10 space-y-2">
+                <div className="flex items-center justify-between text-xs font-bold text-[#E8DFD1]">
+                  <span className="flex items-center gap-1.5">
+                    <Clock className="w-4 h-4 text-[#F5D061]" />
+                    <span>취침 수면 타이머</span>
+                  </span>
+                  <span className="text-[#F5D061] text-[11px]">
+                    {sleepTimerSecondsLeft > 0
+                      ? `${Math.floor(sleepTimerSecondsLeft / 60)}분 ${sleepTimerSecondsLeft % 60}초 남음`
+                      : '연속 재생 중'}
+                  </span>
+                </div>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {[
+                    { m: 15, label: '15분' },
+                    { m: 30, label: '30분' },
+                    { m: 60, label: '1시간' },
+                    { m: null, label: '연속' },
+                  ].map((item) => (
+                    <button
+                      key={item.label}
+                      type="button"
+                      onClick={() => handleSetSleepTimer(item.m)}
+                      className={`py-2 rounded-xl text-xs font-bold border transition ${
+                        (item.m === null && !sleepTimerMinutes) || sleepTimerMinutes === item.m
+                          ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
+                          : 'bg-white/5 text-[#D6CEC2] border-white/10 hover:bg-white/10'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 안내 문구 */}
+              <p className="text-[11px] text-[#8C8275] text-center leading-relaxed">
+                ※ 스마트폰 화면을 끄거나 다른 앱을 보셔도 끊김 없이 편안하게 재생됩니다.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* 하단 네비게이션 바 (일반 신도에게 신행홈·소원등켜기·한줄사경·불사안내·내정보 5개로 큼직하고 시원하게 노출) */}
         <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#1B1815]/95 backdrop-blur-md border-t border-[#C59B27]/35 px-2 py-2 flex items-center justify-around">
