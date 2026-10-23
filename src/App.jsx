@@ -2902,8 +2902,12 @@ export default function App() {
                 마음의 소원등(願燈)을 밝혀보세요
               </h2>
 
-              {/* 연등 그래픽 + 하단 제주 소원사 축원 명패 */}
-              <div className="my-4 flex flex-col items-center">
+              {/* 연등 그래픽 + 하단 제주 소원사 축원 명패 (생동감 넘치는 둥실둥실 부유 모션) */}
+              <div
+                className={`my-4 flex flex-col items-center transition-transform duration-700 ${
+                  isLanternLit ? 'lantern-floating-unit' : 'opacity-85'
+                }`}
+              >
                 <button
                   type="button"
                   onClick={() => {
@@ -2919,7 +2923,7 @@ export default function App() {
                   <Flame
                     className={`w-12 h-12 transition-transform duration-500 ${
                       isLanternLit
-                        ? 'text-[#1E1812] fill-[#FFF5C0] scale-110'
+                        ? 'text-[#1E1812] fill-[#FFF5C0] flame-flicker'
                         : 'text-[#8C8275]'
                     }`}
                   />
