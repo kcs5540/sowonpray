@@ -2353,9 +2353,9 @@ export default function App() {
   const isAdmin = currentUser?.role === 'master'
 
   return (
-    <div className="min-h-screen bg-[#12100E] flex justify-center selection:bg-[#C59B27] selection:text-white">
+    <div className="min-h-screen bg-[#12100E] flex justify-center selection:bg-[#C59B27] selection:text-white w-full max-w-full overflow-x-hidden">
       {/* 모바일 앱 컨테이너 (최대 480px 중앙 정렬) */}
-      <div className="w-full max-w-[480px] min-h-screen bg-[#FAF8F5] text-[#231F1C] flex flex-col relative shadow-[0_0_50px_rgba(0,0,0,0.8)] border-x border-[#E8DFD1]/30 pb-24">
+      <div className="w-full max-w-[480px] min-h-screen bg-[#FAF8F5] text-[#231F1C] flex flex-col relative shadow-[0_0_50px_rgba(0,0,0,0.8)] border-x border-[#E8DFD1]/30 pb-24 overflow-x-hidden">
         
         {/* 상단 고정 헤더: 제주 소원사 공식 모바일 법당 */}
         <header className="sticky top-0 z-30 bg-[#1B1815]/95 backdrop-blur-md text-[#FAF8F5] px-3.5 py-3 border-b-2 border-[#C59B27]/50 flex items-center justify-between gap-2">
@@ -2615,7 +2615,7 @@ export default function App() {
                   playSingingBowlSound()
                   setActiveTab('lantern')
                 }}
-                className="bg-gradient-to-br from-[#2B241D] to-[#1A1612] text-white px-3.5 py-3.5 rounded-2xl text-left border border-[#C59B27]/50 shadow-md hover:scale-[1.01] transition flex items-center gap-2.5 overflow-hidden"
+                className="bg-gradient-to-br from-[#2B241D] to-[#1A1612] text-white px-3.5 py-3.5 rounded-2xl text-left border border-[#C59B27]/50 shadow-md hover:brightness-105 active:scale-95 transition flex items-center gap-2.5 overflow-hidden"
               >
                 <div className="w-10 h-10 rounded-xl bg-[#C59B27]/20 border border-[#F5D061]/40 flex items-center justify-center shrink-0">
                   <Flame className="w-5 h-5 text-[#F5D061]" />
@@ -2635,7 +2635,7 @@ export default function App() {
                   playSingingBowlSound()
                   setActiveTab('sutra')
                 }}
-                className="bg-gradient-to-br from-[#F6F1E4] to-[#EAE0C8] text-[#231F1C] px-3.5 py-3.5 rounded-2xl text-left border border-[#D5C59B] shadow-md hover:scale-[1.01] transition flex items-center gap-2.5 overflow-hidden"
+                className="bg-gradient-to-br from-[#F6F1E4] to-[#EAE0C8] text-[#231F1C] px-3.5 py-3.5 rounded-2xl text-left border border-[#D5C59B] shadow-md hover:brightness-105 active:scale-95 transition flex items-center gap-2.5 overflow-hidden"
               >
                 <div className="w-10 h-10 rounded-xl bg-[#9A7418]/15 border border-[#9A7418]/30 flex items-center justify-center shrink-0">
                   <BookOpen className="w-5 h-5 text-[#8A6510]" />
@@ -2693,7 +2693,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* 우측 퀵 컨트롤: 재생/정지 + 트랙선택(펼침) + 전체화면 */}
+                  {/* 우측 퀵 컨트롤: 재생/정지 + 트랙선택(펼침) */}
                   <div className="flex items-center gap-1.5 shrink-0">
                     <button
                       type="button"
@@ -2716,15 +2716,6 @@ export default function App() {
                     >
                       <span>트랙 선택</span>
                       <ChevronDown className="w-3.5 h-3.5" />
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setShowFullAudioModal(true)}
-                      className="p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-[#C2B8AB] transition"
-                      title="전체 화면 LP 모달 열기"
-                    >
-                      <Maximize2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
@@ -2800,7 +2791,7 @@ export default function App() {
                           onClick={() => handleToggleHealingPlay(t.id)}
                           className={`w-full p-3 sm:p-3.5 rounded-2xl text-left border transition-all flex items-center justify-between gap-3 ${
                             isSelected
-                              ? 'bg-gradient-to-r from-[#3D3020] via-[#2A2015] to-[#1C150E] border-[#F5D061] shadow-lg scale-[1.01]'
+                              ? 'bg-gradient-to-r from-[#3D3020] via-[#2A2015] to-[#1C150E] border-[#F5D061] shadow-lg'
                               : 'bg-white/5 border-white/10 hover:bg-white/10'
                           }`}
                         >
