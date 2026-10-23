@@ -135,3 +135,28 @@
   animation: flameFlicker 2s ease-in-out infinite;
   transform-origin: bottom center;
 }
+
+/* 사시예불 축원 명부 A4 전용 프린트 스타일 */
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+  #printable-sasi-sheet, #printable-sasi-sheet * {
+    visibility: visible !important;
+  }
+  #printable-sasi-sheet {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 12mm !important;
+    background: #ffffff !important;
+    color: #111111 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

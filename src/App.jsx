@@ -36,6 +36,7 @@ import {
   Moon,
   VolumeX,
   Maximize2,
+  Printer,
   X,
 } from 'lucide-react'
 import {
@@ -1668,6 +1669,35 @@ export default function App() {
   const [wishCategory, setWishCategory] = useState('가족건강')
   const [wishText, setWishText] = useState('')
   const [showSuccessModal, setShowSuccessModal] = useState(false)
+
+  // [사시예불 축원 명부] 7일 이내 유효 신도 전용 인쇄 모달 상태
+  const [showSasiPrintModal, setShowSasiPrintModal] = useState(false)
+
+  // 7일 정진 기간 내(D-7 ~ D-1) 유효 신도만 자동 필터링 (7일 지난 만료 신도는 자동 제외)
+  const activeSasiPrayers = useMemo(() => {
+    const now = Date.now()
+    const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000
+
+    return (prayers || [])
+      .map((p) => {
+        let pTime = now
+        if (p.created_at) {
+          const parsed = new Date(p.created_at).getTime()
+          if (!isNaN(parsed)) pTime = parsed
+        }
+        const diffMs = now - pTime
+        const isWithin7Days = diffMs >= 0 && diffMs <= SEVEN_DAYS_MS
+        const daysLeft = Math.max(1, Math.ceil((SEVEN_DAYS_MS - diffMs) / (1000 * 60 * 60 * 24)))
+        return {
+          ...p,
+          pTime,
+          isWithin7Days,
+          daysLeft,
+        }
+      })
+      .filter((p) => p.isWithin7Days)
+      .sort((a, b) => b.pTime - a.pTime)
+  }, [prayers])
 
   // 탭 이동 시 해당 탭에 맞는 기본 종목 자동 세팅
   useEffect(() => {
@@ -5251,6 +5281,23 @@ export default function App() {
                       </p>
                     </div>
                   </div>
+
+                  {(isMaster || currentUser.role === 'temple_admin' || currentUser.role === 'agent' || currentUser.role === 'committee_head') && (
+                    <div className="pt-3 border-t border-white/15 flex items-center justify-between gap-2 flex-wrap">
+                      <div className="text-xs text-[#F5D061] font-semibold flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
+                        <span>오늘 사시예불 축원 대상: <strong>{activeSasiPrayers.length}위</strong> (7일 정진)</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowSasiPrintModal(true)}
+                        className="px-3 py-1.5 rounded-xl bg-[#F5D061] text-[#1B1815] font-extrabold text-[11px] flex items-center gap-1 shadow hover:brightness-105 transition shrink-0"
+                      >
+                        <Printer className="w-3.5 h-3.5 shrink-0" />
+                        <span>사시예불 축원 명부 인쇄</span>
+                      </button>
+                    </div>
+                  )}
                 </section>
 
                 {/* 가족·도반과 함께하는 복(福) 전하는 인연 나눔 주소 카드 */}
@@ -5857,6 +5904,34 @@ export default function App() {
               </div>
             </section>
 
+            {/* 오늘의 대웅전 사시예불 축원 명부 (7일 유효 신도 전용) 인쇄 관제 */}
+            <section className="bg-gradient-to-r from-[#241E17] via-[#2F2417] to-[#1C160F] text-white rounded-2xl p-4 sm:p-5 border-2 border-[#D4AF37] shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                  <span className="px-2.5 py-0.5 rounded-full bg-[#D4AF37] text-[#1B1815] text-[10.5px] font-extrabold whitespace-nowrap">
+                    대웅전 불단 축원용
+                  </span>
+                  <span className="text-xs text-[#F5D061] font-bold whitespace-nowrap">
+                    매일 오전 10:30 사시예불 실시간 연동
+                  </span>
+                </div>
+                <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white whitespace-nowrap">
+                  오늘의 사시예불 축원 명부 ({activeSasiPrayers.length}위 진행중)
+                </h3>
+                <p className="text-xs text-[#D6CEC2] mt-0.5 leading-relaxed break-keep">
+                  접수 후 7일 이내 정진 불자만 자동 추출됩니다. (7일 지난 만료 신도는 자동 제외)
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSasiPrintModal(true)}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs shadow-md hover:brightness-105 active:scale-95 transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              >
+                <Printer className="w-4 h-4" />
+                <span>사시예불 명부 열기 & A4 인쇄</span>
+              </button>
+            </section>
+
             {/* 1. 신규 포교위원 / 회원 등록 및 등급 관리 */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-4">
               <div className="flex items-center justify-between">
@@ -6314,6 +6389,134 @@ export default function App() {
               >
                 합장하며 확인 (나무아미타불)
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* ==================== 오늘의 대웅전 사시예불 축원 발원 명부 A4 인쇄 모달 ==================== */}
+        {showSasiPrintModal && (
+          <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+            <div className="w-full max-w-4xl bg-white text-[#111111] rounded-2xl shadow-2xl flex flex-col my-auto border border-[#E5D399] overflow-hidden">
+              {/* 모달 상단 조작 바 (인쇄 시 숨김: no-print) */}
+              <div className="no-print bg-[#1B1815] text-[#FAF8F5] p-3.5 sm:p-4 flex items-center justify-between gap-3 border-b-2 border-[#D4AF37]">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-lg bg-[#D4AF37] text-[#1B1815] flex items-center justify-center font-bold text-sm shrink-0">
+                    卍
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-serif-kr text-sm sm:text-base font-bold text-[#F5D061] truncate">
+                      오늘의 대웅전 사시예불 축원 명부 (7일 유효 신도 전용)
+                    </h3>
+                    <p className="text-[11px] text-[#D6CEC2] truncate">
+                      접수 7일 이내 정진 불자만 자동 추출됨 (총 {activeSasiPrayers.length}위)
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => window.print()}
+                    className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs flex items-center gap-1.5 shadow hover:brightness-105 active:scale-95 transition whitespace-nowrap"
+                  >
+                    <Printer className="w-4 h-4" />
+                    <span>A4 인쇄하기</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowSasiPrintModal(false)}
+                    className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition"
+                    title="닫기"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* 실제 A4 인쇄 영역 (#printable-sasi-sheet) */}
+              <div id="printable-sasi-sheet" className="p-6 sm:p-8 space-y-4 bg-white text-[#111111]">
+                {/* 전통 사찰 헤더 */}
+                <div className="text-center border-b-2 border-[#222222] pb-3.5">
+                  <div className="text-xs text-[#555555] tracking-widest mb-1 font-serif-kr">
+                    卍 濟州 願成寺 大雄殿 · 소원성취 기도도량 제주 소원사
+                  </div>
+                  <h1 className="font-serif-kr text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111111]">
+                    제주 소원사 대웅전 사시예불(巳時禮佛) 축원 명부
+                  </h1>
+                  <div className="flex items-center justify-center gap-4 text-xs font-semibold text-[#444444] mt-2 flex-wrap">
+                    <span>
+                      축원 일시: {new Date().getFullYear()}년 {new Date().getMonth() + 1}월 {new Date().getDate()}일 오전 10:30 사시예불
+                    </span>
+                    <span>·</span>
+                    <span>
+                      당일 축원 대상: <strong>{activeSasiPrayers.length}위</strong> (7일 정진 진행 불자)
+                    </span>
+                  </div>
+                </div>
+
+                {/* 안내 문구 */}
+                <div className="text-xs text-[#444444] bg-[#F9F7F2] p-2.5 rounded-lg border border-[#E8E2D2] flex justify-between items-center text-[11px]">
+                  <span>
+                    ※ 본 명부는 <strong>접수일로부터 7일 이내</strong> 정진 신도만을 자동 추출한 대웅전 불단 축원 전용 명부입니다. (7일 만료 신도 자동 제외)
+                  </span>
+                  <span className="font-bold text-[#111111] shrink-0 ml-2">대웅전 불단 봉안용</span>
+                </div>
+
+                {/* 축원 대상자 테이블 */}
+                {activeSasiPrayers.length === 0 ? (
+                  <div className="p-8 text-center text-sm text-[#777777] font-serif-kr border border-dashed border-[#CCCCCC] rounded-xl">
+                    현재 7일 이내 진행 중인 소원등 접수 내역이 없습니다.
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse border border-[#333333] text-xs">
+                      <thead>
+                        <tr className="bg-[#F0EDE4] text-[#111111] font-bold text-center border-b border-[#333333]">
+                          <th className="p-2 border-r border-[#333333] w-12 text-center">연번</th>
+                          <th className="p-2 border-r border-[#333333] w-32">불자 성함(법명)</th>
+                          <th className="p-2 border-r border-[#333333] w-28 text-center">기원 분야</th>
+                          <th className="p-2 border-r border-[#333333]">부처님 전 지극지성 발원문</th>
+                          <th className="p-2 border-r border-[#333333] w-20 text-center">정진 기간</th>
+                          <th className="p-2 w-24 text-center">접수일</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {activeSasiPrayers.map((p, idx) => (
+                          <tr key={p.id} className="border-b border-[#DDDDDD] hover:bg-[#FAF8F4]">
+                            <td className="p-2.5 text-center font-bold border-r border-[#DDDDDD] text-[#555555]">
+                              {idx + 1}
+                            </td>
+                            <td className="p-2.5 font-bold font-serif-kr border-r border-[#DDDDDD] text-sm text-[#111111]">
+                              {p.believer_name}
+                            </td>
+                            <td className="p-2.5 font-semibold text-center border-r border-[#DDDDDD] text-[#8A6510]">
+                              [{p.wish_category}]
+                            </td>
+                            <td className="p-2.5 text-[#222222] leading-snug border-r border-[#DDDDDD] break-keep">
+                              “{p.wish_text}”
+                            </td>
+                            <td className="p-2.5 text-center font-bold border-r border-[#DDDDDD] text-[#B8860B]">
+                              D-{p.daysLeft}
+                            </td>
+                            <td className="p-2.5 text-center text-[11px] text-[#666666] whitespace-nowrap">
+                              {formatPrayerDate(p.created_at)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* 대웅전 불공 회향 발원문 */}
+                <div className="pt-3 border-t border-[#333333] text-center space-y-1">
+                  <p className="font-serif-kr text-xs font-bold text-[#111111]">
+                    “앙고시방삼보 대자대비 부처님 가피로 위 축원 불자님들의 간절한 소원이 원만 성취되기를 지심귀명례 축원하나이다.”
+                  </p>
+                  <p className="text-[11px] text-[#666666] font-serif-kr tracking-widest">
+                    나무아미타불 · 나무아미타불 · 나무시아본사 석가모니불
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         )}
