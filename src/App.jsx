@@ -1527,6 +1527,25 @@ export default function App() {
     setTimeout(() => setToast(null), 3500)
   }
 
+  // 발원문 접수일시 친화적 포맷팅 함수
+  const formatPrayerDate = (dateStr) => {
+    if (!dateStr) return '최근'
+    if (dateStr === '방금 전') return '방금 전'
+    try {
+      const d = new Date(dateStr)
+      if (isNaN(d.getTime())) return dateStr
+      const diffMs = Date.now() - d.getTime()
+      const diffMin = Math.floor(diffMs / 60000)
+      if (diffMin < 2) return '방금 전'
+      if (diffMin < 60) return `${diffMin}분 전`
+      const diffHours = Math.floor(diffMin / 60)
+      if (diffHours < 24) return `${diffHours}시간 전`
+      return `${d.getMonth() + 1}월 ${d.getDate()}일`
+    } catch (e) {
+      return dateStr
+    }
+  }
+
   // 상태 변경 시 로컬스토리지 자동 동기화
   useEffect(() => {
     localStorage.setItem('sowonpray_members_v5', JSON.stringify(members))
@@ -1739,6 +1758,54 @@ export default function App() {
       setWishPhone('')
     }
   }, [currentUser])
+
+  // 클라우드 및 계정 연동 7일 소원등 자동 동기화 (기기 간 실시간 동기화: PC에서 켜면 폰에서도 자동 점등)
+  useEffect(() => {
+    if (!prayers || prayers.length === 0) return
+
+    // 현재 로그인된 회원 또는 폼 입력 정보 기준 매칭
+    const cleanUserPhone = (currentUser?.phone || wishPhone || '').replace(/[^0-9]/g, '')
+    const userCode = currentUser?.code || ''
+    const userName = currentUser?.name || wishName || ''
+
+    if (!cleanUserPhone && !userCode && !userName) return
+
+    const myLatestPrayer = prayers.find((p) => {
+      const pPhone = (p.believer_phone || '').replace(/[^0-9]/g, '')
+      const pCode = p.member_code || ''
+      const pName = p.believer_name || ''
+
+      const matchPhone = cleanUserPhone && pPhone && cleanUserPhone === pPhone
+      const matchCode = userCode && pCode && userCode === pCode
+      const matchName = userName && pName && (pName.includes(userName) || userName.includes(pName))
+
+      return matchPhone || matchCode || matchName
+    })
+
+    if (myLatestPrayer) {
+      let prayerTime = Date.now()
+      if (myLatestPrayer.created_at) {
+        const parsed = new Date(myLatestPrayer.created_at).getTime()
+        if (!isNaN(parsed)) prayerTime = parsed
+      }
+      const expireAt = prayerTime + 7 * 24 * 60 * 60 * 1000
+
+      if (expireAt > Date.now()) {
+        const syncedLantern = {
+          believer_name: myLatestPrayer.believer_name,
+          believer_phone: myLatestPrayer.believer_phone || currentUser?.phone || '',
+          wish_category: myLatestPrayer.wish_category || '가족건강',
+          wish_text: myLatestPrayer.wish_text || '',
+          lit_at: prayerTime,
+          expire_at: expireAt,
+        }
+        setLanternData(syncedLantern)
+        try {
+          localStorage.setItem('sowonsa_7day_lantern', JSON.stringify(syncedLantern))
+        } catch (e) {}
+      }
+    }
+  }, [currentUser, prayers, wishPhone, wishName])
 
   // 사경/법문/경전공부/지혜퀴즈 탭 상태
   const [sutraSubTab, setSutraSubTab] = useState('copy') // 'copy' | 'wisdom' | 'study' | 'quiz'
@@ -2084,7 +2151,7 @@ export default function App() {
         wishCategory.includes('위패') || wishCategory.includes('삼성각')
           ? '종무소 위패·삼성각 불사 우선 상담 배정됨'
           : '오늘 제주 소원사 대웅전 축원 접수완료',
-      created_at: '방금 전',
+      created_at: new Date().toISOString(),
     }
 
     setPrayers((prev) => [newPrayer, ...prev])
@@ -4107,7 +4174,7 @@ export default function App() {
                     <p className="text-xs text-[#4A433C] leading-relaxed break-keep">“{p.wish_text}”</p>
                     <div className="flex items-center justify-between gap-2 text-[11px] text-[#8C7A5B] pt-1">
                       <span className="whitespace-nowrap">✓ {p.prayed_at}</span>
-                      <span className="whitespace-nowrap shrink-0">{p.created_at}</span>
+                      <span className="whitespace-nowrap shrink-0">{formatPrayerDate(p.created_at)}</span>
                     </div>
                   </div>
                 ))}
@@ -5740,7 +5807,7 @@ export default function App() {
                         </div>
 
                         <div className="flex items-center justify-between text-[11px] text-[#8C7A5B] pt-1 border-t border-[#EFE9DD]">
-                          <span>접수일시: {p.created_at}</span>
+                          <span>접수일시: {formatPrayerDate(p.created_at)}</span>
                           <span>담당코드: {p.agent_code}</span>
                         </div>
                       </div>
