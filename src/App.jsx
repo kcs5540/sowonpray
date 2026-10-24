@@ -961,19 +961,19 @@ function playMoktakAcousticSynth() {
   }
 }
 
-// 24시간 힐링 법음 & 수면 명상 5대 테마 트랙 (공공누리 제1유형 정식 공공저작물 음원 완비)
+// 24시간 힐링 법음 & 수면 명상 5대 테마 트랙 (영인스님 정통 독경 및 법음 완비)
 const HEALING_AUDIO_TRACKS = [
   {
     id: 'prajna_chanting',
     category: '경전독경',
     icon: '📿',
-    title: '반야심경(般若心經) 스님 실물 독경',
-    subtitle: '실제 스님 독경 원음 & 법당 목탁·범종 (완독 2분 36초 연속 회향)',
-    description: '공공저작물(공공누리 제1유형) 정식 승인 음원으로, 스님의 장엄한 육성 독경과 사찰 법당 목탁 원음이 끊김 없이 울려 퍼집니다.',
+    title: '반야심경(般若心經) 영인스님 정통 독경',
+    subtitle: '영인스님 청아한 육성 원음 & 법당 목탁 (2분 51초 완독 회향)',
+    description: '대한민국 불자들이 가장 사랑하는 영인스님의 맑고 청아한 반야심경 독경 전편과 법당 목탁 원음입니다. (BBS 불교방송 마스터링본)',
     type: 'chant',
     audioUrl: '/audio/prajna_chanting.mp3',
     voiceText: null, // MP3 자체에 실제 스님 목소리 독경 완독 수록
-    attribution: '출처: 국립국악원 / 공공누리 제1유형 (출처표시·상업적이용가능)',
+    attribution: '출처: BBS 불교방송 / 영인스님 독경 정진 (사찰 포교 및 법공양)',
   },
   {
     id: 'sleep_meditation',
@@ -2821,7 +2821,7 @@ export default function App() {
                                 </span>
                                 {t.id === 'prajna_chanting' ? (
                                   <span className="bg-[#F5D061]/25 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/40">
-                                    🎙️ 스님 실물 독경 원음
+                                    🎙️ 영인스님 실물 독경 원음
                                   </span>
                                 ) : t.voiceText ? (
                                   <span className="bg-[#F5D061]/20 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/30">
@@ -6510,7 +6510,7 @@ export default function App() {
                   <div className="flex justify-center mt-3">
                     <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F5D061]/20 text-[#FFE58A] border border-[#F5D061]/40 flex items-center gap-1.5 shadow-sm">
                       <span>📿</span>
-                      <span>스님 실제 독경 육성 &amp; 대웅전 목탁 원음</span>
+                      <span>영인스님 실제 독경 육성 &amp; 대웅전 목탁 원음</span>
                     </span>
                   </div>
                 ) : HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.voiceText ? (
