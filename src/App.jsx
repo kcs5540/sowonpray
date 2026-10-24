@@ -3800,59 +3800,23 @@ export default function App() {
                 </div>
 
                 {/* 축원 대상란 (소원발원 대상) */}
-                <div className="space-y-1.5">
-                  <div className="space-y-0.5">
-                    <label className="block text-xs font-bold text-[#3D3630] flex items-center gap-1.5">
-                      <span>소원발원 대상 (축원 대상자)</span>
-                      <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
-                        선택
-                      </span>
-                    </label>
-                    <p className="text-[11px] text-[#7A7065]">
-                      비워두시면 <strong>[신청자 본인]</strong>으로 축원됩니다
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={wishTarget}
-                      onChange={(e) => setWishTarget(e.target.value)}
-                      placeholder="예: 자녀 김철수, 부모님, 가족 전체"
-                      className="flex-1 px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
-                    />
-                    {wishTarget && (
-                      <button
-                        type="button"
-                        onClick={() => setWishTarget('')}
-                        className="px-2.5 py-2 text-xs text-[#8C7A5B] hover:text-[#3D3630] underline shrink-0"
-                      >
-                        본인으로 초기화
-                      </button>
-                    )}
-                  </div>
-
-                  {/* 빠른 선택 칩 */}
-                  <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
-                    <span className="text-[10.5px] font-bold text-[#8A6510] shrink-0">빠른 선택:</span>
-                    {['본인', '가족 전체', '자녀', '부모님', '배우자'].map((chip) => {
-                      const isSelected = (chip === '본인' && !wishTarget) || wishTarget === chip
-                      return (
-                        <button
-                          key={chip}
-                          type="button"
-                          onClick={() => setWishTarget(chip === '본인' ? '' : chip)}
-                          className={`px-2 py-0.5 rounded-md text-[11px] font-bold border transition ${
-                            isSelected
-                              ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-xs'
-                              : 'bg-white text-[#6E655C] border-[#D6CEC2] hover:bg-[#FAF5E6]'
-                          }`}
-                        >
-                          {chip}
-                        </button>
-                      )
-                    })}
-                  </div>
+                <div>
+                  <label className="block text-xs font-bold text-[#3D3630] mb-0.5 flex items-center gap-1.5">
+                    <span>소원발원 대상 (축원 대상자)</span>
+                    <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
+                      선택
+                    </span>
+                  </label>
+                  <p className="text-[11px] text-[#7A7065] mb-1">
+                    비워두시면 <strong>[신청자 본인]</strong>으로 축원됩니다
+                  </p>
+                  <input
+                    type="text"
+                    value={wishTarget}
+                    onChange={(e) => setWishTarget(e.target.value)}
+                    placeholder="예: 자녀 김철수, 부모님, 가족 전체"
+                    className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
+                  />
                 </div>
 
                 <div>
@@ -4237,59 +4201,23 @@ export default function App() {
                 </div>
 
                 {/* 축원 대상란 (소원발원 대상) */}
-                <div className="space-y-1.5">
-                  <div className="space-y-0.5">
-                    <label className="block text-xs font-bold text-[#3D3630] flex items-center gap-1.5">
-                      <span>소원발원 대상 (축원 대상자)</span>
-                      <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
-                        선택
-                      </span>
-                    </label>
-                    <p className="text-[11px] text-[#7A7065]">
-                      비워두시면 <strong>[신청자 본인]</strong>으로 축원됩니다
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={wishTarget}
-                      onChange={(e) => setWishTarget(e.target.value)}
-                      placeholder="예: 자녀 김철수, 부모님, 가족 전체"
-                      className="flex-1 px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
-                    />
-                    {wishTarget && (
-                      <button
-                        type="button"
-                        onClick={() => setWishTarget('')}
-                        className="px-2.5 py-2 text-xs text-[#8C7A5B] hover:text-[#3D3630] underline shrink-0"
-                      >
-                        본인으로 초기화
-                      </button>
-                    )}
-                  </div>
-
-                  {/* 빠른 선택 칩 */}
-                  <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
-                    <span className="text-[10.5px] font-bold text-[#8A6510] shrink-0">빠른 선택:</span>
-                    {['본인', '가족 전체', '자녀', '부모님', '배우자'].map((chip) => {
-                      const isSelected = (chip === '본인' && !wishTarget) || wishTarget === chip
-                      return (
-                        <button
-                          key={chip}
-                          type="button"
-                          onClick={() => setWishTarget(chip === '본인' ? '' : chip)}
-                          className={`px-2 py-0.5 rounded-md text-[11px] font-bold border transition ${
-                            isSelected
-                              ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-xs'
-                              : 'bg-white text-[#6E655C] border-[#D6CEC2] hover:bg-[#FAF5E6]'
-                          }`}
-                        >
-                          {chip}
-                        </button>
-                      )
-                    })}
-                  </div>
+                <div>
+                  <label className="block text-xs font-bold text-[#3D3630] mb-0.5 flex items-center gap-1.5">
+                    <span>소원발원 대상 (축원 대상자)</span>
+                    <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
+                      선택
+                    </span>
+                  </label>
+                  <p className="text-[11px] text-[#7A7065] mb-1">
+                    비워두시면 <strong>[신청자 본인]</strong>으로 축원됩니다
+                  </p>
+                  <input
+                    type="text"
+                    value={wishTarget}
+                    onChange={(e) => setWishTarget(e.target.value)}
+                    placeholder="예: 자녀 김철수, 부모님, 가족 전체"
+                    className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
+                  />
                 </div>
 
                 <div>
