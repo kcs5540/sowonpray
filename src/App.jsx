@@ -2765,32 +2765,32 @@ export default function App() {
               </button>
             </section>
 
-            {/* 퀵 액션 배너 2종: 7일 소원등 켜기 · 온라인 한줄 사경 (불사안내는 하단 탭으로 분리하여 첫 화면 부담 제거) */}
-            <div className="grid grid-cols-2 gap-3">
+            {/* 퀵 액션 배너 2종: 7일 소원등 켜기 · 온라인 한줄 사경 (모바일 글자 잘림 없는 정갈한 규격) */}
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
               <button
                 onClick={() => {
                   playSingingBowlSound()
                   setActiveTab('lantern')
                 }}
-                className="bg-gradient-to-br from-[#2B241D] to-[#1A1612] text-white px-3.5 py-3.5 rounded-2xl text-left border border-[#C59B27]/50 shadow-md hover:brightness-105 active:scale-95 transition flex items-center gap-2.5 overflow-hidden"
+                className="bg-gradient-to-br from-[#2B241D] to-[#1A1612] text-white p-3 sm:p-3.5 rounded-2xl text-left border border-[#C59B27]/50 shadow-md hover:brightness-105 active:scale-95 transition flex items-center gap-2.5 overflow-hidden"
               >
                 <div
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
                     isLanternLit
                       ? 'bg-[#F5D061] text-[#1B1815] border-[#FFF3B8] shadow-[0_0_15px_rgba(245,208,97,0.4)]'
                       : 'bg-[#C59B27]/20 border-[#F5D061]/40 text-[#F5D061]'
                   }`}
                 >
-                  <Flame className={`w-5 h-5 ${isLanternLit ? 'fill-current flame-flicker' : ''}`} />
+                  <Flame className={`w-4.5 h-4.5 ${isLanternLit ? 'fill-current flame-flicker' : ''}`} />
                 </div>
-                <div className="min-w-0">
-                  <span className="block text-[10.5px] text-[#F5D061] font-medium whitespace-nowrap">
+                <div className="min-w-0 flex-1">
+                  <span className="block text-[10px] text-[#F5D061] font-medium truncate">
                     {isLanternLit
-                      ? `7일 점등 축원중 (D-${lanternDaysRemaining})`
-                      : '대웅전 7일 무료 축원'}
+                      ? `점등 축원중 (D-${lanternDaysRemaining})`
+                      : '대웅전 7일 무료'}
                   </span>
-                  <h3 className="font-serif-kr font-bold text-sm sm:text-base mt-0.5 whitespace-nowrap">
-                    {isLanternLit ? '나의 소원등 보기' : '소원등 켜기'}
+                  <h3 className="font-serif-kr font-bold text-sm sm:text-base mt-0.5 truncate">
+                    {isLanternLit ? '나의 소원등' : '소원등 켜기'}
                   </h3>
                 </div>
               </button>
@@ -2800,16 +2800,16 @@ export default function App() {
                   playSingingBowlSound()
                   setActiveTab('sutra')
                 }}
-                className="bg-gradient-to-br from-[#F6F1E4] to-[#EAE0C8] text-[#231F1C] px-3.5 py-3.5 rounded-2xl text-left border border-[#D5C59B] shadow-md hover:brightness-105 active:scale-95 transition flex items-center gap-2.5 overflow-hidden"
+                className="bg-gradient-to-br from-[#F6F1E4] to-[#EAE0C8] text-[#231F1C] p-3 sm:p-3.5 rounded-2xl text-left border border-[#D5C59B] shadow-md hover:brightness-105 active:scale-95 transition flex items-center gap-2.5 overflow-hidden"
               >
-                <div className="w-10 h-10 rounded-xl bg-[#9A7418]/15 border border-[#9A7418]/30 flex items-center justify-center shrink-0">
-                  <BookOpen className="w-5 h-5 text-[#8A6510]" />
+                <div className="w-9 h-9 rounded-xl bg-[#9A7418]/15 border border-[#9A7418]/30 flex items-center justify-center shrink-0">
+                  <BookOpen className="w-4.5 h-4.5 text-[#8A6510]" />
                 </div>
-                <div className="min-w-0">
-                  <span className="block text-[10.5px] text-[#8A6510] font-semibold whitespace-nowrap">
+                <div className="min-w-0 flex-1">
+                  <span className="block text-[10px] text-[#8A6510] font-semibold truncate">
                     나의 공덕 {currentMeritCount}회
                   </span>
-                  <h3 className="font-serif-kr font-bold text-sm sm:text-base mt-0.5 whitespace-nowrap">
+                  <h3 className="font-serif-kr font-bold text-sm sm:text-base mt-0.5 truncate">
                     한 줄 사경
                   </h3>
                 </div>
@@ -2887,33 +2887,18 @@ export default function App() {
               ) : (
                 /* [상태 B] 터치 시 시원하게 펼쳐진 상세 5대 트랙 & 타이머 패널 */
                 <div className="p-4 sm:p-5 space-y-3.5 animate-in fade-in duration-200">
-                  <div className="flex items-start justify-between gap-2 relative z-10">
-                    <div className="flex items-center gap-2.5">
-                      <div
-                        className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border ${
-                          isHealingPlaying
-                            ? 'bg-[#F5D061] text-[#1B1815] border-[#FFF3B8] shadow-[0_0_20px_rgba(245,208,97,0.5)] scale-105'
-                            : 'bg-white/10 text-[#F5D061] border-white/10'
-                        } transition-all duration-500`}
-                      >
-                        <Headphones className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-black text-[#F5D061] bg-[#F5D061]/15 px-2 py-0.5 rounded-full border border-[#F5D061]/30">
-                            24시간 마음 쉼터
-                          </span>
-                          {isHealingPlaying && (
-                            <span className="flex items-center gap-1 text-[10px] text-[#4ADE80] font-bold">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-ping" />
-                              마음 치유 중
-                            </span>
-                          )}
-                        </div>
-                        <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white mt-0.5">
-                          일할 때 & 잘 때 듣는 법음(法音)
-                        </h3>
-                      </div>
+                  {/* 상단 1열: 배지 및 치유 상태 + 우측 조작 (스님 음성 토글 & 간편 접기) */}
+                  <div className="flex items-center justify-between gap-2 relative z-10 pb-2.5 border-b border-white/10">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black text-[#F5D061] bg-[#F5D061]/15 px-2.5 py-0.5 rounded-full border border-[#F5D061]/30">
+                        24시간 마음 쉼터
+                      </span>
+                      {isHealingPlaying && (
+                        <span className="flex items-center gap-1 text-[10px] text-[#4ADE80] font-bold">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-ping" />
+                          치유 중
+                        </span>
+                      )}
                     </div>
 
                     {/* 우측 컨트롤: 스님 음성 토글 & 간편 접기 */}
@@ -2941,6 +2926,27 @@ export default function App() {
                         <span>접기</span>
                         <ChevronUp className="w-3.5 h-3.5" />
                       </button>
+                    </div>
+                  </div>
+
+                  {/* 2열 메인 타이틀: 100% 전폭을 확보하여 줄바꿈 없이 1줄로 시원하게 노출 */}
+                  <div className="flex items-center gap-3 relative z-10">
+                    <div
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${
+                        isHealingPlaying
+                          ? 'bg-[#F5D061] text-[#1B1815] border-[#FFF3B8] shadow-[0_0_15px_rgba(245,208,97,0.5)] scale-105'
+                          : 'bg-white/10 text-[#F5D061] border-white/10'
+                      } transition-all duration-500`}
+                    >
+                      <Headphones className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white whitespace-nowrap">
+                        일할 때 & 잘 때 듣는 법음(法音)
+                      </h3>
+                      <p className="text-[11px] text-[#C2B8AB] mt-0.5 truncate">
+                        마음을 다스리는 5대 불경 독경과 힐링의 쉼
+                      </p>
                     </div>
                   </div>
 
