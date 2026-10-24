@@ -1864,6 +1864,7 @@ export default function App() {
 
   // 로그인/회원가입 전환 상태 ('login' | 'signup')
   const [authMode, setAuthMode] = useState('login')
+  const [showTestAccountSwitch, setShowTestAccountSwitch] = useState(false)
   const [loginIdInput, setLoginIdInput] = useState('')
   const [loginPwInput, setLoginPwInput] = useState('')
 
@@ -5218,12 +5219,21 @@ export default function App() {
         {/* ==================== 4. 내정보 (로그인 · 회원가입 · 축원정보 관리) 탭 ==================== */}
         {activeTab === 'profile' && (
           <main className="flex-1 flex flex-col gap-5 p-4">
-            {/* 대표님 테스트용 원클릭 계정 전환 스위치 바 */}
-            <section className="rounded-2xl bg-[#26211C] text-white p-4 border border-[#C59B27]/40 space-y-2.5">
+            {/* 대표님 테스트용 원클릭 계정 전환 스위치 바 (접이식 아코디언 토글) */}
+            <section className="rounded-2xl bg-[#26211C] text-white p-3.5 border border-[#C59B27]/40 space-y-2.5">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[11px] text-[#F5D061] font-bold whitespace-nowrap">
-                  ⚡ 역할별 계정 빠른 전환 (테스트용)
-                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowTestAccountSwitch(!showTestAccountSwitch)}
+                  className="flex items-center gap-1.5 text-left group"
+                >
+                  <span className="text-[11px] text-[#F5D061] font-bold whitespace-nowrap">
+                    ⚡ 테스트 계정 빠른 전환
+                  </span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-[#D6CEC2] group-hover:text-white transition">
+                    {showTestAccountSwitch ? '접기 ▲' : '펼치기 ▼'}
+                  </span>
+                </button>
                 {currentUser && (
                   <button
                     type="button"
@@ -5238,64 +5248,67 @@ export default function App() {
                   </button>
                 )}
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCurrentUserCode('33065540')
-                    showToast('👑 [김철수 포교위원장] 계정으로 전환되었습니다. (총괄 마스터 50% 총판)')
-                  }}
-                  className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
-                    currentUser?.code === '33065540'
-                      ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
-                      : 'bg-white/5 text-[#E8DFD1] border-white/10'
-                  }`}
-                >
-                  포교위원장(김철수)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCurrentUserCode('53872248')
-                    showToast('🪷 포교위원장 [유광수] 계정으로 전환되었습니다. (40% 요율)')
-                  }}
-                  className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
-                    currentUser?.code === '53872248'
-                      ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
-                      : 'bg-white/5 text-[#E8DFD1] border-white/10'
-                  }`}
-                >
-                  포교위원장(유광수)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCurrentUserCode('91010002')
-                    showToast('🌿 포교위원 [이진우(진각심)] 계정으로 전환되었습니다. (30% 요율)')
-                  }}
-                  className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
-                    currentUser?.code === '91010002'
-                      ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
-                      : 'bg-white/5 text-[#E8DFD1] border-white/10'
-                  }`}
-                >
-                  포교위원(이진우)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCurrentUserCode('82341088')
-                    showToast('🙏 일반신도 [이정숙(무량화)] 계정으로 전환되었습니다.')
-                  }}
-                  className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
-                    currentUser?.code === '82341088'
-                      ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
-                      : 'bg-white/5 text-[#E8DFD1] border-white/10'
-                  }`}
-                >
-                  신도(이정숙)
-                </button>
-              </div>
+
+              {showTestAccountSwitch && (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-1 border-t border-white/10 animate-fadeIn">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentUserCode('33065540')
+                      showToast('👑 [김철수 포교위원장] 계정으로 전환되었습니다. (총괄 마스터 50% 총판)')
+                    }}
+                    className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
+                      currentUser?.code === '33065540'
+                        ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
+                        : 'bg-white/5 text-[#E8DFD1] border-white/10'
+                    }`}
+                  >
+                    포교위원장(김철수)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentUserCode('53872248')
+                      showToast('🪷 포교위원장 [유광수] 계정으로 전환되었습니다. (40% 요율)')
+                    }}
+                    className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
+                      currentUser?.code === '53872248'
+                        ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
+                        : 'bg-white/5 text-[#E8DFD1] border-white/10'
+                    }`}
+                  >
+                    포교위원장(유광수)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentUserCode('91010002')
+                      showToast('🌿 포교위원 [이진우(진각심)] 계정으로 전환되었습니다. (30% 요율)')
+                    }}
+                    className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
+                      currentUser?.code === '91010002'
+                        ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
+                        : 'bg-white/5 text-[#E8DFD1] border-white/10'
+                    }`}
+                  >
+                    포교위원(이진우)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentUserCode('82341088')
+                      showToast('🙏 일반신도 [이정숙(무량화)] 계정으로 전환되었습니다.')
+                    }}
+                    className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition whitespace-nowrap ${
+                      currentUser?.code === '82341088'
+                        ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
+                        : 'bg-white/5 text-[#E8DFD1] border-white/10'
+                    }`}
+                  >
+                    신도(이정숙)
+                  </button>
+                </div>
+              )}
             </section>
 
             {/* [A] 로그아웃 상태일 때: 로그인 / 신규 회원가입 폼 */}
