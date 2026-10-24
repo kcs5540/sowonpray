@@ -3814,9 +3814,12 @@ export default function App() {
                     placeholder="예: 자녀 김철수, 부모님, 가족 전체"
                     className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
                   />
-                  <p className="text-[11px] text-[#7A7065] mt-1 px-0.5">
-                    비워두시면 <strong>[신청자 본인]</strong>으로 축원됩니다
-                  </p>
+                  <div className="flex items-center gap-1 text-[11px] text-[#7A7065] mt-1.5 px-0.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#B8860B] shrink-0" />
+                    <span>
+                      비워두시면 <strong>[신청자 본인]</strong>으로 축원됩니다
+                    </span>
+                  </div>
                 </div>
 
                 <div>
@@ -4215,9 +4218,12 @@ export default function App() {
                     placeholder="예: 자녀 김철수, 부모님, 가족 전체"
                     className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
                   />
-                  <p className="text-[11px] text-[#7A7065] mt-1 px-0.5">
-                    비워두시면 <strong>[신청자 본인]</strong>으로 축원됩니다
-                  </p>
+                  <div className="flex items-center gap-1 text-[11px] text-[#7A7065] mt-1.5 px-0.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#B8860B] shrink-0" />
+                    <span>
+                      비워두시면 <strong>[신청자 본인]</strong>으로 축원됩니다
+                    </span>
+                  </div>
                 </div>
 
                 <div>
