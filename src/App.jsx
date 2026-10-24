@@ -86,6 +86,43 @@ const HERO_SLIDES = [
   },
 ]
 
+// 각 기원 분야별 대웅전 정통 예시 발원문 (직접 작성하지 않고도 그대로 올릴 수 있도록 지원)
+const PRAYER_CATEGORY_TEMPLATES = {
+  // 1. 소원등 6대 기원 분야
+  가족건강:
+    '지극한 정성으로 발원하오니, 우리 가족 모두 병고 없이 무병장수하고 화목과 평안이 늘 함께하기를 지심귀명례합니다.',
+  사업번창:
+    '부처님의 자비 광명 속에 경영하는 사업이 날로 번창하고, 귀인과 좋은 인연이 모여 재물과 복덕이 가득하기를 발원합니다.',
+  '학업/시험합격':
+    '지혜의 빛으로 마음을 밝혀 주시어, 원하는 시험에 원만히 합격하고 뜻한 학업의 길을 지혜롭게 펼쳐나가기를 발원합니다.',
+  '마음평안/소원성취':
+    '마음속 온갖 번뇌와 근심이 눈 녹듯 사라지고, 가슴 깊이 품은 간절한 소원이 부처님 가피로 원만 성취되기를 발원합니다.',
+  '자녀축복/취업성취':
+    '사랑하는 자녀의 앞길을 자비로 인도하시어, 원하는 곳에 취업 성공하고 뜻한 포부를 당당히 펼치기를 지심으로 발원합니다.',
+  '액운소멸/무병장수':
+    '올 한 해 모든 삼재와 액난이 맑게 소멸되고, 건강과 장수의 큰 복을 누리며 만사형통하기를 간절히 발원합니다.',
+
+  // 2. 불사 및 특별기도 6대 분야
+  '생전예수재(황금위패)':
+    '생전에 미리 공덕을 닦아 사후의 안락을 구하오며, 부모님과 가족의 무량복덕을 위해 황금위패 봉안을 지극한 마음으로 발원합니다.',
+  '조상영구위패(흑색)':
+    '대대로 은혜로운 조상 선망 영가님들의 극락왕생을 발원하오며, 가문의 번영과 자손들의 평안을 위해 영구위패 봉안을 축원합니다.',
+  '삼성각 영구축원명패':
+    '제주 소원사 삼성각 영구축원명패 봉안을 발원하며, 가문 대대로 조상 은덕과 부처님 가피가 충만하기를 축원합니다.',
+  '삼성각 기둥·단청불사':
+    '삼성각 기둥 및 단청 불사에 정성껏 동참하오니, 삼재팔난을 소멸하고 자손 대대로 무량복덕을 누리기를 발원합니다.',
+  '삼성각 소원기와불사':
+    '제주 소원사 삼성각 지붕 기와에 가족의 소원을 얹어 올리오니, 온 집안이 평안하고 가업이 번영하기를 발원합니다.',
+  '대웅전 1년 인등(가족등)':
+    '대웅전 부처님 전에 1년 가족 인등을 정성껏 밝히오니, 365일 지혜와 건강의 밝은 빛이 늘 함께하기를 발원합니다.',
+  '49재/천도재/기일제사':
+    '인연 있는 조상 영가님들의 극락왕생을 지극한 마음으로 발원하오며, 정성껏 천도재 및 기일 축원을 올립니다.',
+  '대웅전 공양미/불전시주':
+    '대웅전 삼존불 전에 청정한 공양미와 시주를 올리오니, 지은 공덕이 온 가족의 복락으로 널리 회향되기를 발원합니다.',
+  '기타 특별기도 상담':
+    '간절한 소원 성취와 가정의 평안을 위하여, 제주 소원사 종무소와 정성껏 특별기도 상담을 희망합니다.',
+}
+
 // ============================================================================
 // 포교자 회원유치 조직도 트리 뷰 (MetaFastest 스타일 모바일 계층 트리)
 // ============================================================================
@@ -1974,13 +2011,29 @@ export default function App() {
     }
   }
 
+  // 기원 분야 변경 시 정통 예시 발원문 연동 핸들러
+  const handleSelectWishCategory = (cat) => {
+    const prevTemplate = PRAYER_CATEGORY_TEMPLATES[wishCategory]
+    setWishCategory(cat)
+    // 사용자가 직접 작성한 적이 없거나, 이전 카테고리의 기본 예시문이었던 경우 새 카테고리 정통 예시문으로 자동 전환!
+    if (!wishText.trim() || wishText.trim() === prevTemplate) {
+      setWishText(PRAYER_CATEGORY_TEMPLATES[cat] || '')
+    }
+  }
+
   // 소원등 점등 및 대웅전 축원 접수 핸들러 (7일간 대웅전 점등 유지)
   const handlePrayerSubmit = (e) => {
     e.preventDefault()
-    if (!wishName.trim() || !wishPhone.trim() || !wishText.trim()) {
-      showToast('성함과 연락처, 소원 발원문을 모두 입력해 주세요.')
+    if (!wishName.trim() || !wishPhone.trim()) {
+      showToast('성함과 연락처를 입력해 주세요.')
       return
     }
+
+    // 소원 발원문을 직접 쓰지 않고 비워둔 경우, 선택된 기원 분야의 정통 예시 발원문으로 자동 접수!
+    const finalWishText =
+      wishText.trim() ||
+      PRAYER_CATEGORY_TEMPLATES[wishCategory] ||
+      '우리 가족 올 한 해 무병장수하고 하는 일마다 순조롭게 풀리기를 발원합니다.'
 
     playSingingBowlSound()
     const now = Date.now()
@@ -1989,7 +2042,7 @@ export default function App() {
       believer_name: wishName.trim(),
       believer_phone: wishPhone.trim(),
       wish_category: wishCategory,
-      wish_text: wishText.trim(),
+      wish_text: finalWishText,
       lit_at: now,
       expire_at: expireAt,
     }
@@ -2008,7 +2061,7 @@ export default function App() {
       believer_phone: wishPhone.trim(),
       agent_code: assignedAgentCode,
       wish_category: wishCategory,
-      wish_text: wishText.trim(),
+      wish_text: finalWishText,
       status:
         wishCategory.includes('위패') || wishCategory.includes('삼성각')
           ? 'consulting'
@@ -2034,7 +2087,7 @@ export default function App() {
             believer_name: wishName.trim(),
             believer_phone: wishPhone.trim(),
             wish_category: wishCategory,
-            wish_text: wishText.trim(),
+            wish_text: finalWishText,
             status: newPrayer.status,
             prayed_at: newPrayer.prayed_at,
           },
@@ -3649,7 +3702,7 @@ export default function App() {
                       <button
                         type="button"
                         key={cat}
-                        onClick={() => setWishCategory(cat)}
+                        onClick={() => handleSelectWishCategory(cat)}
                         className={`py-2.5 px-2.5 rounded-xl text-[11.5px] font-bold border text-left transition flex items-center gap-1.5 ${
                           isSelected
                             ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-md ring-2 ring-[#C59B27]/40'
@@ -3717,16 +3770,47 @@ export default function App() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                    봉안 대상자 정보 및 발원 내용
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-bold text-[#3D3630]">
+                      봉안 대상자 정보 및 발원 내용
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setWishText(PRAYER_CATEGORY_TEMPLATES[wishCategory] || '')}
+                      className="px-2.5 py-1 rounded-lg bg-[#FAF3DF] hover:bg-[#F5E6BF] text-[#8A6510] border border-[#E5D399] text-[11px] font-bold flex items-center gap-1 transition shadow-sm active:scale-95"
+                      title="이 불사 종목 추천 발원문을 그대로 입력합니다"
+                    >
+                      <Sparkles className="w-3 h-3 text-[#B8860B]" />
+                      <span>✨ 예시문 그대로 넣기</span>
+                    </button>
+                  </div>
                   <textarea
                     rows={3}
                     value={wishText}
                     onChange={(e) => setWishText(e.target.value)}
-                    placeholder="예: 부모님 생전예수재 황금위패 2기 봉안 상담 희망합니다 / 가족 1년 인등 신청합니다."
-                    className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm text-[#231F1C] shadow-inner"
+                    placeholder={
+                      PRAYER_CATEGORY_TEMPLATES[wishCategory] ||
+                      '예: 부모님 생전예수재 황금위패 2기 봉안 상담 희망합니다 / 가족 1년 인등 신청합니다.'
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm text-[#231F1C] shadow-inner leading-relaxed"
                   />
+                  <div className="flex items-center justify-between text-[11px] text-[#7A7065] mt-1.5 px-0.5">
+                    <span className="flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#B8860B] shrink-0" />
+                      <span>
+                        직접 쓰지 않고 비워두셔도 <strong>[{wishCategory}]</strong> 기본 발원 내용으로 자동 상담 접수됩니다.
+                      </span>
+                    </span>
+                    {wishText && (
+                      <button
+                        type="button"
+                        onClick={() => setWishText('')}
+                        className="text-[#998877] hover:text-[#554433] underline text-[10.5px] ml-2 shrink-0"
+                      >
+                        지우기
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -3940,7 +4024,7 @@ export default function App() {
                       <button
                         type="button"
                         key={cat}
-                        onClick={() => setWishCategory(cat)}
+                        onClick={() => handleSelectWishCategory(cat)}
                         className={`py-2.5 px-2.5 rounded-xl text-[11.5px] font-bold border text-left transition flex items-center gap-1.5 ${
                           isSelected
                             ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-md ring-2 ring-[#C59B27]/40'
@@ -4008,16 +4092,47 @@ export default function App() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                    부처님께 올리는 한 줄 소원 (발원문)
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-bold text-[#3D3630]">
+                      부처님께 올리는 한 줄 소원 (발원문)
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setWishText(PRAYER_CATEGORY_TEMPLATES[wishCategory] || '')}
+                      className="px-2.5 py-1 rounded-lg bg-[#FAF3DF] hover:bg-[#F5E6BF] text-[#8A6510] border border-[#E5D399] text-[11px] font-bold flex items-center gap-1 transition shadow-sm active:scale-95"
+                      title="이 기원분야 추천 발원문을 그대로 입력합니다"
+                    >
+                      <Sparkles className="w-3 h-3 text-[#B8860B]" />
+                      <span>✨ 예시문 그대로 넣기</span>
+                    </button>
+                  </div>
                   <textarea
                     rows={3}
                     value={wishText}
                     onChange={(e) => setWishText(e.target.value)}
-                    placeholder="예: 우리 가족 올 한 해 무병장수하고 하는 일마다 순조롭게 풀리기를 발원합니다."
-                    className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm text-[#231F1C] shadow-inner"
+                    placeholder={
+                      PRAYER_CATEGORY_TEMPLATES[wishCategory] ||
+                      '예: 우리 가족 올 한 해 무병장수하고 하는 일마다 순조롭게 풀리기를 발원합니다.'
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm text-[#231F1C] shadow-inner leading-relaxed"
                   />
+                  <div className="flex items-center justify-between text-[11px] text-[#7A7065] mt-1.5 px-0.5">
+                    <span className="flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#B8860B] shrink-0" />
+                      <span>
+                        직접 쓰지 않고 비워두셔도 <strong>[{wishCategory}]</strong> 정통 발원문으로 자동 축원됩니다.
+                      </span>
+                    </span>
+                    {wishText && (
+                      <button
+                        type="button"
+                        onClick={() => setWishText('')}
+                        className="text-[#998877] hover:text-[#554433] underline text-[10.5px] ml-2 shrink-0"
+                      >
+                        지우기
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
