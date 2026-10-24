@@ -3346,35 +3346,39 @@ export default function App() {
               </div>
             </section>
 
-            {/* 제주 소원사 공식 사이트 & SNS 채널 통합 바로가기 */}
+            {/* 제주 소원사 공식 사이트 & SNS 채널 통합 바로가기 (A안: 가로 원형 아이콘 바) */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-3">
-              <div>
-                <span className="text-[11px] font-bold text-[#9A7418]">
-                  OFFICIAL CHANNELS
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-[11px] font-bold text-[#9A7418]">
+                    OFFICIAL CHANNELS
+                  </span>
+                  <h2 className="font-serif-kr font-bold text-base text-[#231F1C] mt-0.5 whitespace-nowrap">
+                    제주 소원사 공식 사이트 · 채널
+                  </h2>
+                </div>
+                <span className="text-[11px] text-[#A69B8D] font-medium hidden sm:inline-block">
+                  터치하여 바로가기
                 </span>
-                <h2 className="font-serif-kr font-bold text-base text-[#231F1C] mt-0.5 whitespace-nowrap">
-                  제주 소원사 공식 사이트 · 채널
-                </h2>
               </div>
 
-              <div className="space-y-2">
+              {/* 가로 아이콘 그리드 / 바 */}
+              <div className="grid grid-cols-6 gap-2 pt-1">
                 {[
                   {
-                    title: '제주 소원사 공식 홈페이지',
-                    sub: '도량 전경과 주요 전각·불사 종합 안내',
+                    name: '홈페이지',
                     url: 'https://sowonsa.vercel.app/',
                     icon: (
-                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#231F1C] to-[#151210] border border-[#C59B27] flex items-center justify-center shadow-sm shrink-0">
-                        <Globe className="w-4 h-4 text-[#F5D061]" />
+                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-[#231F1C] to-[#151210] border border-[#C59B27] flex items-center justify-center shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all">
+                        <Globe className="w-5 h-5 text-[#F5D061]" />
                       </div>
                     ),
                   },
                   {
-                    title: '제주 소원사 네이버 플레이스',
-                    sub: '네이버 지도 길찾기 · 도량 위치 · 방문자 리뷰',
+                    name: '네이버',
                     url: 'https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%86%8C%EC%9B%90%EC%82%AC',
                     icon: (
-                      <div className="w-9 h-9 rounded-xl bg-[#03C75A] flex items-center justify-center shadow-sm shrink-0">
+                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#03C75A] flex items-center justify-center shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all">
                         <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white" aria-hidden="true">
                           <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z" />
                         </svg>
@@ -3382,11 +3386,10 @@ export default function App() {
                     ),
                   },
                   {
-                    title: '제주 소원사 공식 유튜브 채널',
-                    sub: '사계절 도량 풍경과 스님 예불·법문 영상',
+                    name: '유튜브',
                     url: 'https://www.youtube.com/@jejusowonsa',
                     icon: (
-                      <div className="w-9 h-9 rounded-xl bg-[#FF0000] flex items-center justify-center shadow-sm shrink-0">
+                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#FF0000] flex items-center justify-center shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all">
                         <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" aria-hidden="true">
                           <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                         </svg>
@@ -3394,12 +3397,11 @@ export default function App() {
                     ),
                   },
                   {
-                    title: '제주 소원사 공식 인스타그램',
-                    sub: '사진으로 만나는 제주 소원사의 따뜻한 일상',
+                    name: '인스타그램',
                     url: 'https://www.instagram.com/jejusowonsa/',
                     icon: (
                       <div
-                        className="w-9 h-9 rounded-xl flex items-center justify-center shadow-sm shrink-0"
+                        className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all"
                         style={{
                           background:
                             'radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%)',
@@ -3412,11 +3414,10 @@ export default function App() {
                     ),
                   },
                   {
-                    title: '제주 소원사 공식 스레드 (Threads)',
-                    sub: '매일 전하는 짧은 마음챙김과 제주 도량 소식',
-                    url: 'https://www.threads.com/@jejusowonsa',
+                    name: '스레드',
+                    url: 'https://www.threads.net/@jejusowonsa',
                     icon: (
-                      <div className="w-9 h-9 rounded-xl bg-black flex items-center justify-center shadow-sm shrink-0">
+                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black flex items-center justify-center shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all">
                         <svg viewBox="0 0 192 192" className="w-5 h-5 fill-white" aria-hidden="true">
                           <path d="M141.537 88.988a66.667 66.667 0 0 0-2.518-1.143c-1.482-27.307-16.403-42.94-41.457-43.1h-.34c-14.986 0-27.449 6.396-35.12 18.036l13.779 9.452c5.73-8.695 14.724-10.548 21.348-10.548h.229c8.249.053 14.474 2.452 18.503 7.13 2.932 3.405 4.893 8.111 5.864 14.05-7.314-1.243-15.224-1.626-23.68-1.14-23.82 1.371-39.134 15.264-38.105 34.568.522 9.792 5.4 18.216 13.735 23.719 7.047 4.652 16.124 6.927 25.557 6.412 12.458-.683 22.231-5.436 29.049-14.127 5.178-6.6 8.453-15.153 9.899-25.93 5.937 3.583 10.337 8.298 12.767 13.966 4.132 9.635 4.373 25.468-8.546 38.376-11.319 11.308-24.925 16.2-45.488 16.35-22.809-.169-40.06-7.484-51.275-21.742C35.236 139.966 29.808 120.682 29.605 96c.203-24.682 5.63-43.966 16.133-57.317C56.954 24.425 74.204 17.11 97.013 16.94c22.975.17 40.526 7.52 52.171 21.847 5.71 7.026 10.015 15.86 12.853 26.162l16.147-4.308c-3.44-12.68-8.853-23.606-16.219-32.668C147.036 9.607 125.202.195 97.07 0h-.113C68.882.195 47.292 9.642 32.788 28.08 19.882 44.485 13.224 67.315 13.001 95.932L13 96v.067c.224 28.617 6.882 51.447 19.788 67.854C47.292 182.358 68.882 191.805 96.957 192h.113c24.96-.173 42.554-6.708 57.048-21.19 18.963-18.945 18.392-42.692 12.142-57.27-4.484-10.454-13.033-18.945-24.723-24.552zm-43.096 40.519c-10.44.588-21.286-4.098-21.82-14.135-.397-7.442 5.296-15.746 22.461-16.735 1.966-.113 3.895-.169 5.79-.169 6.235 0 12.068.606 17.371 1.765-1.978 24.702-13.58 28.713-23.802 29.274z" />
                         </svg>
@@ -3424,11 +3425,10 @@ export default function App() {
                     ),
                   },
                   {
-                    title: '제주 소원사 모바일 안내카드',
-                    sub: '지인에게 카카오톡으로 소원사 소개하기',
+                    name: '안내카드',
                     url: 'https://sowonsa.vercel.app/introcard',
                     icon: (
-                      <div className="w-9 h-9 rounded-xl bg-[#FEE500] flex items-center justify-center shadow-sm shrink-0">
+                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#FEE500] flex items-center justify-center shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all">
                         <svg viewBox="0 0 24 24" className="w-5 h-5 fill-[#3C1E1E]" aria-hidden="true">
                           <path d="M12 3C6.477 3 2 6.477 2 10.765c0 2.772 1.868 5.204 4.685 6.57-.204.763-.74 2.768-.847 3.197-.133.527.194.52.408.378.168-.111 2.668-1.81 3.746-2.546.652.094 1.323.144 2.008.144 5.523 0 10-3.477 10-7.743C22 6.477 17.523 3 12 3z" />
                         </svg>
@@ -3441,20 +3441,13 @@ export default function App() {
                     href={ch.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-3 rounded-xl bg-[#FAF8F5] hover:bg-[#F3ECE0] border border-[#E6DEC8] flex items-center justify-between transition"
+                    className="group flex flex-col items-center gap-1.5 py-1 text-center"
+                    title={ch.name}
                   >
-                    <div className="flex items-center gap-3 min-w-0">
-                      {ch.icon}
-                      <div className="min-w-0">
-                        <div className="text-xs font-bold text-[#231F1C] truncate">
-                          {ch.title}
-                        </div>
-                        <div className="text-[11px] text-[#786E63] truncate">
-                          {ch.sub}
-                        </div>
-                      </div>
-                    </div>
-                    <ExternalLink className="w-4 h-4 text-[#9A7418] shrink-0" />
+                    {ch.icon}
+                    <span className="text-[11px] font-medium text-[#544B41] group-hover:text-[#9A7418] transition-colors whitespace-nowrap">
+                      {ch.name}
+                    </span>
                   </a>
                 ))}
               </div>
