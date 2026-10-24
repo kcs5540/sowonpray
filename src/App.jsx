@@ -3526,30 +3526,30 @@ export default function App() {
                   </p>
                 </div>
 
-                {/* ② 조상 영가 흑색 위패 */}
+                {/* ② 조상 영가 흑색 위패 (대안 1: 은은하고 엷은 웜차콜/소프트 먹색 톤) */}
                 <div
                   onClick={() => {
                     playMoktakSound()
                     setWishCategory('조상영구위패(흑색)')
                   }}
-                  className={`rounded-xl border p-4 space-y-2 cursor-pointer transition bg-gradient-to-br from-[#231F1C] to-[#161311] text-white ${
+                  className={`rounded-xl border p-4 space-y-2 cursor-pointer transition bg-gradient-to-br from-[#3D3731] to-[#2B2621] text-[#FAF8F5] shadow-sm ${
                     wishCategory === '조상영구위패(흑색)'
                       ? 'border-[#F5D061] ring-2 ring-[#F5D061]/40'
-                      : 'border-[#3A352F]'
+                      : 'border-[#5A5146]/60 hover:border-[#8C7B68]'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/40 whitespace-nowrap">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#C59B27]/30 text-[#FCE18B] border border-[#F5D061]/50 whitespace-nowrap">
                       돌아가신 조상님 · 극락왕생 천도
                     </span>
-                    <span className="text-xs font-extrabold text-[#F5D061] whitespace-nowrap shrink-0">
+                    <span className="text-xs font-extrabold text-[#FCE18B] whitespace-nowrap shrink-0">
                       영구 봉안
                     </span>
                   </div>
-                  <h4 className="font-serif-kr font-bold text-base text-[#FAF8F5] whitespace-nowrap">
+                  <h4 className="font-serif-kr font-bold text-base text-white whitespace-nowrap">
                     ② 조상 영가 품격 흑색 영구위패
                   </h4>
-                  <p className="text-xs text-[#C8C0B7] leading-relaxed break-keep">
+                  <p className="text-xs text-[#D8D0C5] leading-relaxed break-keep">
                     중후한 흑색 바탕에 순금빛 존함을 새겨 후손들의 제사 부담을 덜어드리고, 사찰에서 영구히 독경과 합동 차례·천도 축원을 올립니다.
                   </p>
                 </div>
