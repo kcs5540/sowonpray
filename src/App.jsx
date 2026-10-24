@@ -979,13 +979,13 @@ const HEALING_AUDIO_TRACKS = [
     id: 'sleep_meditation',
     category: '수면치유',
     icon: '🌙',
-    title: '432Hz 크리스탈 싱잉볼 & 새벽 대종',
-    subtitle: '뇌파를 안정시키고 깊은 숙면을 유도하는 힐링 공명음 (3분 무한 루프)',
-    description: '불면증과 스트레스를 씻어내고 편안한 잠자리를 만들어주는 432Hz 크리스탈 싱잉볼과 사찰 새벽 대종의 은은한 치유 공명음입니다.',
+    title: '광명진언(光明眞言) 영인스님 치유 독경',
+    subtitle: '영인스님 나즈막한 자비 원음 & 치유 종송 (2분 46초 완독 회향)',
+    description: '불면증과 악몽, 마음의 불안을 잠재우고 깊고 평안한 숙면을 이끌어주는 영인스님의 명품 광명진언 독경 원음입니다. (BBS 불교방송 마스터링본)',
     type: 'sleep',
     audioUrl: '/audio/sleep_meditation.mp3',
     voiceText: null,
-    attribution: '음원 출처: 432Hz Crystal Sound Master / 깊은 숙면 치유 공양',
+    attribution: '음원 출처: BBS 불교방송 / 영인스님 독경 정진 (사찰 포교 및 법공양)',
   },
   {
     id: 'dhammapada_wisdom',
@@ -2817,13 +2817,9 @@ export default function App() {
                                 <span className="text-[10px] text-[#F5D061] font-bold">
                                   {t.category}
                                 </span>
-                                {t.id === 'prajna_chanting' || t.id === 'dhammapada_wisdom' ? (
+                                {t.id === 'prajna_chanting' || t.id === 'sleep_meditation' || t.id === 'dhammapada_wisdom' ? (
                                   <span className="bg-[#F5D061]/25 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/40">
                                     🎙️ 영인스님 실물 독경 원음
-                                  </span>
-                                ) : t.id === 'sleep_meditation' ? (
-                                  <span className="bg-[#38BDF8]/20 text-[#BAE6FD] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#38BDF8]/30">
-                                    🌙 432Hz 숙면 치유음
                                   </span>
                                 ) : t.id === 'rhythmic_moktak' ? (
                                   <span className="bg-[#F5D061]/20 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/30">
@@ -6509,15 +6505,10 @@ export default function App() {
 
                 {/* 트랙별 감성 보증 배지 */}
                 <div className="flex justify-center mt-3">
-                  {healingAudioTrack === 'prajna_chanting' || healingAudioTrack === 'dhammapada_wisdom' ? (
+                  {healingAudioTrack === 'prajna_chanting' || healingAudioTrack === 'sleep_meditation' || healingAudioTrack === 'dhammapada_wisdom' ? (
                     <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F5D061]/20 text-[#FFE58A] border border-[#F5D061]/40 flex items-center gap-1.5 shadow-sm">
                       <span>📿</span>
                       <span>영인스님 실제 독경 육성 &amp; 대웅전 목탁 원음</span>
-                    </span>
-                  ) : healingAudioTrack === 'sleep_meditation' ? (
-                    <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#38BDF8]/20 text-[#BAE6FD] border border-[#38BDF8]/40 flex items-center gap-1.5 shadow-sm">
-                      <span>🌙</span>
-                      <span>432Hz 크리스탈 싱잉볼 &amp; 새벽 대종 치유 공명음</span>
                     </span>
                   ) : healingAudioTrack === 'rhythmic_moktak' ? (
                     <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F5D061]/20 text-[#FFE58A] border border-[#F5D061]/40 flex items-center gap-1.5 shadow-sm">
