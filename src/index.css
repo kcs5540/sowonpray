@@ -39,38 +39,10 @@
   }
 }
 
-/* 모바일 크롬 등 기본(100%) 브라우저에서도 50~70대 불자님이 편하게 읽으실 수 있도록 전체 글자 크기 1단계 확대 */
-.text-\[10px\] {
-  font-size: 11.5px !important;
-}
-.text-\[10\.5px\] {
-  font-size: 12px !important;
-}
-.text-\[11px\] {
-  font-size: 12.5px !important;
-}
-.text-\[11\.5px\] {
-  font-size: 13px !important;
-}
-.text-xs {
-  font-size: 13.5px !important;
-  line-height: 1.48 !important;
-}
-.text-sm {
-  font-size: 15.5px !important;
-  line-height: 1.5 !important;
-}
-.text-base {
-  font-size: 17px !important;
-  line-height: 1.5 !important;
-}
-.text-lg {
-  font-size: 19px !important;
-  line-height: 1.45 !important;
-}
-.text-xl {
-  font-size: 21.5px !important;
-  line-height: 1.35 !important;
+/* 모바일 브라우저(삼성인터넷/카카오톡/크롬) 글자 확대 시 겹침 현상 원천 방지 규칙 */
+p, span, h1, h2, h3, h4, h5, h6, label, button {
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 /* Custom Scrollbar for horizontal cards */

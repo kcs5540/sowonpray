@@ -3492,9 +3492,9 @@ export default function App() {
                   alt="생전 예수재 황금위패와 조상 흑색 위패 실물"
                   className="w-full h-44 object-cover"
                 />
-                <div className="bg-[#1B1815] text-white px-3 py-2 flex justify-between gap-2 text-[10.5px] font-bold">
-                  <span className="text-[#F5D061] whitespace-nowrap">◀ 좌측: 생전 예수재 황금위패</span>
-                  <span className="text-[#E2DAD0] whitespace-nowrap">우측: 조상 영가 흑색위패 ▶</span>
+                <div className="bg-[#1B1815] text-white px-3 py-2 flex flex-col sm:flex-row sm:justify-between items-center gap-1 text-[10.5px] font-bold text-center">
+                  <span className="text-[#F5D061]">◀ 좌측: 생전 예수재 황금위패</span>
+                  <span className="text-[#E2DAD0]">우측: 조상 영가 흑색위패 ▶</span>
                 </div>
               </div>
 
@@ -3511,11 +3511,11 @@ export default function App() {
                       : 'border-[#D4AF37] bg-gradient-to-br from-[#FFFDF7] to-[#F9F1D8]'
                   }`}
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#D4AF37] text-[#1B1815] whitespace-nowrap">
+                  <div className="flex flex-wrap items-center justify-between gap-1.5">
+                    <span className="text-[10.5px] font-bold px-2 py-0.5 rounded bg-[#D4AF37] text-[#1B1815] break-keep">
                       살아계신 분 · 현세 복덕과 무병장수
                     </span>
-                    <span className="text-xs font-extrabold text-[#8A6510] whitespace-nowrap shrink-0">
+                    <span className="text-xs font-extrabold text-[#8A6510] shrink-0">
                       영구 봉안
                     </span>
                   </div>
@@ -3539,15 +3539,15 @@ export default function App() {
                       : 'border-[#5A5146]/60 hover:border-[#8C7B68]'
                   }`}
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#C59B27]/30 text-[#FCE18B] border border-[#F5D061]/50 whitespace-nowrap">
+                  <div className="flex flex-wrap items-center justify-between gap-1.5">
+                    <span className="text-[10.5px] font-bold px-2 py-0.5 rounded bg-[#C59B27]/30 text-[#FCE18B] border border-[#F5D061]/50 break-keep">
                       돌아가신 조상님 · 극락왕생 천도
                     </span>
-                    <span className="text-xs font-extrabold text-[#FCE18B] whitespace-nowrap shrink-0">
+                    <span className="text-xs font-extrabold text-[#FCE18B] shrink-0">
                       영구 봉안
                     </span>
                   </div>
-                  <h4 className="font-serif-kr font-bold text-base text-white whitespace-nowrap">
+                  <h4 className="font-serif-kr font-bold text-base text-white break-keep">
                     ② 조상 영가 품격 흑색 영구위패
                   </h4>
                   <p className="text-xs text-[#D8D0C5] leading-relaxed break-keep">
@@ -3662,7 +3662,7 @@ export default function App() {
                 <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] text-[11.5px] font-extrabold whitespace-nowrap shadow-sm mb-1.5">
                   3. 상시 기도 및 공덕 불사 종목 (3종)
                 </span>
-                <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] whitespace-nowrap">
+                <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
                   1년 가족 인등 · 천도재 · 공양미 시주
                 </h3>
               </div>
@@ -3700,11 +3700,11 @@ export default function App() {
                         : 'bg-[#FAF8F5] border-[#EAE2D3] hover:border-[#C59B27]'
                     }`}
                   >
-                    <div className="flex items-center justify-between gap-2 mb-1">
-                      <span className="text-xs font-bold text-[#231F1C] whitespace-nowrap">
+                    <div className="flex flex-wrap items-center justify-between gap-1.5 mb-1">
+                      <span className="text-xs font-bold text-[#231F1C] break-keep">
                         {item.title}
                       </span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-white text-[#8A6510] border border-[#E5D399] font-bold whitespace-nowrap shrink-0">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-white text-[#8A6510] border border-[#E5D399] font-bold shrink-0">
                         {item.badge}
                       </span>
                     </div>
@@ -3719,17 +3719,17 @@ export default function App() {
               onSubmit={handlePrayerSubmit}
               className="bg-white rounded-2xl p-4 sm:p-5 shadow-md border-2 border-[#C59B27] space-y-4"
             >
-              <div className="border-b border-[#EFE9DD] pb-3 flex items-center justify-between gap-2">
+              <div className="border-b border-[#EFE9DD] pb-3 flex flex-wrap items-center justify-between gap-2">
                 <div className="min-w-0">
-                  <span className="block text-[10.5px] font-bold text-[#9A7418] whitespace-nowrap">
+                  <span className="block text-[10.5px] font-bold text-[#9A7418]">
                     ONLINE APPLICATION
                   </span>
-                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] whitespace-nowrap">
+                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
                     불사 · 위패 · 기도 동참 신청란
                   </h3>
                 </div>
                 {currentUser && (
-                  <span className="text-[10.5px] px-2 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] font-bold border border-[#E5D399] whitespace-nowrap shrink-0">
+                  <span className="text-[10.5px] px-2 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] font-bold border border-[#E5D399] shrink-0">
                     내 계정 연동됨
                   </span>
                 )}
@@ -3737,14 +3737,14 @@ export default function App() {
 
               {/* STEP 1. 종목 선택 영역 */}
               <div className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF5E6] border border-[#E5D399]">
-                <div className="flex items-center justify-between gap-2 mb-2.5">
-                  <label className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C] whitespace-nowrap">
+                <div className="flex flex-wrap items-center justify-between gap-1.5 mb-2.5">
+                  <label className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C]">
                     <span className="px-2 py-0.5 rounded-md bg-[#231F1C] text-[#F5D061] text-[10px] font-extrabold shrink-0">
                       1단계
                     </span>
                     <span>불사 / 기도 종목 선택</span>
                   </label>
-                  <span className="text-[11px] font-bold text-[#9A7418] whitespace-nowrap shrink-0">
+                  <span className="text-[11px] font-bold text-[#9A7418] shrink-0">
                     1개 선택
                   </span>
                 </div>
@@ -3792,14 +3792,14 @@ export default function App() {
 
               {/* STEP 2. 신청자 정보 및 발원 내용 입력 영역 */}
               <div className="p-3.5 sm:p-4 rounded-2xl bg-[#F4F1EA] border border-[#DDD4C4] space-y-3.5">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C] whitespace-nowrap">
+                <div className="flex flex-wrap items-center justify-between gap-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C]">
                     <span className="px-2 py-0.5 rounded-md bg-[#8A6510] text-white text-[10px] font-extrabold shrink-0">
                       2단계
                     </span>
                     <span>신청자 성함 · 발원문 접수</span>
                   </div>
-                  <span className="text-[10.5px] text-[#7A7065] font-medium whitespace-nowrap shrink-0">
+                  <span className="text-[10.5px] text-[#7A7065] font-medium shrink-0">
                     ✎ 직접 입력
                   </span>
                 </div>
@@ -4074,7 +4074,7 @@ export default function App() {
                     1
                   </span>
                   <span className="text-lg sm:text-xl mb-1">✍️</span>
-                  <h4 className="text-[11.5px] sm:text-xs font-bold text-[#231F1C] whitespace-nowrap mb-0.5">
+                  <h4 className="text-[11px] sm:text-xs font-bold text-[#231F1C] break-keep mb-0.5 text-center">
                     발원문 접수
                   </h4>
                   <p className="text-[10px] sm:text-[10.5px] text-[#6E655C] leading-snug break-keep">
@@ -4088,7 +4088,7 @@ export default function App() {
                     2
                   </span>
                   <span className="text-lg sm:text-xl mb-1">🕯️</span>
-                  <h4 className="text-[11.5px] sm:text-xs font-bold text-[#231F1C] whitespace-nowrap mb-0.5">
+                  <h4 className="text-[11px] sm:text-xs font-bold text-[#231F1C] break-keep mb-0.5 text-center">
                     7일간 실시간 점등
                   </h4>
                   <p className="text-[10px] sm:text-[10.5px] text-[#6E655C] leading-snug break-keep">
@@ -4102,7 +4102,7 @@ export default function App() {
                     3
                   </span>
                   <span className="text-lg sm:text-xl mb-1">🙏</span>
-                  <h4 className="text-[11.5px] sm:text-xs font-bold text-[#231F1C] whitespace-nowrap mb-0.5">
+                  <h4 className="text-[11px] sm:text-xs font-bold text-[#231F1C] break-keep mb-0.5 text-center">
                     스님 매일 축원
                   </h4>
                   <p className="text-[10px] sm:text-[10.5px] text-[#6E655C] leading-snug break-keep">
@@ -4111,8 +4111,8 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="mt-3 pt-2.5 border-t border-[#EAE2D3] flex items-center justify-between text-[10.5px] sm:text-[11px] text-[#7A7065]">
-                <span className="flex items-center gap-1 font-medium">
+              <div className="mt-3 pt-2.5 border-t border-[#EAE2D3] flex flex-wrap items-center justify-between gap-1.5 text-[10.5px] sm:text-[11px] text-[#7A7065]">
+                <span className="flex items-center gap-1 font-medium break-keep">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#B8860B] shrink-0" />
                   <span>온라인으로 누구나 무료로 정성을 올릴 수 있습니다</span>
                 </span>
@@ -4128,17 +4128,17 @@ export default function App() {
               onSubmit={handlePrayerSubmit}
               className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-4"
             >
-              <div className="border-b border-[#EFE9DD] pb-3 flex items-center justify-between gap-2">
+              <div className="border-b border-[#EFE9DD] pb-3 flex flex-wrap items-center justify-between gap-2">
                 <div className="min-w-0">
-                  <span className="block text-[10.5px] font-bold text-[#9A7418] whitespace-nowrap">
+                  <span className="block text-[10.5px] font-bold text-[#9A7418]">
                     100% 무료 매일 사시예불 축원
                   </span>
-                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] mt-0.5 whitespace-nowrap">
+                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] mt-0.5 break-keep">
                     대웅전 소원등 발원문 접수
                   </h3>
                 </div>
                 {currentUser && (
-                  <span className="text-[10.5px] px-2 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] font-bold border border-[#E5D399] whitespace-nowrap shrink-0">
+                  <span className="text-[10.5px] px-2 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] font-bold border border-[#E5D399] shrink-0">
                     내 계정 연동됨
                   </span>
                 )}
@@ -4146,14 +4146,14 @@ export default function App() {
 
               {/* STEP 1. 기원 분야 선택 영역 */}
               <div className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF5E6] border border-[#E5D399]">
-                <div className="flex items-center justify-between gap-2 mb-2.5">
-                  <label className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C] whitespace-nowrap">
+                <div className="flex flex-wrap items-center justify-between gap-1.5 mb-2.5">
+                  <label className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C]">
                     <span className="px-2 py-0.5 rounded-md bg-[#231F1C] text-[#F5D061] text-[10px] font-extrabold shrink-0">
                       1단계
                     </span>
                     <span>기원 분야 선택 (터치)</span>
                   </label>
-                  <span className="text-[11px] font-bold text-[#9A7418] whitespace-nowrap shrink-0">
+                  <span className="text-[11px] font-bold text-[#9A7418] shrink-0">
                     1개 선택
                   </span>
                 </div>
@@ -4199,14 +4199,14 @@ export default function App() {
 
               {/* STEP 2. 신청자 정보 및 발원문 입력 영역 */}
               <div className="p-3.5 sm:p-4 rounded-2xl bg-[#F4F1EA] border border-[#DDD4C4] space-y-3.5">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C] whitespace-nowrap">
+                <div className="flex flex-wrap items-center justify-between gap-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C]">
                     <span className="px-2 py-0.5 rounded-md bg-[#8A6510] text-white text-[10px] font-extrabold shrink-0">
                       2단계
                     </span>
                     <span>신청자 성함 · 발원문 접수</span>
                   </div>
-                  <span className="text-[10.5px] text-[#7A7065] font-medium whitespace-nowrap shrink-0">
+                  <span className="text-[10.5px] text-[#7A7065] font-medium shrink-0">
                     ✎ 직접 입력
                   </span>
                 </div>
@@ -4457,7 +4457,7 @@ export default function App() {
                     ? `${currentUser.name}${currentUser.dharma_name ? `(${currentUser.dharma_name})` : ''}님의 신행 공덕장`
                     : '나의 온라인 신행 공덕장'}
                 </span>
-                <h2 className="font-serif-kr text-xl sm:text-2xl font-bold mt-0.5 whitespace-nowrap">
+                <h2 className="font-serif-kr text-xl sm:text-2xl font-bold mt-0.5 break-keep">
                   누적 수행 공덕 <span className="text-[#F5D061]">{currentMeritCount}</span>회
                 </h2>
                 <p className="text-[11px] text-[#BFB6AA] mt-0.5 break-keep">
@@ -6064,14 +6064,14 @@ export default function App() {
 
             {/* 나의 인연 신도 도량 방문 & 사찰 공양(식사) 예약 현황 */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8]">
-              <div className="flex items-center justify-between gap-2 mb-3">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                 <div className="flex items-center gap-1.5 min-w-0">
                   <Coffee className="w-4 h-4 text-[#9A7418] shrink-0" />
-                  <h3 className="font-serif-kr font-bold text-sm sm:text-base whitespace-nowrap">
+                  <h3 className="font-serif-kr font-bold text-sm sm:text-base break-keep">
                     인연 신도 방문 · 공양(식사) 예약 현황
                   </h3>
                 </div>
-                <span className="text-xs text-[#9A7418] font-bold whitespace-nowrap shrink-0">
+                <span className="text-xs text-[#9A7418] font-bold shrink-0">
                   총 {visits.filter((v) => isAdmin || v.agent_code === activeAgent.code).length}건 ·{' '}
                   총{' '}
                   {visits
@@ -6271,7 +6271,7 @@ export default function App() {
                     매일 오전 10:30 사시예불 실시간 연동
                   </span>
                 </div>
-                <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white whitespace-nowrap">
+                <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white break-keep">
                   오늘의 사시예불 축원 명부 ({activeSasiPrayers.length}위 진행중)
                 </h3>
                 <p className="text-xs text-[#D6CEC2] mt-0.5 leading-relaxed break-keep">
@@ -7160,12 +7160,12 @@ export default function App() {
                   setActiveTab(tab.id)
                   window.scrollTo({ top: 0, behavior: 'smooth' })
                 }}
-                className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition ${
+                className={`flex-1 min-w-0 flex flex-col items-center justify-center py-1 px-1 rounded-xl transition ${
                   isActive ? 'text-[#F5D061]' : 'text-[#9E9488] hover:text-[#D6CEC2]'
                 }`}
               >
-                <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.4px]' : 'stroke-[1.8px]'}`} />
-                <span className="text-[11px] font-semibold mt-1 whitespace-nowrap">
+                <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'stroke-[2.4px]' : 'stroke-[1.8px]'}`} />
+                <span className="text-[10.5px] sm:text-[11px] font-semibold mt-1 tracking-tight text-center truncate w-full">
                   {tab.label}
                 </span>
               </button>
