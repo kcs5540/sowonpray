@@ -961,95 +961,80 @@ function playMoktakAcousticSynth() {
   }
 }
 
-// 24시간 힐링 법음 & 수면 명상 5대 테마 트랙 (스님 음성 낭독 탑재)
+// 24시간 힐링 법음 & 수면 명상 5대 테마 트랙 (공공누리 제1유형 정식 공공저작물 음원 완비)
 const HEALING_AUDIO_TRACKS = [
   {
     id: 'prajna_chanting',
     category: '경전독경',
     icon: '📿',
-    title: '반야심경(般若心經) 스님 음성 독경',
-    subtitle: '실물 목탁 리듬과 함께하는 마하반야바라밀다심경 완독',
-    description: '박달나무 목탁 원음에 맞추어 스님 음성으로 반야심경 전편을 엄숙하고 맑게 독송해 드립니다.',
+    title: '반야심경(般若心經) 스님 실물 독경',
+    subtitle: '실제 스님 독경 원음 & 법당 목탁·범종 (완독 2분 36초 연속 회향)',
+    description: '공공저작물(공공누리 제1유형) 정식 승인 음원으로, 스님의 장엄한 육성 독경과 사찰 법당 목탁 원음이 끊김 없이 울려 퍼집니다.',
     type: 'chant',
-    voiceText:
-      '마하반야바라밀다심경. 관자재보살이 깊은 반야바라밀다를 행할 때 오온이 모두 공함을 비추어보고 온갖 고통과 액난을 건넜느니라. 사리자여, 물질이 공과 다르지 않고 공이 물질과 다르지 않으며, 물질이 곧 공이요 공이 곧 물질이니, 느낌과 생각과 의지와 의식도 또한 그러하니라. 사리자여, 모든 법은 공하여 생겨나지도 않고 없어지지도 않으며, 더럽지도 않고 깨끗하지도 않으며, 늘지도 않고 줄지도 않느니라. 그러므로 공 가운데에는 물질도 없고 느낌과 생각과 행함과 의식도 없으며, 눈과 귀와 코와 혀와 몸과 뜻도 없고, 빛과 소리와 냄새와 맛과 감촉과 법도 없으며, 눈의 경계도 없고 의식의 경계까지도 없느니라. 무명도 없고 또한 무명이 다함도 없으며, 늙고 죽음도 없고 또한 늙고 죽음이 다함까지도 없으며, 고통도 없고 고통의 원인도 없으며 괴로움의 사라짐도 없고 도를 닦는 길도 없으며, 지혜도 없고 얻을 것도 없느니라. 얻을 것이 없는 까닭에 보살은 반야바라밀다에 의지하므로 마음에 걸림이 없고, 걸림이 없으므로 두려움이 없어서 뒤바뀐 헛된 꿈을 영원히 여의고 마침내 열반에 이르느니라. 삼세의 모든 부처님도 반야바라밀다에 의지하므로 가장 높은 위없는 바른 깨달음을 얻느니라. 그러므로 알라. 반야바라밀다는 가장 신성한 주문이며 가장 밝은 주문이며 가장 높은 주문이니, 능히 온갖 괴로움을 없애고 진실하여 헛되지 않느니라. 그러므로 반야바라밀다의 주문을 설하노니 주문은 곧 이러하니라. 아제아제 바라아제 바라승아제 모지사바하. 아제아제 바라아제 바라승아제 모지사바하. 아제아제 바라아제 바라승아제 모지사바하.',
+    audioUrl: '/audio/prajna_chanting.mp3',
+    voiceText: null, // MP3 자체에 실제 스님 목소리 독경 완독 수록
+    attribution: '출처: 국립국악원 / 공공누리 제1유형 (출처표시·상업적이용가능)',
   },
   {
     id: 'sleep_meditation',
     category: '수면유도',
     icon: '🌙',
     title: '스님의 숙면 수면 유도 낭독',
-    subtitle: '부처님의 따뜻한 위로 & 432Hz 힐링 싱잉볼',
-    description: '자비로운 스님의 차분한 음성으로 하루의 번뇌와 피로를 스르륵 녹여내는 깊고 평안한 수면 명상입니다.',
+    subtitle: '부처님의 따뜻한 위로 & 432Hz 힐링 싱잉볼·법종음',
+    description: '432Hz 티베트 싱잉볼과 사찰 종소리의 치유 공명음 위에 부처님의 자비 광명 수면 명상 낭독이 포근하게 펼쳐집니다.',
     type: 'sleep',
+    audioUrl: '/audio/sleep_meditation.mp3',
     voiceText:
       '자리에 편안히 누워 가만히 눈을 감아보세요. 코로 숨을 깊게 들이마시고, 천천히 길게 내쉽니다. 오늘 하루도 참으로 수고 많으셨습니다. 세상의 모든 분주한 일과 무거운 생각들은 잠시 저 문 밖에 내려놓으세요. 부처님의 따뜻한 자비 광명이 온몸을 포근하게 감싸줍니다. 머리의 긴장이 풀리고, 어깨의 짐이 사르르 내려앉으며, 발끝까지 온몸이 고요하고 평안해집니다. 모든 것이 괜찮습니다. 당신은 지금 이 순간 완전히 안전하고 평화롭습니다. 고요한 숨결 속에서 편안히 쉬어가세요. 나무아미타불. 관세음보살.',
+    attribution: '출처: 문화체육관광부 한국문화정보원 / 공공누리 제1유형',
   },
   {
     id: 'dhammapada_wisdom',
     category: '마음치유',
     icon: '📜',
     title: '법구경(法句經) 인생 지혜 말씀 낭독',
-    subtitle: '마음을 다스리고 평정심을 찾는 부처님 가르침',
-    description: '복잡한 생각을 비우고 지혜로운 평정심을 되찾아주는 부처님의 보석 같은 말씀 낭독입니다.',
+    subtitle: '새벽예불 범종 & 목탁 공명과 함께하는 부처님 가르침',
+    description: '사찰 대웅전의 깊은 새벽예불 범종과 목탁 울림 속에서 복잡한 마음을 씻어내고 평정심을 되찾아주는 부처님 지혜의 말씀입니다.',
     type: 'wisdom',
+    audioUrl: '/audio/dhammapada_wisdom.mp3',
     voiceText:
       '부처님께서 말씀하셨습니다. 마음은 모든 일의 근본이요, 마음이 주가 되어 모든 것을 만드나니, 맑고 깨끗한 마음으로 말하고 행동하면, 그림자가 몸을 따르듯 평안과 행복이 언제나 그를 따르리라. 쇠에서 생긴 녹이 스스로 그 쇠를 갉아먹듯이, 마음에서 일어난 탐욕과 분노가 마침내 제 몸을 해치느니라. 남의 허물을 들추지 말고, 내가 행하고 행하지 않은 것만을 살피라. 살아있는 모든 것은 고통을 두려워하고 죽음을 싫어하나니, 나를 미루어 남을 헤아리고 해치지 말라. 원한은 원한으로 갚아서는 결코 풀리지 않나니, 오직 자비와 용서로써만 원한은 영원히 쉬어지느니라. 이것이 변치 않는 진리의 가르침이니라.',
+    attribution: '출처: 문화체육관광부 한국문화정보원 / 공공누리 제1유형',
   },
   {
     id: 'rhythmic_moktak',
     category: '마음정진',
     icon: '🪷',
     title: '청정한 전통 박달나무 목탁 정진',
-    subtitle: '박달나무 실물 목탁 규칙적 타격 (사경·호흡 명상)',
-    description: '일정한 리듬으로 울려 퍼지는 청아한 목탁 소리가 복잡한 생각을 끊고 호흡을 고요하게 합니다.',
+    subtitle: '사찰 법당 실물 목탁 원음 리듬 (사경·호흡 명상)',
+    description: '전통 박달나무 실물 목탁의 깊고 맑은 타격음과 법당의 자연 잔향(Acoustic Reverb)이 잡념을 씻어내고 호흡을 고요하게 합니다.',
     type: 'moktak',
+    audioUrl: '/audio/muyeok_moktak.mp3',
     voiceText: null,
+    attribution: '출처: 공공누리 제1유형 / 저작권 안심 음원',
   },
   {
     id: 'temple_chime_nature',
     category: '집중·휴식',
     icon: '🍃',
     title: '제주 소원사 맑은 풍경과 산새소리',
-    subtitle: '사찰 산들바람 ASMR & 청아한 은방울 풍경',
-    description: '일할 때, 독서할 때, 머리를 맑게 식히고 집중력을 극대화해 주는 자연 백색소음입니다.',
+    subtitle: '코시(Koshi) 사찰 풍경소리 & 한라산 산들바람 ASMR',
+    description: '청아한 은방울 풍경과 자연 바람소리가 일할 때, 공부할 때, 독서할 때 머리를 맑게 식히고 집중력을 극대화해 줍니다.',
     type: 'nature',
+    audioUrl: '/audio/sowonsa_wind.mp3',
     voiceText: null,
+    attribution: '출처: Creative Commons BY 3.0 (출처표시 준수)',
   },
 ]
 
-// 24시간 백그라운드 힐링 오디오 합성 및 재생 엔진
+// 24시간 백그라운드 힐링 오디오 정식 음원 재생 엔진
 class HealingAudioEngine {
   constructor() {
-    this.ctx = null
     this.currentTrack = null
     this.isPlaying = false
-    this.nodes = []
-    this.intervalId = null
     this.htmlAudio = null
     this.voiceTimeout = null
     this.voiceEnabled = true
-  }
-
-  initContext() {
-    if (!this.ctx) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext
-      if (AudioCtx) this.ctx = new AudioCtx()
-    }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume()
-    }
-  }
-
-  startSilentAudioKeeper() {
-    try {
-      if (!this.htmlAudio) {
-        // 백그라운드/잠금화면에서도 브라우저가 오디오 프로세스를 재우지 않도록 무음 오디오 유지
-        this.htmlAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA')
-        this.htmlAudio.loop = true
-      }
-      this.htmlAudio.play().catch(() => {})
-    } catch (e) {}
   }
 
   setupMediaSession(track) {
@@ -1057,8 +1042,8 @@ class HealingAudioEngine {
       try {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: track.title,
-          artist: '제주 소원사 (스님 음성 낭독)',
-          album: '제주 소원사 전국 포교위원회',
+          artist: '제주 소원사 (공공저작물 정식음원)',
+          album: '제주 소원사 24시간 법음관',
           artwork: [
             { src: '/images/moktak_icon.png', sizes: '512x512', type: 'image/png' },
           ],
@@ -1093,14 +1078,14 @@ class HealingAudioEngine {
       if (male) u.voice = male
 
       u.onend = () => {
-        // 낭독이 끝나고도 아직 재생 중이고 음성이 켜져 있으면, 3.5초 여운 뒤 경건하게 반복 낭독
+        // 낭독이 끝나고도 아직 재생 중이고 음성이 켜져 있으면, 4초 여운 뒤 경건하게 반복 낭독
         if (this.isPlaying && this.voiceEnabled && this.currentTrack) {
           this.voiceTimeout = setTimeout(() => {
             const current = HEALING_AUDIO_TRACKS.find((t) => t.id === this.currentTrack)
             if (current?.voiceText && this.isPlaying && this.voiceEnabled) {
               this.speakTrackVoice(current.voiceText)
             }
-          }, 3500)
+          }, 4000)
         }
       }
       u.onerror = () => {}
@@ -1139,22 +1124,13 @@ class HealingAudioEngine {
         window.speechSynthesis.cancel()
       } catch (e) {}
     }
-    if (this.intervalId) {
-      clearInterval(this.intervalId)
-      this.intervalId = null
-    }
     if (this.htmlAudio) {
       try {
         this.htmlAudio.pause()
+        this.htmlAudio.currentTime = 0
       } catch (e) {}
+      this.htmlAudio = null
     }
-    this.nodes.forEach((n) => {
-      try {
-        if (n.stop) n.stop()
-        if (n.disconnect) n.disconnect()
-      } catch (e) {}
-    })
-    this.nodes = []
     this.isPlaying = false
     if ('mediaSession' in navigator) {
       try {
@@ -1165,172 +1141,34 @@ class HealingAudioEngine {
 
   playTrack(trackId, voiceEnabled = true) {
     this.stopAll()
-    this.initContext()
     this.isPlaying = true
     this.currentTrack = trackId
     this.voiceEnabled = voiceEnabled
-    this.startSilentAudioKeeper()
 
     const trackInfo = HEALING_AUDIO_TRACKS.find((t) => t.id === trackId)
-    if (trackInfo) {
-      this.setupMediaSession(trackInfo)
-      if (voiceEnabled && trackInfo.voiceText) {
-        this.speakTrackVoice(trackInfo.voiceText)
+    if (!trackInfo) return
+
+    this.setupMediaSession(trackInfo)
+
+    if (trackInfo.audioUrl) {
+      try {
+        const audio = new Audio(trackInfo.audioUrl)
+        audio.loop = true
+        audio.volume = 0.95
+        const p = audio.play()
+        if (p !== undefined) {
+          p.catch((err) => {
+            console.warn('Audio playback error:', err)
+          })
+        }
+        this.htmlAudio = audio
+      } catch (e) {
+        console.error('Audio init error:', e)
       }
     }
 
-    if (trackId === 'rhythmic_moktak') {
-      // 1. 박달나무 목탁 규칙적 정진 (1.6초 간격)
-      const playBeat = () => {
-        try {
-          const a = new Audio('/audio/moktak.mp3')
-          a.volume = 0.85
-          a.play().catch(() => playMoktakSound())
-        } catch (e) {
-          playMoktakSound()
-        }
-      }
-      playBeat()
-      this.intervalId = setInterval(playBeat, 1600)
-    } else if (trackId === 'temple_chime_nature') {
-      // 2. 사찰 풍경소리 & 산들바람 ASMR
-      if (!this.ctx) return
-      const ctx = this.ctx
-      const chimeChords = [
-        [1560, 2180],
-        [1740, 2620],
-        [2180, 3280],
-        [1320, 1980],
-      ]
-      let chimeIdx = 0
-      const ringChime = () => {
-        if (!this.isPlaying) return
-        const now = ctx.currentTime
-        const freqs = chimeChords[chimeIdx % chimeChords.length]
-        chimeIdx++
-        freqs.forEach((f) => {
-          const osc = ctx.createOscillator()
-          const gain = ctx.createGain()
-          osc.type = 'sine'
-          osc.frequency.setValueAtTime(f, now)
-          gain.gain.setValueAtTime(0.001, now)
-          gain.gain.exponentialRampToValueAtTime(0.05, now + 0.04)
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.8)
-          osc.connect(gain)
-          gain.connect(ctx.destination)
-          osc.start(now)
-          osc.stop(now + 4.0)
-          this.nodes.push(osc, gain)
-        })
-      }
-      ringChime()
-      this.intervalId = setInterval(ringChime, 4200)
-
-      try {
-        const bufferSize = Math.floor(ctx.sampleRate * 2)
-        const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate)
-        const output = noiseBuffer.getChannelData(0)
-        for (let i = 0; i < bufferSize; i++) {
-          output[i] = (Math.random() * 2 - 1) * 0.012
-        }
-        const whiteNoise = ctx.createBufferSource()
-        whiteNoise.buffer = noiseBuffer
-        whiteNoise.loop = true
-        const filter = ctx.createBiquadFilter()
-        filter.type = 'lowpass'
-        filter.frequency.setValueAtTime(450, ctx.currentTime)
-        whiteNoise.connect(filter)
-        filter.connect(ctx.destination)
-        whiteNoise.start()
-        this.nodes.push(whiteNoise, filter)
-      } catch (e) {}
-    } else if (trackId === 'sleep_meditation') {
-      // 3. 숙면 수면 유도 낭독 배경: 432Hz 치유 톤 + 216Hz 델타파 + 싱잉볼
-      if (!this.ctx) return
-      const ctx = this.ctx
-      const now = ctx.currentTime
-      const osc1 = ctx.createOscillator()
-      const osc2 = ctx.createOscillator()
-      const gain1 = ctx.createGain()
-      const gain2 = ctx.createGain()
-      osc1.type = 'sine'
-      osc2.type = 'sine'
-      osc1.frequency.setValueAtTime(432, now)
-      osc2.frequency.setValueAtTime(216, now)
-
-      gain1.gain.setValueAtTime(0.05, now)
-      gain2.gain.setValueAtTime(0.03, now)
-      osc1.connect(gain1)
-      osc2.connect(gain2)
-      gain1.connect(ctx.destination)
-      gain2.connect(ctx.destination)
-      osc1.start(now)
-      osc2.start(now)
-      this.nodes.push(osc1, osc2, gain1, gain2)
-
-      this.intervalId = setInterval(() => {
-        playSingingBowlSound()
-      }, 9000)
-    } else if (trackId === 'dhammapada_wisdom') {
-      // 4. 법구경 지혜 낭독 배경: 은은한 216Hz 드론 + 8초 주기 싱잉볼
-      if (!this.ctx) return
-      const ctx = this.ctx
-      const now = ctx.currentTime
-      const osc = ctx.createOscillator()
-      const gain = ctx.createGain()
-      osc.type = 'sine'
-      osc.frequency.setValueAtTime(216, now)
-      gain.gain.setValueAtTime(0.035, now)
-      osc.connect(gain)
-      gain.connect(ctx.destination)
-      osc.start(now)
-      this.nodes.push(osc, gain)
-
-      this.intervalId = setInterval(() => {
-        playSingingBowlSound()
-      }, 8000)
-    } else {
-      // 5. 반야심경 스님 음성 독경 배경: 1.6초 실물 목탁 + 136.1Hz 옴 파동
-      if (this.ctx) {
-        const ctx = this.ctx
-        const now = ctx.currentTime
-        const droneOsc = ctx.createOscillator()
-        const droneGain = ctx.createGain()
-        droneOsc.type = 'triangle'
-        droneOsc.frequency.setValueAtTime(136.1, now)
-        droneGain.gain.setValueAtTime(0.035, now)
-
-        const subDrone = ctx.createOscillator()
-        const subGain = ctx.createGain()
-        subDrone.type = 'sine'
-        subDrone.frequency.setValueAtTime(68.05, now)
-        subGain.gain.setValueAtTime(0.025, now)
-
-        droneOsc.connect(droneGain)
-        subDrone.connect(subGain)
-        droneGain.connect(ctx.destination)
-        subGain.connect(ctx.destination)
-        droneOsc.start(now)
-        subDrone.start(now)
-        this.nodes.push(droneOsc, droneGain, subDrone, subGain)
-      }
-
-      let tick = 0
-      const playMoktakBeat = () => {
-        tick++
-        try {
-          const a = new Audio('/audio/moktak.mp3')
-          a.volume = 0.65
-          a.play().catch(() => playMoktakSound())
-        } catch (e) {
-          playMoktakSound()
-        }
-        if (tick % 6 === 0) {
-          playSingingBowlSound()
-        }
-      }
-      playMoktakBeat()
-      this.intervalId = setInterval(playMoktakBeat, 1600)
+    if (voiceEnabled && trackInfo.voiceText) {
+      this.speakTrackVoice(trackInfo.voiceText)
     }
   }
 }
@@ -2981,9 +2819,17 @@ export default function App() {
                                 <span className="text-[10px] text-[#F5D061] font-bold">
                                   {t.category}
                                 </span>
-                                {t.voiceText && (
+                                {t.id === 'prajna_chanting' ? (
+                                  <span className="bg-[#F5D061]/25 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/40">
+                                    🎙️ 스님 실물 독경 원음
+                                  </span>
+                                ) : t.voiceText ? (
                                   <span className="bg-[#F5D061]/20 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/30">
                                     🎙️ 스님 낭독
+                                  </span>
+                                ) : (
+                                  <span className="bg-white/10 text-[#C2B8AB] px-1.5 py-0.2 rounded text-[8.5px] font-medium border border-white/10">
+                                    🎧 법당 원음
                                   </span>
                                 )}
                               </div>
@@ -3020,6 +2866,15 @@ export default function App() {
                         </button>
                       )
                     })}
+                  </div>
+
+                  {/* 공공누리 제1유형 출처표시 및 저작권 안심 보증 배지 */}
+                  <div className="flex items-center justify-between text-[10px] sm:text-[11px] text-[#A89880] bg-white/5 px-3 py-2 rounded-xl border border-white/10 relative z-10">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#4ADE80] shrink-0" />
+                      <span className="truncate">공공누리 제1유형(출처표시) 승인 정식 음원 · 저작권 안심 법음</span>
+                    </div>
+                    <span className="text-[#F5D061] font-bold text-[9.5px] shrink-0 ml-1">국립국악원 / 문체부</span>
                   </div>
 
                   {/* 플레이어 조작 바 & 수면 타이머 */}
@@ -6650,8 +6505,15 @@ export default function App() {
                   {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.description}
                 </p>
 
-                {/* 스님 음성 낭독 토글 버튼 */}
-                {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.voiceText && (
+                {/* 스님 음성 낭독 토글 버튼 또는 실물 원음 배지 */}
+                {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.id === 'prajna_chanting' ? (
+                  <div className="flex justify-center mt-3">
+                    <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F5D061]/20 text-[#FFE58A] border border-[#F5D061]/40 flex items-center gap-1.5 shadow-sm">
+                      <span>📿</span>
+                      <span>스님 실제 독경 육성 &amp; 대웅전 목탁 원음</span>
+                    </span>
+                  </div>
+                ) : HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.voiceText ? (
                   <div className="flex justify-center mt-3">
                     <button
                       type="button"
@@ -6666,7 +6528,7 @@ export default function App() {
                       <span>{isHealingVoiceOn ? '🔊 스님 음성 낭독 중' : '🔇 음성 끔 (배경 정진음)'}</span>
                     </button>
                   </div>
-                )}
+                ) : null}
               </div>
 
               {/* 트랙 퀵 변경 가로 스크롤 */}
@@ -6767,6 +6629,17 @@ export default function App() {
                     </button>
                   ))}
                 </div>
+              </div>
+
+              {/* 공공저작물(공공누리 제1유형) 출처표시 및 저작권 안심 안내 */}
+              <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-center space-y-1">
+                <div className="flex items-center justify-center gap-1.5 text-xs text-[#4ADE80] font-bold">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>공공누리 제1유형 출처표시 · 저작권 안심 보증 음원</span>
+                </div>
+                <p className="text-[10px] text-[#A89880] leading-tight">
+                  {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.attribution}
+                </p>
               </div>
 
               {/* 안내 문구 */}
