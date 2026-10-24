@@ -3823,8 +3823,11 @@ export default function App() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                    봉안 대상자 정보 및 발원 내용
+                  <label className="block text-xs font-bold text-[#3D3630] mb-1 flex items-center gap-1.5">
+                    <span>봉안 대상자 정보 및 발원 내용</span>
+                    <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
+                      선택
+                    </span>
                   </label>
                   <textarea
                     rows={3}
@@ -4227,8 +4230,11 @@ export default function App() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                    부처님께 올리는 한 줄 소원 (발원문)
+                  <label className="block text-xs font-bold text-[#3D3630] mb-1 flex items-center gap-1.5">
+                    <span>부처님께 올리는 한 줄 소원 (발원문)</span>
+                    <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
+                      선택
+                    </span>
                   </label>
                   <textarea
                     rows={3}
