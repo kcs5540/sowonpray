@@ -37,6 +37,7 @@ import {
   VolumeX,
   Maximize2,
   Printer,
+  HelpCircle,
   X,
 } from 'lucide-react'
 import {
@@ -3984,6 +3985,75 @@ export default function App() {
               </div>
             </div>
 
+                        {/* [1번] 3단계 소원등 축원 프로세스 인포그래픽 카드 */}
+            <div className="bg-[#FAF5E6] rounded-2xl p-4 sm:p-5 border border-[#E5D399] shadow-sm">
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-4 rounded-full bg-[#B8860B]" />
+                  <h3 className="font-serif-kr text-sm sm:text-base font-bold text-[#231F1C]">
+                    소원등은 어떻게 진행되나요?
+                  </h3>
+                </div>
+                <span className="text-[10.5px] font-bold text-[#8A6510] bg-white px-2 py-0.5 rounded-full border border-[#E5D399]">
+                  3단계 축원 여정
+                </span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                {/* 1단계 */}
+                <div className="bg-white rounded-xl p-2.5 sm:p-3 border border-[#EAE2D3] flex flex-col items-center text-center shadow-xs">
+                  <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#FAF3DF] text-[#8A6510] text-[10px] sm:text-[11px] font-extrabold flex items-center justify-center mb-1 border border-[#E5D399]">
+                    1
+                  </span>
+                  <span className="text-lg sm:text-xl mb-1">✍️</span>
+                  <h4 className="text-[11.5px] sm:text-xs font-bold text-[#231F1C] whitespace-nowrap mb-0.5">
+                    발원문 작성
+                  </h4>
+                  <p className="text-[10px] sm:text-[10.5px] text-[#6E655C] leading-snug break-keep">
+                    기원분야 선택 후 정통 발원문 입력
+                  </p>
+                </div>
+
+                {/* 2단계 */}
+                <div className="bg-white rounded-xl p-2.5 sm:p-3 border border-[#EAE2D3] flex flex-col items-center text-center shadow-xs">
+                  <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#FAF3DF] text-[#8A6510] text-[10px] sm:text-[11px] font-extrabold flex items-center justify-center mb-1 border border-[#E5D399]">
+                    2
+                  </span>
+                  <span className="text-lg sm:text-xl mb-1">🕯️</span>
+                  <h4 className="text-[11.5px] sm:text-xs font-bold text-[#231F1C] whitespace-nowrap mb-0.5">
+                    7일간 실시간 점등
+                  </h4>
+                  <p className="text-[10px] sm:text-[10.5px] text-[#6E655C] leading-snug break-keep">
+                    대웅전 전산 연동 & 황금등불 유지
+                  </p>
+                </div>
+
+                {/* 3단계 */}
+                <div className="bg-white rounded-xl p-2.5 sm:p-3 border border-[#EAE2D3] flex flex-col items-center text-center shadow-xs">
+                  <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#FAF3DF] text-[#8A6510] text-[10px] sm:text-[11px] font-extrabold flex items-center justify-center mb-1 border border-[#E5D399]">
+                    3
+                  </span>
+                  <span className="text-lg sm:text-xl mb-1">🙏</span>
+                  <h4 className="text-[11.5px] sm:text-xs font-bold text-[#231F1C] whitespace-nowrap mb-0.5">
+                    스님 매일 축원
+                  </h4>
+                  <p className="text-[10px] sm:text-[10.5px] text-[#6E655C] leading-snug break-keep">
+                    매일 오전 10시 사시예불 직접 축원
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-3 pt-2.5 border-t border-[#EAE2D3] flex items-center justify-between text-[10.5px] sm:text-[11px] text-[#7A7065]">
+                <span className="flex items-center gap-1 font-medium">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#B8860B] shrink-0" />
+                  <span>온라인으로 누구나 무료로 정성을 올릴 수 있습니다</span>
+                </span>
+                <span className="text-[#8A6510] font-bold shrink-0">
+                  대웅전 실시간 봉안
+                </span>
+              </div>
+            </div>
+
             {/* 무료 소원 축원 신청 폼 (고유 id 부여로 원터치 스크롤 이동 연동) */}
             <form
               id="lantern-prayer-form"
@@ -4180,6 +4250,90 @@ export default function App() {
                     </div>
                   </div>
                 ))}
+              </div>
+            </section>
+
+            {/* [4번] 소원등 자주 묻는 질문 (FAQ) 아코디언 */}
+            <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-3">
+              <div className="border-b border-[#EFE9DD] pb-3 flex items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5">
+                  <HelpCircle className="w-4 h-4 text-[#C59B27] shrink-0" />
+                  <h3 className="font-serif-kr text-base font-bold text-[#231F1C]">
+                    소원등 자주 묻는 질문 (FAQ)
+                  </h3>
+                </div>
+                <span className="text-[10.5px] text-[#8A6510] font-bold bg-[#FAF5E6] px-2 py-0.5 rounded-full border border-[#E5D399]">
+                  궁금증 안내
+                </span>
+              </div>
+
+              <div className="space-y-2">
+                {/* Q1 */}
+                <details className="group rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] transition" open>
+                  <summary className="p-3.5 flex items-center justify-between cursor-pointer list-none select-none">
+                    <span className="text-xs sm:text-sm font-bold text-[#231F1C] flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-[#231F1C] text-[#F5D061] text-[10px] font-extrabold flex items-center justify-center shrink-0">
+                        Q
+                      </span>
+                      <span>소원등은 며칠 동안 켜지며 어떻게 유지되나요?</span>
+                    </span>
+                    <ChevronDown className="w-4 h-4 text-[#8C7A5B] transition-transform duration-200 group-open:rotate-180 shrink-0 ml-2" />
+                  </summary>
+                  <div className="px-3.5 pb-3.5 pt-1 text-xs text-[#575049] leading-relaxed border-t border-[#EFE9DD] break-keep">
+                    발원문을 접수하시면 화면에서 즉시 황금빛 소원등이 밝혀지며, <strong>7일 동안 꺼지지 않고 유지</strong>됩니다. 
+                    화면 상단에서 남은 정진 일수(D-Day)를 실시간으로 확인하실 수 있으며, 7일이 지나 회향된 후에는 새로운 발원으로 언제든 다시 점등하실 수 있습니다.
+                  </div>
+                </details>
+
+                {/* Q2 */}
+                <details className="group rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] transition">
+                  <summary className="p-3.5 flex items-center justify-between cursor-pointer list-none select-none">
+                    <span className="text-xs sm:text-sm font-bold text-[#231F1C] flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-[#231F1C] text-[#F5D061] text-[10px] font-extrabold flex items-center justify-center shrink-0">
+                        Q
+                      </span>
+                      <span>스님께서 정말 매일 아침 사시예불에 축원해 주시나요?</span>
+                    </span>
+                    <ChevronDown className="w-4 h-4 text-[#8C7A5B] transition-transform duration-200 group-open:rotate-180 shrink-0 ml-2" />
+                  </summary>
+                  <div className="px-3.5 pb-3.5 pt-1 text-xs text-[#575049] leading-relaxed border-t border-[#EFE9DD] break-keep">
+                    네, 그렇습니다. 접수해주신 성함과 발원문은 <strong>제주 소원사 대웅전 사시예불 축원 전산 명부</strong>에 정식으로 등재됩니다. 
+                    주지 스님께서 <strong>매일 아침 10시 사시예불(巳時禮佛)</strong>마다 부처님 전에 불자님의 발원 내용을 올리며 7일간 지극한 정성으로 직접 축원 올립니다.
+                  </div>
+                </details>
+
+                {/* Q3 */}
+                <details className="group rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] transition">
+                  <summary className="p-3.5 flex items-center justify-between cursor-pointer list-none select-none">
+                    <span className="text-xs sm:text-sm font-bold text-[#231F1C] flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-[#231F1C] text-[#F5D061] text-[10px] font-extrabold flex items-center justify-center shrink-0">
+                        Q
+                      </span>
+                      <span>소원등 켜기에 별도의 비용이 드나요?</span>
+                    </span>
+                    <ChevronDown className="w-4 h-4 text-[#8C7A5B] transition-transform duration-200 group-open:rotate-180 shrink-0 ml-2" />
+                  </summary>
+                  <div className="px-3.5 pb-3.5 pt-1 text-xs text-[#575049] leading-relaxed border-t border-[#EFE9DD] break-keep">
+                    <strong>비용은 일체 들지 않습니다.</strong> 소원등 켜기는 거리에 상관없이 전국 어디서나 부처님께 정성을 올리고 마음의 평안을 얻으실 수 있도록 마련된 <strong>100% 무료 비대면 정진 공덕</strong>입니다. 
+                    (평생 위패 봉안이나 영구축원명패 등 사찰 불사 동참을 원하시는 경우에만 '불사안내' 탭에서 별도 상담 신청하실 수 있습니다.)
+                  </div>
+                </details>
+
+                {/* Q4 */}
+                <details className="group rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] transition">
+                  <summary className="p-3.5 flex items-center justify-between cursor-pointer list-none select-none">
+                    <span className="text-xs sm:text-sm font-bold text-[#231F1C] flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-[#231F1C] text-[#F5D061] text-[10px] font-extrabold flex items-center justify-center shrink-0">
+                        Q
+                      </span>
+                      <span>가족이나 지인의 소원등도 대신 켜줄 수 있나요?</span>
+                    </span>
+                    <ChevronDown className="w-4 h-4 text-[#8C7A5B] transition-transform duration-200 group-open:rotate-180 shrink-0 ml-2" />
+                  </summary>
+                  <div className="px-3.5 pb-3.5 pt-1 text-xs text-[#575049] leading-relaxed border-t border-[#EFE9DD] break-keep">
+                    네, 가능합니다. 신청자 성함란에 <strong>축원받으실 가족이나 부모님, 자녀의 성함(또는 법명)</strong>을 적고, 기원분야와 발원 내용을 남겨주시면 해당 분의 이름으로 대웅전에 소원등이 점등되어 스님의 축원을 받으실 수 있습니다.
+                  </div>
+                </details>
               </div>
             </section>
           </main>
