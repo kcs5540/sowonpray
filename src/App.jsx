@@ -2429,12 +2429,12 @@ export default function App() {
   const isAdmin = currentUser?.role === 'master'
 
   return (
-    <div className="min-h-screen bg-[#12100E] flex justify-center selection:bg-[#C59B27] selection:text-white w-full max-w-full overflow-x-hidden">
+    <div className="min-h-screen bg-[#12100E] flex justify-center selection:bg-[#C59B27] selection:text-white w-full max-w-full overflow-x-clip">
       {/* 모바일 앱 컨테이너 (최대 480px 중앙 정렬) */}
-      <div className="w-full max-w-[480px] min-h-screen bg-[#FAF8F5] text-[#231F1C] flex flex-col relative shadow-[0_0_50px_rgba(0,0,0,0.8)] border-x border-[#E8DFD1]/30 pb-24 overflow-x-hidden">
+      <div className="w-full max-w-[480px] min-h-screen bg-[#FAF8F5] text-[#231F1C] flex flex-col relative shadow-[0_0_50px_rgba(0,0,0,0.8)] border-x border-[#E8DFD1]/30 pb-24 overflow-x-clip">
         
         {/* 상단 고정 헤더: 제주 소원사 공식 모바일 법당 */}
-        <header className="sticky top-0 z-30 bg-[#1B1815]/95 backdrop-blur-md text-[#FAF8F5] px-3.5 py-3 border-b-2 border-[#C59B27]/50 flex items-center justify-between gap-2">
+        <header className="sticky top-0 z-40 bg-[#1B1815]/95 backdrop-blur-md text-[#FAF8F5] px-3.5 py-3 border-b-2 border-[#C59B27]/50 flex items-center justify-between gap-2 shadow-md">
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#B6861C] flex items-center justify-center shadow-[0_0_15px_rgba(245,208,97,0.4)] border border-[#FFF3B8]/60 font-serif-kr font-black text-base text-[#1B1815] shrink-0">
               卍
