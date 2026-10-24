@@ -3771,7 +3771,7 @@ export default function App() {
                       type="text"
                       value={wishName}
                       onChange={(e) => setWishName(e.target.value)}
-                      placeholder="예: 홍길동 (무량심)"
+                      placeholder="예: 홍길동 (무량심) 또는 김영희 (부모: 이상원)"
                       className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
                     />
                   </div>
@@ -4152,7 +4152,7 @@ export default function App() {
                       type="text"
                       value={wishName}
                       onChange={(e) => setWishName(e.target.value)}
-                      placeholder="예: 홍길동 (무량심)"
+                      placeholder="예: 홍길동 (무량심) 또는 김영희 (자녀: 김철수)"
                       className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
                     />
                   </div>
@@ -4330,8 +4330,21 @@ export default function App() {
                     </span>
                     <ChevronDown className="w-4 h-4 text-[#8C7A5B] transition-transform duration-200 group-open:rotate-180 shrink-0 ml-2" />
                   </summary>
-                  <div className="px-3.5 pb-3.5 pt-1 text-xs text-[#575049] leading-relaxed border-t border-[#EFE9DD] break-keep">
-                    네, 가능합니다. 신청자 성함란에 <strong>축원받으실 가족이나 부모님, 자녀의 성함(또는 법명)</strong>을 적고, 기원분야와 발원 내용을 남겨주시면 해당 분의 이름으로 대웅전에 소원등이 점등되어 스님의 축원을 받으실 수 있습니다.
+                  <div className="px-3.5 pb-3.5 pt-1 text-xs text-[#575049] leading-relaxed border-t border-[#EFE9DD] break-keep space-y-1.5">
+                    <p>
+                      <strong>네, 물론 가능합니다.</strong> 아래 2가지 편한 방법 중 하나로 신청해 주시면 주지 스님께서 부처님 전에 정확히 축원 올립니다:
+                    </p>
+                    <div className="bg-white p-2.5 rounded-lg border border-[#E5D399] space-y-1 text-[11.5px]">
+                      <p>
+                        <strong className="text-[#8A6510]">방법 1 (가장 추천):</strong> 성함란에 <strong className="text-[#231F1C]">김영희 (자녀: 김철수)</strong> 처럼 가족 성함을 괄호 안에 함께 적기 (연락처는 본인 휴대폰 번호 입력 가능)
+                      </p>
+                      <p>
+                        <strong className="text-[#8A6510]">방법 2:</strong> 발원문 내용에 <strong className="text-[#231F1C]">“사랑하는 아들 김철수(28세) 시험 합격과 취업 성취 발원”</strong> 처럼 가족의 이름과 소원을 적기
+                      </p>
+                    </div>
+                    <p className="text-[11px] text-[#7A7065]">
+                      ※ 접수 즉시 대웅전 전산 명부에 등록되어 사시예불마다 스님께서 해당 가족의 이름을 부처님 전에 정성껏 올려드립니다.
+                    </p>
                   </div>
                 </details>
               </div>
