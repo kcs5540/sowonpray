@@ -3800,7 +3800,7 @@ export default function App() {
                 </div>
 
                 {/* 축원 대상란 (소원발원 대상) */}
-                <div className="bg-white/80 rounded-xl p-3 border border-[#E0D7C6] space-y-2">
+                <div className="space-y-1.5">
                   <div className="space-y-0.5">
                     <label className="block text-xs font-bold text-[#3D3630] flex items-center gap-1.5">
                       <span>소원발원 대상 (축원 대상자)</span>
@@ -3819,7 +3819,7 @@ export default function App() {
                       value={wishTarget}
                       onChange={(e) => setWishTarget(e.target.value)}
                       placeholder="예: 자녀 김철수, 부모님, 가족 전체"
-                      className="flex-1 px-3.5 py-2 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
+                      className="flex-1 px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
                     />
                     {wishTarget && (
                       <button
@@ -4237,7 +4237,7 @@ export default function App() {
                 </div>
 
                 {/* 축원 대상란 (소원발원 대상) */}
-                <div className="bg-white/80 rounded-xl p-3 border border-[#E0D7C6] space-y-2">
+                <div className="space-y-1.5">
                   <div className="space-y-0.5">
                     <label className="block text-xs font-bold text-[#3D3630] flex items-center gap-1.5">
                       <span>소원발원 대상 (축원 대상자)</span>
@@ -4256,7 +4256,7 @@ export default function App() {
                       value={wishTarget}
                       onChange={(e) => setWishTarget(e.target.value)}
                       placeholder="예: 자녀 김철수, 부모님, 가족 전체"
-                      className="flex-1 px-3.5 py-2 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
+                      className="flex-1 px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
                     />
                     {wishTarget && (
                       <button
