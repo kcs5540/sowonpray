@@ -3765,7 +3765,7 @@ export default function App() {
                     <span className="px-2 py-0.5 rounded-md bg-[#8A6510] text-white text-[10px] font-extrabold shrink-0">
                       2단계
                     </span>
-                    <span>신청자 성함 · 발원문 작성</span>
+                    <span>신청자 성함 · 발원문 접수</span>
                   </div>
                   <span className="text-[10.5px] text-[#7A7065] font-medium whitespace-nowrap shrink-0">
                     ✎ 직접 입력
@@ -3902,7 +3902,7 @@ export default function App() {
                       ? 'bg-[#241E18] border-[#9E7A32] opacity-80 hover:border-[#D4AF37]'
                       : 'bg-[#1F1914] border-[#4A3D2F] opacity-85 hover:border-[#C59B27]/60'
                   }`}
-                  title={isLanternLit ? '7일 정진 축원 진행중' : '발원문 작성하고 7일 소원등 밝히기'}
+                  title={isLanternLit ? '7일 정진 축원 진행중' : '발원문 접수하고 7일 소원등 밝히기'}
                 >
                   <Flame
                     className={`w-12 h-12 transition-transform duration-500 ${
@@ -4011,7 +4011,7 @@ export default function App() {
                     }}
                     className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#F5D061]/20 text-[#F5D061] border border-[#F5D061]/40 text-xs font-bold hover:bg-[#F5D061]/30 transition"
                   >
-                    <span>아래에서 발원문 작성하고 7일 소원등 켜기</span>
+                    <span>아래에서 발원문 접수하고 7일 소원등 켜기</span>
                     <ChevronDown className="w-3.5 h-3.5" />
                   </button>
                 )}
@@ -4040,10 +4040,10 @@ export default function App() {
                   </span>
                   <span className="text-lg sm:text-xl mb-1">✍️</span>
                   <h4 className="text-[11.5px] sm:text-xs font-bold text-[#231F1C] whitespace-nowrap mb-0.5">
-                    발원문 작성
+                    발원문 접수
                   </h4>
                   <p className="text-[10px] sm:text-[10.5px] text-[#6E655C] leading-snug break-keep">
-                    기원분야 선택 후 정통 발원문 입력
+                    기원분야 선택 후 정통 발원문 접수
                   </p>
                 </div>
 
@@ -4169,7 +4169,7 @@ export default function App() {
                     <span className="px-2 py-0.5 rounded-md bg-[#8A6510] text-white text-[10px] font-extrabold shrink-0">
                       2단계
                     </span>
-                    <span>신청자 성함 · 발원문 작성</span>
+                    <span>신청자 성함 · 발원문 접수</span>
                   </div>
                   <span className="text-[10.5px] text-[#7A7065] font-medium whitespace-nowrap shrink-0">
                     ✎ 직접 입력
