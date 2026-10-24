@@ -9,13 +9,21 @@
     width: 100% !important;
     touch-action: pan-y; /* 스마트폰 수직 스크롤 전용 고정: 좌우 덜컹거림 원천 차단 */
     -webkit-overflow-scrolling: touch;
+    /* 모바일 브라우저별(크롬, 삼성인터넷, 사파리, 네이버, 카카오톡) 폰트 자동 확대(Font Boosting) 차단 및 100% 통일 */
+    -webkit-text-size-adjust: 100% !important;
+    -moz-text-size-adjust: 100% !important;
+    -ms-text-size-adjust: 100% !important;
+    text-size-adjust: 100% !important;
   }
 
   body {
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
     -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     word-break: keep-all;
     overflow-wrap: break-word;
+    letter-spacing: -0.02em; /* 한국어 가독성 최적화 자간 */
   }
 
   #root {
@@ -27,6 +35,7 @@
   h1, h2, h3, h4, .font-serif-kr {
     font-family: 'Noto Serif KR', serif;
     word-break: keep-all;
+    letter-spacing: -0.015em;
   }
 }
 
