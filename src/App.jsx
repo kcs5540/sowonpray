@@ -38,8 +38,10 @@ import {
   Maximize2,
   Printer,
   HelpCircle,
+  QrCode,
   X,
 } from 'lucide-react'
+import QRCode from 'qrcode'
 import {
   INITIAL_MEMBERS,
   INITIAL_PRAYERS,
@@ -2414,6 +2416,42 @@ export default function App() {
     const url = `${window.location.origin}/?ref=${code}`
     navigator.clipboard?.writeText(url)
     showToast(`📋 포교위원 전용 추천 링크가 복사되었습니다: ${url}`)
+  }
+
+  // QR코드 모달/펼침 상태
+  const [showQrCode, setShowQrCode] = useState(null)
+  const [qrDataUrl, setQrDataUrl] = useState('')
+
+  const handleToggleQr = async (code) => {
+    if (showQrCode === code) {
+      setShowQrCode(null)
+      return
+    }
+    const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
+    const refUrl = `${origin}/?ref=${code}`
+    try {
+      const url = await QRCode.toDataURL(refUrl, {
+        width: 320,
+        margin: 2,
+        color: {
+          dark: '#1B1815',
+          light: '#FFFFFF',
+        },
+      })
+      setQrDataUrl(url)
+      setShowQrCode(code)
+    } catch (err) {
+      showToast('QR코드를 생성할 수 없습니다.')
+    }
+  }
+
+  const handleDownloadQr = (name, code) => {
+    if (!qrDataUrl) return
+    const a = document.createElement('a')
+    a.href = qrDataUrl
+    a.download = `제주소원사_인연QR_${name || code}.png`
+    a.click()
+    showToast('💾 QR코드 이미지가 저장되었습니다. 카카오톡이나 인쇄물에 활용해 보세요.')
   }
 
   // 권한 체크 헬퍼
@@ -5535,7 +5573,67 @@ export default function App() {
                       <Copy className="w-3.5 h-3.5 shrink-0" />
                       <span>주소 복사</span>
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => handleToggleQr(currentUser.code)}
+                      className={`px-3 py-2.5 rounded-xl text-xs font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 transition shadow-sm border ${
+                        showQrCode === currentUser.code
+                          ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
+                          : 'bg-[#FAF3DF] text-[#8A6510] border-[#E5D399] hover:bg-[#F5E6BF]'
+                      }`}
+                    >
+                      <QrCode className="w-3.5 h-3.5 shrink-0" />
+                      <span>QR코드</span>
+                    </button>
                   </div>
+
+                  {showQrCode === currentUser.code && (
+                    <div className="mt-3 p-4 rounded-xl bg-[#FAF5E6] border border-[#E5D399] flex flex-col items-center text-center space-y-2.5">
+                      <div className="text-center">
+                        <span className="text-[11px] font-bold text-[#8A6510]">
+                          卍 제주 소원사 모바일 법당 전용 QR
+                        </span>
+                        <h4 className="font-serif-kr text-sm font-bold text-[#231F1C] mt-0.5">
+                          {currentUser.name} {currentUser.dharma_name ? `(${currentUser.dharma_name})` : ''} 님의 복덕 인연 QR
+                        </h4>
+                      </div>
+
+                      {qrDataUrl ? (
+                        <div className="p-3 bg-white rounded-2xl border-2 border-[#C59B27] shadow-md inline-block">
+                          <img
+                            src={qrDataUrl}
+                            alt="인연 연결 QR코드"
+                            className="w-44 h-44 sm:w-48 sm:h-48 rounded-lg"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-44 h-44 flex items-center justify-center bg-white rounded-2xl border">
+                          <span className="text-xs text-[#8C7A5B]">QR 생성 중...</span>
+                        </div>
+                      )}
+
+                      <p className="text-[11px] text-[#6E655C] leading-snug break-keep max-w-xs">
+                        가족이나 지인의 스마트폰 카메라로 비추시면, 회원님의 인연 코드가 자동 연결된 모바일 법당으로 즉시 열립니다.
+                      </p>
+
+                      <div className="flex items-center gap-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => handleDownloadQr(currentUser.name, currentUser.code)}
+                          className="px-3.5 py-1.5 rounded-lg bg-[#231F1C] text-[#F5D061] border border-[#C59B27] text-xs font-bold flex items-center gap-1 shadow hover:brightness-110 transition"
+                        >
+                          <span>QR 이미지 저장</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShowQrCode(null)}
+                          className="px-3 py-1.5 rounded-lg bg-white border border-[#DDD4C4] text-xs text-[#6E655C] hover:bg-[#FAF8F5] transition"
+                        >
+                          닫기
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </section>
 
                 {/* 부처님과 맺은 나의 인연 공덕 나무 (계보 트리) */}
@@ -5903,7 +6001,43 @@ export default function App() {
                     <Copy className="w-3.5 h-3.5 shrink-0" />
                     <span>복사</span>
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => handleToggleQr(activeAgent.code)}
+                    className={`px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1 whitespace-nowrap shrink-0 transition border ${
+                      showQrCode === activeAgent.code
+                        ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
+                        : 'bg-white/10 text-[#FAF8F5] border-white/20 hover:bg-white/20'
+                    }`}
+                  >
+                    <QrCode className="w-3.5 h-3.5 shrink-0" />
+                    <span>QR</span>
+                  </button>
                 </div>
+
+                {showQrCode === activeAgent.code && (
+                  <div className="mt-3 p-4 rounded-xl bg-[#26211C] border border-[#C59B27]/40 flex flex-col items-center text-center space-y-2.5">
+                    <span className="text-[11px] font-bold text-[#F5D061]">
+                      {activeAgent.name} 포교위원 전용 QR코드
+                    </span>
+                    {qrDataUrl && (
+                      <div className="p-3 bg-white rounded-2xl border-2 border-[#C59B27] shadow-md inline-block">
+                        <img
+                          src={qrDataUrl}
+                          alt="포교위원 QR코드"
+                          className="w-40 h-40 rounded-lg"
+                        />
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => handleDownloadQr(activeAgent.name, activeAgent.code)}
+                      className="px-3.5 py-1.5 rounded-lg bg-[#F5D061] text-[#1B1815] text-xs font-bold shadow hover:brightness-105 transition"
+                    >
+                      QR 이미지 저장
+                    </button>
+                  </div>
+                )}
               </div>
             </section>
 
