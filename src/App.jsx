@@ -3770,20 +3770,9 @@ export default function App() {
                 </div>
 
                 <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="block text-xs font-bold text-[#3D3630]">
-                      봉안 대상자 정보 및 발원 내용
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => setWishText(PRAYER_CATEGORY_TEMPLATES[wishCategory] || '')}
-                      className="px-2.5 py-1 rounded-lg bg-[#FAF3DF] hover:bg-[#F5E6BF] text-[#8A6510] border border-[#E5D399] text-[11px] font-bold flex items-center gap-1 transition shadow-sm active:scale-95"
-                      title="이 불사 종목 추천 발원문을 그대로 입력합니다"
-                    >
-                      <Sparkles className="w-3 h-3 text-[#B8860B]" />
-                      <span>✨ 예시문 그대로 넣기</span>
-                    </button>
-                  </div>
+                  <label className="block text-xs font-bold text-[#3D3630] mb-1">
+                    봉안 대상자 정보 및 발원 내용
+                  </label>
                   <textarea
                     rows={3}
                     value={wishText}
@@ -4092,20 +4081,9 @@ export default function App() {
                 </div>
 
                 <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="block text-xs font-bold text-[#3D3630]">
-                      부처님께 올리는 한 줄 소원 (발원문)
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => setWishText(PRAYER_CATEGORY_TEMPLATES[wishCategory] || '')}
-                      className="px-2.5 py-1 rounded-lg bg-[#FAF3DF] hover:bg-[#F5E6BF] text-[#8A6510] border border-[#E5D399] text-[11px] font-bold flex items-center gap-1 transition shadow-sm active:scale-95"
-                      title="이 기원분야 추천 발원문을 그대로 입력합니다"
-                    >
-                      <Sparkles className="w-3 h-3 text-[#B8860B]" />
-                      <span>✨ 예시문 그대로 넣기</span>
-                    </button>
-                  </div>
+                  <label className="block text-xs font-bold text-[#3D3630] mb-1">
+                    부처님께 올리는 한 줄 소원 (발원문)
+                  </label>
                   <textarea
                     rows={3}
                     value={wishText}
