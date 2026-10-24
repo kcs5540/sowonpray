@@ -1539,6 +1539,7 @@ export default function App() {
   )
 
   const [wishName, setWishName] = useState('')
+  const [wishTarget, setWishTarget] = useState('')
   const [wishPhone, setWishPhone] = useState('')
   const [wishCategory, setWishCategory] = useState('가족건강')
   const [wishText, setWishText] = useState(
@@ -2049,6 +2050,12 @@ export default function App() {
       return
     }
 
+    const finalTarget = wishTarget.trim()
+    const formattedBelieverName =
+      finalTarget && finalTarget !== '본인'
+        ? `${wishName.trim()} (대상: ${finalTarget})`
+        : wishName.trim()
+
     // 소원 발원문을 직접 쓰지 않고 비워둔 경우, 선택된 기원 분야의 정통 예시 발원문으로 자동 접수!
     const finalWishText =
       wishText.trim() ||
@@ -2059,7 +2066,8 @@ export default function App() {
     const now = Date.now()
     const expireAt = now + 7 * 24 * 60 * 60 * 1000 // 7일 정진 축원 기간
     const newLanternInfo = {
-      believer_name: wishName.trim(),
+      believer_name: formattedBelieverName,
+      wish_target: finalTarget || '본인',
       believer_phone: wishPhone.trim(),
       wish_category: wishCategory,
       wish_text: finalWishText,
@@ -2077,7 +2085,8 @@ export default function App() {
     const newPrayer = {
       id: 'p-' + Date.now(),
       member_code: writerCode,
-      believer_name: wishName.trim(),
+      believer_name: formattedBelieverName,
+      wish_target: finalTarget || '본인',
       believer_phone: wishPhone.trim(),
       agent_code: assignedAgentCode,
       wish_category: wishCategory,
@@ -2104,7 +2113,7 @@ export default function App() {
             temple_id: 'sowonsa',
             member_code: writerCode,
             agent_code: assignedAgentCode,
-            believer_name: wishName.trim(),
+            believer_name: formattedBelieverName,
             believer_phone: wishPhone.trim(),
             wish_category: wishCategory,
             wish_text: finalWishText,
@@ -2156,6 +2165,7 @@ export default function App() {
     )
 
     setWishText(PRAYER_CATEGORY_TEMPLATES[wishCategory] || '')
+    setWishTarget('')
     setShowSuccessModal(true)
     showToast('🙏 대웅전 소원등이 밝게 점등되었습니다. 사시예불마다 정성껏 축원 올립니다.')
   }
@@ -3789,6 +3799,62 @@ export default function App() {
                   </div>
                 </div>
 
+                {/* 축원 대상란 (소원발원 대상) */}
+                <div className="bg-white/80 rounded-xl p-3 border border-[#E0D7C6] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-bold text-[#3D3630] flex items-center gap-1.5">
+                      <span>소원발원 대상 (축원 대상자)</span>
+                      <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
+                        선택
+                      </span>
+                    </label>
+                    <span className="text-[10.5px] text-[#7A7065]">
+                      비워두시면 <strong>[신청자 본인]</strong>으로 축원됩니다
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={wishTarget}
+                      onChange={(e) => setWishTarget(e.target.value)}
+                      placeholder="예: 자녀 김철수, 부모님, 가족 전체"
+                      className="flex-1 px-3.5 py-2 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
+                    />
+                    {wishTarget && (
+                      <button
+                        type="button"
+                        onClick={() => setWishTarget('')}
+                        className="px-2.5 py-2 text-xs text-[#8C7A5B] hover:text-[#3D3630] underline shrink-0"
+                      >
+                        본인으로 초기화
+                      </button>
+                    )}
+                  </div>
+
+                  {/* 빠른 선택 칩 */}
+                  <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                    <span className="text-[10.5px] font-bold text-[#8A6510] shrink-0">빠른 선택:</span>
+                    {['본인', '가족 전체', '자녀', '부모님', '배우자'].map((chip) => {
+                      const isSelected = (chip === '본인' && !wishTarget) || wishTarget === chip
+                      return (
+                        <button
+                          key={chip}
+                          type="button"
+                          onClick={() => setWishTarget(chip === '본인' ? '' : chip)}
+                          className={`px-2 py-0.5 rounded-md text-[11px] font-bold border transition ${
+                            isSelected
+                              ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-xs'
+                              : 'bg-white text-[#6E655C] border-[#D6CEC2] hover:bg-[#FAF5E6]'
+                          }`}
+                        >
+                          {chip}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-xs font-bold text-[#3D3630] mb-1">
                     봉안 대상자 정보 및 발원 내용
@@ -4167,6 +4233,62 @@ export default function App() {
                       placeholder="010-0000-0000"
                       className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
                     />
+                  </div>
+                </div>
+
+                {/* 축원 대상란 (소원발원 대상) */}
+                <div className="bg-white/80 rounded-xl p-3 border border-[#E0D7C6] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-bold text-[#3D3630] flex items-center gap-1.5">
+                      <span>소원발원 대상 (축원 대상자)</span>
+                      <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
+                        선택
+                      </span>
+                    </label>
+                    <span className="text-[10.5px] text-[#7A7065]">
+                      비워두시면 <strong>[신청자 본인]</strong>으로 축원됩니다
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={wishTarget}
+                      onChange={(e) => setWishTarget(e.target.value)}
+                      placeholder="예: 자녀 김철수, 부모님, 가족 전체"
+                      className="flex-1 px-3.5 py-2 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
+                    />
+                    {wishTarget && (
+                      <button
+                        type="button"
+                        onClick={() => setWishTarget('')}
+                        className="px-2.5 py-2 text-xs text-[#8C7A5B] hover:text-[#3D3630] underline shrink-0"
+                      >
+                        본인으로 초기화
+                      </button>
+                    )}
+                  </div>
+
+                  {/* 빠른 선택 칩 */}
+                  <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                    <span className="text-[10.5px] font-bold text-[#8A6510] shrink-0">빠른 선택:</span>
+                    {['본인', '가족 전체', '자녀', '부모님', '배우자'].map((chip) => {
+                      const isSelected = (chip === '본인' && !wishTarget) || wishTarget === chip
+                      return (
+                        <button
+                          key={chip}
+                          type="button"
+                          onClick={() => setWishTarget(chip === '본인' ? '' : chip)}
+                          className={`px-2 py-0.5 rounded-md text-[11px] font-bold border transition ${
+                            isSelected
+                              ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-xs'
+                              : 'bg-white text-[#6E655C] border-[#D6CEC2] hover:bg-[#FAF5E6]'
+                          }`}
+                        >
+                          {chip}
+                        </button>
+                      )
+                    })}
                   </div>
                 </div>
 
@@ -6611,7 +6733,7 @@ export default function App() {
                       <thead>
                         <tr className="bg-[#F0EDE4] text-[#111111] font-bold text-center border-b border-[#333333]">
                           <th className="p-2 border-r border-[#333333] w-12 text-center">연번</th>
-                          <th className="p-2 border-r border-[#333333] w-32">불자 성함(법명)</th>
+                          <th className="p-2 border-r border-[#333333] w-36">신청자 / 축원대상</th>
                           <th className="p-2 border-r border-[#333333] w-28 text-center">기원 분야</th>
                           <th className="p-2 border-r border-[#333333]">부처님 전 지극지성 발원문</th>
                           <th className="p-2 border-r border-[#333333] w-20 text-center">정진 기간</th>
