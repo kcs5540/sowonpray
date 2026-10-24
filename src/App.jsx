@@ -3801,16 +3801,16 @@ export default function App() {
 
                 {/* 축원 대상란 (소원발원 대상) */}
                 <div className="bg-white/80 rounded-xl p-3 border border-[#E0D7C6] space-y-2">
-                  <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
                     <label className="block text-xs font-bold text-[#3D3630] flex items-center gap-1.5">
                       <span>소원발원 대상 (축원 대상자)</span>
                       <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
                         선택
                       </span>
                     </label>
-                    <span className="text-[10.5px] text-[#7A7065]">
+                    <p className="text-[11px] text-[#7A7065]">
                       비워두시면 <strong>[신청자 본인]</strong>으로 축원됩니다
-                    </span>
+                    </p>
                   </div>
 
                   <div className="flex items-center gap-2">
@@ -4238,16 +4238,16 @@ export default function App() {
 
                 {/* 축원 대상란 (소원발원 대상) */}
                 <div className="bg-white/80 rounded-xl p-3 border border-[#E0D7C6] space-y-2">
-                  <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
                     <label className="block text-xs font-bold text-[#3D3630] flex items-center gap-1.5">
                       <span>소원발원 대상 (축원 대상자)</span>
                       <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
                         선택
                       </span>
                     </label>
-                    <span className="text-[10.5px] text-[#7A7065]">
+                    <p className="text-[11px] text-[#7A7065]">
                       비워두시면 <strong>[신청자 본인]</strong>으로 축원됩니다
-                    </span>
+                    </p>
                   </div>
 
                   <div className="flex items-center gap-2">
