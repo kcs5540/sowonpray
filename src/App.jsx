@@ -3842,8 +3842,9 @@ export default function App() {
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
                 <span>제주 소원사 대웅전 실시간 연동</span>
               </div>
-              <h2 className="font-serif-kr text-xl sm:text-2xl font-bold mb-2">
-                소원등(願燈)을 밝혀보세요
+              <h2 className="font-serif-kr text-xl sm:text-2xl font-bold mb-2 leading-snug">
+                <span className="block sm:inline">소원등 켜고, </span>
+                <span className="block sm:inline">간절한 소원을 올려보세요</span>
               </h2>
               <p className="text-xs text-[#D6CEC2] max-w-xs mx-auto leading-relaxed mb-4 break-keep">
                 {isLanternLit
