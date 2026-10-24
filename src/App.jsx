@@ -1540,7 +1540,9 @@ export default function App() {
   const [wishName, setWishName] = useState('')
   const [wishPhone, setWishPhone] = useState('')
   const [wishCategory, setWishCategory] = useState('가족건강')
-  const [wishText, setWishText] = useState('')
+  const [wishText, setWishText] = useState(
+    () => PRAYER_CATEGORY_TEMPLATES['가족건강'] || ''
+  )
   const [showSuccessModal, setShowSuccessModal] = useState(false)
 
   // [사시예불 축원 명부] 7일 이내 유효 신도 전용 인쇄 모달 상태
@@ -1572,11 +1574,14 @@ export default function App() {
       .sort((a, b) => b.pTime - a.pTime)
   }, [prayers])
 
-  // 탭 이동 시 해당 탭에 맞는 기본 종목 자동 세팅
+  // 탭 이동 시 해당 탭에 맞는 기본 종목 자동 세팅 및 정통 예시문 연동
   useEffect(() => {
     const bulsaCats = [
       '생전예수재(황금위패)',
       '조상영구위패(흑색)',
+      '삼성각 영구축원명패',
+      '삼성각 기둥·단청불사',
+      '삼성각 소원기와불사',
       '대웅전 1년 인등(가족등)',
       '49재/천도재/기일제사',
       '대웅전 공양미/불전시주',
@@ -1590,10 +1595,19 @@ export default function App() {
       '자녀축복/취업성취',
       '액운소멸/무병장수',
     ]
+    const allTemplates = Object.values(PRAYER_CATEGORY_TEMPLATES)
     if (activeTab === 'bulsa' && !bulsaCats.includes(wishCategory)) {
-      setWishCategory('생전예수재(황금위패)')
+      const defaultBulsa = '생전예수재(황금위패)'
+      setWishCategory(defaultBulsa)
+      if (!wishText.trim() || allTemplates.includes(wishText.trim())) {
+        setWishText(PRAYER_CATEGORY_TEMPLATES[defaultBulsa] || '')
+      }
     } else if (activeTab === 'lantern' && !lanternCats.includes(wishCategory)) {
-      setWishCategory('가족건강')
+      const defaultLantern = '가족건강'
+      setWishCategory(defaultLantern)
+      if (!wishText.trim() || allTemplates.includes(wishText.trim())) {
+        setWishText(PRAYER_CATEGORY_TEMPLATES[defaultLantern] || '')
+      }
     }
   }, [activeTab])
 
@@ -2015,8 +2029,13 @@ export default function App() {
   const handleSelectWishCategory = (cat) => {
     const prevTemplate = PRAYER_CATEGORY_TEMPLATES[wishCategory]
     setWishCategory(cat)
-    // 사용자가 직접 작성한 적이 없거나, 이전 카테고리의 기본 예시문이었던 경우 새 카테고리 정통 예시문으로 자동 전환!
-    if (!wishText.trim() || wishText.trim() === prevTemplate) {
+    // 사용자가 직접 작성한 고유 내용이 아니거나(비어있거나 기존 예시문 템플릿 중 하나였던 경우), 새 카테고리 예시문으로 자동 전환하여 바로 수정해서 쓸 수 있게 함!
+    const allTemplates = Object.values(PRAYER_CATEGORY_TEMPLATES)
+    if (
+      !wishText.trim() ||
+      wishText.trim() === prevTemplate ||
+      allTemplates.includes(wishText.trim())
+    ) {
       setWishText(PRAYER_CATEGORY_TEMPLATES[cat] || '')
     }
   }
@@ -2135,7 +2154,7 @@ export default function App() {
       )
     )
 
-    setWishText('')
+    setWishText(PRAYER_CATEGORY_TEMPLATES[wishCategory] || '')
     setShowSuccessModal(true)
     showToast('🙏 대웅전 소원등이 밝게 점등되었습니다. 사시예불마다 정성껏 축원 올립니다.')
   }
@@ -3787,7 +3806,7 @@ export default function App() {
                     <span className="flex items-center gap-1">
                       <CheckCircle2 className="w-3.5 h-3.5 text-[#B8860B] shrink-0" />
                       <span>
-                        직접 쓰지 않고 비워두셔도 <strong>[{wishCategory}]</strong> 기본 발원 내용으로 자동 상담 접수됩니다.
+                        예시문을 자유롭게 수정하시거나 그대로 두셔도 <strong>[{wishCategory}]</strong> 기본 발원 내용으로 자동 상담 접수됩니다.
                       </span>
                     </span>
                     {wishText && (
@@ -4098,7 +4117,7 @@ export default function App() {
                     <span className="flex items-center gap-1">
                       <CheckCircle2 className="w-3.5 h-3.5 text-[#B8860B] shrink-0" />
                       <span>
-                        직접 쓰지 않고 비워두셔도 <strong>[{wishCategory}]</strong> 정통 발원문으로 자동 축원됩니다.
+                        예시문을 자유롭게 수정하시거나 그대로 두셔도 <strong>[{wishCategory}]</strong> 정통 발원문으로 자동 축원됩니다.
                       </span>
                     </span>
                     {wishText && (
