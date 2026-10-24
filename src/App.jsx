@@ -5527,6 +5527,19 @@ export default function App() {
                         로그인 ID(전화번호): {currentUser.phone} · 고유코드: {currentUser.code}
                       </p>
                     </div>
+
+                    {/* 로그인된 사용자 언제든 로그아웃할 수 있는 버튼 */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCurrentUserCode('')
+                        showToast('로그아웃되었습니다. 로그인/가입 화면으로 전환됩니다.')
+                      }}
+                      className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#E8DFD1] hover:text-white border border-white/15 text-xs font-semibold flex items-center gap-1.5 transition shrink-0"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>로그아웃</span>
+                    </button>
                   </div>
 
                   {(isMaster || currentUser.role === 'temple_admin' || currentUser.role === 'agent' || currentUser.role === 'committee_head') && (
