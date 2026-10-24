@@ -3801,15 +3801,12 @@ export default function App() {
 
                 {/* 축원 대상란 (소원발원 대상) */}
                 <div>
-                  <label className="block text-xs font-bold text-[#3D3630] mb-0.5 flex items-center gap-1.5">
+                  <label className="block text-xs font-bold text-[#3D3630] mb-1 flex items-center gap-1.5">
                     <span>소원발원 대상 (축원 대상자)</span>
                     <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
                       선택
                     </span>
                   </label>
-                  <p className="text-[11px] text-[#7A7065] mb-1">
-                    비워두시면 <strong>[신청자 본인]</strong>으로 축원됩니다
-                  </p>
                   <input
                     type="text"
                     value={wishTarget}
@@ -3817,6 +3814,9 @@ export default function App() {
                     placeholder="예: 자녀 김철수, 부모님, 가족 전체"
                     className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
                   />
+                  <p className="text-[11px] text-[#7A7065] mt-1 px-0.5">
+                    비워두시면 <strong>[신청자 본인]</strong>으로 축원됩니다
+                  </p>
                 </div>
 
                 <div>
@@ -4202,15 +4202,12 @@ export default function App() {
 
                 {/* 축원 대상란 (소원발원 대상) */}
                 <div>
-                  <label className="block text-xs font-bold text-[#3D3630] mb-0.5 flex items-center gap-1.5">
+                  <label className="block text-xs font-bold text-[#3D3630] mb-1 flex items-center gap-1.5">
                     <span>소원발원 대상 (축원 대상자)</span>
                     <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
                       선택
                     </span>
                   </label>
-                  <p className="text-[11px] text-[#7A7065] mb-1">
-                    비워두시면 <strong>[신청자 본인]</strong>으로 축원됩니다
-                  </p>
                   <input
                     type="text"
                     value={wishTarget}
@@ -4218,6 +4215,9 @@ export default function App() {
                     placeholder="예: 자녀 김철수, 부모님, 가족 전체"
                     className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
                   />
+                  <p className="text-[11px] text-[#7A7065] mt-1 px-0.5">
+                    비워두시면 <strong>[신청자 본인]</strong>으로 축원됩니다
+                  </p>
                 </div>
 
                 <div>
