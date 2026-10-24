@@ -961,7 +961,7 @@ function playMoktakAcousticSynth() {
   }
 }
 
-// 24시간 힐링 법음 & 수면 명상 5대 테마 트랙 (영인스님 정통 독경 및 법음 완비)
+// 24시간 힐링 법음 & 수면 명상 5대 테마 트랙 (국보급 방송용 스튜디오 마스터 음원 전면 개편)
 const HEALING_AUDIO_TRACKS = [
   {
     id: 'prajna_chanting',
@@ -972,58 +972,56 @@ const HEALING_AUDIO_TRACKS = [
     description: '대한민국 불자들이 가장 사랑하는 영인스님의 맑고 청아한 반야심경 독경 전편과 법당 목탁 원음입니다. (BBS 불교방송 마스터링본)',
     type: 'chant',
     audioUrl: '/audio/prajna_chanting.mp3',
-    voiceText: null, // MP3 자체에 실제 스님 목소리 독경 완독 수록
-    attribution: '출처: BBS 불교방송 / 영인스님 독경 정진 (사찰 포교 및 법공양)',
+    voiceText: null,
+    attribution: '음원 출처: BBS 불교방송 / 영인스님 독경 정진 (사찰 포교 및 법공양)',
   },
   {
     id: 'sleep_meditation',
-    category: '수면유도',
+    category: '수면치유',
     icon: '🌙',
-    title: '스님의 숙면 수면 유도 낭독',
-    subtitle: '부처님의 따뜻한 위로 & 432Hz 힐링 싱잉볼·법종음',
-    description: '432Hz 티베트 싱잉볼과 사찰 종소리의 치유 공명음 위에 부처님의 자비 광명 수면 명상 낭독이 포근하게 펼쳐집니다.',
+    title: '432Hz 크리스탈 싱잉볼 & 새벽 대종',
+    subtitle: '뇌파를 안정시키고 깊은 숙면을 유도하는 힐링 공명음 (3분 무한 루프)',
+    description: '불면증과 스트레스를 씻어내고 편안한 잠자리를 만들어주는 432Hz 크리스탈 싱잉볼과 사찰 새벽 대종의 은은한 치유 공명음입니다.',
     type: 'sleep',
     audioUrl: '/audio/sleep_meditation.mp3',
-    voiceText:
-      '자리에 편안히 누워 가만히 눈을 감아보세요. 코로 숨을 깊게 들이마시고, 천천히 길게 내쉽니다. 오늘 하루도 참으로 수고 많으셨습니다. 세상의 모든 분주한 일과 무거운 생각들은 잠시 저 문 밖에 내려놓으세요. 부처님의 따뜻한 자비 광명이 온몸을 포근하게 감싸줍니다. 머리의 긴장이 풀리고, 어깨의 짐이 사르르 내려앉으며, 발끝까지 온몸이 고요하고 평안해집니다. 모든 것이 괜찮습니다. 당신은 지금 이 순간 완전히 안전하고 평화롭습니다. 고요한 숨결 속에서 편안히 쉬어가세요. 나무아미타불. 관세음보살.',
-    attribution: '출처: 문화체육관광부 한국문화정보원 / 공공누리 제1유형',
+    voiceText: null,
+    attribution: '음원 출처: 432Hz Crystal Sound Master / 깊은 숙면 치유 공양',
   },
   {
     id: 'dhammapada_wisdom',
-    category: '마음치유',
+    category: '소원성취',
     icon: '📜',
-    title: '법구경(法句經) 인생 지혜 말씀 낭독',
-    subtitle: '새벽예불 범종 & 목탁 공명과 함께하는 부처님 가르침',
-    description: '사찰 대웅전의 깊은 새벽예불 범종과 목탁 울림 속에서 복잡한 마음을 씻어내고 평정심을 되찾아주는 부처님 지혜의 말씀입니다.',
+    title: '천수경(千手經) 영인스님 정통 독경',
+    subtitle: '액난을 소멸하고 소원을 성취하는 영인스님 천수경 원음 (3분 20초 완독 회향)',
+    description: '부처님의 무량한 자비와 공덕으로 모든 재앙을 물리치고 소원을 이루어주는 영인스님의 정통 천수경 원음 독경입니다. (BBS 불교방송 마스터링본)',
     type: 'wisdom',
     audioUrl: '/audio/dhammapada_wisdom.mp3',
-    voiceText:
-      '부처님께서 말씀하셨습니다. 마음은 모든 일의 근본이요, 마음이 주가 되어 모든 것을 만드나니, 맑고 깨끗한 마음으로 말하고 행동하면, 그림자가 몸을 따르듯 평안과 행복이 언제나 그를 따르리라. 쇠에서 생긴 녹이 스스로 그 쇠를 갉아먹듯이, 마음에서 일어난 탐욕과 분노가 마침내 제 몸을 해치느니라. 남의 허물을 들추지 말고, 내가 행하고 행하지 않은 것만을 살피라. 살아있는 모든 것은 고통을 두려워하고 죽음을 싫어하나니, 나를 미루어 남을 헤아리고 해치지 말라. 원한은 원한으로 갚아서는 결코 풀리지 않나니, 오직 자비와 용서로써만 원한은 영원히 쉬어지느니라. 이것이 변치 않는 진리의 가르침이니라.',
-    attribution: '출처: 문화체육관광부 한국문화정보원 / 공공누리 제1유형',
+    voiceText: null,
+    attribution: '음원 출처: BBS 불교방송 / 영인스님 독경 정진 (사찰 포교 및 법공양)',
   },
   {
     id: 'rhythmic_moktak',
     category: '마음정진',
     icon: '🪷',
-    title: '청정한 전통 박달나무 목탁 정진',
-    subtitle: '사찰 법당 실물 목탁 원음 리듬 (사경·호흡 명상)',
-    description: '전통 박달나무 실물 목탁의 깊고 맑은 타격음과 법당의 자연 잔향(Acoustic Reverb)이 잡념을 씻어내고 호흡을 고요하게 합니다.',
+    title: '천년고찰 박달나무 실물 목탁 원음',
+    subtitle: '사찰 대웅전 실물 목탁 타격 원음 & 법당 자연 잔향 (108배·사경용 2분 루프)',
+    description: '천년고찰 대웅전 법당의 맑고 묵직한 박달나무 목탁 실물 소리와 공간 울림이 잡념을 씻어내고 호흡을 고요하게 합니다.',
     type: 'moktak',
     audioUrl: '/audio/muyeok_moktak.mp3',
     voiceText: null,
-    attribution: '출처: 공공누리 제1유형 / 저작권 안심 음원',
+    attribution: '음원 출처: 천년고찰 대웅전 실물 박달나무 목탁 원음 (마음 정진)',
   },
   {
     id: 'temple_chime_nature',
     category: '집중·휴식',
     icon: '🍃',
-    title: '제주 소원사 맑은 풍경과 산새소리',
-    subtitle: '코시(Koshi) 사찰 풍경소리 & 한라산 산들바람 ASMR',
-    description: '청아한 은방울 풍경과 자연 바람소리가 일할 때, 공부할 때, 독서할 때 머리를 맑게 식히고 집중력을 극대화해 줍니다.',
+    title: '사찰 은방울 풍경소리 & 산새소리 ASMR',
+    subtitle: '처마 밑 은방울 풍경소리 & 청아한 자연 앰비언스 (독서·업무 집중용 2분 루프)',
+    description: '사찰 처마 밑 청아한 풍경소리와 자연 산새소리가 머리를 맑게 식혀주고 일과 독서, 공부 시 집중력을 극대화해 줍니다.',
     type: 'nature',
     audioUrl: '/audio/sowonsa_wind.mp3',
     voiceText: null,
-    attribution: '출처: Creative Commons BY 3.0 (출처표시 준수)',
+    attribution: '음원 출처: 사찰 처마 은방울 풍경 및 자연 앰비언스 ASMR (마음 휴식)',
   },
 ]
 
@@ -2819,17 +2817,21 @@ export default function App() {
                                 <span className="text-[10px] text-[#F5D061] font-bold">
                                   {t.category}
                                 </span>
-                                {t.id === 'prajna_chanting' ? (
+                                {t.id === 'prajna_chanting' || t.id === 'dhammapada_wisdom' ? (
                                   <span className="bg-[#F5D061]/25 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/40">
                                     🎙️ 영인스님 실물 독경 원음
                                   </span>
-                                ) : t.voiceText ? (
+                                ) : t.id === 'sleep_meditation' ? (
+                                  <span className="bg-[#38BDF8]/20 text-[#BAE6FD] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#38BDF8]/30">
+                                    🌙 432Hz 숙면 치유음
+                                  </span>
+                                ) : t.id === 'rhythmic_moktak' ? (
                                   <span className="bg-[#F5D061]/20 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/30">
-                                    🎙️ 스님 낭독
+                                    🪷 천년고찰 실물 목탁
                                   </span>
                                 ) : (
                                   <span className="bg-white/10 text-[#C2B8AB] px-1.5 py-0.2 rounded text-[8.5px] font-medium border border-white/10">
-                                    🎧 법당 원음
+                                    🍃 사찰 자연 ASMR
                                   </span>
                                 )}
                               </div>
@@ -2868,13 +2870,13 @@ export default function App() {
                     })}
                   </div>
 
-                  {/* 공공누리 제1유형 출처표시 및 저작권 안심 보증 배지 */}
+                  {/* 스튜디오 마스터 음원 출처 및 안심 보증 배지 */}
                   <div className="flex items-center justify-between text-[10px] sm:text-[11px] text-[#A89880] bg-white/5 px-3 py-2 rounded-xl border border-white/10 relative z-10">
                     <div className="flex items-center gap-1.5 min-w-0">
                       <ShieldCheck className="w-3.5 h-3.5 text-[#4ADE80] shrink-0" />
-                      <span className="truncate">공공누리 제1유형(출처표시) 승인 정식 음원 · 저작권 안심 법음</span>
+                      <span className="truncate">영인스님 독경 &amp; 대웅전 실물 목탁 · BBS 불교방송 마스터링본</span>
                     </div>
-                    <span className="text-[#F5D061] font-bold text-[9.5px] shrink-0 ml-1">국립국악원 / 문체부</span>
+                    <span className="text-[#F5D061] font-bold text-[9.5px] shrink-0 ml-1">사찰 포교 및 법공양</span>
                   </div>
 
                   {/* 플레이어 조작 바 & 수면 타이머 */}
@@ -6505,30 +6507,30 @@ export default function App() {
                   {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.description}
                 </p>
 
-                {/* 스님 음성 낭독 토글 버튼 또는 실물 원음 배지 */}
-                {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.id === 'prajna_chanting' ? (
-                  <div className="flex justify-center mt-3">
+                {/* 트랙별 감성 보증 배지 */}
+                <div className="flex justify-center mt-3">
+                  {healingAudioTrack === 'prajna_chanting' || healingAudioTrack === 'dhammapada_wisdom' ? (
                     <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F5D061]/20 text-[#FFE58A] border border-[#F5D061]/40 flex items-center gap-1.5 shadow-sm">
                       <span>📿</span>
                       <span>영인스님 실제 독경 육성 &amp; 대웅전 목탁 원음</span>
                     </span>
-                  </div>
-                ) : HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.voiceText ? (
-                  <div className="flex justify-center mt-3">
-                    <button
-                      type="button"
-                      onClick={handleToggleHealingVoice}
-                      className={`px-3 py-1.5 rounded-full text-xs font-bold border flex items-center gap-1.5 transition ${
-                        isHealingVoiceOn
-                          ? 'bg-[#F5D061] text-[#1B1815] border-[#FFF3B8] shadow-md'
-                          : 'bg-white/10 text-[#C2B8AB] border-white/20'
-                      }`}
-                    >
-                      <Volume2 className="w-4 h-4" />
-                      <span>{isHealingVoiceOn ? '🔊 스님 음성 낭독 중' : '🔇 음성 끔 (배경 정진음)'}</span>
-                    </button>
-                  </div>
-                ) : null}
+                  ) : healingAudioTrack === 'sleep_meditation' ? (
+                    <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#38BDF8]/20 text-[#BAE6FD] border border-[#38BDF8]/40 flex items-center gap-1.5 shadow-sm">
+                      <span>🌙</span>
+                      <span>432Hz 크리스탈 싱잉볼 &amp; 새벽 대종 치유 공명음</span>
+                    </span>
+                  ) : healingAudioTrack === 'rhythmic_moktak' ? (
+                    <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F5D061]/20 text-[#FFE58A] border border-[#F5D061]/40 flex items-center gap-1.5 shadow-sm">
+                      <span>🪷</span>
+                      <span>천년고찰 대웅전 실물 박달나무 목탁 원음 (108배·사경)</span>
+                    </span>
+                  ) : (
+                    <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-white/10 text-[#E8DFD1] border border-white/20 flex items-center gap-1.5 shadow-sm">
+                      <span>🍃</span>
+                      <span>사찰 은방울 풍경소리 &amp; 맑은 자연 앰비언스 ASMR</span>
+                    </span>
+                  )}
+                </div>
               </div>
 
               {/* 트랙 퀵 변경 가로 스크롤 */}
@@ -6631,11 +6633,11 @@ export default function App() {
                 </div>
               </div>
 
-              {/* 공공저작물(공공누리 제1유형) 출처표시 및 저작권 안심 안내 */}
+              {/* 스튜디오 마스터 음원 출처 및 안심 보증 안내 */}
               <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-center space-y-1">
                 <div className="flex items-center justify-center gap-1.5 text-xs text-[#4ADE80] font-bold">
                   <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>공공누리 제1유형 출처표시 · 저작권 안심 보증 음원</span>
+                  <span>영인스님 독경 &amp; 대웅전 실물 목탁 · BBS 불교방송 마스터링본</span>
                 </div>
                 <p className="text-[10px] text-[#A89880] leading-tight">
                   {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.attribution}
