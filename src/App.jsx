@@ -2474,9 +2474,11 @@ export default function App() {
     currentUser?.role === 'temple_admin' ||
     currentUser?.role === 'master'
 
-  // 오직 김철수 총괄대표님(master)만 총괄 마진(20만 원) 및 총괄정산 탭에 접근 가능 (포교위원장들에게 절대 비밀)
+  // 김철수 총괄대표(master) 및 양영문 창건주·신도회장 사찰 최고대표(temple_admin) 총괄전산 및 관제 권한
   const isMaster = currentUser?.role === 'master'
-  const isAdmin = currentUser?.role === 'master'
+  const isTempleAdmin = currentUser?.role === 'temple_admin'
+  const isMasterOrTempleAdmin = isMaster || isTempleAdmin
+  const isAdmin = isMasterOrTempleAdmin
 
   return (
     <div className="min-h-screen bg-[#12100E] flex justify-center selection:bg-[#C59B27] selection:text-white w-full max-w-full overflow-x-clip">
@@ -5887,7 +5889,7 @@ export default function App() {
                         <ChevronRight className="w-4 h-4" />
                       </button>
 
-                      {isMaster && (
+                      {isMasterOrTempleAdmin && (
                         <button
                           type="button"
                           onClick={() => {
@@ -5941,7 +5943,7 @@ export default function App() {
                     {activeAgent.role === 'committee_member' ? ' 포교위원' : ' 포교위원장'}님의 전법 도량
                   </h2>
                 </div>
-                {isMaster && (
+                {isMasterOrTempleAdmin && (
                   <select
                     value={selectedAgentCode}
                     onChange={(e) => setSelectedAgentCode(e.target.value)}
@@ -6236,8 +6238,8 @@ export default function App() {
           </main>
         )}
 
-        {/* ==================== 6. 총괄정산 & 회원관리 (김철수 마스터 전산) 탭 ==================== */}
-        {activeTab === 'admin' && isMaster && (
+        {/* ==================== 6. 총괄정산 & 회원관리 (사찰 최고대표 및 총괄 마스터 전산) 탭 ==================== */}
+        {activeTab === 'admin' && isMasterOrTempleAdmin && (
           <main className="flex-1 flex flex-col gap-5 p-4">
             {/* 상단: 내정보 창으로 돌아가기 바 */}
             <div className="flex items-center justify-between pb-0.5">
@@ -6251,26 +6253,34 @@ export default function App() {
               >
                 <span>← [내정보] 창으로 돌아가기</span>
               </button>
-              <span className="text-[11px] text-[#A69B8D] font-medium">총괄 마스터 전용</span>
+              <span className="text-[11px] text-[#A69B8D] font-medium">
+                {isTempleAdmin ? '사찰 최고대표 관제' : '총괄 마스터 전용'}
+              </span>
             </div>
 
             <section className="rounded-2xl bg-gradient-to-br from-[#1C1814] to-[#2C241C] text-white p-5 border border-[#C59B27]/50 shadow-md">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 text-[#F5D061] border border-[#F5D061]/40 font-bold">
-                  MASTER ADMIN · 김철수 총괄 전산
+                  {isTempleAdmin
+                    ? '소원사 본부 최고대표 관제 · 양영문 창건주 회장 전산'
+                    : 'MASTER ADMIN · 총괄 포교본부 전산 (제주AI파트너)'}
                 </span>
                 <Settings className="w-4 h-4 text-[#F5D061]" />
               </div>
               <h2 className="font-serif-kr text-xl font-bold">
-                총괄 판권(100만 원) & 전국 위원회 정산 관제 센터
+                {isTempleAdmin
+                  ? '소원사 사찰 본부 & 전국 위원회 총괄 정산 관제 센터'
+                  : '총괄 판권(100만 원) & 전국 위원회 정산 관제 센터'}
               </h2>
               <p className="text-xs text-[#D6CEC2] mt-1 leading-relaxed">
-                김철수 총괄 대표님의 100만 원 판권 기준, 사찰 불사금 100만 원(50%) 및 포교위원장(80만) · 포교위원(60만) 판권 마진을 통합 관제합니다.
+                {isTempleAdmin
+                  ? '소원사 창건주 겸 신도회장(사찰 최고 대표책임자) 양영문 회장님의 사찰 본부 총괄 관제 센터입니다.'
+                  : '김철수 총괄 대표님의 100만 원 판권 기준, 사찰 불사금 100만 원(50%) 및 포교위원장(80만) · 포교위원(60만) 판권 마진을 통합 관제합니다.'}
               </p>
               <div className="mt-2.5 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-[#F5D061] flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 shrink-0 text-[#F5D061]" />
                 <span>
-                  <strong>[보안 기밀 보장]</strong> 총괄 200,000원 오버라이딩 마진은 포교위원장/포교위원 화면에 일절 노출되지 않으며 오직 대표님 화면에만 표시됩니다.
+                  <strong>[사찰 최고 보안 보장]</strong> 사찰 최고 대표책임자(창건주 회장님) 및 총괄 사업단만 열람 가능하며, 하위 포교위원에게는 일절 노출되지 않습니다.
                 </span>
               </div>
             </section>
@@ -7155,19 +7165,37 @@ export default function App() {
           </div>
         )}
 
-        {/* 하단 네비게이션 바 (일반 신도에게 신행홈·소원등켜기·한줄사경·불사안내·내정보 5개로 큼직하고 시원하게 노출) */}
-        <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#1B1815]/95 backdrop-blur-md border-t border-[#C59B27]/35 px-2 py-2 flex items-center justify-around">
-          {[
-            { id: 'home', label: '신행홈', icon: Heart },
-            { id: 'lantern', label: '소원등켜기', icon: Flame },
-            { id: 'sutra', label: '한줄사경', icon: BookOpen },
-            { id: 'bulsa', label: '불사안내', icon: Award },
-            { id: 'profile', label: '내정보', icon: User },
-          ].map((tab) => {
+        {/* 하단 네비게이션 바: 총괄 책임자(김철수 총괄/양영문 창건주 회장님)에게는 '총괄전산' 버튼을 최우선 노출 */}
+        <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#1B1815]/95 backdrop-blur-md border-t border-[#C59B27]/35 px-1.5 py-2 flex items-center justify-around">
+          {(isMasterOrTempleAdmin
+            ? [
+                { id: 'home', label: '신행홈', icon: Heart },
+                { id: 'lantern', label: '소원등', icon: Flame },
+                { id: 'bulsa', label: '불사안내', icon: Award },
+                { id: 'admin', label: '총괄전산', icon: TrendingUp, isSpecial: true },
+                { id: 'profile', label: '내정보', icon: User },
+              ]
+            : isAgentOrAbove
+            ? [
+                { id: 'home', label: '신행홈', icon: Heart },
+                { id: 'lantern', label: '소원등', icon: Flame },
+                { id: 'bulsa', label: '불사안내', icon: Award },
+                { id: 'agent', label: '포교전산', icon: Users, isSpecial: true },
+                { id: 'profile', label: '내정보', icon: User },
+              ]
+            : [
+                { id: 'home', label: '신행홈', icon: Heart },
+                { id: 'lantern', label: '소원등켜기', icon: Flame },
+                { id: 'sutra', label: '한줄사경', icon: BookOpen },
+                { id: 'bulsa', label: '불사안내', icon: Award },
+                { id: 'profile', label: '내정보', icon: User },
+              ]
+          ).map((tab) => {
             const Icon = tab.icon
             const isActive =
               activeTab === tab.id ||
-              (tab.id === 'profile' && (activeTab === 'agent' || activeTab === 'admin'))
+              (tab.id === 'admin' && activeTab === 'agent' && isMasterOrTempleAdmin) ||
+              (tab.id === 'profile' && !isAgentOrAbove && (activeTab === 'agent' || activeTab === 'admin'))
             return (
               <button
                 key={tab.id}
@@ -7176,11 +7204,22 @@ export default function App() {
                   window.scrollTo({ top: 0, behavior: 'smooth' })
                 }}
                 className={`flex-1 min-w-0 flex flex-col items-center justify-center py-1 px-1 rounded-xl transition ${
-                  isActive ? 'text-[#F5D061]' : 'text-[#9E9488] hover:text-[#D6CEC2]'
+                  isActive
+                    ? 'text-[#F5D061]'
+                    : tab.isSpecial
+                    ? 'text-[#E5C158] hover:text-[#F5D061]'
+                    : 'text-[#9E9488] hover:text-[#D6CEC2]'
                 }`}
               >
-                <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'stroke-[2.4px]' : 'stroke-[1.8px]'}`} />
-                <span className="text-[10.5px] sm:text-[11px] font-semibold mt-1 tracking-tight text-center truncate w-full">
+                <div className="relative">
+                  <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'stroke-[2.4px]' : 'stroke-[1.8px]'}`} />
+                  {tab.isSpecial && (
+                    <span className={`absolute -top-1 -right-1 w-2 h-2 rounded-full ${isActive ? 'bg-[#F5D061]' : 'bg-emerald-400 animate-pulse'}`} />
+                  )}
+                </div>
+                <span className={`text-[10.5px] sm:text-[11px] mt-1 tracking-tight text-center truncate w-full ${
+                  tab.isSpecial ? 'font-bold text-[#F5D061]' : 'font-semibold'
+                }`}>
                   {tab.label}
                 </span>
               </button>
