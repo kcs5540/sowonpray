@@ -4547,8 +4547,8 @@ export default function App() {
             {/* ==================== [코너 1] 터치식 황금 사경 & 목탁 수행 ==================== */}
             {sutraSubTab === 'copy' && (
               <>
-                {/* 8대 경전 구절 선택 가로 스크롤 */}
-                <div className="flex gap-2 overflow-x-auto no-scrollbar pb-0.5">
+                {/* 8대 경전 4개씩 2줄 바둑판 그리드 (한눈에 전체 8개 확인) */}
+                <div className="grid grid-cols-4 gap-1.5 pb-0.5">
                   {SUTRA_LIST.map((item, idx) => (
                     <button
                       key={item.id}
@@ -4565,9 +4565,9 @@ export default function App() {
                           )
                         }
                       }}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border transition shadow-sm ${
+                      className={`py-2 px-1 rounded-xl text-[11.5px] font-bold text-center border transition shadow-sm whitespace-nowrap overflow-hidden text-ellipsis ${
                         selectedSutraIdx === idx
-                          ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-sm'
+                          ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-sm font-extrabold'
                           : 'bg-white text-[#5C5349] border-[#E4DDD0] hover:bg-[#FAF8F5]'
                       }`}
                     >
