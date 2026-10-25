@@ -6789,43 +6789,7 @@ export default function App() {
                 </button>
               </div>
 
-              {/* 상단 원페이지 빠른 이동(Quick-Jump) 네비게이션 바 */}
-              <div className="bg-[#241F1A] border-b border-[#C59B27]/30 px-2.5 py-2 flex items-center gap-1.5 shrink-0 overflow-x-auto no-scrollbar">
-                <button
-                  type="button"
-                  onClick={() => document.getElementById('sec-common')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                  className="py-1.5 px-2.5 rounded-xl text-xs font-bold bg-[#FAF8F5]/10 hover:bg-[#FAF8F5]/20 text-[#FAF8F5] border border-white/10 whitespace-nowrap shrink-0 transition active:scale-95 flex items-center gap-1"
-                >
-                  <span>🌿 1.포교사</span>
-                </button>
-                {(currentUser?.role === 'committee_head' || currentUser?.role === 'agent' || isMasterOrTempleAdmin) && (
-                  <button
-                    type="button"
-                    onClick={() => document.getElementById('sec-head')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                    className="py-1.5 px-2.5 rounded-xl text-xs font-bold bg-[#F5D061]/20 hover:bg-[#F5D061]/30 text-[#F5D061] border border-[#F5D061]/40 whitespace-nowrap shrink-0 transition active:scale-95 flex items-center gap-1"
-                  >
-                    <span>🎖️ 2.포교위원장</span>
-                  </button>
-                )}
-                {isMasterOrTempleAdmin && (
-                  <button
-                    type="button"
-                    onClick={() => document.getElementById('sec-temple')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                    className="py-1.5 px-2.5 rounded-xl text-xs font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 whitespace-nowrap shrink-0 transition active:scale-95 flex items-center gap-1"
-                  >
-                    <span>🏛️ 3.사찰전산</span>
-                  </button>
-                )}
-                {isMaster && (
-                  <button
-                    type="button"
-                    onClick={() => document.getElementById('sec-master')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                    className="py-1.5 px-2.5 rounded-xl text-xs font-extrabold bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] shadow-md whitespace-nowrap shrink-0 transition active:scale-95 flex items-center gap-1 border border-[#FFF3B8]"
-                  >
-                    <span>👑 4.총괄(김철수)</span>
-                  </button>
-                )}
-              </div>
+
 
               {/* 모달 내부 원페이지 스크롤 컨텐츠 (포교사 -> 포교위원장 -> 사찰본부 -> 총괄 순차 전개) */}
               <div className="flex-1 overflow-y-auto p-4 space-y-6 scroll-smooth">
