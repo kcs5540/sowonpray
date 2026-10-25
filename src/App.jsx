@@ -1991,16 +1991,10 @@ export default function App() {
       return
     }
     const inputPw = loginPwInput.trim()
-    const phoneLast4 = found.phone ? found.phone.replace(/[^0-9]/g, '').slice(-4) : ''
-    const isPwValid =
-      !inputPw ||
-      inputPw === found.password_pin ||
-      inputPw === '0000' ||
-      inputPw === phoneLast4 ||
-      (found.code === '55570267' && (inputPw === '0267' || inputPw === '0000'))
+    const isPwValid = Boolean(inputPw && inputPw === found.password_pin)
 
     if (!isPwValid) {
-      showToast('비밀번호가 일치하지 않습니다. (초기 기본값: 0000 또는 휴대전화 뒷 4자리)')
+      showToast('비밀번호가 일치하지 않습니다. 변경하신 비밀번호를 확인해 주세요.')
       return
     }
     setCurrentUserCode(found.code)
@@ -2077,25 +2071,25 @@ export default function App() {
   const handleSaveProfile = (e) => {
     e.preventDefault()
     if (!currentUser) return
+    const updatedMember = {
+      ...currentUser,
+      name: profileForm.name.trim() || currentUser.name,
+      password_pin: profileForm.password_pin.trim() || currentUser.password_pin,
+      dharma_name: profileForm.dharma_name.trim(),
+      birth_date: profileForm.birth_date.trim(),
+      lunar_solar: profileForm.lunar_solar,
+      address: profileForm.address.trim(),
+      family_memo: profileForm.family_memo.trim(),
+      bank_name: profileForm.bank_name.trim(),
+      bank_account: profileForm.bank_account.trim(),
+      account_holder: profileForm.account_holder.trim(),
+    }
     setMembers((prev) =>
-      prev.map((m) =>
-        m.code === currentUser.code
-          ? {
-              ...m,
-              name: profileForm.name.trim() || m.name,
-              password_pin: profileForm.password_pin.trim() || m.password_pin,
-              dharma_name: profileForm.dharma_name.trim(),
-              birth_date: profileForm.birth_date.trim(),
-              lunar_solar: profileForm.lunar_solar,
-              address: profileForm.address.trim(),
-              family_memo: profileForm.family_memo.trim(),
-              bank_name: profileForm.bank_name.trim(),
-              bank_account: profileForm.bank_account.trim(),
-              account_holder: profileForm.account_holder.trim(),
-            }
-          : m
-      )
+      prev.map((m) => (m.code === currentUser.code ? updatedMember : m))
     )
+    if (supabase) {
+      supabase.from('members').upsert([updatedMember], { onConflict: 'code' }).then()
+    }
     playSingingBowlSound()
     showToast('✅ 내 계정 및 사찰 축원 상세정보가 안전하게 저장되었습니다.')
   }
