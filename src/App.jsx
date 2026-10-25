@@ -2002,6 +2002,9 @@ export default function App() {
 
     setMembers((prev) => [newMember, ...prev])
     setCurrentUserCode(newMember.code)
+    if (supabase) {
+      supabase.from('members').upsert([newMember], { onConflict: 'code' }).then()
+    }
     playSingingBowlSound()
     showToast(`🎉 환영합니다, ${newMember.name} 불자님! 본인 계정이 생성되어 자동 로그인되었습니다.`)
     setActiveTab('home')
@@ -2376,6 +2379,9 @@ export default function App() {
       extra_data: {},
     }
     setMembers((prev) => [created, ...prev])
+    if (supabase) {
+      supabase.from('members').upsert([created], { onConflict: 'code' }).then()
+    }
     setAdminNewName('')
     setAdminNewDharma('')
     setAdminNewPhone('')
