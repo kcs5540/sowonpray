@@ -2724,50 +2724,52 @@ export default function App() {
             </section>
 
             {/* 퀵 액션 배너 2종: 7일 소원등 켜기 · 온라인 한줄 사경 (모바일 글자 잘림 없는 정갈한 규격) */}
-            <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
               <button
+                type="button"
                 onClick={() => {
                   playSingingBowlSound()
                   setActiveTab('lantern')
                 }}
-                className="bg-gradient-to-br from-[#2B241D] to-[#1A1612] text-white p-3 sm:p-3.5 rounded-2xl text-left border border-[#C59B27]/50 shadow-md hover:brightness-105 active:scale-95 transition flex items-center gap-2.5 overflow-hidden"
+                className="bg-gradient-to-br from-[#2B241D] to-[#1A1612] text-white p-2.5 sm:p-3 rounded-2xl text-left border border-[#C59B27]/50 shadow-md hover:brightness-105 active:scale-95 transition flex items-center gap-2 overflow-hidden"
               >
                 <div
-                  className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
+                  className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
                     isLanternLit
                       ? 'bg-[#F5D061] text-[#1B1815] border-[#FFF3B8] shadow-[0_0_15px_rgba(245,208,97,0.4)]'
                       : 'bg-[#C59B27]/20 border-[#F5D061]/40 text-[#F5D061]'
                   }`}
                 >
-                  <Flame className={`w-4.5 h-4.5 ${isLanternLit ? 'fill-current flame-flicker' : ''}`} />
+                  <Flame className={`w-4 h-4 ${isLanternLit ? 'fill-current flame-flicker' : ''}`} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <span className="block text-[10px] text-[#F5D061] font-medium truncate">
+                  <span className="block text-[10px] text-[#F5D061] font-semibold tracking-tight whitespace-nowrap leading-none">
                     {isLanternLit
-                      ? `점등 축원중 (D-${lanternDaysRemaining})`
+                      ? `축원점등 (D-${lanternDaysRemaining})`
                       : '대웅전 7일 무료'}
                   </span>
-                  <h3 className="font-serif-kr font-bold text-sm sm:text-base mt-0.5 truncate">
+                  <h3 className="font-serif-kr font-bold text-[13px] sm:text-sm mt-1 tracking-tight whitespace-nowrap leading-tight text-white">
                     {isLanternLit ? '나의 소원등' : '소원등 켜기'}
                   </h3>
                 </div>
               </button>
 
               <button
+                type="button"
                 onClick={() => {
                   playSingingBowlSound()
                   setActiveTab('sutra')
                 }}
-                className="bg-gradient-to-br from-[#F6F1E4] to-[#EAE0C8] text-[#231F1C] p-3 sm:p-3.5 rounded-2xl text-left border border-[#D5C59B] shadow-md hover:brightness-105 active:scale-95 transition flex items-center gap-2.5 overflow-hidden"
+                className="bg-gradient-to-br from-[#F6F1E4] to-[#EAE0C8] text-[#231F1C] p-2.5 sm:p-3 rounded-2xl text-left border border-[#D5C59B] shadow-md hover:brightness-105 active:scale-95 transition flex items-center gap-2 overflow-hidden"
               >
-                <div className="w-9 h-9 rounded-xl bg-[#9A7418]/15 border border-[#9A7418]/30 flex items-center justify-center shrink-0">
-                  <BookOpen className="w-4.5 h-4.5 text-[#8A6510]" />
+                <div className="w-8 h-8 rounded-xl bg-[#9A7418]/15 border border-[#9A7418]/30 flex items-center justify-center shrink-0">
+                  <BookOpen className="w-4 h-4 text-[#8A6510]" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <span className="block text-[10px] text-[#8A6510] font-semibold truncate">
+                  <span className="block text-[10px] text-[#8A6510] font-semibold tracking-tight whitespace-nowrap leading-none">
                     나의 공덕 {currentMeritCount}회
                   </span>
-                  <h3 className="font-serif-kr font-bold text-sm sm:text-base mt-0.5 truncate">
+                  <h3 className="font-serif-kr font-bold text-[13px] sm:text-sm mt-1 tracking-tight whitespace-nowrap leading-tight text-[#231F1C]">
                     한 줄 사경
                   </h3>
                 </div>
