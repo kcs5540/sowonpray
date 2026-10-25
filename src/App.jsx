@@ -1784,6 +1784,7 @@ export default function App() {
   const [selectedSutraIdx, setSelectedSutraIdx] = useState(0)
   const [sutraInput, setSutraInput] = useState('')
   const [sutraCompleted, setSutraCompleted] = useState(false)
+  const [showMeritCertModal, setShowMeritCertModal] = useState(false)
   const [moktakCount, setMoktakCount] = useState(0)
   const [guestMeritBonus, setGuestMeritBonus] = useState(0)
 
@@ -2356,6 +2357,7 @@ export default function App() {
       playSingingBowlSound()
       setSutraCompleted(true)
       addMerit(1)
+      setShowMeritCertModal(true)
       showToast('✨ 한 줄 사경 공덕이 내 계정에 원만히 회향되었습니다. (공덕 +1)')
     }
   }
@@ -2757,6 +2759,28 @@ export default function App() {
                     }`}
                   >
                     <Volume2 className="w-3.5 h-3.5" />
+                  </button>
+                  {/* 말씀 카톡/지인 법공양 공유 버튼 */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const shareText = `📿 [제주 소원사 오늘의 부처님 말씀]\n\n"${currentQuote.verse}"\n- ${currentQuote.source}\n\n뜻풀이: ${currentQuote.commentary}\n\n🙏 매일 아침 함께하는 모바일 법당:\nhttps://sowonpray.vercel.app`
+                      if (navigator.share) {
+                        navigator.share({
+                          title: '제주 소원사 오늘의 부처님 말씀',
+                          text: shareText,
+                          url: 'https://sowonpray.vercel.app',
+                        }).catch(() => {})
+                      } else if (navigator.clipboard) {
+                        navigator.clipboard.writeText(shareText)
+                        showToast('📋 부처님 말씀이 복사되었습니다. 카카오톡으로 지인에게 전해보세요!')
+                      }
+                    }}
+                    title="오늘의 부처님 말씀 지인에게 전하기 (법공양)"
+                    aria-label="말씀 공유하기"
+                    className="p-1.5 rounded-full border border-[#E5D399] bg-[#FAF3DF] text-[#9A7418] hover:bg-[#F3E7C4] hover:text-[#7A5B0B] transition flex items-center justify-center shrink-0 active:scale-95"
+                  >
+                    <Share2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
@@ -3995,6 +4019,49 @@ export default function App() {
                 <span>[{wishCategory}] 온라인 신청 접수하기</span>
               </button>
             </form>
+
+            {/* 제주 소원사 공식 시주 · 불사 동참 계좌 안내 및 원터치 복사 */}
+            <section className="bg-gradient-to-br from-[#1E1A16] to-[#151210] rounded-2xl p-4 sm:p-5 border border-[#C59B27]/50 text-white shadow-md space-y-3">
+              <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#F5D061] animate-pulse shrink-0" />
+                  <span className="text-xs font-black text-[#F5D061] tracking-wide">
+                    제주 소원사 공식 시주 · 불사 동참 계좌
+                  </span>
+                </div>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#C59B27]/25 text-[#FCE18B] border border-[#F5D061]/30 font-bold whitespace-nowrap shrink-0">
+                  종무소 공식
+                </span>
+              </div>
+              <p className="text-[11.5px] text-[#D6CEC2] leading-relaxed break-keep">
+                불사 및 상시기도 신청 후 아래 사찰 공식 계좌로 시주금을 입금해 주시면, 입금 확인 즉시 종무소 대웅전 축원 대장에 등재되어 매일 오전 10시 사시예불 축원이 정성껏 봉행됩니다.
+              </p>
+              <div className="p-3 rounded-xl bg-[#28221C] border border-[#C59B27]/40 flex flex-wrap items-center justify-between gap-2.5">
+                <div className="min-w-0">
+                  <div className="text-[11px] text-[#A89E90] font-semibold">
+                    농협은행 (예금주: 소원사)
+                  </div>
+                  <div className="text-sm sm:text-base font-extrabold text-[#F5D061] tracking-wider mt-0.5 select-all">
+                    301-0024-41
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText('301-0024-41')
+                    showToast('📋 소원사 농협 계좌번호(301-0024-41)가 복사되었습니다!')
+                  }}
+                  className="px-3 py-2 rounded-lg bg-[#C59B27] hover:bg-[#D4AF37] text-[#1B1815] font-extrabold text-xs flex items-center gap-1.5 shadow active:scale-95 transition shrink-0"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>계좌번호 복사</span>
+                </button>
+              </div>
+              <div className="text-[10.5px] text-[#A89E90] flex items-center gap-1.5 pt-0.5">
+                <HelpCircle className="w-3.5 h-3.5 text-[#C59B27] shrink-0" />
+                <span>입금 시 신청자 성함(또는 법명)으로 입금해 주시면 종무소 확인이 가장 빠릅니다.</span>
+              </div>
+            </section>
           </main>
         )}
 
@@ -4013,10 +4080,32 @@ export default function App() {
                     <span className="text-[#F5D061] block sm:inline">대웅전 부처님 전에 </span>
                     <span className="block sm:inline">소원등이 켜져 있습니다</span>
                   </h2>
-                  <p className="text-xs text-[#E8DFD1] max-w-xs mx-auto leading-relaxed mb-4 break-keep">
+                  <p className="text-xs text-[#E8DFD1] max-w-xs mx-auto leading-relaxed mb-3 break-keep">
                     스님께서 매일 오전 10시 사시예불마다{' '}
                     <strong className="text-[#F5D061]">{lanternData?.believer_name}</strong> 불자님의 소원을 정성껏 축원 올리고 있습니다.
                   </p>
+                  <div className="flex justify-center mb-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const shareMsg = `🪔 [제주 소원사 대웅전]\n${lanternData?.believer_name || '불자'}님의 소원등이 부처님 전에 밝혀져 매일 오전 10시 사시예불 축원을 올리고 있습니다.\n\n"부처님 가피로 간절한 소원이 원만 성취되기를 발원합니다."\n\n함께 소원등 켜기:\nhttps://sowonpray.vercel.app`
+                        if (navigator.share) {
+                          navigator.share({
+                            title: '제주 소원사 대웅전 소원등',
+                            text: shareMsg,
+                            url: 'https://sowonpray.vercel.app',
+                          }).catch(() => {})
+                        } else if (navigator.clipboard) {
+                          navigator.clipboard.writeText(shareMsg)
+                          showToast('📋 소원등 축원 메시지가 복사되었습니다! 카카오톡 가족방에 전해보세요.')
+                        }
+                      }}
+                      className="px-3.5 py-1.5 rounded-full bg-[#F5D061]/15 border border-[#F5D061]/50 text-[#F5D061] text-xs font-bold flex items-center gap-1.5 hover:bg-[#F5D061]/25 transition active:scale-95"
+                    >
+                      <Share2 className="w-3.5 h-3.5 text-[#F5D061]" />
+                      <span>가족·지인에게 내 소원등 알리기</span>
+                    </button>
+                  </div>
                 </>
               ) : (
                 <>
@@ -4784,7 +4873,7 @@ export default function App() {
                   </div>
 
                   {sutraCompleted && (
-                    <div className="p-4 rounded-xl bg-gradient-to-r from-[#231F1C] to-[#2E2822] text-white flex items-center justify-between gap-2 border border-[#F5D061]">
+                    <div className="p-3.5 sm:p-4 rounded-xl bg-gradient-to-r from-[#231F1C] to-[#2E2822] text-white flex flex-col gap-2.5 border border-[#F5D061] shadow-lg animate-fadeIn">
                       <div className="flex items-center gap-2.5 min-w-0">
                         <Sparkles className="w-5 h-5 text-[#F5D061] shrink-0" />
                         <div className="min-w-0">
@@ -4792,29 +4881,39 @@ export default function App() {
                             사경 1독 회향 완료! (+1 공덕 적립)
                           </div>
                           <div className="text-[11px] text-[#D6CEC2] break-keep">
-                            이 공덕이 불자님과 가족의 평안으로 회향되기를 발원합니다.
+                            이 공덕이 불자님과 온 가족의 평안으로 원만히 회향되기를 발원합니다.
                           </div>
                         </div>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const nextIdx = (selectedSutraIdx + 1) % SUTRA_LIST.length
-                          setSelectedSutraIdx(nextIdx)
-                          setSutraInput('')
-                          setSutraCompleted(false)
-                          if (autoVoiceEnabled || speakingId === 'sutra-copy') {
-                            const nextItem = SUTRA_LIST[nextIdx]
-                            startSpeech(
-                              'sutra-copy',
-                              `${nextItem.title}. ${nextItem.text}. 뜻풀이, ${nextItem.meaning}`
-                            )
-                          }
-                        }}
-                        className="px-3 py-2 rounded-lg bg-[#F5D061] text-[#1B1815] text-[11px] font-extrabold whitespace-nowrap shrink-0"
-                      >
-                        다음 구절 ▶
-                      </button>
+                      <div className="flex items-center gap-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => setShowMeritCertModal(true)}
+                          className="flex-1 py-2 px-2.5 rounded-lg bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] text-xs font-black flex items-center justify-center gap-1.5 shadow active:scale-95 transition"
+                        >
+                          <Award className="w-4 h-4 text-[#1B1815] shrink-0" />
+                          <span>📜 사경 회향 공덕장 보기</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const nextIdx = (selectedSutraIdx + 1) % SUTRA_LIST.length
+                            setSelectedSutraIdx(nextIdx)
+                            setSutraInput('')
+                            setSutraCompleted(false)
+                            if (autoVoiceEnabled || speakingId === 'sutra-copy') {
+                              const nextItem = SUTRA_LIST[nextIdx]
+                              startSpeech(
+                                'sutra-copy',
+                                `${nextItem.title}. ${nextItem.text}. 뜻풀이, ${nextItem.meaning}`
+                              )
+                            }
+                          }}
+                          className="px-3.5 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-[#F5D061] text-xs font-bold whitespace-nowrap border border-[#F5D061]/30 transition active:scale-95 shrink-0"
+                        >
+                          다음 구절 ▶
+                        </button>
+                      </div>
                     </div>
                   )}
                 </section>
@@ -6864,17 +6963,151 @@ export default function App() {
                 대웅전 7일 소원등 점등 완료
               </h3>
               <p className="text-xs text-[#E2DAD0] leading-relaxed break-keep">
-                <strong>{wishName.trim()} 불자님</strong>의 간절한 발원이 <strong>제주 소원사 대웅전</strong>에 봉안되었습니다. 앞으로 <strong>7일 동안 매일 오전 사시예불</strong>마다 스님께서 부처님 전에 정성껏 축원 올립니다.
+                <strong>{wishName.trim()} 불자님</strong>의 간절한 발원이 <strong>제주 소원사 대웅전</strong>에 봉안되었습니다. 앞으로 <strong>7일 동안 매일 오전 10시 사시예불</strong>마다 스님께서 부처님 전에 정성껏 축원 올립니다.
               </p>
               <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-[11px] text-[#F5D061]">
                 🙏 도량에 오시기 전날 미리 연락 주시면 따뜻한 차와 공양(식사)을 대접해 드립니다. (010-5557-0267)
               </div>
+              {/* 가족·지인에게 소원등 알리기 (카카오톡 공유) */}
+              <button
+                type="button"
+                onClick={() => {
+                  const shareTarget = wishTarget && wishTarget !== '본인' ? ` (${wishTarget})` : ''
+                  const shareMsg = `🪔 [제주 소원사 대웅전]\n${wishName.trim()}${shareTarget} 불자님의 간절한 소원등이 부처님 전에 밝혀졌습니다.\n\n"앞으로 7일 동안 매일 오전 10시 사시예불마다 스님께서 정성껏 축원 올립니다."\n\n🙏 함께 소원등 켜고 축원 받기:\nhttps://sowonpray.vercel.app`
+                  if (navigator.share) {
+                    navigator.share({
+                      title: '제주 소원사 7일 소원등 점등',
+                      text: shareMsg,
+                      url: 'https://sowonpray.vercel.app',
+                    }).catch(() => {})
+                  } else if (navigator.clipboard) {
+                    navigator.clipboard.writeText(shareMsg)
+                    showToast('📋 소원등 축원 메시지가 복사되었습니다! 카카오톡 가족방에 붙여넣어 보세요.')
+                  }
+                }}
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow flex items-center justify-center gap-1.5 active:scale-95 transition"
+              >
+                <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
+                <span>가족·지인에게 내 소원등 알리기 (카톡 공유)</span>
+              </button>
               <button
                 onClick={() => setShowSuccessModal(false)}
-                className="w-full py-3 rounded-xl bg-[#F5D061] text-[#1B1815] font-bold text-xs"
+                className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs transition"
               >
                 합장하며 확인 (나무아미타불)
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* 사경 회향 공덕장 (황금 인증서) 모달 */}
+        {showMeritCertModal && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3.5 sm:p-4 animate-fadeIn">
+            <div className="w-full max-w-[390px] bg-gradient-to-b from-[#251F19] via-[#1B1713] to-[#120F0D] text-white rounded-3xl p-5 sm:p-6 border-2 border-[#D4AF37] shadow-[0_0_35px_rgba(212,175,55,0.35)] relative overflow-hidden">
+              {/* 상단 장식 빛무리 */}
+              <div className="absolute -top-12 -left-12 w-36 h-36 bg-[#F5D061]/15 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute -bottom-12 -right-12 w-36 h-36 bg-[#D4AF37]/15 rounded-full blur-2xl pointer-events-none" />
+
+              {/* 닫기 버튼 */}
+              <button
+                type="button"
+                onClick={() => setShowMeritCertModal(false)}
+                className="absolute top-3.5 right-3.5 w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-[#E5DCD0] flex items-center justify-center transition active:scale-90 z-10"
+                aria-label="닫기"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              {/* 공덕장 내부 본문 카드 (전통 한지 & 황금 테두리) */}
+              <div className="p-4 sm:p-4.5 rounded-2xl bg-[#FAF6EE] text-[#241F1A] border-2 border-[#C59B27] relative shadow-inner">
+                {/* 모서리 전통 문양 포인트 */}
+                <div className="text-[10px] text-[#A67C1E] font-serif-kr text-center tracking-widest font-bold">
+                  卍 제주 소원사 모바일 법당 卍
+                </div>
+
+                <div className="w-11 h-11 rounded-full bg-[#FAF0D5] border-2 border-[#C59B27] mx-auto flex items-center justify-center mt-2.5 shadow-sm">
+                  <Award className="w-6 h-6 text-[#A67C1E]" />
+                </div>
+
+                <h3 className="font-serif-kr text-xl sm:text-2xl font-black text-[#6B4E08] text-center mt-2 tracking-tight">
+                  사경 회향 공덕장
+                </h3>
+                <div className="text-[11px] text-[#8C6D1F] font-serif-kr text-center font-bold tracking-widest -mt-0.5">
+                  寫 經 回 向 功 德 狀
+                </div>
+
+                <div className="my-3 border-t border-[#D5C59B] border-dashed" />
+
+                {/* 수여자 정보 */}
+                <div className="space-y-1.5 text-xs text-[#3A3228] font-serif-kr">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#8C6D1F] font-bold">정진 불자</span>
+                    <span className="font-black text-[#1C1814] text-[13px]">
+                      {currentUser?.name || lanternData?.believer_name || '소원사 정진 불자'} 합장
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#8C6D1F] font-bold">회향 경전</span>
+                    <span className="font-bold text-[#6B4E08]">
+                      {currentSutra?.title || '반야심경'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* 사경 구절 본문 박스 */}
+                <div className="mt-3 p-2.5 rounded-xl bg-[#F0E8D5] border border-[#D5C59B] text-center">
+                  <p className="font-serif-kr text-xs sm:text-[12.5px] font-black text-[#2A231B] leading-relaxed break-keep">
+                    “{currentSutra?.text}”
+                  </p>
+                  {currentSutra?.meaning && (
+                    <p className="text-[10.5px] text-[#6B5E4F] mt-1 leading-snug break-keep">
+                      ({currentSutra.meaning})
+                    </p>
+                  )}
+                </div>
+
+                {/* 축원문 */}
+                <p className="text-[11px] text-[#4A4035] leading-relaxed break-keep font-serif-kr text-center mt-3">
+                  위 불자님께서는 부처님의 거룩한 진리의 말씀을 정성껏 마음에 새기며 사경 1독을 원만히 회향하셨기에 이 공덕장을 드리며, 온 가족의 건강과 만복·소원성취를 두 손 모아 축원합니다.
+                </p>
+
+                <div className="mt-3 pt-2 border-t border-[#D5C59B]/70 flex items-center justify-between text-[10px] text-[#786A59] font-serif-kr">
+                  <span>{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                  <span className="font-black text-[#5C4307]">제주 소원사 주지 합장 📿</span>
+                </div>
+              </div>
+
+              {/* 하단 공유 & 닫기 버튼 */}
+              <div className="mt-3.5 space-y-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const believer = currentUser?.name || lanternData?.believer_name || '소원사 불자'
+                    const shareMsg = `📜 [제주 소원사 사경 회향 공덕장]\n\n${believer} 불자님께서 부처님의 거룩한 말씀 "${currentSutra?.title}" 사경 1독을 지극한 정성으로 원만히 회향하셨습니다.\n\n"${currentSutra?.text}"\n\n"이 거룩한 사경 공덕이 온 가족과 지인 모두의 건강과 소원성취로 회향되기를 발원합니다."\n\n🙏 함께 사경하고 마음의 평안 찾기:\nhttps://sowonpray.vercel.app`
+                    if (navigator.share) {
+                      navigator.share({
+                        title: '제주 소원사 사경 회향 공덕장',
+                        text: shareMsg,
+                        url: 'https://sowonpray.vercel.app',
+                      }).catch(() => {})
+                    } else if (navigator.clipboard) {
+                      navigator.clipboard.writeText(shareMsg)
+                      showToast('📋 사경 회향 공덕장 메시지가 복사되었습니다! 카카오톡 가족·지인방에 전해보세요.')
+                    }
+                  }}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow flex items-center justify-center gap-1.5 active:scale-95 transition"
+                >
+                  <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
+                  <span>가족·지인에게 사경 공덕 나누기 (카톡 공유)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowMeritCertModal(false)}
+                  className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs transition active:scale-95"
+                >
+                  합장하며 닫기 (나무아미타불)
+                </button>
+              </div>
             </div>
           </div>
         )}
