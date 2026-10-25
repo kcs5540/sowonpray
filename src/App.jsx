@@ -2759,24 +2759,31 @@ export default function App() {
                   playSingingBowlSound()
                   setActiveTab('lantern')
                 }}
-                className="bg-gradient-to-br from-[#2B241D] to-[#1A1612] text-white p-2.5 sm:p-3 rounded-2xl text-left border border-[#C59B27]/50 shadow-md hover:brightness-105 active:scale-95 transition flex items-center gap-2 overflow-hidden"
+                className={`p-2.5 sm:p-3 rounded-2xl text-left border transition-all duration-300 flex items-center gap-2 overflow-hidden shadow-md hover:brightness-105 active:scale-95 relative ${
+                  isLanternLit
+                    ? 'bg-gradient-to-br from-[#FFF8E7] via-[#FDF0D0] to-[#FCE6B3] border-[#E8C568] shadow-[0_4px_16px_rgba(212,175,55,0.22)]'
+                    : 'bg-gradient-to-br from-[#FFF9EE] via-[#FDF1D6] to-[#F8E3B6] border-[#E5CA85] shadow-sm'
+                }`}
               >
+                {/* 은은한 등불 광명 후광 */}
+                <div className="absolute -top-6 -right-6 w-16 h-16 bg-[#F5D061]/35 rounded-full blur-xl pointer-events-none" />
+
                 <div
-                  className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border transition-all duration-300 relative z-10 ${
                     isLanternLit
-                      ? 'bg-[#F5D061] text-[#1B1815] border-[#FFF3B8] shadow-[0_0_15px_rgba(245,208,97,0.4)]'
-                      : 'bg-[#C59B27]/20 border-[#F5D061]/40 text-[#F5D061]'
+                      ? 'bg-gradient-to-br from-[#E25C2B] via-[#E98227] to-[#F4B41A] text-white border-[#FFEAA7] shadow-[0_0_14px_rgba(233,130,39,0.55)] scale-105'
+                      : 'bg-gradient-to-br from-[#C98B22] to-[#996510] text-[#FFF4D0] border-[#FFD978]/60 shadow-sm'
                   }`}
                 >
-                  <Flame className={`w-4 h-4 ${isLanternLit ? 'fill-current flame-flicker' : ''}`} />
+                  <Flame className={`w-4 h-4 ${isLanternLit ? 'fill-current flame-flicker text-[#FFF7CE]' : 'text-white'}`} />
                 </div>
-                <div className="min-w-0 flex-1">
-                  <span className="block text-[10px] text-[#F5D061] font-semibold tracking-tight whitespace-nowrap leading-none">
+                <div className="min-w-0 flex-1 relative z-10">
+                  <span className="block text-[10px] font-extrabold tracking-tight whitespace-nowrap leading-none text-[#A86E0B]">
                     {isLanternLit
-                      ? `축원점등 (D-${lanternDaysRemaining})`
+                      ? `✨ 축원점등 (D-${lanternDaysRemaining})`
                       : '대웅전 7일 무료'}
                   </span>
-                  <h3 className="font-serif-kr font-bold text-[13px] sm:text-sm mt-1 tracking-tight whitespace-nowrap leading-tight text-white">
+                  <h3 className="font-serif-kr font-extrabold text-[13.5px] sm:text-[14.5px] mt-1 tracking-tight whitespace-nowrap leading-tight text-[#2B1F11]">
                     {isLanternLit ? '나의 소원등' : '소원등 켜기'}
                   </h3>
                 </div>
