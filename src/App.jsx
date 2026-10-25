@@ -2100,8 +2100,9 @@ export default function App() {
     } catch (err) {}
     setLanternData(newLanternInfo)
 
-    const assignedAgentCode = currentUser?.parent_code || referralCode || '52148821'
     const writerCode = currentUser?.code || extractPhone8Code(wishPhone)
+    const matchedMember = members.find((m) => m.code === writerCode)
+    const assignedAgentCode = currentUser?.parent_code || matchedMember?.parent_code || referralCode || '52148821'
 
     const newPrayer = {
       id: 'p-' + Date.now(),
@@ -2199,8 +2200,9 @@ export default function App() {
       showToast('방문자 성함과 연락처, 방문 예정일을 확인해 주세요.')
       return
     }
-    const assignedAgentCode = currentUser?.parent_code || referralCode || '52148821'
     const writerCode = currentUser?.code || extractPhone8Code(wishPhone)
+    const matchedMember = members.find((m) => m.code === writerCode)
+    const assignedAgentCode = currentUser?.parent_code || matchedMember?.parent_code || referralCode || '52148821'
 
     const newVisit = {
       id: 'v-' + Date.now(),
