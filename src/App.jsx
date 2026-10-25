@@ -5607,18 +5607,13 @@ export default function App() {
 
                 {/* 가족·도반과 함께하는 복(福) 전하는 인연 나눔 주소 카드 */}
                 <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="min-w-0">
-                      <span className="block text-[11px] font-bold text-[#9A7418]">
-                        卍 부처님과의 소중한 불연(佛緣)
-                      </span>
-                      <h3 className="font-serif-kr text-base font-bold text-[#231F1C] mt-0.5">
-                        가족 · 도반에게 복(福)을 전하는 주소
-                      </h3>
-                    </div>
-                    <span className="text-xs px-2.5 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] font-bold border border-[#E5D399] whitespace-nowrap shrink-0">
-                      인연코드: {currentUser.code}
+                  <div>
+                    <span className="block text-[11px] font-bold text-[#9A7418]">
+                      卍 부처님과의 소중한 불연(佛緣)
                     </span>
+                    <h3 className="font-serif-kr text-base font-bold text-[#231F1C] mt-0.5 whitespace-nowrap">
+                      가족 · 도반에게 복(福)을 전하는 주소
+                    </h3>
                   </div>
                   <p className="text-xs text-[#575049] leading-relaxed break-keep">
                     가족, 친지, 도반에게 따뜻한 소원등과 축원의 공덕을 선물해 보세요. 이 주소로 모바일 법당을 찾아오신 분들은 부처님 전에 함께 복을 짓는{' '}
@@ -5651,6 +5646,11 @@ export default function App() {
                     >
                       <QrCode className="w-4 h-4 shrink-0" />
                     </button>
+                  </div>
+
+                  <div className="flex items-center justify-between text-[11px] text-[#8C8071] pt-0.5">
+                    <span>※ 링크 접속 시 자동 연동</span>
+                    <span className="font-bold text-[#8A6510]">내 인연코드: {currentUser.code}</span>
                   </div>
 
                   {showQrCode === currentUser.code && (
