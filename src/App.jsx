@@ -4703,21 +4703,23 @@ export default function App() {
                     />
                   </div>
 
-                  {/* 터치 사경 / 원클릭 완독 / 다시 쓰기 버튼 */}
-                  <div className="grid grid-cols-2 gap-2">
+                  {/* 터치 사경 / 원클릭 완독 / 다시 쓰기 버튼 (모바일 글자 넘침 방지 칼정렬) */}
+                  <div className="grid grid-cols-2 gap-2 w-full">
                     <button
                       type="button"
                       onClick={handleTouchStepSutra}
-                      className="py-2.5 px-3 rounded-xl bg-[#231F1C] text-[#F5D061] border border-[#C59B27] text-xs font-extrabold hover:bg-[#302A24] transition whitespace-nowrap"
+                      className="py-2.5 px-1.5 sm:px-3 rounded-xl bg-[#231F1C] text-[#F5D061] border border-[#C59B27] text-[11.5px] sm:text-xs font-extrabold hover:bg-[#302A24] transition flex items-center justify-center gap-1 text-center truncate active:scale-95"
                     >
-                      🪷 목탁 치며 한마디씩 사경
+                      <span>🪷</span>
+                      <span className="truncate">한마디씩 사경</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => handleSutraChange(currentSutra.text)}
-                      className="py-2.5 px-3 rounded-xl bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] text-xs font-extrabold hover:bg-[#F3E7C6] transition whitespace-nowrap"
+                      className="py-2.5 px-1.5 sm:px-3 rounded-xl bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] text-[11.5px] sm:text-xs font-extrabold hover:bg-[#F3E7C6] transition flex items-center justify-center gap-1 text-center truncate active:scale-95"
                     >
-                      ✨ 한 번에 사경 완독
+                      <span>✨</span>
+                      <span className="truncate">한 번에 완독</span>
                     </button>
                   </div>
 
