@@ -5532,15 +5532,15 @@ export default function App() {
                 <section className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-5 border border-[#C59B27]/40 shadow-md space-y-3">
                   {/* 상단 1행: 직책 배지(좌) + '전산' 소형 버튼 + 로그아웃 버튼(우측 상단 배치) */}
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 flex-wrap min-w-0">
+                    <div className="flex items-center gap-1.5 shrink-0 flex-nowrap">
                       <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/40 font-bold whitespace-nowrap shrink-0">
                         {currentUser.role === 'master' || currentUser.role === 'agent' || currentUser.role === 'committee_head'
-                          ? '소원사 포교위원장'
+                          ? '포교위원장'
                           : currentUser.role === 'committee_member'
-                          ? '소원사 포교위원'
+                          ? '포교위원'
                           : currentUser.role === 'temple_admin'
-                          ? '소원사 창건주 · 신도회장 (사찰 최고대표)'
-                          : '제주 소원사 신도'}
+                          ? '창건주 · 신도회장'
+                          : '소원사 신도'}
                       </span>
 
                       {/* 직책 배지 바로 옆에 아담하고 고급스럽게 배치된 '전산' 모달 버튼 */}
