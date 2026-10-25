@@ -3938,27 +3938,68 @@ export default function App() {
                   }`}
                   title={isLanternLit ? '7일 정진 축원 진행중' : '발원문 접수하고 7일 소원등 밝히기'}
                 >
-                  <Flame
-                    className={`w-12 h-12 transition-transform duration-500 ${
-                      isLanternLit
-                        ? 'text-[#1E1812] fill-[#FFF5C0] flame-flicker scale-110'
-                        : isLanternExpired
-                        ? 'text-[#A8883B] opacity-70'
-                        : 'text-[#7A6B59]'
-                    }`}
-                  />
-                  {!isLanternLit && (
-                    <span
-                      className={`mt-1.5 font-serif-kr font-bold text-xs ${
-                        isLanternExpired
-                          ? 'text-[#D4AF37]'
-                          : 'text-[#C2B8AB]'
-                      }`}
-                    >
-                      {isLanternExpired
-                        ? '7일 회향 · 다시 밝히기'
-                        : '터치하여 7일 점등하기'}
-                    </span>
+                  {isLanternLit ? (
+                    <div className="relative flex items-center justify-center flame-flicker py-1">
+                      {/* 외곽 앰버 골드 따뜻한 광배 후광 */}
+                      <div className="absolute w-24 h-24 bg-gradient-to-t from-[#FF7A00]/40 via-[#FFB703]/35 to-transparent rounded-full blur-xl pointer-events-none -translate-y-2" />
+                      
+                      {/* 진짜 사찰 촛불처럼 생동감 넘치는 입체 불꽃 SVG (외곽 주황 불꽃 + 내부 백금 고열 심지 불꽃) */}
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="w-20 h-20 relative z-10 transition-transform duration-500"
+                        style={{ filter: 'drop-shadow(0 0 18px rgba(255, 200, 60, 0.95)) drop-shadow(0 -6px 20px rgba(255, 90, 10, 0.8))' }}
+                      >
+                        <defs>
+                          <radialGradient id="outerFlameGrad" cx="50%" cy="75%" r="65%">
+                            <stop offset="0%" stopColor="#FFFFFF" />
+                            <stop offset="25%" stopColor="#FFF275" />
+                            <stop offset="60%" stopColor="#FF8500" />
+                            <stop offset="100%" stopColor="#D9381E" />
+                          </radialGradient>
+                          <radialGradient id="innerCoreGrad" cx="50%" cy="80%" r="50%">
+                            <stop offset="0%" stopColor="#FFFFFF" />
+                            <stop offset="45%" stopColor="#FFFBE6" />
+                            <stop offset="85%" stopColor="#FFDE59" />
+                            <stop offset="100%" stopColor="#FFAA00" />
+                          </radialGradient>
+                        </defs>
+                        {/* 1. 외곽 주황-황금 불꽃 */}
+                        <path
+                          d="M8.5 14.5A3.5 3.5 0 0 0 12 18a3.5 3.5 0 0 0 3.5-3.5c0-2-1.5-3.5-2-4.5-.5 1-1.5 1.5-2 1.5s-1.5-1-1.5-2.5c0-.8.4-1.6 1-2.2C9.5 8 8.5 10 8.5 11.5c0 .3 0 .7.1 1-.7.4-1.1 1.2-1.1 2z"
+                          fill="url(#outerFlameGrad)"
+                          stroke="#FFC043"
+                          strokeWidth="0.3"
+                          transform="scale(1.2) translate(-2, -2)"
+                        />
+                        {/* 2. 내부 촛불 백색 고열 심지 코어 */}
+                        <path
+                          d="M10.2 14.8c.2 1.5 1 2.2 1.8 2.2s1.6-.7 1.8-2.2c0-1.1-.9-2.1-1.3-2.7-.4.6-1.1 1.6-1.3 2.7z"
+                          fill="url(#innerCoreGrad)"
+                          transform="scale(1.2) translate(-2, -2)"
+                        />
+                      </svg>
+                    </div>
+                  ) : (
+                    <>
+                      <Flame
+                        className={`w-14 h-14 transition-transform duration-500 ${
+                          isLanternExpired
+                            ? 'text-[#A8883B] opacity-70'
+                            : 'text-[#7A6B59]'
+                        }`}
+                      />
+                      <span
+                        className={`mt-1.5 font-serif-kr font-bold text-xs ${
+                          isLanternExpired
+                            ? 'text-[#D4AF37]'
+                            : 'text-[#C2B8AB]'
+                        }`}
+                      >
+                        {isLanternExpired
+                          ? '7일 회향 · 다시 밝히기'
+                          : '터치하여 7일 점등하기'}
+                      </span>
+                    </>
                   )}
                 </button>
 
