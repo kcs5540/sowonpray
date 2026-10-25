@@ -3897,15 +3897,28 @@ export default function App() {
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
                 <span>제주 소원사 대웅전 실시간 연동</span>
               </div>
-              <h2 className="font-serif-kr text-xl sm:text-2xl font-bold mb-2 leading-snug">
-                <span className="block sm:inline">소원등 켜고, </span>
-                <span className="block sm:inline">간절한 소원을 올려보세요</span>
-              </h2>
-              <p className="text-xs text-[#D6CEC2] max-w-xs mx-auto leading-relaxed mb-4 break-keep">
-                {isLanternLit
-                  ? `제주 소원사 스님께서 매일 오전 사시예불마다 ${lanternData?.believer_name} 불자님의 소원을 축원하고 계십니다.`
-                  : '정성으로 발원문을 올리시면 대웅전에 소원등이 밝혀지고 7일간 매일 아침 사시예불에서 축원해 드립니다.'}
-              </p>
+              {isLanternLit ? (
+                <>
+                  <h2 className="font-serif-kr text-xl sm:text-2xl font-bold mb-2 leading-snug">
+                    <span className="text-[#F5D061] block sm:inline">대웅전 부처님 전에 </span>
+                    <span className="block sm:inline">소원등이 켜져 있습니다</span>
+                  </h2>
+                  <p className="text-xs text-[#E8DFD1] max-w-xs mx-auto leading-relaxed mb-4 break-keep">
+                    스님께서 매일 오전 10시 사시예불마다{' '}
+                    <strong className="text-[#F5D061]">{lanternData?.believer_name}</strong> 불자님의 소원을 정성껏 축원 올리고 있습니다.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h2 className="font-serif-kr text-xl sm:text-2xl font-bold mb-2 leading-snug">
+                    <span className="block sm:inline">소원등 켜고, </span>
+                    <span className="block sm:inline">간절한 소원을 올려보세요</span>
+                  </h2>
+                  <p className="text-xs text-[#D6CEC2] max-w-xs mx-auto leading-relaxed mb-4 break-keep">
+                    정성으로 발원문을 올리시면 대웅전에 소원등이 밝혀지고 7일간 매일 오전 10시 사시예불에서 축원해 드립니다.
+                  </p>
+                </>
+              )}
 
               {/* 연등 그래픽 + 하단 제주 소원사 축원 명패 (생동감 넘치는 둥실둥실 부유 모션) */}
               <div
