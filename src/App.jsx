@@ -3146,7 +3146,7 @@ export default function App() {
                           onClick={() =>
                             setVisitHeadcount((prev) => Math.max(1, Number(prev || 1) - 1))
                           }
-                          className="w-7 h-7 rounded-md bg-[#181411] border border-[#C59B27]/40 text-[#F5D061] font-extrabold text-sm flex items-center justify-center shrink-0 active:scale-95 transition"
+                          className="w-8 h-8 rounded-md bg-[#181411] border border-[#C59B27]/40 text-[#F5D061] font-extrabold text-base flex items-center justify-center shrink-0 active:scale-95 transition"
                           aria-label="방문 인원 1명 감소"
                         >
                           -
@@ -3174,11 +3174,8 @@ export default function App() {
                             }}
                             className="w-10 text-right bg-transparent text-[#F5D061] text-sm font-extrabold focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           />
-                          <span className="text-xs text-white font-bold whitespace-nowrap">
-                            명 방문{' '}
-                            <span className="text-[11px] text-[#F5D061] font-semibold">
-                              (공양 {visitHeadcount || 1}인분 준비)
-                            </span>
+                          <span className="text-xs text-white font-extrabold whitespace-nowrap pr-1">
+                            명
                           </span>
                         </div>
                         <button
@@ -3186,7 +3183,7 @@ export default function App() {
                           onClick={() =>
                             setVisitHeadcount((prev) => Math.min(200, Number(prev || 1) + 1))
                           }
-                          className="w-7 h-7 rounded-md bg-[#181411] border border-[#C59B27]/40 text-[#F5D061] font-extrabold text-sm flex items-center justify-center shrink-0 active:scale-95 transition"
+                          className="w-8 h-8 rounded-md bg-[#181411] border border-[#C59B27]/40 text-[#F5D061] font-extrabold text-base flex items-center justify-center shrink-0 active:scale-95 transition"
                           aria-label="방문 인원 1명 증가"
                         >
                           +
