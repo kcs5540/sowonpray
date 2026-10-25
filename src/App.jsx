@@ -5882,65 +5882,6 @@ export default function App() {
                   </button>
                 </form>
 
-                {/* 4. 포교위원 및 총괄 관리자 전용 전산 바로가기 (내정보 창 하단 배치) */}
-                {isAgentOrAbove && (
-                  <section className="bg-gradient-to-br from-[#231F1C] to-[#151210] rounded-2xl p-5 border border-[#C59B27]/40 shadow-md space-y-3.5 text-white">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <Users className="w-4 h-4 text-[#F5D061]" />
-                        <h3 className="font-serif-kr font-bold text-sm text-[#F5D061]">
-                          소원사 포교위원회 파트너 전산
-                        </h3>
-                      </div>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#C59B27]/30 text-[#F5D061] border border-[#C59B27]/50 font-bold">
-                        {currentUser?.role === 'committee_member' ? '포교위원 전용' : '포교위원장 전용'}
-                      </span>
-                    </div>
-
-                    <p className="text-xs text-[#D8CFBF] leading-relaxed">
-                      나의 인연 신도 조직도, 위패 봉안 현황, 사찰 방문 차담 예약 및 불사 포교비를 확인하고 관리합니다.
-                    </p>
-
-                    <div className="pt-1 flex flex-col gap-2.5">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setAdminModalTab('common')
-                          setShowUnifiedAdminModal(true)
-                        }}
-                        className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#9E7A18] text-[#15120F] font-bold text-xs shadow-md hover:brightness-110 transition flex items-center justify-between"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4" />
-                          <span>🌿 1. 포교사 공통 전산 모달 열기</span>
-                        </div>
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-
-                      {isMasterOrTempleAdmin && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (isMaster) setAdminModalTab('master')
-                            else setAdminModalTab('temple')
-                            setShowUnifiedAdminModal(true)
-                          }}
-                          className="w-full py-3.5 px-4 rounded-xl bg-[#2A231C] border border-[#F5D061]/50 text-[#F5D061] font-bold text-xs shadow hover:bg-[#382E24] transition flex items-center justify-between"
-                        >
-                          <div className="flex items-center gap-2">
-                            <TrendingUp className="w-4 h-4 text-[#F5D061]" />
-                            <span>
-                              {isMaster
-                                ? '👑 4. 최고관제(나만) 총괄전산 모달 열기'
-                                : '🏛️ 3. 소원사 사찰본부 관제 모달 열기'}
-                            </span>
-                          </div>
-                          <ChevronRight className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  </section>
-                )}
               </>
             )}
           </main>
