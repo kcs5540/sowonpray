@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="1200" height="400" fill="none">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1200" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#241E18"/>
+      <stop offset="50%" stop-color="#1B1713"/>
+      <stop offset="100%" stop-color="#130F0C"/>
+    </linearGradient>
+    <linearGradient id="lotusGold" x1="0" y1="0" x2="300" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF3B8"/>
+      <stop offset="25%" stop-color="#F5D061"/>
+      <stop offset="70%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#9A7418"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#F5D061" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="400" rx="32" fill="url(#bgGrad)"/>
+  <rect x="2" y="2" width="1196" height="396" rx="30" stroke="#C59B27" stroke-width="2.5" opacity="0.45"/>
+
+  <!-- Golden Lotus Icon (left) -->
+  <g transform="translate(100, 60) scale(7)" filter="url(#glow)">
+    <path d="M20 4C20 4 14.5 14 14.5 21C14.5 24 16.9 26.5 20 26.5C23.1 26.5 25.5 24 25.5 21C25.5 14 20 4 20 4Z" fill="url(#lotusGold)" opacity="0.98"/>
+    <path d="M13.5 11.5C13.5 11.5 6.8 18 6.8 23C6.8 26.5 9.8 28.5 13 28.5C16.2 28.5 17.8 26 17.8 24.2C17.8 18.5 13.5 11.5 13.5 11.5Z" fill="url(#lotusGold)" opacity="0.86"/>
+    <path d="M26.5 11.5C26.5 11.5 33.2 18 33.2 23C33.2 26.5 30.2 28.5 27 28.5C23.8 28.5 22.2 26 22.2 24.2C22.2 18.5 26.5 11.5 26.5 11.5Z" fill="url(#lotusGold)" opacity="0.86"/>
+    <path d="M6.2 22C6.2 22 2 25.8 2 29C2 31.5 4.2 33.5 7.8 33.5C11.8 33.5 14.8 30.2 14.8 28.2C14.8 25 6.2 22 6.2 22Z" fill="url(#lotusGold)" opacity="0.70"/>
+    <path d="M33.8 22C33.8 22 38 25.8 38 29C38 31.5 35.8 33.5 32.2 33.5C28.2 33.5 25.2 30.2 25.2 28.2C25.2 25 33.8 22 33.8 22Z" fill="url(#lotusGold)" opacity="0.70"/>
+    <path d="M11 32C15 35.2 25 35.2 29 32C27 35.2 23.8 36.5 20 36.5C16.2 36.5 13 35.2 11 32Z" fill="url(#lotusGold)"/>
+  </g>
+
+  <!-- Typography (right) -->
+  <text x="440" y="160" font-family="'Batang', 'Noto Serif KR', serif" font-size="28" font-weight="600" fill="#E5D399" letter-spacing="4">
+    한라산 소원성취 기도도량
+  </text>
+  <text x="440" y="260" font-family="'Batang', 'Noto Serif KR', serif" font-size="92" font-weight="900" fill="#F5D061" letter-spacing="-1">
+    제주 소원사
+  </text>
+  <text x="444" y="315" font-family="'Malgun Gothic', 'Segoe UI', sans-serif" font-size="24" font-weight="700" fill="#C59B27" letter-spacing="12">
+    JEJU SOWONSA
+  </text>
+</svg>
