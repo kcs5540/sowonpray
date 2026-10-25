@@ -3284,16 +3284,16 @@ export default function App() {
             </section>
 
             {/* 실시간 대웅전 소원등 축원 현황 (첫 화면에는 순수 소원 기도만 노출하여 부담 제거) */}
-            <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8]">
+            <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8]">
               <div className="flex items-center justify-between gap-2 mb-3">
                 <div className="flex items-center gap-1.5 min-w-0">
                   <Sparkles className="w-4 h-4 text-[#C59B27] shrink-0" />
-                  <h2 className="font-serif-kr font-bold text-base whitespace-nowrap">
+                  <h2 className="font-serif-kr font-bold text-sm sm:text-base text-[#231F1C] truncate">
                     실시간 소원사 축원 등불
                   </h2>
                 </div>
-                <span className="text-xs text-[#8C7A5B] whitespace-nowrap shrink-0">
-                  대웅전 상시 축원중
+                <span className="text-[10.5px] font-semibold text-[#8C7A5B] bg-[#FAF8F5] px-2 py-0.5 rounded-full border border-[#EDE6D8] whitespace-nowrap shrink-0">
+                  대웅전 상시 축원
                 </span>
               </div>
 
