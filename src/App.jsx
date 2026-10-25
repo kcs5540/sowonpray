@@ -39,6 +39,8 @@ import {
   Printer,
   HelpCircle,
   QrCode,
+  Network,
+  Calculator,
   X,
 } from 'lucide-react'
 import QRCode from 'qrcode'
