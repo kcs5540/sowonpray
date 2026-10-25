@@ -5521,38 +5521,42 @@ export default function App() {
               /* [B] 로그인 상태일 때: 내 계정 정보 확인 & 확장 정보 수정 */
               <>
                 <section className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-5 border border-[#C59B27]/40 shadow-md space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/40 font-bold">
-                        {currentUser.role === 'master' || currentUser.role === 'agent' || currentUser.role === 'committee_head'
-                          ? '소원사 포교위원장'
-                          : currentUser.role === 'committee_member'
-                          ? '소원사 포교위원'
-                          : currentUser.role === 'temple_admin'
-                          ? '소원사 본부 (신도회장)'
-                          : '제주 소원사 신도'}
-                      </span>
-                      <h2 className="font-serif-kr text-xl font-bold mt-1.5">
-                        {currentUser.name}
-                        {currentUser.dharma_name ? ` (${currentUser.dharma_name})` : ''}님
-                      </h2>
-                      <p className="text-xs text-[#BFB6AA] mt-0.5">
-                        로그인 ID(전화번호): {currentUser.phone} · 고유코드: {currentUser.code}
-                      </p>
-                    </div>
+                  {/* 상단 1행: 직책 배지(좌) + 로그아웃 버튼(우측 상단 배치) */}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/40 font-bold whitespace-nowrap">
+                      {currentUser.role === 'master' || currentUser.role === 'agent' || currentUser.role === 'committee_head'
+                        ? '소원사 포교위원장'
+                        : currentUser.role === 'committee_member'
+                        ? '소원사 포교위원'
+                        : currentUser.role === 'temple_admin'
+                        ? '소원사 본부 (신도회장)'
+                        : '제주 소원사 신도'}
+                    </span>
 
-                    {/* 로그인된 사용자 언제든 로그아웃할 수 있는 버튼 */}
+                    {/* 오른쪽 상단으로 올린 로그아웃 버튼 */}
                     <button
                       type="button"
                       onClick={() => {
                         setCurrentUserCode('')
                         showToast('로그아웃되었습니다. 로그인/가입 화면으로 전환됩니다.')
                       }}
-                      className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#E8DFD1] hover:text-white border border-white/15 text-xs font-semibold flex items-center gap-1.5 transition shrink-0"
+                      className="px-2.5 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-[#E8DFD1] hover:text-white border border-white/15 text-[11px] font-semibold flex items-center gap-1 transition shrink-0"
                     >
                       <LogOut className="w-3.5 h-3.5" />
                       <span>로그아웃</span>
                     </button>
+                  </div>
+
+                  {/* 2행: 성함 및 법명 (단독 전체 가로폭 확보로 1줄로 시원하게 표시) */}
+                  <div>
+                    <h2 className="font-serif-kr text-xl sm:text-2xl font-bold tracking-tight text-white whitespace-nowrap">
+                      {currentUser.name}
+                      {currentUser.dharma_name ? ` (${currentUser.dharma_name})` : ''}님
+                    </h2>
+                    <p className="text-xs text-[#BFB6AA] mt-1 break-keep">
+                      로그인 ID(전화번호): <strong className="text-[#E8DFD1]">{currentUser.phone}</strong> · 고유코드:{' '}
+                      <strong className="text-[#F5D061]">{currentUser.code}</strong>
+                    </p>
                   </div>
 
                   {(isMaster || currentUser.role === 'temple_admin' || currentUser.role === 'agent' || currentUser.role === 'committee_head') && (
