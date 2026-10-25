@@ -1812,7 +1812,8 @@ export default function App() {
   const startSpeech = (id, rawText) => {
     try {
       if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
-        showToast('현재 브라우저에서는 음성 낭독 기능을 지원하지 않습니다.')
+        playSingingBowlSound()
+        showToast('💡 카카오톡 등 인앱 브라우저는 음성 낭독이 제한됩니다. 우측 상단(⋮) [다른 브라우저로 열기]를 이용해 주세요.')
         return
       }
       window.speechSynthesis.cancel()
