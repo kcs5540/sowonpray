@@ -2873,24 +2873,12 @@ export default function App() {
               {/* [펼침 상태] 플레이어 바 바로 아래에 트랙 목록만 깔끔하게 드롭다운 */}
               {isPlayerExpanded && (
                 <div className="px-3 pb-3.5 pt-1 space-y-2.5 border-t border-white/10 animate-in fade-in duration-200">
-                  {/* 상단 간편 안내 + 음성 낭독 토글 */}
-                  <div className="flex items-center justify-between pt-1">
-                    <span className="text-[11px] font-bold text-[#E8DFD1]">
-                      📜 들으실 트랙을 선택해 주세요
+                  {/* 상단 간편 안내 */}
+                  <div className="pt-1.5 pb-0.5">
+                    <span className="text-[11.5px] font-bold text-[#F5D061] flex items-center gap-1.5">
+                      <span>📜</span>
+                      <span>원하시는 독경 · 쉼터 트랙을 선택해 주세요</span>
                     </span>
-                    <button
-                      type="button"
-                      onClick={handleToggleHealingVoice}
-                      className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border flex items-center gap-1 transition ${
-                        isHealingVoiceOn
-                          ? 'bg-[#F5D061] text-[#1B1815] border-[#FFF3B8] shadow-sm'
-                          : 'bg-white/10 text-[#C2B8AB] border-white/15'
-                      }`}
-                      title="스님 음성 낭독 켜기/끄기"
-                    >
-                      <Volume2 className="w-3 h-3" />
-                      <span>{isHealingVoiceOn ? '스님 음성 ON' : '음성 끔'}</span>
-                    </button>
                   </div>
 
                   {/* 5대 힐링 트랙 선택 리스트 (한 줄씩 풀 너비로 글자 잘림 없이 시원하게 노출) */}
