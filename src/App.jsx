@@ -447,6 +447,7 @@ const DAILY_QUOTES = [
 const SUTRA_LIST = [
   {
     id: 'sutra-1',
+    shortName: '반야심경',
     title: '반야심경 핵심구절',
     hanja: '色卽是空 空卽是色',
     text: '색즉시공 공즉시색 수상행식 역부여시',
@@ -454,6 +455,7 @@ const SUTRA_LIST = [
   },
   {
     id: 'sutra-2',
+    shortName: '육자진언',
     title: '관세음보살 육자진언',
     hanja: '唵 嘛 呢 叭 咪 吽',
     text: '옴 마니 반메 훔 옴 마니 반메 훔',
@@ -461,6 +463,7 @@ const SUTRA_LIST = [
   },
   {
     id: 'sutra-3',
+    shortName: '천수경',
     title: '천수경 정구업진언',
     hanja: '修利修利 摩訶修利',
     text: '수리수리 마하수리 수수리 사바하',
@@ -468,6 +471,7 @@ const SUTRA_LIST = [
   },
   {
     id: 'sutra-4',
+    shortName: '금강경',
     title: '금강경 사구게',
     hanja: '凡所有相 皆是虛妄',
     text: '범소유상 개시허망 약견제상비상 즉견여래',
@@ -475,6 +479,7 @@ const SUTRA_LIST = [
   },
   {
     id: 'sutra-5',
+    shortName: '약사여래',
     title: '약사여래 무병장수 기원',
     hanja: '南無 藥師琉璃光如來',
     text: '나무 약사여래불 몸과 마음의 병이 소멸하소서',
@@ -482,6 +487,7 @@ const SUTRA_LIST = [
   },
   {
     id: 'sutra-6',
+    shortName: '법구경',
     title: '법구경 칠불통계게',
     hanja: '諸惡莫作 衆善奉行',
     text: '모든 악을 짓지 말고 온갖 선을 받들어 행하라',
@@ -489,6 +495,7 @@ const SUTRA_LIST = [
   },
   {
     id: 'sutra-7',
+    shortName: '화엄경',
     title: '화엄경 일체유심조',
     hanja: '一切唯心造',
     text: '모든 것은 오직 내 한마음이 짓는 것이니라',
@@ -496,6 +503,7 @@ const SUTRA_LIST = [
   },
   {
     id: 'sutra-8',
+    shortName: '지장보살',
     title: '지장보살 극락왕생 발원',
     hanja: '南無 大願本尊 地藏菩薩',
     text: '나무 지장보살 마하살 조상님의 극락왕생을 발원합니다',
@@ -4557,13 +4565,13 @@ export default function App() {
                           )
                         }
                       }}
-                      className={`px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap border transition ${
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border transition shadow-sm ${
                         selectedSutraIdx === idx
-                          ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
-                          : 'bg-white text-[#6E655C] border-[#E4DDD0]'
+                          ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-sm'
+                          : 'bg-white text-[#5C5349] border-[#E4DDD0] hover:bg-[#FAF8F5]'
                       }`}
                     >
-                      {idx + 1}. {item.title}
+                      {item.shortName || item.title}
                     </button>
                   ))}
                 </div>
