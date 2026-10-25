@@ -1573,7 +1573,13 @@ export default function App() {
     return null
   })
 
-  const isLanternLit = Boolean(lanternData && lanternData.expire_at > Date.now())
+  // 소원등 유효 점등 여부 (보안 및 개인정보 보호: 로그아웃 상태이거나 다른 회원 접속 시 이전 회원의 등 비노출)
+  const isLanternLit = Boolean(
+    lanternData &&
+    lanternData.expire_at > Date.now() &&
+    (!lanternData.member_code || (currentUser && currentUser.code === lanternData.member_code)) &&
+    (currentUser || !members.some((m) => lanternData.believer_name && lanternData.believer_name.includes(m.name)))
+  )
   const lanternDaysRemaining = isLanternLit
     ? Math.max(1, Math.ceil((lanternData.expire_at - Date.now()) / (1000 * 60 * 60 * 24)))
     : 0
@@ -1764,6 +1770,7 @@ export default function App() {
 
       if (expireAt > Date.now()) {
         const syncedLantern = {
+          member_code: myLatestPrayer.member_code || currentUser?.code || '',
           believer_name: myLatestPrayer.believer_name,
           believer_phone: myLatestPrayer.believer_phone || currentUser?.phone || '',
           wish_category: myLatestPrayer.wish_category || '가족건강',
@@ -2006,6 +2013,20 @@ export default function App() {
     setActiveTab('home')
   }
 
+  // 로그아웃 핸들러: 세션 종료 및 개인정보 보호 (로그아웃 시 소원등 로컬 상태도 안전하게 비워 타인 노출 방지)
+  const handleLogout = () => {
+    setCurrentUserCode('')
+    setWishName('')
+    setWishPhone('')
+    setWishTarget('')
+    setLanternData(null)
+    try {
+      localStorage.removeItem('sowonsa_7day_lantern')
+      localStorage.setItem('sowonpray_current_user_v3', '')
+    } catch (e) {}
+    showToast('로그아웃되었습니다. 로그인/가입 화면으로 전환됩니다.')
+  }
+
   // 신규 회원가입 핸들러 (필수: 성함 + 전화번호 + 비밀번호 / 선택: 법명·생년월일·주소·가족메모)
   const handleSignup = (e) => {
     e.preventDefault()
@@ -2134,6 +2155,7 @@ export default function App() {
     const now = Date.now()
     const expireAt = now + 7 * 24 * 60 * 60 * 1000 // 7일 정진 축원 기간
     const newLanternInfo = {
+      member_code: currentUser?.code || '',
       believer_name: formattedBelieverName,
       wish_target: finalTarget || '본인',
       believer_phone: wishPhone.trim(),
@@ -5504,10 +5526,7 @@ export default function App() {
                   {currentUser && (
                     <button
                       type="button"
-                      onClick={() => {
-                        setCurrentUserCode('')
-                        showToast('로그아웃되었습니다. 로그인/회원가입 화면이 표시됩니다.')
-                      }}
+                      onClick={handleLogout}
                       className="text-[11px] text-[#D6CEC2] hover:text-white flex items-center gap-1 underline whitespace-nowrap shrink-0"
                     >
                       <LogOut className="w-3 h-3 shrink-0" />
@@ -5810,10 +5829,7 @@ export default function App() {
                     {/* 오른쪽 상단으로 올린 로그아웃 버튼 */}
                     <button
                       type="button"
-                      onClick={() => {
-                        setCurrentUserCode('')
-                        showToast('로그아웃되었습니다. 로그인/가입 화면으로 전환됩니다.')
-                      }}
+                      onClick={handleLogout}
                       className="px-2.5 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-[#E8DFD1] hover:text-white border border-white/15 text-[11px] font-semibold flex items-center gap-1 transition shrink-0"
                     >
                       <LogOut className="w-3.5 h-3.5" />
