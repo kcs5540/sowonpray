@@ -2589,7 +2589,7 @@ export default function App() {
 
         {/* ==================== 1. 신행홈 탭 ==================== */}
         {activeTab === 'home' && (
-          <main className="flex-1 flex flex-col gap-5 p-4">
+          <main className="flex-1 flex flex-col gap-4 px-3 py-4">
             {/* 히어로 3종 경량 캐러셀 카드: 제주 소원사 도량·대웅전·위패/삼성각 불사 */}
             {(() => {
               const slide = HERO_SLIDES[heroSlideIdx] || HERO_SLIDES[0]
@@ -2685,7 +2685,7 @@ export default function App() {
             })()}
 
             {/* 오늘의 부처님 말씀 */}
-            <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] relative overflow-hidden">
+            <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] relative overflow-hidden">
               <div className="flex items-center justify-between gap-1.5 mb-3">
                 <div className="flex items-center gap-1.5 min-w-0">
                   <span className="text-xs font-bold text-[#9A7418] bg-[#FAF3DF] px-2.5 py-1 rounded-full border border-[#E5D399] whitespace-nowrap">
