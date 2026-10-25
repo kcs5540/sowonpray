@@ -4091,7 +4091,7 @@ export default function App() {
                   </span>
                   <span className="text-lg sm:text-xl mb-1">🕯️</span>
                   <h4 className="text-[11px] sm:text-xs font-bold text-[#231F1C] break-keep mb-0.5 text-center">
-                    7일간 실시간 점등
+                    실시간 점등
                   </h4>
                   <p className="text-[10px] sm:text-[10.5px] text-[#6E655C] leading-snug break-keep">
                     대웅전 전산 연동 & 황금등불 유지
