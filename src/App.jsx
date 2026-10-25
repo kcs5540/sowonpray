@@ -6959,8 +6959,8 @@ export default function App() {
                           </select>
                           <input
                             type="text"
-                            value={adminNewParentCode}
-                            onChange={(e) => setAdminNewParentCode(e.target.value)}
+                            value={adminNewParent}
+                            onChange={(e) => setAdminNewParent(e.target.value)}
                             placeholder="추천인 코드 (선택)"
                             className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs"
                           />
@@ -7071,27 +7071,27 @@ export default function App() {
                             className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs"
                           />
                           <select
-                            value={simItemName}
+                            value={simItemType}
                             onChange={(e) => {
                               const val = e.target.value
-                              setSimItemName(val)
-                              if (val.includes('흑색 1기')) setSimTotalAmount('2000000')
-                              else if (val.includes('부부 2기')) setSimTotalAmount('4000000')
-                              else if (val.includes('황금 1기')) setSimTotalAmount('3000000')
-                              else if (val.includes('특별')) setSimTotalAmount('5000000')
+                              setSimItemType(val)
+                              if (val.includes('2기')) setSimAmount(4000000)
+                              else if (val.includes('단청')) setSimAmount(1000000)
+                              else if (val.includes('기와')) setSimAmount(100000)
+                              else setSimAmount(2000000)
                             }}
                             className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs font-semibold"
                           >
+                            <option value="생전예수재 황금위패 (1기)">생전예수재 황금위패 1기 (200만)</option>
                             <option value="조상 영가 흑색 영구위패 (1기)">흑색 영구위패 1기 (200만)</option>
                             <option value="조상 영가 부부 영구위패 (2기)">부부 영구위패 2기 (400만)</option>
-                            <option value="인등 1년 기도 불사">인등 1년 기도 (30만)</option>
                           </select>
                         </div>
                         <div className="grid grid-cols-2 gap-2">
                           <input
                             type="number"
-                            value={simTotalAmount}
-                            onChange={(e) => setSimTotalAmount(e.target.value)}
+                            value={simAmount}
+                            onChange={(e) => setSimAmount(Number(e.target.value))}
                             placeholder="입금액(원)"
                             required
                             className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs font-bold text-[#8A6510]"
@@ -7197,19 +7197,19 @@ export default function App() {
                           <h4 className="font-serif-kr font-bold text-sm">도량 차담 & 공양 예약 현황</h4>
                         </div>
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-[#8A6510] font-bold">
-                          {visitReservations.length}건 접수
+                          {visits.length}건 접수
                         </span>
                       </div>
                       <div className="space-y-2">
-                        {visitReservations.map((res) => (
+                        {visits.map((res) => (
                           <div key={res.id} className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] flex items-center justify-between text-xs">
                             <div>
                               <div className="font-bold text-[#231F1C]">
-                                {res.believer_name} 불자님
-                                <span className="text-[11px] text-[#8C8071] ml-1">({res.guest_count}명 방문)</span>
+                                {res.visitor_name || res.believer_name || '불자'}님
+                                <span className="text-[11px] text-[#8C8071] ml-1">({res.headcount || 1}명 방문)</span>
                               </div>
                               <div className="text-[11px] text-[#8A6510] mt-0.5">
-                                📅 {res.visit_date} {res.visit_time} · {res.tea_or_meal}
+                                📅 {res.visit_date} {res.visit_time || ''} · {res.tea_or_meal || '차담 및 사찰공양'}
                               </div>
                             </div>
                             <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold shrink-0">
