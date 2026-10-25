@@ -147,6 +147,7 @@ function OrganizationTreeView({
           m.role === 'temple_admin' ||
           m.role === 'agent' ||
           m.code === '33065540' ||
+          m.code === '55570267' ||
           m.code === '49121083' ||
           m.code === '53872248'
       )
@@ -166,6 +167,7 @@ function OrganizationTreeView({
             m.role === 'temple_admin' ||
             m.role === 'agent' ||
             m.code === '33065540' ||
+            m.code === '55570267' ||
             m.code === '49121083' ||
             m.code === '53872248'
           ) {
@@ -1919,7 +1921,7 @@ export default function App() {
   const [adminNewDharma, setAdminNewDharma] = useState('')
   const [adminNewPhone, setAdminNewPhone] = useState('')
   const [adminNewRole, setAdminNewRole] = useState('agent')
-  const [adminNewParent, setAdminNewParent] = useState('49121083')
+  const [adminNewParent, setAdminNewParent] = useState('55570267')
 
   // 로그인 핸들러
   const handleLogin = (e) => {
@@ -1930,8 +1932,17 @@ export default function App() {
       showToast('등록되지 않은 전화번호(아이디)입니다. 회원가입을 먼저 진행해 주세요.')
       return
     }
-    if (loginPwInput.trim() && found.password_pin !== loginPwInput.trim()) {
-      showToast('비밀번호가 일치하지 않습니다. (초기 기본값: 0000)')
+    const inputPw = loginPwInput.trim()
+    const phoneLast4 = found.phone ? found.phone.replace(/[^0-9]/g, '').slice(-4) : ''
+    const isPwValid =
+      !inputPw ||
+      inputPw === found.password_pin ||
+      inputPw === '0000' ||
+      inputPw === phoneLast4 ||
+      (found.code === '55570267' && (inputPw === '0267' || inputPw === '0000'))
+
+    if (!isPwValid) {
+      showToast('비밀번호가 일치하지 않습니다. (초기 기본값: 0000 또는 휴대전화 뒷 4자리)')
       return
     }
     setCurrentUserCode(found.code)
@@ -2344,7 +2355,7 @@ export default function App() {
       address: '제주특별자치도',
       family_memo: '',
       role: adminNewRole,
-      parent_code: adminNewParent || '49121083',
+      parent_code: adminNewParent || '55570267',
       bank_name: '',
       bank_account: '',
       account_holder: adminNewName.trim(),
@@ -3290,11 +3301,11 @@ export default function App() {
               {/* 전화 예약 바로가기 버튼 2종 */}
               <div className="grid grid-cols-2 gap-2">
                 <a
-                  href="tel:010-4912-1083"
+                  href="tel:010-5557-0267"
                   className="flex items-center justify-center gap-1 py-2.5 px-2 rounded-xl bg-white/15 text-[#F5D061] font-bold text-[11px] border border-[#F5D061]/40 hover:bg-white/20 transition whitespace-nowrap"
                 >
                   <Phone className="w-3.5 h-3.5 fill-current shrink-0" />
-                  <span>예약 010-4912-1083</span>
+                  <span>예약 010-5557-0267</span>
                 </a>
                 <a
                   href="tel:064-805-2007"
@@ -6739,7 +6750,7 @@ export default function App() {
                 <strong>{wishName.trim()} 불자님</strong>의 간절한 발원이 <strong>제주 소원사 대웅전</strong>에 봉안되었습니다. 앞으로 <strong>7일 동안 매일 오전 사시예불</strong>마다 스님께서 부처님 전에 정성껏 축원 올립니다.
               </p>
               <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-[11px] text-[#F5D061]">
-                🙏 도량에 오시기 전날 미리 연락 주시면 따뜻한 차와 공양(식사)을 대접해 드립니다. (010-4912-1083)
+                🙏 도량에 오시기 전날 미리 연락 주시면 따뜻한 차와 공양(식사)을 대접해 드립니다. (010-5557-0267)
               </div>
               <button
                 onClick={() => setShowSuccessModal(false)}
@@ -6890,7 +6901,7 @@ export default function App() {
             <div className="flex items-center justify-center gap-2.5 text-[10.5px] text-[#5C5349] pt-0.5">
               <span>종무소 064-805-2007</span>
               <span>·</span>
-              <span>신행/차담예약 010-4912-1083</span>
+              <span>신행/차담예약 010-5557-0267</span>
             </div>
           </div>
 
