@@ -2548,8 +2548,22 @@ export default function App() {
         {/* 상단 고정 헤더: 제주 소원사 공식 모바일 법당 */}
         <header className="sticky top-0 z-40 bg-[#1B1815]/95 backdrop-blur-md text-[#FAF8F5] px-3.5 py-3 border-b-2 border-[#C59B27]/50 flex items-center justify-between gap-2 shadow-md">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#B6861C] flex items-center justify-center shadow-[0_0_15px_rgba(245,208,97,0.4)] border border-[#FFF3B8]/60 font-serif-kr font-black text-base text-[#1B1815] shrink-0">
-              卍
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#2D241C] via-[#221C16] to-[#17130F] flex items-center justify-center shadow-[0_0_15px_rgba(245,208,97,0.35)] border border-[#C59B27]/60 p-1 shrink-0" title="제주 소원사 공식 심볼 (황금 연꽃)">
+              <svg className="w-full h-full filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M20 5C20 5 15 14.5 15 21C15 23.8 17.2 26 20 26C22.8 26 25 23.8 25 21C25 14.5 20 5 20 5Z" fill="url(#headerGoldLotusGrad)" opacity="0.95" />
+                <path d="M14 12C14 12 7.5 18.5 7.5 23C7.5 26.2 10.2 28 13.2 28C16.2 28 17.8 25.5 17.8 24C17.8 18.5 14 12 14 12Z" fill="url(#headerGoldLotusGrad)" opacity="0.82" />
+                <path d="M26 12C26 12 32.5 18.5 32.5 23C32.5 26.2 29.8 28 26.8 28C23.8 28 22.2 25.5 22.2 24C22.2 18.5 26 12 26 12Z" fill="url(#headerGoldLotusGrad)" opacity="0.82" />
+                <path d="M6.5 22.5C6.5 22.5 2.5 26 2.5 29C2.5 31.2 4.5 33 7.8 33C11.8 33 14.8 29.8 14.8 28C14.8 25.2 6.5 22.5 6.5 22.5Z" fill="url(#headerGoldLotusGrad)" opacity="0.65" />
+                <path d="M33.5 22.5C33.5 22.5 37.5 26 37.5 29C37.5 31.2 35.5 33 32.2 33C28.2 33 25.2 29.8 25.2 28C25.2 25.2 33.5 22.5 33.5 22.5Z" fill="url(#headerGoldLotusGrad)" opacity="0.65" />
+                <path d="M11.5 32C15.2 34.8 24.8 34.8 28.5 32C26.5 34.8 23.5 35.8 20 35.8C16.5 35.8 13.5 34.8 11.5 32Z" fill="url(#headerGoldLotusGrad)" />
+                <defs>
+                  <linearGradient id="headerGoldLotusGrad" x1="5" y1="5" x2="35" y2="35" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#FDE68A" />
+                    <stop offset="0.5" stopColor="#F5D061" />
+                    <stop offset="1" stopColor="#B6861C" />
+                  </linearGradient>
+                </defs>
+              </svg>
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
