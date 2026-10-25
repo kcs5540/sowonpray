@@ -5547,16 +5547,12 @@ export default function App() {
                     </button>
                   </div>
 
-                  {/* 2행: 성함 및 법명 (단독 전체 가로폭 확보로 1줄로 시원하게 표시) */}
+                  {/* 2행: 성함 및 법명 (불필요한 기술적 ID 표기를 제거하여 군더더기 없이 최고로 단정하게 표시) */}
                   <div>
                     <h2 className="font-serif-kr text-xl sm:text-2xl font-bold tracking-tight text-white whitespace-nowrap">
                       {currentUser.name}
                       {currentUser.dharma_name ? ` (${currentUser.dharma_name})` : ''}님
                     </h2>
-                    <p className="text-xs text-[#BFB6AA] mt-1 break-keep">
-                      로그인 ID(전화번호): <strong className="text-[#E8DFD1]">{currentUser.phone}</strong> · 고유코드:{' '}
-                      <strong className="text-[#F5D061]">{currentUser.code}</strong>
-                    </p>
                   </div>
 
                   {(isMaster || currentUser.role === 'temple_admin' || currentUser.role === 'agent' || currentUser.role === 'committee_head') && (
