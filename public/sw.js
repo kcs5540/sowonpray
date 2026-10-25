@@ -1,5 +1,4 @@
-// 제주 소원사 모바일 법당 Service Worker (PWA 설치 및 캐시 지원)
-const CACHE_NAME = 'sowonpray-cache-v1'
+const CACHE_NAME = 'sowonpray-cache-v2'
 
 self.addEventListener('install', (event) => {
   self.skipWaiting()

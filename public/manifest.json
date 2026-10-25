@@ -2,21 +2,33 @@
   "name": "제주 소원사 · 모바일 법당",
   "short_name": "제주 소원사",
   "description": "간절한 한 가지 소원이 이루어지는 기도·불공의 성지 제주 소원사 모바일 법당",
-  "start_url": "/",
-  "id": "/",
+  "start_url": "/?pwa=1",
+  "id": "/?pwa=1",
   "display": "standalone",
   "background_color": "#1B1815",
   "theme_color": "#1B1815",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "/sowonsa-icon-192.png?v=2",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/icon-192.png?v=2",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/sowonsa-icon-512.png?v=2",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png?v=2",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
