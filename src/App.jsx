@@ -4620,35 +4620,42 @@ export default function App() {
 
                 {/* 터치식 + 타자식 겸용 황금 사경장 */}
                 <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-4">
-                  <div className="text-center border-b border-[#EFE9DD] pb-3.5 space-y-1.5">
+                  <div className="relative text-center border-b border-[#EFE9DD] pb-3 space-y-1.5">
+                    {/* 오른쪽 상단 미니 음성 활성/비활성 토글 버튼 */}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        toggleSpeech(
+                          'sutra-copy',
+                          `${currentSutra.title}. ${currentSutra.text}. 뜻풀이, ${currentSutra.meaning}`
+                        )
+                      }
+                      className={`absolute -top-1 right-0 px-2.5 py-1 rounded-full text-xs font-extrabold border inline-flex items-center gap-1 transition active:scale-95 ${
+                        speakingId === 'sutra-copy'
+                          ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow ring-1 ring-[#F5D061]/50'
+                          : 'bg-[#FAF5E6] text-[#8A6510] border-[#E5D399] hover:bg-[#F2E8CD]'
+                      }`}
+                      aria-label={speakingId === 'sutra-copy' ? '음성 낭독 멈추기' : '경전 음성 듣기'}
+                    >
+                      <Volume2
+                        className={`w-3.5 h-3.5 shrink-0 ${
+                          speakingId === 'sutra-copy'
+                            ? 'animate-pulse text-[#F5D061]'
+                            : 'text-[#8A6510]'
+                        }`}
+                      />
+                      <span className="text-[11px] font-bold">
+                        {speakingId === 'sutra-copy' ? '음성 ON' : '음성'}
+                      </span>
+                    </button>
+
                     <span className="block text-xs text-[#9A7418] font-bold tracking-widest">
                       {currentSutra.hanja}
                     </span>
                     <h3 className="font-serif-kr text-lg font-bold text-[#231F1C]">
                       {currentSutra.title}
                     </h3>
-                    <p className="text-xs text-[#6E655C] break-keep">{currentSutra.meaning}</p>
-                    <div className="pt-1 flex justify-center">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          toggleSpeech(
-                            'sutra-copy',
-                            `${currentSutra.title}. ${currentSutra.text}. 뜻풀이, ${currentSutra.meaning}`
-                          )
-                        }
-                        className={`px-3.5 py-1.5 rounded-full text-[11px] font-extrabold border inline-flex items-center gap-1.5 transition ${
-                          speakingId === 'sutra-copy'
-                            ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow'
-                            : 'bg-[#FAF5E6] text-[#8A6510] border-[#E5D399]'
-                        }`}
-                      >
-                        <Volume2 className="w-3.5 h-3.5 shrink-0" />
-                        <span>
-                          {speakingId === 'sutra-copy' ? '⏹ 경전 낭독 멈추기' : '🔊 경전 구절 & 뜻 음성으로 듣기'}
-                        </span>
-                      </button>
-                    </div>
+                    <p className="text-xs text-[#6E655C] break-keep px-2">{currentSutra.meaning}</p>
                   </div>
 
                   {/* 터치 사경 판: 글자 박스를 손가락으로 톡톡 터치해도 목탁 소리와 함께 황금빛으로 채워짐 */}
