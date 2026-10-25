@@ -5634,22 +5634,22 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => handleCopyRefLink(currentUser.code)}
-                      className="px-3.5 py-2.5 rounded-xl bg-[#F5D061] text-[#1B1815] font-extrabold text-xs flex items-center gap-1 whitespace-nowrap shrink-0 hover:brightness-105 transition shadow-sm"
+                      className="p-2.5 rounded-xl bg-[#F5D061] text-[#1B1815] font-extrabold text-xs flex items-center justify-center shrink-0 hover:brightness-105 active:scale-95 transition shadow-sm w-10 h-10"
+                      title="전용 링크 복사"
                     >
-                      <Copy className="w-3.5 h-3.5 shrink-0" />
-                      <span>주소 복사</span>
+                      <Copy className="w-4 h-4 shrink-0" />
                     </button>
                     <button
                       type="button"
                       onClick={() => handleToggleQr(currentUser.code)}
-                      className={`px-3 py-2.5 rounded-xl text-xs font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 transition shadow-sm border ${
+                      className={`p-2.5 rounded-xl text-xs font-extrabold flex items-center justify-center shrink-0 transition shadow-sm border w-10 h-10 ${
                         showQrCode === currentUser.code
                           ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
                           : 'bg-[#FAF3DF] text-[#8A6510] border-[#E5D399] hover:bg-[#F5E6BF]'
                       }`}
+                      title="전용 QR코드 보기"
                     >
-                      <QrCode className="w-3.5 h-3.5 shrink-0" />
-                      <span>QR코드</span>
+                      <QrCode className="w-4 h-4 shrink-0" />
                     </button>
                   </div>
 
@@ -6881,22 +6881,22 @@ export default function App() {
                       <button
                         type="button"
                         onClick={() => handleCopyRefLink(activeAgent.code)}
-                        className="px-3 py-2 rounded-xl bg-[#F5D061] text-[#1B1815] font-extrabold text-xs flex items-center gap-1 whitespace-nowrap shrink-0 hover:brightness-105 active:scale-95 transition"
+                        className="p-2.5 rounded-xl bg-[#F5D061] text-[#1B1815] font-extrabold text-xs flex items-center justify-center shrink-0 hover:brightness-105 active:scale-95 transition shadow-sm w-10 h-10"
+                        title="전용 링크 복사"
                       >
-                        <Copy className="w-3.5 h-3.5 shrink-0" />
-                        <span>복사</span>
+                        <Copy className="w-4 h-4 shrink-0" />
                       </button>
                       <button
                         type="button"
                         onClick={() => handleToggleQr(activeAgent.code)}
-                        className={`px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1 whitespace-nowrap shrink-0 transition border ${
+                        className={`p-2.5 rounded-xl text-xs font-bold flex items-center justify-center shrink-0 transition border shadow-sm w-10 h-10 ${
                           showQrCode === activeAgent.code
                             ? 'bg-[#1B1815] text-[#F5D061] border-[#1B1815]'
                             : 'bg-white text-[#231F1C] border-[#D5C59B] hover:bg-neutral-50'
                         }`}
+                        title="전용 QR코드 보기"
                       >
-                        <QrCode className="w-3.5 h-3.5 shrink-0" />
-                        <span>QR</span>
+                        <QrCode className="w-4 h-4 shrink-0" />
                       </button>
                     </div>
 
