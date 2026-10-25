@@ -4709,15 +4709,16 @@ export default function App() {
                 </section>
 
                 {/* 온라인 목탁 · 9배 염주 정진 코너 */}
-                <section className="rounded-2xl bg-gradient-to-br from-[#29231E] to-[#1A1612] text-white p-4 sm:p-5 border border-[#C59B27]/50 shadow-md flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <span className="inline-block text-[10.5px] px-2 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/30 font-bold mb-1">
-                      📿 온라인 목탁 · 염불 정진 (9타마다 +1공덕)
+                <section className="rounded-2xl bg-gradient-to-br from-[#29231E] to-[#1A1612] text-white p-3.5 sm:p-4 border border-[#C59B27]/50 shadow-md flex items-center justify-between gap-2.5">
+                  <div className="min-w-0 flex-1">
+                    <span className="inline-flex items-center gap-1 text-[10px] sm:text-[10.5px] px-2 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/30 font-bold mb-1 whitespace-nowrap">
+                      <span>📿 온라인 목탁 정진</span>
+                      <span className="text-[#FFE898] font-normal">(9타당 +1공덕)</span>
                     </span>
-                    <h4 className="font-serif-kr text-base font-bold text-white">
+                    <h4 className="font-serif-kr text-[14.5px] sm:text-base font-bold text-white truncate">
                       “관세음보살” 부르며 목탁 치기
                     </h4>
-                    <p className="text-[11px] text-[#D6CEC2] mt-0.5 break-keep">
+                    <p className="text-[11px] text-[#D6CEC2] mt-0.5 truncate">
                       오늘 친 목탁: <strong className="text-[#F5D061]">{moktakCount}타</strong> (다음 공덕까지{' '}
                       <strong className="text-[#F5D061]">{9 - (moktakCount % 9)}타</strong>)
                     </p>
@@ -4725,15 +4726,15 @@ export default function App() {
                   <button
                     type="button"
                     onClick={handleMoktakTap}
-                    className="w-20 h-20 rounded-2xl bg-gradient-to-b from-[#F5D061] to-[#B88619] text-[#1B1815] font-extrabold shadow-[0_0_20px_rgba(245,208,97,0.35)] border-2 border-[#FFF3B8] flex flex-col items-center justify-center gap-0.5 active:scale-90 transition shrink-0"
+                    className="w-16 h-16 rounded-2xl bg-gradient-to-b from-[#F5D061] to-[#B88619] text-[#1B1815] font-extrabold shadow-[0_0_15px_rgba(245,208,97,0.3)] border-2 border-[#FFF3B8] flex flex-col items-center justify-center gap-0.5 active:scale-90 transition shrink-0"
                     title="터치하여 청아한 목탁 소리와 함께 마음을 가다듬으세요"
                   >
                     <img
                       src="/images/moktak_icon.png"
                       alt="목탁"
-                      className="w-10 h-10 object-contain drop-shadow-sm active:rotate-12 transition-transform"
+                      className="w-7 h-7 object-contain drop-shadow-sm active:rotate-12 transition-transform"
                     />
-                    <span className="text-[11px] font-black whitespace-nowrap mt-0.5">목탁 탁!</span>
+                    <span className="text-[10px] font-black whitespace-nowrap leading-none mt-0.5">목탁 탁!</span>
                   </button>
                 </section>
               </>
