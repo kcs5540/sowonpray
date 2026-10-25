@@ -7710,18 +7710,14 @@ export default function App() {
         {isHealingPlaying && (
           <div className="fixed bottom-[58px] left-1/2 -translate-x-1/2 w-full max-w-[480px] z-30 px-3 pb-1 animate-in slide-in-from-bottom-2 duration-300">
             <div className="p-2.5 rounded-2xl bg-[#1F1914]/95 backdrop-blur-md border border-[#F5D061]/50 shadow-2xl flex items-center justify-between gap-2.5">
-              <button
-                type="button"
-                onClick={() => setShowFullAudioModal(true)}
-                className="flex items-center gap-2 min-w-0 flex-1 text-left"
-              >
+              <div className="flex items-center gap-2.5 min-w-0 flex-1">
                 <div className="w-8 h-8 rounded-xl bg-[#F5D061] text-[#1B1815] flex items-center justify-center shrink-0 shadow">
                   <Headphones className="w-4 h-4" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="text-[11px] font-black text-white truncate flex items-center gap-1.5">
+                  <div className="text-[11.5px] font-black text-white truncate flex items-center gap-1.5">
                     <span>{HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.icon}</span>
-                    <span>{HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.title}</span>
+                    <span className="truncate">{HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.title}</span>
                   </div>
                   <div className="text-[9.5px] text-[#F5D061] font-semibold truncate">
                     {sleepTimerSecondsLeft > 0
@@ -7729,9 +7725,9 @@ export default function App() {
                       : '화면 꺼짐 모드 지원 · 24시간 스트리밍'}
                   </div>
                 </div>
-              </button>
+              </div>
 
-              <div className="flex items-center gap-1 shrink-0">
+              <div className="flex items-center shrink-0 ml-1">
                 <button
                   type="button"
                   onClick={() => handleToggleHealingPlay()}
@@ -7739,14 +7735,6 @@ export default function App() {
                   title="일시 정지 / 재생"
                 >
                   <Pause className="w-4 h-4 fill-current" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowFullAudioModal(true)}
-                  className="p-1.5 text-[#C8C0B7] hover:text-white transition"
-                  title="전체 플레이어 열기"
-                >
-                  <Maximize2 className="w-4 h-4" />
                 </button>
               </div>
             </div>
