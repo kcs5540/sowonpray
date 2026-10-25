@@ -130,6 +130,36 @@ const PRAYER_CATEGORY_TEMPLATES = {
     '간절한 소원 성취와 가정의 평안을 위하여, 제주 소원사 종무소와 정성껏 특별기도 상담을 희망합니다.',
 }
 
+// 사찰 방문 및 차담·공양 예약 시간대 & 목적 슬롯 (한눈에 선택하는 원터치 버튼)
+const VISIT_TIME_SLOTS = [
+  {
+    time: '오전 10:30',
+    fullTime: '오전 10:30 (참배·차담)',
+    title: '참배 · 차담',
+    purpose: '도량 참배 및 따뜻한 차담 예약',
+  },
+  {
+    time: '오전 11:30',
+    fullTime: '오전 11:30 (점심공양)',
+    title: '점심공양 (식사)',
+    purpose: '따뜻한 차 & 사찰 공양(식사) 대접 예약',
+    badge: '인기',
+  },
+  {
+    time: '오후 02:00',
+    fullTime: '오후 02:00 (오후차담)',
+    title: '스님 차담 · 상담',
+    purpose: '스님 신행 상담 및 차담 예약',
+  },
+  {
+    time: '오후 04:00',
+    fullTime: '오후 04:00 (오후참배)',
+    title: '오후 기도 · 참배',
+    purpose: '가족 기도 및 도량 참배 예약',
+  },
+]
+
+
 // ============================================================================
 // 포교자 회원유치 조직도 트리 뷰 (MetaFastest 스타일 모바일 계층 트리)
 // ============================================================================
@@ -1648,7 +1678,7 @@ export default function App() {
     const tomorrow = new Date(Date.now() + 86400000)
     return tomorrow.toISOString().split('T')[0]
   })
-  const [visitTime, setVisitTime] = useState('오전 11:30 (점심 공양 및 차담)')
+  const [visitTime, setVisitTime] = useState('오전 11:30 (점심공양)')
   const [visitHeadcount, setVisitHeadcount] = useState(2)
   const [visitPurpose, setVisitPurpose] = useState('따뜻한 차 & 사찰 공양(식사) 대접 예약')
   const [visitMemo, setVisitMemo] = useState('')
@@ -3191,36 +3221,51 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-[80px_minmax(0,1fr)] items-center gap-2 w-full">
-                      <label className="text-xs text-[#E8DFD1] font-bold whitespace-nowrap">
-                        방문 시간대
+                    {/* 방문 시간 및 목적 2x2 직관형 원터치 버튼 */}
+                    <div className="grid grid-cols-[80px_minmax(0,1fr)] items-start gap-2 w-full pt-0.5">
+                      <label className="text-xs text-[#E8DFD1] font-bold whitespace-nowrap pt-2">
+                        시간 · 목적
                       </label>
-                      <select
-                        value={visitTime}
-                        onChange={(e) => setVisitTime(e.target.value)}
-                        className="block w-full max-w-full min-w-0 box-border px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061] truncate"
-                      >
-                        <option value="오전 10:30 (오전 참배 및 차담)">오전 10:30 (참배·차담)</option>
-                        <option value="오전 11:30 (점심 공양 및 차담)">오전 11:30 (점심공양)</option>
-                        <option value="오후 02:00 (오후 차담 및 참배)">오후 02:00 (오후차담)</option>
-                        <option value="오후 04:00 (오후 참배 및 상담)">오후 04:00 (오후참배)</option>
-                      </select>
-                    </div>
-
-                    <div className="grid grid-cols-[80px_minmax(0,1fr)] items-center gap-2 w-full">
-                      <label className="text-xs text-[#E8DFD1] font-bold whitespace-nowrap">
-                        식사 · 차담
-                      </label>
-                      <select
-                        value={visitPurpose}
-                        onChange={(e) => setVisitPurpose(e.target.value)}
-                        className="block w-full max-w-full min-w-0 box-border px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061] truncate"
-                      >
-                        <option value="따뜻한 차 & 사찰 공양(식사) 대접 예약">차 & 사찰 공양(식사)</option>
-                        <option value="도량 참배 및 따뜻한 차담 예약">도량 참배 & 차담</option>
-                        <option value="스님 신행 상담 및 차담 예약">스님 신행 상담</option>
-                        <option value="가족 기도 및 도량 참배 예약">가족 기도 참배</option>
-                      </select>
+                      <div className="grid grid-cols-2 gap-2 w-full">
+                        {VISIT_TIME_SLOTS.map((slot) => {
+                          const isSelected =
+                            visitTime === slot.fullTime ||
+                            visitTime === slot.time ||
+                            visitTime.includes(slot.time)
+                          return (
+                            <button
+                              key={slot.time}
+                              type="button"
+                              onClick={() => {
+                                setVisitTime(slot.fullTime)
+                                setVisitPurpose(slot.purpose)
+                              }}
+                              className={`relative p-2.5 rounded-xl border text-left transition flex flex-col justify-center active:scale-95 ${
+                                isSelected
+                                  ? 'bg-[#C59B27]/25 border-[#F5D061] text-[#F5D061] shadow-[0_0_12px_rgba(245,208,97,0.25)] ring-1 ring-[#F5D061]'
+                                  : 'bg-[#26211C] border-[#C59B27]/40 text-[#D6CEC2] hover:border-[#C59B27]'
+                              }`}
+                            >
+                              {slot.badge && (
+                                <span className="absolute -top-1.5 right-1.5 px-1.5 py-0.2 rounded-full bg-[#E53935] text-white text-[9px] font-extrabold shadow">
+                                  {slot.badge}
+                                </span>
+                              )}
+                              <span className="text-xs font-black tracking-wide flex items-center gap-1 text-white">
+                                <Clock className="w-3.5 h-3.5 text-[#F5D061] shrink-0" />
+                                {slot.time}
+                              </span>
+                              <span
+                                className={`text-[11px] font-bold mt-1 leading-tight ${
+                                  isSelected ? 'text-[#F5D061]' : 'text-[#A89E90]'
+                                }`}
+                              >
+                                {slot.title}
+                              </span>
+                            </button>
+                          )
+                        })}
+                      </div>
                     </div>
                   </div>
 
