@@ -3437,7 +3437,7 @@ export default function App() {
 
         {/* ==================== 1-B. 불사안내 (생전예수재·위패·삼성각·기도 통합 신청) 탭 ==================== */}
         {activeTab === 'bulsa' && (
-          <main className="flex-1 flex flex-col gap-5 p-4">
+          <main className="flex-1 flex flex-col gap-4 px-2 py-3.5">
             {/* 상단 불사안내 헤더 */}
             <section className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-5 border border-[#C59B27]/50 shadow-md">
               <span className="block text-[11px] text-[#F5D061] font-bold whitespace-nowrap">
@@ -3883,7 +3883,7 @@ export default function App() {
 
         {/* ==================== 2. 디지털 소원등 탭 (7일 정진 축원 시스템) ==================== */}
         {activeTab === 'lantern' && (
-          <main className="flex-1 flex flex-col gap-5 p-4">
+          <main className="flex-1 flex flex-col gap-4 px-2 py-3.5">
             {/* 인터랙티브 3D 광명 연등 */}
             <div className="rounded-2xl bg-gradient-to-b from-[#16120E] via-[#221C15] to-[#16120E] text-white p-6 text-center relative overflow-hidden border border-[#C59B27]/40 shadow-xl">
               <div className="flex items-center justify-center gap-1.5 text-xs text-[#F5D061] font-semibold mb-1">
@@ -4427,7 +4427,7 @@ export default function App() {
 
         {/* ==================== 3. 사경 · 불교명언 · 경전공부 · 지혜퀴즈 탭 ==================== */}
         {activeTab === 'sutra' && (
-          <main className="flex-1 flex flex-col gap-4 p-4">
+          <main className="flex-1 flex flex-col gap-4 px-2 py-3.5">
             {/* 상단 나의 공덕장 & 싱잉볼/목탁 버튼 */}
             <div className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-4 sm:p-5 border border-[#C59B27]/40 shadow-md flex items-center justify-between gap-3">
               <div className="min-w-0">
@@ -5197,7 +5197,7 @@ export default function App() {
 
         {/* ==================== 4. 내정보 (로그인 · 회원가입 · 축원정보 관리) 탭 ==================== */}
         {activeTab === 'profile' && (
-          <main className="flex-1 flex flex-col gap-5 p-4">
+          <main className="flex-1 flex flex-col gap-4 px-2 py-3.5">
             {/* 대표님(마스터) 계정일 때만 노출되는 역할별 원클릭 계정 전환 스위치 바 */}
             {isMaster && (
               <section className="rounded-2xl bg-[#26211C] text-white p-3.5 border border-[#C59B27]/40 space-y-2.5">
@@ -5846,7 +5846,7 @@ export default function App() {
 
         {/* ==================== 5. 포교사(파트너 전산) 탭 ==================== */}
         {activeTab === 'agent' && isAgentOrAbove && (
-          <main className="flex-1 flex flex-col gap-5 p-4">
+          <main className="flex-1 flex flex-col gap-4 px-2 py-3.5">
             {/* 상단: 내정보 창으로 돌아가기 바 */}
             <div className="flex items-center justify-between pb-0.5">
               <button
@@ -6171,7 +6171,7 @@ export default function App() {
 
         {/* ==================== 6. 총괄정산 & 회원관리 (사찰 최고대표 및 총괄 마스터 전산) 탭 ==================== */}
         {activeTab === 'admin' && isMasterOrTempleAdmin && (
-          <main className="flex-1 flex flex-col gap-5 p-4">
+          <main className="flex-1 flex flex-col gap-4 px-2 py-3.5">
             {/* 상단: 내정보 창으로 돌아가기 바 */}
             <div className="flex items-center justify-between pb-0.5">
               <button
