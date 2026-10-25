@@ -7165,37 +7165,19 @@ export default function App() {
           </div>
         )}
 
-        {/* 하단 네비게이션 바: 총괄 책임자(김철수 총괄/양영문 창건주 회장님)에게는 '총괄전산' 버튼을 최우선 노출 */}
-        <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#1B1815]/95 backdrop-blur-md border-t border-[#C59B27]/35 px-1.5 py-2 flex items-center justify-around">
-          {(isMasterOrTempleAdmin
-            ? [
-                { id: 'home', label: '신행홈', icon: Heart },
-                { id: 'lantern', label: '소원등', icon: Flame },
-                { id: 'bulsa', label: '불사안내', icon: Award },
-                { id: 'admin', label: '총괄전산', icon: TrendingUp, isSpecial: true },
-                { id: 'profile', label: '내정보', icon: User },
-              ]
-            : isAgentOrAbove
-            ? [
-                { id: 'home', label: '신행홈', icon: Heart },
-                { id: 'lantern', label: '소원등', icon: Flame },
-                { id: 'bulsa', label: '불사안내', icon: Award },
-                { id: 'agent', label: '포교전산', icon: Users, isSpecial: true },
-                { id: 'profile', label: '내정보', icon: User },
-              ]
-            : [
-                { id: 'home', label: '신행홈', icon: Heart },
-                { id: 'lantern', label: '소원등켜기', icon: Flame },
-                { id: 'sutra', label: '한줄사경', icon: BookOpen },
-                { id: 'bulsa', label: '불사안내', icon: Award },
-                { id: 'profile', label: '내정보', icon: User },
-              ]
-          ).map((tab) => {
+        {/* 하단 네비게이션 바 (신행홈·소원등켜기·한줄사경·불사안내·내정보 5대 신행 메뉴 고정) */}
+        <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#1B1815]/95 backdrop-blur-md border-t border-[#C59B27]/35 px-2 py-2 flex items-center justify-around">
+          {[
+            { id: 'home', label: '신행홈', icon: Heart },
+            { id: 'lantern', label: '소원등켜기', icon: Flame },
+            { id: 'sutra', label: '한줄사경', icon: BookOpen },
+            { id: 'bulsa', label: '불사안내', icon: Award },
+            { id: 'profile', label: '내정보', icon: User },
+          ].map((tab) => {
             const Icon = tab.icon
             const isActive =
               activeTab === tab.id ||
-              (tab.id === 'admin' && activeTab === 'agent' && isMasterOrTempleAdmin) ||
-              (tab.id === 'profile' && !isAgentOrAbove && (activeTab === 'agent' || activeTab === 'admin'))
+              (tab.id === 'profile' && (activeTab === 'agent' || activeTab === 'admin'))
             return (
               <button
                 key={tab.id}
@@ -7204,22 +7186,11 @@ export default function App() {
                   window.scrollTo({ top: 0, behavior: 'smooth' })
                 }}
                 className={`flex-1 min-w-0 flex flex-col items-center justify-center py-1 px-1 rounded-xl transition ${
-                  isActive
-                    ? 'text-[#F5D061]'
-                    : tab.isSpecial
-                    ? 'text-[#E5C158] hover:text-[#F5D061]'
-                    : 'text-[#9E9488] hover:text-[#D6CEC2]'
+                  isActive ? 'text-[#F5D061]' : 'text-[#9E9488] hover:text-[#D6CEC2]'
                 }`}
               >
-                <div className="relative">
-                  <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'stroke-[2.4px]' : 'stroke-[1.8px]'}`} />
-                  {tab.isSpecial && (
-                    <span className={`absolute -top-1 -right-1 w-2 h-2 rounded-full ${isActive ? 'bg-[#F5D061]' : 'bg-emerald-400 animate-pulse'}`} />
-                  )}
-                </div>
-                <span className={`text-[10.5px] sm:text-[11px] mt-1 tracking-tight text-center truncate w-full ${
-                  tab.isSpecial ? 'font-bold text-[#F5D061]' : 'font-semibold'
-                }`}>
+                <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'stroke-[2.4px]' : 'stroke-[1.8px]'}`} />
+                <span className="text-[10.5px] sm:text-[11px] font-semibold mt-1 tracking-tight text-center truncate w-full">
                   {tab.label}
                 </span>
               </button>
