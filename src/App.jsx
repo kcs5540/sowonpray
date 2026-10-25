@@ -2687,9 +2687,30 @@ export default function App() {
             {/* 오늘의 부처님 말씀 */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] relative overflow-hidden">
               <div className="flex items-center justify-between gap-1.5 mb-3">
-                <span className="text-xs font-bold text-[#9A7418] bg-[#FAF3DF] px-2.5 py-1 rounded-full border border-[#E5D399] whitespace-nowrap">
-                  오늘의 부처님 말씀
-                </span>
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className="text-xs font-bold text-[#9A7418] bg-[#FAF3DF] px-2.5 py-1 rounded-full border border-[#E5D399] whitespace-nowrap">
+                    오늘의 부처님 말씀
+                  </span>
+                  {/* 소리 아이콘 버튼 */}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      toggleSpeech(
+                        'home-quote',
+                        `오늘의 부처님 말씀입니다. ${currentQuote.verse}. ${currentQuote.source}. ${currentQuote.commentary}`
+                      )
+                    }
+                    title="말씀 듣기"
+                    aria-label="말씀 듣기"
+                    className={`p-1.5 rounded-full border transition flex items-center justify-center shrink-0 ${
+                      speakingId === 'home-quote'
+                        ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] animate-pulse shadow-sm'
+                        : 'bg-[#FAF3DF] text-[#9A7418] border-[#E5D399] hover:bg-[#F3E7C4] hover:text-[#7A5B0B]'
+                    }`}
+                  >
+                    <Volume2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
                 <div className="flex items-center gap-1.5 shrink-0">
                   <button
                     type="button"
@@ -2721,29 +2742,6 @@ export default function App() {
               <p className="text-xs text-[#575049] bg-[#FAF8F5] p-3 rounded-xl border border-[#EFE9DD] leading-relaxed break-keep">
                 💡 {currentQuote.commentary}
               </p>
-
-              {/* 스님 음성으로 말씀 듣기 큼직한 황금 버튼 */}
-              <button
-                type="button"
-                onClick={() =>
-                  toggleSpeech(
-                    'home-quote',
-                    `오늘의 부처님 말씀입니다. ${currentQuote.verse}. ${currentQuote.source}. ${currentQuote.commentary}`
-                  )
-                }
-                className={`w-full mt-3 py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border transition shadow-sm ${
-                  speakingId === 'home-quote'
-                    ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] animate-pulse'
-                    : 'bg-gradient-to-r from-[#FAF3DF] via-[#F6EAC9] to-[#FAF3DF] text-[#8A6510] border-[#E5D399] hover:brightness-95'
-                }`}
-              >
-                <Volume2 className="w-4 h-4 shrink-0 text-[#C59B27]" />
-                <span>
-                  {speakingId === 'home-quote'
-                    ? '⏹ 스님 음성 낭독 멈추기'
-                    : '🔊 오늘의 말씀 스님 음성으로 바로 듣기'}
-                </span>
-              </button>
             </section>
 
             {/* 퀵 액션 배너 2종: 7일 소원등 켜기 · 온라인 한줄 사경 (모바일 글자 잘림 없는 정갈한 규격) */}
