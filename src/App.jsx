@@ -1991,10 +1991,15 @@ export default function App() {
       return
     }
     const inputPw = loginPwInput.trim()
-    const isPwValid = Boolean(inputPw && inputPw === found.password_pin)
+    const phoneLast4 = found.phone ? found.phone.replace(/[^0-9]/g, '').slice(-4) : ''
+    // 비밀번호 우선순위:
+    // 1) 본인이 설정/등록한 password_pin
+    // 2) 아직 설정한 적 없는 기존 회원의 경우: 휴대전화 뒷 4자리 또는 '0000'
+    const expectedPw = (found.password_pin && found.password_pin.trim()) || phoneLast4 || '0000'
+    const isPwValid = Boolean(inputPw && inputPw === expectedPw)
 
     if (!isPwValid) {
-      showToast('비밀번호가 일치하지 않습니다. 변경하신 비밀번호를 확인해 주세요.')
+      showToast('비밀번호가 일치하지 않습니다. (초기 비밀번호: 휴대전화 뒷 4자리 또는 0000)')
       return
     }
     setCurrentUserCode(found.code)
@@ -5636,7 +5641,7 @@ export default function App() {
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                        비밀번호 (초기 기본값: 0000)
+                        비밀번호 (초기 기본값: 0000 또는 휴대전화 뒷 4자리)
                       </label>
                       <input
                         type="password"
