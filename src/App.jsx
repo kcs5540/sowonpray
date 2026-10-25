@@ -1220,6 +1220,10 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('home')
   const [heroSlideIdx, setHeroSlideIdx] = useState(0)
 
+  // 소원사 본부 & 전국 포교 통합 전산 모달 상태 ('hq': 사찰본부 관제, 'partner': 포교 조직망, 'sasi': 사시예불 축원)
+  const [showUnifiedAdminModal, setShowUnifiedAdminModal] = useState(false)
+  const [adminModalTab, setAdminModalTab] = useState('hq')
+
   // 24시간 힐링 법음 & 수면 명상 오디오 플레이어 상태 (기본: 반야심경 스님 음성 독경)
   const [healingAudioTrack, setHealingAudioTrack] = useState('prajna_chanting')
   const [isHealingPlaying, setIsHealingPlaying] = useState(false)
@@ -5559,19 +5563,44 @@ export default function App() {
                     </h2>
                   </div>
 
-                  {(isMaster || currentUser.role === 'temple_admin' || currentUser.role === 'agent' || currentUser.role === 'committee_head') && (
-                    <div className="pt-3 border-t border-white/15 flex items-center justify-between gap-2 flex-wrap">
-                      <div className="text-xs text-[#F5D061] font-semibold flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
-                        <span>오늘 사시예불 축원 대상: <strong>{activeSasiPrayers.length}위</strong> (7일 정진)</span>
+                  {(isMaster || currentUser.role === 'temple_admin' || currentUser.role === 'agent' || currentUser.role === 'committee_head' || currentUser.role === 'committee_member') && (
+                    <div className="pt-3 border-t border-white/15 space-y-2.5">
+                      <div className="flex items-center justify-between gap-2 flex-wrap">
+                        <div className="text-xs text-[#F5D061] font-semibold flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
+                          <span>오늘 사시예불 축원 대상: <strong>{activeSasiPrayers.length}위</strong> (7일 정진)</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowSasiPrintModal(true)}
+                          className="px-2.5 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] border border-white/20 font-bold text-[11px] flex items-center gap-1 shadow transition shrink-0"
+                        >
+                          <Printer className="w-3.5 h-3.5 shrink-0" />
+                          <span>축원 명부 인쇄</span>
+                        </button>
                       </div>
+
+                      {/* 저 위에 전산으로 들어가는 통합 버튼 (모달창 팝업 실행) */}
                       <button
                         type="button"
-                        onClick={() => setShowSasiPrintModal(true)}
-                        className="px-3 py-1.5 rounded-xl bg-[#F5D061] text-[#1B1815] font-extrabold text-[11px] flex items-center gap-1 shadow hover:brightness-105 transition shrink-0"
+                        onClick={() => {
+                          setShowUnifiedAdminModal(true)
+                          setAdminModalTab(isMasterOrTempleAdmin ? 'hq' : 'partner')
+                        }}
+                        className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#F5D061] via-[#E5C158] to-[#C59B27] text-[#1B1815] font-extrabold text-xs sm:text-sm shadow-lg hover:brightness-105 active:scale-[0.99] transition flex items-center justify-between gap-2"
                       >
-                        <Printer className="w-3.5 h-3.5 shrink-0" />
-                        <span>사시예불 축원 명부 인쇄</span>
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-base shrink-0">🏛️</span>
+                          <span className="truncate">
+                            {isMasterOrTempleAdmin
+                              ? '소원사 본부 & 전국 포교 통합 전산'
+                              : '소원사 포교위원회 파트너 전산'}
+                          </span>
+                        </div>
+                        <span className="text-[11px] px-2 py-0.5 rounded-lg bg-[#1B1815]/20 text-[#1B1815] font-black shrink-0 flex items-center gap-1">
+                          <span>전산 모달 열기</span>
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </span>
                       </button>
                     </div>
                   )}
@@ -5877,14 +5906,14 @@ export default function App() {
                       <button
                         type="button"
                         onClick={() => {
-                          setActiveTab('agent')
-                          window.scrollTo({ top: 0, behavior: 'smooth' })
+                          setAdminModalTab('partner')
+                          setShowUnifiedAdminModal(true)
                         }}
                         className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#9E7A18] text-[#15120F] font-bold text-xs shadow-md hover:brightness-110 transition flex items-center justify-between"
                       >
                         <div className="flex items-center gap-2">
                           <Users className="w-4 h-4" />
-                          <span>🌿 포교위원 파트너 센터 (포교전산) 열기</span>
+                          <span>🌿 포교위원 파트너 센터 (포교전산) 모달 열기</span>
                         </div>
                         <ChevronRight className="w-4 h-4" />
                       </button>
@@ -5893,14 +5922,14 @@ export default function App() {
                         <button
                           type="button"
                           onClick={() => {
-                            setActiveTab('admin')
-                            window.scrollTo({ top: 0, behavior: 'smooth' })
+                            setAdminModalTab('hq')
+                            setShowUnifiedAdminModal(true)
                           }}
                           className="w-full py-3.5 px-4 rounded-xl bg-[#2A231C] border border-[#F5D061]/50 text-[#F5D061] font-bold text-xs shadow hover:bg-[#382E24] transition flex items-center justify-between"
                         >
                           <div className="flex items-center gap-2">
                             <TrendingUp className="w-4 h-4 text-[#F5D061]" />
-                            <span>👑 총괄 판권 & 전국 정산 관제 센터 (총괄정산) 열기</span>
+                            <span>👑 소원사 본부 & 전국 포교 통합 총괄전산 모달 열기</span>
                           </div>
                           <ChevronRight className="w-4 h-4" />
                         </button>
@@ -6770,6 +6799,481 @@ export default function App() {
               >
                 합장하며 확인 (나무아미타불)
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* ==================== 소원사 본부 & 전국 포교 통합 전산 모달 ==================== */}
+        {showUnifiedAdminModal && (
+          <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-3 animate-fadeIn">
+            <div className="w-full max-w-[480px] h-[94vh] sm:h-[90vh] bg-[#FAF8F5] text-[#231F1C] rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-[#C59B27]/40 relative">
+              {/* 모달 상단 고정 헤더 */}
+              <div className="bg-[#1C1814] text-white px-4 py-3 flex items-center justify-between border-b border-[#C59B27]/30 shrink-0">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-7 h-7 rounded-lg bg-[#C59B27]/25 border border-[#F5D061]/40 flex items-center justify-center text-[#F5D061] text-xs font-bold shrink-0">
+                    🏛️
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-serif-kr text-sm font-bold text-[#F5D061] truncate">
+                      {isMasterOrTempleAdmin
+                        ? '소원사 본부 & 전국 포교 통합 전산'
+                        : '소원사 포교 파트너 전산'}
+                    </h3>
+                    <p className="text-[10.5px] text-[#A89880] truncate">
+                      {isMasterOrTempleAdmin
+                        ? '창건주 회장님 · 총괄대표 · 본부 관리자 통합 관제'
+                        : `${currentUser?.name} 포교위원님의 도량 관제`}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowUnifiedAdminModal(false)}
+                  className="px-2.5 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition shrink-0 flex items-center gap-1 text-xs border border-white/15 font-semibold"
+                  title="닫기"
+                >
+                  <span>닫기</span>
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* 모달 내부 서브 탭 (총괄 관리자일 때 3개 탭 전환, 포교위원일 때 단일 안내) */}
+              {isMasterOrTempleAdmin && (
+                <div className="bg-[#241F1A] border-b border-[#C59B27]/20 px-2 py-1.5 flex items-center gap-1 shrink-0">
+                  {[
+                    { id: 'hq', label: '🏛️ 사찰본부 관제' },
+                    { id: 'partner', label: '🌿 포교 조직망' },
+                    { id: 'sasi', label: '📿 사시예불 축원' },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setAdminModalTab(tab.id)}
+                      className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-bold transition whitespace-nowrap text-center ${
+                        adminModalTab === tab.id
+                          ? 'bg-[#F5D061] text-[#1B1815] shadow font-extrabold'
+                          : 'text-[#D8CFBF] hover:bg-white/10'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* 모달 내부 스크롤 컨텐츠 */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                {/* 1. 사찰 본부 총괄 관제 탭 (불사금 50%, 회원 DB, 요율제, 조직도, 정산) */}
+                {adminModalTab === 'hq' && isMasterOrTempleAdmin && (
+                  <div className="space-y-4">
+                    {/* 상단 통합 안내 카드 */}
+                    <section className="rounded-2xl bg-gradient-to-br from-[#1C1814] to-[#2C241C] text-white p-4 sm:p-5 border border-[#C59B27]/50 shadow-md">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 text-[#F5D061] border border-[#F5D061]/40 font-bold">
+                          소원사 사찰 본부 & 전국 포교 총괄 통합 관제
+                        </span>
+                        <Settings className="w-4 h-4 text-[#F5D061]" />
+                      </div>
+                      <h2 className="font-serif-kr text-base sm:text-lg font-bold">
+                        소원사 본부 & 전국 포교위원회 통합 총괄 전산
+                      </h2>
+                      <p className="text-xs text-[#D6CEC2] mt-1 leading-relaxed">
+                        양영문 창건주·신도회장님과 김철수 총괄대표님, 소원사 관리자가 사찰 불사금(50%), 대웅전 사시예불 축원, 전국 포교위원회 조직 및 정산을 원스톱으로 함께 관제합니다.
+                      </p>
+                      <div className="mt-2.5 p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-[#F5D061] flex items-center gap-1.5">
+                        <ShieldCheck className="w-4 h-4 shrink-0 text-[#F5D061]" />
+                        <span>
+                          <strong>[사찰 본부 최고 기밀 보장]</strong> 사찰 최고 책임자(창건주 회장님 · 총괄대표 · 사찰 본부 관리자) 전용 통합 전산입니다.
+                        </span>
+                      </div>
+                    </section>
+
+                    {/* 오늘의 대웅전 사시예불 축원 명부 인쇄 바로가기 카드 */}
+                    <section className="bg-gradient-to-r from-[#241E17] via-[#2F2417] to-[#1C160F] text-white rounded-2xl p-4 border-2 border-[#D4AF37] shadow-lg flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#D4AF37] text-[#1B1815] font-extrabold">
+                          대웅전 불단 축원용
+                        </span>
+                        <h4 className="font-serif-kr text-sm font-bold mt-1 text-[#F5D061]">
+                          사시예불 축원 명부 ({activeSasiPrayers.length}위)
+                        </h4>
+                        <p className="text-[10.5px] text-[#D6CEC2]">매일 10:30 실시간 연동</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowSasiPrintModal(true)}
+                        className="px-3 py-2 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs shadow hover:brightness-105 active:scale-95 transition flex items-center gap-1 whitespace-nowrap shrink-0"
+                      >
+                        <Printer className="w-4 h-4" />
+                        <span>A4 인쇄</span>
+                      </button>
+                    </section>
+
+                    {/* 1. 신규 포교위원 / 회원 등록 및 등급 관리 */}
+                    <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-serif-kr font-bold text-sm">
+                          1. 통합 회원 & 포교위원회 DB 관리 ({members.length}명)
+                        </h3>
+                        <span className="text-[11px] text-[#9A7418] font-bold">
+                          포교위원 {agents.length}명 · 신도 {members.length - agents.length}명
+                        </span>
+                      </div>
+
+                      <form
+                        onSubmit={handleAdminAddMember}
+                        className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-2 text-xs"
+                      >
+                        <div className="font-bold text-[#231F1C] flex items-center gap-1.5">
+                          <UserPlus className="w-3.5 h-3.5 text-[#9A7418]" />
+                          <span>신규 포교위원 / 신도 빠른 등록 (초기비번: 0000)</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            value={adminNewName}
+                            onChange={(e) => setAdminNewName(e.target.value)}
+                            placeholder="성함 (예: 홍길동)"
+                            required
+                            className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs"
+                          />
+                          <input
+                            type="tel"
+                            value={adminNewPhone}
+                            onChange={(e) => setAdminNewPhone(e.target.value)}
+                            placeholder="휴대폰 (010-0000-0000)"
+                            required
+                            className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs"
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <select
+                            value={adminNewRole}
+                            onChange={(e) => setAdminNewRole(e.target.value)}
+                            className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs font-semibold"
+                          >
+                            <option value="believer">일반신도</option>
+                            <option value="committee_member">포교위원 (60만)</option>
+                            <option value="agent">포교위원장 (80만)</option>
+                          </select>
+                          <input
+                            type="text"
+                            value={adminNewParentCode}
+                            onChange={(e) => setAdminNewParentCode(e.target.value)}
+                            placeholder="추천인 코드 (선택)"
+                            className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs"
+                          />
+                        </div>
+                        <button
+                          type="submit"
+                          className="w-full py-2.5 rounded-xl bg-[#231F1C] text-[#F5D061] font-bold text-xs hover:bg-[#302A25] transition"
+                        >
+                          회원 등록 완료
+                        </button>
+                      </form>
+
+                      {/* 회원 등급 관리 목록 */}
+                      <div className="max-h-56 overflow-y-auto space-y-1.5 pr-1 divide-y divide-[#EAE2D3]">
+                        {members.slice(0, 15).map((m) => (
+                          <div key={m.code} className="pt-1.5 flex items-center justify-between text-xs gap-2">
+                            <div className="min-w-0">
+                              <span className="font-bold text-[#1B1815]">{m.name}</span>
+                              {m.dharma_name && <span className="text-[#8C8071] text-[11px]"> ({m.dharma_name})</span>}
+                              <span className="text-[10px] text-[#A69B8D] block">{m.phone}</span>
+                            </div>
+                            <select
+                              value={m.role}
+                              onChange={(e) => {
+                                const nextRole = e.target.value
+                                setMembers((prev) =>
+                                  prev.map((item) =>
+                                    item.code === m.code ? { ...item, role: nextRole } : item
+                                  )
+                                )
+                                showToast(`${m.name}님의 회원 등급이 변경되었습니다.`)
+                              }}
+                              className="px-2 py-1 rounded-lg bg-white border border-[#D5C59B] text-[11px] font-bold text-[#231F1C] shrink-0"
+                            >
+                              <option value="believer">일반신도</option>
+                              <option value="committee_member">포교위원 (60만)</option>
+                              <option value="agent">포교위원장 (80만)</option>
+                              <option value="temple_admin">창건주·신도회장 본부</option>
+                              <option value="master">총괄 포교위원장 (제주AI파트너)</option>
+                            </select>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+
+                    {/* 2. 실입금액 기준 백분율(%) 배분 체계 */}
+                    <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-serif-kr font-bold text-sm">
+                          2. 실입금액 기준 백분율(%) 배분 체계
+                        </h3>
+                        <span className="text-[10.5px] text-[#8C8071]">자동 정산</span>
+                      </div>
+                      <div className="space-y-2 text-xs">
+                        <div className="p-3 rounded-xl bg-gradient-to-br from-[#1F1B17] to-[#2B231A] text-white border border-[#C59B27]/40 space-y-1">
+                          <span className="text-[10.5px] text-[#F5D061] font-bold">1. 사찰 본부 & 사업 총판 (50%)</span>
+                          <p className="text-[10.5px] text-[#C5BBAE]">
+                            입금액의 50%는 사찰 대웅전 불사금 및 총괄 운영비로 귀속됩니다. (예: 200만 원 입금 시 100만 원)
+                          </p>
+                        </div>
+                        <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E5D399] space-y-1">
+                          <span className="text-[10.5px] text-[#8A6510] font-bold">2. 포교위원장 직추천 (40% / 80만 원)</span>
+                          <p className="text-[10.5px] text-[#6E6354]">
+                            포교위원장이 직접 신도를 인연 맺을 시 입금액의 40%가 포교비로 정산됩니다.
+                          </p>
+                        </div>
+                        <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E5D399] space-y-1">
+                          <span className="text-[10.5px] text-[#8A6510] font-bold">3. 포교위원 직추천 (30% / 60만 원)</span>
+                          <p className="text-[10.5px] text-[#6E6354]">
+                            포교위원 30% + 상위 포교위원장 10% 오버라이딩 마진이 배분됩니다.
+                          </p>
+                        </div>
+                      </div>
+                    </section>
+
+                    {/* 3. 전국 소원사 포교위원회 계층 인연 조직도 */}
+                    <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <Network className="w-4 h-4 text-[#8A6510]" />
+                          <h3 className="font-serif-kr font-bold text-sm">
+                            3. 전국 소원사 포교위원회 인연 조직도
+                          </h3>
+                        </div>
+                        <span className="text-[10px] text-[#8C8071]">실시간 연동</span>
+                      </div>
+                      <OrganizationTreeView members={members} rootCode={null} />
+                    </section>
+
+                    {/* 4. 실시간 정산 시뮬레이션 및 신규 불사금 접수 */}
+                    <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <Calculator className="w-4 h-4 text-[#8A6510]" />
+                          <h3 className="font-serif-kr font-bold text-sm">
+                            4. 신규 불사 접수 & 실시간 정산
+                          </h3>
+                        </div>
+                      </div>
+                      <form onSubmit={handleAddSettlement} className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-2 text-xs">
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            value={simBelieverName}
+                            onChange={(e) => setSimBelieverName(e.target.value)}
+                            placeholder="신도 성함 (예: 최선자)"
+                            required
+                            className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs"
+                          />
+                          <select
+                            value={simItemName}
+                            onChange={(e) => {
+                              const val = e.target.value
+                              setSimItemName(val)
+                              if (val.includes('흑색 1기')) setSimTotalAmount('2000000')
+                              else if (val.includes('부부 2기')) setSimTotalAmount('4000000')
+                              else if (val.includes('황금 1기')) setSimTotalAmount('3000000')
+                              else if (val.includes('특별')) setSimTotalAmount('5000000')
+                            }}
+                            className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs font-semibold"
+                          >
+                            <option value="조상 영가 흑색 영구위패 (1기)">흑색 영구위패 1기 (200만)</option>
+                            <option value="조상 영가 부부 영구위패 (2기)">부부 영구위패 2기 (400만)</option>
+                            <option value="인등 1년 기도 불사">인등 1년 기도 (30만)</option>
+                          </select>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            type="number"
+                            value={simTotalAmount}
+                            onChange={(e) => setSimTotalAmount(e.target.value)}
+                            placeholder="입금액(원)"
+                            required
+                            className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs font-bold text-[#8A6510]"
+                          />
+                          <select
+                            value={simAgentCode}
+                            onChange={(e) => setSimAgentCode(e.target.value)}
+                            className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs font-semibold"
+                          >
+                            {agents.map((a) => (
+                              <option key={a.code} value={a.code}>
+                                {a.name} ({a.role === 'committee_member' ? '위원 60만' : a.role === 'master' ? '김철수 총괄' : '위원장 80만'})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <button
+                          type="submit"
+                          className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#8A6510] text-[#15120F] font-extrabold text-xs shadow hover:brightness-105 transition"
+                        >
+                          ⚡ 실시간 자동 정산 실행
+                        </button>
+                      </form>
+                    </section>
+                  </div>
+                )}
+
+                {/* 2. 전국 포교 조직망 / 파트너 센터 탭 */}
+                {(adminModalTab === 'partner' || !isMasterOrTempleAdmin) && (
+                  <div className="space-y-4">
+                    {/* 파트너 헤더 */}
+                    <section className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-4 sm:p-5 border border-[#C59B27]/40 shadow-md space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-[10.5px] text-[#F5D061] font-semibold">
+                            포교위원 모바일 파트너 센터
+                          </span>
+                          <h3 className="font-serif-kr text-base sm:text-lg font-bold mt-0.5">
+                            {activeAgent.name}
+                            {activeAgent.dharma_name ? `(${activeAgent.dharma_name})` : ''}
+                            {activeAgent.role === 'committee_member' ? ' 포교위원' : ' 포교위원장'}님의 도량
+                          </h3>
+                        </div>
+                        {isMasterOrTempleAdmin && (
+                          <select
+                            value={selectedAgentCode}
+                            onChange={(e) => setSelectedAgentCode(e.target.value)}
+                            className="bg-[#2E2822] text-[#F5D061] border border-[#C59B27]/50 rounded-xl px-2.5 py-1 text-xs font-bold focus:outline-none"
+                          >
+                            {agents.map((ag) => (
+                              <option key={ag.code} value={ag.code}>
+                                {ag.name} ({ag.role === 'committee_member' ? '위원' : '위원장'})
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2 pt-1 text-center">
+                        <div className="bg-white/5 border border-white/10 rounded-xl p-2">
+                          <div className="text-[10px] text-[#BFB6AA]">인연 신도</div>
+                          <div className="text-base font-bold text-[#F5D061] mt-0.5">
+                            {activeAgent.believers_count || 0}명
+                          </div>
+                        </div>
+                        <div className="bg-white/5 border border-white/10 rounded-xl p-2">
+                          <div className="text-[10px] text-[#BFB6AA]">위패 봉안</div>
+                          <div className="text-base font-bold text-white mt-0.5">
+                            {activeAgent.wipae_count || 0}기
+                          </div>
+                        </div>
+                        <div className="bg-white/5 border border-white/10 rounded-xl p-2">
+                          <div className="text-[10px] text-[#BFB6AA]">포교 요율</div>
+                          <div className="text-base font-bold text-emerald-400 mt-0.5">
+                            {activeAgent.role === 'committee_member' ? '30%' : '40%'}
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+
+                    {/* 인연 신도 조직도 트리 */}
+                    <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <Users className="w-4 h-4 text-[#8A6510]" />
+                          <h4 className="font-serif-kr font-bold text-sm">산하 인연 조직도</h4>
+                        </div>
+                        <span className="text-[10.5px] text-[#8C8071]">
+                          {activeAgent.name} 포교위원 관할
+                        </span>
+                      </div>
+                      <OrganizationTreeView
+                        members={members}
+                        rootCode={isAdmin ? null : activeAgent.code}
+                      />
+                    </section>
+
+                    {/* 차담 & 사찰 공양 예약 현황 */}
+                    <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <Coffee className="w-4 h-4 text-[#8A6510]" />
+                          <h4 className="font-serif-kr font-bold text-sm">도량 차담 & 공양 예약 현황</h4>
+                        </div>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-[#8A6510] font-bold">
+                          {visitReservations.length}건 접수
+                        </span>
+                      </div>
+                      <div className="space-y-2">
+                        {visitReservations.map((res) => (
+                          <div key={res.id} className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] flex items-center justify-between text-xs">
+                            <div>
+                              <div className="font-bold text-[#231F1C]">
+                                {res.believer_name} 불자님
+                                <span className="text-[11px] text-[#8C8071] ml-1">({res.guest_count}명 방문)</span>
+                              </div>
+                              <div className="text-[11px] text-[#8A6510] mt-0.5">
+                                📅 {res.visit_date} {res.visit_time} · {res.tea_or_meal}
+                              </div>
+                            </div>
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold shrink-0">
+                              {res.status === 'confirmed' ? '예약 확정' : '접수 완료'}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  </div>
+                )}
+
+                {/* 3. 대웅전 사시예불 축원 탭 */}
+                {adminModalTab === 'sasi' && isMasterOrTempleAdmin && (
+                  <div className="space-y-4">
+                    <section className="bg-gradient-to-r from-[#241E17] via-[#2F2417] to-[#1C160F] text-white rounded-2xl p-4 sm:p-5 border-2 border-[#D4AF37] shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                      <div>
+                        <span className="px-2.5 py-0.5 rounded-full bg-[#D4AF37] text-[#1B1815] text-[10.5px] font-extrabold">
+                          대웅전 불단 축원용
+                        </span>
+                        <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white mt-1">
+                          오늘의 사시예불 축원 명부 ({activeSasiPrayers.length}위)
+                        </h3>
+                        <p className="text-xs text-[#D6CEC2] mt-0.5">
+                          접수 후 7일 이내 정진 불자만 매일 자동 추출됩니다.
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowSasiPrintModal(true)}
+                        className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs shadow-md hover:brightness-105 active:scale-95 transition flex items-center gap-1.5 whitespace-nowrap"
+                      >
+                        <Printer className="w-4 h-4" />
+                        <span>A4 인쇄 모달 열기</span>
+                      </button>
+                    </section>
+
+                    {/* 축원 대상자 리스트 */}
+                    <div className="bg-white rounded-2xl p-4 border border-[#E6DEC8] shadow-sm space-y-2">
+                      <h4 className="font-serif-kr text-sm font-bold text-[#1B1815] mb-2">
+                        당일 사시예불 축원 대상 불자 명단
+                      </h4>
+                      <div className="divide-y divide-[#EAE2D3] max-h-96 overflow-y-auto pr-1">
+                        {activeSasiPrayers.map((p, idx) => (
+                          <div key={p.id || idx} className="py-2.5 flex items-center justify-between text-xs">
+                            <div>
+                              <div className="font-bold text-[#231F1C]">
+                                #{idx + 1} {p.believer_name}
+                                {p.dharma_name && <span className="text-[#8A6510]"> ({p.dharma_name})</span>}
+                              </div>
+                              <div className="text-[11px] text-[#8C8071] mt-0.5">
+                                발원: {p.wish_type} · 접수: {p.created_at}
+                              </div>
+                            </div>
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10.5px] font-bold border border-emerald-200 shrink-0">
+                              정진 진행중
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
