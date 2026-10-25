@@ -3947,21 +3947,19 @@ export default function App() {
                         : 'text-[#7A6B59]'
                     }`}
                   />
-                  <span
-                    className={`mt-1.5 font-serif-kr font-bold text-xs ${
-                      isLanternLit
-                        ? 'text-[#1E1812]'
-                        : isLanternExpired
-                        ? 'text-[#D4AF37]'
-                        : 'text-[#C2B8AB]'
-                    }`}
-                  >
-                    {isLanternLit
-                      ? `7일 광명 점등중`
-                      : isLanternExpired
-                      ? '7일 회향 · 다시 밝히기'
-                      : '터치하여 7일 점등하기'}
-                  </span>
+                  {!isLanternLit && (
+                    <span
+                      className={`mt-1.5 font-serif-kr font-bold text-xs ${
+                        isLanternExpired
+                          ? 'text-[#D4AF37]'
+                          : 'text-[#C2B8AB]'
+                      }`}
+                    >
+                      {isLanternExpired
+                        ? '7일 회향 · 다시 밝히기'
+                        : '터치하여 7일 점등하기'}
+                    </span>
+                  )}
                 </button>
 
                 {/* 연등 아래 매달린 제주 소원사 황금 축원 명패 */}
