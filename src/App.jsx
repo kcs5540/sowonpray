@@ -4001,7 +4001,7 @@ export default function App() {
                       <span>{lanternData?.believer_name} 불자님의 7일 정진 축원이 진행 중입니다</span>
                     </div>
                     <p className="text-[11px] text-[#D6CEC2]">
-                      매일 오전 10시 30분 사시예불에서 제주 소원사 스님께서 정성껏 축원해 드리고 있습니다. (D-{lanternDaysRemaining}일 남음)
+                      매일 오전 10시 사시예불에서 제주 소원사 스님께서 정성껏 축원해 드리고 있습니다. (D-{lanternDaysRemaining}일 남음)
                     </p>
                   </div>
                 ) : isLanternExpired ? (
@@ -4280,7 +4280,7 @@ export default function App() {
               <div className="p-3 rounded-xl bg-[#FAF3DF] border border-[#E5D399] text-[11px] text-[#6E5617] flex items-start gap-2">
                 <Sparkles className="w-4 h-4 text-[#9A7418] shrink-0 mt-0.5" />
                 <div className="break-keep">
-                  <strong>제주 소원사 대웅전 매일 축원:</strong> 소원등을 밝히고 남겨주신 발원문은 매일 오전 10시 30분 사시예불마다 부처님 전에 정성껏 축원 올립니다.
+                  <strong>제주 소원사 대웅전 매일 축원:</strong> 소원등을 밝히고 남겨주신 발원문은 매일 오전 10시 사시예불마다 부처님 전에 정성껏 축원 올립니다.
                 </div>
               </div>
 
@@ -6224,7 +6224,7 @@ export default function App() {
                     대웅전 불단 축원용
                   </span>
                   <span className="text-xs text-[#F5D061] font-bold whitespace-nowrap">
-                    매일 오전 10:30 사시예불 실시간 연동
+                    매일 오전 10:00 사시예불 실시간 연동
                   </span>
                 </div>
                 <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white break-keep">
@@ -7128,7 +7128,7 @@ export default function App() {
                         <h4 className="font-serif-kr text-sm font-bold mt-1 text-[#F5D061]">
                           사시예불 축원 명부 ({activeSasiPrayers.length}위)
                         </h4>
-                        <p className="text-[10.5px] text-[#D6CEC2]">매일 10:30 사시예불 실시간 연동</p>
+                        <p className="text-[10.5px] text-[#D6CEC2]">매일 10:00 사시예불 실시간 연동</p>
                       </div>
                       <button
                         type="button"
@@ -7532,7 +7532,7 @@ export default function App() {
                   </h1>
                   <div className="flex items-center justify-center gap-4 text-xs font-semibold text-[#444444] mt-2 flex-wrap">
                     <span>
-                      축원 일시: {new Date().getFullYear()}년 {new Date().getMonth() + 1}월 {new Date().getDate()}일 오전 10:30 사시예불
+                      축원 일시: {new Date().getFullYear()}년 {new Date().getMonth() + 1}월 {new Date().getDate()}일 오전 10:00 사시예불
                     </span>
                     <span>·</span>
                     <span>
