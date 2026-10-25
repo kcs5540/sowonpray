@@ -1635,11 +1635,11 @@ export default function App() {
       '대웅전 1년 인등(가족등)',
       '100일 소원성취 특별기도',
       '49재/천도재/기일제사',
+      '생전예수재(황금위패)',
+      '조상영구위패(흑색)',
       '삼성각 소원기와불사',
       '삼성각 기둥·단청불사',
       '삼성각 영구축원명패',
-      '생전예수재(황금위패)',
-      '조상영구위패(흑색)',
       '기타 특별기도 상담',
     ]
     const lanternCats = [
@@ -3530,8 +3530,8 @@ export default function App() {
                 }}
                 className="py-2.5 px-1.5 rounded-xl bg-white border border-[#E6DEC8] text-center shadow-sm hover:border-[#C59B27] transition active:scale-95"
               >
-                <span className="block text-[10px] text-[#8A6510] font-bold">2. 성전 건립</span>
-                <span className="block text-xs font-black text-[#231F1C] mt-0.5 truncate">삼성각 불사</span>
+                <span className="block text-[10px] text-[#8A6510] font-bold">2. 영구 위패</span>
+                <span className="block text-xs font-black text-[#231F1C] mt-0.5 truncate">황금 · 흑색</span>
               </button>
               <button
                 type="button"
@@ -3540,8 +3540,8 @@ export default function App() {
                 }}
                 className="py-2.5 px-1.5 rounded-xl bg-white border border-[#E6DEC8] text-center shadow-sm hover:border-[#C59B27] transition active:scale-95"
               >
-                <span className="block text-[10px] text-[#8A6510] font-bold">3. 영구 위패</span>
-                <span className="block text-xs font-black text-[#231F1C] mt-0.5 truncate">황금 · 흑색</span>
+                <span className="block text-[10px] text-[#8A6510] font-bold">3. 성전 건립</span>
+                <span className="block text-xs font-black text-[#231F1C] mt-0.5 truncate">삼성각 불사</span>
               </button>
             </div>
 
@@ -3618,15 +3618,103 @@ export default function App() {
               </div>
             </section>
 
-            {/* [큰 항목 2] 삼성각(三聖閣) 성전 건립 대작불사 (3종) - 가벼운 소원기와부터 배치 */}
+            {/* [큰 항목 2] 명당 위패 봉안 불사 (2종) */}
             <section
               id="bulsa-section-2"
+              className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-4 scroll-mt-20"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] text-[11.5px] font-extrabold whitespace-nowrap shadow-sm mb-1.5">
+                    2. 명당 위패 봉안 불사 (2종)
+                  </span>
+                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
+                    생전 예수재 황금위패 · 조상 영구위패
+                  </h3>
+                </div>
+                <Award className="w-6 h-6 text-[#C59B27] shrink-0" />
+              </div>
+
+              <div className="rounded-xl overflow-hidden border border-[#D8CBB8]">
+                <img
+                  src="/images/wipae_product.jpg"
+                  alt="생전 예수재 황금위패와 조상 흑색 위패 실물"
+                  className="w-full h-44 object-cover"
+                />
+                <div className="bg-[#1B1815] text-white px-3 py-2 flex flex-col sm:flex-row sm:justify-between items-center gap-1 text-[10.5px] font-bold text-center">
+                  <span className="text-[#F5D061]">◀ 좌측: 생전 예수재 황금위패</span>
+                  <span className="text-[#E2DAD0]">우측: 조상 영가 흑색위패 ▶</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3">
+                {/* ① 생전 예수재 황금위패 */}
+                <div
+                  onClick={() => {
+                    playMoktakSound()
+                    setWishCategory('생전예수재(황금위패)')
+                  }}
+                  className={`rounded-xl border-2 p-4 space-y-2 cursor-pointer transition ${
+                    wishCategory === '생전예수재(황금위패)'
+                      ? 'border-[#B8860B] ring-2 ring-[#D4AF37]/40 bg-gradient-to-br from-[#FFFDF7] to-[#F6E8BE]'
+                      : 'border-[#D4AF37] bg-gradient-to-br from-[#FFFDF7] to-[#F9F1D8]'
+                  }`}
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-1.5">
+                    <span className="text-[10.5px] font-bold px-2 py-0.5 rounded bg-[#D4AF37] text-[#1B1815] break-keep">
+                      살아계신 분 · 현세 복덕과 무병장수
+                    </span>
+                    <span className="text-xs font-extrabold text-[#8A6510] shrink-0">
+                      영구 봉안
+                    </span>
+                  </div>
+                  <h4 className="font-serif-kr font-bold text-base text-[#231F1C] break-keep">
+                    ① 생전 예수재 황금빛 위패
+                  </h4>
+                  <p className="text-xs text-[#575049] leading-relaxed break-keep">
+                    살아생전에 미리 선업과 공덕을 닦아 삼재팔난과 액난을 소멸하고, 부모님과 가족의 무병장수·수복증장을 기원하는 찬란한 황금 위패입니다.
+                  </p>
+                </div>
+
+                {/* ② 조상 영가 흑색 위패 */}
+                <div
+                  onClick={() => {
+                    playMoktakSound()
+                    setWishCategory('조상영구위패(흑색)')
+                  }}
+                  className={`rounded-xl border p-4 space-y-2 cursor-pointer transition bg-gradient-to-br from-[#3D3731] to-[#2B2621] text-[#FAF8F5] shadow-sm ${
+                    wishCategory === '조상영구위패(흑색)'
+                      ? 'border-[#F5D061] ring-2 ring-[#F5D061]/40'
+                      : 'border-[#5A5146]/60 hover:border-[#8C7B68]'
+                  }`}
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-1.5">
+                    <span className="text-[10.5px] font-bold px-2 py-0.5 rounded bg-[#C59B27]/30 text-[#FCE18B] border border-[#F5D061]/50 break-keep">
+                      돌아가신 조상님 · 극락왕생 천도
+                    </span>
+                    <span className="text-xs font-extrabold text-[#FCE18B] shrink-0">
+                      영구 봉안
+                    </span>
+                  </div>
+                  <h4 className="font-serif-kr font-bold text-base text-white break-keep">
+                    ② 조상 영가 품격 흑색 영구위패
+                  </h4>
+                  <p className="text-xs text-[#D8D0C5] leading-relaxed break-keep">
+                    중후한 흑색 바탕에 순금빛 존함을 새겨 후손들의 제사 부담을 덜어드리고, 사찰에서 영구히 독경과 합동 차례·천도 축원을 올립니다.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            {/* [큰 항목 3] 삼성각(三聖閣) 성전 건립 대작불사 (3종) - 가벼운 소원기와부터 배치 */}
+            <section
+              id="bulsa-section-3"
               className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-3.5 scroll-mt-20"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] text-[11.5px] font-extrabold whitespace-nowrap shadow-sm mb-1.5">
-                    2. 천년 도량 성전 건립 대작불사 (3종)
+                    3. 천년 도량 성전 건립 대작불사 (3종)
                   </span>
                   <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
                     제주 소원사 ‘삼성각(三聖閣)’ 건립 불사
@@ -3720,94 +3808,6 @@ export default function App() {
               </div>
             </section>
 
-            {/* [큰 항목 3] 명당 위패 봉안 불사 (2종) */}
-            <section
-              id="bulsa-section-3"
-              className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-4 scroll-mt-20"
-            >
-              <div className="flex items-center justify-between gap-2">
-                <div className="min-w-0">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] text-[11.5px] font-extrabold whitespace-nowrap shadow-sm mb-1.5">
-                    3. 명당 위패 봉안 불사 (2종)
-                  </span>
-                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
-                    생전 예수재 황금위패 · 조상 영구위패
-                  </h3>
-                </div>
-                <Award className="w-6 h-6 text-[#C59B27] shrink-0" />
-              </div>
-
-              <div className="rounded-xl overflow-hidden border border-[#D8CBB8]">
-                <img
-                  src="/images/wipae_product.jpg"
-                  alt="생전 예수재 황금위패와 조상 흑색 위패 실물"
-                  className="w-full h-44 object-cover"
-                />
-                <div className="bg-[#1B1815] text-white px-3 py-2 flex flex-col sm:flex-row sm:justify-between items-center gap-1 text-[10.5px] font-bold text-center">
-                  <span className="text-[#F5D061]">◀ 좌측: 생전 예수재 황금위패</span>
-                  <span className="text-[#E2DAD0]">우측: 조상 영가 흑색위패 ▶</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 gap-3">
-                {/* ① 생전 예수재 황금위패 */}
-                <div
-                  onClick={() => {
-                    playMoktakSound()
-                    setWishCategory('생전예수재(황금위패)')
-                  }}
-                  className={`rounded-xl border-2 p-4 space-y-2 cursor-pointer transition ${
-                    wishCategory === '생전예수재(황금위패)'
-                      ? 'border-[#B8860B] ring-2 ring-[#D4AF37]/40 bg-gradient-to-br from-[#FFFDF7] to-[#F6E8BE]'
-                      : 'border-[#D4AF37] bg-gradient-to-br from-[#FFFDF7] to-[#F9F1D8]'
-                  }`}
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-1.5">
-                    <span className="text-[10.5px] font-bold px-2 py-0.5 rounded bg-[#D4AF37] text-[#1B1815] break-keep">
-                      살아계신 분 · 현세 복덕과 무병장수
-                    </span>
-                    <span className="text-xs font-extrabold text-[#8A6510] shrink-0">
-                      영구 봉안
-                    </span>
-                  </div>
-                  <h4 className="font-serif-kr font-bold text-base text-[#231F1C] break-keep">
-                    ① 생전 예수재 황금빛 위패
-                  </h4>
-                  <p className="text-xs text-[#575049] leading-relaxed break-keep">
-                    살아생전에 미리 선업과 공덕을 닦아 삼재팔난과 액난을 소멸하고, 부모님과 가족의 무병장수·수복증장을 기원하는 찬란한 황금 위패입니다.
-                  </p>
-                </div>
-
-                {/* ② 조상 영가 흑색 위패 */}
-                <div
-                  onClick={() => {
-                    playMoktakSound()
-                    setWishCategory('조상영구위패(흑색)')
-                  }}
-                  className={`rounded-xl border p-4 space-y-2 cursor-pointer transition bg-gradient-to-br from-[#3D3731] to-[#2B2621] text-[#FAF8F5] shadow-sm ${
-                    wishCategory === '조상영구위패(흑색)'
-                      ? 'border-[#F5D061] ring-2 ring-[#F5D061]/40'
-                      : 'border-[#5A5146]/60 hover:border-[#8C7B68]'
-                  }`}
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-1.5">
-                    <span className="text-[10.5px] font-bold px-2 py-0.5 rounded bg-[#C59B27]/30 text-[#FCE18B] border border-[#F5D061]/50 break-keep">
-                      돌아가신 조상님 · 극락왕생 천도
-                    </span>
-                    <span className="text-xs font-extrabold text-[#FCE18B] shrink-0">
-                      영구 봉안
-                    </span>
-                  </div>
-                  <h4 className="font-serif-kr font-bold text-base text-white break-keep">
-                    ② 조상 영가 품격 흑색 영구위패
-                  </h4>
-                  <p className="text-xs text-[#D8D0C5] leading-relaxed break-keep">
-                    중후한 흑색 바탕에 순금빛 존함을 새겨 후손들의 제사 부담을 덜어드리고, 사찰에서 영구히 독경과 합동 차례·천도 축원을 올립니다.
-                  </p>
-                </div>
-              </div>
-            </section>
-
             {/* 불사·위패·기도 통합 신청란 */}
             <form
               onSubmit={handlePrayerSubmit}
@@ -3848,11 +3848,11 @@ export default function App() {
                     '대웅전 1년 인등(가족등)',
                     '100일 소원성취 특별기도',
                     '49재/천도재/기일제사',
+                    '생전예수재(황금위패)',
+                    '조상영구위패(흑색)',
                     '삼성각 소원기와불사',
                     '삼성각 기둥·단청불사',
                     '삼성각 영구축원명패',
-                    '생전예수재(황금위패)',
-                    '조상영구위패(흑색)',
                     '기타 특별기도 상담',
                   ].map((cat) => {
                     const isSelected = wishCategory === cat
