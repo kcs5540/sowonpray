@@ -2596,7 +2596,7 @@ export default function App() {
 
         {/* ==================== 1. 신행홈 탭 ==================== */}
         {activeTab === 'home' && (
-          <main className="flex-1 flex flex-col gap-4 px-3 py-4">
+          <main className="flex-1 flex flex-col gap-3.5 px-2 py-3.5">
             {/* 히어로 3종 경량 캐러셀 카드: 제주 소원사 도량·대웅전·위패/삼성각 불사 */}
             {(() => {
               const slide = HERO_SLIDES[heroSlideIdx] || HERO_SLIDES[0]
