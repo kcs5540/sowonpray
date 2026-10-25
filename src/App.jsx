@@ -43,6 +43,7 @@ import {
   Calculator,
   Share2,
   X,
+  ListMusic,
 } from 'lucide-react'
 import QRCode from 'qrcode'
 import {
@@ -2839,7 +2840,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* 우측 퀵 컨트롤: 재생/정지 + 트랙선택(펼침) */}
+                  {/* 우측 퀵 컨트롤: 재생/정지 + 트랙선택(아이콘) */}
                   <div className="flex items-center gap-1.5 shrink-0">
                     <button
                       type="button"
@@ -2857,11 +2858,11 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => setIsPlayerExpanded(true)}
-                      className="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-[#F5D061] border border-[#F5D061]/30 text-xs font-bold flex items-center gap-1 transition"
-                      title="5대 불경 트랙 목록 펼치기"
+                      className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/15 text-[#F5D061] border border-[#F5D061]/30 flex items-center justify-center transition"
+                      title="5대 불경 트랙 목록 열기"
+                      aria-label="5대 불경 트랙 목록 열기"
                     >
-                      <span>트랙 선택</span>
-                      <ChevronDown className="w-3.5 h-3.5" />
+                      <ListMusic className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
