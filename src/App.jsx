@@ -260,7 +260,7 @@ function OrganizationTreeView({
         case 'master':
           return { label: '포교위원장', bg: 'bg-[#C59B27] text-[#120F0D]' }
         case 'temple_admin':
-          return { label: '소원사 본부', bg: 'bg-[#8A6510] text-white' }
+          return { label: '창건주 · 신도회장', bg: 'bg-[#8A6510] text-white' }
         case 'agent':
         case 'committee_head':
           return { label: '포교위원장', bg: 'bg-emerald-700 text-white' }
@@ -2526,7 +2526,7 @@ export default function App() {
                 <span className="truncate text-[11.5px]">
                   <strong className="text-[#F5D061]">
                     {currentUser.name}
-                    {currentUser.dharma_name ? `(${currentUser.dharma_name})` : ''}
+                    {currentUser.dharma_name ? ` (${currentUser.dharma_name})` : ''}
                   </strong>
                   {currentUser.role === 'master' || currentUser.role === 'agent' || currentUser.role === 'committee_head'
                     ? ' 포교위원장님'
@@ -5529,7 +5529,7 @@ export default function App() {
                         : currentUser.role === 'committee_member'
                         ? '소원사 포교위원'
                         : currentUser.role === 'temple_admin'
-                        ? '소원사 본부 (신도회장)'
+                        ? '소원사 창건주 · 신도회장 (사찰 최고대표)'
                         : '제주 소원사 신도'}
                     </span>
 
@@ -5547,11 +5547,13 @@ export default function App() {
                     </button>
                   </div>
 
-                  {/* 2행: 성함 및 법명 (불필요한 기술적 ID 표기를 제거하여 군더더기 없이 최고로 단정하게 표시) */}
+                  {/* 2행: 성함 및 직함/법명 (양영문 회장님은 창건주 회장님으로 최고 예우 표시) */}
                   <div>
                     <h2 className="font-serif-kr text-xl sm:text-2xl font-bold tracking-tight text-white whitespace-nowrap">
-                      {currentUser.name}
-                      {currentUser.dharma_name ? ` (${currentUser.dharma_name})` : ''}님
+                      {currentUser.name}{' '}
+                      {currentUser.role === 'temple_admin'
+                        ? '(창건주) 회장님'
+                        : `${currentUser.dharma_name ? `(${currentUser.dharma_name})` : ''}님`}
                     </h2>
                   </div>
 
@@ -6440,8 +6442,8 @@ export default function App() {
                         <option value="believer">일반신도</option>
                         <option value="committee_member">포교위원 (60만)</option>
                         <option value="agent">포교위원장 (80만)</option>
-                        <option value="temple_admin">소원사 본부</option>
-                        <option value="master">총괄 (김철수)</option>
+                        <option value="temple_admin">창건주·신도회장 본부</option>
+                        <option value="master">총괄 포교위원장 (제주AI파트너)</option>
                       </select>
                     </div>
                   ))}
