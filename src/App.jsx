@@ -5529,17 +5529,35 @@ export default function App() {
               /* [B] 로그인 상태일 때: 내 계정 정보 확인 & 확장 정보 수정 */
               <>
                 <section className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-5 border border-[#C59B27]/40 shadow-md space-y-3">
-                  {/* 상단 1행: 직책 배지(좌) + 로그아웃 버튼(우측 상단 배치) */}
+                  {/* 상단 1행: 직책 배지(좌) + '전산' 소형 버튼 + 로그아웃 버튼(우측 상단 배치) */}
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/40 font-bold whitespace-nowrap">
-                      {currentUser.role === 'master' || currentUser.role === 'agent' || currentUser.role === 'committee_head'
-                        ? '소원사 포교위원장'
-                        : currentUser.role === 'committee_member'
-                        ? '소원사 포교위원'
-                        : currentUser.role === 'temple_admin'
-                        ? '소원사 창건주 · 신도회장 (사찰 최고대표)'
-                        : '제주 소원사 신도'}
-                    </span>
+                    <div className="flex items-center gap-1.5 flex-wrap min-w-0">
+                      <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/40 font-bold whitespace-nowrap shrink-0">
+                        {currentUser.role === 'master' || currentUser.role === 'agent' || currentUser.role === 'committee_head'
+                          ? '소원사 포교위원장'
+                          : currentUser.role === 'committee_member'
+                          ? '소원사 포교위원'
+                          : currentUser.role === 'temple_admin'
+                          ? '소원사 창건주 · 신도회장 (사찰 최고대표)'
+                          : '제주 소원사 신도'}
+                      </span>
+
+                      {/* 직책 배지 바로 옆에 아담하고 고급스럽게 배치된 '전산' 모달 버튼 */}
+                      {(isMaster || currentUser.role === 'temple_admin' || currentUser.role === 'agent' || currentUser.role === 'committee_head' || currentUser.role === 'committee_member') && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setAdminModalTab(isMasterOrTempleAdmin ? 'hq' : 'partner')
+                            setShowUnifiedAdminModal(true)
+                          }}
+                          className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-[11px] flex items-center gap-1 shadow hover:brightness-105 active:scale-95 transition whitespace-nowrap shrink-0 border border-[#F5D061]"
+                          title="소원사 통합 전산 모달 열기"
+                        >
+                          <span>🏛️ 전산</span>
+                          <ChevronRight className="w-3 h-3 -ml-0.5" />
+                        </button>
+                      )}
+                    </div>
 
                     {/* 오른쪽 상단으로 올린 로그아웃 버튼 */}
                     <button
@@ -5566,43 +5584,18 @@ export default function App() {
                   </div>
 
                   {(isMaster || currentUser.role === 'temple_admin' || currentUser.role === 'agent' || currentUser.role === 'committee_head' || currentUser.role === 'committee_member') && (
-                    <div className="pt-3 border-t border-white/15 space-y-2.5">
-                      <div className="flex items-center justify-between gap-2 flex-wrap">
-                        <div className="text-xs text-[#F5D061] font-semibold flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
-                          <span>오늘 사시예불 축원 대상: <strong>{activeSasiPrayers.length}위</strong> (7일 정진)</span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setShowSasiPrintModal(true)}
-                          className="px-2.5 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] border border-white/20 font-bold text-[11px] flex items-center gap-1 shadow transition shrink-0"
-                        >
-                          <Printer className="w-3.5 h-3.5 shrink-0" />
-                          <span>축원 명부 인쇄</span>
-                        </button>
+                    <div className="pt-3 border-t border-white/15 flex items-center justify-between gap-2 flex-wrap">
+                      <div className="text-xs text-[#F5D061] font-semibold flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
+                        <span>오늘 사시예불 축원 대상: <strong>{activeSasiPrayers.length}위</strong> (7일 정진)</span>
                       </div>
-
-                      {/* 저 위에 전산으로 들어가는 통합 버튼 (모달창 팝업 실행) */}
                       <button
                         type="button"
-                        onClick={() => {
-                          setShowUnifiedAdminModal(true)
-                          setAdminModalTab(isMasterOrTempleAdmin ? 'hq' : 'partner')
-                        }}
-                        className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#F5D061] via-[#E5C158] to-[#C59B27] text-[#1B1815] font-extrabold text-xs sm:text-sm shadow-lg hover:brightness-105 active:scale-[0.99] transition flex items-center justify-between gap-2"
+                        onClick={() => setShowSasiPrintModal(true)}
+                        className="px-2.5 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] border border-white/20 font-bold text-[11px] flex items-center gap-1 shadow transition shrink-0"
                       >
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span className="text-base shrink-0">🏛️</span>
-                          <span className="truncate">
-                            {isMasterOrTempleAdmin
-                              ? '소원사 본부 & 전국 포교 통합 전산'
-                              : '소원사 포교위원회 파트너 전산'}
-                          </span>
-                        </div>
-                        <span className="text-[11px] px-2 py-0.5 rounded-lg bg-[#1B1815]/20 text-[#1B1815] font-black shrink-0 flex items-center gap-1">
-                          <span>전산 모달 열기</span>
-                          <ChevronRight className="w-3.5 h-3.5" />
-                        </span>
+                        <Printer className="w-3.5 h-3.5 shrink-0" />
+                        <span>축원 명부 인쇄</span>
                       </button>
                     </div>
                   )}
