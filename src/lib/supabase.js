@@ -153,9 +153,9 @@ export const INITIAL_MEMBERS = [
     extra_data: {},
   },
   {
-    code: '30724749',
-    phone: '010-3072-4749',
-    password_pin: '4749',
+    code: '83855838',
+    phone: '010-8385-5838',
+    password_pin: '5838',
     name: '오수미',
     dharma_name: '',
     birth_date: '',
