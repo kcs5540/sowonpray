@@ -2892,8 +2892,8 @@ function normalizeMemberHierarchy(m) {
           window.Kakao.Share.sendDefault({
             objectType: 'feed',
             content: {
-              title: '🪷 제주 소원사 · 7일 무료 소원등 복(福) 선물',
-              description: `${senderName}께서 7일 소원등을 선물하셨습니다. 부처님 전에 소원을 밝혀보세요.`,
+              title: '🪷 제주 소원사 소원등 복(福) 선물',
+              description: `${senderName}께서 보낸 소원등 선물\n부처님 전에 소원을 밝혀보세요.`,
               imageUrl: altarImageUrl,
               imageWidth: 1024,
               imageHeight: 536,
@@ -2920,8 +2920,8 @@ function normalizeMemberHierarchy(m) {
     }
 
     // 2) 브라우저 네이티브 공유 / 복사 fallback
-    const shareTitle = '🪷 제주 소원사 · 7일 무료 소원등 복(福) 선물'
-    const shareText = `[제주 소원사 모바일 법당]\n${senderName}께서 7일 소원등을 선물하셨습니다.\n부처님 전에 소원을 밝혀보세요.\n아래 카드를 터치하여 대웅전에 소원등을 밝혀보세요.`
+    const shareTitle = '🪷 제주 소원사 소원등 복(福) 선물'
+    const shareText = `[제주 소원사 모바일 법당]\n${senderName}께서 보낸 소원등 선물\n부처님 전에 소원을 밝혀보세요.\n아래 카드를 터치하여 대웅전에 소원등을 밝혀보세요.`
 
     if (navigator.share) {
       navigator.share({
