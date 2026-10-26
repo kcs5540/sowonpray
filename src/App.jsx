@@ -8334,11 +8334,11 @@ export default function App() {
             </div>
           </div>
 
-          {/* 하단 단정한 전산 크레딧 & 카피라이트 (사찰 품격을 높이는 은은한 표기) */}
+          {/* 하단 단정한 전산 크레딧 & 카피라이트 (플랫폼 소프트웨어 소유권: 제주AI파트너 명시) */}
           <div className="pt-0.5 text-[10px] text-[#A69B8D] space-y-0.5">
             <p>디지털 전산 총괄: 제주AI파트너</p>
             <p className="tracking-wider text-[#B8AF9F]">
-              © Jeju Sowonsa. All rights reserved.
+              Platform © Jeju AI Partner. All rights reserved.
             </p>
           </div>
         </footer>
