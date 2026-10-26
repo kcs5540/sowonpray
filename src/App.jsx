@@ -1375,8 +1375,8 @@ export default function App() {
       if (saved) {
         const parsed = JSON.parse(saved)
         const cleaned = parsed
-          .filter((m) => m.code !== '49121083')
-          .map((m) => (m.parent_code === '49121083' ? { ...m, parent_code: '55570267' } : m))
+          .filter((m) => m.code !== '49121083' && m.code !== '74200267')
+          .map((m) => (m.parent_code === '49121083' || m.parent_code === '74200267' ? { ...m, parent_code: '55570267' } : m))
         const seen = new Set()
         return cleaned.filter((m) => {
           if (seen.has(m.code)) return false
@@ -1525,25 +1525,25 @@ export default function App() {
       try {
         const { data: cloudMembers } = await supabase.from('members').select('*')
         if (cloudMembers && cloudMembers.length > 0) {
-          // 구 양영문(49121083) 레코드가 Supabase 클라우드에 남아있다면 자식 재배치 및 정리
-          const hasOldYang = cloudMembers.some((m) => m.code === '49121083')
-          if (hasOldYang) {
+          // 구 양영문(49121083) 및 종무소 가상계정(74200267) 정리
+          const toDelete = cloudMembers.filter((m) => m.code === '49121083' || m.code === '74200267')
+          if (toDelete.length > 0) {
             try {
-              await supabase.from('members').update({ parent_code: '55570267' }).eq('parent_code', '49121083')
-              await supabase.from('members').delete().eq('code', '49121083')
+              await supabase.from('members').update({ parent_code: '55570267' }).or('parent_code.eq.49121083,parent_code.eq.74200267')
+              await supabase.from('members').delete().in('code', ['49121083', '74200267'])
             } catch (err) {
               console.log('Supabase duplicate cleanup note:', err)
             }
           }
 
           const sanitizedCloud = cloudMembers
-            .filter((m) => m.code !== '49121083')
-            .map((m) => (m.parent_code === '49121083' ? { ...m, parent_code: '55570267' } : m))
+            .filter((m) => m.code !== '49121083' && m.code !== '74200267')
+            .map((m) => (m.parent_code === '49121083' || m.parent_code === '74200267' ? { ...m, parent_code: '55570267' } : m))
 
           const cloudCodes = new Set(sanitizedCloud.map((m) => m.code))
           const merged = [
             ...sanitizedCloud,
-            ...INITIAL_MEMBERS.filter((m) => !cloudCodes.has(m.code) && m.code !== '49121083'),
+            ...INITIAL_MEMBERS.filter((m) => !cloudCodes.has(m.code) && m.code !== '49121083' && m.code !== '74200267'),
           ]
           const seen = new Set()
           const finalMembers = merged.filter((m) => {
