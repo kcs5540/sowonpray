@@ -8289,13 +8289,13 @@ export default function App() {
                     <section className="bg-gradient-to-r from-[#241E17] via-[#2F2417] to-[#1C160F] text-white rounded-2xl p-4 border-2 border-[#D4AF37] shadow-lg flex items-center justify-between gap-3">
                       <div className="min-w-0">
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#D4AF37] text-[#1B1815] font-extrabold">
-                          사찰 본부 보관용
+                          사찰 본부
                         </span>
-                        <h4 className="font-serif-kr text-sm font-bold mt-1 text-[#F5D061]">
-                          소원사 모바일법당 전체 회원명부 ({members.length}명)
+                        <h4 className="font-serif-kr text-base font-bold mt-1 text-[#F5D061] truncate">
+                          전체 회원명부 ({members.length}명)
                         </h4>
-                        <p className="text-[10.5px] text-[#D6CEC2]">
-                          신도 {members.filter((m) => m.role === 'believer').length}명 · 포교위원 {members.filter((m) => m.role !== 'believer').length}명 실시간 연동
+                        <p className="text-[11px] text-[#D6CEC2] mt-0.5">
+                          신도 {members.filter((m) => m.role === 'believer').length}명 · 위원 {members.filter((m) => m.role !== 'believer').length}명
                         </p>
                       </div>
                       <button
@@ -8308,28 +8308,18 @@ export default function App() {
                       </button>
                     </section>
 
-                    {/* 📜 소원사 모바일법당 전체 회원명부 실무 검색 및 관리 카드 */}
+                    {/* 📜 실시간 회원 검색 및 관리 카드 */}
                     <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+                      <div className="flex items-center justify-between pb-1 border-b border-[#EAE2D3]/60">
+                        <div className="flex items-center gap-1.5">
                           <Users className="w-4 h-4 text-[#8A6510]" />
-                          <h4 className="font-serif-kr text-base font-bold text-[#1B1815]">
-                            소원사 모바일법당 전체 회원명부
+                          <h4 className="font-serif-kr text-sm font-bold text-[#1B1815]">
+                            신도 및 위원 목록
                           </h4>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setShowMemberPrintModal(true)}
-                            className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-[11px] flex items-center gap-1 shadow hover:brightness-105 active:scale-95 transition"
-                          >
-                            <Printer className="w-3.5 h-3.5" />
-                            <span>A4 인쇄</span>
-                          </button>
-                          <span className="text-[11px] px-2.5 py-1 rounded-full bg-amber-100 text-[#8A6510] font-bold border border-amber-300">
-                            총 {members.length}명 등록
-                          </span>
-                        </div>
+                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#FAF8F5] text-[#8A6510] font-bold border border-[#EAE2D3]">
+                          총 {members.length}명
+                        </span>
                       </div>
 
                       {/* 실시간 검색창 */}
@@ -8339,7 +8329,7 @@ export default function App() {
                           type="text"
                           value={adminMemberSearchQuery}
                           onChange={(e) => setAdminMemberSearchQuery(e.target.value)}
-                          placeholder="신도 성함, 법명, 전화번호, 주소 검색"
+                          placeholder="성함, 법명, 연락처 검색"
                           className="w-full pl-9 pr-8 py-2 rounded-xl bg-[#FAF8F5] border border-[#D5C59B] text-xs placeholder:text-[#A89D8E] focus:outline-none focus:border-[#C59B27]"
                         />
                         {adminMemberSearchQuery && (
@@ -8357,7 +8347,7 @@ export default function App() {
                       <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 text-[11px]">
                         {[
                           { id: 'all', label: `전체 (${members.length})` },
-                          { id: 'believer', label: `일반신도 (${members.filter((m) => m.role === 'believer').length})` },
+                          { id: 'believer', label: `신도 (${members.filter((m) => m.role === 'believer').length})` },
                           { id: 'agent', label: `위원장 (${members.filter((m) => m.role === 'agent').length})` },
                           { id: 'committee_member', label: `위원 (${members.filter((m) => m.role === 'committee_member').length})` },
                         ].map((tab) => (
