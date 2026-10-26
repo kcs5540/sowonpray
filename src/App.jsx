@@ -2880,9 +2880,9 @@ function normalizeMemberHierarchy(m) {
     const shareUrl = `${origin}/?ref=${code}&tab=lantern`
     const senderName = userName ? `${userName} 불자님` : '도반님'
     const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
-    const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=2'
+    const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=3'
 
-    // 1) Kakao JavaScript SDK 공식 피드 카드 (하단 목재를 잘라내 삼존불을 확대한 1.91:1 황금비율 배너 + 깔끔한 축원 문구)
+    // 1) Kakao JavaScript SDK 공식 피드 카드 (대표님 지정 1024x693 규격 삼존불 배너 + 1줄 제목 + 2줄 본문)
     if (typeof window !== 'undefined' && window.Kakao) {
       try {
         if (!window.Kakao.isInitialized()) {
@@ -2896,7 +2896,7 @@ function normalizeMemberHierarchy(m) {
               description: `${senderName}께서 보낸 소원등 선물\n부처님 전에 소원을 밝혀보세요.`,
               imageUrl: altarImageUrl,
               imageWidth: 1024,
-              imageHeight: 536,
+              imageHeight: 693,
               link: {
                 mobileWebUrl: shareUrl,
                 webUrl: shareUrl,
