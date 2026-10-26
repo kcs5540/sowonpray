@@ -2941,6 +2941,73 @@ function normalizeMemberHierarchy(m) {
     }
   }
 
+  // 가족·지인에게 내 소원등 알리기 (대웅전 삼존불 공식 카카오 피드 카드)
+  const handleShareMyLantern = (believerName) => {
+    const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
+    const code = currentUser?.code || referralCode || '33065540'
+    const shareUrl = `${origin}/?ref=${code}&tab=lantern`
+    const name = believerName ? `${believerName} 불자님` : (currentUser?.name ? `${currentUser.name} 불자님` : '도반님')
+    const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
+    const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=3'
+
+    // 1) Kakao JavaScript SDK 공식 피드 카드 (동일한 1024x693 규격 삼존불 배너 + 1줄 제목 + 2줄 본문)
+    if (typeof window !== 'undefined' && window.Kakao) {
+      try {
+        if (!window.Kakao.isInitialized()) {
+          window.Kakao.init(kakaoKey)
+        }
+        if (window.Kakao.isInitialized() && window.Kakao.Share) {
+          window.Kakao.Share.sendDefault({
+            objectType: 'feed',
+            content: {
+              title: '🪷 제주 소원사 소원등 복(福) 나눔',
+              description: `${name}의 소원등이 밝혀졌습니다\n함께 등을 밝히고 축원을 받으세요.`,
+              imageUrl: altarImageUrl,
+              imageWidth: 1024,
+              imageHeight: 693,
+              link: {
+                mobileWebUrl: shareUrl,
+                webUrl: shareUrl,
+              },
+            },
+            buttons: [
+              {
+                title: '🪔 7일 무료 소원등 밝히기',
+                link: {
+                  mobileWebUrl: shareUrl,
+                  webUrl: shareUrl,
+                },
+              },
+            ],
+          })
+          return
+        }
+      } catch (err) {
+        console.warn('Kakao share fallback:', err)
+      }
+    }
+
+    // 2) 브라우저 네이티브 공유 / 복사 fallback
+    const shareTitle = '🪷 제주 소원사 소원등 복(福) 나눔'
+    const shareText = `[제주 소원사 대웅전]\n${name}의 소원등이 부처님 전에 밝혀졌습니다.\n아래 카드를 터치하여 함께 소원등을 켜보세요.`
+
+    if (navigator.share) {
+      navigator.share({
+        title: shareTitle,
+        text: shareText,
+        url: shareUrl,
+      }).catch((err) => {
+        if (err?.name !== 'AbortError') {
+          navigator.clipboard?.writeText(`${shareText}\n${shareUrl}`)
+          showToast('📋 소원등 축원 링크가 복사되었습니다! 카카오톡에 전해보세요.')
+        }
+      })
+    } else {
+      navigator.clipboard?.writeText(`${shareText}\n${shareUrl}`)
+      showToast('📋 소원등 축원 링크가 복사되었습니다! 카카오톡에 전해보세요.')
+    }
+  }
+
   // QR코드 모달/펼침 상태
   const [showQrCode, setShowQrCode] = useState(null)
   const [qrDataUrl, setQrDataUrl] = useState('')
@@ -4552,19 +4619,7 @@ function normalizeMemberHierarchy(m) {
                   <div className="flex justify-center mb-1">
                     <button
                       type="button"
-                      onClick={() => {
-                        const shareMsg = `🪔 [제주 소원사 대웅전]\n${lanternData?.believer_name || '불자'}님의 소원등이 부처님 전에 밝혀져 매일 오전 10시 사시예불 축원을 올리고 있습니다.\n\n"부처님 가피로 간절한 소원이 원만 성취되기를 발원합니다."\n\n함께 소원등 켜기:\nhttps://sowonpray.vercel.app`
-                        if (navigator.share) {
-                          navigator.share({
-                            title: '제주 소원사 대웅전 소원등',
-                            text: shareMsg,
-                            url: 'https://sowonpray.vercel.app',
-                          }).catch(() => {})
-                        } else if (navigator.clipboard) {
-                          navigator.clipboard.writeText(shareMsg)
-                          showToast('📋 소원등 축원 메시지가 복사되었습니다! 카카오톡 가족방에 전해보세요.')
-                        }
-                      }}
+                      onClick={() => handleShareMyLantern(lanternData?.believer_name)}
                       className="px-3.5 py-1.5 rounded-full bg-[#F5D061]/15 border border-[#F5D061]/50 text-[#F5D061] text-xs font-bold flex items-center gap-1.5 hover:bg-[#F5D061]/25 transition active:scale-95"
                     >
                       <Share2 className="w-3.5 h-3.5 text-[#F5D061]" />
