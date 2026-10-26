@@ -8322,7 +8322,7 @@ export default function App() {
         )}
 
         {/* 통합 공식 푸터 (사찰 안내 & 제주AI파트너 디지털 전산 파트너십) */}
-        <footer className="px-4 pt-4 pb-14 text-center text-[11px] text-[#786E63] border-t border-[#E6DEC8] space-y-2">
+        <footer className="px-4 pt-3.5 pb-5 text-center text-[11px] text-[#786E63] border-t border-[#E6DEC8] space-y-1.5">
           {/* 사찰 및 종무소 정보 (통합 단일화) */}
           <div className="space-y-0.5 leading-relaxed break-keep">
             <div className="font-bold text-[#231F1C] text-xs">
