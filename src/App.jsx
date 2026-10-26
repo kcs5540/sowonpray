@@ -2874,14 +2874,15 @@ function normalizeMemberHierarchy(m) {
     showToast(`📋 도반 연결 링크가 복사되었습니다: ${url}`)
   }
 
-  // 도반에게 카카오톡 소원등 복(福) 선물하기 (카카오 공식 피드 카드 또는 모바일 공유 fallback)
+  // 도반에게 카카오톡 소원등 복(福) 선물하기 (대웅전 삼존불 피드 카드 또는 모바일 공유 fallback)
   const handleShareKakao = (code, userName) => {
     const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
     const shareUrl = `${origin}/?ref=${code}&tab=lantern`
     const senderName = userName ? `${userName} 불자님` : '도반님'
     const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
+    const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_main.jpg'
 
-    // 1) Kakao JavaScript SDK 공식 피드 카드 (사진 + 제목 + 설명 + [7일 무료 소원등 켜기] 버튼)
+    // 1) Kakao JavaScript SDK 공식 피드 카드 (대웅전 삼존불 사진 + 최고의 축원 문구 + 소원등 탭 직행 버튼)
     if (typeof window !== 'undefined' && window.Kakao) {
       try {
         if (!window.Kakao.isInitialized()) {
@@ -2891,9 +2892,9 @@ function normalizeMemberHierarchy(m) {
           window.Kakao.Share.sendDefault({
             objectType: 'feed',
             content: {
-              title: '🪷 제주 소원사 7일 무료 소원등 복(福) 선물',
-              description: `${senderName}께서 부처님 전 7일간 꺼지지 않는 대웅전 소원등을 정성껏 선물하셨습니다.`,
-              imageUrl: 'https://sowonpray.vercel.app/images/sowonsa_real_cover_path.png',
+              title: '🪷 제주 소원사 대웅전 · 7일 무료 소원등 복(福) 선물',
+              description: `${senderName}께서 부처님 전 7일 소원등을 선물하셨습니다. 매일 사시예불 축원으로 간절한 소원성취를 발원합니다.`,
+              imageUrl: altarImageUrl,
               link: {
                 mobileWebUrl: shareUrl,
                 webUrl: shareUrl,
@@ -2901,7 +2902,7 @@ function normalizeMemberHierarchy(m) {
             },
             buttons: [
               {
-                title: '7일 무료 소원등 켜기',
+                title: '🪔 7일 무료 소원등 밝히기',
                 link: {
                   mobileWebUrl: shareUrl,
                   webUrl: shareUrl,
@@ -2917,8 +2918,8 @@ function normalizeMemberHierarchy(m) {
     }
 
     // 2) 브라우저 네이티브 공유 / 복사 fallback
-    const shareTitle = '🪷 제주 소원사 7일 무료 소원등 복(福) 선물'
-    const shareText = `[제주 소원사 모바일 법당]\n${senderName}께서 부처님 전 7일 무료 소원등을 정성껏 선물하셨습니다.\n아래 카드를 터치하여 대웅전에 소원등을 밝혀보세요.`
+    const shareTitle = '🪷 제주 소원사 대웅전 · 7일 무료 소원등 복(福) 선물'
+    const shareText = `[제주 소원사 모바일 법당]\n${senderName}께서 부처님 전 7일 무료 소원등을 정성껏 선물하셨습니다.\n매일 사시예불 축원으로 간절한 소원성취를 발원합니다.\n아래 카드를 터치하여 대웅전에 소원등을 밝혀보세요.`
 
     if (navigator.share) {
       navigator.share({
