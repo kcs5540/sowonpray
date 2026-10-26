@@ -8457,30 +8457,44 @@ export default function App() {
                         </h3>
                         <span className="text-[10px] text-[#8C8071]">정산 자동화</span>
                       </div>
-                      <div className="space-y-2 text-xs">
+                      <div className="space-y-2.5 text-xs">
                         <div className="p-3 rounded-xl bg-gradient-to-br from-[#1F1B17] to-[#2B231A] text-white border border-[#C59B27]/40 space-y-1">
                           <span className="text-[10.5px] text-[#F5D061] font-bold">1. 사찰 본부 & 대웅전 불사금 (50%)</span>
                           <p className="text-[10.5px] text-[#C5BBAE]">
-                            입금액의 50%는 사찰 대웅전 불사금 및 사찰 기본 기금으로 원천 적립됩니다.
+                            입금액의 50%는 사찰 대웅전 불사금 및 사찰 기본 기금으로 사찰 통장에 원천 적립됩니다.
                           </p>
                         </div>
-                        <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E5D399] space-y-1">
-                          <span className="text-[10.5px] text-[#8A6510] font-bold">2. 포교위원장 직추천 (40%)</span>
-                          <p className="text-[10.5px] text-[#6E6354]">
-                            포교위원장이 직접 신도를 인연 맺을 시 40%가 포교비로 정산됩니다.
+
+                        <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[11px] text-[#8A6510] font-bold flex items-center gap-1.5">
+                              <span>👑</span>
+                              <span>2. 김철수 총괄대표 전국 판권 (50%)</span>
+                            </span>
+                            <span className="text-[10px] font-black text-[#8A6510] bg-[#F5D061]/30 px-2 py-0.5 rounded-full border border-amber-400/50">
+                              전국 총판 50% 풀
+                            </span>
+                          </div>
+                          <p className="text-[10.5px] text-[#6E6354] leading-relaxed">
+                            제주AI파트너 50% 판권 안에서 총괄 마진(10%~50%) 및 산하 포교위원장·포교위원 수당이 완전 자동 정산됩니다.
                           </p>
-                        </div>
-                        <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E5D399] space-y-1">
-                          <span className="text-[10.5px] text-[#8A6510] font-bold">3. 포교위원 직추천 (30%)</span>
-                          <p className="text-[10.5px] text-[#6E6354]">
-                            포교위원 30% + 직속 포교위원장 10% 오버라이딩 마진이 배분됩니다.
-                          </p>
-                        </div>
-                        <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-1">
-                          <span className="text-[10.5px] text-[#8A6510] font-bold">4. 김철수 총괄대표 마진 (10%~20%)</span>
-                          <p className="text-[10.5px] text-[#6E6354]">
-                            포교위원 추천 시 총괄 10% 극비 마진이 귀속되며, 총판 관리비로 정산됩니다.
-                          </p>
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 text-[10.5px] pt-1">
+                            <div className="p-2 rounded-lg bg-white border border-[#E5D399] space-y-0.5">
+                              <span className="text-[#8A6510] font-bold block">① 총괄 직속 성사</span>
+                              <strong className="text-[#1B1815] text-xs">50% 전액 귀속</strong>
+                              <span className="text-[9.5px] text-[#8C8071] block">산하 위원 없는 라인</span>
+                            </div>
+                            <div className="p-2 rounded-lg bg-white border border-[#E5D399] space-y-0.5">
+                              <span className="text-[#8A6510] font-bold block">② 포교위원장 직추천</span>
+                              <strong className="text-[#1B1815] text-xs">40% 지급 + 10% 총괄</strong>
+                              <span className="text-[9.5px] text-[#8C8071] block">총괄 관리비 10% 귀속</span>
+                            </div>
+                            <div className="p-2 rounded-lg bg-white border border-[#E5D399] space-y-0.5">
+                              <span className="text-[#8A6510] font-bold block">③ 포교위원 직추천</span>
+                              <strong className="text-[#1B1815] text-xs">30% + 10% + 10%</strong>
+                              <span className="text-[9.5px] text-[#8C8071] block">위원30%·위원장10%·총괄10%</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </section>
