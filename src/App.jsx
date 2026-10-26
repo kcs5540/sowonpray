@@ -8330,7 +8330,7 @@ export default function App() {
             </div>
             <p>제주특별자치도 제주시 죽성서길 75 (오등동 935)</p>
             <div className="flex items-center justify-center text-[10.5px] text-[#5C5349] pt-0.5">
-              <span>종무소 064-805-2007 / 010-4912-1083</span>
+              <span>종무소(신행·차담예약) 064-805-2007 / 010-4912-1083</span>
             </div>
           </div>
 
