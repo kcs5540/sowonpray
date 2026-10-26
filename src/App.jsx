@@ -1263,8 +1263,17 @@ class HealingAudioEngine {
 const healingAudioEngine = new HealingAudioEngine()
 
 export default function App() {
-  // 탭 상태: 'home' | 'lantern' | 'sutra' | 'agent' | 'admin' | 'profile'
-  const [activeTab, setActiveTab] = useState('home')
+  // 탭 상태: 'home' | 'lantern' | 'sutra' | 'bulsa' | 'agent' | 'admin' | 'profile' (URL ?tab= 파라미터 직접 진입 지원)
+  const [activeTab, setActiveTab] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      const tabParam = params.get('tab')
+      if (tabParam && ['home', 'lantern', 'sutra', 'bulsa', 'agent', 'admin', 'profile'].includes(tabParam)) {
+        return tabParam
+      }
+    }
+    return 'home'
+  })
   const [heroSlideIdx, setHeroSlideIdx] = useState(0)
 
   // 소원사 통합 전산 모달 상태 ('common': 1.포교사 공통, 'head': 2.포교위원장, 'temple': 3.사찰본부, 'master': 4.최고관제)
@@ -2868,7 +2877,7 @@ function normalizeMemberHierarchy(m) {
   // 도반에게 카카오톡 소원등 복(福) 선물하기 (카카오 공식 피드 카드 또는 모바일 공유 fallback)
   const handleShareKakao = (code, userName) => {
     const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
-    const shareUrl = `${origin}/?ref=${code}`
+    const shareUrl = `${origin}/?ref=${code}&tab=lantern`
     const senderName = userName ? `${userName} 불자님` : '도반님'
     const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
 
