@@ -8192,10 +8192,10 @@ function normalizeMemberHierarchy(m) {
                   <section className="bg-gradient-to-r from-[#241E17] via-[#2F2417] to-[#1C160F] text-white rounded-2xl p-4 border-2 border-[#D4AF37] shadow-lg flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#D4AF37] text-[#1B1815] font-extrabold">
-                        {isMasterOrTempleAdmin ? '사찰 본부' : '산하 관할'}
+                        산하 관할
                       </span>
                       <h4 className="font-serif-kr text-base font-bold mt-1 text-[#F5D061] truncate">
-                        {isMasterOrTempleAdmin ? '전체 회원명부' : `${activeAgent.name} 산하 회원명부`} ({myAffiliatedMembers.length}명)
+                        {activeAgent.name} 산하 회원명부 ({myAffiliatedMembers.length}명)
                       </h4>
                       <p className="text-[11px] text-[#D6CEC2] mt-0.5">
                         일반신도 {myAffiliatedMembers.filter((m) => m.role === 'believer').length}명 · 위원장 {myAffiliatedMembers.filter((m) => m.role === 'agent' || m.role === 'master').length}명
@@ -8217,7 +8217,7 @@ function normalizeMemberHierarchy(m) {
                       <div className="flex items-center gap-1.5">
                         <Users className="w-4 h-4 text-[#8A6510]" />
                         <h4 className="font-serif-kr text-sm font-bold text-[#1B1815]">
-                          {isMasterOrTempleAdmin ? '전체 회원명부' : `${activeAgent.name} 포교위원장 산하 회원`}
+                          {activeAgent.name} 산하 회원 명단
                         </h4>
                       </div>
                       <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#FAF8F5] text-[#8A6510] font-bold border border-[#EAE2D3]">
