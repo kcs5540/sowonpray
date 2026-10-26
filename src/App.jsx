@@ -6131,20 +6131,22 @@ export default function App() {
                           else setAdminModalTab('common')
                           setShowUnifiedAdminModal(true)
                         }}
-                        className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#F5D061] via-[#E8C568] to-[#D4AF37] text-[#1B1815] font-extrabold text-sm flex items-center justify-between shadow-[0_4px_16px_rgba(212,175,55,0.3)] hover:brightness-105 active:scale-98 transition border border-[#FFF3B8]"
+                        className="w-full py-3 px-3.5 rounded-2xl bg-gradient-to-r from-[#F5D061] via-[#E8C568] to-[#D4AF37] text-[#1B1815] font-extrabold text-sm flex items-center justify-between shadow-[0_4px_16px_rgba(212,175,55,0.3)] hover:brightness-105 active:scale-98 transition border border-[#FFF3B8] gap-2"
                       >
-                        <div className="flex items-center gap-2">
-                          <span className="text-base">🏛️</span>
-                          <div className="text-left">
-                            <span className="block leading-tight">전국 포교 전산 관제실 열기</span>
-                            <span className="text-[10.5px] font-medium text-[#4A3D18]">
-                              인연 신도 {currentUser.believers_count || 0}명 · 위패 봉안 {currentUser.wipae_count || 0}기
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-base shrink-0">🏛️</span>
+                          <div className="text-left min-w-0">
+                            <span className="block font-black text-xs sm:text-sm whitespace-nowrap leading-tight text-[#1B1815]">
+                              포교 전산 관제실
+                            </span>
+                            <span className="text-[10px] sm:text-[10.5px] font-medium text-[#4A3D18] whitespace-nowrap block mt-0.5">
+                              인연 {currentUser.believers_count || 0}명 · 위패 {currentUser.wipae_count || 0}기
                             </span>
                           </div>
                         </div>
-                        <div className="flex items-center gap-1 text-xs font-black bg-[#1B1815] text-[#F5D061] px-2.5 py-1 rounded-xl">
-                          <span>전산 입장</span>
-                          <ChevronRight className="w-3.5 h-3.5" />
+                        <div className="flex items-center gap-0.5 text-[11px] font-black bg-[#1B1815] text-[#F5D061] px-2.5 py-1.5 rounded-xl shrink-0 whitespace-nowrap shadow-sm">
+                          <span>입장</span>
+                          <ChevronRight className="w-3.5 h-3.5 -mr-0.5" />
                         </div>
                       </button>
 
