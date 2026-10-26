@@ -29,10 +29,14 @@ export function formatPhone11(input = '') {
   return input
 }
 
+// 기본 사찰 식별자 (제주 소원사 단독 모드, 향후 전국 사찰 확장 호환)
+export const DEFAULT_TEMPLE_ID = 'sowonsa'
+
 // 통합 회원 초기 시드 데이터 (총괄대표 + 소원사본부 + 포교사 + 일반신도)
 // 기본 간편 비밀번호(password_pin): '0000'
 export const INITIAL_MEMBERS = [
   {
+    temple_id: 'sowonsa',
     code: '33065540',
     phone: '010-3306-5540',
     password_pin: '0000',
