@@ -2230,32 +2230,29 @@ function normalizeMemberHierarchy(m) {
     )
   }, [members, selectedAgentCode, currentUser])
 
-  // 현재 포교위원(activeAgent)의 산하 인연 신도 및 위원 목록 (직속 + 하위 전체 계보)
+  // 현재 포교위원(activeAgent)의 산하 인연 신도 및 위원 목록 (직속 + 하위 전체 계보만 정확히 탐색)
   const myAffiliatedMembers = useMemo(() => {
     if (!members || members.length === 0) return []
-    if (!activeAgent || !activeAgent.code) return members
+    if (!activeAgent || !activeAgent.code) return []
 
-    // 최고 마스터(김철수 총괄대표)나 창건주 본부(양영문 회장) 계정인 경우 전체 회원 반환
-    if (
-      activeAgent.role === 'master' ||
-      activeAgent.role === 'temple_admin' ||
-      activeAgent.code === '55400267' ||
-      activeAgent.code === '55570267'
-    ) {
-      return members
-    }
+    // activeAgent 본인의 하위(산하) 계보만 재귀 탐색
+    const downlineCodes = new Set()
+    let queue = [activeAgent.code]
 
-    const downlineCodes = new Set([activeAgent.code])
-    let added = true
-    while (added) {
-      added = false
+    while (queue.length > 0) {
+      const parentCode = queue.shift()
       members.forEach((m) => {
-        if (m.parent_code && downlineCodes.has(m.parent_code) && !downlineCodes.has(m.code)) {
+        // activeAgent의 하위로 등록된 인연 회원만 수집 (상위 추천인 및 양영문 회장님 절대 미포함)
+        if (m.parent_code === parentCode && !downlineCodes.has(m.code) && m.code !== activeAgent.code && m.role !== 'temple_admin') {
           downlineCodes.add(m.code)
-          added = true
+          queue.push(m.code)
         }
       })
     }
+
+    // 만약 activeAgent가 포교위원장/마스터인 경우 본인도 명부에 표기할지 여부:
+    // 산하 명부는 activeAgent의 '산하 회원들' 목록이므로 downlineCodes만 필터링!
+    // (김철수 총괄대표 산하에는 유광수, 오다혜, 임평종 및 산하 일반신도들만 정확히 포함)
     return members.filter((m) => downlineCodes.has(m.code))
   }, [members, activeAgent])
 
