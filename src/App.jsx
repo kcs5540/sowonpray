@@ -5980,14 +5980,14 @@ export default function App() {
               /* [B] 로그인 상태일 때: 제주 소원사 VIP 모바일 신도증 & 고품격 신행 카드 */
               <>
                 {/* 1. 🪷 제주 소원사 VIP 모바일 디지털 신도증 */}
-                <section className="rounded-3xl bg-gradient-to-br from-[#262019] via-[#1B1713] to-[#120F0C] text-white p-5 sm:p-6 border-2 border-[#D4AF37]/50 shadow-[0_10px_30px_rgba(212,175,55,0.18)] relative overflow-hidden space-y-4">
+                <section className="rounded-3xl bg-gradient-to-br from-[#262019] via-[#1B1713] to-[#120F0C] text-white p-4 sm:p-6 border-2 border-[#D4AF37]/50 shadow-[0_10px_30px_rgba(212,175,55,0.18)] relative overflow-hidden space-y-3.5">
                   {/* 상단 장식 빛망울 */}
                   <div className="absolute -top-12 -right-12 w-36 h-36 bg-[#F5D061]/10 rounded-full blur-2xl pointer-events-none" />
 
-                  {/* 1행: 로고 & 법당명 (좌) / 직책 배지 & 로그아웃 (우) */}
+                  {/* 1행: 로고 & 법당명 (좌) / 직책 배지 & 로그아웃 (우) - 좁은 화면에서도 줄바꿈 없는 깔끔한 정렬 */}
                   <div className="flex items-center justify-between gap-2 relative z-10">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#2D241C] to-[#17130F] flex items-center justify-center border border-[#C59B27]/50 p-1 shrink-0">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#2D241C] to-[#17130F] flex items-center justify-center border border-[#C59B27]/60 p-1 shrink-0 shadow-sm">
                         <svg className="w-full h-full" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M20 5C20 5 15 14.5 15 21C15 23.8 17.2 26 20 26C22.8 26 25 23.8 25 21C25 14.5 20 5 20 5Z" fill="#F5D061" />
                           <path d="M14 12C14 12 7.5 18.5 7.5 23C7.5 26.2 10.2 28 13.2 28C16.2 28 17.8 25.5 17.8 24C17.8 18.5 14 12 14 12Z" fill="#F5D061" opacity="0.8" />
@@ -5995,13 +5995,16 @@ export default function App() {
                           <path d="M11.5 32C15.2 34.8 24.8 34.8 28.5 32C26.5 34.8 23.5 35.8 20 35.8C16.5 35.8 13.5 34.8 11.5 32Z" fill="#F5D061" />
                         </svg>
                       </div>
-                      <span className="font-serif-kr text-xs font-bold text-[#F5D061] tracking-wide">
-                        제주 소원사 모바일 신도증
-                      </span>
+                      <div className="min-w-0 leading-tight">
+                        <div className="text-[10px] text-[#C59B27] font-semibold tracking-wider">제주 소원사</div>
+                        <div className="font-serif-kr text-xs font-extrabold text-[#F5D061] tracking-tight whitespace-nowrap">
+                          디지털 신도증
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/40 font-bold whitespace-nowrap">
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className="text-[10.5px] px-2.5 py-1 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/50 font-bold whitespace-nowrap shadow-sm">
                         {currentUser.role === 'temple_admin'
                           ? '창건주 · 신도회장'
                           : currentUser.role === 'master' || currentUser.role === 'agent' || currentUser.role === 'committee_head'
@@ -6013,7 +6016,7 @@ export default function App() {
                       <button
                         type="button"
                         onClick={handleLogout}
-                        className="px-2 py-0.5 rounded-lg bg-white/10 hover:bg-white/20 text-[#D6CEC2] hover:text-white border border-white/10 text-[10.5px] font-medium flex items-center gap-1 transition"
+                        className="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#D6CEC2] hover:text-white border border-white/10 text-[10.5px] font-medium flex items-center gap-1 transition"
                         title="로그아웃"
                       >
                         <LogOut className="w-3 h-3" />
@@ -6023,8 +6026,8 @@ export default function App() {
                   </div>
 
                   {/* 2행: 신도 성함 & 법명 (어르신도 한눈에 보이는 큼직하고 기품 있는 서체) */}
-                  <div className="pt-1 relative z-10">
-                    <h2 className="font-serif-kr text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-baseline gap-2 flex-wrap">
+                  <div className="pt-0.5 relative z-10">
+                    <h2 className="font-serif-kr text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-baseline gap-1.5 flex-wrap">
                       <span>{currentUser.name}</span>
                       {currentUser.role === 'temple_admin' ? (
                         <span className="text-base sm:text-lg text-[#F5D061] font-bold">(창건주) 회장님</span>
@@ -6033,59 +6036,70 @@ export default function App() {
                       ) : null}
                       <span className="text-sm sm:text-base text-[#D4AF37] font-semibold">불자님</span>
                     </h2>
-                    <div className="flex items-center gap-3 text-xs text-[#BFB6AA] mt-1.5 flex-wrap">
-                      <span>신도 번호: <strong className="text-white font-mono">{currentUser.code}</strong></span>
-                      <span>·</span>
-                      <span>연락처: <span className="font-mono text-[#D6CEC2]">{currentUser.phone}</span></span>
+                    <div className="flex items-center gap-2 text-xs text-[#BFB6AA] mt-1.5 flex-wrap">
+                      <span className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 font-mono text-[11px] text-[#F5D061]">
+                        No. {currentUser.code}
+                      </span>
+                      <span className="text-[#8C8071]">|</span>
+                      <span className="font-mono text-[11px] text-[#D6CEC2]">{currentUser.phone}</span>
                     </div>
                   </div>
 
-                  {/* 3행: 🔥 나의 7일 소원등 정진 현황 카드 */}
-                  <div className="relative z-10 pt-1">
+                  {/* 3행: 🔥 나의 7일 소원등 정진 현황 카드 (좁은 모바일 화면에서도 글자 잘림 없는 2단 분리 레이아웃) */}
+                  <div className="relative z-10 pt-0.5">
                     {isLanternLit ? (
-                      <div className="rounded-2xl p-3.5 bg-gradient-to-r from-[#3D2914] via-[#483318] to-[#2D1E0E] border border-[#F5D061]/50 shadow-[0_4px_16px_rgba(245,208,97,0.18)] flex items-center justify-between gap-3">
-                        <div className="min-w-0 flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#E25C2B] to-[#F4B41A] text-white flex items-center justify-center shadow-[0_0_12px_rgba(233,130,39,0.5)] shrink-0">
-                            <Flame className="w-5 h-5 fill-current text-[#FFF7CE] flame-flicker" />
-                          </div>
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-1.5 flex-wrap">
-                              <span className="text-[11px] font-extrabold text-[#F5D061] tracking-wide">
-                                🔥 7일 소원등 불밝힘 정진 중
+                      <div className="rounded-2xl p-3 sm:p-3.5 bg-gradient-to-r from-[#3D2914] via-[#483318] to-[#2D1E0E] border border-[#F5D061]/50 shadow-[0_4px_16px_rgba(245,208,97,0.18)] space-y-2">
+                        {/* 상단: 상태 및 D-Day + [내 등불 보기] 버튼 */}
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#E25C2B] to-[#F4B41A] text-white flex items-center justify-center shadow-[0_0_10px_rgba(233,130,39,0.5)] shrink-0">
+                              <Flame className="w-4 h-4 fill-current text-[#FFF7CE] flame-flicker" />
+                            </div>
+                            <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
+                              <span className="text-xs font-extrabold text-[#F5D061] tracking-wide whitespace-nowrap">
+                                7일 소원등 불밝힘 정진 중
                               </span>
-                              <span className="px-1.5 py-0.2 rounded-full bg-[#F5D061] text-[#1B1815] text-[10px] font-extrabold">
+                              <span className="px-1.5 py-0.5 rounded-full bg-[#F5D061] text-[#1B1815] text-[10px] font-black whitespace-nowrap">
                                 D-{lanternDaysRemaining}일 남음
                               </span>
                             </div>
-                            <p className="text-xs text-[#FAF8F5] truncate mt-0.5">
-                              발원: <strong className="text-[#FFE58A]">[{lanternData?.wish_category || '소원성취'}]</strong> “{lanternData?.wish_text || '간절한 소원'}”
-                            </p>
                           </div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setActiveTab('lantern')
+                              window.scrollTo({ top: 0, behavior: 'smooth' })
+                            }}
+                            className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-black text-[11px] shrink-0 shadow hover:brightness-105 active:scale-95 transition whitespace-nowrap flex items-center gap-1"
+                          >
+                            <span>내 등불 보기</span>
+                            <ChevronRight className="w-3.5 h-3.5 -mr-0.5" />
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setActiveTab('lantern')
-                            window.scrollTo({ top: 0, behavior: 'smooth' })
-                          }}
-                          className="px-3 py-2 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs shrink-0 shadow hover:brightness-105 active:scale-95 transition whitespace-nowrap flex items-center gap-1"
-                        >
-                          <span>내 등불 보기</span>
-                          <ChevronRight className="w-3.5 h-3.5 -mr-0.5" />
-                        </button>
+
+                        {/* 하단: 발원문 전체 너비 카드 (좁은 화면에서도 잘림 없이 여유롭게 표시) */}
+                        <div className="p-2.5 rounded-xl bg-black/25 border border-white/10 text-xs text-[#FAF8F5] leading-snug">
+                          <span className="text-[#FFE58A] font-extrabold mr-1">
+                            [{lanternData?.wish_category || '가족건강'}]
+                          </span>
+                          <span className="text-[#E8DFD1] font-serif-kr">
+                            “{lanternData?.wish_text || '간절한 소원이 원만 성취되기를 발원합니다.'}”
+                          </span>
+                        </div>
                       </div>
                     ) : (
-                      <div className="rounded-2xl p-3.5 bg-white/5 border border-white/10 flex items-center justify-between gap-3">
-                        <div className="min-w-0 flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-white/10 text-[#C59B27] flex items-center justify-center shrink-0 border border-white/10">
-                            <Flame className="w-5 h-5 text-[#D4AF37]" />
+                      <div className="rounded-2xl p-3 sm:p-3.5 bg-white/5 border border-white/10 flex items-center justify-between gap-3">
+                        <div className="min-w-0 flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-lg bg-white/10 text-[#C59B27] flex items-center justify-center shrink-0 border border-white/10">
+                            <Flame className="w-4 h-4 text-[#D4AF37]" />
                           </div>
                           <div className="min-w-0">
-                            <span className="text-[11px] font-bold text-[#E8DFD1] block">
+                            <span className="text-xs font-bold text-[#E8DFD1] block">
                               🕯️ 부처님 전 소원등 미점등
                             </span>
                             <p className="text-[11px] text-[#A89880] truncate mt-0.5">
-                              7일간 꺼지지 않는 소원등을 켜고 매일 가피를 입어보세요.
+                              7일간 꺼지지 않는 소원등을 켜보세요.
                             </p>
                           </div>
                         </div>
@@ -6095,7 +6109,7 @@ export default function App() {
                             setActiveTab('lantern')
                             window.scrollTo({ top: 0, behavior: 'smooth' })
                           }}
-                          className="px-3 py-2 rounded-xl bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] font-extrabold text-xs shrink-0 hover:bg-[#F5E6BF] transition whitespace-nowrap"
+                          className="px-3 py-1.5 rounded-xl bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] font-extrabold text-xs shrink-0 hover:bg-[#F5E6BF] transition whitespace-nowrap"
                         >
                           소원등 켜기 →
                         </button>
