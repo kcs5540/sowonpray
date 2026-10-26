@@ -3412,11 +3412,11 @@ export default function App() {
               {/* 전화 예약 바로가기 버튼 2종 */}
               <div className="grid grid-cols-2 gap-2">
                 <a
-                  href="tel:010-5557-0267"
+                  href="tel:010-4912-1083"
                   className="flex items-center justify-center gap-1 py-2.5 px-2 rounded-xl bg-white/15 text-[#F5D061] font-bold text-[11px] border border-[#F5D061]/40 hover:bg-white/20 transition whitespace-nowrap"
                 >
                   <Phone className="w-3.5 h-3.5 fill-current shrink-0" />
-                  <span>예약 010-5557-0267</span>
+                  <span>예약 010-4912-1083</span>
                 </a>
                 <a
                   href="tel:064-805-2007"
@@ -7271,7 +7271,7 @@ export default function App() {
                 <strong>{wishName.trim()} 불자님</strong>의 간절한 발원이 <strong>제주 소원사 대웅전</strong>에 봉안되었습니다. 앞으로 <strong>7일 동안 매일 오전 10시 사시예불</strong>마다 스님께서 부처님 전에 정성껏 축원 올립니다.
               </p>
               <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-[11px] text-[#F5D061]">
-                🙏 도량에 오시기 전날 미리 연락 주시면 따뜻한 차와 공양(식사)을 대접해 드립니다. (010-5557-0267)
+                🙏 도량에 오시기 전날 미리 연락 주시면 따뜻한 차와 공양(식사)을 대접해 드립니다. (010-4912-1083)
               </div>
               {/* 가족·지인에게 소원등 알리기 (카카오톡 공유) */}
               <button
@@ -8332,7 +8332,7 @@ export default function App() {
             <div className="flex items-center justify-center gap-2.5 text-[10.5px] text-[#5C5349] pt-0.5">
               <span>종무소 064-805-2007</span>
               <span>·</span>
-              <span>신행/차담예약 010-5557-0267</span>
+              <span>신행/차담예약 010-4912-1083</span>
             </div>
           </div>
 
