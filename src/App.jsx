@@ -3002,12 +3002,12 @@ function normalizeMemberHierarchy(m) {
                     {currentUser.name}
                     {currentUser.dharma_name ? ` (${currentUser.dharma_name})` : ''}
                   </strong>
-                  {currentUser.role === 'master' || currentUser.role === 'agent' || currentUser.role === 'committee_head'
+                  {currentUser.role === 'temple_admin'
+                    ? ' 신도회장님'
+                    : currentUser.role === 'master'
+                    ? ' 총괄위원장님'
+                    : currentUser.role === 'agent'
                     ? ' 포교위원장님'
-                    : currentUser.role === 'committee_member'
-                    ? ' 포교위원님'
-                    : currentUser.role === 'temple_admin'
-                    ? ' 회장님'
                     : ' 불자님'}{' '}
                   접속중
                 </span>
@@ -6196,11 +6196,11 @@ function normalizeMemberHierarchy(m) {
                       <span className="text-[10.5px] px-2.5 py-1 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/50 font-bold whitespace-nowrap shadow-sm">
                         {currentUser.role === 'temple_admin'
                           ? '창건주 · 신도회장'
-                          : currentUser.role === 'master' || currentUser.role === 'agent' || currentUser.role === 'committee_head'
+                          : currentUser.role === 'master'
+                          ? '총괄위원장'
+                          : currentUser.role === 'agent'
                           ? '포교위원장'
-                          : currentUser.role === 'committee_member'
-                          ? '포교위원'
-                          : '소원사 정식신도'}
+                          : '소원사 일반신도'}
                       </span>
                       <button
                         type="button"
@@ -8715,7 +8715,7 @@ function normalizeMemberHierarchy(m) {
                           >
                             {agents.map((a) => (
                               <option key={a.code} value={a.code}>
-                                {a.name} ({a.role === 'committee_member' ? '위원 30%' : a.role === 'master' ? '김철수 총괄' : '위원장 40%'})
+                                {a.name} ({a.role === 'temple_admin' ? '신도회장' : a.role === 'master' ? '총괄위원장' : '포교위원장'})
                               </option>
                             ))}
                           </select>
