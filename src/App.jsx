@@ -6972,12 +6972,12 @@ export default function App() {
               <h2 className="font-serif-kr text-xl font-bold">
                 {isTempleAdmin
                   ? '소원사 사찰 본부 & 전국 위원회 총괄 정산 관제 센터'
-                  : '총괄 판권(100만 원) & 전국 위원회 정산 관제 센터'}
+                  : '총괄 판권(50%) & 전국 위원회 정산 관제 센터'}
               </h2>
               <p className="text-xs text-[#D6CEC2] leading-relaxed">
                 {isTempleAdmin
                   ? '소원사 창건주 겸 신도회장(사찰 최고 대표책임자) 양영문 회장님의 사찰 본부 총괄 관제 센터입니다.'
-                  : '김철수 총괄 대표님의 100만 원 판권 기준, 사찰 불사금 100만 원(50%) 및 포교위원장(80만) · 포교위원(60만) 판권 마진을 통합 관제합니다.'}
+                  : '김철수 총괄 대표님의 50% 판권 기준, 사찰 불사금(50%) 및 포교위원장(40%) · 포교위원(30%) 판권 마진을 통합 관제합니다.'}
               </p>
               <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-[#F5D061] flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 shrink-0 text-[#F5D061]" />
@@ -7123,8 +7123,8 @@ export default function App() {
                     onChange={(e) => setAdminNewRole(e.target.value)}
                     className="px-2 py-2 rounded-lg bg-white border border-[#DDD4C4] text-xs font-semibold"
                   >
-                    <option value="agent">포교위원장 등록 (80만)</option>
-                    <option value="committee_member">포교위원 등록 (60만)</option>
+                    <option value="agent">포교위원장 등록 (40%)</option>
+                    <option value="committee_member">포교위원 등록 (30%)</option>
                     <option value="believer">일반신도 등록</option>
                   </select>
                   <select
@@ -7299,8 +7299,8 @@ export default function App() {
                               className="px-2 py-1 rounded-lg bg-white border border-[#D5C59B] text-[11px] font-bold text-[#231F1C]"
                             >
                               <option value="believer">일반신도</option>
-                              <option value="committee_member">포교위원 (60만)</option>
-                              <option value="agent">포교위원장 (80만)</option>
+                              <option value="committee_member">포교위원 (30%)</option>
+                              <option value="agent">포교위원장 (40%)</option>
                               <option value="temple_admin">창건주·신도회장 본부</option>
                               <option value="master">총괄 포교위원장 (제주AI파트너)</option>
                             </select>
@@ -7340,7 +7340,7 @@ export default function App() {
                     <span className="text-base text-[#F5D061]">실입금액의 50% (전액)</span>
                   </div>
                   <p className="text-[11px] text-[#C5BBAE]">
-                    산하에 포교위원장/포교위원이 없는 라인에서 성사 시, 50% 총판 풀 전액이 김철수 총괄 수당으로 귀속됩니다. (예: 200만 입금 시 100만 / 50만 분납 시 25만 원)
+                    산하에 포교위원장/포교위원이 없는 라인에서 성사 시, 50% 총판 풀 전액이 김철수 총괄 수당으로 귀속됩니다.
                   </p>
                 </div>
 
@@ -7357,12 +7357,12 @@ export default function App() {
                     <div className="p-2.5 rounded-lg bg-white border border-[#E4DDD0]">
                       <span className="text-[#6B6155] block">포교위원장 지급:</span>
                       <strong className="text-[#1B1815] text-xs">실입금액의 40%</strong>
-                      <span className="text-[10px] text-[#8C8071] block mt-0.5">200만 시 80만 / 50만 시 20만</span>
+                      <span className="text-[10px] text-[#8C8071] block mt-0.5">직접 추천 포교비</span>
                     </div>
                     <div className="p-2.5 rounded-lg bg-[#FFF9E6] border border-[#E5D399]">
                       <span className="text-[#8A6510] block font-bold">총괄 오버라이딩 마진:</span>
                       <strong className="text-[#9A7418] text-xs">+실입금액의 10%</strong>
-                      <span className="text-[10px] text-[#8A6510] block mt-0.5">200만 시 20만 / 50만 시 5만</span>
+                      <span className="text-[10px] text-[#8A6510] block mt-0.5">총괄 관리 지도비</span>
                     </div>
                   </div>
                   <p className="text-[10.5px] text-[#8C8071]">
@@ -7383,17 +7383,17 @@ export default function App() {
                     <div className="p-2 rounded-lg bg-white border border-[#E4DDD0]">
                       <span className="text-[#6B6155] block">포교위원:</span>
                       <strong className="text-[#1B1815]">30%</strong>
-                      <span className="text-[9.5px] text-[#8C8071] block">200만시 60만</span>
+                      <span className="text-[9.5px] text-[#8C8071] block">직접 추천</span>
                     </div>
                     <div className="p-2 rounded-lg bg-white border border-[#E4DDD0]">
                       <span className="text-[#6B6155] block">상위위원장:</span>
                       <strong className="text-[#1B1815]">10%</strong>
-                      <span className="text-[9.5px] text-[#8C8071] block">200만시 20만</span>
+                      <span className="text-[9.5px] text-[#8C8071] block">관리 지도비</span>
                     </div>
                     <div className="p-2 rounded-lg bg-[#FFF9E6] border border-[#E5D399]">
                       <span className="text-[#8A6510] block font-bold">총괄마진:</span>
                       <strong className="text-[#9A7418]">+10%</strong>
-                      <span className="text-[9.5px] text-[#8A6510] block">200만시 20만</span>
+                      <span className="text-[9.5px] text-[#8A6510] block">총괄 관리비</span>
                     </div>
                   </div>
                   <p className="text-[10.5px] text-[#8C8071]">
@@ -7445,7 +7445,7 @@ export default function App() {
                   >
                     {agents.map((a) => (
                       <option key={a.code} value={a.code}>
-                        {a.name} ({a.role === 'committee_member' ? '포교위원 60만' : a.role === 'master' ? '김철수 총괄' : '포교위원장 80만'})
+                        {a.name} ({a.role === 'committee_member' ? '포교위원 30%' : a.role === 'master' ? '김철수 총괄' : '포교위원장 40%'})
                       </option>
                     ))}
                   </select>
@@ -8076,16 +8076,16 @@ export default function App() {
                         포교위원장 특별 권한 & 오버라이딩 수수료 체계
                       </h2>
                       <p className="text-xs text-[#D6CEC2] mt-1 leading-relaxed">
-                        포교위원장 직추천 시 40%(80만 원)가 정산되며, 산하 포교위원이 신도를 인연 맺을 때마다 10%(20만 원)의 관리 지도비가 위원장님께 지속 정산됩니다.
+                        포교위원장 직추천 시 40%가 정산되며, 산하 포교위원이 신도를 인연 맺을 때마다 10%의 관리 지도비가 위원장님께 지속 정산됩니다.
                       </p>
                       <div className="grid grid-cols-2 gap-2 mt-3 text-center">
                         <div className="p-2.5 rounded-xl bg-white/5 border border-white/10">
                           <span className="text-[10px] text-[#C5BBAE] block">직접 추천 포교비</span>
-                          <span className="text-sm font-extrabold text-[#F5D061]">40% (80만 원)</span>
+                          <span className="text-base font-black text-[#F5D061]">40%</span>
                         </div>
                         <div className="p-2.5 rounded-xl bg-white/5 border border-white/10">
                           <span className="text-[10px] text-[#C5BBAE] block">산하 관리 오버라이딩</span>
-                          <span className="text-sm font-extrabold text-emerald-400">10% (20만 원)</span>
+                          <span className="text-base font-black text-emerald-400">10%</span>
                         </div>
                       </div>
                     </section>
@@ -8228,7 +8228,7 @@ export default function App() {
                         소원사 대웅전 불사 및 유지보수 기금 (실입금액의 50%)
                       </h4>
                       <p className="text-xs text-[#6B5E4C] leading-relaxed">
-                        모든 불사금 접수액 중 50%는 사찰 통장에 원천 보존되어 대웅전 불사, 기도 정진 및 도량 관리에 안전하게 적립됩니다. (예: 위패 1기 200만 원 접수 시 100만 원 즉시 사찰 불사금 배분)
+                        모든 불사금 접수액 중 50%는 사찰 통장에 원천 보존되어 대웅전 불사, 기도 정진 및 도량 관리에 안전하게 적립됩니다.
                       </p>
                     </section>
 
@@ -8322,8 +8322,8 @@ export default function App() {
                             className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs font-semibold"
                           >
                             <option value="believer">일반신도</option>
-                            <option value="committee_member">포교위원 (60만)</option>
-                            <option value="agent">포교위원장 (80만)</option>
+                            <option value="committee_member">포교위원 (30%)</option>
+                            <option value="agent">포교위원장 (40%)</option>
                           </select>
                           <input
                             type="text"
@@ -8364,8 +8364,8 @@ export default function App() {
                               className="px-2 py-1 rounded-lg bg-white border border-[#D5C59B] text-[11px] font-bold text-[#231F1C] shrink-0"
                             >
                               <option value="believer">일반신도</option>
-                              <option value="committee_member">포교위원 (60만)</option>
-                              <option value="agent">포교위원장 (80만)</option>
+                              <option value="committee_member">포교위원 (30%)</option>
+                              <option value="agent">포교위원장 (40%)</option>
                               <option value="temple_admin">창건주·신도회장 본부</option>
                               <option value="master">총괄 포교위원장 (제주AI파트너)</option>
                             </select>
@@ -8439,7 +8439,7 @@ export default function App() {
                         제주AI파트너 총판 50% 사업권 & 총괄 정산 제어
                       </h2>
                       <p className="text-xs text-[#D6CEC2] leading-relaxed">
-                        전국 50% 총판 사업권 및 총괄 10%(20만 원) 극비 마진, 전국 위원회 전체 통제 화면입니다. 사찰 본부 및 타 임직원에게 비공개됩니다.
+                        전국 50% 총판 사업권 및 총괄 10% 극비 마진, 전국 위원회 전체 통제 화면입니다. 사찰 본부 및 타 임직원에게 비공개됩니다.
                       </p>
                     </section>
 
@@ -8447,33 +8447,33 @@ export default function App() {
                     <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
                       <div className="flex items-center justify-between">
                         <h3 className="font-serif-kr font-bold text-sm">
-                          전국 100% 수익 배분 체계 (위패 1기 200만 원 기준)
+                          전국 100% 수익 배분 체계 (실입금액 백분율 요율제)
                         </h3>
                         <span className="text-[10px] text-[#8C8071]">정산 자동화</span>
                       </div>
                       <div className="space-y-2 text-xs">
                         <div className="p-3 rounded-xl bg-gradient-to-br from-[#1F1B17] to-[#2B231A] text-white border border-[#C59B27]/40 space-y-1">
-                          <span className="text-[10.5px] text-[#F5D061] font-bold">1. 사찰 본부 & 대웅전 불사금 (50% / 100만 원)</span>
+                          <span className="text-[10.5px] text-[#F5D061] font-bold">1. 사찰 본부 & 대웅전 불사금 (50%)</span>
                           <p className="text-[10.5px] text-[#C5BBAE]">
                             입금액의 50%는 사찰 대웅전 불사금 및 사찰 기본 기금으로 원천 적립됩니다.
                           </p>
                         </div>
                         <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E5D399] space-y-1">
-                          <span className="text-[10.5px] text-[#8A6510] font-bold">2. 포교위원장 직추천 (40% / 80만 원)</span>
+                          <span className="text-[10.5px] text-[#8A6510] font-bold">2. 포교위원장 직추천 (40%)</span>
                           <p className="text-[10.5px] text-[#6E6354]">
                             포교위원장이 직접 신도를 인연 맺을 시 40%가 포교비로 정산됩니다.
                           </p>
                         </div>
                         <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E5D399] space-y-1">
-                          <span className="text-[10.5px] text-[#8A6510] font-bold">3. 포교위원 직추천 (30% / 60만 원)</span>
+                          <span className="text-[10.5px] text-[#8A6510] font-bold">3. 포교위원 직추천 (30%)</span>
                           <p className="text-[10.5px] text-[#6E6354]">
-                            포교위원 30%(60만) + 직속 포교위원장 10%(20만) 오버라이딩 마진이 배분됩니다.
+                            포교위원 30% + 직속 포교위원장 10% 오버라이딩 마진이 배분됩니다.
                           </p>
                         </div>
                         <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-1">
-                          <span className="text-[10.5px] text-[#8A6510] font-bold">4. 김철수 총괄대표 마진 (10%~20% / 20만~40만 원)</span>
+                          <span className="text-[10.5px] text-[#8A6510] font-bold">4. 김철수 총괄대표 마진 (10%~20%)</span>
                           <p className="text-[10.5px] text-[#6E6354]">
-                            포교위원 추천 시 총괄 10%(20만 원) 극비 마진이 귀속되며, 총판 관리비로 정산됩니다.
+                            포교위원 추천 시 총괄 10% 극비 마진이 귀속되며, 총판 관리비로 정산됩니다.
                           </p>
                         </div>
                       </div>
@@ -8532,7 +8532,7 @@ export default function App() {
                           >
                             {agents.map((a) => (
                               <option key={a.code} value={a.code}>
-                                {a.name} ({a.role === 'committee_member' ? '위원 60만' : a.role === 'master' ? '김철수 총괄' : '위원장 80만'})
+                                {a.name} ({a.role === 'committee_member' ? '위원 30%' : a.role === 'master' ? '김철수 총괄' : '위원장 40%'})
                               </option>
                             ))}
                           </select>
