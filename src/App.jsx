@@ -1412,7 +1412,8 @@ function normalizeMemberHierarchy(m) {
   const [members, setMembers] = useState(() => {
     try {
       localStorage.removeItem('sowonpray_members_v5')
-      const saved = localStorage.getItem('sowonpray_members_v6')
+      localStorage.removeItem('sowonpray_members_v6')
+      const saved = localStorage.getItem('sowonpray_members_v7')
       if (saved) {
         const parsed = JSON.parse(saved)
         const cleaned = parsed
@@ -1534,7 +1535,7 @@ function normalizeMemberHierarchy(m) {
 
   // 상태 변경 시 로컬스토리지 자동 동기화
   useEffect(() => {
-    localStorage.setItem('sowonpray_members_v6', JSON.stringify(members))
+    localStorage.setItem('sowonpray_members_v7', JSON.stringify(members))
   }, [members])
 
   useEffect(() => {
