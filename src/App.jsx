@@ -1368,6 +1368,46 @@ export default function App() {
     }
   }, [healingAudioTrack, isHealingPlaying])
 
+// [소원사 공인 직책 및 계보 규격]
+// - 양영문: 최상위 신도회장 (temple_admin, parent_code: null)
+// - 포교위원장 4명: 김철수 (master), 유광수 (agent), 오다혜 (agent), 임평종 (agent)
+// - 나머지 전원: 일반신도 (believer), 4대 포교위원장 산하로 균등/랜덤 배정
+const CHAIRMEN_CODES = ['33065540', '53872248', '83855838', '35651669']
+
+function normalizeMemberHierarchy(m) {
+  if (!m) return m
+  // 양영문: 최상위 신도회장
+  if (m.code === '55570267' || m.name === '양영문' || m.role === 'temple_admin') {
+    return { ...m, role: 'temple_admin', parent_code: null }
+  }
+  // 김철수: 전국 포교위원장 (총괄대표)
+  if (m.code === '33065540' || m.name === '김철수' || m.role === 'master') {
+    return { ...m, role: 'master', parent_code: '55570267' }
+  }
+  // 유광수: 포교위원장
+  if (m.code === '53872248' || m.name === '유광수') {
+    return { ...m, role: 'agent', parent_code: '33065540' }
+  }
+  // 오다혜: 포교위원장
+  if (m.code === '83855838' || m.name === '오다혜') {
+    return { ...m, role: 'agent', parent_code: '33065540' }
+  }
+  // 임평종: 포교위원장
+  if (m.code === '35651669' || m.name === '임평종') {
+    return { ...m, role: 'agent', parent_code: '33065540' }
+  }
+
+  // 나머지는 전부 일반신도 (4대 포교위원장 산하로 랜덤/균등 배정)
+  let parentCode = m.parent_code
+  if (!CHAIRMEN_CODES.includes(parentCode)) {
+    const codeStr = String(m.code || m.name || '0')
+    const charSum = codeStr.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
+    parentCode = CHAIRMEN_CODES[charSum % CHAIRMEN_CODES.length]
+  }
+
+  return { ...m, role: 'believer', parent_code: parentCode }
+}
+
   // 전체 통합 회원 DB 상태 (신도 + 포교사 + 본부 + 관리자)
   const [members, setMembers] = useState(() => {
     try {
@@ -1377,6 +1417,7 @@ export default function App() {
         const cleaned = parsed
           .filter((m) => m.code !== '49121083' && m.code !== '74200267')
           .map((m) => (m.parent_code === '49121083' || m.parent_code === '74200267' ? { ...m, parent_code: '55570267' } : m))
+          .map(normalizeMemberHierarchy)
         const seen = new Set()
         return cleaned.filter((m) => {
           if (seen.has(m.code)) return false
@@ -1384,9 +1425,9 @@ export default function App() {
           return true
         })
       }
-      return INITIAL_MEMBERS
+      return INITIAL_MEMBERS.map(normalizeMemberHierarchy)
     } catch {
-      return INITIAL_MEMBERS
+      return INITIAL_MEMBERS.map(normalizeMemberHierarchy)
     }
   })
 
@@ -1429,7 +1470,7 @@ export default function App() {
       localStorage.setItem('sowonpray_locked_ref_v3', normalized)
       return normalized
     }
-    return savedRef || '52148821'
+    return savedRef || '33065540'
   })
 
   // 현재 로그인된 본인 계정 코드 (자동 로그인 유지, 초기 기본값: 일반신도 이정숙 '82341088')
@@ -1444,13 +1485,11 @@ export default function App() {
     return members.find((m) => m.code === currentUserCode) || null
   }, [members, currentUserCode])
 
-  // 포교위원장/포교위원/본부/관리자 목록 필터링
+  // 관리자/위원장 목록 필터링 (양영문 신도회장, 김철수·유광수·오다혜·임평종 포교위원장)
   const agents = useMemo(() => {
     return members.filter(
       (m) =>
         m.role === 'agent' ||
-        m.role === 'committee_head' ||
-        m.role === 'committee_member' ||
         m.role === 'temple_admin' ||
         m.role === 'master'
     )
@@ -1458,10 +1497,10 @@ export default function App() {
 
   // 현재 회원의 담당(인도) 포교사 객체
   const currentLockedAgent = useMemo(() => {
-    const targetCode = currentUser?.parent_code || referralCode || '52148821'
+    const targetCode = currentUser?.parent_code || referralCode || '33065540'
     return (
       members.find((m) => m.code === targetCode) ||
-      members.find((m) => m.code === '52148821') ||
+      members.find((m) => m.code === '33065540') ||
       members[0]
     )
   }, [members, currentUser, referralCode])
@@ -1546,12 +1585,27 @@ export default function App() {
             ...INITIAL_MEMBERS.filter((m) => !cloudCodes.has(m.code) && m.code !== '49121083' && m.code !== '74200267'),
           ]
           const seen = new Set()
-          const finalMembers = merged.filter((m) => {
-            if (seen.has(m.code)) return false
-            seen.add(m.code)
-            return true
-          })
+          const finalMembers = merged
+            .map(normalizeMemberHierarchy)
+            .filter((m) => {
+              if (seen.has(m.code)) return false
+              seen.add(m.code)
+              return true
+            })
           setMembers(finalMembers)
+
+          // Supabase 클라우드 DB 역할 동기화 (김철수, 양영문, 유광수, 오다혜, 임평종 제외한 전원 believer)
+          try {
+            await supabase
+              .from('members')
+              .update({ role: 'believer' })
+              .not('code', 'in', '("33065540","55570267","53872248","83855838","35651669")')
+            await supabase.from('members').update({ role: 'agent', parent_code: '33065540' }).in('code', ['53872248', '83855838', '35651669'])
+            await supabase.from('members').update({ role: 'master', parent_code: '55570267' }).eq('code', '33065540')
+            await supabase.from('members').update({ role: 'temple_admin', parent_code: null }).eq('code', '55570267')
+          } catch (syncErr) {
+            console.log('Supabase role sync note:', syncErr)
+          }
         }
         const { data: cloudPrayers } = await supabase
           .from('prayers')
@@ -2151,14 +2205,12 @@ export default function App() {
   const [signupAddress, setSignupAddress] = useState('')
   const [signupFamilyMemo, setSignupFamilyMemo] = useState('')
 
-  // 포교위원 전산 탭: 총괄대표(master)일 때는 위원 선택 조회 가능, 일반 포교위원장/위원일 때는 본인 고정
-  const [selectedAgentCode, setSelectedAgentCode] = useState('52148821')
+  // 포교위원 전산 탭: 총괄대표(master)일 때는 위원 선택 조회 가능, 일반 포교위원장일 때는 본인 고정
+  const [selectedAgentCode, setSelectedAgentCode] = useState('33065540')
   useEffect(() => {
     if (
       currentUser &&
       (currentUser.role === 'agent' ||
-        currentUser.role === 'committee_head' ||
-        currentUser.role === 'committee_member' ||
         currentUser.role === 'temple_admin' ||
         currentUser.role === 'master')
     ) {
@@ -2167,17 +2219,13 @@ export default function App() {
   }, [currentUser])
 
   const activeAgent = useMemo(() => {
-    if (
-      currentUser?.role === 'agent' ||
-      currentUser?.role === 'committee_head' ||
-      currentUser?.role === 'committee_member'
-    ) {
+    if (currentUser?.role === 'agent') {
       return currentUser
     }
     return (
       members.find((m) => m.code === selectedAgentCode) ||
       currentUser ||
-      members[2]
+      members[0]
     )
   }, [members, selectedAgentCode, currentUser])
 
@@ -2244,11 +2292,9 @@ export default function App() {
       if (memberPrintRoleFilter === 'believer') {
         list = list.filter((m) => m.role === 'believer')
       } else if (memberPrintRoleFilter === 'agent') {
-        list = list.filter((m) => m.role === 'agent')
-      } else if (memberPrintRoleFilter === 'committee_member') {
-        list = list.filter((m) => m.role === 'committee_member')
+        list = list.filter((m) => m.role === 'agent' || m.role === 'master')
       } else if (memberPrintRoleFilter === 'leadership') {
-        list = list.filter((m) => m.role === 'temple_admin' || m.role === 'master')
+        list = list.filter((m) => m.role === 'temple_admin')
       }
     }
     if (memberPrintSearchQuery.trim()) {
@@ -2357,7 +2403,7 @@ export default function App() {
       address: signupAddress.trim(),
       family_memo: signupFamilyMemo.trim(),
       role: 'believer',
-      parent_code: referralCode || '52148821',
+      parent_code: referralCode || '33065540',
       bank_name: '',
       bank_account: '',
       account_holder: '',
@@ -2476,7 +2522,7 @@ export default function App() {
 
     const writerCode = currentUser?.code || extractPhone8Code(wishPhone)
     const matchedMember = members.find((m) => m.code === writerCode)
-    const assignedAgentCode = currentUser?.parent_code || matchedMember?.parent_code || referralCode || '52148821'
+    const assignedAgentCode = currentUser?.parent_code || matchedMember?.parent_code || referralCode || '33065540'
 
     const newPrayer = {
       id: 'p-' + Date.now(),
@@ -2576,7 +2622,7 @@ export default function App() {
     }
     const writerCode = currentUser?.code || extractPhone8Code(wishPhone)
     const matchedMember = members.find((m) => m.code === writerCode)
-    const assignedAgentCode = currentUser?.parent_code || matchedMember?.parent_code || referralCode || '52148821'
+    const assignedAgentCode = currentUser?.parent_code || matchedMember?.parent_code || referralCode || '33065540'
 
     const newVisit = {
       id: 'v-' + Date.now(),
@@ -6772,7 +6818,7 @@ export default function App() {
                 <h2 className="font-serif-kr text-lg sm:text-xl font-bold text-white flex items-center gap-1.5 flex-wrap">
                   <span>{activeAgent.name}</span>
                   <span className="text-[#F5D061]">
-                    {activeAgent.role === 'committee_member' ? '포교위원' : '포교위원장'}
+                    {activeAgent.role === 'temple_admin' ? '신도회장' : activeAgent.role === 'master' ? '총괄위원장' : '포교위원장'}
                   </span>
                   <span className="text-[#D6CEC2] text-xs font-normal">님의 전법 도량</span>
                 </h2>
@@ -6785,7 +6831,7 @@ export default function App() {
                     >
                       {agents.map((ag) => (
                         <option key={ag.code} value={ag.code} className="bg-[#231F1C] text-[#F5D061]">
-                          {ag.name} ({ag.role === 'committee_member' ? '위원' : '위원장'})
+                          {ag.name} ({ag.role === 'temple_admin' ? '신도회장' : ag.role === 'master' ? '총괄위원장' : '포교위원장'})
                         </option>
                       ))}
                     </select>
@@ -8035,7 +8081,7 @@ export default function App() {
                       <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white flex items-center gap-1.5 flex-wrap">
                         <span>{activeAgent.name}</span>
                         <span className="text-[#F5D061]">
-                          {activeAgent.role === 'committee_member' ? '포교위원' : '포교위원장'}
+                          {activeAgent.role === 'temple_admin' ? '신도회장' : activeAgent.role === 'master' ? '총괄위원장' : '포교위원장'}
                         </span>
                         <span className="text-[#D6CEC2] text-xs font-normal">님의 도량</span>
                       </h3>
@@ -8048,7 +8094,7 @@ export default function App() {
                           >
                             {agents.map((ag) => (
                               <option key={ag.code} value={ag.code} className="bg-[#231F1C] text-[#F5D061]">
-                                {ag.name} ({ag.role === 'committee_member' ? '위원' : '위원장'})
+                                {ag.name} ({ag.role === 'temple_admin' ? '신도회장' : ag.role === 'master' ? '총괄위원장' : '포교위원장'})
                               </option>
                             ))}
                           </select>
@@ -8154,7 +8200,7 @@ export default function App() {
                         {isMasterOrTempleAdmin ? '전체 회원명부' : `${activeAgent.name} 산하 회원명부`} ({myAffiliatedMembers.length}명)
                       </h4>
                       <p className="text-[11px] text-[#D6CEC2] mt-0.5">
-                        신도 {myAffiliatedMembers.filter((m) => m.role === 'believer').length}명 · 위원 {myAffiliatedMembers.filter((m) => m.role !== 'believer').length}명
+                        일반신도 {myAffiliatedMembers.filter((m) => m.role === 'believer').length}명 · 위원장 {myAffiliatedMembers.filter((m) => m.role === 'agent' || m.role === 'master').length}명
                       </p>
                     </div>
                     <button
@@ -8173,7 +8219,7 @@ export default function App() {
                       <div className="flex items-center gap-1.5">
                         <Users className="w-4 h-4 text-[#8A6510]" />
                         <h4 className="font-serif-kr text-sm font-bold text-[#1B1815]">
-                          {isMasterOrTempleAdmin ? '신도 및 위원 목록' : '산하 신도 및 위원 목록'}
+                          {isMasterOrTempleAdmin ? '전체 회원명부' : `${activeAgent.name} 포교위원장 산하 회원`}
                         </h4>
                       </div>
                       <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#FAF8F5] text-[#8A6510] font-bold border border-[#EAE2D3]">
@@ -8206,9 +8252,8 @@ export default function App() {
                     <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 text-[11px]">
                       {[
                         { id: 'all', label: `전체 (${myAffiliatedMembers.length})` },
-                        { id: 'believer', label: `신도 (${myAffiliatedMembers.filter((m) => m.role === 'believer').length})` },
-                        { id: 'agent', label: `위원장 (${myAffiliatedMembers.filter((m) => m.role === 'agent' || m.role === 'master').length})` },
-                        { id: 'committee_member', label: `위원 (${myAffiliatedMembers.filter((m) => m.role === 'committee_member').length})` },
+                        { id: 'believer', label: `일반신도 (${myAffiliatedMembers.filter((m) => m.role === 'believer').length})` },
+                        { id: 'agent', label: `포교위원장 (${myAffiliatedMembers.filter((m) => m.role === 'agent' || m.role === 'master').length})` },
                       ].map((tab) => (
                         <button
                           key={tab.id}
@@ -8242,16 +8287,15 @@ export default function App() {
                               <div className="font-bold text-[#231F1C] flex items-center gap-1.5 flex-wrap">
                                 <span>{m.name}</span>
                                 {m.dharma_name && (
-                                  <span className="text-[#8A6510] text-[11px] font-normal">({m.dharma_name})</span>
+                                   <span className="text-[#8A6510] text-[11px] font-normal">({m.dharma_name})</span>
                                 )}
                                 <span className={`text-[9.5px] px-1.5 py-0.2 rounded font-semibold ${
                                   m.role === 'agent' ? 'bg-amber-100 text-[#8A6510]' :
-                                  m.role === 'committee_member' ? 'bg-teal-100 text-teal-800' :
-                                  m.role === 'temple_admin' ? 'bg-amber-700 text-white' :
+                                  m.role === 'temple_admin' ? 'bg-amber-700 text-white font-bold' :
                                   m.role === 'master' ? 'bg-purple-100 text-purple-800 font-black' :
                                   'bg-neutral-100 text-neutral-600'
                                 }`}>
-                                  {m.role === 'agent' ? '위원장' : m.role === 'committee_member' ? '위원' : m.role === 'temple_admin' ? '창건주·본부' : m.role === 'master' ? '총괄' : '신도'}
+                                  {m.role === 'agent' ? '포교위원장' : m.role === 'temple_admin' ? '신도회장' : m.role === 'master' ? '총괄위원장' : '일반신도'}
                                 </span>
                               </div>
                               <div className="text-[11px] text-[#8C8071] mt-0.5 flex items-center gap-2 truncate">
@@ -8799,9 +8843,8 @@ export default function App() {
                     {[
                       { id: 'all', label: `전체 (${members.length})` },
                       { id: 'believer', label: `일반신도 (${members.filter((m) => m.role === 'believer').length})` },
-                      { id: 'agent', label: `포교위원장 (${members.filter((m) => m.role === 'agent').length})` },
-                      { id: 'committee_member', label: `포교위원 (${members.filter((m) => m.role === 'committee_member').length})` },
-                      { id: 'leadership', label: `사찰본부·총괄 (${members.filter((m) => m.role === 'temple_admin' || m.role === 'master').length})` },
+                      { id: 'agent', label: `포교위원장 (${members.filter((m) => m.role === 'agent' || m.role === 'master').length})` },
+                      { id: 'leadership', label: `신도회장 (${members.filter((m) => m.role === 'temple_admin').length})` },
                     ].map((tab) => (
                       <button
                         key={tab.id}
@@ -8874,13 +8917,11 @@ export default function App() {
                           const recommenderName = getRecommenderName(m.parent_code)
                           const roleLabel =
                             m.role === 'temple_admin'
-                              ? '창건주·회장'
+                              ? '신도회장'
                               : m.role === 'master'
-                              ? '총괄대표'
+                              ? '총괄위원장'
                               : m.role === 'agent'
                               ? '포교위원장'
-                              : m.role === 'committee_member'
-                              ? '포교위원'
                               : '일반신도'
                           return (
                             <tr
