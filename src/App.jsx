@@ -277,7 +277,8 @@ function OrganizationTreeView({
       const found = members.find((m) => m.code === rootCode)
       return found ? [found] : []
     }
-    const roots = members.filter((m) => !m.parent_code || m.role === 'master')
+    // [옵션 A] 창건주·신도회장 본부(!m.parent_code)를 최상위 단일 뿌리로 모시고, 그 직속으로 김철수 총괄위원장 단독 배치
+    const roots = members.filter((m) => !m.parent_code)
     return roots.length ? roots : [members[0]]
   }, [members, rootCode])
 
