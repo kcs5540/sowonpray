@@ -6055,13 +6055,15 @@ export default function App() {
                             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#E25C2B] to-[#F4B41A] text-white flex items-center justify-center shadow-[0_0_10px_rgba(233,130,39,0.5)] shrink-0">
                               <Flame className="w-4 h-4 fill-current text-[#FFF7CE] flame-flicker" />
                             </div>
-                            <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
-                              <span className="text-xs font-extrabold text-[#F5D061] tracking-wide whitespace-nowrap">
-                                7일 소원등 불밝힘 정진 중
-                              </span>
-                              <span className="px-1.5 py-0.5 rounded-full bg-[#F5D061] text-[#1B1815] text-[10px] font-black whitespace-nowrap">
-                                D-{lanternDaysRemaining}일 남음
-                              </span>
+                            <div className="min-w-0">
+                              <div className="text-xs font-extrabold text-[#F5D061] tracking-wide whitespace-nowrap">
+                                소원등 불밝힘 정진 중
+                              </div>
+                              <div className="mt-0.5">
+                                <span className="px-1.5 py-0.5 rounded-full bg-[#F5D061] text-[#1B1815] text-[10px] font-black whitespace-nowrap inline-block">
+                                  D-{lanternDaysRemaining}일 남음
+                                </span>
+                              </div>
                             </div>
                           </div>
 
