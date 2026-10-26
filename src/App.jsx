@@ -6481,13 +6481,15 @@ function normalizeMemberHierarchy(m) {
                     </p>
                   </div>
 
-                  {/* 1) 큼직한 카카오톡 원클릭 선물 버튼 (어르신도 1초 만에 터치) */}
+                  {/* 1) 큼직한 카카오톡 원클릭 선물 버튼 (어르신도 1초 만에 터치, 정식 카카오 심볼) */}
                   <button
                     type="button"
                     onClick={() => handleShareKakao(currentUser.code, currentUser.name)}
-                    className="w-full py-3.5 px-4 rounded-2xl bg-[#FEE500] hover:bg-[#FADA0A] text-[#191919] font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition active:scale-98 border border-[#E6CE00]"
+                    className="w-full py-3.5 px-4 rounded-2xl bg-[#FEE500] hover:bg-[#FADA0A] text-[#191919] font-extrabold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-sm transition active:scale-98 border border-[#E6CE00]"
                   >
-                    <span className="text-lg">💬</span>
+                    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-[#3A1D1D] shrink-0" aria-hidden="true">
+                      <path d="M12 3C6.477 3 2 6.477 2 10.767c0 2.766 1.874 5.19 4.678 6.558l-1.18 4.337a.5.5 0 0 0 .768.528l5.105-3.374c.206.015.414.024.629.024 5.523 0 10-3.477 10-7.767C22 6.477 17.523 3 12 3z"/>
+                    </svg>
                     <span>카카오톡으로 7일 소원등 복(福) 선물하기</span>
                   </button>
 
