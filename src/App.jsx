@@ -8243,42 +8243,123 @@ export default function App() {
                       </span>
                     </div>
 
-                    {/* 상단 통합 안내 카드 */}
-                    <section className="rounded-2xl bg-gradient-to-br from-[#1C1814] to-[#2C241C] text-white p-4 sm:p-5 border border-[#C59B27]/50 shadow-md">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 text-[#F5D061] border border-[#F5D061]/40 font-bold">
-                          소원사 사찰본부 & 창건주 회장님 관제
-                        </span>
-                        <Settings className="w-4 h-4 text-[#F5D061]" />
-                      </div>
-                      <h2 className="font-serif-kr text-base sm:text-lg font-bold">
-                        제주 소원사 본부 관제 및 대웅전 축원
-                      </h2>
-                      <p className="text-xs text-[#D6CEC2] mt-1 leading-relaxed">
-                        양영문 창건주·신도회장님과 사찰 본부 관리자가 대웅전 사시예불 축원, 공식 50% 불사금, 통합 회원 DB 및 도량 공양을 총괄합니다.
-                      </p>
-                      <div className="mt-2.5 p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-[#F5D061] flex items-center gap-1.5">
-                        <ShieldCheck className="w-4 h-4 shrink-0 text-[#F5D061]" />
-                        <span>
-                          <strong>[사찰 본부 전용 관제]</strong> 일반 포교위원 및 포교위원장에게는 노출되지 않는 사찰 본부 화면입니다.
-                        </span>
-                      </div>
-                    </section>
-
-                    {/* 소원사 사찰 공식 50% 불사금 현황 카드 */}
-                    <section className="bg-gradient-to-br from-[#FAF8F5] to-[#F2EDE2] rounded-2xl p-4 border border-[#D5C59B] shadow-sm space-y-2">
+                    {/* 📜 소원사 모바일법당 전체 회원명부 실무 카드 */}
+                    <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#8A6510] text-white font-extrabold">
-                          사찰 불사금 원천 보존
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4 text-[#8A6510]" />
+                          <h4 className="font-serif-kr text-base font-bold text-[#1B1815]">
+                            소원사 모바일법당 전체 회원명부
+                          </h4>
+                        </div>
+                        <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-100 text-[#8A6510] font-bold border border-amber-300">
+                          총 {members.length}명 등록
                         </span>
-                        <span className="text-xs font-bold text-[#8A6510]">사찰 50% 귀속</span>
                       </div>
-                      <h4 className="font-serif-kr text-sm font-bold text-[#231F1C]">
-                        소원사 대웅전 불사 및 유지보수 기금 (실입금액의 50%)
-                      </h4>
-                      <p className="text-xs text-[#6B5E4C] leading-relaxed">
-                        모든 불사금 접수액 중 50%는 사찰 통장에 원천 보존되어 대웅전 불사, 기도 정진 및 도량 관리에 안전하게 적립됩니다.
-                      </p>
+
+                      {/* 실시간 검색창 */}
+                      <div className="relative">
+                        <Search className="w-4 h-4 text-[#8C8071] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        <input
+                          type="text"
+                          value={adminMemberSearchQuery}
+                          onChange={(e) => setAdminMemberSearchQuery(e.target.value)}
+                          placeholder="신도 성함, 법명, 전화번호, 주소 검색"
+                          className="w-full pl-9 pr-8 py-2 rounded-xl bg-[#FAF8F5] border border-[#D5C59B] text-xs placeholder:text-[#A89D8E] focus:outline-none focus:border-[#C59B27]"
+                        />
+                        {adminMemberSearchQuery && (
+                          <button
+                            type="button"
+                            onClick={() => setAdminMemberSearchQuery('')}
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#8C8071] hover:text-[#1B1815] p-1"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+
+                      {/* 등급별 필터 칩 */}
+                      <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 text-[11px]">
+                        {[
+                          { id: 'all', label: `전체 (${members.length})` },
+                          { id: 'believer', label: `일반신도 (${members.filter((m) => m.role === 'believer').length})` },
+                          { id: 'agent', label: `위원장 (${members.filter((m) => m.role === 'agent').length})` },
+                          { id: 'committee_member', label: `위원 (${members.filter((m) => m.role === 'committee_member').length})` },
+                        ].map((tab) => (
+                          <button
+                            key={tab.id}
+                            type="button"
+                            onClick={() => setAdminMemberRoleFilter(tab.id)}
+                            className={`px-2.5 py-1 rounded-lg font-bold shrink-0 transition ${
+                              adminMemberRoleFilter === tab.id
+                                ? 'bg-[#231F1C] text-[#F5D061] border border-[#C59B27]'
+                                : 'bg-[#FAF8F5] text-[#6E6354] border border-[#EAE2D3] hover:bg-[#F2ECE1]'
+                            }`}
+                          >
+                            {tab.label}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* 실시간 회원 리스트 (클릭 시 상세 모달, 원클릭 전화/문자) */}
+                      <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+                        {filteredAdminMembers.length === 0 ? (
+                          <div className="p-6 text-center text-xs text-[#8C8071] border border-dashed border-[#DDD4C4] rounded-xl">
+                            검색 조건에 일치하는 등록 회원이 없습니다.
+                          </div>
+                        ) : (
+                          filteredAdminMembers.map((m) => (
+                            <div
+                              key={m.code}
+                              onClick={() => setSelectedMemberDetail(m)}
+                              className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] hover:border-[#C59B27] cursor-pointer transition flex items-center justify-between text-xs"
+                            >
+                              <div className="min-w-0 pr-2">
+                                <div className="font-bold text-[#231F1C] flex items-center gap-1.5 flex-wrap">
+                                  <span>{m.name}</span>
+                                  {m.dharma_name && (
+                                    <span className="text-[#8A6510] text-[11px] font-normal">({m.dharma_name})</span>
+                                  )}
+                                  <span className={`text-[9.5px] px-1.5 py-0.2 rounded font-semibold ${
+                                    m.role === 'agent' ? 'bg-amber-100 text-[#8A6510]' :
+                                    m.role === 'committee_member' ? 'bg-teal-100 text-teal-800' :
+                                    m.role === 'temple_admin' ? 'bg-amber-700 text-white' :
+                                    m.role === 'master' ? 'bg-purple-100 text-purple-800 font-black' :
+                                    'bg-neutral-100 text-neutral-600'
+                                  }`}>
+                                    {m.role === 'agent' ? '포교위원장' : m.role === 'committee_member' ? '포교위원' : m.role === 'temple_admin' ? '창건주·본부' : m.role === 'master' ? '김철수 총괄' : '일반신도'}
+                                  </span>
+                                </div>
+                                <div className="text-[11px] text-[#8C8071] mt-0.5 flex items-center gap-2 truncate">
+                                  <span>📞 {m.phone || '연락처 미등록'}</span>
+                                  {m.address && <span className="truncate">· {m.address}</span>}
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
+                                {m.phone && (
+                                  <>
+                                    <a
+                                      href={`tel:${m.phone}`}
+                                      className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition"
+                                      title="전화걸기"
+                                    >
+                                      <Phone className="w-3.5 h-3.5" />
+                                    </a>
+                                    <a
+                                      href={`sms:${m.phone}`}
+                                      className="p-1.5 rounded-lg bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 transition"
+                                      title="문자보내기"
+                                    >
+                                      <MessageSquare className="w-3.5 h-3.5" />
+                                    </a>
+                                  </>
+                                )}
+                                <ChevronRight className="w-4 h-4 text-[#A89D8E]" />
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
                     </section>
 
                     {/* 오늘의 대웅전 사시예불 축원 명부 인쇄 바로가기 카드 */}
