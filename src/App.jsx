@@ -2865,11 +2865,49 @@ function normalizeMemberHierarchy(m) {
     showToast(`📋 도반 연결 링크가 복사되었습니다: ${url}`)
   }
 
-  // 도반에게 카카오톡 소원등 복(福) 선물하기 (안전한 원클릭 모바일 공유 & 링크 복사)
+  // 도반에게 카카오톡 소원등 복(福) 선물하기 (카카오 공식 피드 카드 또는 모바일 공유 fallback)
   const handleShareKakao = (code, userName) => {
     const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
     const shareUrl = `${origin}/?ref=${code}`
     const senderName = userName ? `${userName} 불자님` : '도반님'
+    const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
+
+    // 1) Kakao JavaScript SDK 공식 피드 카드 (사진 + 제목 + 설명 + [7일 무료 소원등 켜기] 버튼)
+    if (typeof window !== 'undefined' && window.Kakao) {
+      try {
+        if (!window.Kakao.isInitialized()) {
+          window.Kakao.init(kakaoKey)
+        }
+        if (window.Kakao.isInitialized() && window.Kakao.Share) {
+          window.Kakao.Share.sendDefault({
+            objectType: 'feed',
+            content: {
+              title: '🪷 제주 소원사 7일 무료 소원등 복(福) 선물',
+              description: `${senderName}께서 부처님 전 7일간 꺼지지 않는 대웅전 소원등을 정성껏 선물하셨습니다.`,
+              imageUrl: 'https://sowonpray.vercel.app/images/sowonsa_real_cover_path.png',
+              link: {
+                mobileWebUrl: shareUrl,
+                webUrl: shareUrl,
+              },
+            },
+            buttons: [
+              {
+                title: '7일 무료 소원등 켜기',
+                link: {
+                  mobileWebUrl: shareUrl,
+                  webUrl: shareUrl,
+                },
+              },
+            ],
+          })
+          return
+        }
+      } catch (err) {
+        console.warn('Kakao SDK share fallback:', err)
+      }
+    }
+
+    // 2) 브라우저 네이티브 공유 / 복사 fallback
     const shareTitle = '🪷 제주 소원사 7일 무료 소원등 복(福) 선물'
     const shareText = `[제주 소원사 모바일 법당]\n${senderName}께서 부처님 전 7일 무료 소원등을 정성껏 선물하셨습니다.\n아래 카드를 터치하여 대웅전에 소원등을 밝혀보세요.`
 
