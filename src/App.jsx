@@ -8276,12 +8276,12 @@ export default function App() {
                     <div className="flex items-center justify-between pb-1.5 border-b border-[#E6DEC8]">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-amber-600"></span>
-                        <h3 className="font-serif-kr text-base font-extrabold text-[#1B1815]">
-                          🏛️ 3. 사찰전산 (소원사 사찰본부 & 창건주 회장님)
+                        <h3 className="font-serif-kr text-base font-extrabold text-[#1B1815] whitespace-nowrap">
+                          🏛️ 3. 사찰본부 전산
                         </h3>
                       </div>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-[#8A6510] font-bold border border-amber-300">
-                        사찰본부 전용
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-[#8A6510] font-bold border border-amber-300 shrink-0">
+                        본부 전용
                       </span>
                     </div>
 
@@ -8517,12 +8517,12 @@ export default function App() {
                     <div className="flex items-center justify-between pb-1.5 border-b border-[#D4AF37]/50">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-[#F5D061] shadow-[0_0_8px_#F5D061]"></span>
-                        <h3 className="font-serif-kr text-base font-extrabold text-[#1B1815]">
-                          👑 4. 총괄(김철수) 전산 [최고관제]
+                        <h3 className="font-serif-kr text-base font-extrabold text-[#1B1815] whitespace-nowrap">
+                          👑 4. 총괄대표 전산
                         </h3>
                       </div>
-                      <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-[#1B1815] text-[#F5D061] font-black border border-[#F5D061]">
-                        김철수 대표님 전용 [극비]
+                      <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-[#1B1815] text-[#F5D061] font-black border border-[#F5D061] shrink-0">
+                        총괄 전용
                       </span>
                     </div>
 
