@@ -8329,10 +8329,8 @@ export default function App() {
               제주 소원사 · 모바일 법당 <span className="text-[#9A7418] font-normal">(소원성취 기도도량)</span>
             </div>
             <p>제주특별자치도 제주시 죽성서길 75 (오등동 935)</p>
-            <div className="flex items-center justify-center gap-2.5 text-[10.5px] text-[#5C5349] pt-0.5">
-              <span>종무소 064-805-2007</span>
-              <span>·</span>
-              <span>신행/차담예약 010-4912-1083</span>
+            <div className="flex items-center justify-center text-[10.5px] text-[#5C5349] pt-0.5">
+              <span>종무소 064-805-2007 / 010-4912-1083</span>
             </div>
           </div>
 
