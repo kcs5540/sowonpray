@@ -1411,7 +1411,8 @@ function normalizeMemberHierarchy(m) {
   // 전체 통합 회원 DB 상태 (신도 + 포교사 + 본부 + 관리자)
   const [members, setMembers] = useState(() => {
     try {
-      const saved = localStorage.getItem('sowonpray_members_v5')
+      localStorage.removeItem('sowonpray_members_v5')
+      const saved = localStorage.getItem('sowonpray_members_v6')
       if (saved) {
         const parsed = JSON.parse(saved)
         const cleaned = parsed
@@ -1533,7 +1534,7 @@ function normalizeMemberHierarchy(m) {
 
   // 상태 변경 시 로컬스토리지 자동 동기화
   useEffect(() => {
-    localStorage.setItem('sowonpray_members_v5', JSON.stringify(members))
+    localStorage.setItem('sowonpray_members_v6', JSON.stringify(members))
   }, [members])
 
   useEffect(() => {
