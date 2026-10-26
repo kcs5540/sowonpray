@@ -8322,9 +8322,9 @@ export default function App() {
         )}
 
         {/* 통합 공식 푸터 (사찰 안내 & 제주AI파트너 디지털 전산 파트너십) */}
-        <footer className="px-4 pt-6 pb-24 text-center text-[11px] text-[#786E63] border-t border-[#E6DEC8] space-y-3.5">
+        <footer className="px-4 pt-4 pb-14 text-center text-[11px] text-[#786E63] border-t border-[#E6DEC8] space-y-2">
           {/* 사찰 및 종무소 정보 (통합 단일화) */}
-          <div className="space-y-1 leading-relaxed break-keep">
+          <div className="space-y-0.5 leading-relaxed break-keep">
             <div className="font-bold text-[#231F1C] text-xs">
               제주 소원사 · 모바일 법당 <span className="text-[#9A7418] font-normal">(소원성취 기도도량)</span>
             </div>
@@ -8335,7 +8335,7 @@ export default function App() {
           </div>
 
           {/* 하단 단정한 전산 크레딧 & 카피라이트 (사찰 품격을 높이는 은은한 표기) */}
-          <div className="pt-1.5 text-[10px] text-[#A69B8D] space-y-0.5">
+          <div className="pt-0.5 text-[10px] text-[#A69B8D] space-y-0.5">
             <p>디지털 전산 총괄: 제주AI파트너</p>
             <p className="tracking-wider text-[#B8AF9F]">
               © Jeju Sowonsa. All rights reserved.
