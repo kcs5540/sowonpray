@@ -6646,9 +6646,6 @@ export default function App() {
                 </div>
                 <h2 className="font-serif-kr text-lg sm:text-xl font-bold text-white flex items-center gap-1.5 flex-wrap">
                   <span>{activeAgent.name}</span>
-                  {activeAgent.dharma_name && (
-                    <span className="text-[#D6CEC2] text-sm font-normal">({activeAgent.dharma_name})</span>
-                  )}
                   <span className="text-[#F5D061]">
                     {activeAgent.role === 'committee_member' ? '포교위원' : '포교위원장'}
                   </span>
@@ -7915,9 +7912,6 @@ export default function App() {
                       </div>
                       <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white flex items-center gap-1.5 flex-wrap">
                         <span>{activeAgent.name}</span>
-                        {activeAgent.dharma_name && (
-                          <span className="text-[#D6CEC2] text-sm font-normal">({activeAgent.dharma_name})</span>
-                        )}
                         <span className="text-[#F5D061]">
                           {activeAgent.role === 'committee_member' ? '포교위원' : '포교위원장'}
                         </span>
