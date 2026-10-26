@@ -6057,7 +6057,7 @@ export default function App() {
                             </div>
                             <div className="min-w-0">
                               <div className="text-xs font-extrabold text-[#F5D061] tracking-wide whitespace-nowrap">
-                                소원등 불밝힘 정진 중
+                                7일 소원등 정진중
                               </div>
                               <div className="mt-0.5">
                                 <span className="px-1.5 py-0.5 rounded-full bg-[#F5D061] text-[#1B1815] text-[10px] font-black whitespace-nowrap inline-block">
