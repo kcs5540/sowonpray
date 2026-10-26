@@ -8086,22 +8086,6 @@ export default function App() {
                     )}
                   </section>
 
-                  {/* 산하 인연 조직도 트리 */}
-                  <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <Users className="w-4 h-4 text-[#8A6510]" />
-                        <h4 className="font-serif-kr font-bold text-sm">산하 인연 조직도</h4>
-                      </div>
-                      <span className="text-[10.5px] text-[#8C8071]">
-                        {activeAgent.name} 포교위원 관할
-                      </span>
-                    </div>
-                    <OrganizationTreeView
-                      members={members}
-                      rootCode={isMasterOrTempleAdmin ? (selectedAgentCode || activeAgent.code) : activeAgent.code}
-                    />
-                  </section>
 
                   {/* 내가 유치한 신도 차담 & 공양 예약 현황 */}
                   <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
