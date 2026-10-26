@@ -6621,29 +6621,11 @@ export default function App() {
             </div>
 
             <section className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-5 border border-[#C59B27]/40 shadow-md space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between gap-2 pb-2 border-b border-white/10">
-                  <span className="text-[11px] text-[#F5D061] font-semibold flex items-center gap-1">
-                    <span>📜</span>
-                    <span>포교위원 모바일 파트너 센터</span>
-                  </span>
-                  {isMasterOrTempleAdmin && (
-                    <div className="flex items-center gap-1 shrink-0">
-                      <span className="text-[10px] text-[#A69B8D]">전환:</span>
-                      <select
-                        value={selectedAgentCode}
-                        onChange={(e) => setSelectedAgentCode(e.target.value)}
-                        className="bg-[#2E2822] text-[#F5D061] border border-[#C59B27]/60 rounded-lg px-2 py-0.5 text-xs font-bold focus:outline-none"
-                      >
-                        {agents.map((ag) => (
-                          <option key={ag.code} value={ag.code}>
-                            {ag.name} ({ag.role === 'committee_member' ? '위원' : '위원장'})
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                </div>
+              <div className="space-y-1.5">
+                <span className="text-[11px] text-[#F5D061] font-semibold flex items-center gap-1">
+                  <span>📜</span>
+                  <span>포교위원 모바일 파트너 센터</span>
+                </span>
                 <h2 className="font-serif-kr text-lg sm:text-xl font-bold text-white flex items-center gap-1.5 flex-wrap">
                   <span>{activeAgent.name}</span>
                   <span className="text-[#F5D061]">
@@ -6651,6 +6633,21 @@ export default function App() {
                   </span>
                   <span className="text-[#D6CEC2] text-xs font-normal">님의 전법 도량</span>
                 </h2>
+                {isMasterOrTempleAdmin && (
+                  <div className="flex justify-end items-center pt-0.5">
+                    <select
+                      value={selectedAgentCode}
+                      onChange={(e) => setSelectedAgentCode(e.target.value)}
+                      className="bg-[#2E2822] text-[#F5D061] border border-[#C59B27]/60 rounded-full px-3 py-1 text-xs font-bold focus:outline-none shadow-sm cursor-pointer"
+                    >
+                      {agents.map((ag) => (
+                        <option key={ag.code} value={ag.code} className="bg-[#231F1C] text-[#F5D061]">
+                          {ag.name} ({ag.role === 'committee_member' ? '위원' : '위원장'})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-3 gap-2 pt-1">
@@ -7887,29 +7884,11 @@ export default function App() {
 
                   {/* 파트너 헤더 */}
                   <section className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-4 sm:p-5 border border-[#C59B27]/40 shadow-md space-y-3">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between gap-2 pb-2 border-b border-white/10">
-                        <span className="text-[10.5px] text-[#F5D061] font-semibold flex items-center gap-1">
-                          <span>📜</span>
-                          <span>포교위원 모바일 파트너 센터</span>
-                        </span>
-                        {isMasterOrTempleAdmin && (
-                          <div className="flex items-center gap-1 shrink-0">
-                            <span className="text-[10px] text-[#A69B8D]">전환:</span>
-                            <select
-                              value={selectedAgentCode}
-                              onChange={(e) => setSelectedAgentCode(e.target.value)}
-                              className="bg-[#2E2822] text-[#F5D061] border border-[#C59B27]/60 rounded-lg px-2 py-0.5 text-xs font-bold focus:outline-none"
-                            >
-                              {agents.map((ag) => (
-                                <option key={ag.code} value={ag.code}>
-                                  {ag.name} ({ag.role === 'committee_member' ? '위원' : '위원장'})
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        )}
-                      </div>
+                    <div className="space-y-1.5">
+                      <span className="text-[10.5px] text-[#F5D061] font-semibold flex items-center gap-1">
+                        <span>📜</span>
+                        <span>포교위원 모바일 파트너 센터</span>
+                      </span>
                       <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white flex items-center gap-1.5 flex-wrap">
                         <span>{activeAgent.name}</span>
                         <span className="text-[#F5D061]">
@@ -7917,6 +7896,21 @@ export default function App() {
                         </span>
                         <span className="text-[#D6CEC2] text-xs font-normal">님의 도량</span>
                       </h3>
+                      {isMasterOrTempleAdmin && (
+                        <div className="flex justify-end items-center pt-0.5">
+                          <select
+                            value={selectedAgentCode}
+                            onChange={(e) => setSelectedAgentCode(e.target.value)}
+                            className="bg-[#2E2822] text-[#F5D061] border border-[#C59B27]/60 rounded-full px-3 py-1 text-xs font-bold focus:outline-none shadow-sm cursor-pointer"
+                          >
+                            {agents.map((ag) => (
+                              <option key={ag.code} value={ag.code} className="bg-[#231F1C] text-[#F5D061]">
+                                {ag.name} ({ag.role === 'committee_member' ? '위원' : '위원장'})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
                     </div>
 
                     <div className="grid grid-cols-3 gap-2 pt-1 text-center">
