@@ -1647,6 +1647,8 @@ export default function App() {
 
   // [사시예불 축원 명부] 7일 이내 유효 신도 전용 인쇄 모달 상태
   const [showSasiPrintModal, setShowSasiPrintModal] = useState(false)
+  // [모바일법당 회원명부] 전체 신도 및 포교위원회 A4 인쇄 모달 상태
+  const [showMemberPrintModal, setShowMemberPrintModal] = useState(false)
 
   // 7일 정진 기간 내(D-7 ~ D-1) 유효 신도만 자동 필터링 (7일 지난 만료 신도는 자동 제외)
   const activeSasiPrayers = useMemo(() => {
@@ -1835,6 +1837,46 @@ export default function App() {
       return 0
     })
   }, [members, adminMemberRoleFilter, adminMemberSearchQuery, adminMemberSort])
+
+  // [모바일법당 회원명부 A4 인쇄] 필터 및 검색
+  const [memberPrintRoleFilter, setMemberPrintRoleFilter] = useState('all')
+  const [memberPrintSearchQuery, setMemberPrintSearchQuery] = useState('')
+
+  const getRecommenderName = (parentCode) => {
+    if (!parentCode) return '-'
+    if (parentCode === '55570267') return '양영문 신도회장'
+    if (parentCode === '55400267') return '김철수 총괄대표'
+    const parent = (members || []).find((m) => m.code === parentCode)
+    return parent ? `${parent.name} (${parent.role === 'agent' ? '위원장' : parent.role === 'committee_member' ? '위원' : '신도'})` : parentCode
+  }
+
+  const filteredPrintMembers = useMemo(() => {
+    let list = members || []
+    if (memberPrintRoleFilter !== 'all') {
+      if (memberPrintRoleFilter === 'believer') {
+        list = list.filter((m) => m.role === 'believer')
+      } else if (memberPrintRoleFilter === 'agent') {
+        list = list.filter((m) => m.role === 'agent')
+      } else if (memberPrintRoleFilter === 'committee_member') {
+        list = list.filter((m) => m.role === 'committee_member')
+      } else if (memberPrintRoleFilter === 'leadership') {
+        list = list.filter((m) => m.role === 'temple_admin' || m.role === 'master')
+      }
+    }
+    if (memberPrintSearchQuery.trim()) {
+      const q = memberPrintSearchQuery.trim().toLowerCase()
+      const rawNum = q.replace(/[^0-9]/g, '')
+      list = list.filter((m) => {
+        const nameMatch = m.name?.toLowerCase().includes(q)
+        const dharmaMatch = m.dharma_name?.toLowerCase().includes(q)
+        const phoneMatch = rawNum && m.phone?.replace(/[^0-9]/g, '').includes(rawNum)
+        const codeMatch = m.code?.includes(q)
+        const addrMatch = m.address?.toLowerCase().includes(q)
+        return nameMatch || dharmaMatch || phoneMatch || codeMatch || addrMatch
+      })
+    }
+    return list
+  }, [members, memberPrintRoleFilter, memberPrintSearchQuery])
 
   // 수당 정산 원장 필터링
   const filteredSettlements = useMemo(() => {
@@ -8243,7 +8285,30 @@ export default function App() {
                       </span>
                     </div>
 
-                    {/* 📜 소원사 모바일법당 전체 회원명부 실무 카드 */}
+                    {/* 🖨️ 소원사 모바일법당 전체 회원명부 A4 인쇄 배너 카드 */}
+                    <section className="bg-gradient-to-r from-[#241E17] via-[#2F2417] to-[#1C160F] text-white rounded-2xl p-4 border-2 border-[#D4AF37] shadow-lg flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#D4AF37] text-[#1B1815] font-extrabold">
+                          사찰 본부 보관용
+                        </span>
+                        <h4 className="font-serif-kr text-sm font-bold mt-1 text-[#F5D061]">
+                          소원사 모바일법당 전체 회원명부 ({members.length}명)
+                        </h4>
+                        <p className="text-[10.5px] text-[#D6CEC2]">
+                          신도 {members.filter((m) => m.role === 'believer').length}명 · 포교위원 {members.filter((m) => m.role !== 'believer').length}명 실시간 연동
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowMemberPrintModal(true)}
+                        className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs shadow hover:brightness-105 active:scale-95 transition flex items-center gap-1.5 whitespace-nowrap shrink-0"
+                      >
+                        <Printer className="w-4 h-4" />
+                        <span>A4 인쇄</span>
+                      </button>
+                    </section>
+
+                    {/* 📜 소원사 모바일법당 전체 회원명부 실무 검색 및 관리 카드 */}
                     <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -8252,9 +8317,19 @@ export default function App() {
                             소원사 모바일법당 전체 회원명부
                           </h4>
                         </div>
-                        <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-100 text-[#8A6510] font-bold border border-amber-300">
-                          총 {members.length}명 등록
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setShowMemberPrintModal(true)}
+                            className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-[11px] flex items-center gap-1 shadow hover:brightness-105 active:scale-95 transition"
+                          >
+                            <Printer className="w-3.5 h-3.5" />
+                            <span>A4 인쇄</span>
+                          </button>
+                          <span className="text-[11px] px-2.5 py-1 rounded-full bg-amber-100 text-[#8A6510] font-bold border border-amber-300">
+                            총 {members.length}명 등록
+                          </span>
+                        </div>
                       </div>
 
                       {/* 실시간 검색창 */}
@@ -8407,102 +8482,6 @@ export default function App() {
                         ))}
                       </div>
                     </div>
-
-                    {/* 통합 회원 & 포교위원회 DB 관리 */}
-                    <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-serif-kr font-bold text-sm">
-                          통합 회원 & 포교위원회 DB 관리 ({members.length}명)
-                        </h3>
-                        <span className="text-[11px] text-[#9A7418] font-bold">
-                          포교위원 {agents.length}명 · 신도 {members.length - agents.length}명
-                        </span>
-                      </div>
-
-                      <form
-                        onSubmit={handleAdminAddMember}
-                        className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-2 text-xs"
-                      >
-                        <div className="font-bold text-[#231F1C] flex items-center gap-1.5">
-                          <UserPlus className="w-3.5 h-3.5 text-[#9A7418]" />
-                          <span>신규 포교위원 / 신도 빠른 등록 (초기비번: 0000)</span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                          <input
-                            type="text"
-                            value={adminNewName}
-                            onChange={(e) => setAdminNewName(e.target.value)}
-                            placeholder="성함 (예: 홍길동)"
-                            required
-                            className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs"
-                          />
-                          <input
-                            type="tel"
-                            value={adminNewPhone}
-                            onChange={(e) => setAdminNewPhone(e.target.value)}
-                            placeholder="휴대폰 (010-0000-0000)"
-                            required
-                            className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs"
-                          />
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                          <select
-                            value={adminNewRole}
-                            onChange={(e) => setAdminNewRole(e.target.value)}
-                            className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs font-semibold"
-                          >
-                            <option value="believer">일반신도</option>
-                            <option value="committee_member">포교위원 (30%)</option>
-                            <option value="agent">포교위원장 (40%)</option>
-                          </select>
-                          <input
-                            type="text"
-                            value={adminNewParent}
-                            onChange={(e) => setAdminNewParent(e.target.value)}
-                            placeholder="추천인 코드 (선택)"
-                            className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs"
-                          />
-                        </div>
-                        <button
-                          type="submit"
-                          className="w-full py-2.5 rounded-xl bg-[#231F1C] text-[#F5D061] font-bold text-xs hover:bg-[#302A25] transition"
-                        >
-                          회원 등록 완료
-                        </button>
-                      </form>
-
-                      {/* 회원 등급 관리 목록 */}
-                      <div className="max-h-56 overflow-y-auto space-y-1.5 pr-1 divide-y divide-[#EAE2D3]">
-                        {members.slice(0, 15).map((m) => (
-                          <div key={m.code} className="pt-1.5 flex items-center justify-between text-xs gap-2">
-                            <div className="min-w-0">
-                              <span className="font-bold text-[#1B1815]">{m.name}</span>
-                              {m.dharma_name && <span className="text-[#8C8071] text-[11px]"> ({m.dharma_name})</span>}
-                              <span className="text-[10px] text-[#A69B8D] block">{m.phone}</span>
-                            </div>
-                            <select
-                              value={m.role}
-                              onChange={(e) => {
-                                const nextRole = e.target.value
-                                setMembers((prev) =>
-                                  prev.map((item) =>
-                                    item.code === m.code ? { ...item, role: nextRole } : item
-                                  )
-                                )
-                                showToast(`${m.name}님의 회원 등급이 변경되었습니다.`)
-                              }}
-                              className="px-2 py-1 rounded-lg bg-white border border-[#D5C59B] text-[11px] font-bold text-[#231F1C] shrink-0"
-                            >
-                              <option value="believer">일반신도</option>
-                              <option value="committee_member">포교위원 (30%)</option>
-                              <option value="agent">포교위원장 (40%)</option>
-                              <option value="temple_admin">창건주·신도회장 본부</option>
-                              <option value="master">총괄 포교위원장 (제주AI파트너)</option>
-                            </select>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
 
                     {/* 사찰 본부 차담 & 식사 공양 총괄 준비 명부 */}
                     <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
@@ -8719,6 +8698,228 @@ export default function App() {
                     </section>
                   </div>
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ==================== 소원사 모바일법당 전체 회원명부 A4 인쇄 모달 ==================== */}
+        {showMemberPrintModal && (
+          <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+            <div className="w-full max-w-4xl bg-white text-[#111111] rounded-2xl shadow-2xl flex flex-col my-auto border border-[#E5D399] overflow-hidden">
+              {/* 모달 상단 조작 바 (인쇄 시 숨김: no-print) */}
+              <div className="no-print bg-[#1B1815] text-[#FAF8F5] p-3.5 sm:p-4 flex flex-col gap-2.5 border-b-2 border-[#D4AF37]">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-8 h-8 rounded-lg bg-[#D4AF37] text-[#1B1815] flex items-center justify-center font-bold text-sm shrink-0">
+                      卍
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-serif-kr text-sm sm:text-base font-bold text-[#F5D061] truncate">
+                        소원사 모바일법당 공식 회원명부 (A4 인쇄)
+                      </h3>
+                      <p className="text-[11px] text-[#D6CEC2] truncate">
+                        사찰본부 보관용 · 총 {members.length}명 중 {filteredPrintMembers.length}명 표시
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => window.print()}
+                      className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs flex items-center gap-1.5 shadow hover:brightness-105 active:scale-95 transition whitespace-nowrap"
+                    >
+                      <Printer className="w-4 h-4" />
+                      <span>A4 인쇄하기</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowMemberPrintModal(false)}
+                      className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition"
+                      title="닫기"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* 인쇄 전 필터 & 검색 툴바 (no-print) */}
+                <div className="flex items-center gap-2 pt-1 border-t border-white/10 flex-wrap text-xs">
+                  <div className="relative flex-1 min-w-[160px]">
+                    <Search className="w-3.5 h-3.5 text-[#D6CEC2] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <input
+                      type="text"
+                      value={memberPrintSearchQuery}
+                      onChange={(e) => setMemberPrintSearchQuery(e.target.value)}
+                      placeholder="신도 성함, 법명, 연락처, 주소 검색"
+                      className="w-full pl-8 pr-7 py-1.5 rounded-lg bg-white/10 border border-white/20 text-[#FAF8F5] text-xs placeholder:text-[#A89D8E] focus:outline-none focus:border-[#F5D061]"
+                    />
+                    {memberPrintSearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setMemberPrintSearchQuery('')}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-[#D6CEC2] hover:text-white"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 text-[11px]">
+                    {[
+                      { id: 'all', label: `전체 (${members.length})` },
+                      { id: 'believer', label: `일반신도 (${members.filter((m) => m.role === 'believer').length})` },
+                      { id: 'agent', label: `포교위원장 (${members.filter((m) => m.role === 'agent').length})` },
+                      { id: 'committee_member', label: `포교위원 (${members.filter((m) => m.role === 'committee_member').length})` },
+                      { id: 'leadership', label: `사찰본부·총괄 (${members.filter((m) => m.role === 'temple_admin' || m.role === 'master').length})` },
+                    ].map((tab) => (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        onClick={() => setMemberPrintRoleFilter(tab.id)}
+                        className={`px-2 py-1 rounded-md font-bold whitespace-nowrap transition ${
+                          memberPrintRoleFilter === tab.id
+                            ? 'bg-[#F5D061] text-[#1B1815]'
+                            : 'bg-white/10 text-[#D6CEC2] hover:bg-white/20'
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* 실제 A4 인쇄 영역 (#printable-member-sheet) */}
+              <div id="printable-member-sheet" className="p-6 sm:p-8 space-y-4 bg-white text-[#111111]">
+                {/* 전통 사찰 헤더 */}
+                <div className="text-center border-b-2 border-[#222222] pb-3.5">
+                  <div className="text-xs text-[#555555] tracking-widest mb-1 font-serif-kr">
+                    卍 濟州 願成寺 · 소원성취 기도도량 제주 소원사 본부
+                  </div>
+                  <h1 className="font-serif-kr text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111111]">
+                    제주 소원사 모바일법당 공식 회원명부
+                  </h1>
+                  <div className="flex items-center justify-center gap-4 text-xs font-semibold text-[#444444] mt-2 flex-wrap">
+                    <span>
+                      발행 일시: {new Date().getFullYear()}년 {new Date().getMonth() + 1}월 {new Date().getDate()}일
+                    </span>
+                    <span>·</span>
+                    <span>
+                      총 등재 인원: <strong>{filteredPrintMembers.length}명</strong> (일반신도 {filteredPrintMembers.filter((m) => m.role === 'believer').length}명 · 포교위원회 {filteredPrintMembers.filter((m) => m.role !== 'believer').length}명)
+                    </span>
+                  </div>
+                </div>
+
+                {/* 안내 문구 */}
+                <div className="text-xs text-[#444444] bg-[#F9F7F2] p-2.5 rounded-lg border border-[#E8E2D2] flex justify-between items-center text-[11px]">
+                  <span>
+                    ※ 본 명부는 <strong>제주 소원사 모바일법당</strong>에 공식 등재된 신도 및 포교위원회 관리 대장으로, 사찰 본부 보관 및 행정 관리 전용입니다.
+                  </span>
+                  <span className="font-bold text-[#111111] shrink-0 ml-2">사찰본부 영구보관용</span>
+                </div>
+
+                {/* 회원 명부 테이블 */}
+                {filteredPrintMembers.length === 0 ? (
+                  <div className="p-8 text-center text-sm text-[#777777] font-serif-kr border border-dashed border-[#CCCCCC] rounded-xl">
+                    현재 조건에 해당하는 회원이 없습니다.
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse border border-[#333333] text-xs">
+                      <thead>
+                        <tr className="bg-[#F0EDE4] text-[#111111] font-bold text-center border-b border-[#333333]">
+                          <th className="p-2 border-r border-[#333333] w-10 text-center">연번</th>
+                          <th className="p-2 border-r border-[#333333] w-28">성함 (법명)</th>
+                          <th className="p-2 border-r border-[#333333] w-24 text-center">직책 / 구분</th>
+                          <th className="p-2 border-r border-[#333333] w-28 text-center">연락처</th>
+                          <th className="p-2 border-r border-[#333333]">거주 주소</th>
+                          <th className="p-2 border-r border-[#333333] w-28 text-center">추천인</th>
+                          <th className="p-2 border-r border-[#333333] w-20 text-center">등록일</th>
+                          <th className="p-2 w-16 text-center">확인/인</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredPrintMembers.map((m, idx) => {
+                          const recommenderName = getRecommenderName(m.parent_code)
+                          const roleLabel =
+                            m.role === 'temple_admin'
+                              ? '창건주·회장'
+                              : m.role === 'master'
+                              ? '총괄대표'
+                              : m.role === 'agent'
+                              ? '포교위원장'
+                              : m.role === 'committee_member'
+                              ? '포교위원'
+                              : '일반신도'
+                          return (
+                            <tr
+                              key={m.code || idx}
+                              className="border-b border-[#DDDDDD] hover:bg-[#FAF8F4] transition"
+                            >
+                              <td className="p-2 text-center font-bold border-r border-[#DDDDDD] text-[#555555]">
+                                {idx + 1}
+                              </td>
+                              <td className="p-2 font-bold font-serif-kr border-r border-[#DDDDDD] text-sm text-[#111111]">
+                                {m.name}
+                                {m.dharma_name && (
+                                  <span className="text-[#8A6510] text-xs font-normal ml-1">
+                                    ({m.dharma_name})
+                                  </span>
+                                )}
+                              </td>
+                              <td className="p-2 text-center border-r border-[#DDDDDD] text-[11px] font-semibold">
+                                <span className={`px-1.5 py-0.5 rounded ${
+                                  m.role === 'temple_admin' ? 'bg-amber-100 text-amber-900 font-bold' :
+                                  m.role === 'master' ? 'bg-purple-100 text-purple-900 font-bold' :
+                                  m.role === 'agent' ? 'bg-amber-50 text-amber-800 font-semibold' :
+                                  m.role === 'committee_member' ? 'bg-teal-50 text-teal-800' :
+                                  'text-neutral-700'
+                                }`}>
+                                  {roleLabel}
+                                </span>
+                              </td>
+                              <td className="p-2 text-center border-r border-[#DDDDDD] text-[11px] font-mono text-[#333333]">
+                                {m.phone || '-'}
+                              </td>
+                              <td className="p-2 text-[#333333] border-r border-[#DDDDDD] text-[11px] truncate max-w-[180px]">
+                                {m.address || '-'}
+                              </td>
+                              <td className="p-2 text-center border-r border-[#DDDDDD] text-[11px] text-[#666666]">
+                                {recommenderName}
+                              </td>
+                              <td className="p-2 text-center text-[10.5px] border-r border-[#DDDDDD] text-[#777777]">
+                                {m.joined_at ? m.joined_at.slice(0, 10) : '2026.03'}
+                              </td>
+                              <td className="p-2 text-center text-[10px] text-[#999999]">
+                                (인)
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* 전통 사찰 공식 직인 및 검인란 (A4 인쇄 시 사찰 공인 서류 품격 완성) */}
+                <div className="pt-4 border-t-2 border-[#222222] grid grid-cols-3 gap-2 text-center text-[11px] font-serif-kr">
+                  <div className="border border-[#444444] p-2.5 rounded-lg bg-[#FAF8F5]">
+                    <div className="text-[10px] text-[#666666]">사찰 본부 대표</div>
+                    <div className="font-extrabold text-[#111111] mt-1 text-xs">창건주 · 신도회장</div>
+                    <div className="text-[10.5px] font-bold text-[#8A6510] mt-0.5">양영문 (인)</div>
+                  </div>
+                  <div className="border border-[#444444] p-2.5 rounded-lg bg-[#FAF8F5]">
+                    <div className="text-[10px] text-[#666666]">포교위원회 총괄 사령탑</div>
+                    <div className="font-extrabold text-[#111111] mt-1 text-xs">전국 포교위원장 총괄대표</div>
+                    <div className="text-[10.5px] font-bold text-[#8A6510] mt-0.5">김철수 (인)</div>
+                  </div>
+                  <div className="border border-[#444444] p-2.5 rounded-lg bg-[#FAF8F5]">
+                    <div className="text-[10px] text-[#666666]">모바일법당 전산 관제</div>
+                    <div className="font-extrabold text-[#111111] mt-1 text-xs">제주AI파트너 총괄본부</div>
+                    <div className="text-[10.5px] font-bold text-[#8A6510] mt-0.5">전산총괄 김철수 (인)</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -121,7 +121,7 @@ p, span, h1, h2, h3, h4, h5, h6, label, button {
   transform-origin: bottom center;
 }
 
-/* 사시예불 축원 명부 A4 전용 프린트 스타일 */
+/* 사시예불 축원 명부 및 모바일법당 회원명부 A4 전용 프린트 스타일 */
 @media print {
   @page {
     size: A4 portrait;
@@ -134,10 +134,11 @@ p, span, h1, h2, h3, h4, h5, h6, label, button {
   body * {
     visibility: hidden !important;
   }
-  #printable-sasi-sheet, #printable-sasi-sheet * {
+  #printable-sasi-sheet, #printable-sasi-sheet *,
+  #printable-member-sheet, #printable-member-sheet * {
     visibility: visible !important;
   }
-  #printable-sasi-sheet {
+  #printable-sasi-sheet, #printable-member-sheet {
     position: absolute !important;
     left: 0 !important;
     top: 0 !important;
@@ -149,7 +150,7 @@ p, span, h1, h2, h3, h4, h5, h6, label, button {
     box-shadow: none !important;
     border: none !important;
   }
-  #printable-sasi-sheet tr {
+  #printable-sasi-sheet tr, #printable-member-sheet tr {
     page-break-inside: avoid !important;
   }
   .no-print {
