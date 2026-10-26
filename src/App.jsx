@@ -1850,33 +1850,6 @@ export default function App() {
     return parent ? `${parent.name} (${parent.role === 'agent' ? '위원장' : parent.role === 'committee_member' ? '위원' : '신도'})` : parentCode
   }
 
-  const filteredPrintMembers = useMemo(() => {
-    let list = members || []
-    if (memberPrintRoleFilter !== 'all') {
-      if (memberPrintRoleFilter === 'believer') {
-        list = list.filter((m) => m.role === 'believer')
-      } else if (memberPrintRoleFilter === 'agent') {
-        list = list.filter((m) => m.role === 'agent')
-      } else if (memberPrintRoleFilter === 'committee_member') {
-        list = list.filter((m) => m.role === 'committee_member')
-      } else if (memberPrintRoleFilter === 'leadership') {
-        list = list.filter((m) => m.role === 'temple_admin' || m.role === 'master')
-      }
-    }
-    if (memberPrintSearchQuery.trim()) {
-      const q = memberPrintSearchQuery.trim().toLowerCase()
-      const rawNum = q.replace(/[^0-9]/g, '')
-      list = list.filter((m) => {
-        const nameMatch = m.name?.toLowerCase().includes(q)
-        const dharmaMatch = m.dharma_name?.toLowerCase().includes(q)
-        const phoneMatch = rawNum && m.phone?.replace(/[^0-9]/g, '').includes(rawNum)
-        const codeMatch = m.code?.includes(q)
-        const addrMatch = m.address?.toLowerCase().includes(q)
-        return nameMatch || dharmaMatch || phoneMatch || codeMatch || addrMatch
-      })
-    }
-    return list
-  }, [members, memberPrintRoleFilter, memberPrintSearchQuery])
 
   // 수당 정산 원장 필터링
   const filteredSettlements = useMemo(() => {
@@ -2207,6 +2180,91 @@ export default function App() {
       members[2]
     )
   }, [members, selectedAgentCode, currentUser])
+
+  // 현재 포교위원(activeAgent)의 산하 인연 신도 및 위원 목록 (직속 + 하위 전체 계보)
+  const myAffiliatedMembers = useMemo(() => {
+    if (!members || members.length === 0) return []
+    if (!activeAgent || !activeAgent.code) return members
+
+    // 최고 마스터(김철수 총괄대표)나 창건주 본부(양영문 회장) 계정인 경우 전체 회원 반환
+    if (
+      activeAgent.role === 'master' ||
+      activeAgent.role === 'temple_admin' ||
+      activeAgent.code === '55400267' ||
+      activeAgent.code === '55570267'
+    ) {
+      return members
+    }
+
+    const downlineCodes = new Set([activeAgent.code])
+    let added = true
+    while (added) {
+      added = false
+      members.forEach((m) => {
+        if (m.parent_code && downlineCodes.has(m.parent_code) && !downlineCodes.has(m.code)) {
+          downlineCodes.add(m.code)
+          added = true
+        }
+      })
+    }
+    return members.filter((m) => downlineCodes.has(m.code))
+  }, [members, activeAgent])
+
+  // 산하 인연 회원 실시간 검색 & 필터링
+  const filteredAffiliatedMembers = useMemo(() => {
+    let list = myAffiliatedMembers || []
+    if (adminMemberRoleFilter !== 'all') {
+      if (adminMemberRoleFilter === 'believer') {
+        list = list.filter((m) => m.role === 'believer')
+      } else if (adminMemberRoleFilter === 'agent') {
+        list = list.filter((m) => m.role === 'agent' || m.role === 'master')
+      } else if (adminMemberRoleFilter === 'committee_member') {
+        list = list.filter((m) => m.role === 'committee_member')
+      }
+    }
+    if (adminMemberSearchQuery.trim()) {
+      const q = adminMemberSearchQuery.trim().toLowerCase()
+      const rawNum = q.replace(/[^0-9]/g, '')
+      list = list.filter((m) => {
+        const nameMatch = m.name?.toLowerCase().includes(q)
+        const dharmaMatch = m.dharma_name?.toLowerCase().includes(q)
+        const phoneMatch = rawNum && m.phone?.replace(/[^0-9]/g, '').includes(rawNum)
+        const codeMatch = m.code?.includes(q)
+        const addrMatch = m.address?.toLowerCase().includes(q)
+        return nameMatch || dharmaMatch || phoneMatch || codeMatch || addrMatch
+      })
+    }
+    return list
+  }, [myAffiliatedMembers, adminMemberRoleFilter, adminMemberSearchQuery])
+
+  // 모바일법당 A4 인쇄용 필터링
+  const filteredPrintMembers = useMemo(() => {
+    let list = myAffiliatedMembers || members || []
+    if (memberPrintRoleFilter !== 'all') {
+      if (memberPrintRoleFilter === 'believer') {
+        list = list.filter((m) => m.role === 'believer')
+      } else if (memberPrintRoleFilter === 'agent') {
+        list = list.filter((m) => m.role === 'agent')
+      } else if (memberPrintRoleFilter === 'committee_member') {
+        list = list.filter((m) => m.role === 'committee_member')
+      } else if (memberPrintRoleFilter === 'leadership') {
+        list = list.filter((m) => m.role === 'temple_admin' || m.role === 'master')
+      }
+    }
+    if (memberPrintSearchQuery.trim()) {
+      const q = memberPrintSearchQuery.trim().toLowerCase()
+      const rawNum = q.replace(/[^0-9]/g, '')
+      list = list.filter((m) => {
+        const nameMatch = m.name?.toLowerCase().includes(q)
+        const dharmaMatch = m.dharma_name?.toLowerCase().includes(q)
+        const phoneMatch = rawNum && m.phone?.replace(/[^0-9]/g, '').includes(rawNum)
+        const codeMatch = m.code?.includes(q)
+        const addrMatch = m.address?.toLowerCase().includes(q)
+        return nameMatch || dharmaMatch || phoneMatch || codeMatch || addrMatch
+      })
+    }
+    return list
+  }, [myAffiliatedMembers, members, memberPrintRoleFilter, memberPrintSearchQuery])
 
   // 총괄 정산 탭 신규 위패 시뮬레이션 입력 상태
   const [simBelieverName, setSimBelieverName] = useState('')
@@ -8086,8 +8144,147 @@ export default function App() {
                     )}
                   </section>
 
+                  {/* 🖨️ 산하 인연 회원명부 A4 인쇄 배너 카드 */}
+                  <section className="bg-gradient-to-r from-[#241E17] via-[#2F2417] to-[#1C160F] text-white rounded-2xl p-4 border-2 border-[#D4AF37] shadow-lg flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#D4AF37] text-[#1B1815] font-extrabold">
+                        {isMasterOrTempleAdmin ? '사찰 본부' : '산하 관할'}
+                      </span>
+                      <h4 className="font-serif-kr text-base font-bold mt-1 text-[#F5D061] truncate">
+                        {isMasterOrTempleAdmin ? '전체 회원명부' : `${activeAgent.name} 산하 회원명부`} ({myAffiliatedMembers.length}명)
+                      </h4>
+                      <p className="text-[11px] text-[#D6CEC2] mt-0.5">
+                        신도 {myAffiliatedMembers.filter((m) => m.role === 'believer').length}명 · 위원 {myAffiliatedMembers.filter((m) => m.role !== 'believer').length}명
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowMemberPrintModal(true)}
+                      className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs shadow hover:brightness-105 active:scale-95 transition flex items-center gap-1.5 whitespace-nowrap shrink-0"
+                    >
+                      <Printer className="w-4 h-4" />
+                      <span>A4 인쇄</span>
+                    </button>
+                  </section>
 
-                  {/* 내가 유치한 신도 차담 & 공양 예약 현황 */}
+                  {/* 📜 실시간 산하 회원 검색 및 관리 카드 */}
+                  <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
+                    <div className="flex items-center justify-between pb-1 border-b border-[#EAE2D3]/60">
+                      <div className="flex items-center gap-1.5">
+                        <Users className="w-4 h-4 text-[#8A6510]" />
+                        <h4 className="font-serif-kr text-sm font-bold text-[#1B1815]">
+                          {isMasterOrTempleAdmin ? '신도 및 위원 목록' : '산하 신도 및 위원 목록'}
+                        </h4>
+                      </div>
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#FAF8F5] text-[#8A6510] font-bold border border-[#EAE2D3]">
+                        총 {myAffiliatedMembers.length}명
+                      </span>
+                    </div>
+
+                    {/* 실시간 검색창 */}
+                    <div className="relative">
+                      <Search className="w-4 h-4 text-[#8C8071] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <input
+                        type="text"
+                        value={adminMemberSearchQuery}
+                        onChange={(e) => setAdminMemberSearchQuery(e.target.value)}
+                        placeholder="성함, 법명, 연락처 검색"
+                        className="w-full pl-9 pr-8 py-2 rounded-xl bg-[#FAF8F5] border border-[#D5C59B] text-xs placeholder:text-[#A89D8E] focus:outline-none focus:border-[#C59B27]"
+                      />
+                      {adminMemberSearchQuery && (
+                        <button
+                          type="button"
+                          onClick={() => setAdminMemberSearchQuery('')}
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#8C8071] hover:text-[#1B1815] p-1"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* 등급별 필터 칩 */}
+                    <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 text-[11px]">
+                      {[
+                        { id: 'all', label: `전체 (${myAffiliatedMembers.length})` },
+                        { id: 'believer', label: `신도 (${myAffiliatedMembers.filter((m) => m.role === 'believer').length})` },
+                        { id: 'agent', label: `위원장 (${myAffiliatedMembers.filter((m) => m.role === 'agent' || m.role === 'master').length})` },
+                        { id: 'committee_member', label: `위원 (${myAffiliatedMembers.filter((m) => m.role === 'committee_member').length})` },
+                      ].map((tab) => (
+                        <button
+                          key={tab.id}
+                          type="button"
+                          onClick={() => setAdminMemberRoleFilter(tab.id)}
+                          className={`px-2.5 py-1 rounded-lg font-bold shrink-0 transition ${
+                            adminMemberRoleFilter === tab.id
+                              ? 'bg-[#231F1C] text-[#F5D061] border border-[#C59B27]'
+                              : 'bg-[#FAF8F5] text-[#6E6354] border border-[#EAE2D3] hover:bg-[#F2ECE1]'
+                          }`}
+                        >
+                          {tab.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* 실시간 회원 리스트 (클릭 시 상세 모달, 원클릭 전화/문자) */}
+                    <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+                      {filteredAffiliatedMembers.length === 0 ? (
+                        <div className="p-6 text-center text-xs text-[#8C8071] border border-dashed border-[#DDD4C4] rounded-xl">
+                          조건에 일치하는 산하 회원이 없습니다.
+                        </div>
+                      ) : (
+                        filteredAffiliatedMembers.map((m) => (
+                          <div
+                            key={m.code}
+                            onClick={() => setSelectedMemberDetail(m)}
+                            className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] hover:border-[#C59B27] cursor-pointer transition flex items-center justify-between text-xs"
+                          >
+                            <div className="min-w-0 pr-2">
+                              <div className="font-bold text-[#231F1C] flex items-center gap-1.5 flex-wrap">
+                                <span>{m.name}</span>
+                                {m.dharma_name && (
+                                  <span className="text-[#8A6510] text-[11px] font-normal">({m.dharma_name})</span>
+                                )}
+                                <span className={`text-[9.5px] px-1.5 py-0.2 rounded font-semibold ${
+                                  m.role === 'agent' ? 'bg-amber-100 text-[#8A6510]' :
+                                  m.role === 'committee_member' ? 'bg-teal-100 text-teal-800' :
+                                  m.role === 'temple_admin' ? 'bg-amber-700 text-white' :
+                                  m.role === 'master' ? 'bg-purple-100 text-purple-800 font-black' :
+                                  'bg-neutral-100 text-neutral-600'
+                                }`}>
+                                  {m.role === 'agent' ? '위원장' : m.role === 'committee_member' ? '위원' : m.role === 'temple_admin' ? '창건주·본부' : m.role === 'master' ? '총괄' : '신도'}
+                                </span>
+                              </div>
+                              <div className="text-[11px] text-[#8C8071] mt-0.5 flex items-center gap-2 truncate">
+                                <span>📞 {m.phone || '연락처 미등록'}</span>
+                                {m.address && <span className="truncate">· {m.address}</span>}
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
+                              {m.phone && (
+                                <>
+                                  <a
+                                    href={`tel:${m.phone}`}
+                                    className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition"
+                                    title="전화걸기"
+                                  >
+                                    <Phone className="w-3.5 h-3.5" />
+                                  </a>
+                                  <a
+                                    href={`sms:${m.phone}`}
+                                    className="p-1.5 rounded-lg bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 transition"
+                                    title="문자보내기"
+                                  >
+                                    <MessageSquare className="w-3.5 h-3.5" />
+                                  </a>
+                                </>
+                              )}
+                              <ChevronRight className="w-4 h-4 text-[#A89D8E]" />
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </section>
                   <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
@@ -8269,147 +8466,6 @@ export default function App() {
                       </span>
                     </div>
 
-                    {/* 🖨️ 소원사 모바일법당 전체 회원명부 A4 인쇄 배너 카드 */}
-                    <section className="bg-gradient-to-r from-[#241E17] via-[#2F2417] to-[#1C160F] text-white rounded-2xl p-4 border-2 border-[#D4AF37] shadow-lg flex items-center justify-between gap-3">
-                      <div className="min-w-0">
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#D4AF37] text-[#1B1815] font-extrabold">
-                          사찰 본부
-                        </span>
-                        <h4 className="font-serif-kr text-base font-bold mt-1 text-[#F5D061] truncate">
-                          전체 회원명부 ({members.length}명)
-                        </h4>
-                        <p className="text-[11px] text-[#D6CEC2] mt-0.5">
-                          신도 {members.filter((m) => m.role === 'believer').length}명 · 위원 {members.filter((m) => m.role !== 'believer').length}명
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setShowMemberPrintModal(true)}
-                        className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs shadow hover:brightness-105 active:scale-95 transition flex items-center gap-1.5 whitespace-nowrap shrink-0"
-                      >
-                        <Printer className="w-4 h-4" />
-                        <span>A4 인쇄</span>
-                      </button>
-                    </section>
-
-                    {/* 📜 실시간 회원 검색 및 관리 카드 */}
-                    <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
-                      <div className="flex items-center justify-between pb-1 border-b border-[#EAE2D3]/60">
-                        <div className="flex items-center gap-1.5">
-                          <Users className="w-4 h-4 text-[#8A6510]" />
-                          <h4 className="font-serif-kr text-sm font-bold text-[#1B1815]">
-                            신도 및 위원 목록
-                          </h4>
-                        </div>
-                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#FAF8F5] text-[#8A6510] font-bold border border-[#EAE2D3]">
-                          총 {members.length}명
-                        </span>
-                      </div>
-
-                      {/* 실시간 검색창 */}
-                      <div className="relative">
-                        <Search className="w-4 h-4 text-[#8C8071] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                        <input
-                          type="text"
-                          value={adminMemberSearchQuery}
-                          onChange={(e) => setAdminMemberSearchQuery(e.target.value)}
-                          placeholder="성함, 법명, 연락처 검색"
-                          className="w-full pl-9 pr-8 py-2 rounded-xl bg-[#FAF8F5] border border-[#D5C59B] text-xs placeholder:text-[#A89D8E] focus:outline-none focus:border-[#C59B27]"
-                        />
-                        {adminMemberSearchQuery && (
-                          <button
-                            type="button"
-                            onClick={() => setAdminMemberSearchQuery('')}
-                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#8C8071] hover:text-[#1B1815] p-1"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                      </div>
-
-                      {/* 등급별 필터 칩 */}
-                      <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 text-[11px]">
-                        {[
-                          { id: 'all', label: `전체 (${members.length})` },
-                          { id: 'believer', label: `신도 (${members.filter((m) => m.role === 'believer').length})` },
-                          { id: 'agent', label: `위원장 (${members.filter((m) => m.role === 'agent').length})` },
-                          { id: 'committee_member', label: `위원 (${members.filter((m) => m.role === 'committee_member').length})` },
-                        ].map((tab) => (
-                          <button
-                            key={tab.id}
-                            type="button"
-                            onClick={() => setAdminMemberRoleFilter(tab.id)}
-                            className={`px-2.5 py-1 rounded-lg font-bold shrink-0 transition ${
-                              adminMemberRoleFilter === tab.id
-                                ? 'bg-[#231F1C] text-[#F5D061] border border-[#C59B27]'
-                                : 'bg-[#FAF8F5] text-[#6E6354] border border-[#EAE2D3] hover:bg-[#F2ECE1]'
-                            }`}
-                          >
-                            {tab.label}
-                          </button>
-                        ))}
-                      </div>
-
-                      {/* 실시간 회원 리스트 (클릭 시 상세 모달, 원클릭 전화/문자) */}
-                      <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
-                        {filteredAdminMembers.length === 0 ? (
-                          <div className="p-6 text-center text-xs text-[#8C8071] border border-dashed border-[#DDD4C4] rounded-xl">
-                            검색 조건에 일치하는 등록 회원이 없습니다.
-                          </div>
-                        ) : (
-                          filteredAdminMembers.map((m) => (
-                            <div
-                              key={m.code}
-                              onClick={() => setSelectedMemberDetail(m)}
-                              className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] hover:border-[#C59B27] cursor-pointer transition flex items-center justify-between text-xs"
-                            >
-                              <div className="min-w-0 pr-2">
-                                <div className="font-bold text-[#231F1C] flex items-center gap-1.5 flex-wrap">
-                                  <span>{m.name}</span>
-                                  {m.dharma_name && (
-                                    <span className="text-[#8A6510] text-[11px] font-normal">({m.dharma_name})</span>
-                                  )}
-                                  <span className={`text-[9.5px] px-1.5 py-0.2 rounded font-semibold ${
-                                    m.role === 'agent' ? 'bg-amber-100 text-[#8A6510]' :
-                                    m.role === 'committee_member' ? 'bg-teal-100 text-teal-800' :
-                                    m.role === 'temple_admin' ? 'bg-amber-700 text-white' :
-                                    m.role === 'master' ? 'bg-purple-100 text-purple-800 font-black' :
-                                    'bg-neutral-100 text-neutral-600'
-                                  }`}>
-                                    {m.role === 'agent' ? '포교위원장' : m.role === 'committee_member' ? '포교위원' : m.role === 'temple_admin' ? '창건주·본부' : m.role === 'master' ? '김철수 총괄' : '일반신도'}
-                                  </span>
-                                </div>
-                                <div className="text-[11px] text-[#8C8071] mt-0.5 flex items-center gap-2 truncate">
-                                  <span>📞 {m.phone || '연락처 미등록'}</span>
-                                  {m.address && <span className="truncate">· {m.address}</span>}
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
-                                {m.phone && (
-                                  <>
-                                    <a
-                                      href={`tel:${m.phone}`}
-                                      className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition"
-                                      title="전화걸기"
-                                    >
-                                      <Phone className="w-3.5 h-3.5" />
-                                    </a>
-                                    <a
-                                      href={`sms:${m.phone}`}
-                                      className="p-1.5 rounded-lg bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 transition"
-                                      title="문자보내기"
-                                    >
-                                      <MessageSquare className="w-3.5 h-3.5" />
-                                    </a>
-                                  </>
-                                )}
-                                <ChevronRight className="w-4 h-4 text-[#A89D8E]" />
-                              </div>
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </section>
 
                     {/* 오늘의 대웅전 사시예불 축원 명부 인쇄 바로가기 카드 */}
                     <section className="bg-gradient-to-r from-[#241E17] via-[#2F2417] to-[#1C160F] text-white rounded-2xl p-4 border-2 border-[#D4AF37] shadow-lg flex items-center justify-between gap-3">
