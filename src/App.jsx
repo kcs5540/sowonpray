@@ -1710,6 +1710,8 @@ export default function App() {
   // 포교사 전산 및 관리자 뷰 모드 ('tree': MetaFastest 스타일 조직도 트리 / 'list': 목록형)
   const [agentViewMode, setAgentViewMode] = useState('tree')
   const [adminMemberViewMode, setAdminMemberViewMode] = useState('tree')
+  const [isProfileEditOpen, setIsProfileEditOpen] = useState(false)
+  const [isOrgTreeOpen, setIsOrgTreeOpen] = useState(false)
 
   useEffect(() => {
     if (currentUser) {
@@ -2096,6 +2098,7 @@ export default function App() {
       supabase.from('members').upsert([updatedMember], { onConflict: 'code' }).then()
     }
     playSingingBowlSound()
+    setIsProfileEditOpen(false)
     showToast('✅ 내 계정 및 사찰 축원 상세정보가 안전하게 저장되었습니다.')
   }
 
@@ -2506,9 +2509,32 @@ export default function App() {
 
   // 포교위원 추천 링크 복사
   const handleCopyRefLink = (code) => {
-    const url = `${window.location.origin}/?ref=${code}`
+    const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
+    const url = `${origin}/?ref=${code}`
     navigator.clipboard?.writeText(url)
-    showToast(`📋 포교위원 전용 추천 링크가 복사되었습니다: ${url}`)
+    showToast(`📋 도반 연결 링크가 복사되었습니다: ${url}`)
+  }
+
+  // 도반에게 카카오톡 소원등 복(福) 선물하기 (모바일 네이티브 공유 또는 클립보드 복사)
+  const handleShareKakao = (code, userName) => {
+    const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
+    const shareUrl = `${origin}/?ref=${code}`
+    const shareTitle = '제주 소원사 모바일 법당 · 7일 무료 소원등'
+    const shareText = `[제주 소원사 모바일 법당]\n${userName ? `${userName}님께서` : '도반님께서'} 부처님 전 7일 무료 소원등을 선물하셨습니다.\n지금 링크를 누르고 소원등을 밝혀보세요:\n${shareUrl}`
+
+    if (navigator.share) {
+      navigator.share({
+        title: shareTitle,
+        text: shareText,
+        url: shareUrl,
+      }).catch(() => {
+        navigator.clipboard?.writeText(shareUrl)
+        showToast('🙏 소원등 인연 링크가 복사되었습니다. 카카오톡에 붙여넣어 전해보세요!')
+      })
+    } else {
+      navigator.clipboard?.writeText(shareUrl)
+      showToast('🙏 소원등 인연 링크가 복사되었습니다. 카카오톡에 붙여넣어 전해보세요!')
+    }
   }
 
   // QR코드 모달/펼침 상태
@@ -5789,132 +5815,238 @@ export default function App() {
                 )}
               </section>
             ) : (
-              /* [B] 로그인 상태일 때: 내 계정 정보 확인 & 확장 정보 수정 */
+              /* [B] 로그인 상태일 때: 제주 소원사 VIP 모바일 신도증 & 고품격 신행 카드 */
               <>
-                <section className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-5 border border-[#C59B27]/40 shadow-md space-y-3">
-                  {/* 상단 1행: 직책 배지(좌) + '전산' 소형 버튼 + 로그아웃 버튼(우측 상단 배치) */}
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 shrink-0 flex-nowrap">
-                      <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/40 font-bold whitespace-nowrap shrink-0">
-                        {currentUser.role === 'master' || currentUser.role === 'agent' || currentUser.role === 'committee_head'
+                {/* 1. 🪷 제주 소원사 VIP 모바일 디지털 신도증 */}
+                <section className="rounded-3xl bg-gradient-to-br from-[#262019] via-[#1B1713] to-[#120F0C] text-white p-5 sm:p-6 border-2 border-[#D4AF37]/50 shadow-[0_10px_30px_rgba(212,175,55,0.18)] relative overflow-hidden space-y-4">
+                  {/* 상단 장식 빛망울 */}
+                  <div className="absolute -top-12 -right-12 w-36 h-36 bg-[#F5D061]/10 rounded-full blur-2xl pointer-events-none" />
+
+                  {/* 1행: 로고 & 법당명 (좌) / 직책 배지 & 로그아웃 (우) */}
+                  <div className="flex items-center justify-between gap-2 relative z-10">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#2D241C] to-[#17130F] flex items-center justify-center border border-[#C59B27]/50 p-1 shrink-0">
+                        <svg className="w-full h-full" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M20 5C20 5 15 14.5 15 21C15 23.8 17.2 26 20 26C22.8 26 25 23.8 25 21C25 14.5 20 5 20 5Z" fill="#F5D061" />
+                          <path d="M14 12C14 12 7.5 18.5 7.5 23C7.5 26.2 10.2 28 13.2 28C16.2 28 17.8 25.5 17.8 24C17.8 18.5 14 12 14 12Z" fill="#F5D061" opacity="0.8" />
+                          <path d="M26 12C26 12 32.5 18.5 32.5 23C32.5 26.2 29.8 28 26.8 28C23.8 28 22.2 25.5 22.2 24C22.2 18.5 26 12 26 12Z" fill="#F5D061" opacity="0.8" />
+                          <path d="M11.5 32C15.2 34.8 24.8 34.8 28.5 32C26.5 34.8 23.5 35.8 20 35.8C16.5 35.8 13.5 34.8 11.5 32Z" fill="#F5D061" />
+                        </svg>
+                      </div>
+                      <span className="font-serif-kr text-xs font-bold text-[#F5D061] tracking-wide">
+                        제주 소원사 모바일 신도증
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/40 font-bold whitespace-nowrap">
+                        {currentUser.role === 'temple_admin'
+                          ? '창건주 · 신도회장'
+                          : currentUser.role === 'master' || currentUser.role === 'agent' || currentUser.role === 'committee_head'
                           ? '포교위원장'
                           : currentUser.role === 'committee_member'
                           ? '포교위원'
-                          : currentUser.role === 'temple_admin'
-                          ? '창건주 · 신도회장'
-                          : '소원사 신도'}
+                          : '소원사 정식신도'}
                       </span>
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="px-2 py-0.5 rounded-lg bg-white/10 hover:bg-white/20 text-[#D6CEC2] hover:text-white border border-white/10 text-[10.5px] font-medium flex items-center gap-1 transition"
+                        title="로그아웃"
+                      >
+                        <LogOut className="w-3 h-3" />
+                        <span>로그아웃</span>
+                      </button>
+                    </div>
+                  </div>
 
-                      {/* 직책 배지 바로 옆에 아담하고 고급스럽게 배치된 '전산' 모달 버튼 */}
-                      {(isMaster || currentUser.role === 'temple_admin' || currentUser.role === 'agent' || currentUser.role === 'committee_head' || currentUser.role === 'committee_member') && (
+                  {/* 2행: 신도 성함 & 법명 (어르신도 한눈에 보이는 큼직하고 기품 있는 서체) */}
+                  <div className="pt-1 relative z-10">
+                    <h2 className="font-serif-kr text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-baseline gap-2 flex-wrap">
+                      <span>{currentUser.name}</span>
+                      {currentUser.role === 'temple_admin' ? (
+                        <span className="text-base sm:text-lg text-[#F5D061] font-bold">(창건주) 회장님</span>
+                      ) : currentUser.dharma_name ? (
+                        <span className="text-base sm:text-lg text-[#F5D061] font-bold">({currentUser.dharma_name})</span>
+                      ) : null}
+                      <span className="text-sm sm:text-base text-[#D4AF37] font-semibold">불자님</span>
+                    </h2>
+                    <div className="flex items-center gap-3 text-xs text-[#BFB6AA] mt-1.5 flex-wrap">
+                      <span>신도 번호: <strong className="text-white font-mono">{currentUser.code}</strong></span>
+                      <span>·</span>
+                      <span>연락처: <span className="font-mono text-[#D6CEC2]">{currentUser.phone}</span></span>
+                    </div>
+                  </div>
+
+                  {/* 3행: 🔥 나의 7일 소원등 정진 현황 카드 */}
+                  <div className="relative z-10 pt-1">
+                    {isLanternLit ? (
+                      <div className="rounded-2xl p-3.5 bg-gradient-to-r from-[#3D2914] via-[#483318] to-[#2D1E0E] border border-[#F5D061]/50 shadow-[0_4px_16px_rgba(245,208,97,0.18)] flex items-center justify-between gap-3">
+                        <div className="min-w-0 flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#E25C2B] to-[#F4B41A] text-white flex items-center justify-center shadow-[0_0_12px_rgba(233,130,39,0.5)] shrink-0">
+                            <Flame className="w-5 h-5 fill-current text-[#FFF7CE] flame-flicker" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="text-[11px] font-extrabold text-[#F5D061] tracking-wide">
+                                🔥 7일 소원등 불밝힘 정진 중
+                              </span>
+                              <span className="px-1.5 py-0.2 rounded-full bg-[#F5D061] text-[#1B1815] text-[10px] font-extrabold">
+                                D-{lanternDaysRemaining}일 남음
+                              </span>
+                            </div>
+                            <p className="text-xs text-[#FAF8F5] truncate mt-0.5">
+                              발원: <strong className="text-[#FFE58A]">[{lanternData?.wish_category || '소원성취'}]</strong> “{lanternData?.wish_text || '간절한 소원'}”
+                            </p>
+                          </div>
+                        </div>
                         <button
                           type="button"
                           onClick={() => {
-                            if (isMaster) setAdminModalTab('master')
-                            else if (isTempleAdmin) setAdminModalTab('temple')
-                            else if (currentUser?.role === 'agent' || currentUser?.role === 'committee_head') setAdminModalTab('head')
-                            else setAdminModalTab('common')
-                            setShowUnifiedAdminModal(true)
+                            setActiveTab('lantern')
+                            window.scrollTo({ top: 0, behavior: 'smooth' })
                           }}
-                          className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-[11px] flex items-center gap-1 shadow hover:brightness-105 active:scale-95 transition whitespace-nowrap shrink-0 border border-[#F5D061]"
-                          title="소원사 통합 전산 모달 열기"
+                          className="px-3 py-2 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs shrink-0 shadow hover:brightness-105 active:scale-95 transition whitespace-nowrap flex items-center gap-1"
                         >
-                          <span>🏛️ 전산</span>
-                          <ChevronRight className="w-3 h-3 -ml-0.5" />
+                          <span>내 등불 보기</span>
+                          <ChevronRight className="w-3.5 h-3.5 -mr-0.5" />
                         </button>
-                      )}
-                    </div>
-
-                    {/* 오른쪽 상단으로 올린 로그아웃 버튼 */}
-                    <button
-                      type="button"
-                      onClick={handleLogout}
-                      className="px-2.5 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-[#E8DFD1] hover:text-white border border-white/15 text-[11px] font-semibold flex items-center gap-1 transition shrink-0"
-                    >
-                      <LogOut className="w-3.5 h-3.5" />
-                      <span>로그아웃</span>
-                    </button>
-                  </div>
-
-                  {/* 2행: 성함 및 직함/법명 (양영문 회장님은 창건주 회장님으로 최고 예우 표시) */}
-                  <div>
-                    <h2 className="font-serif-kr text-xl sm:text-2xl font-bold tracking-tight text-white whitespace-nowrap">
-                      {currentUser.name}{' '}
-                      {currentUser.role === 'temple_admin'
-                        ? '(창건주) 회장님'
-                        : `${currentUser.dharma_name ? `(${currentUser.dharma_name})` : ''}님`}
-                    </h2>
-                  </div>
-
-                  {(isMaster || currentUser.role === 'temple_admin' || currentUser.role === 'agent' || currentUser.role === 'committee_head' || currentUser.role === 'committee_member') && (
-                    <div className="pt-3 border-t border-white/15 flex items-center justify-between gap-2 flex-wrap">
-                      <div className="text-xs text-[#F5D061] font-semibold flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
-                        <span>오늘 사시예불 축원 대상: <strong>{activeSasiPrayers.length}위</strong> (7일 정진)</span>
                       </div>
+                    ) : (
+                      <div className="rounded-2xl p-3.5 bg-white/5 border border-white/10 flex items-center justify-between gap-3">
+                        <div className="min-w-0 flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-white/10 text-[#C59B27] flex items-center justify-center shrink-0 border border-white/10">
+                            <Flame className="w-5 h-5 text-[#D4AF37]" />
+                          </div>
+                          <div className="min-w-0">
+                            <span className="text-[11px] font-bold text-[#E8DFD1] block">
+                              🕯️ 부처님 전 소원등 미점등
+                            </span>
+                            <p className="text-[11px] text-[#A89880] truncate mt-0.5">
+                              7일간 꺼지지 않는 소원등을 켜고 매일 가피를 입어보세요.
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveTab('lantern')
+                            window.scrollTo({ top: 0, behavior: 'smooth' })
+                          }}
+                          className="px-3 py-2 rounded-xl bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] font-extrabold text-xs shrink-0 hover:bg-[#F5E6BF] transition whitespace-nowrap"
+                        >
+                          소원등 켜기 →
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 4행: 포교위원 / 위원장 / 관리자 전용 대형 전산 버튼 */}
+                  {(isMaster || currentUser.role === 'temple_admin' || currentUser.role === 'agent' || currentUser.role === 'committee_head' || currentUser.role === 'committee_member') && (
+                    <div className="relative z-10 pt-1 space-y-2">
                       <button
                         type="button"
-                        onClick={() => setShowSasiPrintModal(true)}
-                        className="px-2.5 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] border border-white/20 font-bold text-[11px] flex items-center gap-1 shadow transition shrink-0"
+                        onClick={() => {
+                          if (isMaster) setAdminModalTab('master')
+                          else if (isTempleAdmin) setAdminModalTab('temple')
+                          else if (currentUser?.role === 'agent' || currentUser?.role === 'committee_head') setAdminModalTab('head')
+                          else setAdminModalTab('common')
+                          setShowUnifiedAdminModal(true)
+                        }}
+                        className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#F5D061] via-[#E8C568] to-[#D4AF37] text-[#1B1815] font-extrabold text-sm flex items-center justify-between shadow-[0_4px_16px_rgba(212,175,55,0.3)] hover:brightness-105 active:scale-98 transition border border-[#FFF3B8]"
                       >
-                        <Printer className="w-3.5 h-3.5 shrink-0" />
-                        <span>축원 명부 인쇄</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-base">🏛️</span>
+                          <div className="text-left">
+                            <span className="block leading-tight">전국 포교 전산 관제실 열기</span>
+                            <span className="text-[10.5px] font-medium text-[#4A3D18]">
+                              인연 신도 {currentUser.believers_count || 0}명 · 위패 봉안 {currentUser.wipae_count || 0}기
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs font-black bg-[#1B1815] text-[#F5D061] px-2.5 py-1 rounded-xl">
+                          <span>전산 입장</span>
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </div>
                       </button>
+
+                      {/* 대웅전 사시예불 축원 대상 요약 & A4 인쇄 원클릭 */}
+                      <div className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs">
+                        <div className="text-[#F5D061] font-medium flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
+                          <span>오늘 사시예불 축원 대상: <strong>{activeSasiPrayers.length}위</strong></span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowSasiPrintModal(true)}
+                          className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#FAF8F5] border border-white/20 font-bold text-[11px] flex items-center gap-1 transition shrink-0"
+                        >
+                          <Printer className="w-3.5 h-3.5" />
+                          <span>명부 인쇄</span>
+                        </button>
+                      </div>
                     </div>
                   )}
                 </section>
 
-                {/* 가족·도반과 함께하는 복(福) 전하는 인연 나눔 주소 카드 */}
-                <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-3">
+                {/* 2. 🎁 도반에게 복(福) 선물하기 (카카오톡 최적화 원클릭 나눔) */}
+                <section className="bg-gradient-to-br from-[#FFFDF9] via-[#FAF7EE] to-[#F5EEDD] rounded-3xl p-5 border border-[#E8DEC7] shadow-sm space-y-3.5">
                   <div>
-                    <span className="block text-[11px] font-bold text-[#9A7418]">
-                      卍 부처님과의 소중한 불연(佛緣)
+                    <span className="text-[11px] font-bold text-[#9A7418] flex items-center gap-1">
+                      <span>🪷</span>
+                      <span>부처님과의 소중한 불연(佛緣) 나눔</span>
                     </span>
-                    <h3 className="font-serif-kr text-base font-bold text-[#231F1C] mt-0.5 whitespace-nowrap">
-                      가족 · 도반에게 복(福)을 전하는 주소
+                    <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] mt-0.5">
+                      가족 · 도반에게 복(福)을 전하는 소원등 선물
                     </h3>
+                    <p className="text-xs text-[#575049] leading-relaxed mt-1 break-keep">
+                      소중한 분들께 7일 무료 소원등을 선물해 보세요. 상대방이 링크를 누르고 소원등을 밝히면 부처님 전에 함께 복을 짓는 <strong className="text-[#8A6510]">‘나의 인연 신도’</strong>로 자동 연결됩니다.
+                    </p>
                   </div>
-                  <p className="text-xs text-[#575049] leading-relaxed break-keep">
-                    가족, 친지, 도반에게 따뜻한 소원등과 축원의 공덕을 선물해 보세요. 이 주소로 모바일 법당을 찾아오신 분들은 부처님 전에 함께 복을 짓는{' '}
-                    <strong className="text-[#8A6510]">‘나의 인연 신도’</strong>로 이어집니다.
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      readOnly
-                      value={`https://sowonpray.vercel.app/?ref=${currentUser.code}`}
-                      className="flex-1 bg-[#FAF8F5] text-[#231F1C] text-xs px-3 py-2.5 rounded-xl border border-[#DDD4C4] font-medium min-w-0"
-                    />
+
+                  {/* 1) 큼직한 카카오톡 원클릭 선물 버튼 (어르신도 1초 만에 터치) */}
+                  <button
+                    type="button"
+                    onClick={() => handleShareKakao(currentUser.code, currentUser.name)}
+                    className="w-full py-3.5 px-4 rounded-2xl bg-[#FEE500] hover:bg-[#FADA0A] text-[#191919] font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition active:scale-98 border border-[#E6CE00]"
+                  >
+                    <span className="text-lg">💬</span>
+                    <span>카카오톡으로 7일 소원등 복(福) 선물하기</span>
+                  </button>
+
+                  {/* 2) 보조 버튼 2종: 링크 복사 & QR코드 보기 */}
+                  <div className="grid grid-cols-2 gap-2 pt-1">
                     <button
                       type="button"
                       onClick={() => handleCopyRefLink(currentUser.code)}
-                      className="p-2.5 rounded-xl bg-[#F5D061] text-[#1B1815] font-extrabold text-xs flex items-center justify-center shrink-0 hover:brightness-105 active:scale-95 transition shadow-sm w-10 h-10"
-                      title="전용 링크 복사"
+                      className="py-2.5 px-3 rounded-xl bg-white hover:bg-[#FAF8F5] text-[#231F1C] border border-[#DDD4C4] font-bold text-xs flex items-center justify-center gap-1.5 transition shadow-sm"
                     >
-                      <Copy className="w-4 h-4 shrink-0" />
+                      <Copy className="w-4 h-4 text-[#9A7418]" />
+                      <span>전용 링크 복사</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => handleToggleQr(currentUser.code)}
-                      className={`p-2.5 rounded-xl text-xs font-extrabold flex items-center justify-center shrink-0 transition shadow-sm border w-10 h-10 ${
+                      className={`py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-sm border ${
                         showQrCode === currentUser.code
                           ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
-                          : 'bg-[#FAF3DF] text-[#8A6510] border-[#E5D399] hover:bg-[#F5E6BF]'
+                          : 'bg-white hover:bg-[#FAF8F5] text-[#231F1C] border-[#DDD4C4]'
                       }`}
-                      title="전용 QR코드 보기"
                     >
-                      <QrCode className="w-4 h-4 shrink-0" />
+                      <QrCode className="w-4 h-4 text-[#9A7418]" />
+                      <span>인연 QR코드 보기</span>
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between text-[11px] text-[#8C8071] pt-0.5">
-                    <span>※ 링크 접속 시 자동 연동</span>
+                  <div className="text-[11px] text-[#8C8071] flex items-center justify-between pt-0.5">
+                    <span>※ 접속 시 인연코드 자동 적용</span>
                     <span className="font-bold text-[#8A6510]">내 인연코드: {currentUser.code}</span>
                   </div>
 
+                  {/* QR코드 펼침 창 */}
                   {showQrCode === currentUser.code && (
-                    <div className="mt-3 p-4 rounded-xl bg-[#FAF5E6] border border-[#E5D399] flex flex-col items-center text-center space-y-2.5">
-                      <div className="text-center">
+                    <div className="mt-3 p-4 rounded-2xl bg-white border-2 border-[#C59B27] flex flex-col items-center text-center space-y-2.5 shadow-md">
+                      <div>
                         <span className="text-[11px] font-bold text-[#8A6510]">
                           卍 제주 소원사 모바일 법당 전용 QR
                         </span>
@@ -5924,7 +6056,7 @@ export default function App() {
                       </div>
 
                       {qrDataUrl ? (
-                        <div className="p-3 bg-white rounded-2xl border-2 border-[#C59B27] shadow-md inline-block">
+                        <div className="p-3 bg-white rounded-2xl border-2 border-[#C59B27] shadow-inner inline-block">
                           <img
                             src={qrDataUrl}
                             alt="인연 연결 QR코드"
@@ -5932,13 +6064,13 @@ export default function App() {
                           />
                         </div>
                       ) : (
-                        <div className="w-44 h-44 flex items-center justify-center bg-white rounded-2xl border">
+                        <div className="w-44 h-44 flex items-center justify-center bg-neutral-50 rounded-2xl border">
                           <span className="text-xs text-[#8C7A5B]">QR 생성 중...</span>
                         </div>
                       )}
 
                       <p className="text-[11px] text-[#6E655C] leading-snug break-keep max-w-xs">
-                        가족이나 지인의 스마트폰 카메라로 비추시면, 회원님의 인연 코드가 자동 연결된 모바일 법당으로 즉시 열립니다.
+                        가족이나 도반의 스마트폰 카메라로 비추시면, 회원님의 인연 코드가 자동 연결된 모바일 법당으로 즉시 열립니다.
                       </p>
 
                       <div className="flex items-center gap-2 pt-1">
@@ -5952,7 +6084,7 @@ export default function App() {
                         <button
                           type="button"
                           onClick={() => setShowQrCode(null)}
-                          className="px-3 py-1.5 rounded-lg bg-white border border-[#DDD4C4] text-xs text-[#6E655C] hover:bg-[#FAF8F5] transition"
+                          className="px-3 py-1.5 rounded-lg bg-neutral-100 border border-[#DDD4C4] text-xs text-[#6E655C] hover:bg-neutral-200 transition"
                         >
                           닫기
                         </button>
@@ -5961,185 +6093,329 @@ export default function App() {
                   )}
                 </section>
 
-                {/* 부처님과 맺은 나의 인연 공덕 나무 (계보 트리) */}
-                <OrganizationTreeView
-                  members={members}
-                  rootCode={currentUser.code}
-                  activeAgentCode={currentUser.code}
-                  title="🌿 부처님과 맺은 ‘나의 인연 공덕 나무’"
-                  onSelectMember={(m) => {
-                    showToast(`[${m.name}] 님의 인연 정보 (코드: ${m.code})`)
-                  }}
-                />
-
-                {/* 내 정보 & 사찰 축원 상세정보 수정 폼 */}
-                <form
-                  onSubmit={handleSaveProfile}
-                  className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-4"
-                >
-                  <div className="border-b border-[#EFE9DD] pb-3">
-                    <span className="text-[11px] font-bold text-[#9A7418]">
-                      MEMBER PROFILE & PRAYER DB
-                    </span>
-                    <h3 className="font-serif-kr text-base font-bold text-[#231F1C] mt-0.5">
-                      내 기본정보 및 사찰 축원 상세정보 관리
-                    </h3>
-                  </div>
-
-                  {/* 1. 기본 계정 정보 */}
-                  <div className="grid grid-cols-3 gap-2.5">
-                    <div>
-                      <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                        성함 (필수)
-                      </label>
-                      <input
-                        type="text"
-                        value={profileForm.name}
-                        onChange={(e) =>
-                          setProfileForm({ ...profileForm, name: e.target.value })
-                        }
-                        className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs font-bold"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                        법명 (선택)
-                      </label>
-                      <input
-                        type="text"
-                        value={profileForm.dharma_name}
-                        onChange={(e) =>
-                          setProfileForm({ ...profileForm, dharma_name: e.target.value })
-                        }
-                        placeholder="예: 무량화"
-                        className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                        비밀번호 변경
-                      </label>
-                      <input
-                        type="text"
-                        value={profileForm.password_pin}
-                        onChange={(e) =>
-                          setProfileForm({ ...profileForm, password_pin: e.target.value })
-                        }
-                        className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
-                      />
-                    </div>
-                  </div>
-
-                  {/* 2. 사찰 축원 & 위패 봉안용 확장 정보 */}
-                  <div className="grid grid-cols-2 gap-2.5">
-                    <div>
-                      <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                        생년월일 (축원용)
-                      </label>
-                      <input
-                        type="text"
-                        value={profileForm.birth_date}
-                        onChange={(e) =>
-                          setProfileForm({ ...profileForm, birth_date: e.target.value })
-                        }
-                        placeholder="예: 1964-02-19"
-                        className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                        음력 / 양력 구분
-                      </label>
-                      <select
-                        value={profileForm.lunar_solar}
-                        onChange={(e) =>
-                          setProfileForm({ ...profileForm, lunar_solar: e.target.value })
-                        }
-                        className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
+                {/* 3. 📊 포교위원 전용 활동 요약 (포교위원/위원장일 때만 노출) */}
+                {isAgentOrAbove && (
+                  <section className="bg-gradient-to-br from-[#231F1C] to-[#151210] text-white rounded-3xl p-5 border border-[#C59B27]/40 shadow-sm space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-base">📜</span>
+                        <h3 className="font-serif-kr text-base font-bold text-[#F5D061]">
+                          나의 전법 포교 현황 요약
+                        </h3>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveTab('agent')
+                          window.scrollTo({ top: 0, behavior: 'smooth' })
+                        }}
+                        className="text-[11px] text-[#D6CEC2] hover:text-[#F5D061] flex items-center gap-1 font-semibold transition"
                       >
-                        <option value="음력">음력</option>
-                        <option value="양력">양력</option>
-                        <option value="음력(윤달)">음력(윤달)</option>
-                      </select>
+                        <span>전산창 바로가기</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
                     </div>
-                  </div>
 
-                  <div>
-                    <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                      거주지 주소 (대웅전 축원문 낭독 시 사용)
-                    </label>
-                    <input
-                      type="text"
-                      value={profileForm.address}
-                      onChange={(e) =>
-                        setProfileForm({ ...profileForm, address: e.target.value })
-                      }
-                      placeholder="예: 제주특별자치도 제주시 애월읍..."
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                      가족 축원 명단 / 조상님 영가 메모 (자유 기재)
-                    </label>
-                    <textarea
-                      rows={2}
-                      value={profileForm.family_memo}
-                      onChange={(e) =>
-                        setProfileForm({ ...profileForm, family_memo: e.target.value })
-                      }
-                      placeholder="예: 배우자 김성수(59년생), 장녀 김미영(90년생) 건강 발원 / 선망 부모님 위패 봉안 등"
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
-                    />
-                  </div>
-
-                  {/* 3. 포교위원 전용 수당 입금 계좌 정보 */}
-                  {isAgentOrAbove && (
-                    <div className="pt-3 border-t border-[#EFE9DD] space-y-2.5">
-                      <span className="block text-[11px] font-bold text-[#9A7418]">
-                        [포교위원 전용] 불사 포교비(수당) 정산 계좌 정보
-                      </span>
-                      <div className="grid grid-cols-3 gap-2">
-                        <input
-                          type="text"
-                          value={profileForm.bank_name}
-                          onChange={(e) =>
-                            setProfileForm({ ...profileForm, bank_name: e.target.value })
-                          }
-                          placeholder="은행명 (예: 농협)"
-                          className="px-2.5 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
-                        />
-                        <input
-                          type="text"
-                          value={profileForm.bank_account}
-                          onChange={(e) =>
-                            setProfileForm({ ...profileForm, bank_account: e.target.value })
-                          }
-                          placeholder="계좌번호"
-                          className="px-2.5 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
-                        />
-                        <input
-                          type="text"
-                          value={profileForm.account_holder}
-                          onChange={(e) =>
-                            setProfileForm({ ...profileForm, account_holder: e.target.value })
-                          }
-                          placeholder="예금주"
-                          className="px-2.5 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
-                        />
+                    <div className="grid grid-cols-3 gap-2 pt-1">
+                      <div className="bg-white/5 border border-white/10 rounded-2xl p-2.5 text-center">
+                        <div className="text-[10.5px] text-[#BFB6AA]">인연 신도수</div>
+                        <div className="text-base sm:text-lg font-extrabold text-[#F5D061] mt-0.5">
+                          {currentUser.believers_count || 0}명
+                        </div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-2xl p-2.5 text-center">
+                        <div className="text-[10.5px] text-[#BFB6AA]">위패/불사 봉안</div>
+                        <div className="text-base sm:text-lg font-extrabold text-white mt-0.5">
+                          {currentUser.wipae_count || 0}기
+                        </div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-2xl p-2.5 text-center">
+                        <div className="text-[10.5px] text-[#BFB6AA]">포교 요율</div>
+                        <div className="text-base sm:text-lg font-extrabold text-emerald-400 mt-0.5">
+                          {currentUser.role === 'committee_member' ? '30%' : '40%'}
+                        </div>
                       </div>
                     </div>
-                  )}
 
-                  <button
-                    type="submit"
-                    className="w-full py-3 rounded-xl bg-[#231F1C] text-[#F5D061] font-bold text-xs border border-[#C59B27] hover:bg-[#302A25] transition flex items-center justify-center gap-1.5"
-                  >
-                    <Save className="w-4 h-4" />
-                    <span>내 회원정보 저장하기</span>
-                  </button>
-                </form>
+                    <div className="text-[11px] text-[#A69B8D] p-2.5 rounded-xl bg-black/25 flex items-center justify-between flex-wrap gap-1">
+                      <span>수당 정산 계좌:</span>
+                      <span className="text-white font-medium">
+                        {currentUser.bank_name ? `${currentUser.bank_name} ${currentUser.bank_account} (예금주: ${currentUser.account_holder || currentUser.name})` : '미등록 (아래 내정보 수정에서 입력)'}
+                      </span>
+                    </div>
+                  </section>
+                )}
+
+                {/* 4. 🌿 나의 인연 공덕 나무 (계보 트리 - 스마트 접이식 아코디언) */}
+                <section className="bg-white rounded-3xl p-5 shadow-sm border border-[#E6DEC8] space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <span className="text-[11px] font-bold text-[#9A7418] block">
+                        卍 부처님과 맺은 소중한 인연
+                      </span>
+                      <h3 className="font-serif-kr text-base font-bold text-[#231F1C] mt-0.5">
+                        나의 인연 공덕 나무 ({members.filter((m) => m.parent_code === currentUser.code).length}명 연결)
+                      </h3>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsOrgTreeOpen(!isOrgTreeOpen)}
+                      className="px-3 py-1.5 rounded-xl bg-[#FAF8F5] hover:bg-[#F3EFE6] text-[#6E5617] border border-[#DDD4C4] text-xs font-bold flex items-center gap-1 transition shrink-0"
+                    >
+                      <span>{isOrgTreeOpen ? '계보 접기 ▲' : '계보 펼치기 ▼'}</span>
+                    </button>
+                  </div>
+
+                  {isOrgTreeOpen ? (
+                    <div className="pt-2 animate-fadeIn border-t border-[#EFE9DD]">
+                      <OrganizationTreeView
+                        members={members}
+                        rootCode={currentUser.code}
+                        activeAgentCode={currentUser.code}
+                        title="🌿 나의 인연 공덕 계보"
+                        onSelectMember={(m) => {
+                          showToast(`[${m.name}] 님의 인연 정보 (코드: ${m.code})`)
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <p className="text-xs text-[#6E655C] bg-[#FAF8F5] p-3 rounded-xl border border-[#EFE9DD] leading-relaxed break-keep">
+                      나의 인연 코드로 소원등을 켠 도반과 가족들이 공덕 나무에 잎사귀처럼 맺힙니다. [계보 펼치기]를 눌러 확인해 보세요.
+                    </p>
+                  )}
+                </section>
+
+                {/* 5. ⚙️ 내 기본정보 및 대웅전 축원 관리 (스마트 요약 & 접이식 수정 폼) */}
+                <section className="bg-white rounded-3xl p-5 shadow-sm border border-[#E6DEC8] space-y-4">
+                  <div className="flex items-center justify-between border-b border-[#EFE9DD] pb-3">
+                    <div>
+                      <span className="text-[11px] font-bold text-[#9A7418]">
+                        MEMBER PROFILE & PRAYER DB
+                      </span>
+                      <h3 className="font-serif-kr text-base font-bold text-[#231F1C] mt-0.5">
+                        내 기본정보 및 사찰 축원 상세 관리
+                      </h3>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsProfileEditOpen(!isProfileEditOpen)}
+                      className="px-3 py-1.5 rounded-xl bg-[#231F1C] text-[#F5D061] text-xs font-bold border border-[#C59B27] hover:bg-[#302A25] transition flex items-center gap-1 shrink-0 shadow-sm"
+                    >
+                      <span>{isProfileEditOpen ? '수정 닫기 ▲' : '✏️ 정보 수정하기'}</span>
+                    </button>
+                  </div>
+
+                  {/* 평소 요약 보기 (입력창 없이 눈이 편안한 카드) */}
+                  {!isProfileEditOpen ? (
+                    <div className="space-y-2.5 text-xs">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EFE9DD]">
+                          <span className="text-[11px] text-[#8C8071] block">성함 / 법명</span>
+                          <span className="font-bold text-[#231F1C] mt-0.5 block">
+                            {currentUser.name} {currentUser.dharma_name ? `(${currentUser.dharma_name})` : '(법명 미입력)'}
+                          </span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EFE9DD]">
+                          <span className="text-[11px] text-[#8C8071] block">생년월일 (축원용)</span>
+                          <span className="font-bold text-[#231F1C] mt-0.5 block">
+                            {currentUser.birth_date ? `${currentUser.birth_date} (${currentUser.lunar_solar || '음력'})` : '생년월일 미입력'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EFE9DD]">
+                        <span className="text-[11px] text-[#8C8071] block">거주지 주소 (대웅전 축원문 낭독용)</span>
+                        <span className="font-semibold text-[#231F1C] mt-0.5 block">
+                          {currentUser.address || '주소 미입력 (사찰 예불 축원 시 기재 필요)'}
+                        </span>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EFE9DD]">
+                        <span className="text-[11px] text-[#8C8071] block">가족 축원 명단 / 조상 영가 메모</span>
+                        <span className="text-[#3D3630] mt-0.5 block leading-relaxed break-keep">
+                          {currentUser.family_memo || '가족 축원 명단 미입력'}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between p-3 rounded-xl bg-[#FAF8F5] border border-[#EFE9DD]">
+                        <span className="text-[11px] text-[#8C8071]">비밀번호</span>
+                        <span className="font-mono text-emerald-600 font-bold">●●●● (안전하게 설정됨)</span>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setIsProfileEditOpen(true)}
+                        className="w-full py-2.5 rounded-xl bg-[#FAF3DF] hover:bg-[#F5E6BF] text-[#8A6510] border border-[#E5D399] font-bold text-xs transition"
+                      >
+                        ✏️ 위 기본정보 또는 비밀번호 변경하기
+                      </button>
+                    </div>
+                  ) : (
+                    /* 수정 폼 열림 상태 */
+                    <form onSubmit={handleSaveProfile} className="space-y-4 pt-1 animate-fadeIn">
+                      <div className="grid grid-cols-3 gap-2.5">
+                        <div>
+                          <label className="block text-xs font-bold text-[#3D3630] mb-1">
+                            성함 (필수 *)
+                          </label>
+                          <input
+                            type="text"
+                            value={profileForm.name}
+                            onChange={(e) =>
+                              setProfileForm({ ...profileForm, name: e.target.value })
+                            }
+                            className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs font-bold"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-[#3D3630] mb-1">
+                            법명 (선택)
+                          </label>
+                          <input
+                            type="text"
+                            value={profileForm.dharma_name}
+                            onChange={(e) =>
+                              setProfileForm({ ...profileForm, dharma_name: e.target.value })
+                            }
+                            placeholder="예: 무량화"
+                            className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-[#3D3630] mb-1">
+                            비밀번호 변경
+                          </label>
+                          <input
+                            type="text"
+                            value={profileForm.password_pin}
+                            onChange={(e) =>
+                              setProfileForm({ ...profileForm, password_pin: e.target.value })
+                            }
+                            className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2.5">
+                        <div>
+                          <label className="block text-xs font-bold text-[#3D3630] mb-1">
+                            생년월일 (축원용)
+                          </label>
+                          <input
+                            type="text"
+                            value={profileForm.birth_date}
+                            onChange={(e) =>
+                              setProfileForm({ ...profileForm, birth_date: e.target.value })
+                            }
+                            placeholder="예: 1964-02-19"
+                            className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-[#3D3630] mb-1">
+                            음력 / 양력 구분
+                          </label>
+                          <select
+                            value={profileForm.lunar_solar}
+                            onChange={(e) =>
+                              setProfileForm({ ...profileForm, lunar_solar: e.target.value })
+                            }
+                            className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
+                          >
+                            <option value="음력">음력</option>
+                            <option value="양력">양력</option>
+                            <option value="음력(윤달)">음력(윤달)</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-[#3D3630] mb-1">
+                          거주지 주소 (대웅전 축원문 낭독용)
+                        </label>
+                        <input
+                          type="text"
+                          value={profileForm.address}
+                          onChange={(e) =>
+                            setProfileForm({ ...profileForm, address: e.target.value })
+                          }
+                          placeholder="예: 제주특별자치도 제주시 애월읍..."
+                          className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-[#3D3630] mb-1">
+                          가족 축원 명단 / 조상 영가 메모 (자유 기재)
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={profileForm.family_memo}
+                          onChange={(e) =>
+                            setProfileForm({ ...profileForm, family_memo: e.target.value })
+                          }
+                          placeholder="예: 배우자 김성수(59년생), 장녀 김미영(90년생) 건강 발원"
+                          className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
+                        />
+                      </div>
+
+                      {/* 포교위원 전용 수당 정산 계좌 */}
+                      {isAgentOrAbove && (
+                        <div className="pt-3 border-t border-[#EFE9DD] space-y-2.5">
+                          <span className="block text-[11px] font-bold text-[#9A7418]">
+                            [포교위원 전용] 불사 포교비(수당) 정산 계좌 정보
+                          </span>
+                          <div className="grid grid-cols-3 gap-2">
+                            <input
+                              type="text"
+                              value={profileForm.bank_name}
+                              onChange={(e) =>
+                                setProfileForm({ ...profileForm, bank_name: e.target.value })
+                              }
+                              placeholder="은행명 (예: 농협)"
+                              className="px-2.5 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
+                            />
+                            <input
+                              type="text"
+                              value={profileForm.bank_account}
+                              onChange={(e) =>
+                                setProfileForm({ ...profileForm, bank_account: e.target.value })
+                              }
+                              placeholder="계좌번호"
+                              className="px-2.5 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
+                            />
+                            <input
+                              type="text"
+                              value={profileForm.account_holder}
+                              onChange={(e) =>
+                                setProfileForm({ ...profileForm, account_holder: e.target.value })
+                              }
+                              placeholder="예금주"
+                              className="px-2.5 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs"
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-2 pt-1">
+                        <button
+                          type="submit"
+                          className="flex-1 py-3 rounded-xl bg-[#231F1C] text-[#F5D061] font-bold text-xs border border-[#C59B27] hover:bg-[#302A25] transition flex items-center justify-center gap-1.5 shadow-sm"
+                        >
+                          <Save className="w-4 h-4" />
+                          <span>내 회원정보 저장하기</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setIsProfileEditOpen(false)}
+                          className="px-4 py-3 rounded-xl bg-neutral-100 border border-[#DDD4C4] text-xs text-[#6E655C] font-semibold hover:bg-neutral-200 transition"
+                        >
+                          취소
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </section>
 
               </>
             )}
