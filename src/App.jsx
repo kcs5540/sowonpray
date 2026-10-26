@@ -6839,21 +6839,21 @@ function normalizeMemberHierarchy(m) {
 
               <div className="grid grid-cols-3 gap-2 pt-1">
                 <div className="bg-white/5 border border-white/10 rounded-xl p-2.5 text-center">
-                  <div className="text-[10.5px] text-[#BFB6AA] whitespace-nowrap">인연 신도수</div>
+                  <div className="text-[10.5px] text-[#BFB6AA] whitespace-nowrap">산하 인연 신도</div>
                   <div className="text-base sm:text-lg font-bold text-[#F5D061] mt-0.5 whitespace-nowrap">
-                    {activeAgent.believers_count || 0}명
+                    {myAffiliatedMembers.filter((m) => m.role === 'believer').length}명
                   </div>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-xl p-2.5 text-center">
                   <div className="text-[10.5px] text-[#BFB6AA] whitespace-nowrap">위패 봉안 누적</div>
                   <div className="text-base sm:text-lg font-bold text-white mt-0.5 whitespace-nowrap">
-                    {activeAgent.wipae_count || 0}기
+                    {myAffiliatedMembers.reduce((sum, m) => sum + (Number(m.wipae_count) || 0), 0)}기
                   </div>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-xl p-2.5 text-center">
                   <div className="text-[10.5px] text-[#BFB6AA] whitespace-nowrap">직접 포교 요율</div>
                   <div className="text-base sm:text-lg font-bold text-emerald-400 mt-0.5 whitespace-nowrap">
-                    {activeAgent.role === 'committee_member' ? '30%' : '40%'}
+                    {activeAgent.role === 'master' ? '50%' : '40%'}
                   </div>
                 </div>
               </div>
@@ -8102,21 +8102,21 @@ function normalizeMemberHierarchy(m) {
 
                     <div className="grid grid-cols-3 gap-2 pt-1 text-center">
                       <div className="bg-white/5 border border-white/10 rounded-xl p-2">
-                        <div className="text-[10px] text-[#BFB6AA]">인연 신도</div>
+                        <div className="text-[10px] text-[#BFB6AA]">산하 인연 신도</div>
                         <div className="text-base font-bold text-[#F5D061] mt-0.5">
-                          {activeAgent.believers_count || 0}명
+                          {myAffiliatedMembers.filter((m) => m.role === 'believer').length}명
                         </div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-xl p-2">
                         <div className="text-[10px] text-[#BFB6AA]">위패 봉안</div>
                         <div className="text-base font-bold text-white mt-0.5">
-                          {activeAgent.wipae_count || 0}기
+                          {myAffiliatedMembers.reduce((sum, m) => sum + (Number(m.wipae_count) || 0), 0)}기
                         </div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-xl p-2">
                         <div className="text-[10px] text-[#BFB6AA]">포교 요율</div>
                         <div className="text-base font-bold text-emerald-400 mt-0.5">
-                          {activeAgent.role === 'committee_member' ? '30%' : '40%'}
+                          {activeAgent.role === 'master' ? '50%' : '40%'}
                         </div>
                       </div>
                     </div>
