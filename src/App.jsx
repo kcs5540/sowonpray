@@ -14,6 +14,8 @@ import {
   ShieldCheck,
   RefreshCw,
   Download,
+  Bell,
+  Megaphone,
   ChevronRight,
   ChevronDown,
   ChevronUp,
@@ -137,6 +139,46 @@ const PRAYER_CATEGORY_TEMPLATES = {
   '기타 특별기도 상담':
     '간절한 소원 성취와 가정의 평안을 위하여, 제주 소원사 종무소와 정성껏 특별기도 상담을 희망합니다.',
 }
+
+// 도량 공식 공지사항 (초기 3선: 초하루 법회, 삼성각 소원기와불사, 도량 참배/차담 안내)
+const INITIAL_NOTICES = [
+  {
+    id: 'notice-1',
+    category: '법회',
+    badge: '특별법회',
+    title: '11월 초하루 맞이 대웅전 특별 축원 법회 안내',
+    date: '2026.11.01',
+    summary: '매월 음력 초하루 대웅전 삼존불 전에서 신도님들의 가내 평안과 소원성취를 위한 특별 축원 법회를 봉행합니다.',
+    content: `나무아미타불 관세음보살.\n\n제주 소원사에서는 매월 음력 초하루를 맞이하여 대웅전 삼존불 전에 향과 등과 꽃을 올리고, 전국에서 모바일 법당을 통해 정성껏 소원등을 밝혀주신 불자님들과 가족분들의 무사안녕과 만사형통을 지극한 마음으로 축원 올립니다.\n\n■ 일시: 매월 음력 초하루 오전 10시 (사시예불)\n■ 장소: 제주 소원사 대웅전 (유튜브 실시간 방송 및 모바일 법당 동시 진행)\n■ 동참 대상: 소원사 신도 및 전국 모바일 법당 소원등 동참 불자님 전원\n\n거리가 멀어 제주 도량에 직접 걸음하지 못하시더라도, 모바일 법당에 올리신 한 줄 발원문과 소원등이 부처님 전 축원 명부에 소중히 봉안되어 스님의 육성으로 낭독됩니다.\n\n불자님들의 가정에 부처님의 자비광명과 무량복덕이 늘 가득하시기를 지심으로 축원합니다.`,
+    targetTab: 'lantern',
+    ctaLabel: '대웅전 소원등 켜고 축원 올리기 ▶',
+    isPinned: true,
+  },
+  {
+    id: 'notice-2',
+    category: '불사',
+    badge: '대작불사',
+    title: '삼성각 성전 건립 소원 기와 및 단청 불사 동참 소식',
+    date: '2026.10.25',
+    summary: '칠성·산신·독성 세 분 성인을 모시는 삼성각 건립 불사가 순조롭게 진행되고 있습니다. 자손만대 복전이 될 기와 불사에 동참해 보세요.',
+    content: `자손만대 복밭을 일구는 삼성각(三聖閣) 건립 불사 동참을 안내해 드립니다.\n\n사찰에서 가장 영험한 기도처로 꼽히는 삼성각은 ① 무병장수와 자손번창의 칠성여래님, ② 가업번창과 도량 수호의 산신님, ③ 말세 중생의 소원을 가장 빠르게 들어주시는 나반존자(독성)님을 모시는 성스러운 전각입니다.\n\n■ 동참 분야:\n  - 가족 소원 기와 불사: 기와 한 장에 온 가족 이름과 간절한 발원을 새겨 지붕에 영구히 얹어 올립니다.\n  - 기둥 및 단청 불사: 삼재팔난을 소멸하고 가문의 복덕을 지키는 대작불사입니다.\n  - 영구 축원 명패 봉안: 삼성각 내에 가문의 복덕을 영구히 기리는 명패를 봉안합니다.\n\n기와 한 장, 기둥 하나에 깃든 정성이 불자님의 가정에 큰 가피로 돌아올 것입니다.`,
+    targetTab: 'bulsa',
+    ctaLabel: '삼성각 불사 상세 보기 ▶',
+    isPinned: true,
+  },
+  {
+    id: 'notice-3',
+    category: '안내',
+    badge: '도량참배',
+    title: '제주 소원사 도량 참배 및 스님 차담·점심공양 사전 예약 안내',
+    date: '2026.10.20',
+    summary: '제주 여행이나 도량 참배로 방문하시는 불자님들께 따뜻한 차와 정성 어린 사찰 공양을 대접해 드립니다.',
+    content: `제주 소원사를 찾아주시는 불자님들을 따뜻하게 맞이하고자 차담 및 사찰공양 사전 예약제를 운영합니다.\n\n한라산의 청정한 정기가 감도는 제주 소원사 도량에 걸음하시어, 고요한 법당에서 부처님께 삼배 올리시고 지친 일상을 쉬어가시기 바랍니다.\n\n■ 사전 예약 혜택:\n  - 주지스님과의 따뜻한 1:1 신행 차담 및 인생 상담\n  - 정갈하고 건강한 제주 소원사 사찰 점심공양(식사) 대접\n  - 도량 전각 및 위패·삼성각 건립지 친절 안내\n\n공양 준비와 스님 일정 조율을 위해 방문 하루 전 모바일 법당 또는 종무소(010-4912-1083)로 편안하게 예약해 주시기 바랍니다.`,
+    targetTab: 'bulsa',
+    ctaLabel: '사찰 참배 · 차담 예약하기 ▶',
+    isPinned: false,
+  },
+]
 
 // 사찰 방문 및 차담·공양 예약 시간대 & 목적 슬롯 (한눈에 선택하는 원터치 버튼)
 const VISIT_TIME_SLOTS = [
@@ -1460,6 +1502,29 @@ function normalizeMemberHierarchy(m) {
     return saved ? JSON.parse(saved) : INITIAL_VISITS
   })
 
+  // 소원사 도량 공지사항 상태 (LocalStorage + 초기공지 3선 연동)
+  const [notices, setNotices] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sowonpray_notices_v1')
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed
+      }
+      return INITIAL_NOTICES
+    } catch {
+      return INITIAL_NOTICES
+    }
+  })
+  const [activeNoticeIdx, setActiveNoticeIdx] = useState(0) // 롤링 공지 인덱스
+  const [selectedNotice, setSelectedNotice] = useState(null) // 상세 모달용 선택된 공지
+  const [showNoticeModal, setShowNoticeModal] = useState(false) // 공지사항 상세 모달 열림 여부
+  const [showNoticeListModal, setShowNoticeListModal] = useState(false) // 전체 공지 목록 모달
+  const [adminNoticeCategory, setAdminNoticeCategory] = useState('법회')
+  const [adminNoticeTitle, setAdminNoticeTitle] = useState('')
+  const [adminNoticeContent, setAdminNoticeContent] = useState('')
+  const [adminNoticeTargetTab, setAdminNoticeTargetTab] = useState('lantern')
+  const [adminNoticeCtaLabel, setAdminNoticeCtaLabel] = useState('소원등 켜고 축원 올리기 ▶')
+
   // 총괄 다이나믹 수당 요율 상태 (김철수 대표님 5% 포함 100% 배분)
   const [commissionRules, setCommissionRules] = useState(() => {
     const saved = localStorage.getItem('sowonpray_rules')
@@ -1561,6 +1626,19 @@ function normalizeMemberHierarchy(m) {
   useEffect(() => {
     localStorage.setItem('sowonpray_visits_v3', JSON.stringify(visits))
   }, [visits])
+
+  useEffect(() => {
+    localStorage.setItem('sowonpray_notices_v1', JSON.stringify(notices))
+  }, [notices])
+
+  // 공지사항 롤링 타이머 (5초마다 다음 공지 순환)
+  useEffect(() => {
+    if (!notices || notices.length <= 1) return
+    const timer = setInterval(() => {
+      setActiveNoticeIdx((prev) => (prev + 1) % notices.length)
+    }, 5500)
+    return () => clearInterval(timer)
+  }, [notices])
 
   useEffect(() => {
     localStorage.setItem('sowonpray_rules', JSON.stringify(commissionRules))
@@ -3389,6 +3467,77 @@ function normalizeMemberHierarchy(m) {
                           ›
                         </button>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            })()}
+
+            {/* 📢 제주 소원사 도량 소식 & 공지사항 롤링 바 (터치 시 모달 오픈) */}
+            {notices && notices.length > 0 && (() => {
+              const curNotice = notices[activeNoticeIdx % notices.length] || notices[0]
+              return (
+                <div className="relative rounded-2xl bg-gradient-to-r from-[#241F1A] via-[#2F271E] to-[#241F1A] p-2.5 sm:p-3 border border-[#C59B27]/40 shadow-sm overflow-hidden text-white flex items-center justify-between gap-2.5">
+                  <div
+                    onClick={() => {
+                      playSingingBowlSound()
+                      setSelectedNotice(curNotice)
+                      setShowNoticeModal(true)
+                    }}
+                    className="flex-1 min-w-0 flex items-center gap-2 cursor-pointer group"
+                  >
+                    <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] flex items-center justify-center text-[#1B1815] shrink-0 shadow-sm animate-pulse">
+                      <Megaphone className="w-3.5 h-3.5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#C59B27]/30 text-[#F5D061] border border-[#F5D061]/30 whitespace-nowrap">
+                          {curNotice.badge || curNotice.category || '도량소식'}
+                        </span>
+                        <span className="text-[10px] text-[#A89D8E] font-mono whitespace-nowrap">
+                          {curNotice.date}
+                        </span>
+                      </div>
+                      <p className="text-xs font-semibold text-[#FBF8F3] group-hover:text-[#F5D061] transition truncate">
+                        {curNotice.title}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playMoktakSound()
+                        setShowNoticeListModal(true)
+                      }}
+                      className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#F5D061] border border-[#F5D061]/30 text-[10.5px] font-bold transition whitespace-nowrap"
+                    >
+                      전체보기
+                    </button>
+                    <div className="flex items-center">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setActiveNoticeIdx(
+                            (prev) => (prev - 1 + notices.length) % notices.length
+                          )
+                        }
+                        className="w-5 h-5 rounded-full text-[#A89D8E] hover:text-[#F5D061] flex items-center justify-center text-xs"
+                        aria-label="이전 공지"
+                      >
+                        ‹
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setActiveNoticeIdx((prev) => (prev + 1) % notices.length)
+                        }
+                        className="w-5 h-5 rounded-full text-[#A89D8E] hover:text-[#F5D061] flex items-center justify-center text-xs"
+                        aria-label="다음 공지"
+                      >
+                        ›
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -8401,7 +8550,157 @@ function normalizeMemberHierarchy(m) {
           </div>
         )}
 
-        {/* ==================== 소원사 본부 & 전국 포교 통합 전산 모달 ==================== */}
+        {/* ==================== 📢 도량 공지사항 상세 모달 (한지 카드 스타일) ==================== */}
+        {showNoticeModal && selectedNotice && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 animate-fadeIn">
+            <div className="w-full max-w-[440px] max-h-[90vh] bg-[#FAF6EE] text-[#241E17] rounded-3xl shadow-2xl border-2 border-[#D4AF37] flex flex-col overflow-hidden relative">
+              {/* 모달 상단 헤더 */}
+              <div className="bg-gradient-to-r from-[#241E17] via-[#2E2419] to-[#241E17] text-white px-5 py-3.5 flex items-center justify-between border-b border-[#C59B27]/40 shrink-0">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="w-2 h-2 rounded-full bg-[#F5D061] animate-ping shrink-0" />
+                  <span className="font-serif-kr text-xs font-bold text-[#F5D061] tracking-wider whitespace-nowrap">
+                    제주 소원사 도량 소식
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowNoticeModal(false)}
+                  className="p-1.5 rounded-full hover:bg-white/10 text-white/80 hover:text-white transition"
+                  title="닫기"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* 본문 스크롤 영역 */}
+              <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
+                {/* 카테고리 배지 + 날짜 */}
+                <div className="flex items-center justify-between gap-2">
+                  <span className="px-2.5 py-1 rounded-full bg-[#EFE3C3] text-[#7A5B0B] border border-[#D5C59B] text-xs font-bold">
+                    {selectedNotice.badge || selectedNotice.category}
+                  </span>
+                  <span className="text-xs text-[#8A7D6B] font-mono">
+                    {selectedNotice.date}
+                  </span>
+                </div>
+
+                {/* 공지 제목 */}
+                <h2 className="font-serif-kr text-lg sm:text-xl font-extrabold text-[#1F1912] leading-snug break-keep">
+                  {selectedNotice.title}
+                </h2>
+
+                {/* 요약 박스 (있을 시) */}
+                {selectedNotice.summary && (
+                  <div className="p-3.5 rounded-2xl bg-[#F0EAE1] border border-[#DDD3C1] text-xs text-[#574C3D] leading-relaxed break-keep font-medium">
+                    💡 {selectedNotice.summary}
+                  </div>
+                )}
+
+                {/* 본문 내용 (한지 느낌의 여백과 줄글) */}
+                <div className="text-xs sm:text-sm text-[#383026] leading-relaxed space-y-2.5 whitespace-pre-line break-keep font-sans">
+                  {selectedNotice.content}
+                </div>
+              </div>
+
+              {/* 모달 하단 액션 버튼 바 */}
+              <div className="p-4 bg-[#F2ECE1] border-t border-[#DDD3C1] shrink-0 space-y-2">
+                {selectedNotice.targetTab && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playSingingBowlSound()
+                      setShowNoticeModal(false)
+                      setActiveTab(selectedNotice.targetTab)
+                      window.scrollTo({ top: 0, behavior: 'smooth' })
+                    }}
+                    className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-extrabold text-xs shadow-md hover:brightness-105 active:scale-95 transition flex items-center justify-center gap-1.5"
+                  >
+                    <span>{selectedNotice.ctaLabel || '관련 정진 바로가기 ▶'}</span>
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setShowNoticeModal(false)}
+                  className="w-full py-2.5 rounded-xl bg-white hover:bg-[#FAF8F5] text-[#5C5042] border border-[#DDD3C1] font-bold text-xs transition active:scale-95"
+                >
+                  확인 및 닫기
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ==================== 📋 도량 공지사항 전체 목록 모달 ==================== */}
+        {showNoticeListModal && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 animate-fadeIn">
+            <div className="w-full max-w-[440px] max-h-[85vh] bg-[#FAF6EE] text-[#241E17] rounded-3xl shadow-2xl border-2 border-[#D4AF37] flex flex-col overflow-hidden relative">
+              {/* 상단 헤더 */}
+              <div className="bg-gradient-to-r from-[#241E17] via-[#2E2419] to-[#241E17] text-white px-5 py-3.5 flex items-center justify-between border-b border-[#C59B27]/40 shrink-0">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Megaphone className="w-4 h-4 text-[#F5D061] shrink-0" />
+                  <span className="font-serif-kr text-sm font-bold text-[#F5D061]">
+                    제주 소원사 도량 소식 목록
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowNoticeListModal(false)}
+                  className="p-1.5 rounded-full hover:bg-white/10 text-white/80 hover:text-white transition"
+                  title="닫기"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* 공지 목록 */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-2.5 divide-y divide-[#E6DEC8]">
+                {notices.map((n) => (
+                  <div
+                    key={n.id}
+                    onClick={() => {
+                      playMoktakSound()
+                      setSelectedNotice(n)
+                      setShowNoticeListModal(false)
+                      setShowNoticeModal(true)
+                    }}
+                    className="pt-2.5 first:pt-0 cursor-pointer group"
+                  >
+                    <div className="p-3 rounded-2xl bg-white hover:bg-[#FFF9EE] border border-[#DDD3C1] transition shadow-sm">
+                      <div className="flex items-center justify-between gap-1.5 mb-1.5">
+                        <span className="px-2 py-0.5 rounded-full bg-[#FAF3DF] text-[#7A5B0B] border border-[#E5D399] text-[10.5px] font-bold">
+                          {n.badge || n.category}
+                        </span>
+                        <span className="text-[10.5px] text-[#8A7D6B] font-mono">
+                          {n.date}
+                        </span>
+                      </div>
+                      <h3 className="font-serif-kr text-xs sm:text-sm font-bold text-[#231F1C] group-hover:text-[#9A7418] transition line-clamp-2">
+                        {n.title}
+                      </h3>
+                      {n.summary && (
+                        <p className="text-[11px] text-[#6E655C] mt-1 line-clamp-2 leading-relaxed">
+                          {n.summary}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* 하단 닫기 */}
+              <div className="p-3 bg-[#F2ECE1] border-t border-[#DDD3C1] shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setShowNoticeListModal(false)}
+                  className="w-full py-2.5 rounded-xl bg-white hover:bg-[#FAF8F5] text-[#5C5042] border border-[#DDD3C1] font-bold text-xs transition"
+                >
+                  닫기
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {showUnifiedAdminModal && (
           <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-3 animate-fadeIn">
             <div className="w-full max-w-[480px] h-[94vh] sm:h-[90vh] bg-[#FAF8F5] text-[#231F1C] rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-[#C59B27]/40 relative">
@@ -8989,6 +9288,194 @@ function normalizeMemberHierarchy(m) {
                       </div>
                       <div className="p-2.5 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] text-[11px] text-[#6B5E4C]">
                         ※ 공양주 보살님 및 원주실에서 당일 방문 신도 공양 준비를 위해 실시간 확인하는 명부입니다.
+                      </div>
+                    </section>
+
+                    {/* 📢 소원사 도량 공지사항 실시간 등록 & 관리 섹션 */}
+                    <section className="bg-white rounded-2xl p-4 shadow-sm border border-[#E6DEC8] space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <Megaphone className="w-4 h-4 text-[#8A6510]" />
+                          <h4 className="font-serif-kr font-bold text-sm text-[#1B1815]">
+                            소원사 도량 공지사항 실시간 관리 ({notices.length}건)
+                          </h4>
+                        </div>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-[#8A6510] font-bold">
+                          홈 화면 실시간 연동
+                        </span>
+                      </div>
+
+                      <p className="text-[11px] text-[#7A6E5E] leading-relaxed">
+                        등록하신 공지사항은 즉시 모바일 법당 홈 화면 상단 롤링 배너에 반영되며, 모든 신도님들의 스마트폰에 실시간 전파됩니다.
+                      </p>
+
+                      {/* 새 공지사항 등록 폼 */}
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault()
+                          if (!adminNoticeTitle.trim() || !adminNoticeContent.trim()) {
+                            showToast('공지 제목과 상세 내용을 입력해 주세요.')
+                            return
+                          }
+                          const newNotice = {
+                            id: 'notice-' + Date.now(),
+                            category: adminNoticeCategory,
+                            badge: adminNoticeCategory === '법회' ? '특별법회' : adminNoticeCategory === '불사' ? '대작불사' : '도량안내',
+                            title: adminNoticeTitle.trim(),
+                            date: new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\. /g, '.').replace(/\.$/, ''),
+                            summary: adminNoticeContent.trim().slice(0, 70) + (adminNoticeContent.trim().length > 70 ? '...' : ''),
+                            content: adminNoticeContent.trim(),
+                            targetTab: adminNoticeTargetTab,
+                            ctaLabel: adminNoticeCtaLabel || '자세히 보기 ▶',
+                            isPinned: false,
+                          }
+                          setNotices((prev) => [newNotice, ...prev])
+                          setAdminNoticeTitle('')
+                          setAdminNoticeContent('')
+                          playSingingBowlSound()
+                          showToast('📢 도량 새 공지사항이 성공적으로 등록되어 홈 화면에 반영되었습니다.')
+                        }}
+                        className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-2.5 text-xs"
+                      >
+                        <div className="font-bold text-[#8A6510] flex items-center gap-1 text-xs">
+                          <span>✏️</span>
+                          <span>새 공지사항 작성하기</span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="block text-[10.5px] font-semibold text-[#6E6354] mb-1">
+                              공지 분류
+                            </label>
+                            <select
+                              value={adminNoticeCategory}
+                              onChange={(e) => {
+                                const cat = e.target.value
+                                setAdminNoticeCategory(cat)
+                                if (cat === '법회') {
+                                  setAdminNoticeTargetTab('lantern')
+                                  setAdminNoticeCtaLabel('소원등 켜고 축원 올리기 ▶')
+                                } else if (cat === '불사') {
+                                  setAdminNoticeTargetTab('bulsa')
+                                  setAdminNoticeCtaLabel('소원 기와 · 위패 불사 보기 ▶')
+                                } else {
+                                  setAdminNoticeTargetTab('bulsa')
+                                  setAdminNoticeCtaLabel('도량 참배 · 차담 예약하기 ▶')
+                                }
+                              }}
+                              className="w-full p-2 rounded-xl bg-white border border-[#DDD4C4] text-xs font-semibold"
+                            >
+                              <option value="법회">법회 (초하루/특별법회/기도)</option>
+                              <option value="불사">불사 (기와/단청/위패/인등)</option>
+                              <option value="안내">안내 (도량참배/차담/종무소)</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block text-[10.5px] font-semibold text-[#6E6354] mb-1">
+                              연결 탭 (클릭 시 이동)
+                            </label>
+                            <select
+                              value={adminNoticeTargetTab}
+                              onChange={(e) => setAdminNoticeTargetTab(e.target.value)}
+                              className="w-full p-2 rounded-xl bg-white border border-[#DDD4C4] text-xs font-semibold"
+                            >
+                              <option value="lantern">소원등 켜기 (대웅전 축원)</option>
+                              <option value="bulsa">불사 안내 (위패/삼성각/차담)</option>
+                              <option value="sutra">한줄 사경 (경전 정진)</option>
+                              <option value="home">신행홈 (메인)</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[10.5px] font-semibold text-[#6E6354] mb-1">
+                            공지 제목
+                          </label>
+                          <input
+                            type="text"
+                            value={adminNoticeTitle}
+                            onChange={(e) => setAdminNoticeTitle(e.target.value)}
+                            placeholder="예: 11월 보름 대웅전 특별 축원 안내"
+                            required
+                            className="w-full p-2 rounded-xl bg-white border border-[#DDD4C4] text-xs"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10.5px] font-semibold text-[#6E6354] mb-1">
+                            상세 내용 (줄바꿈 가능)
+                          </label>
+                          <textarea
+                            rows={3}
+                            value={adminNoticeContent}
+                            onChange={(e) => setAdminNoticeContent(e.target.value)}
+                            placeholder="불자님들께 전할 도량 공지 내용을 상세히 적어주세요."
+                            required
+                            className="w-full p-2 rounded-xl bg-white border border-[#DDD4C4] text-xs leading-relaxed"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10.5px] font-semibold text-[#6E6354] mb-1">
+                            하단 바로가기 버튼 문구
+                          </label>
+                          <input
+                            type="text"
+                            value={adminNoticeCtaLabel}
+                            onChange={(e) => setAdminNoticeCtaLabel(e.target.value)}
+                            placeholder="예: 소원등 켜고 축원 올리기 ▶"
+                            className="w-full p-2 rounded-xl bg-white border border-[#DDD4C4] text-xs font-medium"
+                          />
+                        </div>
+
+                        <button
+                          type="submit"
+                          className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-extrabold text-xs shadow hover:brightness-105 active:scale-95 transition"
+                        >
+                          📢 소원사 공지사항 즉시 등록하기
+                        </button>
+                      </form>
+
+                      {/* 등록된 공지사항 목록 및 삭제 제어 */}
+                      <div className="space-y-2 pt-1">
+                        <div className="text-xs font-bold text-[#231F1C]">
+                          등록된 공지 목록 (상단 순서대로 롤링 노출)
+                        </div>
+                        <div className="divide-y divide-[#EAE2D3] max-h-60 overflow-y-auto pr-1">
+                          {notices.map((n, idx) => (
+                            <div key={n.id || idx} className="py-2.5 flex items-start justify-between gap-2 text-xs">
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-1.5 mb-0.5">
+                                  <span className="px-1.5 py-0.2 rounded bg-amber-100 text-[#8A6510] text-[10px] font-bold">
+                                    {n.category}
+                                  </span>
+                                  <span className="text-[10px] text-[#8C8071] font-mono">
+                                    {n.date}
+                                  </span>
+                                </div>
+                                <div className="font-bold text-[#1B1815] truncate">
+                                  {n.title}
+                                </div>
+                                <p className="text-[11px] text-[#6E6354] truncate mt-0.5">
+                                  {n.summary || n.content}
+                                </p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (confirm(`'${n.title}' 공지를 삭제하시겠습니까?`)) {
+                                    setNotices((prev) => prev.filter((item) => item.id !== n.id))
+                                    showToast('공지사항이 삭제되었습니다.')
+                                  }
+                                }}
+                                className="px-2 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-[10.5px] font-bold shrink-0 transition"
+                              >
+                                삭제
+                              </button>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </section>
                   </div>
