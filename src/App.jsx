@@ -1665,7 +1665,15 @@ function normalizeMemberHierarchy(m) {
   const [quoteIdx, setQuoteIdx] = useState(0)
   const currentQuote = DAILY_QUOTES[quoteIdx]
 
-  // 7일 소원등 축원 상태 (발원문 접수 시 7일간 대웅전에 광명 점등 유지되는 7일 정진 시스템)
+  // 1일 1소원등 축원 상태 (매일 대웅전에 광명 점등 유지 및 연속 정진 일수 카운트)
+  const [lanternStreak, setLanternStreak] = useState(() => {
+    try {
+      return Number(localStorage.getItem('sowonsa_lantern_streak')) || 1
+    } catch (e) {
+      return 1
+    }
+  })
+
   const [lanternData, setLanternData] = useState(() => {
     try {
       const saved = localStorage.getItem('sowonsa_7day_lantern')
@@ -2550,6 +2558,14 @@ function normalizeMemberHierarchy(m) {
     const endOfToday = new Date()
     endOfToday.setHours(23, 59, 59, 999)
     const expireAt = Math.max(endOfToday.getTime(), now + 12 * 60 * 60 * 1000) // 최소 12시간~당일 자정 유지
+
+    // 연속 정진 일수 계산 및 공덕 가산
+    const nextStreak = (lanternStreak || 0) + 1
+    setLanternStreak(nextStreak)
+    try {
+      localStorage.setItem('sowonsa_lantern_streak', String(nextStreak))
+    } catch (e) {}
+
     const newLanternInfo = {
       member_code: currentUser?.code || '',
       believer_name: formattedBelieverName,
@@ -2559,6 +2575,7 @@ function normalizeMemberHierarchy(m) {
       wish_text: finalWishText,
       lit_at: now,
       expire_at: expireAt,
+      streak: nextStreak,
     }
     try {
       localStorage.setItem('sowonsa_7day_lantern', JSON.stringify(newLanternInfo))
@@ -8111,13 +8128,45 @@ function normalizeMemberHierarchy(m) {
                 <Flame className="w-8 h-8 text-[#F5D061] fill-[#F5D061]" />
               </div>
               <h3 className="font-serif-kr text-xl font-bold text-[#F5D061]">
-                대웅전 7일 소원등 점등 완료
+                대웅전 소원등 점등 완료
               </h3>
+
+              {/* 연속 정진 칭찬 뱃지 (한 줄) */}
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F5D061]/15 border border-[#F5D061]/50 text-xs font-bold text-[#F5D061]">
+                <span>🪔</span>
+                <span>{lanternStreak || 1}일 연속 정진 중! (공덕 +100)</span>
+              </div>
+
               <p className="text-xs text-[#E2DAD0] leading-relaxed break-keep">
-                <strong>{wishName.trim()} 불자님</strong>의 간절한 발원이 <strong>제주 소원사 대웅전</strong>에 봉안되었습니다. 앞으로 <strong>7일 동안 매일 오전 10시 사시예불</strong>마다 스님께서 부처님 전에 정성껏 축원 올립니다.
+                <strong>{wishName.trim()} 불자님</strong>의 간절한 발원이 <strong>제주 소원사 대웅전</strong>에 봉안되었습니다. 오늘 하루 부처님의 자비광명이 온 가족과 늘 함께하시길 정성껏 축원 올립니다.
               </p>
-              <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-[11px] text-[#F5D061]">
-                🙏 도량에 오시기 전날 미리 연락 주시면 따뜻한 차와 공양(식사)을 대접해 드립니다. (010-4912-1083)
+
+              {/* 365일 꺼지지 않는 1년 인등 불사 안내 배너 (깔끔한 골드 박스) */}
+              <div
+                onClick={() => {
+                  setShowSuccessModal(false)
+                  setNavTab('bulsa')
+                }}
+                className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left cursor-pointer hover:border-[#F5D061] transition group shadow-md"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815]">
+                    상시 정진
+                  </span>
+                  <span className="text-[10.5px] text-[#F5D061] font-bold group-hover:translate-x-0.5 transition">
+                    상세보기 &gt;
+                  </span>
+                </div>
+                <div className="font-serif-kr text-xs font-bold text-[#FAF8F5] mt-1.5">
+                  🪔 365일 꺼지지 않는 대웅전 1년 인등 불사
+                </div>
+                <div className="text-[10.5px] text-[#A89D8E] mt-0.5 leading-snug">
+                  매일 켜는 정성을 넘어, 부처님 전에 온 가족의 평생 광명을 밝히세요.
+                </div>
+              </div>
+
+              <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-[11px] text-[#D4AF37]">
+                🙏 도량에 오시기 전날 미리 연락 주시면 따뜻한 차와 공양을 대접해 드립니다. (010-4912-1083)
               </div>
               {/* 가족·지인에게 소원등 알리기 (카카오톡 공유) */}
               <button
@@ -8691,6 +8740,16 @@ function normalizeMemberHierarchy(m) {
                                 }`}>
                                   {m.role === 'agent' ? '포교위원장' : m.role === 'temple_admin' ? '신도회장' : m.role === 'master' ? '총괄위원장' : '일반신도'}
                                 </span>
+                                {prayers.some(
+                                  (p) =>
+                                    (p.member_code === m.code || (p.believer_phone && m.phone && p.believer_phone.replace(/[^0-9]/g, '') === m.phone.replace(/[^0-9]/g, ''))) &&
+                                    new Date(p.created_at).toDateString() === new Date().toDateString()
+                                ) && (
+                                  <span className="text-[9.5px] px-1.5 py-0.2 rounded font-black bg-amber-500/15 text-amber-700 border border-amber-500/30 flex items-center gap-0.5">
+                                    <span>🪔</span>
+                                    <span>오늘 점등</span>
+                                  </span>
+                                )}
                               </div>
                               <div className="text-[11px] text-[#8C8071] mt-0.5 flex items-center gap-2 truncate">
                                 <span>📞 {m.phone || '연락처 미등록'}</span>
