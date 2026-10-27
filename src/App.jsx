@@ -75,7 +75,7 @@ const HERO_SLIDES = [
   },
   {
     id: 'slide-2',
-    image: '/images/sowonsa_daewoongjeon_altar.jpg',
+    image: '/images/sowonsa_daewoongjeon_altar_v2.jpg',
     badge: '매일 아침 사시예불 스님 축원 도량',
     titlePrefix: '내 손안의 법당, 꺼지지 않는',
     titleHighlight: '광명 소원등',
