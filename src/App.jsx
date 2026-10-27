@@ -4104,10 +4104,10 @@ function normalizeMemberHierarchy(m) {
             {/* [큰 항목 1] 상시 기도 및 공덕 불사 종목 (4종) - 가벼운 일상 공덕 우선 배치 */}
             <section
               id="bulsa-section-1"
-              className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-3.5 scroll-mt-20"
+              className="bg-white rounded-2xl p-5 shadow-md border-2 border-[#C59B27] space-y-3.5 scroll-mt-20"
             >
               <div>
-                <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] text-[11.5px] font-extrabold whitespace-nowrap shadow-sm mb-1.5">
+                <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#FAF3DF] text-[#7A5707] border-2 border-[#C59B27] text-[11.5px] font-black whitespace-nowrap shadow-sm mb-1.5">
                   1. 상시 기도 및 공덕 불사 (4종)
                 </span>
                 <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
@@ -4177,11 +4177,11 @@ function normalizeMemberHierarchy(m) {
             {/* [큰 항목 2] 명당 위패 봉안 불사 (2종) */}
             <section
               id="bulsa-section-2"
-              className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-4 scroll-mt-20"
+              className="bg-white rounded-2xl p-5 shadow-md border-2 border-[#C59B27] space-y-4 scroll-mt-20"
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] text-[11.5px] font-extrabold whitespace-nowrap shadow-sm mb-1.5">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#FAF3DF] text-[#7A5707] border-2 border-[#C59B27] text-[11.5px] font-black whitespace-nowrap shadow-sm mb-1.5">
                     2. 명당 위패 봉안 불사 (2종)
                   </span>
                   <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
@@ -4265,11 +4265,11 @@ function normalizeMemberHierarchy(m) {
             {/* [큰 항목 3] 삼성각(三聖閣) 성전 건립 대작불사 (3종) - 가벼운 소원기와부터 배치 */}
             <section
               id="bulsa-section-3"
-              className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-3.5 scroll-mt-20"
+              className="bg-white rounded-2xl p-5 shadow-md border-2 border-[#C59B27] space-y-3.5 scroll-mt-20"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] text-[11.5px] font-extrabold whitespace-nowrap shadow-sm mb-1.5">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#FAF3DF] text-[#7A5707] border-2 border-[#C59B27] text-[11.5px] font-black whitespace-nowrap shadow-sm mb-1.5">
                     3. 천년 도량 성전 건립 대작불사 (3종)
                   </span>
                   <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
