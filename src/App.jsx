@@ -4561,33 +4561,41 @@ function normalizeMemberHierarchy(m) {
                     }
                     className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm text-[#231F1C] shadow-inner leading-relaxed"
                   />
-                  <div className="flex items-center justify-between text-[11px] text-[#7A7065] mt-1.5 px-0.5">
-                    <span className="flex items-center gap-1">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#B8860B] shrink-0" />
-                      <span>
-                        예시문을 자유롭게 수정하시거나 그대로 두셔도 <strong>[{wishCategory}]</strong> 기본 발원 내용으로 자동 상담 접수됩니다.
-                      </span>
-                    </span>
-                    {wishText && (
-                      <button
-                        type="button"
-                        onClick={() => setWishText('')}
-                        className="text-[#998877] hover:text-[#554433] underline text-[10.5px] ml-2 shrink-0"
-                      >
-                        지우기
-                      </button>
-                    )}
+                  <div className="mt-2 p-2.5 sm:p-3 rounded-xl bg-[#FAF5E6] border border-[#E5D399] text-xs text-[#5C4A28] space-y-1">
+                    <div className="flex items-start justify-between gap-1.5">
+                      <div className="flex items-start gap-1.5">
+                        <CheckCircle2 className="w-4 h-4 text-[#B8860B] shrink-0 mt-0.5" />
+                        <p className="leading-relaxed break-keep text-[#3D3630]">
+                          <strong className="text-[#231F1C] font-extrabold">예시문을 자유롭게 수정하시거나 그대로 두셔도 됩니다.</strong><br />
+                          접수해 주시면 <strong className="text-[#8A6510] font-extrabold">제주 소원사 종무소에서 전화로 친절히 상세 일정과 동참 절차를 상담 안내</strong>해 드립니다.
+                        </p>
+                      </div>
+                      {wishText && (
+                        <button
+                          type="button"
+                          onClick={() => setWishText('')}
+                          className="text-[#998877] hover:text-[#554433] underline text-[10.5px] shrink-0 ml-1 font-semibold"
+                        >
+                          지우기
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <button
-                type="submit"
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-extrabold text-xs sm:text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-1.5 whitespace-nowrap"
-              >
-                <Award className="w-4 h-4 shrink-0" />
-                <span>[{wishCategory}] 온라인 신청 접수하기</span>
-              </button>
+              <div className="space-y-1.5">
+                <button
+                  type="submit"
+                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-extrabold text-xs sm:text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-1.5 whitespace-nowrap"
+                >
+                  <Award className="w-4 h-4 shrink-0" />
+                  <span>[{wishCategory}] 동참 상담 신청 접수하기</span>
+                </button>
+                <p className="text-center text-[11px] text-[#7A7065] font-medium break-keep">
+                  ※ 접수 완료 시 종무소에서 안내 전화를 드리며, 상담 후 편안하게 동참을 진행하실 수 있습니다.
+                </p>
+              </div>
             </form>
 
             {/* 제주 소원사 공식 시주 · 불사 동참 계좌 안내 및 원터치 복사 */}
