@@ -4057,7 +4057,7 @@ function normalizeMemberHierarchy(m) {
             {/* 상단 불사안내 헤더 */}
             <section className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-5 border border-[#C59B27]/50 shadow-md">
               <span className="block text-[11px] text-[#F5D061] font-bold whitespace-nowrap">
-                제주 소원사 상시 기도 · 공덕 불사 · 삼성각 건립 · 위패 봉안
+                제주 소원사 상시 기도 · 공덕 불사 · 위패 봉안 · 삼성각 건립
               </span>
               <h2 className="font-serif-kr text-lg sm:text-xl font-bold mt-1 break-keep">
                 현세의 복덕과 자손만대 번창을 발원합니다
