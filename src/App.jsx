@@ -9862,21 +9862,16 @@ function normalizeMemberHierarchy(m) {
                 )}
 
                 {/* 전통 사찰 공식 직인 및 검인란 (A4 인쇄 시 사찰 공인 서류 품격 완성) */}
-                <div className="pt-4 border-t-2 border-[#222222] grid grid-cols-3 gap-2 text-center text-[11px] font-serif-kr">
+                <div className="pt-4 border-t-2 border-[#222222] grid grid-cols-2 gap-3 text-center text-[11px] font-serif-kr">
                   <div className="border border-[#444444] p-2.5 rounded-lg bg-[#FAF8F5]">
                     <div className="text-[10px] text-[#666666]">사찰 본부 대표</div>
                     <div className="font-extrabold text-[#111111] mt-1 text-xs">창건주 · 신도회장</div>
                     <div className="text-[10.5px] font-bold text-[#8A6510] mt-0.5">양영문 (인)</div>
                   </div>
                   <div className="border border-[#444444] p-2.5 rounded-lg bg-[#FAF8F5]">
-                    <div className="text-[10px] text-[#666666]">포교위원회 총괄 사령탑</div>
-                    <div className="font-extrabold text-[#111111] mt-1 text-xs">전국 포교위원장 총괄대표</div>
-                    <div className="text-[10.5px] font-bold text-[#8A6510] mt-0.5">김철수 (인)</div>
-                  </div>
-                  <div className="border border-[#444444] p-2.5 rounded-lg bg-[#FAF8F5]">
-                    <div className="text-[10px] text-[#666666]">모바일법당 전산 관제</div>
-                    <div className="font-extrabold text-[#111111] mt-1 text-xs">제주AI파트너 총괄본부</div>
-                    <div className="text-[10.5px] font-bold text-[#8A6510] mt-0.5">전산총괄 김철수 (인)</div>
+                    <div className="text-[10px] text-[#666666]">대웅전 축원 증명</div>
+                    <div className="font-extrabold text-[#111111] mt-1 text-xs">대한불교 본원종 제주 소원사</div>
+                    <div className="text-[10.5px] font-bold text-[#8A6510] mt-0.5">주지스님 직인 (인)</div>
                   </div>
                 </div>
               </div>
@@ -10082,7 +10077,7 @@ function normalizeMemberHierarchy(m) {
                 </div>
 
                 {/* 전통 사찰 공식 직인 및 증명란 (A4 인쇄 시 불단 품격 완성) */}
-                <div className="pt-4 border-t-2 border-[#222222] grid grid-cols-3 gap-2 text-center text-[11px] font-serif-kr">
+                <div className="pt-4 border-t-2 border-[#222222] grid grid-cols-2 gap-3 text-center text-[11px] font-serif-kr">
                   <div className="border border-[#444444] p-2.5 rounded-lg bg-[#FAF8F5]">
                     <div className="text-[10px] text-[#666666]">대웅전 축원 증명</div>
                     <div className="font-extrabold text-[#111111] mt-1 text-xs">대한불교 본원종 제주 소원사</div>
@@ -10092,11 +10087,6 @@ function normalizeMemberHierarchy(m) {
                     <div className="text-[10px] text-[#666666]">사시예불 집전 봉행</div>
                     <div className="font-extrabold text-[#111111] mt-1 text-xs">대웅전 삼존불 불단</div>
                     <div className="text-[10.5px] font-bold text-[#8A6510] mt-0.5">집전법사스님 (인)</div>
-                  </div>
-                  <div className="border border-[#444444] p-2.5 rounded-lg bg-[#FAF8F5]">
-                    <div className="text-[10px] text-[#666666]">디지털 전산 발급</div>
-                    <div className="font-extrabold text-[#111111] mt-1 text-xs">제주AI파트너 총괄본부</div>
-                    <div className="text-[10.5px] font-bold text-[#8A6510] mt-0.5">전산총괄 김철수 (인)</div>
                   </div>
                 </div>
               </div>
