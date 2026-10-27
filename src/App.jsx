@@ -4704,12 +4704,12 @@ function normalizeMemberHierarchy(m) {
               <p className="text-[11.5px] text-[#D6CEC2] leading-relaxed break-keep">
                 불사 및 상시기도 신청 후 아래 사찰 공식 계좌로 시주금을 입금해 주시면, 입금 확인 즉시 종무소 대웅전 축원 대장에 등재되어 매일 오전 10시 사시예불 축원이 정성껏 봉행됩니다.
               </p>
-              <div className="p-3 rounded-xl bg-[#28221C] border border-[#C59B27]/40 flex flex-wrap items-center justify-between gap-2.5">
-                <div className="min-w-0">
+              <div className="p-3 rounded-xl bg-[#28221C] border border-[#C59B27]/40 flex items-center justify-between gap-2">
+                <div className="min-w-0 flex-1">
                   <div className="text-[11px] text-[#A89E90] font-semibold">
                     농협은행 (예금주: 소원사)
                   </div>
-                  <div className="text-sm sm:text-base font-extrabold text-[#F5D061] tracking-wider mt-0.5 select-all">
+                  <div className="text-sm sm:text-base font-extrabold text-[#F5D061] tracking-wider mt-0.5 select-all truncate">
                     301-0324-0024-41
                   </div>
                 </div>
@@ -4719,10 +4719,10 @@ function normalizeMemberHierarchy(m) {
                     navigator.clipboard.writeText('301-0324-0024-41')
                     showToast('📋 소원사 농협 계좌번호(301-0324-0024-41)가 복사되었습니다!')
                   }}
-                  className="px-3 py-2 rounded-lg bg-[#C59B27] hover:bg-[#D4AF37] text-[#1B1815] font-extrabold text-xs flex items-center gap-1.5 shadow active:scale-95 transition shrink-0"
+                  className="px-2.5 py-2 rounded-lg bg-[#C59B27] hover:bg-[#D4AF37] text-[#1B1815] font-extrabold text-xs flex items-center gap-1 shadow active:scale-95 transition shrink-0 whitespace-nowrap"
                 >
-                  <Save className="w-3.5 h-3.5" />
-                  <span>계좌번호 복사</span>
+                  <Copy className="w-3.5 h-3.5" />
+                  <span>계좌 복사</span>
                 </button>
               </div>
               <div className="text-[10.5px] text-[#A89E90] flex items-center gap-1.5 pt-0.5">
