@@ -5154,10 +5154,17 @@ function normalizeMemberHierarchy(m) {
             {/* 🪔 365일 1년 인등 불사 초슬림 심플 바 */}
             <div
               onClick={() => {
-                setBulsaCategory('기도불사')
+                playMoktakSound()
                 setWishCategory('대웅전 1년 인등(가족등)')
-                setNavTab('bulsa')
-                window.scrollTo({ top: 0, behavior: 'smooth' })
+                setActiveTab('bulsa')
+                setTimeout(() => {
+                  const el = document.getElementById('bulsa-section-1') || document.getElementById('bulsa-application-form')
+                  if (el) {
+                    el.scrollIntoView({ behavior: 'smooth' })
+                  } else {
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }
+                }, 80)
               }}
               className="py-3 px-4 rounded-xl bg-[#FAF6EC] border border-[#D5C59B] text-[#7A5B10] hover:bg-[#F5EDD8] cursor-pointer transition flex items-center justify-between text-xs font-bold shadow-xs active:scale-98"
             >
