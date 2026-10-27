@@ -6710,11 +6710,11 @@ function normalizeMemberHierarchy(m) {
                 {/* 3. 📊 포교위원 전용 활동 요약 (포교위원/위원장일 때만 노출) */}
                 {isAgentOrAbove && (
                   <section className="bg-gradient-to-br from-[#231F1C] to-[#151210] text-white rounded-3xl p-5 border border-[#C59B27]/40 shadow-sm space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-base">📜</span>
-                        <h3 className="font-serif-kr text-base font-bold text-[#F5D061]">
-                          나의 전법 포교 현황 요약
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="text-sm shrink-0">📜</span>
+                        <h3 className="font-serif-kr text-sm sm:text-base font-bold text-[#F5D061] whitespace-nowrap">
+                          나의 포교 현황
                         </h3>
                       </div>
                       <button
@@ -6723,7 +6723,7 @@ function normalizeMemberHierarchy(m) {
                           setActiveTab('agent')
                           window.scrollTo({ top: 0, behavior: 'smooth' })
                         }}
-                        className="text-[11px] text-[#D6CEC2] hover:text-[#F5D061] flex items-center gap-1 font-semibold transition"
+                        className="text-[11px] text-[#D6CEC2] hover:text-[#F5D061] flex items-center gap-1 font-semibold transition whitespace-nowrap shrink-0 px-2.5 py-1 rounded-xl bg-white/5 border border-white/10 hover:border-[#F5D061]/40"
                       >
                         <span>전산창 바로가기</span>
                         <ChevronRight className="w-3.5 h-3.5" />
