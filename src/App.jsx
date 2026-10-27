@@ -2055,7 +2055,10 @@ function normalizeMemberHierarchy(m) {
         const parsed = new Date(myLatestPrayer.created_at).getTime()
         if (!isNaN(parsed)) prayerTime = parsed
       }
-      const expireAt = prayerTime + 7 * 24 * 60 * 60 * 1000
+      const prayerDate = new Date(prayerTime)
+      const expireDate = new Date(prayerTime)
+      expireDate.setHours(23, 59, 59, 999)
+      const expireAt = Math.max(expireDate.getTime(), prayerTime + 12 * 60 * 60 * 1000)
 
       if (expireAt > Date.now()) {
         const syncedLantern = {
@@ -4875,8 +4878,8 @@ function normalizeMemberHierarchy(m) {
                         }`}
                       >
                         {isLanternExpired
-                          ? '7일 회향 · 다시 밝히기'
-                          : '터치하여 7일 점등하기'}
+                          ? '오늘 회향 · 다시 밝히기'
+                          : '터치하여 소원등 밝히기'}
                       </span>
                     </>
                   )}
@@ -4914,11 +4917,11 @@ function normalizeMemberHierarchy(m) {
                     </span>
                     {isLanternLit ? (
                       <span className="px-1.5 py-0.2 rounded bg-[#F5D061]/25 text-[#FFE58A] text-[10px] font-bold border border-[#F5D061]/50">
-                        7일 정진 D-{lanternDaysRemaining}
+                        오늘 정진 점등 중
                       </span>
                     ) : (
                       <span className="px-1.5 py-0.2 rounded bg-white/10 text-[#C2B8AB] text-[9.5px]">
-                        7일 무료 사시예불 축원
+                        매일 무료 사시예불 축원
                       </span>
                     )}
                   </div>
@@ -4931,10 +4934,10 @@ function normalizeMemberHierarchy(m) {
                   <div className="bg-[#FAF3DF]/10 border border-[#F5D061]/35 rounded-xl p-3 text-xs text-[#FAF8F5] leading-relaxed break-keep">
                     <div className="flex items-center justify-center gap-1.5 font-bold text-[#F5D061] mb-1">
                       <Sparkles className="w-3.5 h-3.5 shrink-0" />
-                      <span>{lanternData?.believer_name} 불자님의 7일 정진 축원이 진행 중입니다</span>
+                      <span>{lanternData?.believer_name} 불자님의 오늘 소원등이 밝게 축원 중입니다</span>
                     </div>
                     <p className="text-[11px] text-[#D6CEC2]">
-                      매일 오전 10시 사시예불에서 제주 소원사 스님께서 정성껏 축원해 드리고 있습니다. (D-{lanternDaysRemaining}일 남음)
+                      매일 오전 10시 사시예불에서 제주 소원사 스님께서 정성껏 축원해 드립니다. (내일 새 원력으로 또 켜실 수 있습니다)
                     </p>
                   </div>
                 ) : isLanternExpired ? (
@@ -4947,7 +4950,7 @@ function normalizeMemberHierarchy(m) {
                     className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#AA8010] text-[#1B1815] font-bold text-xs shadow hover:brightness-105 transition flex items-center justify-center gap-1.5"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
-                    <span>지난 7일 기도가 회향되었습니다 · 새 발원으로 다시 밝히기</span>
+                    <span>오늘의 기도가 회향되었습니다 · 내일 새 발원으로 다시 밝히기</span>
                   </button>
                 ) : (
                   <button
@@ -6514,11 +6517,11 @@ function normalizeMemberHierarchy(m) {
                             </div>
                             <div className="min-w-0">
                               <div className="text-xs font-extrabold text-[#F5D061] tracking-wide whitespace-nowrap">
-                                7일 소원등 정진중
+                                오늘 소원등 정진중
                               </div>
                               <div className="mt-0.5">
                                 <span className="px-1.5 py-0.5 rounded-full bg-[#F5D061] text-[#1B1815] text-[10px] font-black whitespace-nowrap inline-block">
-                                  D-{lanternDaysRemaining}일 남음
+                                  오늘 점등 완료
                                 </span>
                               </div>
                             </div>
@@ -6555,10 +6558,10 @@ function normalizeMemberHierarchy(m) {
                           </div>
                           <div className="min-w-0">
                             <span className="text-xs font-bold text-[#E8DFD1] block">
-                              🕯️ 부처님 전 소원등 미점등
+                              🕯️ 오늘 부처님 전 소원등 미점등
                             </span>
                             <p className="text-[11px] text-[#A89880] truncate mt-0.5">
-                              7일간 꺼지지 않는 소원등을 켜보세요.
+                              오늘 하루의 평안을 위해 소원등을 켜보세요.
                             </p>
                           </div>
                         </div>
