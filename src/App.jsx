@@ -61,6 +61,7 @@ import {
   INITIAL_VISITS,
   extractPhone8Code,
   formatPhone11,
+  computeZodiacAndGanji,
   supabase,
 } from './lib/supabase'
 
@@ -1915,7 +1916,8 @@ function normalizeMemberHierarchy(m) {
   const [adminMemberSort, setAdminMemberSort] = useState('latest') // 'latest' | 'name' | 'merit'
   const [selectedMemberDetail, setSelectedMemberDetail] = useState(null)
 
-  // [전산 고도화] 사시예불 축원 명부 분야별 필터 & 검색 & 당일 축원 완료 체크
+  // [전산 고도화] 사시예불 축원 명부 기도 유형 탭 ('all': 전체 | 'lantern': 1일 소원등 | 'prayer_100d': 100일 특별기도 | 'indeung_1yr': 1년 인등 명패)
+  const [sasiPrayerTypeTab, setSasiPrayerTypeTab] = useState('all')
   const [sasiCategoryFilter, setSasiCategoryFilter] = useState('all')
   const [sasiSearchQuery, setSasiSearchQuery] = useState('')
   const [sasiPrayedCheckedIds, setSasiPrayedCheckedIds] = useState(() => {
@@ -1944,9 +1946,18 @@ function normalizeMemberHierarchy(m) {
     })
   }
 
-  // 사시예불 축원 명부 필터링
+  // 사시예불 축원 명부 필터링 (기도유형 + 분야 + 검색어)
   const filteredSasiPrayers = useMemo(() => {
     let list = activeSasiPrayers || []
+    if (sasiPrayerTypeTab !== 'all') {
+      if (sasiPrayerTypeTab === 'indeung_1yr') {
+        list = list.filter((p) => p.prayer_type === 'indeung_1yr' || p.wish_category?.includes('인등'))
+      } else if (sasiPrayerTypeTab === 'prayer_100d') {
+        list = list.filter((p) => p.prayer_type === 'prayer_100d' || p.wish_category?.includes('100일'))
+      } else if (sasiPrayerTypeTab === 'lantern') {
+        list = list.filter((p) => !p.prayer_type || p.prayer_type === 'lantern')
+      }
+    }
     if (sasiCategoryFilter !== 'all') {
       list = list.filter((p) => p.wish_category === sasiCategoryFilter)
     }
@@ -1960,7 +1971,7 @@ function normalizeMemberHierarchy(m) {
       })
     }
     return list
-  }, [activeSasiPrayers, sasiCategoryFilter, sasiSearchQuery])
+  }, [activeSasiPrayers, sasiPrayerTypeTab, sasiCategoryFilter, sasiSearchQuery])
 
   // 10만 신도 대비 통합 검색 & 필터링 & 정렬
   const filteredAdminMembers = useMemo(() => {
@@ -3266,9 +3277,11 @@ function normalizeMemberHierarchy(m) {
   const isAdmin = isMasterOrTempleAdmin
 
   return (
-    <div className="min-h-screen bg-[#12100E] flex justify-center selection:bg-[#C59B27] selection:text-white w-full max-w-full overflow-x-clip">
-      {/* 모바일 앱 컨테이너 (최대 480px 중앙 정렬) */}
-      <div className="w-full max-w-[480px] min-h-screen bg-[#FAF8F5] text-[#231F1C] flex flex-col relative shadow-[0_0_50px_rgba(0,0,0,0.8)] border-x border-[#E8DFD1]/30 pb-24 overflow-x-clip">
+    <div className={`min-h-screen bg-[#12100E] flex justify-center selection:bg-[#C59B27] selection:text-white w-full max-w-full overflow-x-clip ${activeTab === 'admin' ? 'p-0 sm:p-4' : ''}`}>
+      {/* 모바일 앱 컨테이너 (일반 탭: 480px, 관리자 탭: PC에서 최대 1280px 와이드 데스크톱 뷰) */}
+      <div className={`w-full min-h-screen bg-[#FAF8F5] text-[#231F1C] flex flex-col relative shadow-[0_0_50px_rgba(0,0,0,0.8)] border-x border-[#E8DFD1]/30 pb-24 overflow-x-clip transition-all duration-300 ${
+        activeTab === 'admin' ? 'max-w-7xl sm:rounded-3xl sm:border border-[#C59B27]/40 sm:my-2' : 'max-w-[480px]'
+      }`}>
         
         {/* 상단 고정 헤더: 제주 소원사 공식 모바일 법당 */}
         <header className="sticky top-0 z-40 bg-[#1B1815]/95 backdrop-blur-md text-[#FAF8F5] px-3.5 py-3 border-b-2 border-[#C59B27]/50 flex items-center justify-between gap-2 shadow-md">
@@ -9941,11 +9954,42 @@ function normalizeMemberHierarchy(m) {
                     )}
                   </div>
 
+                  {/* 기도 종류별 탭 (1일 소원등 / 100일 특별기도 / 1년 가족인등 명패) */}
+                  <div className="flex items-center gap-1.5 w-full border-b border-white/15 pb-2">
+                    <span className="text-[10px] text-[#A89D8E] font-bold shrink-0">출력 서식:</span>
+                    <div className="flex items-center gap-1 flex-wrap">
+                      {[
+                        { id: 'all', label: `통합 명부 (${activeSasiPrayers.length})` },
+                        { id: 'lantern', label: '🪔 1일 소원등 축원' },
+                        { id: 'prayer_100d', label: '📜 100일 특별기도 축원' },
+                        { id: 'indeung_1yr', label: '🏮 1년 가족인등 명패 서식' },
+                      ].map((tab) => (
+                        <button
+                          key={tab.id}
+                          type="button"
+                          onClick={() => {
+                            setSasiPrayerTypeTab(tab.id)
+                            setSasiCategoryFilter('all')
+                          }}
+                          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 ${
+                            sasiPrayerTypeTab === tab.id
+                              ? 'bg-[#F5D061] text-[#1B1815] shadow-sm'
+                              : 'bg-white/10 text-[#D6CEC2] hover:bg-white/20'
+                          }`}
+                        >
+                          {tab.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                   <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 text-[11px]">
                     {[
-                      { id: 'all', label: `전체 (${activeSasiPrayers.length})` },
+                      { id: 'all', label: '전체 분야' },
                       { id: '가족건강', label: '가족건강' },
                       { id: '사업번창', label: '사업번창' },
+                      { id: '대웅전 1년 인등(가족등)', label: '1년 인등' },
+                      { id: '100일 소원성취 특별기도', label: '100일 기도' },
                       { id: '생전예수재(황금위패)', label: '생전예수재' },
                       { id: '조상영구위패(흑색)', label: '조상위패' },
                     ].map((tab) => (
@@ -9955,7 +9999,7 @@ function normalizeMemberHierarchy(m) {
                         onClick={() => setSasiCategoryFilter(tab.id)}
                         className={`px-2 py-1 rounded-md font-bold whitespace-nowrap transition ${
                           sasiCategoryFilter === tab.id
-                            ? 'bg-[#F5D061] text-[#1B1815]'
+                            ? 'bg-[#C59B27] text-white'
                             : 'bg-white/10 text-[#D6CEC2] hover:bg-white/20'
                         }`}
                       >
@@ -9995,10 +10039,94 @@ function normalizeMemberHierarchy(m) {
                   <span className="font-bold text-[#111111] shrink-0 ml-2">대웅전 불단 봉안용</span>
                 </div>
 
-                {/* 축원 대상자 테이블 */}
+                {/* 축원 대상자 테이블 / 1년 인등 전통 가족 명패 서식 분기 렌더링 */}
                 {filteredSasiPrayers.length === 0 ? (
                   <div className="p-8 text-center text-sm text-[#777777] font-serif-kr border border-dashed border-[#CCCCCC] rounded-xl">
                     현재 조건에 해당하는 사시예불 접수 내역이 없습니다.
+                  </div>
+                ) : sasiPrayerTypeTab === 'indeung_1yr' ? (
+                  /* ======================================================== */
+                  /* 🏮 1년 인등(가족등) 전통 가족 축원 명패 서식 (한 페이지 2~3가족) */
+                  /* ======================================================== */
+                  <div className="space-y-4">
+                    {filteredSasiPrayers.map((p, idx) => {
+                      const member = members.find((m) => m.code === p.member_code) || null
+                      const familyList = member?.family_members && member.family_members.length > 0
+                        ? member.family_members
+                        : [
+                            {
+                              id: 'fm-default',
+                              relation: '세주(가장)',
+                              name: p.believer_name?.split(' ')[0] || '불자',
+                              birth_year: member?.birth_date?.slice(0, 4) || '1964',
+                              lunar_solar: member?.lunar_solar || '음력',
+                              ganji: computeZodiacAndGanji(member?.birth_date?.slice(0, 4) || '1964').ganji,
+                              animal: computeZodiacAndGanji(member?.birth_date?.slice(0, 4) || '1964').animal,
+                              dharma_name: member?.dharma_name || '',
+                            },
+                          ]
+
+                      return (
+                        <div
+                          key={p.id || idx}
+                          className="border-2 border-[#C59B27] p-4 sm:p-5 rounded-2xl bg-[#FAF6EE] relative shadow-sm page-break-inside-avoid"
+                        >
+                          <div className="flex items-center justify-between border-b border-[#D5C59B] pb-2 mb-3">
+                            <div className="flex items-center gap-2">
+                              <span className="text-base text-[#8A6510]">🏮</span>
+                              <span className="font-serif-kr font-extrabold text-sm sm:text-base text-[#241E17]">
+                                제주 소원사 대웅전 1년 인등(가족등) 봉안 명패 #{idx + 1}
+                              </span>
+                            </div>
+                            <span className="px-2.5 py-0.5 rounded-full bg-[#EFE3C3] text-[#7A5B0B] text-xs font-bold border border-[#D5C59B]">
+                              365일 상시 축원등
+                            </span>
+                          </div>
+
+                          {/* 거주지 주소 */}
+                          <div className="text-xs text-[#554E45] font-serif-kr mb-3 flex items-center gap-2">
+                            <span className="font-bold text-[#8A6510]">주소:</span>
+                            <span>{member?.address || '제주특별자치도 제주시 (소원사 도량)'}</span>
+                          </div>
+
+                          {/* 가족 사주 그리드 (세주, 배우자, 자녀 나란히 정렬) */}
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-3.5">
+                            {familyList.map((f, fIdx) => (
+                              <div
+                                key={f.id || fIdx}
+                                className="p-3 rounded-xl bg-white border border-[#DDD3C1] text-xs font-serif-kr space-y-1"
+                              >
+                                <div className="flex items-center justify-between">
+                                  <span className="font-bold text-[#8A6510] text-[11px] px-1.5 py-0.2 rounded bg-[#FAF3DF]">
+                                    {f.relation}
+                                  </span>
+                                  <span className="text-[10.5px] text-[#777777]">
+                                    {f.lunar_solar || '음력'}
+                                  </span>
+                                </div>
+                                <div className="text-sm font-black text-[#1B1815] pt-0.5">
+                                  {f.name}
+                                  {f.dharma_name && (
+                                    <span className="text-xs text-[#8A6510] font-normal ml-1">
+                                      ({f.dharma_name})
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="text-[11px] text-[#554E45]">
+                                  {f.ganji ? `${f.ganji} (${f.animal})` : `${f.birth_year || '연도'}생`}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* 가내 길상 발원문 */}
+                          <div className="p-2.5 rounded-xl bg-[#F0EAE1] border border-[#DDD3C1] text-xs text-[#3A3228] font-serif-kr leading-relaxed flex items-start gap-2">
+                            <span className="font-bold text-[#8A6510] shrink-0">가내 길상 발원:</span>
+                            <span>“{p.wish_text || '사시사철 온 가족 무병장수하고 가업이 날로 번창하기를 지심 축원합니다.'}”</span>
+                          </div>
+                        </div>
+                      )
+                    })}
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
@@ -10053,7 +10181,7 @@ function normalizeMemberHierarchy(m) {
                                 “{p.wish_text}”
                               </td>
                               <td className="p-2.5 text-center font-bold border-r border-[#DDDDDD] text-[#B8860B]">
-                                D-{p.daysLeft}
+                                {p.duration_days ? `${p.duration_days}일` : `D-${p.daysLeft}`}
                               </td>
                               <td className="p-2.5 text-center text-[11px] text-[#666666] whitespace-nowrap">
                                 {formatPrayerDate(p.created_at)}

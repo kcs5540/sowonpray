@@ -32,6 +32,30 @@ export function formatPhone11(input = '') {
 // 기본 사찰 식별자 (제주 소원사 단독 모드, 향후 전국 사찰 확장 호환)
 export const DEFAULT_TEMPLE_ID = 'sowonsa'
 
+// 천간(10간) 및 지지(12지) 배열
+const CHEONGAN = ['갑', '을', '병', '정', '무', '기', '경', '신', '임', '계']
+const JIJI = ['자', '축', '인', '묘', '진', '사', '오', '미', '신', '유', '술', '해']
+const ZODIAC_ANIMALS = ['쥐띠', '소띠', '호랑이띠', '토끼띠', '용띠', '뱀띠', '말띠', '양띠', '원숭이띠', '닭띠', '개띠', '돼지띠']
+
+// 태어난 연도로부터 사주 육십간지(예: 1962년 -> 임인생) 및 12간지 띠(호랑이띠) 자동 계산 엔진
+export function computeZodiacAndGanji(birthYearInput) {
+  if (!birthYearInput) return { ganji: '', animal: '', label: '' }
+  const match = String(birthYearInput).match(/\d{4}/)
+  if (!match) return { ganji: '', animal: '', label: '' }
+  const year = parseInt(match[0], 10)
+  if (isNaN(year) || year < 1900 || year > 2100) return { ganji: '', animal: '', label: '' }
+
+  // 서기 4년이 갑자년(甲子年) 기준
+  const ganIndex = (year - 4) % 10
+  const jiIndex = (year - 4) % 12
+  const gan = CHEONGAN[(ganIndex + 10) % 10]
+  const ji = JIJI[(jiIndex + 12) % 12]
+  const animal = ZODIAC_ANIMALS[(jiIndex + 12) % 12]
+  const ganji = `${gan}${ji}생`
+  const label = `${ganji} (${animal})`
+  return { ganji, animal, label }
+}
+
 // 통합 회원 초기 시드 데이터 (총괄대표 + 소원사본부 + 포교사 + 일반신도)
 // 기본 간편 비밀번호(password_pin): '0000'
 export const INITIAL_MEMBERS = [
@@ -244,8 +268,43 @@ export const INITIAL_MEMBERS = [
     dharma_name: '무량화',
     birth_date: '1964-02-19',
     lunar_solar: '음력',
-    address: '제주특별자치도 제주시 애월읍',
+    address: '제주특별자치도 제주시 애월읍 애월로 12',
     family_memo: '배우자 김성수(59년생), 장녀 김미영(90년생) 건강 발원',
+    family_members: [
+      {
+        id: 'fm-1',
+        relation: '세주(가장)',
+        name: '김성수',
+        birth_year: '1959',
+        birth_date: '1959-05-14',
+        lunar_solar: '음력',
+        ganji: '기해생',
+        animal: '돼지띠',
+        dharma_name: '',
+      },
+      {
+        id: 'fm-2',
+        relation: '배우자',
+        name: '이정숙',
+        birth_year: '1964',
+        birth_date: '1964-02-19',
+        lunar_solar: '음력',
+        ganji: '갑진생',
+        animal: '용띠',
+        dharma_name: '무량화',
+      },
+      {
+        id: 'fm-3',
+        relation: '장녀',
+        name: '김미영',
+        birth_year: '1990',
+        birth_date: '1990-11-03',
+        lunar_solar: '양력',
+        ganji: '경오생',
+        animal: '말띠',
+        dharma_name: '',
+      },
+    ],
     role: 'believer',
     parent_code: '53872248',
     bank_name: '',
@@ -338,10 +397,48 @@ export const INITIAL_PRAYERS = [
     believer_phone: '010-9120-4412',
     agent_code: '88321920',
     wish_category: '조상영구위패(흑색)',
+    prayer_type: 'wipae',
+    duration_days: null,
     wish_text: '선망 부모님 극락왕생을 발원하며 소원사 위패전에 영구 봉안 희망합니다.',
     status: 'consulting',
     prayed_at: '종무소 봉안 상담 예약됨',
     created_at: '2026-10-18 16:40',
+  },
+  {
+    id: 'p-106',
+    temple_id: 'sowonsa',
+    member_code: '82341088',
+    believer_name: '이정숙 (무량화)',
+    believer_phone: '010-8234-1088',
+    agent_code: '53872248',
+    wish_category: '대웅전 1년 인등(가족등)',
+    prayer_type: 'indeung_1yr',
+    duration_days: 365,
+    start_date: '2026-10-01',
+    end_date: '2027-09-30',
+    family_members_count: 3,
+    wish_text: '대웅전 부처님 전에 1년 가족 인등을 정성껏 밝히오니, 온 가족 무병장수와 사업번창을 발원합니다.',
+    status: 'prayed',
+    prayed_at: '대웅전 1년 인등 점등 및 365일 사시예불 축원중',
+    created_at: '2026-10-01 09:00',
+  },
+  {
+    id: 'p-107',
+    temple_id: 'sowonsa',
+    member_code: '77123301',
+    believer_name: '강무량 (무량수)',
+    believer_phone: '010-7712-3301',
+    agent_code: '33065540',
+    wish_category: '100일 소원성취 특별기도',
+    prayer_type: 'prayer_100d',
+    duration_days: 100,
+    start_date: '2026-10-15',
+    end_date: '2027-01-22',
+    family_members_count: 1,
+    wish_text: '자녀 대입 수능 고득점 및 원하는 대학 원만 합격을 지심으로 발원합니다.',
+    status: 'prayed',
+    prayed_at: '대웅전 100일 특별기도 입재 (D-87일 정진중)',
+    created_at: '2026-10-15 10:00',
   },
 ]
 
