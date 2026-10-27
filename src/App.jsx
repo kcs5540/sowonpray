@@ -260,6 +260,16 @@ function OrganizationTreeView({
     setExpandedCodes(new Set())
   }
 
+  const isAllExpanded = expandedCodes.size >= Math.max(1, Math.floor(members.length / 3))
+
+  const handleToggleAll = () => {
+    if (isAllExpanded) {
+      collapseAll()
+    } else {
+      expandAll()
+    }
+  }
+
   // 자식 노드 맵 (parent_code -> children[])
   const childrenMap = useMemo(() => {
     const map = {}
@@ -384,22 +394,13 @@ function OrganizationTreeView({
             {title}
           </h4>
         </div>
-        <div className="flex items-center gap-1 shrink-0">
-          <button
-            type="button"
-            onClick={expandAll}
-            className="px-2 py-1 rounded bg-white/10 hover:bg-white/15 text-[10px] text-[#E8DFD1] transition whitespace-nowrap"
-          >
-            모두 펼치기
-          </button>
-          <button
-            type="button"
-            onClick={collapseAll}
-            className="px-2 py-1 rounded bg-white/10 hover:bg-white/15 text-[10px] text-[#E8DFD1] transition whitespace-nowrap"
-          >
-            모두 접기
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={handleToggleAll}
+          className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/15 border border-white/15 text-[11px] font-semibold text-[#F5D061] transition whitespace-nowrap shrink-0 flex items-center gap-1 active:scale-95"
+        >
+          <span>{isAllExpanded ? '모두 접기 ▲' : '모두 펼치기 ▼'}</span>
+        </button>
       </div>
 
       {/* 검색창 */}
