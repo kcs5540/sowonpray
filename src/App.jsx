@@ -5151,40 +5151,25 @@ function normalizeMemberHierarchy(m) {
               </button>
             </form>
 
-            {/* 🪔 [핵심 불사 연계] 365일 꺼지지 않는 대웅전 1년 인등(가족등) 불사 상설 골드 배너 */}
-            <section
+            {/* 🪔 365일 1년 인등 불사 초슬림 심플 바 */}
+            <div
               onClick={() => {
                 setBulsaCategory('기도불사')
                 setWishCategory('대웅전 1년 인등(가족등)')
                 setNavTab('bulsa')
                 window.scrollTo({ top: 0, behavior: 'smooth' })
               }}
-              className="rounded-2xl p-4 sm:p-4.5 bg-gradient-to-r from-[#241E17] via-[#332717] to-[#1C160F] text-white border-2 border-[#D4AF37] shadow-lg cursor-pointer hover:border-[#F5D061] transition group relative overflow-hidden"
+              className="py-3 px-4 rounded-xl bg-[#FAF6EC] border border-[#D5C59B] text-[#7A5B10] hover:bg-[#F5EDD8] cursor-pointer transition flex items-center justify-between text-xs font-bold shadow-xs active:scale-98"
             >
-              <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#F5D061]/10 rounded-full blur-xl pointer-events-none" />
-              <div className="relative z-10 flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <span className="px-2 py-0.5 rounded-full bg-[#D4AF37] text-[#1B1815] text-[10px] font-black">
-                      365일 상시 축원
-                    </span>
-                    <span className="text-[11px] text-[#F5D061] font-bold">
-                      제주 소원사 대웅전 불사
-                    </span>
-                  </div>
-                  <h4 className="font-serif-kr text-sm sm:text-base font-bold text-[#FFF3CC] group-hover:text-white transition">
-                    🪔 365일 꺼지지 않는 1년 가족 인등 불사
-                  </h4>
-                  <p className="text-[11px] text-[#CFC5B6] mt-0.5 leading-snug">
-                    매일 켜는 정성을 넘어, 부처님 전에 1년 내내 우리 가족 평생 광명을 밝히세요.
-                  </p>
-                </div>
-                <div className="shrink-0 flex items-center gap-1 px-3 py-2 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-black text-xs shadow group-hover:scale-105 transition">
-                  <span>동참하기</span>
-                  <ChevronRight className="w-4 h-4" />
-                </div>
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="text-base shrink-0">🪔</span>
+                <span className="truncate">365일 대웅전 1년 인등(가족등) 불사 안내</span>
               </div>
-            </section>
+              <span className="text-[11px] text-[#A67C1E] shrink-0 flex items-center font-extrabold ml-1">
+                <span>자세히 보기</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </span>
+            </div>
 
             {/* 접수된 전체 축원 리스트 */}
             <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8]">
