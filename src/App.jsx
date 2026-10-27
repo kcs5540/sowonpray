@@ -4590,7 +4590,7 @@ function normalizeMemberHierarchy(m) {
                   className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-extrabold text-xs sm:text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-1.5 whitespace-nowrap"
                 >
                   <Award className="w-4 h-4 shrink-0" />
-                  <span>[{wishCategory}] 동참 상담 신청 접수하기</span>
+                  <span>[{wishCategory}] 무료상담 신청하기</span>
                 </button>
                 <p className="text-center text-[11px] text-[#7A7065] font-medium break-keep">
                   ※ 접수 완료 시 종무소에서 안내 전화를 드리며, 상담 후 편안하게 동참을 진행하실 수 있습니다.
