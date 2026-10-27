@@ -8230,7 +8230,132 @@ function normalizeMemberHierarchy(m) {
 
               {/* 하단 2단 액션 버튼 (실물 이미지 저장/공유 + 카카오톡 피드 카드 전송) */}
               <div className="mt-3.5 space-y-2">
-                {/* 1. 실물 공덕장 원본 형태 그대로 이미지 저장 및 공유 */}
+                {/* 1. 이 형태 그대로 카카오톡 카드 전송 (공덕장 실물 사진 + 링크 버튼 동시 전송) */}
+                <button
+                  type="button"
+                  disabled={isCapturingCert}
+                  onClick={async () => {
+                    playMoktakSound()
+                    if (!meritCertRef.current) return
+                    setIsCapturingCert(true)
+                    const believer = currentUser?.name || lanternData?.believer_name || '소원사 정진 불자'
+                    const sutraTitle = currentSutra?.title || '천수경 정구업진언'
+                    const sutraText = currentSutra?.text || '수리수리 마하수리 수수리 사바하'
+                    const code = currentUser?.code || referralCode || '33065540'
+                    const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
+                    const shareUrl = `${origin}/?ref=${code}&tab=sutra`
+                    const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
+
+                    try {
+                      // 1) 화면 공덕장 캡처
+                      const canvas = await html2canvas(meritCertRef.current, {
+                        scale: 2,
+                        backgroundColor: '#FAF6EE',
+                        useCORS: true,
+                        logging: false,
+                      })
+
+                      const fileName = `sowonsa_merit_cert_${Date.now()}.png`
+
+                      canvas.toBlob(async (blob) => {
+                        if (!blob) {
+                          setIsCapturingCert(false)
+                          return
+                        }
+
+                        // 2) 카카오 SDK가 사용 가능한 경우 카카오 서버로 이미지 즉시 업로드 후 피드 카드 전송
+                        if (typeof window !== 'undefined' && window.Kakao) {
+                          try {
+                            if (!window.Kakao.isInitialized()) {
+                              window.Kakao.init(kakaoKey)
+                            }
+                            if (window.Kakao.isInitialized() && window.Kakao.Share && window.Kakao.Share.uploadImage) {
+                              const file = new File([blob], fileName, { type: 'image/png' })
+                              const dataTransfer = new DataTransfer()
+                              dataTransfer.items.add(file)
+                              const fileList = dataTransfer.files
+
+                              // 카카오 이미지 서버(KAGE)에 공덕장 실물 사진 즉시 업로드
+                              const uploadRes = await window.Kakao.Share.uploadImage({ file: fileList })
+                              const kakaoImgUrl = uploadRes?.infos?.original?.url || uploadRes?.infos?.[0]?.url
+
+                              if (kakaoImgUrl) {
+                                window.Kakao.Share.sendDefault({
+                                  objectType: 'feed',
+                                  content: {
+                                    title: `📜 제주 소원사 사경 회향 공덕장`,
+                                    description: `"${believer} 불자님께서 '${sutraTitle}' 사경을 정성으로 원만히 회향하셨습니다."\n\n"${sutraText}"`,
+                                    imageUrl: kakaoImgUrl,
+                                    imageWidth: canvas.width,
+                                    imageHeight: canvas.height,
+                                    link: {
+                                      mobileWebUrl: shareUrl,
+                                      webUrl: shareUrl,
+                                    },
+                                  },
+                                  buttons: [
+                                    {
+                                      title: '✍️ 나도 마음 사경 동참하기',
+                                      link: {
+                                        mobileWebUrl: shareUrl,
+                                        webUrl: shareUrl,
+                                      },
+                                    },
+                                    {
+                                      title: '🪔 무료 소원등 켜기',
+                                      link: {
+                                        mobileWebUrl: `${origin}/?ref=${code}&tab=lantern`,
+                                        webUrl: `${origin}/?ref=${code}&tab=lantern`,
+                                      },
+                                    },
+                                  ],
+                                })
+                                setIsCapturingCert(false)
+                                return
+                              }
+                            }
+                          } catch (kakaoErr) {
+                            console.warn('Kakao upload & share error, fallback to native:', kakaoErr)
+                          }
+                        }
+
+                        // 3) Web Share API (모바일 OS 공유창) Fallback
+                        const file = new File([blob], `제주소원사_사경회향공덕장_${believer}.png`, { type: 'image/png' })
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                          try {
+                            await navigator.share({
+                              files: [file],
+                              title: '제주 소원사 사경 회향 공덕장',
+                              text: `📜 제주 소원사 [사경 회향 공덕장]\n${believer} 불자님께서 사경 1독을 회향하셨습니다.\n\n🙏 함께 사경하기: ${shareUrl}`,
+                            })
+                            setIsCapturingCert(false)
+                            return
+                          } catch (e) {
+                            // 취소 시 다운로드 진행
+                          }
+                        }
+
+                        // 4) 다운로드 Fallback
+                        const link = document.createElement('a')
+                        link.href = canvas.toDataURL('image/png')
+                        link.download = `제주소원사_사경회향공덕장_${believer}.png`
+                        link.click()
+                        showToast('🖼️ 공덕장 실물 사진이 저장되었습니다. 카카오톡에 전송해 보세요!')
+                        setIsCapturingCert(false)
+                      }, 'image/png')
+                    } catch (err) {
+                      console.error('공덕장 카카오 전송 오류:', err)
+                      showToast('공덕장 카카오 전송 중 오류가 발생했습니다.')
+                      setIsCapturingCert(false)
+                    }
+                  }}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow-md flex items-center justify-center gap-1.5 active:scale-95 transition disabled:opacity-60"
+                >
+                  <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
+                  <span>{isCapturingCert ? '공덕장 카톡 카드 준비 중...' : '💬 이 공덕장 그대로 카톡 보내기 (사진+링크)'}</span>
+                </button>
+
+                {/* 2. 사진 파일로 내 폰 갤러리에 저장 */}
                 <button
                   type="button"
                   disabled={isCapturingCert}
@@ -8247,124 +8372,21 @@ function normalizeMemberHierarchy(m) {
                       })
                       const believer = currentUser?.name || lanternData?.believer_name || '소원사_정진불자'
                       const fileName = `제주소원사_사경회향공덕장_${believer}.png`
-
-                      canvas.toBlob(async (blob) => {
-                        if (!blob) {
-                          setIsCapturingCert(false)
-                          return
-                        }
-                        const file = new File([blob], fileName, { type: 'image/png' })
-
-                        // 모바일 브라우저의 파일 직접 공유 지원 시 (카카오톡, 밴드, 문자 등 이미지 직접 전송)
-                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                          try {
-                            await navigator.share({
-                              files: [file],
-                              title: '제주 소원사 사경 회향 공덕장',
-                              text: `📜 제주 소원사에서 수여된 ${believer} 불자님의 사경 회향 공덕장입니다. 온 가족의 만복과 건강을 축원합니다.`,
-                            })
-                            setIsCapturingCert(false)
-                            return
-                          } catch (e) {
-                            // 사용자가 취소했거나 실패 시 다운로드로 진행
-                          }
-                        }
-
-                        // PC 또는 네이티브 공유 미지원 시 이미지 자동 다운로드
-                        const link = document.createElement('a')
-                        link.href = canvas.toDataURL('image/png')
-                        link.download = fileName
-                        link.click()
-                        showToast('🖼️ 공덕장 실물 이미지가 갤러리/다운로드에 저장되었습니다! 카카오톡에 바로 전송해 보세요.')
-                        setIsCapturingCert(false)
-                      }, 'image/png')
-                    } catch (err) {
-                      console.error('공덕장 캡처 오류:', err)
-                      showToast('공덕장 이미지를 생성하는 중 오류가 발생했습니다.')
+                      const link = document.createElement('a')
+                      link.href = canvas.toDataURL('image/png')
+                      link.download = fileName
+                      link.click()
+                      showToast('💾 공덕장 사진이 갤러리에 저장되었습니다!')
+                    } catch (e) {
+                      showToast('사진 저장 실패')
+                    } finally {
                       setIsCapturingCert(false)
                     }
                   }}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#F5D061] via-[#E5B537] to-[#D4AF37] hover:brightness-105 text-[#2A1E05] font-black text-xs shadow-md flex items-center justify-center gap-1.5 active:scale-95 transition disabled:opacity-60"
+                  className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-[#EAD8B5] border border-[#C59B27]/40 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition disabled:opacity-60"
                 >
-                  <Download className="w-4 h-4 text-[#2A1E05] shrink-0" />
-                  <span>{isCapturingCert ? '공덕장 이미지 생성 중...' : '🖼️ 이 형태 그대로 사진 저장 · 카톡 보내기'}</span>
-                </button>
-
-                {/* 2. 카카오톡 공식 피드 카드 바로가기 초대 링크 발송 */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    playMoktakSound()
-                    const believer = currentUser?.name || lanternData?.believer_name || '소원사 정진 불자'
-                    const sutraTitle = currentSutra?.title || '천수경 정구업진언'
-                    const sutraText = currentSutra?.text || '수리수리 마하수리 수수리 사바하'
-                    const code = currentUser?.code || referralCode || '33065540'
-                    const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
-                    const shareUrl = `${origin}/?ref=${code}&tab=sutra`
-                    const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
-                    const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=3'
-
-                    // 1) 카카오톡 공식 피드 카드 공유
-                    if (typeof window !== 'undefined' && window.Kakao) {
-                      try {
-                        if (!window.Kakao.isInitialized()) {
-                          window.Kakao.init(kakaoKey)
-                        }
-                        if (window.Kakao.isInitialized() && window.Kakao.Share) {
-                          window.Kakao.Share.sendDefault({
-                            objectType: 'feed',
-                            content: {
-                              title: `📜 제주 소원사 [사경 회향 공덕장]`,
-                              description: `"${believer} 불자님께서 '${sutraTitle}' 사경을 정성으로 원만히 회향하셨습니다."\n\n"${sutraText}"`,
-                              imageUrl: altarImageUrl,
-                              imageWidth: 1024,
-                              imageHeight: 693,
-                              link: {
-                                mobileWebUrl: shareUrl,
-                                webUrl: shareUrl,
-                              },
-                            },
-                            buttons: [
-                              {
-                                title: '✍️ 나도 마음 사경 동참하기',
-                                link: {
-                                  mobileWebUrl: shareUrl,
-                                  webUrl: shareUrl,
-                                },
-                              },
-                              {
-                                title: '🪔 무료 소원등 켜기',
-                                link: {
-                                  mobileWebUrl: `${origin}/?ref=${code}&tab=lantern`,
-                                  webUrl: `${origin}/?ref=${code}&tab=lantern`,
-                                },
-                              },
-                            ],
-                          })
-                          return
-                        }
-                      } catch (err) {
-                        console.warn('Kakao sutra cert share fallback:', err)
-                      }
-                    }
-
-                    // 2) 일반 브라우저 공유 / 클립보드 복사 fallback
-                    const shareMsg = `📜 [제주 소원사 사경 회향 공덕장]\n\n${believer} 불자님께서 부처님의 거룩한 말씀 "${sutraTitle}" 사경 1독을 지극한 정성으로 원만히 회향하셨습니다.\n\n"${sutraText}"\n\n"이 거룩한 사경 공덕이 온 가족과 지인 모두의 건강과 소원성취로 회향되기를 발원합니다."\n\n🙏 함께 사경하고 마음의 평안 찾기:\n${shareUrl}`
-                    if (navigator.share) {
-                      navigator.share({
-                        title: '제주 소원사 사경 회향 공덕장',
-                        text: shareMsg,
-                        url: shareUrl,
-                      }).catch(() => {})
-                    } else if (navigator.clipboard) {
-                      navigator.clipboard.writeText(shareMsg)
-                      showToast('📋 사경 회향 공덕장 메시지가 복사되었습니다! 카카오톡 가족·지인방에 전해보세요.')
-                    }
-                  }}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow flex items-center justify-center gap-1.5 active:scale-95 transition"
-                >
-                  <Share2 className="w-3.5 h-3.5 text-[#3C1E1E] shrink-0" />
-                  <span>카톡 바로가기 카드 전송 (추천인 링크 포함)</span>
+                  <Download className="w-3.5 h-3.5 text-[#F5D061] shrink-0" />
+                  <span>내 휴대폰 갤러리에 사진 파일로 저장</span>
                 </button>
 
                 <button
