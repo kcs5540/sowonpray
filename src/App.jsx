@@ -5046,7 +5046,7 @@ function normalizeMemberHierarchy(m) {
               <div className="border-b border-[#EFE9DD] pb-3 flex flex-wrap items-center justify-between gap-2">
                 <div className="min-w-0">
                   <span className="block text-[10.5px] font-bold text-[#9A7418]">
-                    100% 무료 매일 사시예불 축원
+                    매일 올리는 사시예불 축원
                   </span>
                   <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] mt-0.5 break-keep">
                     대웅전 소원등 발원문 접수
