@@ -2266,6 +2266,35 @@ function normalizeMemberHierarchy(m) {
     return members.filter((m) => downlineCodes.has(m.code))
   }, [members, activeAgent])
 
+  // 현재 로그인 회원(currentUser)의 산하 인연 신도/위원 목록 및 통계 (실시간 동적 자동 집계)
+  const currentUserAffiliatedMembers = useMemo(() => {
+    if (!members || members.length === 0 || !currentUser?.code) return []
+    const downlineCodes = new Set()
+    let queue = [currentUser.code]
+    while (queue.length > 0) {
+      const parentCode = queue.shift()
+      members.forEach((m) => {
+        if (m.parent_code === parentCode && !downlineCodes.has(m.code) && m.code !== currentUser.code && m.role !== 'temple_admin') {
+          downlineCodes.add(m.code)
+          queue.push(m.code)
+        }
+      })
+    }
+    return members.filter((m) => downlineCodes.has(m.code))
+  }, [members, currentUser])
+
+  // 현재 회원의 산하 인연 신도수 (동적 계산 및 DB값 중 최대치 보장)
+  const currentUserBelieversCount = useMemo(() => {
+    const dynamicCount = currentUserAffiliatedMembers.filter((m) => m.role === 'believer').length
+    return Math.max(dynamicCount, Number(currentUser?.believers_count) || 0)
+  }, [currentUserAffiliatedMembers, currentUser])
+
+  // 현재 회원의 산하 위패 봉안수 (동적 계산 및 DB값 중 최대치 보장)
+  const currentUserWipaeCount = useMemo(() => {
+    const dynamicWipae = currentUserAffiliatedMembers.reduce((sum, m) => sum + (Number(m.wipae_count) || 0), 0)
+    return Math.max(dynamicWipae, Number(currentUser?.wipae_count) || 0)
+  }, [currentUserAffiliatedMembers, currentUser])
+
   // 산하 인연 회원 실시간 검색 & 필터링
   const filteredAffiliatedMembers = useMemo(() => {
     let list = myAffiliatedMembers || []
@@ -6543,7 +6572,7 @@ function normalizeMemberHierarchy(m) {
                               포교 전산 관제실
                             </span>
                             <span className="text-[10px] sm:text-[10.5px] font-medium text-[#4A3D18] whitespace-nowrap block mt-0.5">
-                              인연 {currentUser.believers_count || 0}명 · 위패 {currentUser.wipae_count || 0}기
+                              인연 {currentUserBelieversCount}명 · 위패 {currentUserWipaeCount}기
                             </span>
                           </div>
                         </div>
@@ -6705,19 +6734,19 @@ function normalizeMemberHierarchy(m) {
                       <div className="bg-white/5 border border-white/10 rounded-2xl p-2.5 text-center">
                         <div className="text-[10.5px] text-[#BFB6AA]">인연 신도수</div>
                         <div className="text-base sm:text-lg font-extrabold text-[#F5D061] mt-0.5">
-                          {currentUser.believers_count || 0}명
+                          {currentUserBelieversCount}명
                         </div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-2xl p-2.5 text-center">
                         <div className="text-[10.5px] text-[#BFB6AA]">위패/불사 봉안</div>
                         <div className="text-base sm:text-lg font-extrabold text-white mt-0.5">
-                          {currentUser.wipae_count || 0}기
+                          {currentUserWipaeCount}기
                         </div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-2xl p-2.5 text-center">
                         <div className="text-[10.5px] text-[#BFB6AA]">포교 요율</div>
                         <div className="text-base sm:text-lg font-extrabold text-emerald-400 mt-0.5">
-                          {currentUser.role === 'committee_member' ? '30%' : '40%'}
+                          {currentUser.role === 'committee_member' ? '30%' : currentUser.role === 'master' ? '50%' : '40%'}
                         </div>
                       </div>
                     </div>

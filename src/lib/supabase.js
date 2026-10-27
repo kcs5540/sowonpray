@@ -52,7 +52,7 @@ export const INITIAL_MEMBERS = [
     bank_account: '301-0000-0000-01',
     account_holder: '김철수',
     merit_count: 108,
-    believers_count: 0,
+    believers_count: 16,
     wipae_count: 0,
     extra_data: {},
   },
