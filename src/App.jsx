@@ -5049,7 +5049,7 @@ function normalizeMemberHierarchy(m) {
                     매일 올리는 사시예불 축원
                   </span>
                   <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] mt-0.5 break-keep">
-                    대웅전 소원등 발원문 접수
+                    대웅전 소원등 신청
                   </h3>
                 </div>
                 {currentUser && (
