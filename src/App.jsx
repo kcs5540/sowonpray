@@ -3008,6 +3008,78 @@ function normalizeMemberHierarchy(m) {
     }
   }
 
+  // 오늘의 부처님 말씀 카카오톡 피드 카드 공유 (법공양 및 추천인 결속)
+  const handleShareDailyQuote = (quote) => {
+    playMoktakSound()
+    const code = currentUser?.code || referralCode || '33065540'
+    const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
+    const shareUrl = `${origin}/?ref=${code}&tab=home`
+    const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
+    const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=3'
+
+    // 1) Kakao JavaScript SDK 정식 피드 카드 전송
+    if (typeof window !== 'undefined' && window.Kakao) {
+      try {
+        if (!window.Kakao.isInitialized()) {
+          window.Kakao.init(kakaoKey)
+        }
+        if (window.Kakao.isInitialized() && window.Kakao.Share) {
+          window.Kakao.Share.sendDefault({
+            objectType: 'feed',
+            content: {
+              title: '🪷 제주 소원사 오늘의 부처님 말씀',
+              description: `"${quote.verse}"\n— ${quote.source}`,
+              imageUrl: altarImageUrl,
+              imageWidth: 1024,
+              imageHeight: 693,
+              link: {
+                mobileWebUrl: shareUrl,
+                webUrl: shareUrl,
+              },
+            },
+            buttons: [
+              {
+                title: '📖 오늘의 법문 마주하기',
+                link: {
+                  mobileWebUrl: shareUrl,
+                  webUrl: shareUrl,
+                },
+              },
+              {
+                title: '🪔 무료 소원등 켜기',
+                link: {
+                  mobileWebUrl: `${origin}/?ref=${code}&tab=lantern`,
+                  webUrl: `${origin}/?ref=${code}&tab=lantern`,
+                },
+              },
+            ],
+          })
+          return
+        }
+      } catch (err) {
+        console.warn('Kakao daily quote share fallback:', err)
+      }
+    }
+
+    // 2) 브라우저 네이티브 공유 / 복사 fallback
+    const shareText = `📿 [제주 소원사 오늘의 부처님 말씀]\n\n"${quote.verse}"\n— ${quote.source}\n\n💡 뜻풀이: ${quote.commentary}\n\n🙏 매일 아침 함께하는 모바일 법당:\n${shareUrl}`
+    if (navigator.share) {
+      navigator.share({
+        title: '제주 소원사 오늘의 부처님 말씀',
+        text: shareText,
+        url: shareUrl,
+      }).catch((err) => {
+        if (err?.name !== 'AbortError') {
+          navigator.clipboard?.writeText(shareText)
+          showToast('📋 부처님 말씀이 복사되었습니다. 카카오톡으로 전해보세요!')
+        }
+      })
+    } else {
+      navigator.clipboard?.writeText(shareText)
+      showToast('📋 부처님 말씀이 복사되었습니다. 카카오톡으로 전해보세요!')
+    }
+  }
+
   // QR코드 모달/펼침 상태
   const [showQrCode, setShowQrCode] = useState(null)
   const [qrDataUrl, setQrDataUrl] = useState('')
@@ -3292,25 +3364,13 @@ function normalizeMemberHierarchy(m) {
                   >
                     <Volume2 className="w-3.5 h-3.5" />
                   </button>
-                  {/* 말씀 카톡/지인 법공양 공유 버튼 */}
+                  {/* 말씀 카카오톡 카드 공유 (법공양) 버튼 */}
                   <button
                     type="button"
-                    onClick={() => {
-                      const shareText = `📿 [제주 소원사 오늘의 부처님 말씀]\n\n"${currentQuote.verse}"\n- ${currentQuote.source}\n\n뜻풀이: ${currentQuote.commentary}\n\n🙏 매일 아침 함께하는 모바일 법당:\nhttps://sowonpray.vercel.app`
-                      if (navigator.share) {
-                        navigator.share({
-                          title: '제주 소원사 오늘의 부처님 말씀',
-                          text: shareText,
-                          url: 'https://sowonpray.vercel.app',
-                        }).catch(() => {})
-                      } else if (navigator.clipboard) {
-                        navigator.clipboard.writeText(shareText)
-                        showToast('📋 부처님 말씀이 복사되었습니다. 카카오톡으로 지인에게 전해보세요!')
-                      }
-                    }}
-                    title="오늘의 부처님 말씀 지인에게 전하기 (법공양)"
-                    aria-label="말씀 공유하기"
-                    className="p-1.5 rounded-full border border-[#E5D399] bg-[#FAF3DF] text-[#9A7418] hover:bg-[#F3E7C4] hover:text-[#7A5B0B] transition flex items-center justify-center shrink-0 active:scale-95"
+                    onClick={() => handleShareDailyQuote(currentQuote)}
+                    title="오늘의 부처님 말씀 카카오톡 카드 전송 (법공양)"
+                    aria-label="말씀 카카오톡 카드 공유하기"
+                    className="p-1.5 rounded-full border border-[#E5D399] bg-[#FAF3DF] text-[#9A7418] hover:bg-[#F3E7C4] hover:text-[#7A5B0B] transition flex items-center justify-center shrink-0 active:scale-95 shadow-xs"
                   >
                     <Share2 className="w-3.5 h-3.5" />
                   </button>
