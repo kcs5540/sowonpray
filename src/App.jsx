@@ -4797,7 +4797,7 @@ function normalizeMemberHierarchy(m) {
                     <span className="block sm:inline">간절한 소원을 올려보세요</span>
                   </h2>
                   <p className="text-xs text-[#D6CEC2] max-w-xs mx-auto leading-relaxed mb-4 break-keep">
-                    정성으로 발원문을 올리시면 대웅전에 소원등이 밝혀지고 7일간 매일 오전 10시 사시예불에서 축원해 드립니다.
+                    정성으로 발원문을 올리시면 대웅전에 소원등이 밝혀지고 매일 오전 10시 사시예불에서 축원해 드립니다.
                   </p>
                 </>
               )}
@@ -5227,8 +5227,8 @@ function normalizeMemberHierarchy(m) {
                 <Flame className="w-4 h-4 fill-current shrink-0" />
                 <span>
                   {isLanternLit
-                    ? '대웅전에 7일 소원등 새로 켜고 축원 올리기'
-                    : '대웅전 7일 소원등 켜고 사시예불 축원 올리기'}
+                    ? '대웅전에 소원등 새로 켜고 축원 올리기'
+                    : '대웅전 소원등 켜고 사시예불 축원 올리기'}
                 </span>
               </button>
             </form>
@@ -5289,8 +5289,8 @@ function normalizeMemberHierarchy(m) {
                     <ChevronDown className="w-4 h-4 text-[#8C7A5B] transition-transform duration-200 group-open:rotate-180 shrink-0 ml-2" />
                   </summary>
                   <div className="px-3.5 pb-3.5 pt-1 text-xs text-[#575049] leading-relaxed border-t border-[#EFE9DD] break-keep">
-                    발원문을 접수하시면 화면에서 즉시 황금빛 소원등이 밝혀지며, <strong>7일 동안 꺼지지 않고 유지</strong>됩니다. 
-                    화면 상단에서 남은 정진 일수(D-Day)를 실시간으로 확인하실 수 있으며, 7일이 지나 회향된 후에는 새로운 발원으로 언제든 다시 점등하실 수 있습니다.
+                    발원문을 접수하시면 화면에서 즉시 황금빛 소원등이 밝혀지며, <strong>오늘 밤 자정까지 환하게 유지</strong>됩니다. 
+                    소원사는 불자님들의 매일의 정진을 응원하며, <strong>매일 아침 새로운 원력과 발원으로 1일 1소원등</strong>을 무료로 다시 밝히실 수 있습니다.
                   </div>
                 </details>
 
@@ -5307,7 +5307,7 @@ function normalizeMemberHierarchy(m) {
                   </summary>
                   <div className="px-3.5 pb-3.5 pt-1 text-xs text-[#575049] leading-relaxed border-t border-[#EFE9DD] break-keep">
                     네, 그렇습니다. 접수해주신 성함과 발원문은 <strong>제주 소원사 대웅전 사시예불 축원 전산 명부</strong>에 정식으로 등재됩니다. 
-                    주지 스님께서 <strong>매일 아침 10시 사시예불(巳時禮佛)</strong>마다 부처님 전에 불자님의 발원 내용을 올리며 7일간 지극한 정성으로 직접 축원 올립니다.
+                    주지 스님께서 <strong>매일 아침 10시 사시예불(巳時禮佛)</strong>마다 부처님 전에 불자님의 발원 내용을 올리며 정성껏 직접 축원 올립니다.
                   </div>
                 </details>
 
