@@ -8226,13 +8226,67 @@ function normalizeMemberHierarchy(m) {
                 <button
                   type="button"
                   onClick={() => {
-                    const believer = currentUser?.name || lanternData?.believer_name || '소원사 불자'
-                    const shareMsg = `📜 [제주 소원사 사경 회향 공덕장]\n\n${believer} 불자님께서 부처님의 거룩한 말씀 "${currentSutra?.title}" 사경 1독을 지극한 정성으로 원만히 회향하셨습니다.\n\n"${currentSutra?.text}"\n\n"이 거룩한 사경 공덕이 온 가족과 지인 모두의 건강과 소원성취로 회향되기를 발원합니다."\n\n🙏 함께 사경하고 마음의 평안 찾기:\nhttps://sowonpray.vercel.app`
+                    playMoktakSound()
+                    const believer = currentUser?.name || lanternData?.believer_name || '소원사 정진 불자'
+                    const sutraTitle = currentSutra?.title || '천수경 정구업진언'
+                    const sutraText = currentSutra?.text || '수리수리 마하수리 수수리 사바하'
+                    const code = currentUser?.code || referralCode || '33065540'
+                    const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
+                    const shareUrl = `${origin}/?ref=${code}&tab=sutra`
+                    const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
+                    const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=3'
+
+                    // 1) 카카오톡 공식 피드 카드 공유
+                    if (typeof window !== 'undefined' && window.Kakao) {
+                      try {
+                        if (!window.Kakao.isInitialized()) {
+                          window.Kakao.init(kakaoKey)
+                        }
+                        if (window.Kakao.isInitialized() && window.Kakao.Share) {
+                          window.Kakao.Share.sendDefault({
+                            objectType: 'feed',
+                            content: {
+                              title: `📜 제주 소원사 [사경 회향 공덕장]`,
+                              description: `"${believer} 불자님께서 '${sutraTitle}' 사경을 정성으로 원만히 회향하셨습니다."\n\n"${sutraText}"`,
+                              imageUrl: altarImageUrl,
+                              imageWidth: 1024,
+                              imageHeight: 693,
+                              link: {
+                                mobileWebUrl: shareUrl,
+                                webUrl: shareUrl,
+                              },
+                            },
+                            buttons: [
+                              {
+                                title: '✍️ 나도 마음 사경 동참하기',
+                                link: {
+                                  mobileWebUrl: shareUrl,
+                                  webUrl: shareUrl,
+                                },
+                              },
+                              {
+                                title: '🪔 무료 소원등 켜기',
+                                link: {
+                                  mobileWebUrl: `${origin}/?ref=${code}&tab=lantern`,
+                                  webUrl: `${origin}/?ref=${code}&tab=lantern`,
+                                },
+                              },
+                            ],
+                          })
+                          return
+                        }
+                      } catch (err) {
+                        console.warn('Kakao sutra cert share fallback:', err)
+                      }
+                    }
+
+                    // 2) 일반 브라우저 공유 / 클립보드 복사 fallback
+                    const shareMsg = `📜 [제주 소원사 사경 회향 공덕장]\n\n${believer} 불자님께서 부처님의 거룩한 말씀 "${sutraTitle}" 사경 1독을 지극한 정성으로 원만히 회향하셨습니다.\n\n"${sutraText}"\n\n"이 거룩한 사경 공덕이 온 가족과 지인 모두의 건강과 소원성취로 회향되기를 발원합니다."\n\n🙏 함께 사경하고 마음의 평안 찾기:\n${shareUrl}`
                     if (navigator.share) {
                       navigator.share({
                         title: '제주 소원사 사경 회향 공덕장',
                         text: shareMsg,
-                        url: 'https://sowonpray.vercel.app',
+                        url: shareUrl,
                       }).catch(() => {})
                     } else if (navigator.clipboard) {
                       navigator.clipboard.writeText(shareMsg)
