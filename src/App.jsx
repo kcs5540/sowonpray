@@ -6768,7 +6768,7 @@ function normalizeMemberHierarchy(m) {
                         卍 부처님과 맺은 소중한 인연
                       </span>
                       <h3 className="font-serif-kr text-base font-bold text-[#231F1C] mt-0.5">
-                        나의 인연 공덕 나무 ({members.filter((m) => m.parent_code === currentUser.code).length}명 연결)
+                        나의 인연 공덕 나무 (전체 {currentUserBelieversCount}명 / 직접 {members.filter((m) => m.parent_code === currentUser.code).length}명)
                       </h3>
                     </div>
                     <button
