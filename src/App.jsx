@@ -5059,129 +5059,114 @@ function normalizeMemberHierarchy(m) {
                 )}
               </div>
 
-              {/* STEP 1. 기원 분야 선택 영역 (글자 잘림 없는 럭셔리 골드 콤보박스) */}
-              <div className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF5E6] border border-[#E5D399] space-y-2.5">
-                <div className="flex flex-wrap items-center justify-between gap-1.5">
-                  <label className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C]">
-                    <span className="px-2 py-0.5 rounded-md bg-[#231F1C] text-[#F5D061] text-[10px] font-extrabold shrink-0">
-                      1단계
+              {/* 통합 단일 발원문 입력 영역 */}
+              <div className="space-y-3.5">
+                {/* 1. 기원 분야 선택 콤보박스 */}
+                <div>
+                  <label className="block text-xs font-bold text-[#3D3630] mb-1.5 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-1.5 h-3.5 rounded-full bg-[#C59B27]" />
+                      <span>기원 분야 선택</span>
+                      <span className="text-[#B8860B]">*</span>
                     </span>
-                    <span>기원 분야 선택 (눌러서 선택)</span>
+                    <span className="text-[10.5px] font-medium text-[#8A6510]">
+                      원터치 선택
+                    </span>
                   </label>
-                  <span className="text-[11px] font-bold text-[#9A7418] shrink-0">
-                    원터치 선택
-                  </span>
-                </div>
-
-                <div className="relative">
-                  <select
-                    value={
-                      [
-                        '가족건강',
-                        '사업번창',
-                        '학업/시험합격',
-                        '마음평안/소원성취',
-                        '자녀축복/취업성취',
-                        '액운소멸/무병장수',
-                      ].includes(wishCategory)
-                        ? wishCategory
-                        : '가족건강'
-                    }
-                    onChange={(e) => {
-                      playMoktakSound()
-                      handleSelectWishCategory(e.target.value)
-                    }}
-                    className="w-full appearance-none pl-3.5 pr-10 py-3 rounded-xl bg-white border-2 border-[#C59B27] text-xs sm:text-sm font-bold text-[#231F1C] focus:outline-none focus:ring-2 focus:ring-[#C59B27]/50 shadow-sm cursor-pointer"
-                  >
-                    <option value="가족건강">🙏 1. 온 가족 건강과 평안 (무병장수)</option>
-                    <option value="사업번창">💼 2. 사업번창 · 재물운 만복성취</option>
-                    <option value="학업/시험합격">🎓 3. 학업성취 · 시험합격 · 지혜총명</option>
-                    <option value="마음평안/소원성취">🪷 4. 마음평안 · 간절한 소원성취</option>
-                    <option value="자녀축복/취업성취">🌱 5. 자녀축복 · 취업성취 · 인연대길</option>
-                    <option value="액운소멸/무병장수">🛡️ 6. 삼재액운 소멸 · 신액제거 · 무탈기원</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-[#9A7418]">
-                    <ChevronDown className="w-5 h-5 text-[#9A7418]" />
+                  <div className="relative">
+                    <select
+                      value={
+                        [
+                          '가족건강',
+                          '사업번창',
+                          '학업/시험합격',
+                          '마음평안/소원성취',
+                          '자녀축복/취업성취',
+                          '액운소멸/무병장수',
+                        ].includes(wishCategory)
+                          ? wishCategory
+                          : '가족건강'
+                      }
+                      onChange={(e) => {
+                        playMoktakSound()
+                        handleSelectWishCategory(e.target.value)
+                      }}
+                      className="w-full appearance-none pl-3.5 pr-10 py-3 rounded-xl bg-[#FAF8F5] border-2 border-[#C59B27] text-xs sm:text-sm font-bold text-[#231F1C] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#C59B27]/40 shadow-sm cursor-pointer transition"
+                    >
+                      <option value="가족건강">🙏 1. 온 가족 건강과 평안 (무병장수)</option>
+                      <option value="사업번창">💼 2. 사업번창 · 재물운 만복성취</option>
+                      <option value="학업/시험합격">🎓 3. 학업성취 · 시험합격 · 지혜총명</option>
+                      <option value="마음평안/소원성취">🪷 4. 마음평안 · 간절한 소원성취</option>
+                      <option value="자녀축복/취업성취">🌱 5. 자녀축복 · 취업성취 · 인연대길</option>
+                      <option value="액운소멸/무병장수">🛡️ 6. 삼재액운 소멸 · 신액제거 · 무탈기원</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-[#9A7418]">
+                      <ChevronDown className="w-5 h-5 text-[#9A7418]" />
+                    </div>
                   </div>
                 </div>
 
-                <p className="text-[10.5px] text-[#786C5E] leading-snug">
-                  ※ 분야를 선택하시면 아래에 스님께서 축원하시는 정통 맞춤 발원문이 자동으로 입력됩니다.
-                </p>
-              </div>
-
-              {/* 구분선 */}
-              <div className="border-t border-dashed border-[#DFD6C7]" />
-
-              {/* STEP 2. 신청자 정보 및 발원문 입력 영역 */}
-              <div className="p-3.5 sm:p-4 rounded-2xl bg-[#F4F1EA] border border-[#DDD4C4] space-y-3.5">
-                <div className="flex flex-wrap items-center justify-between gap-1.5">
-                  <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C]">
-                    <span className="px-2 py-0.5 rounded-md bg-[#8A6510] text-white text-[10px] font-extrabold shrink-0">
-                      2단계
-                    </span>
-                    <span>신청자 성함 · 발원문 접수</span>
-                  </div>
-                  <span className="text-[10.5px] text-[#7A7065] font-medium shrink-0">
-                    ✎ 직접 입력
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* 2. 성함 & 연락처 (2열 그리드) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-0.5">
                   <div>
-                    <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                      성함 (또는 법명) <span className="text-[#B8860B]">*</span>
+                    <label className="block text-xs font-bold text-[#3D3630] mb-1 flex items-center gap-1">
+                      <span className="w-1.5 h-3.5 rounded-full bg-[#C59B27]" />
+                      <span>신청자 성함 (또는 법명)</span>
+                      <span className="text-[#B8860B]">*</span>
                     </label>
                     <input
                       type="text"
                       value={wishName}
                       onChange={(e) => setWishName(e.target.value)}
-                      placeholder="예: 홍길동 (무량심) 또는 김영희 (자녀: 김철수)"
-                      className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
+                      placeholder="예: 홍길동 (무량심)"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF8F5] border-2 border-[#D5C59B] focus:bg-white focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner transition"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                      휴대폰 번호 (아이디) <span className="text-[#B8860B]">*</span>
+                    <label className="block text-xs font-bold text-[#3D3630] mb-1 flex items-center gap-1">
+                      <span className="w-1.5 h-3.5 rounded-full bg-[#C59B27]" />
+                      <span>휴대폰 번호</span>
+                      <span className="text-[#B8860B]">*</span>
                     </label>
                     <input
                       type="tel"
                       value={wishPhone}
                       onChange={(e) => setWishPhone(e.target.value)}
                       placeholder="010-0000-0000"
-                      className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF8F5] border-2 border-[#D5C59B] focus:bg-white focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner transition"
                     />
                   </div>
                 </div>
 
-                {/* 축원 대상란 (소원발원 대상) */}
+                {/* 3. 축원 대상란 (소원발원 대상) */}
                 <div>
-                  <label className="block text-xs font-bold text-[#3D3630] mb-1 flex items-center gap-1.5">
-                    <span>소원발원 대상 (축원 대상자)</span>
-                    <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
-                      선택
+                  <label className="block text-xs font-bold text-[#3D3630] mb-1 flex items-center justify-between">
+                    <span className="flex items-center gap-1">
+                      <span className="w-1.5 h-3.5 rounded-full bg-[#C59B27]" />
+                      <span>소원발원 대상 (축원 대상자)</span>
+                    </span>
+                    <span className="text-[10.5px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
+                      선택사항
                     </span>
                   </label>
                   <input
                     type="text"
                     value={wishTarget}
                     onChange={(e) => setWishTarget(e.target.value)}
-                    placeholder="예: 자녀 김철수, 부모님, 가족 전체"
-                    className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
+                    placeholder="예: 자녀 김철수, 부모님, 가족 전체 (비워두시면 본인으로 축원)"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF8F5] border-2 border-[#D5C59B] focus:bg-white focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner transition"
                   />
-                  <div className="flex items-center gap-1 text-[11px] text-[#7A7065] mt-1.5 px-0.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#B8860B] shrink-0" />
-                    <span>
-                      비워두시면 <strong>[신청자 본인]</strong>으로 축원됩니다
-                    </span>
-                  </div>
                 </div>
 
+                {/* 4. 부처님께 올리는 한 줄 소원 (발원문) */}
                 <div>
-                  <label className="block text-xs font-bold text-[#3D3630] mb-1 flex items-center gap-1.5">
-                    <span>부처님께 올리는 한 줄 소원 (발원문)</span>
-                    <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
-                      선택
+                  <label className="block text-xs font-bold text-[#3D3630] mb-1 flex items-center justify-between">
+                    <span className="flex items-center gap-1">
+                      <span className="w-1.5 h-3.5 rounded-full bg-[#C59B27]" />
+                      <span>부처님께 올리는 한 줄 소원 (발원문)</span>
+                    </span>
+                    <span className="text-[10.5px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
+                      선택사항
                     </span>
                   </label>
                   <textarea
@@ -5192,13 +5177,13 @@ function normalizeMemberHierarchy(m) {
                       PRAYER_CATEGORY_TEMPLATES[wishCategory] ||
                       '예: 우리 가족 올 한 해 무병장수하고 하는 일마다 순조롭게 풀리기를 발원합니다.'
                     }
-                    className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm text-[#231F1C] shadow-inner leading-relaxed"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF8F5] border-2 border-[#D5C59B] focus:bg-white focus:border-[#C59B27] focus:outline-none text-sm text-[#231F1C] shadow-inner leading-relaxed transition"
                   />
                   <div className="flex items-center justify-between text-[11px] text-[#7A7065] mt-1.5 px-0.5">
                     <span className="flex items-center gap-1">
                       <CheckCircle2 className="w-3.5 h-3.5 text-[#B8860B] shrink-0" />
                       <span>
-                        예시문을 자유롭게 수정하시거나 그대로 두셔도 <strong>[{wishCategory}]</strong> 정통 발원문으로 자동 축원됩니다.
+                        예시문을 수정하거나 그대로 두셔도 <strong>[{wishCategory}]</strong> 정통 발원문으로 자동 축원됩니다.
                       </span>
                     </span>
                     {wishText && (
