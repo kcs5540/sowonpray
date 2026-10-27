@@ -5059,54 +5059,55 @@ function normalizeMemberHierarchy(m) {
                 )}
               </div>
 
-              {/* STEP 1. 기원 분야 선택 영역 */}
-              <div className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF5E6] border border-[#E5D399]">
-                <div className="flex flex-wrap items-center justify-between gap-1.5 mb-2.5">
+              {/* STEP 1. 기원 분야 선택 영역 (글자 잘림 없는 럭셔리 골드 콤보박스) */}
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF5E6] border border-[#E5D399] space-y-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-1.5">
                   <label className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C]">
                     <span className="px-2 py-0.5 rounded-md bg-[#231F1C] text-[#F5D061] text-[10px] font-extrabold shrink-0">
                       1단계
                     </span>
-                    <span>기원 분야 선택 (터치)</span>
+                    <span>기원 분야 선택 (눌러서 선택)</span>
                   </label>
                   <span className="text-[11px] font-bold text-[#9A7418] shrink-0">
-                    1개 선택
+                    원터치 선택
                   </span>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    '가족건강',
-                    '사업번창',
-                    '학업/시험합격',
-                    '마음평안/소원성취',
-                    '자녀축복/취업성취',
-                    '액운소멸/무병장수',
-                  ].map((cat) => {
-                    const isSelected = wishCategory === cat
-                    return (
-                      <button
-                        type="button"
-                        key={cat}
-                        onClick={() => handleSelectWishCategory(cat)}
-                        className={`py-2.5 px-2.5 rounded-xl text-[11.5px] font-bold border text-left transition flex items-center gap-1.5 ${
-                          isSelected
-                            ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-md ring-2 ring-[#C59B27]/40'
-                            : 'bg-white/80 text-[#575049] border-[#DFD3B8] hover:bg-white'
-                        }`}
-                      >
-                        <span
-                          className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] shrink-0 border ${
-                            isSelected
-                              ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061] font-extrabold'
-                              : 'bg-[#FAF8F5] text-transparent border-[#C8BFA8]'
-                          }`}
-                        >
-                          ✓
-                        </span>
-                        <span className="truncate whitespace-nowrap">{cat}</span>
-                      </button>
-                    )
-                  })}
+
+                <div className="relative">
+                  <select
+                    value={
+                      [
+                        '가족건강',
+                        '사업번창',
+                        '학업/시험합격',
+                        '마음평안/소원성취',
+                        '자녀축복/취업성취',
+                        '액운소멸/무병장수',
+                      ].includes(wishCategory)
+                        ? wishCategory
+                        : '가족건강'
+                    }
+                    onChange={(e) => {
+                      playMoktakSound()
+                      handleSelectWishCategory(e.target.value)
+                    }}
+                    className="w-full appearance-none pl-3.5 pr-10 py-3 rounded-xl bg-white border-2 border-[#C59B27] text-xs sm:text-sm font-bold text-[#231F1C] focus:outline-none focus:ring-2 focus:ring-[#C59B27]/50 shadow-sm cursor-pointer"
+                  >
+                    <option value="가족건강">🙏 1. 온 가족 건강과 평안 (무병장수)</option>
+                    <option value="사업번창">💼 2. 사업번창 · 재물운 만복성취</option>
+                    <option value="학업/시험합격">🎓 3. 학업성취 · 시험합격 · 지혜총명</option>
+                    <option value="마음평안/소원성취">🪷 4. 마음평안 · 간절한 소원성취</option>
+                    <option value="자녀축복/취업성취">🌱 5. 자녀축복 · 취업성취 · 인연대길</option>
+                    <option value="액운소멸/무병장수">🛡️ 6. 삼재액운 소멸 · 신액제거 · 무탈기원</option>
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-[#9A7418]">
+                    <ChevronDown className="w-5 h-5 text-[#9A7418]" />
+                  </div>
                 </div>
+
+                <p className="text-[10.5px] text-[#786C5E] leading-snug">
+                  ※ 분야를 선택하시면 아래에 스님께서 축원하시는 정통 맞춤 발원문이 자동으로 입력됩니다.
+                </p>
               </div>
 
               {/* 구분선 */}
