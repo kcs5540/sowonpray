@@ -2493,15 +2493,15 @@ function normalizeMemberHierarchy(m) {
     showToast('✅ 내 계정 및 사찰 축원 상세정보가 안전하게 저장되었습니다.')
   }
 
-  // 7일 소원등 터치 상호작용 (점등 중이면 축원 안내, 미점등이면 발원문 폼으로 부드러운 스크롤 이동)
+  // 1일 1소원등 터치 상호작용 (점등 중이면 축원 안내, 미점등이면 발원문 폼으로 부드러운 스크롤 이동)
   const handleLanternClick = () => {
     playSingingBowlSound()
     if (isLanternLit) {
       showToast(
-        `✨ ${lanternData?.believer_name || '불자'}님의 소원등이 제주 소원사 대웅전에서 축원 중입니다 (D-${lanternDaysRemaining}일 남음)`
+        `✨ ${lanternData?.believer_name || '불자'}님의 소원등이 오늘 제주 소원사 대웅전에서 축원 중입니다 (내일 새 원력으로 또 켜실 수 있습니다)`
       )
     } else {
-      showToast('🙏 아래 발원문을 접수하시면 대웅전 소원등이 7일간 환하게 밝혀집니다.')
+      showToast('🙏 아래 발원문을 접수하시면 오늘 대웅전 소원등이 환하게 밝혀집니다.')
       const formEl = document.getElementById('lantern-prayer-form')
       if (formEl) {
         formEl.scrollIntoView({ behavior: 'smooth' })
@@ -2546,7 +2546,10 @@ function normalizeMemberHierarchy(m) {
 
     playSingingBowlSound()
     const now = Date.now()
-    const expireAt = now + 7 * 24 * 60 * 60 * 1000 // 7일 정진 축원 기간
+    // 1일 1소원등: 오늘 밤 자정(23:59:59)까지 유지된 후 내일 다시 새 원력으로 점등 가능
+    const endOfToday = new Date()
+    endOfToday.setHours(23, 59, 59, 999)
+    const expireAt = Math.max(endOfToday.getTime(), now + 12 * 60 * 60 * 1000) // 최소 12시간~당일 자정 유지
     const newLanternInfo = {
       member_code: currentUser?.code || '',
       believer_name: formattedBelieverName,
