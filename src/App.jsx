@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import {
   Flame,
   Sparkles,
@@ -13,6 +13,7 @@ import {
   Volume2,
   ShieldCheck,
   RefreshCw,
+  Download,
   ChevronRight,
   ChevronDown,
   ChevronUp,
@@ -49,6 +50,7 @@ import {
   MessageSquare,
 } from 'lucide-react'
 import QRCode from 'qrcode'
+import html2canvas from 'html2canvas'
 import {
   DEFAULT_TEMPLE_ID,
   INITIAL_MEMBERS,
@@ -2071,6 +2073,8 @@ function normalizeMemberHierarchy(m) {
   const [sutraInput, setSutraInput] = useState('')
   const [sutraCompleted, setSutraCompleted] = useState(false)
   const [showMeritCertModal, setShowMeritCertModal] = useState(false)
+  const [isCapturingCert, setIsCapturingCert] = useState(false)
+  const meritCertRef = useRef(null)
   const [moktakCount, setMoktakCount] = useState(0)
   const [guestMeritBonus, setGuestMeritBonus] = useState(0)
 
@@ -8163,7 +8167,10 @@ function normalizeMemberHierarchy(m) {
               </button>
 
               {/* 공덕장 내부 본문 카드 (전통 한지 & 황금 테두리) */}
-              <div className="p-4 sm:p-4.5 rounded-2xl bg-[#FAF6EE] text-[#241F1A] border-2 border-[#C59B27] relative shadow-inner">
+              <div
+                ref={meritCertRef}
+                className="p-4 sm:p-4.5 rounded-2xl bg-[#FAF6EE] text-[#241F1A] border-2 border-[#C59B27] relative shadow-inner"
+              >
                 {/* 모서리 전통 문양 포인트 */}
                 <div className="text-[10px] text-[#A67C1E] font-serif-kr text-center tracking-widest font-bold">
                   卍 제주 소원사 모바일 법당 卍
@@ -8221,8 +8228,69 @@ function normalizeMemberHierarchy(m) {
                 </div>
               </div>
 
-              {/* 하단 공유 & 닫기 버튼 */}
+              {/* 하단 2단 액션 버튼 (실물 이미지 저장/공유 + 카카오톡 피드 카드 전송) */}
               <div className="mt-3.5 space-y-2">
+                {/* 1. 실물 공덕장 원본 형태 그대로 이미지 저장 및 공유 */}
+                <button
+                  type="button"
+                  disabled={isCapturingCert}
+                  onClick={async () => {
+                    playMoktakSound()
+                    if (!meritCertRef.current) return
+                    setIsCapturingCert(true)
+                    try {
+                      const canvas = await html2canvas(meritCertRef.current, {
+                        scale: 2,
+                        backgroundColor: '#FAF6EE',
+                        useCORS: true,
+                        logging: false,
+                      })
+                      const believer = currentUser?.name || lanternData?.believer_name || '소원사_정진불자'
+                      const fileName = `제주소원사_사경회향공덕장_${believer}.png`
+
+                      canvas.toBlob(async (blob) => {
+                        if (!blob) {
+                          setIsCapturingCert(false)
+                          return
+                        }
+                        const file = new File([blob], fileName, { type: 'image/png' })
+
+                        // 모바일 브라우저의 파일 직접 공유 지원 시 (카카오톡, 밴드, 문자 등 이미지 직접 전송)
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                          try {
+                            await navigator.share({
+                              files: [file],
+                              title: '제주 소원사 사경 회향 공덕장',
+                              text: `📜 제주 소원사에서 수여된 ${believer} 불자님의 사경 회향 공덕장입니다. 온 가족의 만복과 건강을 축원합니다.`,
+                            })
+                            setIsCapturingCert(false)
+                            return
+                          } catch (e) {
+                            // 사용자가 취소했거나 실패 시 다운로드로 진행
+                          }
+                        }
+
+                        // PC 또는 네이티브 공유 미지원 시 이미지 자동 다운로드
+                        const link = document.createElement('a')
+                        link.href = canvas.toDataURL('image/png')
+                        link.download = fileName
+                        link.click()
+                        showToast('🖼️ 공덕장 실물 이미지가 갤러리/다운로드에 저장되었습니다! 카카오톡에 바로 전송해 보세요.')
+                        setIsCapturingCert(false)
+                      }, 'image/png')
+                    } catch (err) {
+                      console.error('공덕장 캡처 오류:', err)
+                      showToast('공덕장 이미지를 생성하는 중 오류가 발생했습니다.')
+                      setIsCapturingCert(false)
+                    }
+                  }}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#F5D061] via-[#E5B537] to-[#D4AF37] hover:brightness-105 text-[#2A1E05] font-black text-xs shadow-md flex items-center justify-center gap-1.5 active:scale-95 transition disabled:opacity-60"
+                >
+                  <Download className="w-4 h-4 text-[#2A1E05] shrink-0" />
+                  <span>{isCapturingCert ? '공덕장 이미지 생성 중...' : '🖼️ 이 형태 그대로 사진 저장 · 카톡 보내기'}</span>
+                </button>
+
+                {/* 2. 카카오톡 공식 피드 카드 바로가기 초대 링크 발송 */}
                 <button
                   type="button"
                   onClick={() => {
@@ -8293,15 +8361,16 @@ function normalizeMemberHierarchy(m) {
                       showToast('📋 사경 회향 공덕장 메시지가 복사되었습니다! 카카오톡 가족·지인방에 전해보세요.')
                     }
                   }}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow flex items-center justify-center gap-1.5 active:scale-95 transition"
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow flex items-center justify-center gap-1.5 active:scale-95 transition"
                 >
-                  <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
-                  <span>가족·지인에게 사경 공덕 나누기 (카톡 공유)</span>
+                  <Share2 className="w-3.5 h-3.5 text-[#3C1E1E] shrink-0" />
+                  <span>카톡 바로가기 카드 전송 (추천인 링크 포함)</span>
                 </button>
+
                 <button
                   type="button"
                   onClick={() => setShowMeritCertModal(false)}
-                  className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs transition active:scale-95"
+                  className="w-full py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white/80 font-bold text-xs transition active:scale-95"
                 >
                   합장하며 닫기 (나무아미타불)
                 </button>
