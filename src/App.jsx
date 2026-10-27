@@ -4722,7 +4722,7 @@ function normalizeMemberHierarchy(m) {
                   className="px-2.5 py-2 rounded-lg bg-[#C59B27] hover:bg-[#D4AF37] text-[#1B1815] font-extrabold text-xs flex items-center gap-1 shadow active:scale-95 transition shrink-0 whitespace-nowrap"
                 >
                   <Copy className="w-3.5 h-3.5" />
-                  <span>계좌 복사</span>
+                  <span>복사</span>
                 </button>
               </div>
               <div className="text-[10.5px] text-[#A89E90] flex items-center gap-1.5 pt-0.5">
