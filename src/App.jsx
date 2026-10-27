@@ -9599,9 +9599,9 @@ function normalizeMemberHierarchy(m) {
           </div>
 
           {/* 하단 단정한 전산 크레딧 & 카피라이트 (플랫폼 소프트웨어 소유권: 제주AI파트너 명시) */}
-          <div className="pt-0.5 text-[10px] text-[#A69B8D] space-y-0.5">
-            <p>디지털 전산 총괄: 제주AI파트너</p>
-            <p className="tracking-wider text-[#B8AF9F]">
+          <div className="pt-1 space-y-0.5">
+            <p className="text-[10.5px] font-medium text-[#63574A]">디지털 전산 총괄: 제주AI파트너</p>
+            <p className="tracking-wider text-[#786C5E] text-[10px]">
               Platform © Jeju AI Partner. All rights reserved.
             </p>
           </div>
