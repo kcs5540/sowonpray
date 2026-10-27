@@ -8352,7 +8352,7 @@ function normalizeMemberHierarchy(m) {
                   className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow-md flex items-center justify-center gap-1.5 active:scale-95 transition disabled:opacity-60"
                 >
                   <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
-                  <span>{isCapturingCert ? '공덕장 카톡 카드 준비 중...' : '💬 이 공덕장 그대로 카톡 보내기 (사진+링크)'}</span>
+                  <span>{isCapturingCert ? '공덕장 전송 준비 중...' : '공덕장 카톡 전송'}</span>
                 </button>
 
                 {/* 2. 사진 파일로 내 폰 갤러리에 저장 */}
@@ -8386,7 +8386,7 @@ function normalizeMemberHierarchy(m) {
                   className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-[#EAD8B5] border border-[#C59B27]/40 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition disabled:opacity-60"
                 >
                   <Download className="w-3.5 h-3.5 text-[#F5D061] shrink-0" />
-                  <span>내 휴대폰 갤러리에 사진 파일로 저장</span>
+                  <span>공덕장 사진 갤러리 저장</span>
                 </button>
 
                 <button
