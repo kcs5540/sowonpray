@@ -2231,6 +2231,10 @@ export default function App() {
       created_at: todayStr,
     }
 
+    const isIndeung = settlementItemType.includes('인등')
+    const is100d = settlementItemType.includes('100일')
+    const lanternId = isIndeung ? 'indeung_1yr' : is100d ? 'prayer_100d' : null
+
     setSettlements((prev) => [newRecord, ...prev])
     setMembers((prev) =>
       prev.map((item) =>
@@ -2238,7 +2242,14 @@ export default function App() {
           ? {
               ...item,
               merit_count: (item.merit_count || 0) + 1,
-              wipae_count: (item.wipae_count || 0) + (settlementItemType.includes('2기') ? 2 : 1),
+              wipae_count: (item.wipae_count || 0) + (settlementItemType.includes('2기') ? 2 : settlementItemType.includes('위패') ? 1 : 0),
+              extra_data: {
+                ...(item.extra_data || {}),
+                prayer_title: settlementItemType,
+                payment_amount: Number(settlementAmount),
+                payment_status: settlementPaymentStatus === 'confirmed' ? 'settled' : 'pending',
+                ...(lanternId ? { lantern_type: lanternId, lantern_active: true, lantern_started_at: todayStr } : {})
+              }
             }
           : item
       )
@@ -2248,7 +2259,7 @@ export default function App() {
     setShowSettlementModal(false)
     setSettlementTargetMember(null)
     setSettlementMemo('')
-    showToast(`💰 [${m.name}] 신도님의 불사 접수 및 소원사 조직표 계보 정산이 완료되었습니다!`)
+    showToast(`🪷 [${m.name}] 신도님의 [${settlementItemType}] 접수 및 소원사 조직표 계보 정산이 완결되었습니다!`)
   }
 
   const renderSettlementModal = () => {
@@ -2271,10 +2282,10 @@ export default function App() {
               </div>
               <div>
                 <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#F5D061]">
-                  사찰 불사 &amp; 위패 봉안 정식 접수
+                  기도 · 위패 · 불사 정식 접수
                 </h3>
                 <p className="text-xs text-[#D6CEC2]">
-                  신도교적부 등록 회원 기준 · 소원사 조직표 계보 실시간 정산 연동
+                  신도교적부 등록 회원 기준 · 소원사 조직표 계보 실시간 정산 연동 (모바일 신청란 표준 100% 일치)
                 </p>
               </div>
             </div>
@@ -2372,7 +2383,7 @@ export default function App() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-bold text-[#3D3630] mb-1">
-                    불사 / 위패 동참 종목 *
+                    동참 종목 선택 (모바일 3대 분류 표준) *
                   </label>
                   <select
                     value={settlementItemType}
@@ -2380,19 +2391,31 @@ export default function App() {
                       const val = e.target.value
                       setSettlementItemType(val)
                       if (val.includes('2기')) setSettlementAmount(4000000)
-                      else if (val.includes('단청') || val.includes('명패')) setSettlementAmount(1000000)
-                      else if (val.includes('기와')) setSettlementAmount(100000)
-                      else setSettlementAmount(2000000)
+                      else if (val.includes('황금빛') || val.includes('흑색') || val.includes('생전예수재') || val.includes('영구위패')) setSettlementAmount(2000000)
+                      else if (val.includes('단청') || val.includes('명패') || val.includes('기둥')) setSettlementAmount(1000000)
+                      else if (val.includes('1년 인등') || val.includes('100일') || val.includes('기와')) setSettlementAmount(100000)
+                      else if (val.includes('공양미')) setSettlementAmount(50000)
+                      else setSettlementAmount(100000)
                     }}
-                    className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-semibold text-[#1B1815]"
+                    className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-semibold text-[#1B1815] shadow-inner"
                   >
-                    <option value="생전예수재 황금위패 1기 (200만원)">생전예수재 황금위패 1기 (200만원)</option>
-                    <option value="조상 영가 흑색 영구위패 1기 (200만원)">조상 영가 흑색 영구위패 1기 (200만원)</option>
-                    <option value="조상 영가 부부 영구위패 2기 (400만원)">조상 영가 부부 영구위패 2기 (400만원)</option>
-                    <option value="삼성각 성전 건립 소원기와 1장 (10만원)">삼성각 성전 건립 소원기와 1장 (10만원)</option>
-                    <option value="삼성각 대들보·기둥·단청 불사 (100만원)">삼성각 대들보·기둥·단청 불사 (100만원)</option>
-                    <option value="삼성각 가족 영구축원 명패 (100만원)">삼성각 가족 영구축원 명패 (100만원)</option>
-                    <option value="사찰 특별 대작불사 동참">사찰 특별 대작불사 동참 (직접입력)</option>
+                    <optgroup label="🪷 1. 대웅전 상시 기도 및 공덕 불사">
+                      <option value="대웅전 공양미 / 불전시주">① 대웅전 공양미 / 불전시주 (50,000원)</option>
+                      <option value="대웅전 1년 인등 (가족등)">② 대웅전 1년 인등 (가족등) (100,000원)</option>
+                      <option value="100일 소원성취 특별기도">③ 100일 소원성취 특별기도 (100,000원)</option>
+                      <option value="49재 / 천도재 / 기일제사">④ 49재 / 천도재 / 기일제사 (상담 및 직접입력)</option>
+                    </optgroup>
+                    <optgroup label="🏛️ 2. 영구 위패 봉안 불사">
+                      <option value="생전예수재 황금빛 위패 (살아계신 분)">① 생전예수재 황금빛 위패 (살아계신 분) (200만원)</option>
+                      <option value="조상 영가 품격 흑색 영구위패">② 조상 영가 품격 흑색 영구위패 (200만원)</option>
+                      <option value="조상 영가 부부 영구위패 (2기)">③ 조상 영가 부부 영구위패 (2기) (400만원)</option>
+                    </optgroup>
+                    <optgroup label="🏔️ 3. 삼성각 성전 건립 대작불사">
+                      <option value="삼성각 건립 소원 기와 불사 (1장)">① 삼성각 건립 소원 기와 불사 (1장) (10만원)</option>
+                      <option value="삼성각 대들보 · 기둥 · 오색단청 불사">② 삼성각 대들보 · 기둥 · 오색단청 불사 (100만원)</option>
+                      <option value="삼성각 가족 영구축원 명패 · 주춧돌">③ 삼성각 가족 영구축원 명패 · 주춧돌 (100만원)</option>
+                      <option value="기타 특별기도 및 맞춤 불사 상담">④ 기타 특별기도 및 맞춤 불사 상담</option>
+                    </optgroup>
                   </select>
                 </div>
 
@@ -6770,26 +6793,7 @@ function normalizeMemberHierarchy(m) {
                       </div>
                     )}
 
-                    {/* 1. 소원등(인등) 접수 */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!currentActiveBeliever) return
-                        setActiveBelieverCode(currentActiveBeliever.code)
-                        setLanternTargetMember(currentActiveBeliever)
-                        setAdminLanternType('indeung_1yr')
-                        setAdminLanternCategory('가족건강')
-                        setAdminLanternWish(PRAYER_CATEGORY_TEMPLATES['가족건강'] || '')
-                        setAdminLanternPaid(true)
-                      }}
-                      className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:brightness-105 text-[#1B1815] font-black text-xs transition flex items-center gap-1.5 shadow-sm border border-amber-400 active:scale-95 cursor-pointer"
-                      title={currentActiveBeliever ? `[${currentActiveBeliever.name} 신도] 1년 인등 / 100일 특별기도 / 1일 소원등 정식 접수` : '소원등(인등) 접수'}
-                    >
-                      <Flame className="w-3.5 h-3.5 text-amber-950 fill-amber-900" />
-                      <span>소원등(인등) 접수</span>
-                    </button>
-
-                    {/* 2. 불사 접수 */}
+                    {/* 1. 기도 · 위패 · 불사 정식 접수 (모바일 신청란 표준 100% 통합 일치) */}
                     <button
                       type="button"
                       onClick={() => {
@@ -6798,11 +6802,11 @@ function normalizeMemberHierarchy(m) {
                         setSettlementTargetMember(currentActiveBeliever)
                         setShowSettlementModal(true)
                       }}
-                      className="px-3.5 py-2 rounded-xl bg-[#FAF3DF] hover:bg-[#F3E6C2] border-2 border-[#D5C59B] text-[#8A6510] font-black text-xs transition flex items-center gap-1.5 shadow-xs active:scale-95 cursor-pointer"
-                      title={currentActiveBeliever ? `[${currentActiveBeliever.name} 신도] 사찰 불사·위패 접수 (조직표 100% 자동 매칭)` : '불사 접수'}
+                      className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:brightness-105 text-[#1B1815] font-black text-xs transition flex items-center gap-1.5 shadow-sm border border-amber-400 active:scale-95 cursor-pointer"
+                      title={currentActiveBeliever ? `[${currentActiveBeliever.name} 신도] 기도·위패·불사 동참 정식 접수 (상시기도/인등 · 영구위패 · 삼성각대작불사 100% 통합)` : '기도 · 위패 · 불사 접수'}
                     >
-                      <PlusCircle className="w-3.5 h-3.5 text-[#8A6510]" />
-                      <span>불사 접수</span>
+                      <Sparkles className="w-3.5 h-3.5 text-amber-950 fill-amber-900" />
+                      <span>기도 · 위패 · 불사 접수</span>
                     </button>
 
                     {/* 3. 인등 명패 */}
