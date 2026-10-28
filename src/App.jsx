@@ -8681,35 +8681,6 @@ function normalizeMemberHierarchy(m) {
                       </button>
                     )}
 
-                    {/* 3) 🖥️ 사찰 최고책임자 및 마스터 전용: 종무행정 PC 독립 ERP 센터 */}
-                    {isMasterOrTempleAdmin && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsStandaloneAdmin(true)
-                          window.history.pushState({}, '', '/admin')
-                          window.scrollTo({ top: 0, behavior: 'smooth' })
-                        }}
-                        className="w-full min-h-[64px] py-3.5 px-4 rounded-2xl bg-[#1B1815] text-[#F5D061] font-extrabold text-xs sm:text-sm flex items-center justify-between border-2 border-[#D4AF37] shadow-lg hover:bg-[#2C241C] active:scale-98 transition cursor-pointer"
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] flex items-center justify-center font-bold text-base shrink-0 shadow">
-                            🖥️
-                          </div>
-                          <div className="text-left min-w-0">
-                            <span className="block font-black text-xs sm:text-sm whitespace-nowrap leading-tight text-[#F5D061]">
-                              종무행정 PC 독립 ERP 전산센터
-                            </span>
-                            <span className="text-[10px] sm:text-[10.5px] text-[#D6CEC2] block mt-0.5 truncate">
-                              PC 모니터 100% 풀스크린 와이드 독립 전산망
-                            </span>
-                          </div>
-                        </div>
-                        <span className="text-[11px] font-black bg-[#F5D061] text-[#1B1815] px-3 py-1.5 rounded-xl shrink-0 shadow-xs whitespace-nowrap">
-                          ERP 진입 ▶
-                        </span>
-                      </button>
-                    )}
 
                     </div>
                 </section>
