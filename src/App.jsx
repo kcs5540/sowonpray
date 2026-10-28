@@ -6516,8 +6516,8 @@ function normalizeMemberHierarchy(m) {
                     : 'text-[#D6CEC2] hover:text-white'
                 }`}
               >
-                <Award className="w-4 h-4 text-[#C59B27]" />
-                <span>💰 4. 사찰 불사 접수 &amp; 정산 관제</span>
+                <Calculator className="w-4 h-4 text-[#C59B27]" />
+                <span>💰 4. 정산관제</span>
               </button>
             </div>
 
@@ -6959,58 +6959,21 @@ function normalizeMemberHierarchy(m) {
               </section>
             )}
 
-            {/* ==================== 4. 사찰 불사 접수 & 정산 관제 탭 ==================== */}
+            {/* ==================== 4. 정산관제 탭 ==================== */}
             {erpTab === 'settlement' && (
               <section className="bg-white text-[#231F1C] rounded-3xl p-6 sm:p-8 shadow-sm border border-[#E6DEC8] space-y-5">
                 <div className="flex items-center justify-between pb-2 border-b border-[#E6DEC8]">
                   <div>
                     <h3 className="font-serif-kr font-bold text-lg text-[#1B1815]">
-                      4. 신규 사찰 불사 접수 등록 및 실시간 정산 관제
+                      4. 정산관제
                     </h3>
                     <p className="text-xs text-[#8C8071] mt-0.5">
-                      사찰 불사금 50% 원천 적립 및 전국 위원회 1·2·3차 요율제 자동 배분 원장입니다.
+                      사찰 불사금 50% 원천 적립 및 전국 포교위원회 1·2·3차 조직표 요율제 실시간 정산 집행 및 감사 원장입니다.
                     </p>
                   </div>
                   <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
-                    실입금액 100% 완전 분배
+                    실입금액 100% 완전 분배·정산
                   </span>
-                </div>
-
-                {/* 卍 사찰 불사 접수 업무 표준 프로세스 가이드 & 신도 검색 바로가기 바 */}
-                <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-[#FFF9E6] via-white to-[#FFF9E6] border-2 border-[#D5C59B] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
-                  <div className="flex items-start sm:items-center gap-3.5">
-                    <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] flex items-center justify-center font-black text-lg shrink-0 shadow-sm">
-                      卍
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="font-serif-kr font-bold text-base text-[#1B1815]">
-                          사찰 불사 접수 및 실시간 정산 관제 프로세스
-                        </h4>
-                        <span className="text-[10.5px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">
-                          신도교적부 연동 필수
-                        </span>
-                      </div>
-                      <p className="text-xs text-[#7A6E5E] mt-1 leading-relaxed">
-                        모든 사찰 불사 및 위패 봉안은 <strong>[신도교적부]에 정식 등록된 신도</strong>를 검색·선택하여 조직표에 따라 접수됩니다.<br className="hidden sm:inline" />
-                        (아직 교적부에 없는 신규 신도는 먼저 교적부에 등록 후 불사 접수가 진행됩니다.)
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2.5 shrink-0 w-full md:w-auto">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setErpTab('search')
-                        showToast('🔍 신도교적부에서 불사를 접수하실 신도님을 검색 후 [불사] 버튼을 눌러주세요.')
-                      }}
-                      className="flex-1 md:flex-initial px-4 py-3 rounded-2xl bg-[#1B1815] text-[#F5D061] text-xs font-black hover:bg-[#2C251F] transition flex items-center justify-center gap-2 shadow-md hover:scale-[1.02]"
-                    >
-                      <Search className="w-4 h-4 text-[#F5D061]" />
-                      <span>신도 검색 후 불사 접수하기</span>
-                    </button>
-
-                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-center text-xs pt-1">
@@ -7040,7 +7003,7 @@ function normalizeMemberHierarchy(m) {
                 <div className="space-y-2 pt-2">
                   <div className="flex items-center justify-between">
                     <h4 className="font-serif-kr font-bold text-sm text-[#1B1815] flex items-center gap-1.5">
-                      <span>📜 사찰 불사 및 위패 봉안 전체 접수 원장 ({settlements.length}건)</span>
+                      <span>📜 사찰 불사 및 위패 봉안 전체 정산 원장 ({settlements.length}건)</span>
                     </h4>
                     <span className="text-xs font-bold text-[#8A6510]">
                       총 불사금: {settlements.reduce((sum, s) => sum + (Number(s.total_amount) || 0), 0).toLocaleString()}원
