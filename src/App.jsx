@@ -2289,9 +2289,9 @@ export default function App() {
           ? {
               ...item,
               merit_count: (item.merit_count || 0) + 1,
-              // 위패 봉안 수량: 실제로 '위패' 종목을 신청하고 완납했을 때만 정확히 1기 또는 2기 증가 (인등, 기도, 기와 등 일반 불사는 0 증가)
+              // 위패 봉안 수량: 완납 또는 일부 납부(분납) 시 향후 완납을 전제로 불사·위패 공식 집행 및 카운트 반영! (전액 미입금 시에만 0)
               wipae_count: (item.wipae_count || 0) + (
-                settlementPaymentStatus === 'confirmed' && settlementItemType.includes('위패')
+                settlementPaymentStatus !== 'pending' && actualPaidAmount > 0 && settlementItemType.includes('위패')
                   ? (settlementItemType.includes('2기') ? 2 : 1)
                   : 0
               ),
@@ -2303,8 +2303,8 @@ export default function App() {
                 unpaid_amount: unpaidAmt,
                 applied_date: settlementAppliedDate || todayStr,
                 paid_date: settlementPaymentStatus !== 'pending' ? (settlementPaidDate || todayStr) : null,
-                payment_status: settlementPaymentStatus === 'confirmed' ? 'settled' : 'pending',
-                ...(lanternId ? { lantern_type: lanternId, lantern_active: true, lantern_started_at: todayStr } : {})
+                payment_status: settlementPaymentStatus === 'confirmed' ? 'settled' : settlementPaymentStatus === 'partial' ? 'partial' : 'pending',
+                ...(lanternId ? { lantern_type: lanternId, lantern_active: settlementPaymentStatus !== 'pending' && actualPaidAmount > 0, lantern_started_at: todayStr } : {})
               }
             }
           : item
@@ -2511,10 +2511,10 @@ export default function App() {
                     : 'bg-stone-100 text-stone-700 border-stone-300'
                 }`}>
                   {settlementPaymentStatus === 'confirmed'
-                    ? '✓ 완납 확인 (실시간 정산 집행)'
+                    ? '✓ 완납 확인 (실시간 전액 정산 집행)'
                     : settlementPaymentStatus === 'partial'
-                    ? '△ 일부 입금 (분납 정산)'
-                    : '⏳ 미입금 (입금 대기 · 정산 보류)'}
+                    ? '✓ 일부 납부 (불사·위패 공식 집행 및 1차 정산)'
+                    : '⏳ 전액 미입금 (불사 및 정산 보류)'}
                 </span>
               </div>
 
@@ -2631,8 +2631,10 @@ export default function App() {
 
                 <div className="text-[10.5px] text-[#8C8071]">
                   {settlementPaymentStatus === 'confirmed'
-                    ? '💡 입금 확인 즉시 조직도 1·2·3차 수당이 집행됩니다.'
-                    : '⚠️ 미입금 건은 신도 입금 완료 시까지 수당 정산이 자동 보류됩니다.'}
+                    ? '💡 완납 확인 즉시 불사 집행 및 조직도 수당이 전액 집행됩니다.'
+                    : settlementPaymentStatus === 'partial'
+                    ? '💡 일부 납부(분납) 시에도 향후 완납을 전제로 불사·위패가 공식 집행되며, 납부액 기준으로 1차 수당이 실시간 집행됩니다.'
+                    : '⚠️ 전액 미입금 건은 신도 입금 완료 시까지 불사 및 수당 정산이 자동 보류됩니다.'}
                 </div>
               </div>
             </div>
@@ -7339,18 +7341,28 @@ function normalizeMemberHierarchy(m) {
                               <td className="p-2.5 text-center whitespace-nowrap">
                                 {isConfirmed ? (
                                   <span className="px-2.5 py-1 rounded-full text-[10.5px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                                    완납·정산집행
+                                    완납·정산완료
                                   </span>
                                 ) : isPartial ? (
-                                  <span className="px-2.5 py-1 rounded-full text-[10.5px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
-                                    분납·일부정산
-                                  </span>
+                                  <div className="flex flex-col items-center gap-1">
+                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                                      분납(1차정산집행)
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleConfirmSettlementPayment(s.id)}
+                                      className="px-2 py-0.5 rounded-lg text-[9.5px] font-bold bg-emerald-700 hover:bg-emerald-800 text-white shadow-xs transition cursor-pointer"
+                                      title="신도가 남은 잔액을 완납했을 때 클릭"
+                                    >
+                                      잔액 완납처리✓
+                                    </button>
+                                  </div>
                                 ) : (
                                   <button
                                     type="button"
                                     onClick={() => handleConfirmSettlementPayment(s.id)}
                                     className="px-2.5 py-1 rounded-full text-[10.5px] font-bold bg-stone-100 hover:bg-emerald-600 hover:text-white text-stone-700 border border-stone-300 transition cursor-pointer shadow-2xs"
-                                    title="클릭 시 오늘 입금 완납 처리"
+                                    title="신도가 입금했을 때 클릭하여 완납 처리"
                                   >
                                     입금대기 (완납확인✓)
                                   </button>
