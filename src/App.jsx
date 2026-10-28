@@ -4096,7 +4096,7 @@ function normalizeMemberHierarchy(m) {
               </div>
               <div>
                 <h3 className="font-serif-kr font-bold text-base text-[#1B1815]">
-                  대웅전 소원등 즉시 접수
+                  대웅전 소원등(인등) 정식 접수
                 </h3>
                 <p className="text-[11px] text-[#8C8071]">
                   {lanternTargetMember.name} {lanternTargetMember.dharma_name ? `(${lanternTargetMember.dharma_name})` : ''} 불자님 (대웅전 사시예불 축원 연동)
@@ -6770,42 +6770,26 @@ function normalizeMemberHierarchy(m) {
                       </div>
                     )}
 
-                    {/* 1. 소원등 점등 */}
+                    {/* 1. 소원등(인등) 접수 */}
                     <button
                       type="button"
                       onClick={() => {
                         if (!currentActiveBeliever) return
                         setActiveBelieverCode(currentActiveBeliever.code)
                         setLanternTargetMember(currentActiveBeliever)
-                        setAdminLanternType('lantern_1d')
+                        setAdminLanternType('indeung_1yr')
                         setAdminLanternCategory('가족건강')
                         setAdminLanternWish(PRAYER_CATEGORY_TEMPLATES['가족건강'] || '')
                         setAdminLanternPaid(true)
                       }}
                       className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:brightness-105 text-[#1B1815] font-black text-xs transition flex items-center gap-1.5 shadow-sm border border-amber-400 active:scale-95 cursor-pointer"
-                      title={currentActiveBeliever ? `[${currentActiveBeliever.name} 신도] 대웅전 소원등 즉시 점등 및 축원 연장` : '소원등 점등'}
+                      title={currentActiveBeliever ? `[${currentActiveBeliever.name} 신도] 1년 인등 / 100일 특별기도 / 1일 소원등 정식 접수` : '소원등(인등) 접수'}
                     >
                       <Flame className="w-3.5 h-3.5 text-amber-950 fill-amber-900" />
-                      <span>소원등 점등</span>
+                      <span>소원등(인등) 접수</span>
                     </button>
 
-                    {/* 2. 인등 명패 */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!currentActiveBeliever) return
-                        setActiveBelieverCode(currentActiveBeliever.code)
-                        setIndeungTargetMember(currentActiveBeliever)
-                        setShowIndeungNameplateModal(true)
-                      }}
-                      className="px-3.5 py-2 rounded-xl bg-white hover:bg-[#FAF3DF] border-2 border-[#D5C59B] text-[#8A6510] font-bold text-xs transition flex items-center gap-1.5 shadow-xs active:scale-95 cursor-pointer"
-                      title={currentActiveBeliever ? `[${currentActiveBeliever.name} 신도] 대웅전 1년 가족인등 전통 명패 A4 원터치 인쇄` : '인등 명패 인쇄'}
-                    >
-                      <Printer className="w-3.5 h-3.5" />
-                      <span>인등 명패</span>
-                    </button>
-
-                    {/* 3. 불사 접수 */}
+                    {/* 2. 불사 접수 */}
                     <button
                       type="button"
                       onClick={() => {
@@ -6819,6 +6803,22 @@ function normalizeMemberHierarchy(m) {
                     >
                       <PlusCircle className="w-3.5 h-3.5 text-[#8A6510]" />
                       <span>불사 접수</span>
+                    </button>
+
+                    {/* 3. 인등 명패 */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!currentActiveBeliever) return
+                        setActiveBelieverCode(currentActiveBeliever.code)
+                        setIndeungTargetMember(currentActiveBeliever)
+                        setShowIndeungNameplateModal(true)
+                      }}
+                      className="px-3.5 py-2 rounded-xl bg-white hover:bg-[#FAF3DF] border-2 border-[#D5C59B] text-[#8A6510] font-bold text-xs transition flex items-center gap-1.5 shadow-xs active:scale-95 cursor-pointer"
+                      title={currentActiveBeliever ? `[${currentActiveBeliever.name} 신도] 대웅전 1년 가족인등 전통 명패 A4 원터치 인쇄` : '인등 명패 인쇄'}
+                    >
+                      <Printer className="w-3.5 h-3.5" />
+                      <span>인등 명패</span>
                     </button>
 
                     {/* 4. 교적 수정 */}
