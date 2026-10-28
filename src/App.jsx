@@ -2003,10 +2003,9 @@ function normalizeMemberHierarchy(m) {
       list = list.filter((m) => {
         const nameMatch = m.name?.toLowerCase().includes(q)
         const dharmaMatch = m.dharma_name?.toLowerCase().includes(q)
-        const phoneMatch = rawNum && m.phone?.replace(/[^0-9]/g, '').includes(rawNum)
-        const codeMatch = m.code?.includes(q)
+        const phoneMatch = Boolean(rawNum && rawNum.length >= 2 && m.phone?.replace(/[^0-9]/g, '').includes(rawNum))
+        const codeMatch = Boolean(rawNum && rawNum.length >= 4 && m.code?.includes(rawNum))
         const addrMatch = m.address?.toLowerCase().includes(q)
-        const memoMatch = m.family_memo?.toLowerCase().includes(q)
         // 양방향 가족 사주 검색: 남편(세주), 배우자, 자녀 이름 또는 법명으로 검색해도 대표 신도 즉시 호출
         const familyMatched = (m.family_members || []).find(
           (f) =>
@@ -2019,10 +2018,22 @@ function normalizeMemberHierarchy(m) {
         } else {
           delete m._matchedFamily
         }
-        return nameMatch || dharmaMatch || phoneMatch || codeMatch || addrMatch || memoMatch || Boolean(familyMatched)
+        return nameMatch || dharmaMatch || phoneMatch || codeMatch || addrMatch || Boolean(familyMatched)
       })
     }
     return [...list].sort((a, b) => {
+      if (adminMemberSearchQuery.trim()) {
+        const q = adminMemberSearchQuery.trim().toLowerCase()
+        const cleanName = (n) => (n || '').replace(/\[.*?\]\s*/g, '').trim().toLowerCase()
+        const aExact = cleanName(a.name) === q
+        const bExact = cleanName(b.name) === q
+        if (aExact && !bExact) return -1
+        if (!aExact && bExact) return 1
+        const aName = a.name?.toLowerCase().includes(q)
+        const bName = b.name?.toLowerCase().includes(q)
+        if (aName && !bName) return -1
+        if (!aName && bName) return 1
+      }
       if (adminMemberSort === 'name') return (a.name || '').localeCompare(b.name || '', 'ko')
       if (adminMemberSort === 'merit') return (b.merit_count || 0) - (a.merit_count || 0)
       return 0
@@ -4172,8 +4183,17 @@ function normalizeMemberHierarchy(m) {
               <section className="bg-white text-[#231F1C] rounded-3xl p-6 sm:p-8 shadow-sm border border-[#E6DEC8] space-y-5">
                 <div className="flex items-center justify-between pb-2 border-b border-[#E6DEC8]">
                   <div>
-                    <h3 className="font-serif-kr font-bold text-lg text-[#1B1815]">
-                      2. 10만 신도 실시간 교적부 검색 및 정보 수정 ({members.length}명)
+                    <h3 className="font-serif-kr font-bold text-lg text-[#1B1815] flex items-center gap-2 flex-wrap">
+                      <span>2. 10만 신도 실시간 교적부 검색 및 정보 수정</span>
+                      {adminMemberSearchQuery.trim() ? (
+                        <span className="text-xs font-bold text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-lg border border-[#E8D4A2]">
+                          검색 일치: {filteredAdminMembers.length}명 / 전체 {members.length}명
+                        </span>
+                      ) : (
+                        <span className="text-xs font-normal text-[#8C8071]">
+                          (전체 {members.length}명)
+                        </span>
+                      )}
                     </h3>
                     <p className="text-xs text-[#8C8071] mt-0.5">
                       본인 이름뿐 아니라 남편(세주) 이름, 자녀 이름, 전화번호 뒷4자리 아무거나 검색해도 1초 만에 가족 전체가 호출됩니다.
