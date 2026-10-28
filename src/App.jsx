@@ -2789,6 +2789,33 @@ function normalizeMemberHierarchy(m) {
       paidDate = rawPaid ? rawPaid.slice(0, 10).replace(/-/g, '.') : appliedDate
     }
 
+    // 🪷 신도의 부처님 전 축원 발원문 및 기원 분야 산출
+    let wishCategory = '가족건강'
+    let wishText = '지극정성으로 가내 평안과 소원성취를 발원합니다.'
+
+    if (latestPrayer?.wish_text) {
+      wishText = latestPrayer.wish_text
+      wishCategory = latestPrayer.wish_category || '가족건강'
+    } else if (m.extra_data?.recent_wish_text) {
+      wishText = m.extra_data.recent_wish_text
+      wishCategory = m.extra_data.recent_wish_category || '가족건강'
+    } else if (latestSettlement) {
+      wishCategory = '불사공덕'
+      wishText = `${latestSettlement.item_name} 불사 동참 공덕으로 온 가족 무병장수와 가내 평안을 발원합니다.`
+    } else if (m.extra_data?.recent_prayer_title && PRAYER_CATEGORY_TEMPLATES[m.extra_data.recent_prayer_title]) {
+      wishCategory = m.extra_data.recent_prayer_title
+      wishText = PRAYER_CATEGORY_TEMPLATES[m.extra_data.recent_prayer_title]
+    } else if ((m.merit_count || 0) >= 30) {
+      wishCategory = '가족건강'
+      wishText = '대웅전 1년 인등 불사 공덕으로 온 가족 무병장수와 만사형통을 지극정성 발원합니다.'
+    } else if ((m.merit_count || 0) >= 10) {
+      wishCategory = '소원성취'
+      wishText = '100일 특별기도 정진으로 뜻하는 바 소원성취와 사업번창을 지극정성 발원합니다.'
+    } else if ((m.merit_count || 0) > 0) {
+      wishCategory = '일일발원'
+      wishText = '부처님 전 일일 소원등을 밝혀 가내 두루 평안하고 액난 소멸을 발원합니다.'
+    }
+
     // 🔥 3대 소원등(1일등, 100일등, 1년등) 각각의 실시간 점등/소등 상태 및 잔여일수 산출
     const now = Date.now()
 
@@ -2900,6 +2927,8 @@ function normalizeMemberHierarchy(m) {
       lanterns,
       activeLanterns,
       longestActiveLantern,
+      wishCategory,
+      wishText,
     }
   }
 
@@ -3053,6 +3082,8 @@ function normalizeMemberHierarchy(m) {
               lantern_active_until: untilDate,
               lantern_lighted_at: new Date().toISOString(),
               lantern_type: typeConfig.name,
+              recent_wish_text: newPrayer.wish_text,
+              recent_wish_category: adminLanternCategory,
               payment_updated_at: new Date().toISOString(),
             },
           }
@@ -3345,40 +3376,44 @@ function normalizeMemberHierarchy(m) {
             )}
           </div>
 
-          {/* ==================== 3열: 가족 사주 & 구성 (lg:col-span-2) ==================== */}
-          <div className="lg:col-span-2 space-y-2 lg:border-l lg:border-[#F0EAE1] lg:pl-3.5 min-w-0">
-            {/* 세주(가장) 정보 */}
-            <div className="space-y-1">
-              <span className="text-[10.5px] font-bold text-[#8C8071] block">세주(가장) 및 가족구성:</span>
-              {seju ? (
-                <div className="text-xs">
-                  <span className="font-bold text-[#8A6510]">세주: {seju.name}</span>
-                  {seju.birth_year && (
-                    <span className="text-[#666666] ml-1">({seju.birth_year}년생 {computeZodiacAndGanji(seju.birth_year).ganji})</span>
-                  )}
-                </div>
-              ) : (
-                <div className="text-xs text-[#8C8071]">세주 미지정</div>
-              )}
-
-              <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
-                <span className="text-[10.5px] px-2 py-0.5 rounded bg-[#FAF8F5] text-[#554E45] border border-[#DDD4C4] font-semibold">
-                  가족 {m.family_members?.length || 0}인 등록
-                </span>
-                {m._matchedFamily && (
-                  <span className="text-[10.5px] px-2 py-0.5 rounded bg-purple-100 text-purple-900 border border-purple-300 font-bold">
-                    가족일치: {m._matchedFamily.name}({m._matchedFamily.relation})
-                  </span>
-                )}
-              </div>
+          {/* ==================== 3열: 🪷 부처님 전 축원 발원문 & 기원분야 (lg:col-span-2) ==================== */}
+          <div className="lg:col-span-2 space-y-1.5 lg:border-l lg:border-[#F0EAE1] lg:pl-3.5 min-w-0">
+            <div className="flex items-center justify-between gap-1">
+              <span className="text-[10.5px] font-bold text-[#8C8071]">부처님 전 축원 발원:</span>
+              <span className="px-1.5 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200 text-[10px] font-bold shrink-0">
+                {pInfo.wishCategory}
+              </span>
             </div>
 
+            {/* 실제 축원 발원문 카드 (클릭 시 점등/발원문 편집 모달 연결) */}
+            <div
+              className="p-2 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] text-xs group hover:border-[#C59B27] hover:bg-[#FFFDF9] transition cursor-pointer"
+              title={`[부처님 전 축원 발원문]\n기원분야: ${pInfo.wishCategory}\n내용: ${pInfo.wishText}\n(클릭 시 발원문 편집 및 점등)`}
+              onClick={() => {
+                setLanternTargetMember(m)
+                setAdminLanternType(pInfo.longestActiveLantern?.id || 'indeung_1yr')
+                setAdminLanternCategory(pInfo.wishCategory || '가족건강')
+                setAdminLanternWish(pInfo.wishText)
+                setAdminLanternPaid(pInfo.paymentStatus === 'settled')
+              }}
+            >
+              <p className="text-[11px] text-[#3A332C] font-serif-kr line-clamp-2 leading-relaxed italic break-keep">
+                "{pInfo.wishText}"
+              </p>
+            </div>
+
+            {/* 가족 등록 정보가 있는 경우 보조 칩 표기 (있을 때만 표시) */}
             {m.family_members && m.family_members.length > 0 && (
-              <div className="pt-1 border-t border-[#F5F0E8] text-xs">
-                <span className="text-[10.5px] text-[#8C8071] block">가족 명단:</span>
-                <p className="text-[11px] text-[#555555] truncate" title={m.family_members.map((f) => `${f.name}(${f.relation})`).join(', ')}>
-                  {m.family_members.map((f) => `${f.name}(${f.relation})`).join(', ')}
-                </p>
+              <div
+                className="flex items-center gap-1 text-[10px] text-[#777777] truncate pt-0.5"
+                title={`가족 명단: ${m.family_members.map((f) => `${f.name}(${f.relation})`).join(', ')}${seju ? ` | 세주: ${seju.name}` : ''}`}
+              >
+                <span className="px-1.5 py-0.2 rounded bg-stone-100 text-stone-600 font-medium shrink-0">
+                  가족 {m.family_members.length}인{seju ? ` (${seju.name})` : ''}
+                </span>
+                <span className="truncate">
+                  {m.family_members.map((f) => f.name).join(', ')}
+                </span>
               </div>
             )}
           </div>
