@@ -2813,7 +2813,8 @@ function normalizeMemberHierarchy(m) {
     try {
       localStorage.removeItem('sowonpray_members_v5')
       localStorage.removeItem('sowonpray_members_v6')
-      const saved = localStorage.getItem('sowonpray_members_v7')
+      localStorage.removeItem('sowonpray_members_v7')
+      const saved = localStorage.getItem('sowonpray_members_v8')
       if (saved) {
         const parsed = JSON.parse(saved)
         const cleaned = parsed
@@ -2834,7 +2835,7 @@ function normalizeMemberHierarchy(m) {
   })
 
   const [prayers, setPrayers] = useState(() => {
-    const saved = localStorage.getItem('sowonpray_prayers_v4')
+    localStorage.removeItem('sowonpray_prayers_v4'); const saved = localStorage.getItem('sowonpray_prayers_v5')
     return saved ? JSON.parse(saved) : INITIAL_PRAYERS
   })
 
