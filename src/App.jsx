@@ -2190,6 +2190,38 @@ export default function App() {
   // ============================================================================
   // 신도 교적부 기반 [사찰 불사 & 위패 봉안 정식 접수] 모달 렌더러
   // ============================================================================
+  // 동참 종목별 표준 권장 보시금 산정 헬퍼
+  const getItemStandardPrice = (itemType) => {
+    if (!itemType) return 100000
+    if (itemType.includes('2기')) return 4000000
+    if (itemType.includes('황금빛') || itemType.includes('흑색') || itemType.includes('생전예수재') || itemType.includes('영구위패')) return 2000000
+    if (itemType.includes('단청') || itemType.includes('명패') || itemType.includes('기둥')) return 1000000
+    if (itemType.includes('1년 인등') || itemType.includes('100일') || itemType.includes('기와')) return 100000
+    if (itemType.includes('공양미')) return 50000
+    return 100000
+  }
+
+  // 정산관제 원장에서 미입금 건 원터치 완납 처리
+  const handleConfirmSettlementPayment = (settlementId) => {
+    const todayStr = new Date().toISOString().slice(0, 10)
+    setSettlements((prev) =>
+      prev.map((s) => {
+        if (s.id === settlementId) {
+          const stdAmt = Number(s.standard_amount || s.total_amount || 0)
+          return {
+            ...s,
+            payment_status: 'confirmed',
+            paid_amount: stdAmt,
+            unpaid_amount: 0,
+            paid_date: todayStr,
+          }
+        }
+        return s
+      })
+    )
+    showToast('✓ 입금 완납 확인 및 소원사 조직표 정산 집행이 완료되었습니다!')
+  }
+
   const handleRegisterSettlementForMember = (e) => {
     e?.preventDefault()
     if (!settlementTargetMember) {
@@ -2205,6 +2237,9 @@ export default function App() {
     const agent3 = agent2?.parent_code ? members.find((a) => a.code === agent2.parent_code) : null
 
     const todayStr = new Date().toISOString().slice(0, 10)
+    const stdAmount = Number(settlementStandardAmount) || 0
+    const actualPaidAmount = settlementPaymentStatus === 'pending' ? 0 : Number(settlementPaidAmount) || 0
+    const unpaidAmt = Math.max(0, stdAmount - actualPaidAmount)
 
     const newRecord = {
       id: 's-' + Date.now(),
@@ -2213,7 +2248,14 @@ export default function App() {
       believer_name: `${m.name}${m.dharma_name ? ` (${m.dharma_name})` : ''}`,
       believer_phone: m.phone || '',
       item_name: settlementItemType,
-      total_amount: Number(settlementAmount),
+      standard_amount: stdAmount,
+      total_amount: stdAmount, // 표준 약정금액
+      paid_amount: actualPaidAmount, // 실제 입금금액
+      unpaid_amount: unpaidAmt, // 미납 잔액
+      applied_date: settlementAppliedDate || todayStr, // 신청/접수일자
+      paid_date: settlementPaymentStatus !== 'pending' ? (settlementPaidDate || todayStr) : null, // 실제 입금일자
+      payment_method: settlementPaymentMethod,
+      payment_status: settlementPaymentStatus, // confirmed, partial, pending
       agent_1st_code: agent1 ? agent1.code : null,
       agent_1st_name: agent1
         ? `${agent1.name}${agent1.dharma_name ? `(${agent1.dharma_name})` : ''} (${agent1.role === 'temple_admin' ? '신도회장' : agent1.role === 'master' ? '총괄위원장' : '포교위원장'})`
@@ -2226,9 +2268,8 @@ export default function App() {
       agent_3rd_name: agent3
         ? `${agent3.name}${agent3.dharma_name ? `(${agent3.dharma_name})` : ''} (신도회장)`
         : '-',
-      payment_status: settlementPaymentStatus,
       memo: settlementMemo,
-      created_at: todayStr,
+      created_at: settlementAppliedDate || todayStr,
     }
 
     const isIndeung = settlementItemType.includes('인등')
@@ -2246,7 +2287,11 @@ export default function App() {
               extra_data: {
                 ...(item.extra_data || {}),
                 prayer_title: settlementItemType,
-                payment_amount: Number(settlementAmount),
+                payment_amount: actualPaidAmount,
+                standard_amount: stdAmount,
+                unpaid_amount: unpaidAmt,
+                applied_date: settlementAppliedDate || todayStr,
+                paid_date: settlementPaymentStatus !== 'pending' ? (settlementPaidDate || todayStr) : null,
                 payment_status: settlementPaymentStatus === 'confirmed' ? 'settled' : 'pending',
                 ...(lanternId ? { lantern_type: lanternId, lantern_active: true, lantern_started_at: todayStr } : {})
               }
@@ -2259,7 +2304,7 @@ export default function App() {
     setShowSettlementModal(false)
     setSettlementTargetMember(null)
     setSettlementMemo('')
-    showToast(`🪷 [${m.name}] 신도님의 [${settlementItemType}] 접수 및 소원사 조직표 계보 정산이 완결되었습니다!`)
+    showToast(`🪷 [${m.name}] 신도님의 [${settlementItemType}] 접수 및 회계 처리가 완결되었습니다!`)
   }
 
   const renderSettlementModal = () => {
@@ -2378,24 +2423,36 @@ export default function App() {
               </div>
             </div>
 
-            {/* 3. 불사 동참 항목 및 금액 */}
-            <div className="space-y-3 pt-1">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
+            {/* 3. 동참 종목 및 접수·약정 표준금액 */}
+            <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-3">
+              <div className="flex items-center justify-between pb-1.5 border-b border-[#EAE2D3]">
+                <span className="font-bold text-[#8A6510] flex items-center gap-1.5">
+                  <BookOpen className="w-4 h-4 text-[#8A6510]" />
+                  <span>3. 동참 종목 및 접수·약정 표준 정보</span>
+                </span>
+                <span className="text-[10.5px] font-bold text-[#8A6510] bg-[#FAF3DF] px-2 py-0.5 rounded border border-[#E8D4A2]">
+                  모바일 신청란 표준
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                {/* 동참 종목 선택 (sm:col-span-6) */}
+                <div className="sm:col-span-6">
                   <label className="block font-bold text-[#3D3630] mb-1">
-                    동참 종목 선택 (모바일 3대 분류 표준) *
+                    동참 종목 선택 *
                   </label>
                   <select
                     value={settlementItemType}
                     onChange={(e) => {
                       const val = e.target.value
+                      const stdPrice = getItemStandardPrice(val)
                       setSettlementItemType(val)
-                      if (val.includes('2기')) setSettlementAmount(4000000)
-                      else if (val.includes('황금빛') || val.includes('흑색') || val.includes('생전예수재') || val.includes('영구위패')) setSettlementAmount(2000000)
-                      else if (val.includes('단청') || val.includes('명패') || val.includes('기둥')) setSettlementAmount(1000000)
-                      else if (val.includes('1년 인등') || val.includes('100일') || val.includes('기와')) setSettlementAmount(100000)
-                      else if (val.includes('공양미')) setSettlementAmount(50000)
-                      else setSettlementAmount(100000)
+                      setSettlementStandardAmount(stdPrice)
+                      if (settlementPaymentStatus === 'confirmed') {
+                        setSettlementPaidAmount(stdPrice)
+                      } else if (settlementPaymentStatus === 'partial') {
+                        setSettlementPaidAmount(Math.round(stdPrice / 2))
+                      }
                     }}
                     className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-semibold text-[#1B1815] shadow-inner"
                   >
@@ -2408,7 +2465,7 @@ export default function App() {
                     <optgroup label="🏛️ 2. 영구 위패 봉안 불사">
                       <option value="생전예수재 황금빛 위패 (살아계신 분)">① 생전예수재 황금빛 위패 (살아계신 분) (200만원)</option>
                       <option value="조상 영가 품격 흑색 영구위패">② 조상 영가 품격 흑색 영구위패 (200만원)</option>
-                      <option value="조상 영가 부부 영구위패 (2기)">③ 조상 영가 부부 영구위패 (2기) (400만원)</option>
+                      <option value="조상 영가 부부 영구위패 2기">③ 조상 영가 부부 영구위패 2기 (400만원)</option>
                     </optgroup>
                     <optgroup label="🏔️ 3. 삼성각 성전 건립 대작불사">
                       <option value="삼성각 건립 소원 기와 불사 (1장)">① 삼성각 건립 소원 기와 불사 (1장) (10만원)</option>
@@ -2419,59 +2476,215 @@ export default function App() {
                   </select>
                 </div>
 
-                <div>
+                {/* 표준 약정금액 (sm:col-span-3) */}
+                <div className="sm:col-span-3">
                   <label className="block font-bold text-[#3D3630] mb-1">
-                    보시 금액 (원) *
+                    표준 약정금액 (원) *
                   </label>
                   <input
                     type="number"
-                    value={settlementAmount}
-                    onChange={(e) => setSettlementAmount(Number(e.target.value))}
+                    value={settlementStandardAmount}
+                    onChange={(e) => {
+                      const val = Number(e.target.value)
+                      setSettlementStandardAmount(val)
+                      if (settlementPaymentStatus === 'confirmed') setSettlementPaidAmount(val)
+                    }}
                     required
-                    className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-mono font-bold text-[#D32F2F]"
+                    className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-mono font-bold text-[#1B1815]"
                   />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-bold text-[#3D3630] mb-1">
-                    보시금 납부 상태 *
-                  </label>
-                  <select
-                    value={settlementPaymentStatus}
-                    onChange={(e) => setSettlementPaymentStatus(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs font-bold text-emerald-900"
-                  >
-                    <option value="confirmed">완납 입금 확인 (실시간 정산 집행)</option>
-                    <option value="pending">분납 / 입금 대기 (접수 보류)</option>
-                    <option value="reserved">예약 동참 접수</option>
-                  </select>
+                  <span className="text-[10px] text-[#8C8071] mt-0.5 block">
+                    종목 권장 기준금액
+                  </span>
                 </div>
 
-                <div>
+                {/* 접수일자 (sm:col-span-3) */}
+                <div className="sm:col-span-3">
                   <label className="block font-bold text-[#3D3630] mb-1">
-                    축원 발원 메모 (선택)
+                    접수일자 (신청일) *
                   </label>
                   <input
-                    type="text"
-                    value={settlementMemo}
-                    onChange={(e) => setSettlementMemo(e.target.value)}
-                    placeholder="예: 가족 건강 및 사업 번창, 조상 영가 극락왕생 발원"
-                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs"
+                    type="date"
+                    value={settlementAppliedDate}
+                    onChange={(e) => setSettlementAppliedDate(e.target.value)}
+                    required
+                    className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-mono font-bold text-[#1B1815]"
                   />
+                  <span className="text-[10px] text-[#8C8071] mt-0.5 block">
+                    현장/온라인 신청일
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* 제출 버튼 */}
+            {/* 4. 실제 입금 수납 처리 (회계 및 정산 집행) */}
+            <div className={`p-3.5 rounded-2xl border space-y-3 transition ${
+              settlementPaymentStatus === 'confirmed'
+                ? 'bg-emerald-50/70 border-emerald-300'
+                : settlementPaymentStatus === 'partial'
+                ? 'bg-amber-50/70 border-amber-300'
+                : 'bg-stone-50 border-stone-300'
+            }`}>
+              <div className="flex items-center justify-between pb-1.5 border-b border-[#EAE2D3]">
+                <span className="font-bold flex items-center gap-1.5 text-[#1B1815]">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-700" />
+                  <span>4. 실제 입금 수납 처리 (회계 및 정산 집행)</span>
+                </span>
+                <span className={`text-[10.5px] font-bold px-2.5 py-0.5 rounded-full border shadow-2xs ${
+                  settlementPaymentStatus === 'confirmed'
+                    ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                    : settlementPaymentStatus === 'partial'
+                    ? 'bg-amber-100 text-amber-900 border-amber-300'
+                    : 'bg-stone-100 text-stone-700 border-stone-300'
+                }`}>
+                  {settlementPaymentStatus === 'confirmed'
+                    ? '✓ 완납 확인 (실시간 정산 집행)'
+                    : settlementPaymentStatus === 'partial'
+                    ? '△ 일부 입금 (분납 정산)'
+                    : '⏳ 미입금 (입금 대기 · 정산 보류)'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                {/* 납부/수납 상태 (sm:col-span-4) */}
+                <div className="sm:col-span-4">
+                  <label className="block font-bold text-[#3D3630] mb-1">
+                    납부/수납 상태 *
+                  </label>
+                  <select
+                    value={settlementPaymentStatus}
+                    onChange={(e) => {
+                      const newStatus = e.target.value
+                      setSettlementPaymentStatus(newStatus)
+                      if (newStatus === 'confirmed') {
+                        setSettlementPaidAmount(settlementStandardAmount)
+                        if (!settlementPaidDate) setSettlementPaidDate(new Date().toISOString().slice(0, 10))
+                      } else if (newStatus === 'pending') {
+                        setSettlementPaidAmount(0)
+                      } else if (newStatus === 'partial') {
+                        if (settlementPaidAmount === settlementStandardAmount || settlementPaidAmount === 0) {
+                          setSettlementPaidAmount(Math.round(settlementStandardAmount / 2))
+                        }
+                        if (!settlementPaidDate) setSettlementPaidDate(new Date().toISOString().slice(0, 10))
+                      }
+                    }}
+                    className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-bold text-[#1B1815]"
+                  >
+                    <option value="confirmed">완납 입금 (실시간 정산 집행)</option>
+                    <option value="partial">분납 (일부 입금 처리)</option>
+                    <option value="pending">미입금 (입금 대기 · 정산 보류)</option>
+                  </select>
+                </div>
+
+                {/* 실제 입금금액 (sm:col-span-4) */}
+                <div className="sm:col-span-4">
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="font-bold text-[#3D3630]">
+                      실제 입금금액 (수납액) *
+                    </label>
+                    {settlementStandardAmount - settlementPaidAmount > 0 && (
+                      <span className="text-[10px] font-bold text-amber-700">
+                        미납: {(settlementStandardAmount - settlementPaidAmount).toLocaleString()}원
+                      </span>
+                    )}
+                  </div>
+                  <input
+                    type="number"
+                    value={settlementPaidAmount}
+                    onChange={(e) => setSettlementPaidAmount(Number(e.target.value))}
+                    disabled={settlementPaymentStatus === 'pending'}
+                    required
+                    className={`w-full px-3 py-2.5 rounded-xl border text-xs font-mono font-bold ${
+                      settlementPaymentStatus === 'pending'
+                        ? 'bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed'
+                        : 'bg-white border-[#D5C59B] text-emerald-800'
+                    }`}
+                  />
+                  <div className="flex items-center justify-between text-[10px] mt-0.5">
+                    <span className="text-[#8C8071]">
+                      {settlementPaymentStatus === 'pending' ? '미입금 상태 (0원)' : '실제 사찰 수납 금액'}
+                    </span>
+                    <strong className={settlementStandardAmount - settlementPaidAmount === 0 ? 'text-emerald-700 font-bold' : 'text-amber-800 font-bold'}>
+                      {settlementStandardAmount - settlementPaidAmount === 0
+                        ? '완납 (잔액 0원)'
+                        : `잔여 ${(settlementStandardAmount - settlementPaidAmount).toLocaleString()}원 미납`}
+                    </strong>
+                  </div>
+                </div>
+
+                {/* 실제 입금일자 (sm:col-span-4) */}
+                <div className="sm:col-span-4">
+                  <label className="block font-bold text-[#3D3630] mb-1">
+                    실제 입금일자 *
+                  </label>
+                  <input
+                    type="date"
+                    value={settlementPaymentStatus === 'pending' ? '' : settlementPaidDate}
+                    onChange={(e) => setSettlementPaidDate(e.target.value)}
+                    disabled={settlementPaymentStatus === 'pending'}
+                    className={`w-full px-3 py-2.5 rounded-xl border text-xs font-mono font-bold ${
+                      settlementPaymentStatus === 'pending'
+                        ? 'bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed'
+                        : 'bg-white border-[#D5C59B] text-[#1B1815]'
+                    }`}
+                  />
+                  <span className="text-[10px] text-[#8C8071] mt-0.5 block">
+                    {settlementPaymentStatus === 'pending' ? '입금 시 일자 입력' : '통장 수납 완료일'}
+                  </span>
+                </div>
+              </div>
+
+              {/* 결제 수단 선택 & 회계 안내 */}
+              <div className="pt-2 border-t border-[#EAE2D3] flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[11px] font-bold text-[#554E45]">입금/수납 수단:</span>
+                  <div className="flex items-center gap-1">
+                    {['계좌이체 (사찰통장)', '현금 (종무소)', '신용카드', '기타'].map((method) => (
+                      <button
+                        key={method}
+                        type="button"
+                        onClick={() => setSettlementPaymentMethod(method)}
+                        className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold transition border ${
+                          settlementPaymentMethod === method
+                            ? 'bg-[#1B1815] text-[#F5D061] border-[#1B1815] shadow-xs'
+                            : 'bg-white text-[#666] border-[#DDD4C4] hover:bg-[#FAF8F5]'
+                        }`}
+                      >
+                        {method}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="text-[10.5px] text-[#8C8071]">
+                  {settlementPaymentStatus === 'confirmed'
+                    ? '💡 입금 확인 즉시 조직도 1·2·3차 수당이 집행됩니다.'
+                    : '⚠️ 미입금 건은 신도 입금 완료 시까지 수당 정산이 자동 보류됩니다.'}
+                </div>
+              </div>
+            </div>
+
+            {/* 5. 축원 발원 메모 */}
+            <div>
+              <label className="block font-bold text-[#3D3630] mb-1">
+                축원 발원문 및 종무 메모 (선택)
+              </label>
+              <input
+                type="text"
+                value={settlementMemo}
+                onChange={(e) => setSettlementMemo(e.target.value)}
+                placeholder="예: 가족 건강 및 사업 번창, 조상 영가 극락왕생 발원 (사시예불 축원 연동)"
+                className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-serif-kr text-[#1B1815] placeholder:text-[#A89D8E]"
+              />
+            </div>
+
+            {/* 6. 제출 및 정산 집행 버튼 */}
             <div className="pt-2">
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#C59B27] via-[#8A6510] to-[#231F1C] text-[#FAF8F5] font-black text-sm shadow-md hover:brightness-105 active:scale-99 transition flex items-center justify-center gap-2"
+                className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] font-serif-kr font-bold text-sm shadow-md flex items-center justify-center gap-2 border border-[#C59B27] transition cursor-pointer"
               >
                 <Save className="w-4 h-4 text-[#F5D061]" />
-                <span>卍 사찰 불사 접수 완료 및 실시간 계보 정산 실행하기</span>
+                <span>卍 사찰 기도·위패·불사 접수 완료 및 실시간 계보 정산 실행하기</span>
               </button>
             </div>
           </form>
@@ -3463,8 +3676,12 @@ function normalizeMemberHierarchy(m) {
   // [사찰 불사 & 위패 봉안 정식 접수] 전용 모달 상태 (신도교적부 검색·선택 기반)
   const [showSettlementModal, setShowSettlementModal] = useState(false)
   const [settlementTargetMember, setSettlementTargetMember] = useState(null)
-  const [settlementItemType, setSettlementItemType] = useState('생전예수재 황금위패 1기 (200만원)')
-  const [settlementAmount, setSettlementAmount] = useState(2000000)
+  const [settlementItemType, setSettlementItemType] = useState('생전예수재 황금빛 위패 (살아계신 분)')
+  const [settlementStandardAmount, setSettlementStandardAmount] = useState(2000000)
+  const [settlementPaidAmount, setSettlementPaidAmount] = useState(2000000)
+  const [settlementAppliedDate, setSettlementAppliedDate] = useState(() => new Date().toISOString().slice(0, 10))
+  const [settlementPaidDate, setSettlementPaidDate] = useState(() => new Date().toISOString().slice(0, 10))
+  const [settlementPaymentMethod, setSettlementPaymentMethod] = useState('계좌이체 (사찰통장)')
   const [settlementPaymentStatus, setSettlementPaymentStatus] = useState('confirmed')
   const [settlementMemo, setSettlementMemo] = useState('')
 
@@ -7073,52 +7290,102 @@ function normalizeMemberHierarchy(m) {
                     <table className="w-full text-left border-collapse text-xs">
                       <thead className="bg-[#FAF8F5] text-[#5C4D3C] border-b border-[#DDD4C4] text-[11px] font-bold">
                         <tr>
-                          <th className="p-2.5 text-center whitespace-nowrap">접수일자</th>
+                          <th className="p-2.5 text-center whitespace-nowrap">접수일 / 입금일</th>
                           <th className="p-2.5 whitespace-nowrap">동참 신도</th>
-                          <th className="p-2.5 whitespace-nowrap">불사 / 위패 항목</th>
-                          <th className="p-2.5 text-right whitespace-nowrap">보시 금액</th>
-                          <th className="p-2.5 text-center whitespace-nowrap">사찰 불사금(50%)</th>
-                          <th className="p-2.5 whitespace-nowrap">유치 추천인 (1차)</th>
-                          <th className="p-2.5 whitespace-nowrap">상위 관리 (2차)</th>
-                          <th className="p-2.5 text-center whitespace-nowrap">상태</th>
+                          <th className="p-2.5 whitespace-nowrap">기도·불사·위패 종목</th>
+                          <th className="p-2.5 text-right whitespace-nowrap">표준 약정액</th>
+                          <th className="p-2.5 text-right whitespace-nowrap">실제 입금액</th>
+                          <th className="p-2.5 text-center whitespace-nowrap">사찰 본원(50%)</th>
+                          <th className="p-2.5 whitespace-nowrap">1차 직속추천 (30%)</th>
+                          <th className="p-2.5 whitespace-nowrap">2차 상위관리 (10%)</th>
+                          <th className="p-2.5 text-center whitespace-nowrap">수납·정산상태</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[#EFE7D8]">
                         {settlements.map((s, idx) => {
-                          const templeAmt = Math.round((Number(s.total_amount) || 0) * 0.5)
+                          const stdAmt = Number(s.standard_amount || s.total_amount || 0)
+                          const actualPaid = s.paid_amount !== undefined ? Number(s.paid_amount) : (s.payment_status === 'pending' ? 0 : stdAmt)
+                          const templeAmt = Math.round(actualPaid * 0.5)
+                          const agent1Amt = Math.round(actualPaid * 0.3)
+                          const isConfirmed = s.payment_status === 'confirmed' || (!s.payment_status && actualPaid > 0)
+                          const isPartial = s.payment_status === 'partial'
+                          const isPending = s.payment_status === 'pending' || actualPaid === 0
+
                           return (
                             <tr key={s.id || idx} className="hover:bg-[#FAF8F5]">
-                              <td className="p-2.5 text-center whitespace-nowrap font-mono text-[11px] text-[#666]">
-                                {(s.created_at || '').slice(0, 10)}
+                              <td className="p-2.5 text-center whitespace-nowrap font-mono text-[11px]">
+                                <div className="text-[#666]" title="접수일자">
+                                  접수: {(s.applied_date || s.created_at || '').slice(0, 10)}
+                                </div>
+                                <div className={`text-[10.5px] font-bold ${s.paid_date ? 'text-emerald-700' : 'text-amber-700'}`} title="입금일자">
+                                  {s.paid_date ? `입금: ${s.paid_date.slice(0, 10)}` : '미입금 (대기)'}
+                                </div>
                               </td>
                               <td className="p-2.5 font-bold text-[#1B1815] whitespace-nowrap">
-                                {s.believer_name}
+                                <div>{s.believer_name}</div>
+                                {s.believer_phone && (
+                                  <div className="font-mono text-[10.5px] text-[#8C8071]">{s.believer_phone}</div>
+                                )}
                               </td>
                               <td className="p-2.5 font-bold text-[#8A6510]">
-                                {s.item_name || s.title || '사찰 특별불사'}
+                                <div>{s.item_name || s.title || '사찰 특별불사'}</div>
+                                {s.memo && (
+                                  <div className="text-[10px] text-[#888] font-normal italic truncate max-w-[200px]" title={s.memo}>
+                                    축원: {s.memo}
+                                  </div>
+                                )}
                               </td>
-                              <td className="p-2.5 text-right font-mono font-bold text-[#D32F2F] whitespace-nowrap">
-                                {Number(s.total_amount || 0).toLocaleString()}원
+                              <td className="p-2.5 text-right font-mono font-bold text-[#555] whitespace-nowrap">
+                                {stdAmt.toLocaleString()}원
+                              </td>
+                              <td className="p-2.5 text-right font-mono font-bold whitespace-nowrap">
+                                <span className={isConfirmed ? 'text-emerald-700' : isPartial ? 'text-amber-700' : 'text-stone-400'}>
+                                  {actualPaid.toLocaleString()}원
+                                </span>
+                                {stdAmt - actualPaid > 0 && (
+                                  <div className="text-[10px] text-red-600 font-bold">
+                                    미납: {(stdAmt - actualPaid).toLocaleString()}원
+                                  </div>
+                                )}
                               </td>
                               <td className="p-2.5 text-center font-mono font-bold text-amber-900 bg-amber-50/50 whitespace-nowrap">
                                 {templeAmt.toLocaleString()}원
                               </td>
                               <td className="p-2.5 text-[#554E45] whitespace-nowrap font-bold">
-                                {s.agent_1st_name || '-'}
+                                <div>{s.agent_1st_name || '-'}</div>
+                                {actualPaid > 0 && (
+                                  <div className="font-mono text-[10px] text-emerald-700 font-semibold">
+                                    +{agent1Amt.toLocaleString()}원
+                                  </div>
+                                )}
                               </td>
                               <td className="p-2.5 text-[#777777] whitespace-nowrap text-[11px]">
                                 {s.agent_2nd_name || '-'}
                               </td>
                               <td className="p-2.5 text-center whitespace-nowrap">
-                                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
-                                  완납·정산
-                                </span>
+                                {isConfirmed ? (
+                                  <span className="px-2.5 py-1 rounded-full text-[10.5px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                    완납·정산집행
+                                  </span>
+                                ) : isPartial ? (
+                                  <span className="px-2.5 py-1 rounded-full text-[10.5px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                                    분납·일부정산
+                                  </span>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleConfirmSettlementPayment(s.id)}
+                                    className="px-2.5 py-1 rounded-full text-[10.5px] font-bold bg-stone-100 hover:bg-emerald-600 hover:text-white text-stone-700 border border-stone-300 transition cursor-pointer shadow-2xs"
+                                    title="클릭 시 오늘 입금 완납 처리"
+                                  >
+                                    입금대기 (완납확인✓)
+                                  </button>
+                                )}
                               </td>
                             </tr>
                           )
                         })}
-                      </tbody>
-                    </table>
+                      </tbody></table>
                   </div>
                 </div>
               </section>
