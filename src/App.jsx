@@ -3278,9 +3278,10 @@ function normalizeMemberHierarchy(m) {
         key={m.code}
         className="p-4 sm:p-5 rounded-2xl bg-white border border-[#EAE2D3] hover:border-[#C59B27] hover:shadow-md transition"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3.5 items-center">
-          {/* ==================== 1열: 신도 기본 인적 & 연락처 (lg:col-span-3) ==================== */}
-          <div className="lg:col-span-3 space-y-1.5 min-w-0">
+        {/* ==================== 카드 상단 헤더: 신도 기본 인적(좌) & 위 오른쪽(⭐) 접수/입금날짜 ==================== */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 mb-3.5 border-b border-[#F0EAE1]">
+          {/* 좌측: 성함, 법명, 생년/띠 간지, 전화번호, 주소 */}
+          <div className="flex items-center gap-3.5 flex-wrap min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-bold text-base text-[#1B1815]">
                 {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''}
@@ -3290,23 +3291,49 @@ function normalizeMemberHierarchy(m) {
                   {m.birth_year || (m.birth_date ? m.birth_date.slice(0, 4) : '')}년 {m.lunar_solar || '음력'} ({zInfo.ganji} {zInfo.animal}띠)
                 </span>
               )}
+              <span className="text-[10.5px] px-2 py-0.5 rounded bg-stone-100 text-stone-600 font-mono font-medium">
+                #{m.code}
+              </span>
             </div>
 
-            {/* 전화번호 & 거주지 주소 */}
-            <div className="text-xs text-[#555555] space-y-0.5 pt-0.5">
+            <div className="flex items-center gap-3 text-xs text-[#555555] flex-wrap">
               <div className="flex items-center gap-1.5">
                 <Phone className="w-3.5 h-3.5 text-[#8A6510] shrink-0" />
                 <span className="font-mono font-bold text-[#1B1815]">{m.phone}</span>
                 {m.tel && <span className="font-mono text-[#888888]">({m.tel})</span>}
               </div>
-              <div className="text-[11.5px] text-[#777777] truncate" title={m.address}>
+              <div className="text-[11.5px] text-[#777777] truncate max-w-[280px]" title={m.address}>
                 🏠 {m.address || '제주특별자치도 제주시'}
               </div>
             </div>
           </div>
 
-          {/* ==================== 2열: 🪔 대웅전 점등 상태 (독립 열 - 수직 일직선 정렬!) (lg:col-span-2) ==================== */}
-          <div className="lg:col-span-2 space-y-1.5 lg:border-l lg:border-[#F0EAE1] lg:pl-3.5 min-w-0">
+          {/* ⭐ 위 오른쪽: 접수날짜 & 입금날짜 박스 (자리가 딱 맞게 배치) */}
+          <div className="p-2 px-3 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-1 text-xs shrink-0 self-start sm:self-auto min-w-[170px]">
+            <div className="flex items-center justify-between text-[11px] gap-3">
+              <span className="text-[#777777] flex items-center gap-1">
+                <Calendar className="w-3 h-3 text-[#8A6510]" />
+                <span>접수날짜:</span>
+              </span>
+              <strong className="font-mono text-[#1B1815]">{pInfo.appliedDate}</strong>
+            </div>
+
+            <div className="flex items-center justify-between text-[11px] pt-0.5 border-t border-[#F0EAE1] gap-3">
+              <span className="text-[#777777] flex items-center gap-1">
+                <Clock className="w-3 h-3 text-[#8A6510]" />
+                <span>입금날짜:</span>
+              </span>
+              <strong className={`font-mono ${pInfo.paymentStatus === 'settled' ? 'text-emerald-700' : 'text-amber-700 font-bold'}`}>
+                {pInfo.paidDate}
+              </strong>
+            </div>
+          </div>
+        </div>
+
+        {/* ==================== 본문 4단 열 그리드 (각 lg:col-span-3 균등 분할) ==================== */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3.5 items-center">
+          {/* ==================== 1열: 🪔 대웅전 점등 상태 (독립 열 - 수직 일직선 정렬!) (lg:col-span-3) ==================== */}
+          <div className="lg:col-span-3 space-y-1.5 min-w-0">
             <span className="text-[10.5px] font-bold text-[#8C8071] block">대웅전 점등 상태:</span>
             {pInfo.isLanternActive ? (
               <div className="space-y-1">
@@ -3376,8 +3403,8 @@ function normalizeMemberHierarchy(m) {
             )}
           </div>
 
-          {/* ==================== 3열: 🪷 부처님 전 축원 발원문 & 기원분야 (lg:col-span-2) ==================== */}
-          <div className="lg:col-span-2 space-y-1.5 lg:border-l lg:border-[#F0EAE1] lg:pl-3.5 min-w-0">
+          {/* ==================== 2열: 🪷 부처님 전 축원 발원문 & 기원분야 (lg:col-span-3) ==================== */}
+          <div className="lg:col-span-3 space-y-1.5 lg:border-l lg:border-[#F0EAE1] lg:pl-3.5 min-w-0">
             <div className="flex items-center justify-between gap-1">
               <span className="text-[10.5px] font-bold text-[#8C8071]">부처님 전 축원 발원:</span>
               <span className="px-1.5 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200 text-[10px] font-bold shrink-0">
@@ -3418,8 +3445,9 @@ function normalizeMemberHierarchy(m) {
             )}
           </div>
 
-          {/* ==================== 4열: 🪔 기도·불사 접수 현황 & 일자 (lg:col-span-3) ==================== */}
-          <div className="lg:col-span-3 space-y-2 lg:border-l lg:border-[#F0EAE1] lg:pl-3.5 min-w-0">
+          {/* ==================== 3열: 🪔 기도·불사 접수 현황 (lg:col-span-3) ==================== */}
+          <div className="lg:col-span-3 space-y-1.5 lg:border-l lg:border-[#F0EAE1] lg:pl-3.5 min-w-0">
+            <span className="text-[10.5px] font-bold text-[#8C8071] block">기도·불사 접수 현황:</span>
             <div>
               <div className="flex items-center gap-1.5 mb-1">
                 <span className={`px-2 py-0.5 rounded text-[10.5px] font-bold border ${pInfo.prayerBadgeColor}`}>
@@ -3451,31 +3479,10 @@ function normalizeMemberHierarchy(m) {
                 </span>
               )}
             </div>
-
-            {/* 📅 접수날짜 & 💳 입금날짜 분리 표기 */}
-            <div className="p-2 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-1 text-xs">
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-[#777777] flex items-center gap-1">
-                  <Calendar className="w-3 h-3 text-[#8A6510]" />
-                  <span>접수날짜:</span>
-                </span>
-                <strong className="font-mono text-[#1B1815]">{pInfo.appliedDate}</strong>
-              </div>
-
-              <div className="flex items-center justify-between text-[11px] pt-0.5 border-t border-[#F0EAE1]">
-                <span className="text-[#777777] flex items-center gap-1">
-                  <Clock className="w-3 h-3 text-[#8A6510]" />
-                  <span>입금날짜:</span>
-                </span>
-                <strong className={`font-mono ${pInfo.paymentStatus === 'settled' ? 'text-emerald-700' : 'text-amber-700 font-bold'}`}>
-                  {pInfo.paidDate}
-                </strong>
-              </div>
-            </div>
           </div>
 
-          {/* ==================== 5열: 💰 보시금·입금처리 & 종무소 액션 (lg:col-span-2) ==================== */}
-          <div className="lg:col-span-2 space-y-2.5 lg:border-l lg:border-[#F0EAE1] lg:pl-4 min-w-0">
+          {/* ==================== 4열: 💰 보시금·입금처리 & 종무소 액션 (lg:col-span-3) ==================== */}
+          <div className="lg:col-span-3 space-y-2 lg:border-l lg:border-[#F0EAE1] lg:pl-3.5 min-w-0">
             {/* 입금 상태 배지 & 금액 */}
             <div className="space-y-1">
               <span className="text-[10.5px] text-[#8C8071] block">보시금 입금 상태:</span>
