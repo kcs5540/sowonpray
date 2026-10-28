@@ -16,6 +16,13 @@ export default function MemberDirectoryPrintModal({
   if (!isOpen) return null
   if (typeof document === 'undefined') return null
 
+  const getRecommenderName = (parentCode) => {
+    if (!parentCode || parentCode === '55570267') return '본사 (양영문)'
+    if (parentCode === '33065540') return '포교본부 (김철수)'
+    const found = (members || []).find((m) => m.code === parentCode)
+    return found ? `${found.name} (${found.code})` : '소원사 본부'
+  }
+
   return createPortal(
 
           <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">

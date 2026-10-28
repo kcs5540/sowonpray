@@ -160,6 +160,17 @@ export default function AdminERPView(props) {
     setCurrentUserCode,
   } = props
 
+  const agents = React.useMemo(() => {
+    return (members || []).filter(
+      (m) =>
+        m.role === 'agent' ||
+        m.role === 'committee_head' ||
+        m.role === 'committee_member' ||
+        m.role === 'temple_admin' ||
+        m.role === 'master'
+    )
+  }, [members])
+
   return (
       <div className="min-h-screen bg-[#161310] text-[#FAF8F5] w-full selection:bg-[#C59B27] selection:text-white flex flex-col font-sans">
         {/* ==================== 🏛️ ERP 전용 최상단 데스크톱 헤더 ==================== */}
@@ -1180,6 +1191,7 @@ export default function AdminERPView(props) {
           prayers={prayers}
           settlements={settlements}
           members={members}
+          agents={agents}
           getMemberPrayerAndPaymentInfo={getMemberPrayerAndPaymentInfo}
           onOpenIndividualRecordPrint={(m) => {
             setIndividualRecordTargetMember(m)

@@ -32,6 +32,7 @@ export default function MemberDetailModal({
   prayers = [],
   settlements = [],
   members = [],
+  agents: propAgents,
   getMemberPrayerAndPaymentInfo,
   onOpenIndividualRecordPrint,
   onOpenIndeungPrint,
@@ -42,6 +43,18 @@ export default function MemberDetailModal({
 
   const selectedMemberDetail = member
   const handleSaveMemberEdit = onSaveMemberEdit
+
+  const agents = React.useMemo(() => {
+    if (propAgents && propAgents.length > 0) return propAgents
+    return (members || []).filter(
+      (m) =>
+        m.role === 'agent' ||
+        m.role === 'committee_head' ||
+        m.role === 'committee_member' ||
+        m.role === 'temple_admin' ||
+        m.role === 'master'
+    )
+  }, [propAgents, members])
     const curComp = computeZodiacAndGanji(selectedMemberDetail.birth_year || selectedMemberDetail.birth_date)
     const curGanji = curComp.ganji || selectedMemberDetail.ganji || ''
     const curAnimal = curComp.animal || selectedMemberDetail.animal || ''

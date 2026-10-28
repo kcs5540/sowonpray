@@ -151,7 +151,7 @@ export function SettlementConfirmModal({
               </button>
               <button
                 type="button"
-                onClick={() => executeFinalSettlementRegistration(data)}
+                onClick={() => onConfirm(data)}
                 className="py-3 px-4 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] font-bold text-xs shadow-md border border-[#C59B27] transition cursor-pointer flex items-center justify-center gap-1.5"
               >
                 <Check className="w-4 h-4 text-[#F5D061]" />
