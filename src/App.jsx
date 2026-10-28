@@ -2871,34 +2871,14 @@ function normalizeMemberHierarchy(m) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 items-center">
           {/* ==================== 1열: 신도 기본 인적 & 연락처 (lg:col-span-4) ==================== */}
           <div className="lg:col-span-4 space-y-1.5 min-w-0">
-            <div className="flex items-center gap-1.5 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="font-bold text-base text-[#1B1815]">
                 {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''}
               </span>
-              <span className="text-[11px] text-[#8A6510] font-mono font-bold bg-[#FAF3DF] px-2 py-0.5 rounded border border-[#E8D4A2]">
-                #{m.code}
-              </span>
-              <span className="text-[10.5px] px-2 py-0.5 rounded-full font-bold bg-[#1B1815] text-[#F5D061]">
-                {m.role === 'master'
-                  ? '총괄 마스터'
-                  : m.role === 'temple_admin'
-                  ? '사찰 본부임원'
-                  : m.role === 'agent'
-                  ? '포교위원장'
-                  : m.role === 'committee_member'
-                  ? '포교위원'
-                  : '일반신도'}
-              </span>
-            </div>
-
-            {/* 사주 간지 & 음양력 */}
-            <div className="flex items-center gap-2 flex-wrap text-xs">
-              {zInfo.ganji ? (
+              {zInfo.ganji && (
                 <span className="px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200 font-serif-kr font-bold text-[11px]">
                   {m.birth_year || (m.birth_date ? m.birth_date.slice(0, 4) : '')}년 {m.lunar_solar || '음력'} ({zInfo.ganji} {zInfo.animal}띠)
                 </span>
-              ) : (
-                <span className="text-[11px] text-[#8C8071]">생년 미입력</span>
               )}
             </div>
 
@@ -10598,9 +10578,6 @@ function normalizeMemberHierarchy(m) {
                             <div className="flex items-center gap-1.5 flex-wrap">
                               <span className="font-bold text-[#231F1C]">
                                 {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''}
-                              </span>
-                              <span className="text-[10.5px] text-[#8A6510] font-mono font-semibold">
-                                #{m.code}
                               </span>
                               <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-900 border border-amber-300 font-semibold">
                                 공덕 {m.merit_count || 0}
