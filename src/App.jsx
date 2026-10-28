@@ -2202,6 +2202,106 @@ export default function App() {
   }
 
   // 정산관제 원장에서 미입금 건 원터치 완납 처리
+  // 정산 원장 착오 수정사항 저장
+  const handleSaveEditedSettlement = (e) => {
+    e?.preventDefault()
+    if (!editingSettlement) return
+    const s = editingSettlement
+    const stdAmt = Number(s.standard_amount || s.total_amount || 0)
+    const paidAmt = s.payment_status === 'refunded' || s.payment_status === 'pending' ? 0 : Number(s.paid_amount || 0)
+    const unpaidAmt = Math.max(0, stdAmt - paidAmt)
+
+    setSettlements((prev) =>
+      prev.map((item) => (item.id === s.id ? { ...s, standard_amount: stdAmt, total_amount: stdAmt, paid_amount: paidAmt, unpaid_amount: unpaidAmt } : item))
+    )
+
+    // 신도 상태 동기화 (환불 시 위패/점등 원복)
+    setMembers((prev) =>
+      prev.map((m) => {
+        if (m.code === s.member_code) {
+          const isRefunded = s.payment_status === 'refunded'
+          const isPending = s.payment_status === 'pending' || paidAmt === 0
+          const isWipae = (s.item_name || '').includes('위패')
+          const isIndeung = (s.item_name || '').includes('인등') || (s.item_name || '').includes('100일')
+
+          return {
+            ...m,
+            wipae_count: isRefunded || isPending
+              ? Math.max(0, (m.wipae_count || 0) - (isWipae ? ((s.item_name || '').includes('2기') ? 2 : 1) : 0))
+              : m.wipae_count,
+            extra_data: {
+              ...(m.extra_data || {}),
+              payment_amount: paidAmt,
+              payment_status: isRefunded ? 'refunded' : isPending ? 'pending' : 'settled',
+              ...(isIndeung && (isRefunded || isPending) ? { lantern_active: false, lantern_active_until: null } : {}),
+            },
+          }
+        }
+        return m
+      })
+    )
+
+    setEditingSettlement(null)
+    showToast('✓ 원장 수정사항이 정상 반영되었습니다.')
+  }
+
+  // 정산 원장 환불/접수취소 원터치 처리
+  const handleRefundSettlement = (settlementId) => {
+    const todayStr = new Date().toISOString().slice(0, 10)
+    let targetMemberCode = null
+    let targetItemName = ''
+
+    setSettlements((prev) =>
+      prev.map((s) => {
+        if (s.id === settlementId) {
+          targetMemberCode = s.member_code
+          targetItemName = s.item_name || ''
+          return {
+            ...s,
+            payment_status: 'refunded',
+            paid_amount: 0,
+            unpaid_amount: 0,
+            paid_date: todayStr,
+            memo: (s.memo ? s.memo + ' ' : '') + `[${todayStr} 환불완료/수당회수]`,
+          }
+        }
+        return s
+      })
+    )
+
+    if (targetMemberCode) {
+      const isWipae = targetItemName.includes('위패')
+      const isIndeung = targetItemName.includes('인등') || targetItemName.includes('100일')
+      setMembers((prev) =>
+        prev.map((m) => {
+          if (m.code === targetMemberCode) {
+            return {
+              ...m,
+              wipae_count: isWipae ? Math.max(0, (m.wipae_count || 0) - (targetItemName.includes('2기') ? 2 : 1)) : m.wipae_count,
+              extra_data: {
+                ...(m.extra_data || {}),
+                payment_amount: 0,
+                payment_status: 'refunded',
+                ...(isIndeung ? { lantern_active: false, lantern_active_until: null } : {}),
+              },
+            }
+          }
+          return m
+        })
+      )
+    }
+
+    setEditingSettlement(null)
+    showToast('💸 환불 및 접수 취소 처리가 완료되었습니다. (추천인 수당 전액 회수)')
+  }
+
+  // 착오 입력 원장 기록 완전 삭제
+  const handleDeleteSettlement = (settlementId) => {
+    setSettlements((prev) => prev.filter((s) => s.id !== settlementId))
+    setEditingSettlement(null)
+    showToast('🗑️ 착오 입력 장부 기록이 완전히 삭제되었습니다.')
+  }
+
   const handleConfirmSettlementPayment = (settlementId) => {
     const todayStr = new Date().toISOString().slice(0, 10)
     setSettlements((prev) =>
@@ -2345,6 +2445,297 @@ export default function App() {
     setSettlementTargetMember(null)
     setSettlementMemo('')
     showToast(`🪷 [${m.name}] 신도님의 [${settlementItemType}] 접수 및 회계 처리가 완결되었습니다!`)
+  }
+
+  // ⚙️ [착오 수정 및 환불/취소 처리 전용 모달 렌더러]
+  const renderSettlementEditModal = () => {
+    if (!editingSettlement) return null
+    const s = editingSettlement
+    const stdAmt = Number(s.standard_amount || s.total_amount || 0)
+    const paidAmt = Number(s.paid_amount !== undefined ? s.paid_amount : stdAmt)
+    const unpaidAmt = Math.max(0, stdAmt - paidAmt)
+
+    return createPortal(
+      <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div className="w-full max-w-xl bg-white text-[#1B1815] rounded-3xl shadow-2xl border-2 border-[#D5C59B] overflow-hidden my-auto animate-in fade-in duration-200">
+          {/* 헤더 */}
+          <div className="bg-[#1B1815] text-[#FAF8F5] p-4 sm:p-5 flex items-center justify-between border-b-2 border-[#D4AF37]">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] flex items-center justify-center font-bold text-base shadow shrink-0">
+                ⚙️
+              </div>
+              <div>
+                <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#F5D061]">
+                  접수 원장 착오 수정 및 환불/취소 처리
+                </h3>
+                <p className="text-xs text-[#D6CEC2]">
+                  동참 신도: {s.believer_name} · 등록번호: {s.id}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setEditingSettlement(null)}
+              className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <form onSubmit={handleSaveEditedSettlement} className="p-5 sm:p-6 space-y-4 text-xs">
+            {/* 1. 신도 기본 정보 확인 */}
+            <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE2D3] flex items-center justify-between">
+              <div>
+                <span className="text-[11px] text-[#8C8071] block">동참 신도 성함 / 연락처</span>
+                <strong className="text-sm font-bold text-[#1B1815]">
+                  {s.believer_name}
+                </strong>
+                {s.believer_phone && <span className="font-mono text-xs text-[#666] ml-2">({s.believer_phone})</span>}
+              </div>
+              <div className="text-right">
+                <span className="text-[10px] text-[#8C8071] block">유치 추천인 (1차)</span>
+                <strong className="text-xs font-bold text-[#8A6510]">{s.agent_1st_name || '소원사 본원'}</strong>
+              </div>
+            </div>
+
+            {/* 2. 동참 종목 & 약정액 & 접수일 수정 */}
+            <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-3">
+              <span className="font-bold text-[#8A6510] block pb-1 border-b border-[#EAE2D3]">
+                동참 종목 및 표준 약정 정보 수정
+              </span>
+
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                <div className="sm:col-span-6">
+                  <label className="block font-bold text-[#3D3630] mb-1">동참 종목</label>
+                  <select
+                    value={s.item_name || ''}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      const stdPrice = getItemStandardPrice(val)
+                      setEditingSettlement((prev) => ({
+                        ...prev,
+                        item_name: val,
+                        standard_amount: stdPrice,
+                        total_amount: stdPrice,
+                        paid_amount: prev.payment_status === 'confirmed' ? stdPrice : prev.paid_amount,
+                      }))
+                    }}
+                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs font-semibold text-[#1B1815]"
+                  >
+                    <optgroup label="🪷 1. 대웅전 상시 기도 및 공덕 불사">
+                      <option value="대웅전 공양미 / 불전시주">① 대웅전 공양미 / 불전시주 (50,000원)</option>
+                      <option value="대웅전 1년 인등 (가족등)">② 대웅전 1년 인등 (가족등) (100,000원)</option>
+                      <option value="100일 소원성취 특별기도">③ 100일 소원성취 특별기도 (100,000원)</option>
+                      <option value="49재 / 천도재 / 기일제사">④ 49재 / 천도재 / 기일제사</option>
+                    </optgroup>
+                    <optgroup label="🏛️ 2. 영구 위패 봉안 불사">
+                      <option value="생전예수재 황금빛 위패 (살아계신 분)">① 생전예수재 황금빛 위패 (살아계신 분) (200만원)</option>
+                      <option value="조상 영가 품격 흑색 영구위패">② 조상 영가 품격 흑색 영구위패 (200만원)</option>
+                      <option value="조상 영가 부부 영구위패 2기">③ 조상 영가 부부 영구위패 2기 (400만원)</option>
+                    </optgroup>
+                    <optgroup label="🏔️ 3. 삼성각 성전 건립 대작불사">
+                      <option value="삼성각 건립 소원 기와 불사 (1장)">① 삼성각 건립 소원 기와 불사 (1장) (10만원)</option>
+                      <option value="삼성각 대들보 · 기둥 · 오색단청 불사">② 삼성각 대들보 · 기둥 · 오색단청 불사 (100만원)</option>
+                      <option value="삼성각 가족 영구축원 명패 · 주춧돌">③ 삼성각 가족 영구축원 명패 · 주춧돌 (100만원)</option>
+                      <option value="기타 특별기도 및 맞춤 불사 상담">④ 기타 특별기도 및 맞춤 불사 상담</option>
+                    </optgroup>
+                  </select>
+                </div>
+
+                <div className="sm:col-span-3">
+                  <label className="block font-bold text-[#3D3630] mb-1">표준 약정액 (원)</label>
+                  <input
+                    type="number"
+                    value={s.standard_amount || s.total_amount || 0}
+                    onChange={(e) => {
+                      const val = Number(e.target.value)
+                      setEditingSettlement((prev) => ({
+                        ...prev,
+                        standard_amount: val,
+                        total_amount: val,
+                        paid_amount: prev.payment_status === 'confirmed' ? val : prev.paid_amount,
+                      }))
+                    }}
+                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs font-mono font-bold"
+                  />
+                </div>
+
+                <div className="sm:col-span-3">
+                  <label className="block font-bold text-[#3D3630] mb-1">접수일자</label>
+                  <input
+                    type="date"
+                    value={(s.applied_date || s.created_at || '').slice(0, 10)}
+                    onChange={(e) => setEditingSettlement((prev) => ({ ...prev, applied_date: e.target.value }))}
+                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs font-mono"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 3. 실제 수납 / 환불 상태 수정 */}
+            <div className={`p-3.5 rounded-2xl border space-y-3 ${
+              s.payment_status === 'refunded'
+                ? 'bg-red-50/70 border-red-300'
+                : s.payment_status === 'confirmed'
+                ? 'bg-emerald-50/70 border-emerald-300'
+                : s.payment_status === 'partial'
+                ? 'bg-amber-50/70 border-amber-300'
+                : 'bg-stone-50 border-stone-300'
+            }`}>
+              <div className="flex items-center justify-between pb-1.5 border-b border-[#EAE2D3]">
+                <span className="font-bold flex items-center gap-1.5 text-[#1B1815]">
+                  <CreditCard className="w-4 h-4 text-emerald-700" />
+                  <span>실제 입금 수납 및 환불 상태 처리</span>
+                </span>
+                <span className={`text-[10.5px] font-bold px-2 py-0.5 rounded-full border ${
+                  s.payment_status === 'refunded'
+                    ? 'bg-red-100 text-red-900 border-red-300'
+                    : s.payment_status === 'confirmed'
+                    ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                    : s.payment_status === 'partial'
+                    ? 'bg-amber-100 text-amber-900 border-amber-300'
+                    : 'bg-stone-100 text-stone-700 border-stone-300'
+                }`}>
+                  {s.payment_status === 'refunded'
+                    ? '💸 환불·취소 (정산회수)'
+                    : s.payment_status === 'confirmed'
+                    ? '✓ 완납 (실시간 정산집행)'
+                    : s.payment_status === 'partial'
+                    ? '△ 일부입금 (분납)'
+                    : '⏳ 미입금 (입금대기)'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                <div className="sm:col-span-4">
+                  <label className="block font-bold text-[#3D3630] mb-1">납부 / 환불 상태 *</label>
+                  <select
+                    value={s.payment_status || 'confirmed'}
+                    onChange={(e) => {
+                      const newStatus = e.target.value
+                      setEditingSettlement((prev) => {
+                        const curStd = Number(prev.standard_amount || prev.total_amount || 0)
+                        if (newStatus === 'confirmed') {
+                          return { ...prev, payment_status: newStatus, paid_amount: curStd, unpaid_amount: 0 }
+                        } else if (newStatus === 'refunded') {
+                          return { ...prev, payment_status: newStatus, paid_amount: 0, unpaid_amount: 0 }
+                        } else if (newStatus === 'pending') {
+                          return { ...prev, payment_status: newStatus, paid_amount: 0, unpaid_amount: curStd }
+                        } else {
+                          return { ...prev, payment_status: newStatus, paid_amount: Math.round(curStd / 2) }
+                        }
+                      })
+                    }}
+                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs font-bold"
+                  >
+                    <option value="confirmed">완납 입금 (실시간 정산 집행)</option>
+                    <option value="partial">분납 (일부 납부)</option>
+                    <option value="pending">미입금 (입금 대기 · 정산 보류)</option>
+                    <option value="refunded">💸 환불 / 접수 취소 (수당 전액 회수)</option>
+                  </select>
+                </div>
+
+                <div className="sm:col-span-4">
+                  <label className="block font-bold text-[#3D3630] mb-1">실제 입금금액 (수납액)</label>
+                  <input
+                    type="number"
+                    value={s.paid_amount !== undefined ? s.paid_amount : stdAmt}
+                    onChange={(e) => {
+                      const val = Number(e.target.value)
+                      setEditingSettlement((prev) => ({
+                        ...prev,
+                        paid_amount: val,
+                        unpaid_amount: Math.max(0, Number(prev.standard_amount || prev.total_amount || 0) - val),
+                      }))
+                    }}
+                    disabled={s.payment_status === 'refunded' || s.payment_status === 'pending'}
+                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs font-mono font-bold text-emerald-800"
+                  />
+                  <span className="text-[10px] text-[#8C8071] mt-0.5 block">
+                    {s.payment_status === 'refunded' ? '환불 처리되어 입금액 0원' : `미납: ${unpaidAmt.toLocaleString()}원`}
+                  </span>
+                </div>
+
+                <div className="sm:col-span-4">
+                  <label className="block font-bold text-[#3D3630] mb-1">실제 입금일자</label>
+                  <input
+                    type="date"
+                    value={(s.paid_date || '').slice(0, 10)}
+                    onChange={(e) => setEditingSettlement((prev) => ({ ...prev, paid_date: e.target.value }))}
+                    disabled={s.payment_status === 'refunded' || s.payment_status === 'pending'}
+                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs font-mono font-bold"
+                  />
+                  <span className="text-[10px] text-[#8C8071] mt-0.5 block">실제 수납 완료일</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-[#3D3630] mb-1">수정 사유 및 축원/환불 메모</label>
+                <input
+                  type="text"
+                  value={s.memo || ''}
+                  onChange={(e) => setEditingSettlement((prev) => ({ ...prev, memo: e.target.value }))}
+                  placeholder="예: 신도 요청으로 환불 완료 / 착오 금액 정정 등 사유 기록"
+                  className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs text-[#1B1815]"
+                />
+              </div>
+            </div>
+
+            {/* 하단 버튼 그룹 */}
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-2.5">
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                {/* 환불 원터치 버튼 */}
+                {s.payment_status !== 'refunded' && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (window.confirm(`[${s.believer_name}] 신도님의 이 접수 건을 '환불/접수취소' 처리하시겠습니까?\n사찰 본사 및 추천인 수당이 전액 회수(취소)되고 신도의 점등/위패가 소등·원복됩니다.`)) {
+                        handleRefundSettlement(s.id)
+                      }
+                    }}
+                    className="px-3.5 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-300 font-bold text-xs transition cursor-pointer"
+                  >
+                    💸 환불/취소 처리
+                  </button>
+                )}
+
+                {/* 착오 입력 완전 삭제 버튼 */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (window.confirm(`[${s.believer_name}] 신도님의 이 원장 기록을 완전히 삭제하시겠습니까?\n(착오로 잘못 등록된 테스트 건이나 중복 건 삭제 전용)`)) {
+                      handleDeleteSettlement(s.id)
+                    }
+                  }}
+                  className="px-3 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-600 font-bold text-xs transition cursor-pointer"
+                >
+                  <Trash2 className="w-3.5 h-3.5 inline mr-1" />
+                  <span>장부 삭제</span>
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <button
+                  type="button"
+                  onClick={() => setEditingSettlement(null)}
+                  className="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-[#555] font-bold text-xs transition cursor-pointer"
+                >
+                  닫기
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] font-bold text-xs shadow-md border border-[#C59B27] transition cursor-pointer"
+                >
+                  <Save className="w-3.5 h-3.5 inline mr-1 text-[#F5D061]" />
+                  <span>수정사항 저장</span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>,
+      document.body
+    )
   }
 
   const renderSettlementModal = () => {
@@ -3695,6 +4086,8 @@ function normalizeMemberHierarchy(m) {
   const [indeungTargetMember, setIndeungTargetMember] = useState(null)
   // [신도교적부 상단 공통 툴바] 현재 활성화/선택된 신도 코드 상태
   const [activeBelieverCode, setActiveBelieverCode] = useState(null)
+  // [정산 원장 착오 수정 및 환불/취소 처리] 전용 모달 상태
+  const [editingSettlement, setEditingSettlement] = useState(null)
 
   // 개인 신도 교적대장 및 1년 가족인등 인쇄 시 배경 앱(#root) 숨김 및 단 1장 완결 출력 전용 클래스 토글
   useEffect(() => {
@@ -7368,34 +7761,50 @@ function normalizeMemberHierarchy(m) {
                                 {s.agent_2nd_name || '-'}
                               </td>
                               <td className="p-2.5 text-center whitespace-nowrap">
-                                {isConfirmed ? (
-                                  <span className="px-2.5 py-1 rounded-full text-[10.5px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                                    완납·정산완료
-                                  </span>
-                                ) : isPartial ? (
-                                  <div className="flex flex-col items-center gap-1">
-                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
-                                      분납(1차정산집행)
+                                <div className="flex flex-col items-center gap-1">
+                                  {s.payment_status === 'refunded' ? (
+                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-900 border border-red-300">
+                                      환불·취소 (정산회수)
                                     </span>
+                                  ) : isConfirmed ? (
+                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                      완납·정산완료
+                                    </span>
+                                  ) : isPartial ? (
+                                    <>
+                                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                                        분납(1차정산)
+                                      </span>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleConfirmSettlementPayment(s.id)}
+                                        className="px-2 py-0.5 rounded-lg text-[9.5px] font-bold bg-emerald-700 hover:bg-emerald-800 text-white shadow-xs transition cursor-pointer"
+                                        title="신도가 남은 잔액을 완납했을 때 클릭"
+                                      >
+                                        잔액완납✓
+                                      </button>
+                                    </>
+                                  ) : (
                                     <button
                                       type="button"
                                       onClick={() => handleConfirmSettlementPayment(s.id)}
-                                      className="px-2 py-0.5 rounded-lg text-[9.5px] font-bold bg-emerald-700 hover:bg-emerald-800 text-white shadow-xs transition cursor-pointer"
-                                      title="신도가 남은 잔액을 완납했을 때 클릭"
+                                      className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-stone-100 hover:bg-emerald-600 hover:text-white text-stone-700 border border-stone-300 transition cursor-pointer shadow-2xs"
+                                      title="신도가 입금했을 때 클릭하여 완납 처리"
                                     >
-                                      잔액 완납처리✓
+                                      입금대기(완납✓)
                                     </button>
-                                  </div>
-                                ) : (
+                                  )}
+
+                                  {/* 착오 수정 및 환불/취소 관리 버튼 */}
                                   <button
                                     type="button"
-                                    onClick={() => handleConfirmSettlementPayment(s.id)}
-                                    className="px-2.5 py-1 rounded-full text-[10.5px] font-bold bg-stone-100 hover:bg-emerald-600 hover:text-white text-stone-700 border border-stone-300 transition cursor-pointer shadow-2xs"
-                                    title="신도가 입금했을 때 클릭하여 완납 처리"
+                                    onClick={() => setEditingSettlement(s)}
+                                    className="px-2 py-0.5 rounded-md text-[9.5px] font-bold bg-[#FAF8F5] hover:bg-[#F0EAE1] text-[#8A6510] border border-[#D5C59B] transition cursor-pointer"
+                                    title="착오 금액 수정, 환불 처리, 장부 삭제"
                                   >
-                                    입금대기 (완납확인✓)
+                                    ⚙️ 수정/환불
                                   </button>
-                                )}
+                                </div>
                               </td>
                             </tr>
                           )
@@ -7656,6 +8065,7 @@ function normalizeMemberHierarchy(m) {
         {/* 신도 상세 및 가족 사주 수정 모달 */}
         {selectedMemberDetail && renderMemberDetailModal()}
         {showSettlementModal && renderSettlementModal()}
+        {editingSettlement && renderSettlementEditModal()}
         {showIndividualRecordPrintModal && renderIndividualRecordPrintModal()}
         {showIndeungNameplateModal && renderIndeungNameplateModal()}
         {lanternTargetMember && renderLanternModal()}
