@@ -7009,18 +7009,7 @@ function normalizeMemberHierarchy(m) {
                       <Search className="w-4 h-4 text-[#F5D061]" />
                       <span>신도 검색 후 불사 접수하기</span>
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setErpTab('search')
-                        setAdminRegMode('family')
-                        showToast('✍️ 신규 신도를 먼저 교적부에 등록합니다.')
-                      }}
-                      className="flex-1 md:flex-initial px-4 py-3 rounded-2xl bg-[#FAF8F5] border-2 border-[#C59B27] text-[#8A6510] text-xs font-bold hover:bg-[#FAF3DF] transition flex items-center justify-center gap-1.5 shadow-sm"
-                    >
-                      <UserPlus className="w-4 h-4 text-[#8A6510]" />
-                      <span>신규 신도 교적 등록</span>
-                    </button>
+
                   </div>
                 </div>
 
