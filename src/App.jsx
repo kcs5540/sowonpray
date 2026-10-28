@@ -3448,6 +3448,8 @@ function normalizeMemberHierarchy(m) {
   // [대웅전 1년 가족 인등 전통 명패] A4 원터치 인쇄 모달 상태
   const [showIndeungNameplateModal, setShowIndeungNameplateModal] = useState(false)
   const [indeungTargetMember, setIndeungTargetMember] = useState(null)
+  // [신도교적부 상단 공통 툴바] 현재 활성화/선택된 신도 코드 상태
+  const [activeBelieverCode, setActiveBelieverCode] = useState(null)
 
   // 개인 신도 교적대장 및 1년 가족인등 인쇄 시 배경 앱(#root) 숨김 및 단 1장 완결 출력 전용 클래스 토글
   useEffect(() => {
@@ -3951,6 +3953,18 @@ function normalizeMemberHierarchy(m) {
     })
   }, [members, adminMemberRoleFilter, adminMemberSearchQuery, adminMemberSort])
 
+  // [신도교적부 상단 공통 툴바] 현재 선택/조작 대상 신도 (클릭 선택 신도 -> 첫 검색 결과 -> 첫 신도 자동 지정)
+  const currentActiveBeliever = useMemo(() => {
+    if (activeBelieverCode) {
+      const found = (members || []).find((m) => m.code === activeBelieverCode)
+      if (found) return found
+    }
+    if (filteredAdminMembers && filteredAdminMembers.length > 0) {
+      return filteredAdminMembers[0]
+    }
+    return (members && members[0]) || null
+  }, [activeBelieverCode, members, filteredAdminMembers])
+
   // [모바일법당 회원명부 A4 인쇄] 필터 및 검색
   const [memberPrintRoleFilter, setMemberPrintRoleFilter] = useState('all')
   const [memberPrintSearchQuery, setMemberPrintSearchQuery] = useState('')
@@ -4238,7 +4252,12 @@ function normalizeMemberHierarchy(m) {
     return (
       <div
         key={m.code}
-        className="p-4 sm:p-5 rounded-2xl bg-white border border-[#EAE2D3] hover:border-[#C59B27] hover:shadow-md transition"
+        onClick={() => setActiveBelieverCode(m.code)}
+        className={`p-4 sm:p-5 rounded-2xl transition cursor-pointer ${
+          currentActiveBeliever?.code === m.code
+            ? 'bg-[#FFFDF7] border-2 border-[#C59B27] shadow-md ring-2 ring-[#C59B27]/25'
+            : 'bg-white border border-[#EAE2D3] hover:border-[#C59B27] hover:shadow-sm'
+        }`}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3.5 items-center">
           {/* ==================== 1열: 신도 기본 인적 & 연락처 (lg:col-span-2) ==================== */}
@@ -6775,7 +6794,7 @@ function normalizeMemberHierarchy(m) {
             {/* ==================== 1. 신도교적부 리스트 & 검색·수정 탭 ==================== */}
             {erpTab === 'search' && (
               <section className="bg-white text-[#231F1C] rounded-3xl p-6 sm:p-8 shadow-sm border border-[#E6DEC8] space-y-5">
-                <div className="flex items-center justify-between pb-2 border-b border-[#E6DEC8]">
+                <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3.5 pb-3 border-b border-[#E6DEC8]">
                   <div>
                     <h3 className="font-serif-kr font-bold text-lg text-[#1B1815] flex items-center gap-2 flex-wrap">
                       <span>1. 신도교적부 리스트 &amp; 검색·수정</span>
@@ -6792,6 +6811,98 @@ function normalizeMemberHierarchy(m) {
                     <p className="text-xs text-[#8C8071] mt-0.5">
                       본인 이름뿐 아니라 남편(세주) 이름, 자녀 이름, 전화번호 뒷4자리 아무거나 검색해도 1초 만에 가족 전체가 호출됩니다.
                     </p>
+                  </div>
+
+                  {/* 🌟 대표님 요청: 페이지 상단 오른쪽 종무원 공통 액션 툴바 (4대 핵심 버튼) */}
+                  <div className="flex items-center gap-2 flex-wrap shrink-0">
+                    {/* 현재 선택 신도 안내 배지 */}
+                    {currentActiveBeliever && (
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#FAF8F5] border border-[#D5C59B] text-xs shadow-2xs">
+                        <span className="w-2 h-2 rounded-full bg-[#C59B27] animate-pulse shrink-0" />
+                        <span className="text-[#8C8071]">선택 신도:</span>
+                        <strong className="text-[#1B1815] font-bold">
+                          {currentActiveBeliever.name} {currentActiveBeliever.dharma_name ? `(${currentActiveBeliever.dharma_name})` : ''}
+                        </strong>
+                      </div>
+                    )}
+
+                    {/* 1. 소원등 점등 */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!currentActiveBeliever) return
+                        setActiveBelieverCode(currentActiveBeliever.code)
+                        setLanternTargetMember(currentActiveBeliever)
+                        setAdminLanternType('lantern_1d')
+                        setAdminLanternCategory('가족건강')
+                        setAdminLanternWish(PRAYER_CATEGORY_TEMPLATES['가족건강'] || '')
+                        setAdminLanternPaid(true)
+                      }}
+                      className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:brightness-105 text-[#1B1815] font-black text-xs transition flex items-center gap-1.5 shadow-sm border border-amber-400 active:scale-95 cursor-pointer"
+                      title={currentActiveBeliever ? `[${currentActiveBeliever.name} 신도] 대웅전 소원등 즉시 점등 및 축원 연장` : '소원등 점등'}
+                    >
+                      <Flame className="w-3.5 h-3.5 text-amber-950 fill-amber-900" />
+                      <span>소원등 점등</span>
+                    </button>
+
+                    {/* 2. 인등 명패 */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!currentActiveBeliever) return
+                        setActiveBelieverCode(currentActiveBeliever.code)
+                        setIndeungTargetMember(currentActiveBeliever)
+                        setShowIndeungNameplateModal(true)
+                      }}
+                      className="px-3.5 py-2 rounded-xl bg-white hover:bg-[#FAF3DF] border-2 border-[#D5C59B] text-[#8A6510] font-bold text-xs transition flex items-center gap-1.5 shadow-xs active:scale-95 cursor-pointer"
+                      title={currentActiveBeliever ? `[${currentActiveBeliever.name} 신도] 대웅전 1년 가족인등 전통 명패 A4 원터치 인쇄` : '인등 명패 인쇄'}
+                    >
+                      <Printer className="w-3.5 h-3.5" />
+                      <span>인등 명패</span>
+                    </button>
+
+                    {/* 3. 불사 접수 */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!currentActiveBeliever) return
+                        setActiveBelieverCode(currentActiveBeliever.code)
+                        setSettlementTargetMember(currentActiveBeliever)
+                        setShowSettlementModal(true)
+                      }}
+                      className="px-3.5 py-2 rounded-xl bg-[#FAF3DF] hover:bg-[#F3E6C2] border-2 border-[#D5C59B] text-[#8A6510] font-black text-xs transition flex items-center gap-1.5 shadow-xs active:scale-95 cursor-pointer"
+                      title={currentActiveBeliever ? `[${currentActiveBeliever.name} 신도] 사찰 불사·위패 접수 (조직표 100% 자동 매칭)` : '불사 접수'}
+                    >
+                      <PlusCircle className="w-3.5 h-3.5 text-[#8A6510]" />
+                      <span>불사 접수</span>
+                    </button>
+
+                    {/* 4. 교적 수정 */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!currentActiveBeliever) return
+                        setActiveBelieverCode(currentActiveBeliever.code)
+                        setSelectedMemberDetail(currentActiveBeliever)
+                        setIsEditingMember(false)
+                      }}
+                      className="px-3.5 py-2 rounded-xl bg-[#1B1815] hover:bg-[#2C251F] text-[#F5D061] font-bold text-xs transition flex items-center gap-1.5 shadow-xs active:scale-95 cursor-pointer"
+                      title={currentActiveBeliever ? `[${currentActiveBeliever.name} 신도] 신도교적부 상세 조회 및 수정` : '교적 상세수정'}
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>교적 수정</span>
+                    </button>
+
+                    {/* 5. 신규 등록 */}
+                    <button
+                      type="button"
+                      onClick={() => setErpTab('register')}
+                      className="px-3 py-2 rounded-xl bg-[#FAF8F5] hover:bg-[#EAE2D3] text-[#555] font-bold text-xs transition flex items-center gap-1.5 border border-[#DDD4C4] active:scale-95 cursor-pointer"
+                      title="신규 신도 교적 새로 등록하기"
+                    >
+                      <UserPlus className="w-3.5 h-3.5 text-[#777]" />
+                      <span>신규 등록</span>
+                    </button>
                   </div>
                 </div>
 
