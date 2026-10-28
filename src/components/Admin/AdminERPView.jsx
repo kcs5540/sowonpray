@@ -122,6 +122,12 @@ export default function AdminERPView(props) {
     setSettlementPaymentStatus,
     settlementStandardAmount,
     setSettlementStandardAmount,
+    settlementAppliedDate,
+    setSettlementAppliedDate,
+    settlementPaidDate,
+    setSettlementPaidDate,
+    settlementPaymentMethod,
+    setSettlementPaymentMethod,
     settlementTargetMember,
     setSettlementTargetMember,
     showBulsaCategorySheet,
@@ -1224,6 +1230,12 @@ export default function AdminERPView(props) {
           setSettlementPaymentStatus={setSettlementPaymentStatus}
           settlementMemo={settlementMemo}
           setSettlementMemo={setSettlementMemo}
+          settlementAppliedDate={settlementAppliedDate}
+          setSettlementAppliedDate={setSettlementAppliedDate}
+          settlementPaidDate={settlementPaidDate}
+          setSettlementPaidDate={setSettlementPaidDate}
+          settlementPaymentMethod={settlementPaymentMethod}
+          setSettlementPaymentMethod={setSettlementPaymentMethod}
           onSubmit={handleRegisterSettlementForMember}
           onOpenCategorySheet={() => setShowBulsaCategorySheet(true)}
         />

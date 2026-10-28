@@ -12,6 +12,33 @@ import {
 } from 'lucide-react'
 import { computeZodiacAndGanji } from '../../lib/supabase'
 
+// 동참 종목별 표준 권장 보시금 산정 헬퍼
+export const getItemStandardPrice = (itemType) => {
+  if (!itemType) return 100000
+  if (itemType.includes('2기')) return 4000000
+  if (
+    itemType.includes('황금빛') ||
+    itemType.includes('흑색') ||
+    itemType.includes('생전예수재') ||
+    itemType.includes('영구위패')
+  )
+    return 2000000
+  if (
+    itemType.includes('단청') ||
+    itemType.includes('명패') ||
+    itemType.includes('기둥')
+  )
+    return 1000000
+  if (
+    itemType.includes('1년 인등') ||
+    itemType.includes('100일') ||
+    itemType.includes('기와')
+  )
+    return 100000
+  if (itemType.includes('공양미')) return 50000
+  return 100000
+}
+
 // 卍 [정식 접수 최종 확인 전용 중앙 팝업 모달]
 export function SettlementConfirmModal({
   isOpen = true,
@@ -484,6 +511,12 @@ export function SettlementModal({
   setSettlementPaymentStatus,
   settlementMemo,
   setSettlementMemo,
+  settlementAppliedDate,
+  setSettlementAppliedDate,
+  settlementPaidDate,
+  setSettlementPaidDate,
+  settlementPaymentMethod,
+  setSettlementPaymentMethod,
   onSubmit,
   onOpenCategorySheet,
 }) {
@@ -491,7 +524,20 @@ export function SettlementModal({
   if (typeof document === 'undefined') return null
 
   const m = member
-    const zInfo = computeZodiacAndGanji(m.birth_year || (m.birth_date ? m.birth_date.slice(0, 4) : ''))
+  const zInfo = computeZodiacAndGanji(m.birth_year || (m.birth_date ? m.birth_date.slice(0, 4) : ''))
+
+  const [internalAppliedDate, setInternalAppliedDate] = React.useState(() => new Date().toISOString().slice(0, 10))
+  const [internalPaidDate, setInternalPaidDate] = React.useState(() => new Date().toISOString().slice(0, 10))
+  const [internalMethod, setInternalMethod] = React.useState('계좌이체 (사찰)')
+
+  const appliedDate = settlementAppliedDate !== undefined ? settlementAppliedDate : internalAppliedDate
+  const onAppliedDateChange = setSettlementAppliedDate || setInternalAppliedDate
+
+  const paidDate = settlementPaidDate !== undefined ? settlementPaidDate : internalPaidDate
+  const onPaidDateChange = setSettlementPaidDate || setInternalPaidDate
+
+  const paymentMethod = settlementPaymentMethod !== undefined ? settlementPaymentMethod : internalMethod
+  const onPaymentMethodChange = setSettlementPaymentMethod || setInternalPaymentMethod
     
     // 조직표 계보 매칭
     const directAgent = members.find((a) => a.code === (m.parent_code || '33065540')) || members.find((a) => a.code === '33065540')
@@ -519,7 +565,6 @@ export function SettlementModal({
               type="button"
               onClick={() => {
                 onClose()
-                setSettlementTargetMember(null)
               }}
               className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition"
             >
@@ -648,8 +693,8 @@ export function SettlementModal({
                   </label>
                   <input
                     type="date"
-                    value={settlementAppliedDate}
-                    onChange={(e) => setSettlementAppliedDate(e.target.value)}
+                    value={appliedDate}
+                    onChange={(e) => onAppliedDateChange(e.target.value)}
                     required
                     className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-mono font-bold text-[#1B1815]"
                   />
@@ -701,14 +746,14 @@ export function SettlementModal({
                       setSettlementPaymentStatus(newStatus)
                       if (newStatus === 'confirmed') {
                         setSettlementPaidAmount(settlementStandardAmount)
-                        if (!settlementPaidDate) setSettlementPaidDate(new Date().toISOString().slice(0, 10))
+                        if (!paidDate) onPaidDateChange(new Date().toISOString().slice(0, 10))
                       } else if (newStatus === 'pending') {
                         setSettlementPaidAmount(0)
                       } else if (newStatus === 'partial') {
                         if (settlementPaidAmount === settlementStandardAmount || settlementPaidAmount === 0) {
                           setSettlementPaidAmount(Math.round(settlementStandardAmount / 2))
                         }
-                        if (!settlementPaidDate) setSettlementPaidDate(new Date().toISOString().slice(0, 10))
+                        if (!paidDate) onPaidDateChange(new Date().toISOString().slice(0, 10))
                       }
                     }}
                     className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-bold text-[#1B1815]"
@@ -786,9 +831,9 @@ export function SettlementModal({
                       <button
                         key={method}
                         type="button"
-                        onClick={() => setSettlementPaymentMethod(method)}
+                        onClick={() => onPaymentMethodChange(method)}
                         className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold transition border ${
-                          settlementPaymentMethod === method
+                          paymentMethod === method
                             ? 'bg-[#1B1815] text-[#F5D061] border-[#1B1815] shadow-xs'
                             : 'bg-white text-[#666] border-[#DDD4C4] hover:bg-[#FAF8F5]'
                         }`}

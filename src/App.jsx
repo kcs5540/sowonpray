@@ -5141,6 +5141,12 @@ function normalizeMemberHierarchy(m) {
         setSettlementPaymentStatus={setSettlementPaymentStatus}
         settlementStandardAmount={settlementStandardAmount}
         setSettlementStandardAmount={setSettlementStandardAmount}
+        settlementAppliedDate={settlementAppliedDate}
+        setSettlementAppliedDate={setSettlementAppliedDate}
+        settlementPaidDate={settlementPaidDate}
+        setSettlementPaidDate={setSettlementPaidDate}
+        settlementPaymentMethod={settlementPaymentMethod}
+        setSettlementPaymentMethod={setSettlementPaymentMethod}
         settlementTargetMember={settlementTargetMember}
         setSettlementTargetMember={setSettlementTargetMember}
         showBulsaCategorySheet={showBulsaCategorySheet}
