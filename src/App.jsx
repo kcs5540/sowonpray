@@ -12222,6 +12222,7 @@ function normalizeMemberHierarchy(m) {
           toggleSasiPrayedCheck={toggleSasiPrayedCheck}
           sasiPrayerTypeTab={sasiPrayerTypeTab}
           setSasiPrayerTypeTab={setSasiPrayerTypeTab}
+          members={members}
         />
 
                 {/* ==================== 10만 신도 고속 검색: 회원 상세 정보 & 가족 사주 관리 모달 ==================== */}

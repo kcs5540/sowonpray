@@ -25,6 +25,7 @@ export default function SasiPrayerPrintModal({
   toggleSasiPrayedCheck,
   sasiPrayerTypeTab = 'all',
   setSasiPrayerTypeTab,
+  members = [],
 }) {
   if (!isOpen) return null
   if (typeof document === 'undefined') return null
@@ -124,7 +125,7 @@ export default function SasiPrayerPrintModal({
                 ) : sasiPrayerTypeTab === 'indeung_1yr' ? (
                   <div className="space-y-4">
                     {filteredSasiPrayers.map((p, idx) => {
-                      const member = members.find((m) => m.code === p.member_code) || null
+                      const member = (members || []).find((m) => m.code === p.member_code) || null
                       const familyList = member?.family_members && member.family_members.length > 0
                         ? member.family_members
                         : [

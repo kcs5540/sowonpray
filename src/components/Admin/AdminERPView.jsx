@@ -1182,6 +1182,7 @@ export default function AdminERPView(props) {
           toggleSasiPrayedCheck={toggleSasiPrayedCheck}
           sasiPrayerTypeTab={sasiPrayerTypeTab}
           setSasiPrayerTypeTab={setSasiPrayerTypeTab}
+          members={members}
         />
 
                 {/* 신도 상세 및 가족 사주 수정 모달 */}
