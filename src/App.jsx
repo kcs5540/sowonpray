@@ -2281,6 +2281,30 @@ export default function App() {
     const isIndeung = settlementItemType.includes('인등')
     const is100d = settlementItemType.includes('100일')
     const lanternId = isIndeung ? 'indeung_1yr' : is100d ? 'prayer_100d' : null
+    const durDays = isIndeung ? 365 : is100d ? 100 : 7
+    const untilIso = new Date(Date.now() + durDays * 86400000).toISOString()
+    const isPaymentActive = settlementPaymentStatus !== 'pending' && actualPaidAmount > 0
+
+    // 인등 및 100일 기도: 완납 또는 일부 납부(분납) 시 즉시 대웅전 점등 및 사시예불 축원 명부에 자동 편성!
+    if ((isIndeung || is100d) && isPaymentActive) {
+      const newPrayer = {
+        id: 'p-' + Date.now(),
+        temple_id: DEFAULT_TEMPLE_ID,
+        member_code: m.code,
+        believer_name: `${m.name}${m.dharma_name ? ` (${m.dharma_name})` : ''}`,
+        believer_phone: m.phone || '',
+        agent_code: m.parent_code || '33065540',
+        wish_category: isIndeung ? '대웅전 1년 인등(가족등)' : '100일 소원성취 특별기도',
+        prayer_type: lanternId,
+        duration_days: durDays,
+        family_members_count: m.family_members?.length || 1,
+        wish_text: settlementMemo || '지극정성으로 가내 평안과 소원성취를 발원합니다.',
+        status: 'prayed',
+        prayed_at: '종무소 정식 접수 (사시예불 축원 연동)',
+        created_at: new Date().toISOString().replace('T', ' ').slice(0, 16),
+      }
+      setPrayers((prev) => [newPrayer, ...prev])
+    }
 
     setSettlements((prev) => [newRecord, ...prev])
     setMembers((prev) =>
@@ -2291,7 +2315,7 @@ export default function App() {
               merit_count: (item.merit_count || 0) + 1,
               // 위패 봉안 수량: 완납 또는 일부 납부(분납) 시 향후 완납을 전제로 불사·위패 공식 집행 및 카운트 반영! (전액 미입금 시에만 0)
               wipae_count: (item.wipae_count || 0) + (
-                settlementPaymentStatus !== 'pending' && actualPaidAmount > 0 && settlementItemType.includes('위패')
+                isPaymentActive && settlementItemType.includes('위패')
                   ? (settlementItemType.includes('2기') ? 2 : 1)
                   : 0
               ),
@@ -2302,9 +2326,14 @@ export default function App() {
                 standard_amount: stdAmount,
                 unpaid_amount: unpaidAmt,
                 applied_date: settlementAppliedDate || todayStr,
-                paid_date: settlementPaymentStatus !== 'pending' ? (settlementPaidDate || todayStr) : null,
+                paid_date: isPaymentActive ? (settlementPaidDate || todayStr) : null,
                 payment_status: settlementPaymentStatus === 'confirmed' ? 'settled' : settlementPaymentStatus === 'partial' ? 'partial' : 'pending',
-                ...(lanternId ? { lantern_type: lanternId, lantern_active: settlementPaymentStatus !== 'pending' && actualPaidAmount > 0, lantern_started_at: todayStr } : {})
+                ...(lanternId ? {
+                  lantern_type: lanternId,
+                  lantern_active: isPaymentActive,
+                  lantern_active_until: isPaymentActive ? untilIso : null,
+                  lantern_started_at: todayStr,
+                } : {})
               }
             }
           : item
