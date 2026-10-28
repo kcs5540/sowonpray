@@ -2122,6 +2122,20 @@ export default function App() {
                   )}
                 </div>
 
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSimBelieverName(selectedMemberDetail.name || '')
+                    setSelectedMemberDetail(null)
+                    setErpTab('settlement')
+                    showToast(`🏛️ ${selectedMemberDetail.name} 불자님의 사찰 불사 접수 화면으로 이동합니다.`)
+                  }}
+                  className="w-full py-2.5 rounded-xl bg-[#FAF8F5] border border-[#C59B27] text-[#8A6510] font-bold text-xs hover:bg-[#F5EEDB] transition flex items-center justify-center gap-1.5"
+                >
+                  <PlusCircle className="w-3.5 h-3.5 text-[#8A6510]" />
+                  <span>➕ 이 신도님의 신규 사찰 불사·위패 동참 접수하기</span>
+                </button>
+
                 {/* 3. 개인 신도 교적대장 종합 A4 원터치 인쇄 버튼 */}
                 <button
                   type="button"
@@ -6150,7 +6164,7 @@ function normalizeMemberHierarchy(m) {
                 }`}
               >
                 <Award className="w-4 h-4 text-[#C59B27]" />
-                <span>💰 4. 불사금 &amp; 요율 정산 관제</span>
+                <span>💰 4. 사찰 불사 접수 &amp; 정산 관제</span>
               </button>
             </div>
 
@@ -6592,16 +6606,16 @@ function normalizeMemberHierarchy(m) {
               </section>
             )}
 
-            {/* ==================== 4. 불사금 & 요율 정산 관제 탭 ==================== */}
+            {/* ==================== 4. 사찰 불사 접수 & 정산 관제 탭 ==================== */}
             {erpTab === 'settlement' && (
               <section className="bg-white text-[#231F1C] rounded-3xl p-6 sm:p-8 shadow-sm border border-[#E6DEC8] space-y-5">
                 <div className="flex items-center justify-between pb-2 border-b border-[#E6DEC8]">
                   <div>
                     <h3 className="font-serif-kr font-bold text-lg text-[#1B1815]">
-                      4. 실입금액 기준 백분율(%) 배분 및 불사금 정산 관제
+                      4. 신규 사찰 불사 접수 등록 및 실시간 정산 관제
                     </h3>
                     <p className="text-xs text-[#8C8071] mt-0.5">
-                      사찰 불사금 50% 및 전국 위원회 요율제 자동 배분 원장입니다.
+                      사찰 불사금 50% 원천 적립 및 전국 위원회 1·2·3차 요율제 자동 배분 원장입니다.
                     </p>
                   </div>
                   <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
@@ -6609,31 +6623,8 @@ function normalizeMemberHierarchy(m) {
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-center text-xs">
-                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
-                    <div className="text-[10.5px] text-[#8C8071]">1차 직속추천</div>
-                    <div className="text-base font-black text-[#1B1815] mt-0.5">30%</div>
-                  </div>
-                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
-                    <div className="text-[10.5px] text-[#8C8071]">2차 상위추천</div>
-                    <div className="text-base font-black text-[#1B1815] mt-0.5">10%</div>
-                  </div>
-                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
-                    <div className="text-[10.5px] text-[#8C8071]">3차 상위추천</div>
-                    <div className="text-base font-black text-[#1B1815] mt-0.5">5%</div>
-                  </div>
-                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
-                    <div className="text-[10.5px] text-[#8A6510]">전산 인프라</div>
-                    <div className="text-base font-black text-[#8A6510] mt-0.5">5%</div>
-                  </div>
-                  <div className="p-3 rounded-xl bg-amber-50 border border-amber-300">
-                    <div className="text-[10.5px] text-amber-900 font-bold">소원사 사찰불사</div>
-                    <div className="text-base font-black text-amber-900 mt-0.5">50%</div>
-                  </div>
-                </div>
-
-                {/* 🪷 신규 사찰 불사 & 위패 봉안 접수 등록 폼 */}
-                <div className="p-5 rounded-2xl bg-[#FCFAF6] border-2 border-[#D4AF37]/50 shadow-sm space-y-4">
+                {/* 🪷 신규 사찰 불사 & 위패 봉안 접수 등록 폼 (상단 최우선 배치) */}
+                <div className="p-5 rounded-2xl bg-[#FCFAF6] border-2 border-[#D4AF37] shadow-md space-y-4">
                   <div className="flex items-center justify-between border-b border-[#E6DEC8] pb-2">
                     <div className="flex items-center gap-2">
                       <Calculator className="w-5 h-5 text-[#8A6510]" />
@@ -6727,6 +6718,28 @@ function normalizeMemberHierarchy(m) {
                       <span>卍 사찰 불사 접수 등록 및 실시간 정산 실행하기</span>
                     </button>
                   </form>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-center text-xs pt-1">
+                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
+                    <div className="text-[10.5px] text-[#8C8071]">1차 직속추천</div>
+                    <div className="text-base font-black text-[#1B1815] mt-0.5">30%</div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
+                    <div className="text-[10.5px] text-[#8C8071]">2차 상위추천</div>
+                    <div className="text-base font-black text-[#1B1815] mt-0.5">10%</div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
+                    <div className="text-[10.5px] text-[#8C8071]">3차 상위추천</div>
+                    <div className="text-base font-black text-[#1B1815] mt-0.5">5%</div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
+                    <div className="text-[10.5px] text-[#8A6510]">전산 인프라</div>
+                    <div className="text-base font-black text-[#8A6510] mt-0.5">5%</div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-amber-50 border border-amber-300">
+                    <div className="text-[10.5px] text-amber-900 font-bold">소원사 사찰불사</div>
+                    <div className="text-base font-black text-amber-900 mt-0.5">50%</div>
+                  </div>
                 </div>
 
                 {/* 📜 사찰 불사 및 위패 봉안 전체 접수 원장 목록 */}
