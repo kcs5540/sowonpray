@@ -135,10 +135,11 @@ p, span, h1, h2, h3, h4, h5, h6, label, button {
     visibility: hidden !important;
   }
   #printable-sasi-sheet, #printable-sasi-sheet *,
-  #printable-member-sheet, #printable-member-sheet * {
+  #printable-member-sheet, #printable-member-sheet *,
+  #printable-individual-record, #printable-individual-record * {
     visibility: visible !important;
   }
-  #printable-sasi-sheet, #printable-member-sheet {
+  #printable-sasi-sheet, #printable-member-sheet, #printable-individual-record {
     position: absolute !important;
     left: 0 !important;
     top: 0 !important;
@@ -150,7 +151,7 @@ p, span, h1, h2, h3, h4, h5, h6, label, button {
     box-shadow: none !important;
     border: none !important;
   }
-  #printable-sasi-sheet tr, #printable-member-sheet tr {
+  #printable-sasi-sheet tr, #printable-member-sheet tr, #printable-individual-record tr {
     page-break-inside: avoid !important;
   }
   .no-print {
