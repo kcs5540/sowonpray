@@ -3307,7 +3307,7 @@ function normalizeMemberHierarchy(m) {
 
           {/* ==================== 2열: 🪔 대웅전 점등 상태 (독립 열 - 수직 일직선 정렬!) (lg:col-span-2) ==================== */}
           <div className="lg:col-span-2 space-y-1.5 lg:border-l lg:border-[#F0EAE1] lg:pl-3.5 min-w-0">
-            <span className="text-[10.5px] font-bold text-[#8C8071] block">대웅전 점등 상태:</span>
+            <span className="lg:hidden text-[10.5px] font-bold text-[#8C8071] block">대웅전 점등 상태:</span>
             {pInfo.isLanternActive ? (
               <div className="space-y-1">
                 <span
@@ -3379,7 +3379,7 @@ function normalizeMemberHierarchy(m) {
           {/* ==================== 3열: 🪷 부처님 전 축원 발원문 & 기원분야 (lg:col-span-2) ==================== */}
           <div className="lg:col-span-2 space-y-1.5 lg:border-l lg:border-[#F0EAE1] lg:pl-3.5 min-w-0">
             <div className="flex items-center justify-between gap-1">
-              <span className="text-[10.5px] font-bold text-[#8C8071]">부처님 전 축원 발원:</span>
+              <span className="lg:hidden text-[10.5px] font-bold text-[#8C8071]">부처님 전 축원 발원:</span>
               <span className="px-1.5 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200 text-[10px] font-bold shrink-0">
                 {pInfo.wishCategory}
               </span>
@@ -3423,7 +3423,7 @@ function normalizeMemberHierarchy(m) {
             <div className="flex flex-col sm:flex-row sm:items-center justify-start gap-3">
               {/* 2번: 🪔 기도·불사 접수 현황 */}
               <div className="space-y-1 min-w-0 shrink-0">
-                <span className="text-[10.5px] font-bold text-[#8C8071] block">기도·불사 접수 현황:</span>
+                <span className="lg:hidden text-[10.5px] font-bold text-[#8C8071] block">기도·불사 접수 현황:</span>
                 <div className="flex items-center gap-1.5">
                   <span className={`px-2 py-0.5 rounded text-[10.5px] font-bold border ${pInfo.prayerBadgeColor}`}>
                     {pInfo.prayerTypeBadge}
@@ -3482,7 +3482,7 @@ function normalizeMemberHierarchy(m) {
           <div className="lg:col-span-2 space-y-2 lg:border-l lg:border-[#F0EAE1] lg:pl-3.5 min-w-0">
             {/* 입금 상태 배지 & 금액 */}
             <div className="space-y-1">
-              <span className="text-[10.5px] text-[#8C8071] block">보시금 입금 상태:</span>
+              <span className="lg:hidden text-[10.5px] text-[#8C8071] block">보시금 입금 상태:</span>
               <div className="flex items-center gap-1.5 flex-wrap">
                 {pInfo.paymentAmount === 0 ? (
                   <span className="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-950 border border-emerald-300 font-black text-[10.5px] flex items-center gap-1">
@@ -5824,6 +5824,25 @@ function normalizeMemberHierarchy(m) {
                     <option value="name">성함 가나다순</option>
                     <option value="merit">공덕(기도) 많은순</option>
                   </select>
+                </div>
+
+                {/* 🪷 10만 신도 교적부 종합 5단 열 헤더 (각 행 중복 제목을 상단 헤더로 일괄 통합!) */}
+                <div className="hidden lg:grid grid-cols-12 gap-3.5 px-4 sm:px-5 py-2.5 rounded-xl bg-[#FAF5EB] border border-[#E6DEC8] text-xs font-bold text-[#7A6E5E] tracking-tight shadow-xs select-none">
+                  <div className="col-span-2 flex items-center gap-1.5">
+                    <span>신도 기본 인적</span>
+                  </div>
+                  <div className="col-span-2 border-l border-[#E6DEC8] pl-3.5 flex items-center gap-1.5">
+                    <span>대웅전 점등 상태</span>
+                  </div>
+                  <div className="col-span-2 border-l border-[#E6DEC8] pl-3.5 flex items-center gap-1.5">
+                    <span>부처님 전 축원 발원</span>
+                  </div>
+                  <div className="col-span-4 border-l border-[#E6DEC8] pl-3.5 flex items-center gap-1.5">
+                    <span>기도·불사 접수 현황 & 일자</span>
+                  </div>
+                  <div className="col-span-2 border-l border-[#E6DEC8] pl-3.5 flex items-center gap-1.5">
+                    <span>보시금 입금 상태 & 관리</span>
+                  </div>
                 </div>
 
                 <div className="space-y-2.5 max-h-[600px] overflow-y-auto pr-1">
