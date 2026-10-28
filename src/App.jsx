@@ -2875,7 +2875,7 @@ function normalizeMemberHierarchy(m) {
     const primaryActiveLantern = activeLanterns[0]
     const daysLeft = primaryActiveLantern?.daysLeft || 0
     const lanternStatusText = isLanternActive
-      ? `점등중 (${activeLanterns.map((l) => `${l.label} D-${l.daysLeft}`).join(', ')})`
+      ? `점등중 (${activeLanterns.map((l) => (l.id === 'lantern_1d' ? `${l.label} (점등)` : `${l.label} D-${l.daysLeft}`)).join(', ')})`
       : '소등 (등 미점등)'
 
     return {
@@ -3265,7 +3265,7 @@ function normalizeMemberHierarchy(m) {
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-600"></span>
                       </span>
                       <Flame className="w-2.5 h-2.5 text-amber-600 fill-amber-500 shrink-0" />
-                      <span>{lt.label} (D-{lt.daysLeft})</span>
+                      <span>{lt.id === 'lantern_1d' ? `${lt.label} (점등)` : `${lt.label} (D-${lt.daysLeft})`}</span>
                     </span>
                   ) : (
                     <button
@@ -3358,7 +3358,7 @@ function normalizeMemberHierarchy(m) {
                         <span>{lt.label}</span>
                       </div>
                       <div className="text-[9.5px] font-mono font-bold text-amber-900 mt-0.5">
-                        D-{lt.daysLeft}일
+                        {lt.id === 'lantern_1d' ? '금일 점등' : `D-${lt.daysLeft}일`}
                       </div>
                     </div>
                   ) : (
