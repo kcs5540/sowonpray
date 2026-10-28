@@ -2237,10 +2237,10 @@ export default function App() {
           </div>
 
           {/* A4 인쇄 대상 본문 (A4 1장 완결 맞춤형 규격) */}
-          <div className="overflow-y-auto p-3 sm:p-6 bg-[#888888]/20 flex justify-center">
+          <div className="overflow-y-auto p-4 sm:p-8 pb-16 bg-[#1F1C19]/85 flex flex-col items-center">
             <div
               id="printable-individual-record"
-              className="w-full max-w-[210mm] bg-white p-5 sm:p-7 font-serif-kr text-[#111] shadow-xl border border-[#D4AF37] space-y-2.5 text-xs"
+              className="w-full max-w-[210mm] bg-white p-6 sm:p-8 pb-8 font-serif-kr text-[#111] shadow-2xl border-2 border-[#D4AF37] space-y-3 text-xs mb-8"
             >
               {/* 상단 헤더 */}
               <div className="text-center pb-2 border-b-2 border-[#1B1815]">
