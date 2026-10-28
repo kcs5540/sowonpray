@@ -273,49 +273,56 @@ export default function BusinessCardModal({
         </a>
       </div>
 
-      {/* ==================== 3. 상대방에게 드리는 복(福) 선물 버튼 2개 ==================== */}
-      <div className="space-y-2">
+      {/* ==================== 3. 소원등 선물 / 불사 동참 / 명함 공유 핵심 3종 버튼 ==================== */}
+      <div className="space-y-2.5 pt-1">
+        {/* 1) 1일 무료 소원등 복 선물 */}
         <button
           type="button"
           onClick={() => {
             if (onClose) onClose()
             if (onNavigateTab) onNavigateTab('lantern', m.code)
           }}
-          className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#F5D061] to-[#C59B27] hover:brightness-110 text-[#1B1815] font-serif-kr font-extrabold text-xs sm:text-sm shadow-md flex items-center justify-between transition cursor-pointer"
+          className="w-full h-12 px-4 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#F5D061] to-[#C59B27] hover:brightness-105 text-[#1B1815] font-serif-kr font-extrabold text-xs sm:text-[13px] shadow flex items-center justify-between transition cursor-pointer active:scale-[0.99]"
         >
-          <span className="flex items-center gap-1.5">
-            <Flame className="w-4 h-4 text-[#1B1815] fill-[#1B1815]" />
-            <span>🪔 1일 무료 소원등 복(福) 선물 켜기</span>
+          <span className="flex items-center gap-2 min-w-0">
+            <Flame className="w-4 h-4 text-[#1B1815] fill-[#1B1815] shrink-0" />
+            <span className="truncate">1일 무료 소원등 복(福) 선물 켜기</span>
           </span>
-          <span className="text-[11px] underline">바로가기 &gt;</span>
+          <span className="text-[11px] font-bold underline opacity-85 shrink-0 ml-2">바로가기 &gt;</span>
         </button>
 
+        {/* 2) 사찰 불사 · 위패 동참 안내 */}
         <button
           type="button"
           onClick={() => {
             if (onClose) onClose()
             if (onNavigateTab) onNavigateTab('bulsa', m.code)
           }}
-          className="w-full py-2.5 px-4 rounded-xl bg-[#231F1C] hover:bg-[#2F2925] text-[#FAF8F5] border border-[#C59B27]/40 font-serif-kr font-bold text-xs flex items-center justify-between transition cursor-pointer"
+          className="w-full h-12 px-4 rounded-2xl bg-[#231F1C] hover:bg-[#2F2925] text-[#FAF8F5] border border-[#C59B27]/40 font-serif-kr font-bold text-xs sm:text-[13px] shadow flex items-center justify-between transition cursor-pointer active:scale-[0.99]"
         >
-          <span className="flex items-center gap-1.5">
-            <Award className="w-3.5 h-3.5 text-[#F5D061]" />
-            <span>기도 · 위패 · 삼성각 대작불사 동참 안내</span>
+          <span className="flex items-center gap-2 min-w-0">
+            <Award className="w-4 h-4 text-[#F5D061] shrink-0" />
+            <span className="truncate">기도 · 위패 · 삼성각 대작불사 동참 안내</span>
           </span>
-          <span className="text-[10px] text-[#A89D8E]">상세보기 &gt;</span>
+          <span className="text-[11px] font-bold text-[#A89D8E] underline shrink-0 ml-2">상세보기 &gt;</span>
         </button>
-      </div>
 
-      {/* ==================== 4. 명함 공유 & 갤러리 저장 액션 ==================== */}
-      <div className="space-y-2 pt-1">
+        {/* 3) 카카오톡 전자명함 전송 */}
         <button
           type="button"
           onClick={handleShareBusinessCardKakao}
-          className="w-full py-3 rounded-2xl bg-[#FEE500] hover:bg-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow flex items-center justify-center gap-2 transition cursor-pointer"
+          className="w-full h-12 px-4 rounded-2xl bg-[#FEE500] hover:bg-[#FADA0A] text-[#3C1E1E] border border-[#E6CE00] font-serif-kr font-extrabold text-xs sm:text-[13px] shadow flex items-center justify-between transition cursor-pointer active:scale-[0.99]"
         >
-          <Share2 className="w-4 h-4 text-[#3C1E1E]" />
-          <span>카카오톡으로 내 전자명함 보내기</span>
+          <span className="flex items-center gap-2 min-w-0">
+            <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
+            <span className="truncate">카카오톡으로 내 전자명함 보내기</span>
+          </span>
+          <span className="text-[11px] font-bold text-[#5A3800] underline shrink-0 ml-2">전송하기 &gt;</span>
         </button>
+      </div>
+
+      {/* ==================== 4. 명함 보조 액션 (링크 복사 & 사진 저장) ==================== */}
+      <div className="space-y-2 pt-0.5">
 
         <div className="grid grid-cols-2 gap-2">
           <button
