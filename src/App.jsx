@@ -2501,7 +2501,7 @@ function normalizeMemberHierarchy(m) {
   const [regBelieverDharma, setRegBelieverDharma] = useState('')
   const [regBelieverPhone, setRegBelieverPhone] = useState('')
   const [regBelieverAddress, setRegBelieverAddress] = useState('제주특별자치도 제주시 ')
-  const [regBelieverParent, setRegBelieverParent] = useState('33065540') // 김철수 총괄대표님 직속 귀속 불변 원칙 100% 준수
+  const [regBelieverParent, setRegBelieverParent] = useState('55570267') // 종무소 ERP 기본: 1번 본사(양영문 창건주 회장) 귀속
   const [regPrayerType, setRegPrayerType] = useState('none') // 'none' | 'lantern_1d' | 'prayer_100d' | 'indeung_1yr' | 'jesujae'
   const [regWishText, setRegWishText] = useState('')
   const [regFamilyList, setRegFamilyList] = useState([
@@ -3101,7 +3101,7 @@ function normalizeMemberHierarchy(m) {
         : `가족 ${cleanedFamily.length}인 등록됨`,
       family_members: cleanedFamily,
       role: 'believer',
-      parent_code: regBelieverParent || '33065540', // 김철수 총괄대표님 직속 귀속 불변 원칙 준수
+      parent_code: regBelieverParent || '55570267', // 1번 본사(양영문 창건주 회장) 또는 선택 귀속처
       bank_name: '',
       bank_account: '',
       account_holder: regBelieverName.trim(),
@@ -3999,16 +3999,17 @@ function normalizeMemberHierarchy(m) {
 
                         <div>
                           <label className="text-[11px] font-bold text-[#554E45] block mb-1">
-                            귀속 포교위원장 (추천인)
+                            신도 귀속처 (본사 사찰본부 / 포교위원장)
                           </label>
                           <select
                             value={regBelieverParent}
                             onChange={(e) => setRegBelieverParent(e.target.value)}
                             className="w-full px-3 py-2 rounded-xl bg-white border border-[#DDD4C4] text-xs font-semibold text-[#8A6510]"
                           >
-                            <option value="33065540">귀속: 김철수 총괄대표 (33065540 · 자연유입 기본)</option>
+                            <option value="55570267">🏛️ 1. 본사 귀속: 양영문 창건주 회장 (55570267 · 사찰본부 직속)</option>
+                            <option value="33065540">👑 2. 귀속: 김철수 총괄대표 (33065540 · 전국포교본부 / 자연유입)</option>
                             {agents
-                              .filter((a) => a.code !== '33065540')
+                              .filter((a) => a.code !== '55570267' && a.code !== '33065540')
                               .map((a) => (
                                 <option key={a.code} value={a.code}>
                                   귀속: {a.name} ({a.role === 'agent' ? '위원장' : '위원'})
@@ -9439,9 +9440,10 @@ function normalizeMemberHierarchy(m) {
                         onChange={(e) => setRegBelieverParent(e.target.value)}
                         className="px-2 py-2 rounded-lg bg-white border border-[#DDD4C4] text-xs font-semibold text-[#8A6510]"
                       >
-                        <option value="33065540">귀속 포교위원장: 김철수 총괄대표 (자연유입 기본배정)</option>
+                        <option value="55570267">🏛️ 1. 본사 귀속: 양영문 창건주 회장 (55570267 · 사찰본부 직속)</option>
+                        <option value="33065540">👑 2. 귀속: 김철수 총괄대표 (33065540 · 전국포교본부 / 자연유입)</option>
                         {agents
-                          .filter((a) => a.code !== '33065540')
+                          .filter((a) => a.code !== '55570267' && a.code !== '33065540')
                           .map((a) => (
                             <option key={a.code} value={a.code}>
                               귀속: {a.name} ({a.role === 'agent' ? '위원장' : '위원'})
