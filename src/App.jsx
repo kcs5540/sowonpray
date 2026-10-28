@@ -2735,7 +2735,8 @@ function normalizeMemberHierarchy(m) {
       } else if (prayerTitle.includes('1일') || prayerTitle.includes('소원등')) {
         prayerTypeBadge = '1일 소원등'
         prayerBadgeColor = 'bg-emerald-100 text-emerald-900 border-emerald-300'
-        paymentAmount = 10000
+        paymentAmount = 0
+        paymentStatus = 'settled'
         durationDays = latestPrayer.duration_days || 7
       } else {
         prayerTypeBadge = '대웅전 기도'
@@ -2758,10 +2759,11 @@ function normalizeMemberHierarchy(m) {
         paymentAmount = 100000
         durationDays = 100
       } else if ((m.merit_count || 0) > 0) {
-        prayerTitle = '대웅전 일일 소원등 축원'
+        prayerTitle = '대웅전 일일 소원등 축원 (무료)'
         prayerTypeBadge = '1일 소원등'
         prayerBadgeColor = 'bg-emerald-100 text-emerald-900 border-emerald-300'
-        paymentAmount = 10000
+        paymentAmount = 0
+        paymentStatus = 'settled'
         durationDays = 7
       }
     }
@@ -2815,7 +2817,7 @@ function normalizeMemberHierarchy(m) {
       prayerTypeBadge,
       prayerBadgeColor,
       paymentStatus,
-      paymentAmount: paymentAmount || 100000,
+      paymentAmount: typeof paymentAmount === 'number' ? paymentAmount : 100000,
       appliedDate,
       paidDate,
       isLanternActive,
@@ -2928,10 +2930,10 @@ function normalizeMemberHierarchy(m) {
     playMoktakSound()
 
     const typeConfig = {
-      lantern_1d: { name: '1일 소원등', duration: 1, amount: 10000, badge: '1일 소원등' },
+      lantern_1d: { name: '1일 소원등', duration: 1, amount: 0, badge: '1일 소원등 (무료)' },
       prayer_100d: { name: '100일 특별기도', duration: 100, amount: 100000, badge: '100일 특별기도' },
       indeung_1yr: { name: '대웅전 1년 인등(가족등)', duration: 365, amount: 100000, badge: '1년 인등' },
-    }[adminLanternType] || { name: '1일 소원등', duration: 1, amount: 10000, badge: '1일 소원등' }
+    }[adminLanternType] || { name: '1일 소원등', duration: 1, amount: 0, badge: '1일 소원등 (무료)' }
 
     const todayStr = new Date().toISOString().slice(0, 10).replace(/-/g, '.')
     const newPrayer = {
@@ -2968,8 +2970,8 @@ function normalizeMemberHierarchy(m) {
             merit_count: (m.merit_count || 0) + 1,
             extra_data: {
               ...(m.extra_data || {}),
-              payment_status: adminLanternPaid ? 'settled' : 'pending',
-              payment_date: adminLanternPaid ? todayStr : '',
+              payment_status: typeConfig.amount === 0 ? 'settled' : adminLanternPaid ? 'settled' : 'pending',
+              payment_date: typeConfig.amount === 0 ? todayStr : adminLanternPaid ? todayStr : '',
               recent_prayer_title: typeConfig.name,
               recent_prayer_date: todayStr,
               lantern_active_until: untilDate,
@@ -3033,7 +3035,7 @@ function normalizeMemberHierarchy(m) {
               <label className="text-[11px] font-bold text-[#554E45] block mb-1">소원등 종류 선택</label>
               <div className="grid grid-cols-3 gap-2">
                 {[
-                  { id: 'lantern_1d', label: '1일 소원등', price: '10,000원' },
+                  { id: 'lantern_1d', label: '1일 소원등', price: '무료 (0원)' },
                   { id: 'prayer_100d', label: '100일 특별기도', price: '100,000원' },
                   { id: 'indeung_1yr', label: '1년 인등(가족등)', price: '100,000원' },
                 ].map((t) => (
@@ -3048,7 +3050,9 @@ function normalizeMemberHierarchy(m) {
                     }`}
                   >
                     <div className="text-[11px] font-bold">{t.label}</div>
-                    <div className="text-[10px] text-[#A69B8D] mt-0.5">{t.price}</div>
+                    <div className={`text-[10px] mt-0.5 ${t.id === 'lantern_1d' ? 'text-emerald-600 font-bold' : 'text-[#A69B8D]'}`}>
+                      {t.price}
+                    </div>
                   </button>
                 ))}
               </div>
@@ -3098,33 +3102,48 @@ function normalizeMemberHierarchy(m) {
             </div>
 
             {/* 보시금 납부 여부 */}
-            <div className="p-3 rounded-2xl bg-white border border-[#E6DEC8] flex items-center justify-between">
-              <span className="font-bold text-[11px] text-[#554E45]">보시금 납부 상태</span>
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => setAdminLanternPaid(true)}
-                  className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition ${
-                    adminLanternPaid
-                      ? 'bg-emerald-700 text-white shadow-sm'
-                      : 'bg-[#FAF8F5] text-[#888888] border border-[#DDD4C4]'
-                  }`}
-                >
-                  입금완료 ✅
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setAdminLanternPaid(false)}
-                  className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition ${
-                    !adminLanternPaid
-                      ? 'bg-amber-600 text-white shadow-sm'
-                      : 'bg-[#FAF8F5] text-[#888888] border border-[#DDD4C4]'
-                  }`}
-                >
-                  입금대기 ⏳
-                </button>
+            {adminLanternType === 'lantern_1d' ? (
+              <div className="p-3 rounded-2xl bg-emerald-50/90 border border-emerald-200 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-emerald-950 font-bold text-[11.5px]">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>1일 소원등은 매일 <strong>전액 무료(0원)</strong>로 밝혀집니다.</span>
+                </div>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-950 font-black">
+                  무료 발원
+                </span>
               </div>
-            </div>
+            ) : (
+              <div className="p-3 rounded-2xl bg-white border border-[#E6DEC8] flex items-center justify-between">
+                <div>
+                  <span className="font-bold text-[11px] text-[#554E45] block">보시금 납부 상태</span>
+                  <span className="text-[10px] text-[#8C8071]">100,000원 정성 봉안</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setAdminLanternPaid(true)}
+                    className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition ${
+                      adminLanternPaid
+                        ? 'bg-emerald-700 text-white shadow-sm'
+                        : 'bg-[#FAF8F5] text-[#888888] border border-[#DDD4C4]'
+                    }`}
+                  >
+                    입금완료 ✅
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAdminLanternPaid(false)}
+                    className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition ${
+                      !adminLanternPaid
+                        ? 'bg-amber-600 text-white shadow-sm'
+                        : 'bg-[#FAF8F5] text-[#888888] border border-[#DDD4C4]'
+                    }`}
+                  >
+                    입금대기 ⏳
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* 점등 버튼 */}
             <button
@@ -3341,7 +3360,12 @@ function normalizeMemberHierarchy(m) {
             <div className="space-y-1">
               <span className="text-[10.5px] text-[#8C8071] block">보시금 입금 상태:</span>
               <div className="flex items-center gap-1.5 flex-wrap">
-                {pInfo.paymentStatus === 'settled' ? (
+                {pInfo.paymentAmount === 0 ? (
+                  <span className="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-950 border border-emerald-300 font-black text-[10.5px] flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3 text-emerald-700 shrink-0" />
+                    <span>무료 발원</span>
+                  </span>
+                ) : pInfo.paymentStatus === 'settled' ? (
                   <span className="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold text-[10.5px] flex items-center gap-1">
                     <CheckCircle2 className="w-3 h-3 text-emerald-700 shrink-0" />
                     <span>입금완료</span>
@@ -3353,23 +3377,29 @@ function normalizeMemberHierarchy(m) {
                   </span>
                 )}
                 <span className="font-mono font-bold text-xs text-[#1B1815]">
-                  {pInfo.paymentAmount.toLocaleString()}원
+                  {pInfo.paymentAmount === 0 ? '0원 (무료)' : `${pInfo.paymentAmount.toLocaleString()}원`}
                 </span>
               </div>
 
-              {/* 원터치 입금확인 토글 버튼 */}
-              <button
-                type="button"
-                onClick={() => handleTogglePaymentStatus(m.code)}
-                className={`w-full mt-1 py-1 px-2 rounded-lg text-[10.5px] font-bold transition border ${
-                  pInfo.paymentStatus === 'settled'
-                    ? 'bg-[#FAF8F5] hover:bg-[#F2ECE1] text-[#666666] border-[#DDD4C4]'
-                    : 'bg-emerald-700 hover:bg-emerald-800 text-white border-emerald-800 shadow-sm'
-                }`}
-                title="입금 상태 변경"
-              >
-                {pInfo.paymentStatus === 'settled' ? '상태변경 (대기로)' : '입금확인 처리 ✓'}
-              </button>
+              {/* 원터치 입금확인 토글 버튼 (무료 발원인 경우 입금 불요 안내) */}
+              {pInfo.paymentAmount === 0 ? (
+                <div className="w-full mt-1 py-1 px-2 rounded-lg text-[10.5px] font-bold text-center bg-emerald-50 text-emerald-800 border border-emerald-200">
+                  무료 발원 (입금 불요)
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => handleTogglePaymentStatus(m.code)}
+                  className={`w-full mt-1 py-1 px-2 rounded-lg text-[10.5px] font-bold transition border ${
+                    pInfo.paymentStatus === 'settled'
+                      ? 'bg-[#FAF8F5] hover:bg-[#F2ECE1] text-[#666666] border-[#DDD4C4]'
+                      : 'bg-emerald-700 hover:bg-emerald-800 text-white border-emerald-800 shadow-sm'
+                  }`}
+                  title="입금 상태 변경"
+                >
+                  {pInfo.paymentStatus === 'settled' ? '상태변경 (대기로)' : '입금확인 처리 ✓'}
+                </button>
+              )}
             </div>
 
             {/* 바로가기 버튼 그룹 (소원등 켜기 / 명패 인쇄 / 상세 수정) */}
