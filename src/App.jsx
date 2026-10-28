@@ -2473,6 +2473,150 @@ export default function App() {
     showToast(`🪷 [${m.name}] 신도님의 [${settlementItemType}] 접수 및 회계 처리가 완결되었습니다!`)
   }
 
+  // 🪷 [모바일/PC 공용] 프리미엄 불사·위패 종목 선택 전용 바텀시트/모달
+  const renderBulsaCategorySheet = () => {
+    if (!showBulsaCategorySheet) return null
+
+    const groups = [
+      {
+        title: '🪷 1. 대웅전 상시 기도 및 공덕 불사',
+        badge: '상시 기도',
+        items: [
+          { value: '대웅전 공양미/불전시주', label: '① 대웅전 공양미 / 불전시주', price: '50,000원' },
+          { value: '대웅전 1년 인등(가족등)', label: '② 대웅전 1년 인등 (가족등)', price: '100,000원' },
+          { value: '100일 소원성취 특별기도', label: '③ 100일 소원성취 특별기도', price: '100,000원' },
+          { value: '49재/천도재/기일제사', label: '④ 49재 / 천도재 / 기일제사', price: '맞춤상담' },
+        ],
+      },
+      {
+        title: '🏛️ 2. 영구 위패 봉안 불사',
+        badge: '영구 봉안',
+        items: [
+          { value: '생전예수재(황금위패)', label: '① 생전예수재 황금빛 위패 (살아계신 분)', price: '200만원' },
+          { value: '조상영구위패(흑색)', label: '② 조상 영가 품격 흑색 영구위패', price: '200만원' },
+        ],
+      },
+      {
+        title: '🏔️ 3. 삼성각 성전 건립 대작불사',
+        badge: '성전 건립',
+        items: [
+          { value: '삼성각 소원기와불사', label: '① 삼성각 건립 소원 기와 불사 (1장)', price: '10만원' },
+          { value: '삼성각 기둥·단청불사', label: '② 삼성각 대들보 · 기둥 · 오색단청 불사', price: '100만원' },
+          { value: '삼성각 영구축원명패', label: '③ 삼성각 가족 영구축원 명패 · 주춧돌', price: '100만원' },
+          { value: '기타 특별기도 상담', label: '④ 기타 특별기도 및 맞춤 불사 상담', price: '맞춤상담' },
+        ],
+      },
+    ]
+
+    return createPortal(
+      <div
+        className="fixed inset-0 z-[70] bg-black/75 flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-xs animate-in fade-in duration-150"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setShowBulsaCategorySheet(false)
+        }}
+      >
+        <div className="w-full sm:max-w-lg bg-[#FAF8F5] text-[#1B1815] rounded-t-3xl sm:rounded-3xl shadow-2xl border-t-2 sm:border-2 border-[#D4AF37] max-h-[85vh] sm:max-h-[80vh] flex flex-col overflow-hidden animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-200">
+          {/* 모바일 상단 바 핸들 */}
+          <div className="w-12 h-1 bg-[#DDD4C4] rounded-full mx-auto mt-2.5 mb-1 sm:hidden shrink-0" />
+
+          {/* 헤더 */}
+          <div className="bg-[#1B1815] text-[#FAF8F5] px-4 py-3.5 sm:px-5 sm:py-4 flex items-center justify-between border-b-2 border-[#D4AF37] shrink-0">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] flex items-center justify-center font-bold text-sm shadow shrink-0">
+                🪷
+              </div>
+              <div>
+                <h3 className="font-serif-kr text-base font-bold text-[#F5D061]">
+                  기도 · 위패 · 불사 종목 선택
+                </h3>
+                <p className="text-[11px] text-[#D6CEC2]">
+                  동참하실 종목을 터치하여 선택해 주세요
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowBulsaCategorySheet(false)}
+              className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* 종목 리스트 (스크롤) */}
+          <div className="p-3.5 sm:p-5 overflow-y-auto space-y-4">
+            {groups.map((group, gIdx) => (
+              <div key={gIdx} className="space-y-1.5">
+                <div className="flex items-center justify-between px-1">
+                  <span className="font-serif-kr font-bold text-xs text-[#8A6510]">
+                    {group.title}
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FAF0D5] text-[#8A6510] border border-[#E5D399]">
+                    {group.badge}
+                  </span>
+                </div>
+
+                <div className="space-y-1.5">
+                  {group.items.map((item) => {
+                    const isSelected = wishCategory === item.value
+                    return (
+                      <button
+                        key={item.value}
+                        type="button"
+                        onClick={() => {
+                          playMoktakSound()
+                          handleSelectWishCategory(item.value)
+                          setShowBulsaCategorySheet(false)
+                        }}
+                        className={`w-full p-3 rounded-2xl text-left flex items-center justify-between transition cursor-pointer border ${
+                          isSelected
+                            ? 'bg-[#FAF3DF] border-2 border-[#C59B27] text-[#8A6510] shadow-xs'
+                            : 'bg-white hover:bg-[#F8F4EC] border-[#E8DEC8] text-[#231F1C]'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 min-w-0 pr-2">
+                          <span className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 border ${
+                            isSelected
+                              ? 'border-[#C59B27] bg-[#C59B27] text-white'
+                              : 'border-[#DDD4C4] bg-stone-50'
+                          }`}>
+                            {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                          </span>
+                          <span className={`text-xs sm:text-[13px] truncate ${isSelected ? 'font-bold' : 'font-medium'}`}>
+                            {item.label}
+                          </span>
+                        </div>
+                        <span className={`text-[11px] font-mono shrink-0 px-2 py-0.5 rounded-md ${
+                          isSelected
+                            ? 'bg-[#8A6510] text-[#FAF8F5] font-bold'
+                            : 'bg-[#F3EFE6] text-[#7A6B56] font-semibold'
+                        }`}>
+                          {item.price}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* 하단 닫기 */}
+          <div className="p-3 bg-white border-t border-[#EAE2D3] shrink-0">
+            <button
+              type="button"
+              onClick={() => setShowBulsaCategorySheet(false)}
+              className="w-full py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-[#555] font-bold text-xs transition cursor-pointer"
+            >
+              닫기
+            </button>
+          </div>
+        </div>
+      </div>,
+      document.body
+    )
+  }
+
   // 卍 [정식 접수 최종 확인 전용 중앙 팝업 모달]
   const renderSettlementConfirmModal = () => {
     if (!pendingSettlementConfirm) return null
@@ -4250,6 +4394,7 @@ function normalizeMemberHierarchy(m) {
   const [wishName, setWishName] = useState('')
   const [wishTarget, setWishTarget] = useState('')
   const [wishPhone, setWishPhone] = useState('')
+  const [showBulsaCategorySheet, setShowBulsaCategorySheet] = useState(false)
   const [wishCategory, setWishCategory] = useState('가족건강')
   const [wishText, setWishText] = useState(
     () => PRAYER_CATEGORY_TEMPLATES['가족건강'] || ''
@@ -8264,6 +8409,7 @@ function normalizeMemberHierarchy(m) {
         {showSettlementModal && renderSettlementModal()}
         {editingSettlement && renderSettlementEditModal()}
         {pendingSettlementConfirm && renderSettlementConfirmModal()}
+        {showBulsaCategorySheet && renderBulsaCategorySheet()}
         {showIndividualRecordPrintModal && renderIndividualRecordPrintModal()}
         {showIndeungNameplateModal && renderIndeungNameplateModal()}
         {lanternTargetMember && renderLanternModal()}
@@ -9674,53 +9820,43 @@ function normalizeMemberHierarchy(m) {
                 </div>
 
                 <div className="relative">
-                  <select
-                    id="bulsa-category-select"
-                    value={
-                      [
-                        '대웅전 공양미/불전시주',
-                        '대웅전 1년 인등(가족등)',
-                        '100일 소원성취 특별기도',
-                        '49재/천도재/기일제사',
-                        '생전예수재(황금위패)',
-                        '조상영구위패(흑색)',
-                        '삼성각 소원기와불사',
-                        '삼성각 기둥·단청불사',
-                        '삼성각 영구축원명패',
-                        '기타 특별기도 상담',
-                      ].includes(wishCategory)
-                        ? wishCategory
-                        : ''
-                    }
-                    onChange={(e) => {
-                      playMoktakSound()
-                      handleSelectWishCategory(e.target.value)
-                    }}
-                    className="w-full appearance-none pl-3.5 pr-10 py-3 rounded-xl bg-white border-2 border-[#C59B27] text-xs sm:text-sm font-bold text-[#231F1C] focus:outline-none focus:ring-2 focus:ring-[#C59B27]/50 shadow-sm cursor-pointer"
+                  <button
+                    type="button"
+                    id="bulsa-category-select-btn"
+                    onClick={() => setShowBulsaCategorySheet(true)}
+                    className="w-full appearance-none pl-3.5 pr-10 py-3 rounded-xl bg-white border-2 border-[#C59B27] text-left text-xs sm:text-sm font-bold text-[#231F1C] focus:outline-none focus:ring-2 focus:ring-[#C59B27]/50 shadow-sm cursor-pointer flex items-center justify-between"
                   >
-                    <option value="" disabled>
-                      동참하실 종목을 선택해 주세요 (눌러서 선택) ▾
-                    </option>
-                    <optgroup label="🪷 1. 대웅전 상시 기도 및 공덕 불사">
-                      <option value="대웅전 공양미/불전시주">① 대웅전 공양미 / 불전시주</option>
-                      <option value="대웅전 1년 인등(가족등)">② 대웅전 1년 인등 (가족등)</option>
-                      <option value="100일 소원성취 특별기도">③ 100일 소원성취 특별기도</option>
-                      <option value="49재/천도재/기일제사">④ 49재 / 천도재 / 기일제사</option>
-                    </optgroup>
-                    <optgroup label="🏛️ 2. 영구 위패 봉안 불사">
-                      <option value="생전예수재(황금위패)">① 생전예수재 황금빛 위패 (살아계신 분)</option>
-                      <option value="조상영구위패(흑색)">② 조상 영가 품격 흑색 영구위패</option>
-                    </optgroup>
-                    <optgroup label="🏔️ 3. 삼성각 성전 건립 대작불사">
-                      <option value="삼성각 소원기와불사">① 삼성각 건립 소원 기와 불사 (1장)</option>
-                      <option value="삼성각 기둥·단청불사">② 삼성각 대들보 · 기둥 · 오색단청 불사</option>
-                      <option value="삼성각 영구축원명패">③ 삼성각 가족 영구축원 명패 · 주춧돌</option>
-                      <option value="기타 특별기도 상담">④ 기타 특별기도 및 맞춤 불사 상담</option>
-                    </optgroup>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-[#9A7418]">
-                    <ChevronDown className="w-5 h-5 text-[#9A7418]" />
-                  </div>
+                    <span className={wishCategory ? "text-[#231F1C] truncate" : "text-[#8C8071] truncate"}>
+                      {wishCategory ? (
+                        wishCategory === '생전예수재(황금위패)'
+                          ? '① 생전예수재 황금빛 위패 (살아계신 분)'
+                          : wishCategory === '조상영구위패(흑색)'
+                          ? '② 조상 영가 품격 흑색 영구위패'
+                          : wishCategory === '대웅전 공양미/불전시주'
+                          ? '① 대웅전 공양미 / 불전시주'
+                          : wishCategory === '대웅전 1년 인등(가족등)'
+                          ? '② 대웅전 1년 인등 (가족등)'
+                          : wishCategory === '100일 소원성취 특별기도'
+                          ? '③ 100일 소원성취 특별기도'
+                          : wishCategory === '49재/천도재/기일제사'
+                          ? '④ 49재 / 천도재 / 기일제사'
+                          : wishCategory === '삼성각 소원기와불사'
+                          ? '① 삼성각 건립 소원 기와 불사 (1장)'
+                          : wishCategory === '삼성각 기둥·단청불사'
+                          ? '② 삼성각 대들보 · 기둥 · 오색단청 불사'
+                          : wishCategory === '삼성각 영구축원명패'
+                          ? '③ 삼성각 가족 영구축원 명패 · 주춧돌'
+                          : wishCategory === '기타 특별기도 상담'
+                          ? '④ 기타 특별기도 및 맞춤 불사 상담'
+                          : wishCategory
+                      ) : (
+                        '동참하실 종목을 선택해 주세요 (눌러서 선택) ▾'
+                      )}
+                    </span>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-[#9A7418]">
+                      <ChevronDown className="w-5 h-5 text-[#9A7418]" />
+                    </div>
+                  </button>
                 </div>
 
                 {[
