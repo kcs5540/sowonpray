@@ -40,6 +40,15 @@ export default class ErrorBoundary extends React.Component {
               <p className="text-xs text-[#D6CEC2] leading-relaxed break-keep pt-1">
                 일시적인 전산 통신 또는 화면 처리 지연이 발생하여 시스템을 안전하게 보호 중입니다. 아래 버튼을 누르시면 정상 화면으로 즉시 복귀합니다.
               </p>
+              {this.state.error && (
+                <div className="mt-3 p-3 rounded-xl bg-black/80 border border-amber-500/50 text-left overflow-x-auto max-h-48 text-[11px] font-mono text-amber-300">
+                  <div className="font-bold text-red-400 mb-1">[전산 오류 감지]</div>
+                  <div>{String(this.state.error?.message || this.state.error)}</div>
+                  {this.state.error?.stack && (
+                    <pre className="mt-1 text-[9.5px] text-gray-400 whitespace-pre-wrap leading-tight">{this.state.error.stack.slice(0, 500)}</pre>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="pt-2">

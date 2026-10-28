@@ -47,11 +47,11 @@ export default function AdminERPView(props) {
     setLoginPwInput,
     handleLogin,
     handleLogout,
-    members,
+    members = [],
     setMembers,
-    prayers,
+    prayers = [],
     setPrayers,
-    settlements,
+    settlements = [],
     setSettlements,
     activeSasiPrayers,
     filteredSasiPrayers,
@@ -64,16 +64,16 @@ export default function AdminERPView(props) {
     showToast,
     adminMemberRoleFilter,
     setAdminMemberRoleFilter,
-    adminMemberSearchQuery,
+    adminMemberSearchQuery = "",
     setAdminMemberSearchQuery,
     adminMemberSort,
     setAdminMemberSort,
-    filteredAdminMembers,
+    filteredAdminMembers = [],
     businessCardTarget,
     setBusinessCardTarget,
     editingSettlement,
     setEditingSettlement,
-    excelParsedRows,
+    excelParsedRows = [],
     setExcelParsedRows,
     excelPasteText,
     setExcelPasteText,
@@ -101,13 +101,13 @@ export default function AdminERPView(props) {
     setRegBelieverParent,
     regBelieverPhone,
     setRegBelieverPhone,
-    regFamilyList,
+    regFamilyList = [],
     setRegFamilyList,
     regPrayerType,
     setRegPrayerType,
     regWishText,
     setRegWishText,
-    sasiPrayedCheckedIds,
+    sasiPrayedCheckedIds = new Set(),
     setSasiPrayedCheckedIds,
     sasiPrayerTypeTab,
     setSasiPrayerTypeTab,
@@ -155,7 +155,7 @@ export default function AdminERPView(props) {
     renderMemberRowCard,
     toggleSasiPrayedCheck,
     handleSaveMemberEdit,
-    adminKPIs,
+    adminKPIs = {},
     currentActiveBeliever,
     setActiveBelieverCode,
     setCurrentUserCode,
@@ -314,11 +314,11 @@ export default function AdminERPView(props) {
                   <Users className="w-4 h-4 text-[#F5D061]" />
                 </div>
                 <div className="text-2xl font-black text-white mt-1">
-                  {adminKPIs.totalMembers.toLocaleString()}
+                  {Number(adminKPIs?.totalMembers || 0).toLocaleString()}
                   <span className="text-sm font-normal text-[#C5BBAF] ml-1">명</span>
                 </div>
                 <div className="text-[11px] text-[#A69B8D] mt-1 truncate">
-                  일반신도 {adminKPIs.totalBelievers} · 위원 {adminKPIs.totalAgents} · 본부 {adminKPIs.totalAdmins}
+                  일반신도 {adminKPIs?.totalBelievers || 0} · 위원 {adminKPIs?.totalAgents || 0} · 본부 {adminKPIs?.totalAdmins || 0}
                 </div>
               </div>
 
@@ -328,11 +328,11 @@ export default function AdminERPView(props) {
                   <Flame className="w-4 h-4 text-amber-500" />
                 </div>
                 <div className="text-2xl font-black text-[#F5D061] mt-1">
-                  {adminKPIs.totalPrayersCount}
+                  {adminKPIs?.totalPrayersCount || 0}
                   <span className="text-sm font-normal text-[#C5BBAF] ml-1">위</span>
                 </div>
                 <div className="text-[11px] text-emerald-400 font-bold mt-1 truncate">
-                  금일 축원완료: {sasiPrayedCheckedIds.size}위 회향
+                  금일 축원완료: {sasiPrayedCheckedIds?.size || 0}위 회향
                 </div>
               </div>
 
@@ -342,11 +342,11 @@ export default function AdminERPView(props) {
                   <Award className="w-4 h-4 text-[#F5D061]" />
                 </div>
                 <div className="text-2xl font-black text-white mt-1">
-                  {(adminKPIs.totalSettlementAmount / 10000).toLocaleString()}
+                  {Math.round(Number(adminKPIs?.totalSettlementAmount || 0) / 10000).toLocaleString()}
                   <span className="text-sm font-normal text-[#C5BBAF] ml-1">만원</span>
                 </div>
                 <div className="text-[11px] text-[#A69B8D] mt-1 truncate">
-                  총 {settlements.length}건 봉안 접수완료
+                  총 {settlements?.length || 0}건 봉안 접수완료
                 </div>
               </div>
 
@@ -356,7 +356,7 @@ export default function AdminERPView(props) {
                   <span className="text-sm font-bold text-[#F5D061]">卍</span>
                 </div>
                 <div className="text-2xl font-black text-[#F5D061] mt-1">
-                  {(adminKPIs.templeFund / 10000).toLocaleString()}
+                  {Math.round(Number(adminKPIs?.templeFund || 0) / 10000).toLocaleString()}
                   <span className="text-sm font-normal text-[#C5BBAF] ml-1">만원</span>
                 </div>
                 <div className="text-[11px] text-[#F5D061]/80 font-semibold mt-1 truncate">
@@ -721,11 +721,11 @@ export default function AdminERPView(props) {
                       <span>1. 신도교적부 리스트 &amp; 검색·수정</span>
                       {adminMemberSearchQuery.trim() ? (
                         <span className="text-xs font-bold text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-lg border border-[#E8D4A2]">
-                          검색 일치: {filteredAdminMembers.length}명 / 전체 {members.length}명
+                          검색 일치: {filteredAdminMembers?.length || 0}명 / 전체 {members?.length || 0}명
                         </span>
                       ) : (
                         <span className="text-xs font-normal text-[#8C8071]">
-                          (전체 {members.length}명)
+                          (전체 {members?.length || 0}명)
                         </span>
                       )}
                     </h3>
@@ -831,7 +831,7 @@ export default function AdminERPView(props) {
                 <div className="flex items-center justify-between gap-2 flex-wrap">
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs">
                     {[
-                      { id: 'all', label: `전체 (${members.length})` },
+                      { id: 'all', label: `전체 (${members?.length || 0})` },
                       {
                         id: 'lantern_active',
                         label: `🔥 점등중 (${members.filter((m) => getMemberPrayerAndPaymentInfo(m).isLanternActive).length})`,
@@ -1016,7 +1016,7 @@ export default function AdminERPView(props) {
                 <div className="space-y-2 pt-2">
                   <div className="flex items-center justify-between">
                     <h4 className="font-serif-kr font-bold text-sm text-[#1B1815] flex items-center gap-1.5">
-                      <span>📜 사찰 불사 및 위패 봉안 전체 정산 원장 ({settlements.length}건)</span>
+                      <span>📜 사찰 불사 및 위패 봉안 전체 정산 원장 ({settlements?.length || 0}건)</span>
                     </h4>
                     <span className="text-xs font-bold text-[#8A6510]">
                       총 불사금: {settlements.reduce((sum, s) => sum + (Number(s.total_amount) || 0), 0).toLocaleString()}원
