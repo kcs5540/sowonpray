@@ -3272,22 +3272,23 @@ function normalizeMemberHierarchy(m) {
                   }}
                   title={`[대웅전 3대 점등 현황]\n1. 1일등: ${pInfo.lanterns[0].active ? '🔥 점등' : '⚪ 소등'}\n2. 100일등: ${pInfo.lanterns[1].active ? `🔥 점등 (D-${pInfo.lanterns[1].daysLeft})` : '⚪ 소등'}\n3. 1년등: ${pInfo.lanterns[2].active ? `🔥 점등 (D-${pInfo.lanterns[2].daysLeft})` : '⚪ 소등'}\n(클릭 시 등 연장/점등창 열기)`}
                 >
-                  {/* 등 표시 앞 3개 램프 도트 (1일등, 100일등, 1년등 순) */}
-                  <span className="flex items-center gap-1 mr-0.5" title="점등 램프: 1일등 | 100일등 | 1년등">
-                    {(pInfo.lanterns || []).map((lt) => (
-                      <span
-                        key={lt.id}
-                        className={`w-2 h-2 rounded-full transition ${
-                          lt.active
-                            ? 'bg-amber-600 shadow-[0_0_5px_rgba(217,119,6,0.9)] ring-1 ring-amber-400'
-                            : 'bg-stone-300 ring-1 ring-stone-300/80'
-                        }`}
-                        title={`${lt.fullName}: ${lt.active ? `점등중 (${lt.id === 'lantern_1d' ? '당일' : `D-${lt.daysLeft}`})` : '소등'}`}
-                      />
-                    ))}
+                  {/* 등 표시 3개 자리: 켜진 등 위치에 불꽃(🔥) 점등, 꺼진 위치에 회색 점(⚪) */}
+                  <span className="flex items-center gap-1.5 mr-0.5" title="대웅전 점등 슬롯: 1일등 | 100일등 | 1년등">
+                    {(pInfo.lanterns || []).map((lt) =>
+                      lt.active ? (
+                        <span key={lt.id} className="relative flex items-center justify-center w-3 h-3" title={`${lt.fullName}: 실시간 점등중`}>
+                          <Flame className="w-3.5 h-3.5 text-amber-600 fill-amber-500 animate-pulse drop-shadow-xs" />
+                        </span>
+                      ) : (
+                        <span
+                          key={lt.id}
+                          className="w-2 h-2 rounded-full bg-stone-300 ring-1 ring-stone-300/80 shrink-0"
+                          title={`${lt.fullName}: 소등`}
+                        />
+                      )
+                    )}
                   </span>
 
-                  <Flame className="w-3 h-3 text-amber-600 fill-amber-500 shrink-0" />
                   <span>
                     {pInfo.longestActiveLantern?.id === 'lantern_1d'
                       ? '1일등 (점등)'
