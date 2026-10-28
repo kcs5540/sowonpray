@@ -6113,7 +6113,7 @@ function normalizeMemberHierarchy(m) {
                 }`}
               >
                 <Search className="w-4 h-4" />
-                <span>📋 1. 신도교적부 리스트&amp;검색.수정</span>
+                <span>📋 1. 신도교적부 리스트 &amp; 검색·수정</span>
               </button>
               <button
                 type="button"
