@@ -4825,7 +4825,7 @@ function normalizeMemberHierarchy(m) {
             },
             buttons: [
               {
-                title: '🪔 7일 무료 소원등 밝히기',
+                title: '🪔 1일 무료 소원등 밝히기',
                 link: {
                   mobileWebUrl: shareUrl,
                   webUrl: shareUrl,
@@ -4893,7 +4893,7 @@ function normalizeMemberHierarchy(m) {
             },
             buttons: [
               {
-                title: '🪔 7일 무료 소원등 밝히기',
+                title: '🪔 1일 무료 소원등 밝히기',
                 link: {
                   mobileWebUrl: shareUrl,
                   webUrl: shareUrl,
@@ -5570,7 +5570,7 @@ function normalizeMemberHierarchy(m) {
                   <span className="block text-[10px] font-extrabold tracking-tight whitespace-nowrap leading-none text-[#A86E0B]">
                     {isLanternLit
                       ? `✨ 축원점등 (D-${lanternDaysRemaining})`
-                      : '대웅전 7일 무료'}
+                      : '대웅전 1일 무료'}
                   </span>
                   <h3 className="font-serif-kr font-extrabold text-[13.5px] sm:text-[14.5px] mt-1 tracking-tight whitespace-nowrap leading-tight text-[#2B1F11]">
                     {isLanternLit ? '나의 소원등' : '소원등 켜기'}
@@ -6883,7 +6883,7 @@ function normalizeMemberHierarchy(m) {
                       ? 'bg-[#241E18] border-[#9E7A32] opacity-80 hover:border-[#D4AF37]'
                       : 'bg-[#1F1914] border-[#4A3D2F] opacity-85 hover:border-[#C59B27]/60'
                   }`}
-                  title={isLanternLit ? '7일 정진 축원 진행중' : '발원문 접수하고 7일 소원등 밝히기'}
+                  title={isLanternLit ? '오늘 소원등 정진 진행중' : '발원문 접수하고 1일 소원등 밝히기'}
                 >
                   {isLanternLit ? (
                     <div className="relative flex items-center justify-center flame-flicker py-1">
@@ -8737,7 +8737,7 @@ function normalizeMemberHierarchy(m) {
                       가족 · 도반에게 복(福)을 전하는 소원등 선물
                     </h3>
                     <p className="text-xs text-[#575049] leading-relaxed mt-1 break-keep">
-                      소중한 분들께 7일 무료 소원등을 선물해 보세요. 상대방이 링크를 누르고 소원등을 밝히면 부처님 전에 함께 복을 짓는 <strong className="text-[#8A6510]">‘나의 인연 신도’</strong>로 자동 연결됩니다.
+                      소중한 분들께 1일 무료 소원등을 선물해 보세요. 상대방이 링크를 누르고 소원등을 밝히면 부처님 전에 함께 복을 짓는 <strong className="text-[#8A6510]">‘나의 인연 신도’</strong>로 자동 연결됩니다.
                     </p>
                   </div>
 
@@ -8750,7 +8750,7 @@ function normalizeMemberHierarchy(m) {
                     <svg viewBox="0 0 24 24" className="w-5 h-5 fill-[#3A1D1D] shrink-0" aria-hidden="true">
                       <path d="M12 3C6.477 3 2 6.477 2 10.767c0 2.766 1.874 5.19 4.678 6.558l-1.18 4.337a.5.5 0 0 0 .768.528l5.105-3.374c.206.015.414.024.629.024 5.523 0 10-3.477 10-7.767C22 6.477 17.523 3 12 3z"/>
                     </svg>
-                    <span>카카오톡으로 7일 소원등 복(福) 선물하기</span>
+                    <span>카카오톡으로 1일 소원등 복(福) 선물하기</span>
                   </button>
 
                   {/* 2) 보조 버튼 2종: 링크 복사 & QR코드 보기 */}
@@ -10639,7 +10639,7 @@ function normalizeMemberHierarchy(m) {
             ? `🏛️ [제주 소원사 영구 위패 봉안]\n${wishName.trim()} 불자님의 영구 위패 봉안 불사가 부처님 전에 정식 접수되었습니다.\n\n"매일 오전 10시 사시예불마다 스님께서 극락왕생과 가내 평안을 영구 축원합니다."\n\n🙏 소원사 모바일 법당:\nhttps://sowonpray.vercel.app`
             : isSamseongCat
             ? `🏔️ [제주 소원사 삼성각 건립 불사]\n${wishName.trim()} 불자님의 성전 건립 동참 공덕이 정식 접수되었습니다.\n\n"칠성·산신·독성 성인의 무량가피가 온 가족과 함께하시길 축원합니다."\n\n🙏 소원사 모바일 법당:\nhttps://sowonpray.vercel.app`
-            : `🪔 [제주 소원사 대웅전]\n${wishName.trim()}${shareTarget} 불자님의 간절한 소원등이 부처님 전에 밝혀졌습니다.\n\n"앞으로 7일 동안 매일 오전 10시 사시예불마다 스님께서 정성껏 축원 올립니다."\n\n🙏 함께 소원등 켜고 축원 받기:\nhttps://sowonpray.vercel.app`
+            : `🪔 [제주 소원사 대웅전]\n${wishName.trim()}${shareTarget} 불자님의 간절한 소원등이 부처님 전에 밝혀졌습니다.\n\n"매일 오전 10시 사시예불마다 스님께서 정성껏 축원 올립니다."\n\n🙏 함께 소원등 켜고 축원 받기:\nhttps://sowonpray.vercel.app`
 
           return (
             <div

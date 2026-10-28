@@ -285,7 +285,7 @@ export default function BusinessCardModal({
         >
           <span className="flex items-center gap-1.5">
             <Flame className="w-4 h-4 text-[#1B1815] fill-[#1B1815]" />
-            <span>🪔 7일 무료 소원등 복(福) 선물 켜기</span>
+            <span>🪔 1일 무료 소원등 복(福) 선물 켜기</span>
           </span>
           <span className="text-[11px] underline">바로가기 &gt;</span>
         </button>
