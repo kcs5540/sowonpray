@@ -2230,11 +2230,17 @@ export default function App() {
     }
 
     const m = settlementTargetMember
-    // 조직표에 따른 직속 추천인(1차) 및 상위 관리자(2차, 3차) 자동 결정
+    // 조직표에 따른 직속 추천인(1차) 및 상위 관리자(2차) 자동 결정
+    // [소원사 정산 규정] 김철수 총괄대표: 판권 50% 총괄 / 양영문 신도회장: 소원사 본원과 동격
     const agent1Code = m.parent_code || '33065540'
     const agent1 = members.find((a) => a.code === agent1Code) || members.find((a) => a.code === '33065540')
-    const agent2 = agent1?.parent_code ? members.find((a) => a.code === agent1.parent_code) : null
-    const agent3 = agent2?.parent_code ? members.find((a) => a.code === agent2.parent_code) : null
+    const isKimCheolSoo = agent1?.code === '33065540' || agent1?.code === '55400267'
+    const isYangYoungMoon = agent1?.code === '55570267'
+    // 김철수 대표 직속이거나 양영문 회장 건은 상위관리자가 없음(본사 및 판권 50% 최고위 동격)
+    const agent2 = (!isKimCheolSoo && !isYangYoungMoon)
+      ? (members.find((a) => a.code === (agent1?.parent_code || '33065540')) || members.find((a) => a.code === '33065540'))
+      : null
+    const agent3 = null
 
     const todayStr = new Date().toISOString().slice(0, 10)
     const stdAmount = Number(settlementStandardAmount) || 0
@@ -2354,9 +2360,14 @@ export default function App() {
                   <UserCheck className="w-4 h-4 text-[#8A6510]" />
                   <span>1. 동참 신도 교적 정보</span>
                 </span>
-                <span className="text-[11px] font-mono text-[#666] bg-white px-2 py-0.5 rounded border border-[#DDD4C4]">
-                  교적코드: {m.code}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[11px] font-bold text-[#554E45] bg-white px-2.5 py-0.5 rounded border border-[#DDD4C4]">
+                    담당 추천인: {directAgent ? `${directAgent.name} (${directAgent.role === 'master' ? '총괄위원장' : directAgent.role === 'temple_admin' ? '신도회장' : '포교위원장'})` : '소원사 본원'}
+                  </span>
+                  <span className="text-[11px] font-mono text-[#666] bg-white px-2 py-0.5 rounded border border-[#DDD4C4]">
+                    교적: {m.code}
+                  </span>
+                </div>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1 text-[11.5px]">
                 <div>
@@ -2381,54 +2392,12 @@ export default function App() {
               </div>
             </div>
 
-            {/* 2. 소원사 공인 조직표 유치 계보 (100% 자동 확정 및 잠금) */}
-            <div className="p-3.5 rounded-2xl bg-emerald-50/80 border border-emerald-300 space-y-2">
-              <div className="flex items-center justify-between pb-1.5 border-b border-emerald-200">
-                <span className="font-bold text-emerald-950 flex items-center gap-1.5">
-                  <Network className="w-4 h-4 text-emerald-700" />
-                  <span>2. 소원사 공인 조직표 계보 (자동 매칭)</span>
-                </span>
-                <span className="text-[10.5px] font-bold text-emerald-800 bg-white px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1 shadow-2xs">
-                  <span>🔒 조직도 자동 확정 (임의 변경 불가)</span>
-                </span>
-              </div>
-              <div className="grid grid-cols-3 gap-2 text-center pt-0.5">
-                <div className="p-2 rounded-xl bg-white border border-emerald-200">
-                  <span className="text-[10px] text-[#8C8071] block">1차 직속추천 (30%)</span>
-                  <strong className="text-xs font-bold text-emerald-950 block mt-0.5">
-                    {directAgent?.name || '소원사 본원'}
-                  </strong>
-                  <span className="text-[9.5px] text-[#8A6510]">
-                    {directAgent?.role === 'temple_admin' ? '신도회장' : directAgent?.role === 'master' ? '총괄위원장' : '포교위원장'}
-                  </span>
-                </div>
-                <div className="p-2 rounded-xl bg-white border border-emerald-200">
-                  <span className="text-[10px] text-[#8C8071] block">2차 상위관리 (10%)</span>
-                  <strong className="text-xs font-bold text-emerald-950 block mt-0.5">
-                    {upperAgent?.name || '-'}
-                  </strong>
-                  <span className="text-[9.5px] text-[#8A6510]">
-                    {upperAgent?.role === 'temple_admin' ? '신도회장' : upperAgent?.role === 'master' ? '총괄위원장' : '-'}
-                  </span>
-                </div>
-                <div className="p-2 rounded-xl bg-amber-50 border border-amber-300">
-                  <span className="text-[10px] text-amber-800 block font-bold">사찰 본사 원천 (50%)</span>
-                  <strong className="text-xs font-black text-amber-950 block mt-0.5">
-                    소원사 본원
-                  </strong>
-                  <span className="text-[9.5px] text-amber-800">
-                    불사금 적립
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* 3. 동참 종목 및 접수·약정 표준금액 */}
+            {/* 2. 동참 종목 및 접수·약정 표준금액 */}
             <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-3">
               <div className="flex items-center justify-between pb-1.5 border-b border-[#EAE2D3]">
                 <span className="font-bold text-[#8A6510] flex items-center gap-1.5">
                   <BookOpen className="w-4 h-4 text-[#8A6510]" />
-                  <span>3. 동참 종목 및 접수·약정 표준 정보</span>
+                  <span>2. 동참 종목 및 접수·약정 표준 정보</span>
                 </span>
                 <span className="text-[10.5px] font-bold text-[#8A6510] bg-[#FAF3DF] px-2 py-0.5 rounded border border-[#E8D4A2]">
                   모바일 신청란 표준
@@ -2516,7 +2485,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* 4. 실제 입금 수납 처리 (회계 및 정산 집행) */}
+            {/* 3. 실제 입금 수납 처리 (회계 및 정산 집행) */}
             <div className={`p-3.5 rounded-2xl border space-y-3 transition ${
               settlementPaymentStatus === 'confirmed'
                 ? 'bg-emerald-50/70 border-emerald-300'
@@ -2527,7 +2496,7 @@ export default function App() {
               <div className="flex items-center justify-between pb-1.5 border-b border-[#EAE2D3]">
                 <span className="font-bold flex items-center gap-1.5 text-[#1B1815]">
                   <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-                  <span>4. 실제 입금 수납 처리 (회계 및 정산 집행)</span>
+                  <span>3. 실제 입금 수납 처리 (회계 및 정산 집행)</span>
                 </span>
                 <span className={`text-[10.5px] font-bold px-2.5 py-0.5 rounded-full border shadow-2xs ${
                   settlementPaymentStatus === 'confirmed'
