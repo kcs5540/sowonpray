@@ -2332,6 +2332,7 @@ export default function App() {
     showToast('✓ 입금 완납 확인 및 소원사 조직표 정산 집행이 완료되었습니다!')
   }
 
+  // 1. 접수 등록 버튼 클릭 시 중앙 확인 모달 팝업 오픈
   const handleRegisterSettlementForMember = (e) => {
     e?.preventDefault()
     if (!settlementTargetMember) {
@@ -2340,13 +2341,10 @@ export default function App() {
     }
 
     const m = settlementTargetMember
-    // 조직표에 따른 직속 추천인(1차) 및 상위 관리자(2차) 자동 결정
-    // [소원사 정산 규정] 김철수 총괄대표: 판권 50% 총괄 / 양영문 신도회장: 소원사 본원과 동격
     const agent1Code = m.parent_code || '33065540'
     const agent1 = members.find((a) => a.code === agent1Code) || members.find((a) => a.code === '33065540')
     const isKimCheolSoo = agent1?.code === '33065540' || agent1?.code === '55400267'
     const isYangYoungMoon = agent1?.code === '55570267'
-    // 김철수 대표 직속이거나 양영문 회장 건은 상위관리자가 없음(본사 및 판권 50% 최고위 동격)
     const agent2 = (!isKimCheolSoo && !isYangYoungMoon)
       ? (members.find((a) => a.code === (agent1?.parent_code || '33065540')) || members.find((a) => a.code === '33065540'))
       : null
@@ -2357,26 +2355,22 @@ export default function App() {
     const actualPaidAmount = settlementPaymentStatus === 'pending' ? 0 : Number(settlementPaidAmount) || 0
     const unpaidAmt = Math.max(0, stdAmount - actualPaidAmount)
 
-    const statusText =
-      settlementPaymentStatus === 'confirmed'
-        ? `완납 (실수납: ${actualPaidAmount.toLocaleString()}원 / 실시간 전액 정산 집행)`
-        : settlementPaymentStatus === 'partial'
-        ? `분납 (1차 수납: ${actualPaidAmount.toLocaleString()}원 / 미납 잔여: ${unpaidAmt.toLocaleString()}원)`
-        : `전액 미입금 (0원 / 입금 대기 · 정산 보류)`
+    // 브라우저 최상단 window.confirm 대신 화면 정중앙 전용 모달 팝업 오픈!
+    setPendingSettlementConfirm({
+      m,
+      agent1,
+      agent2,
+      agent3,
+      stdAmount,
+      actualPaidAmount,
+      unpaidAmt,
+      todayStr,
+    })
+  }
 
-    const confirmMsg =
-      `[卍 소원사 불사 · 위패 정식 접수 확인]\n\n` +
-      `• 동참 신도: ${m.name} ${m.dharma_name ? `(${m.dharma_name})` : ''}\n` +
-      `• 동참 종목: ${settlementItemType}\n` +
-      `• 표준 약정액: ${stdAmount.toLocaleString()}원\n` +
-      `• 수납/납부 상태: ${statusText}\n` +
-      `• 실제 입금일자: ${settlementPaymentStatus === 'pending' ? '미입금 (입금 대기)' : (settlementPaidDate || todayStr)}\n` +
-      `• 직속 추천인: ${agent1 ? agent1.name : '소원사 본원'}\n\n` +
-      `위 내용으로 정식 등록 및 회계 장부에 반영하시겠습니까?`
-
-    if (!window.confirm(confirmMsg)) {
-      return
-    }
+  // 2. 중앙 확인 모달에서 [최종 등록 확인] 클릭 시 실제 회계 및 불사 집행
+  const executeFinalSettlementRegistration = (data) => {
+    const { m, agent1, agent2, agent3, stdAmount, actualPaidAmount, unpaidAmt, todayStr } = data
 
     const newRecord = {
       id: 's-' + Date.now(),
@@ -2444,7 +2438,7 @@ export default function App() {
           ? {
               ...item,
               merit_count: (item.merit_count || 0) + 1,
-              // 위패 봉안 수량: 완납 또는 일부 납부(분납) 시 향후 완납을 전제로 불사·위패 공식 집행 및 카운트 반영! (전액 미입금 시에만 0)
+              // 위패 봉안 수량: 완납 또는 일부 납부(분납) 시 향후 완납을 전제로 불사·위패 공식 집행 및 카운트 반영!
               wipae_count: (item.wipae_count || 0) + (
                 isPaymentActive && settlementItemType.includes('위패')
                   ? (settlementItemType.includes('2기') ? 2 : 1)
@@ -2472,10 +2466,159 @@ export default function App() {
     )
 
     playSingingBowlSound()
+    setPendingSettlementConfirm(null)
     setShowSettlementModal(false)
     setSettlementTargetMember(null)
     setSettlementMemo('')
     showToast(`🪷 [${m.name}] 신도님의 [${settlementItemType}] 접수 및 회계 처리가 완결되었습니다!`)
+  }
+
+  // 卍 [정식 접수 최종 확인 전용 중앙 팝업 모달]
+  const renderSettlementConfirmModal = () => {
+    if (!pendingSettlementConfirm) return null
+    const data = pendingSettlementConfirm
+    const { m, stdAmount, actualPaidAmount, unpaidAmt, agent1 } = data
+
+    return createPortal(
+      <div
+        className="fixed inset-0 z-[70] bg-black/80 flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-150"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setPendingSettlementConfirm(null)
+        }}
+      >
+        <div className="w-full max-w-md bg-white text-[#1B1815] rounded-3xl shadow-2xl border-2 border-[#D4AF37] overflow-hidden my-auto animate-in zoom-in-95 duration-150">
+          {/* 헤더 */}
+          <div className="bg-[#1B1815] text-[#FAF8F5] p-4 sm:p-5 flex items-center justify-between border-b-2 border-[#D4AF37]">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] flex items-center justify-center font-bold text-base shadow shrink-0">
+                卍
+              </div>
+              <div>
+                <h3 className="font-serif-kr text-base font-bold text-[#F5D061]">
+                  불사 · 위패 정식 접수 최종 확인
+                </h3>
+                <p className="text-xs text-[#D6CEC2]">
+                  장부 등록 전 입력하신 정보를 최종 확인합니다.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setPendingSettlementConfirm(null)}
+              className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* 본문 요약 카드 */}
+          <div className="p-5 space-y-3.5 text-xs">
+            {/* 신도 정보 */}
+            <div className="p-3 rounded-2xl bg-[#FAF8F5] border border-[#EAE2D3] flex items-center justify-between">
+              <div>
+                <span className="text-[11px] text-[#8C8071] block">동참 신도</span>
+                <strong className="text-sm font-bold text-[#1B1815]">
+                  {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''}
+                </strong>
+                {m.phone && <span className="font-mono text-xs text-[#666] ml-2">({m.phone})</span>}
+              </div>
+              <div className="text-right">
+                <span className="text-[10px] text-[#8C8071] block">담당 추천인</span>
+                <strong className="text-xs font-bold text-[#8A6510]">
+                  {agent1 ? agent1.name : '소원사 본원'}
+                </strong>
+              </div>
+            </div>
+
+            {/* 종목 및 표준 약정금 */}
+            <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[#666] font-semibold">동참 종목</span>
+                <strong className="font-bold text-[#1B1815] text-right max-w-[220px] truncate">
+                  {settlementItemType}
+                </strong>
+              </div>
+              <div className="flex items-center justify-between pt-1.5 border-t border-[#EAE2D3]">
+                <span className="text-[#666] font-semibold">표준 약정액</span>
+                <strong className="font-mono font-bold text-sm text-[#1B1815]">
+                  {stdAmount.toLocaleString()}원
+                </strong>
+              </div>
+            </div>
+
+            {/* 수납 상태 및 실제 입금액 */}
+            <div className={`p-3.5 rounded-2xl border space-y-2 ${
+              settlementPaymentStatus === 'confirmed'
+                ? 'bg-emerald-50/70 border-emerald-300'
+                : settlementPaymentStatus === 'partial'
+                ? 'bg-amber-50/70 border-amber-300'
+                : 'bg-stone-50 border-stone-300'
+            }`}>
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-[#333]">납부 / 수납 상태</span>
+                <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border shadow-2xs ${
+                  settlementPaymentStatus === 'confirmed'
+                    ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                    : settlementPaymentStatus === 'partial'
+                    ? 'bg-amber-100 text-amber-900 border-amber-300'
+                    : 'bg-stone-200 text-stone-700 border-stone-300'
+                }`}>
+                  {settlementPaymentStatus === 'confirmed'
+                    ? '✓ 완납 (실시간 전액 정산)'
+                    : settlementPaymentStatus === 'partial'
+                    ? '△ 분납 (1차 수납)'
+                    : '⏳ 미입금 (입금 대기)'}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between pt-1.5 border-t border-[#EAE2D3]">
+                <span className="font-bold text-[#333]">실제 사찰 수납액</span>
+                <strong className={`font-mono font-bold text-base ${
+                  settlementPaymentStatus === 'confirmed'
+                    ? 'text-emerald-700'
+                    : settlementPaymentStatus === 'partial'
+                    ? 'text-amber-700'
+                    : 'text-stone-500'
+                }`}>
+                  {actualPaidAmount.toLocaleString()}원
+                </strong>
+              </div>
+
+              {unpaidAmt > 0 && settlementPaymentStatus !== 'pending' && (
+                <div className="flex items-center justify-between text-[11px] text-amber-800 font-bold pt-1">
+                  <span>향후 완납 잔액</span>
+                  <span>{unpaidAmt.toLocaleString()}원 미납</span>
+                </div>
+              )}
+            </div>
+
+            <p className="text-[11px] text-center text-[#7A6E5E] pt-1">
+              위 내용으로 정식 등록 및 회계 장부에 반영하시겠습니까?
+            </p>
+
+            {/* 하단 버튼 2개 */}
+            <div className="grid grid-cols-2 gap-2.5 pt-1">
+              <button
+                type="button"
+                onClick={() => setPendingSettlementConfirm(null)}
+                className="py-3 px-4 rounded-xl bg-stone-100 hover:bg-stone-200 text-[#444] font-bold text-xs transition cursor-pointer"
+              >
+                돌아가서 수정
+              </button>
+              <button
+                type="button"
+                onClick={() => executeFinalSettlementRegistration(data)}
+                className="py-3 px-4 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] font-bold text-xs shadow-md border border-[#C59B27] transition cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Check className="w-4 h-4 text-[#F5D061]" />
+                <span>최종 등록 확인</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>,
+      document.body
+    )
   }
 
   // ⚙️ [착오 수정 및 환불/취소 처리 전용 모달 렌더러]
@@ -4140,6 +4283,8 @@ function normalizeMemberHierarchy(m) {
   const [activeBelieverCode, setActiveBelieverCode] = useState(null)
   // [정산 원장 착오 수정 및 환불/취소 처리] 전용 모달 상태
   const [editingSettlement, setEditingSettlement] = useState(null)
+  // [정식 접수 최종 확인 전용 중앙 팝업 모달 상태]
+  const [pendingSettlementConfirm, setPendingSettlementConfirm] = useState(null)
 
   // 개인 신도 교적대장 및 1년 가족인등 인쇄 시 배경 앱(#root) 숨김 및 단 1장 완결 출력 전용 클래스 토글
   useEffect(() => {
@@ -8118,6 +8263,7 @@ function normalizeMemberHierarchy(m) {
         {selectedMemberDetail && renderMemberDetailModal()}
         {showSettlementModal && renderSettlementModal()}
         {editingSettlement && renderSettlementEditModal()}
+        {pendingSettlementConfirm && renderSettlementConfirmModal()}
         {showIndividualRecordPrintModal && renderIndividualRecordPrintModal()}
         {showIndeungNameplateModal && renderIndeungNameplateModal()}
         {lanternTargetMember && renderLanternModal()}
