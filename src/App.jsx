@@ -3420,9 +3420,9 @@ function normalizeMemberHierarchy(m) {
 
           {/* ==================== 4열: 2번(기도·불사 접수) 왼쪽에, 1번(접수/입금날짜) 오른쪽에 나란히! (lg:col-span-4) ==================== */}
           <div className="lg:col-span-4 lg:border-l lg:border-[#F0EAE1] lg:pl-3.5 min-w-0">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-start gap-3">
               {/* 2번: 🪔 기도·불사 접수 현황 */}
-              <div className="space-y-1 min-w-0 flex-1">
+              <div className="space-y-1 min-w-0 shrink-0">
                 <span className="text-[10.5px] font-bold text-[#8C8071] block">기도·불사 접수 현황:</span>
                 <div className="flex items-center gap-1.5">
                   <span className={`px-2 py-0.5 rounded text-[10.5px] font-bold border ${pInfo.prayerBadgeColor}`}>
@@ -3455,8 +3455,8 @@ function normalizeMemberHierarchy(m) {
                 )}
               </div>
 
-              {/* 1번: 📅 접수날짜 & 💳 입금날짜 분리 표기 (2번 오른쪽에 나란히 안착!) */}
-              <div className="p-2 px-2.5 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-1 text-xs shrink-0 min-w-[155px]">
+              {/* 1번: 📅 접수날짜 & 💳 입금날짜 분리 표기 (2번 오른쪽에 바로 붙여서 빈공간 축소!) */}
+              <div className="p-2 px-2.5 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-1 text-xs shrink-0 min-w-[150px]">
                 <div className="flex items-center justify-between text-[11px] gap-2">
                   <span className="text-[#777777] flex items-center gap-1">
                     <Calendar className="w-3 h-3 text-[#8A6510]" />
