@@ -6631,6 +6631,163 @@ function normalizeMemberHierarchy(m) {
                     <div className="text-base font-black text-amber-900 mt-0.5">50%</div>
                   </div>
                 </div>
+
+                {/* 🪷 신규 사찰 불사 & 위패 봉안 접수 등록 폼 */}
+                <div className="p-5 rounded-2xl bg-[#FCFAF6] border-2 border-[#D4AF37]/50 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between border-b border-[#E6DEC8] pb-2">
+                    <div className="flex items-center gap-2">
+                      <Calculator className="w-5 h-5 text-[#8A6510]" />
+                      <h4 className="font-serif-kr font-bold text-base text-[#1B1815]">
+                        신규 사찰 불사 &amp; 위패 봉안 접수 등록
+                      </h4>
+                    </div>
+                    <span className="text-xs font-bold text-[#8A6510] bg-[#FAF3DF] px-2.5 py-1 rounded-lg border border-[#E8D4A2]">
+                      사찰 50% 불사금 원천 적립
+                    </span>
+                  </div>
+
+                  <form onSubmit={handleAddSettlement} className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                      <div>
+                        <label className="block font-bold text-[#3D3630] mb-1">
+                          동참 신도 성함 *
+                        </label>
+                        <input
+                          type="text"
+                          value={simBelieverName}
+                          onChange={(e) => setSimBelieverName(e.target.value)}
+                          placeholder="예: 김연화 (연화심)"
+                          required
+                          className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-bold text-[#1B1815]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-[#3D3630] mb-1">
+                          불사 / 위패 동참 종목 *
+                        </label>
+                        <select
+                          value={simItemType}
+                          onChange={(e) => {
+                            const val = e.target.value
+                            setSimItemType(val)
+                            if (val.includes('2기')) setSimAmount(4000000)
+                            else if (val.includes('단청') || val.includes('명패')) setSimAmount(1000000)
+                            else if (val.includes('기와')) setSimAmount(100000)
+                            else setSimAmount(2000000)
+                          }}
+                          className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-semibold text-[#1B1815]"
+                        >
+                          <option value="생전예수재 황금위패 (1기)">생전예수재 황금위패 1기 (200만원)</option>
+                          <option value="조상 영가 흑색 영구위패 (1기)">조상 영가 흑색 영구위패 1기 (200만원)</option>
+                          <option value="조상 영가 부부 영구위패 (2기)">조상 영가 부부 영구위패 2기 (400만원)</option>
+                          <option value="삼성각 성전 건립 소원기와 (1장)">삼성각 성전 건립 소원기와 1장 (10만원)</option>
+                          <option value="삼성각 대들보·기둥·단청 불사">삼성각 대들보·기둥·단청 불사 (100만원)</option>
+                          <option value="삼성각 가족 영구축원 명패">삼성각 가족 영구축원 명패 (100만원)</option>
+                          <option value="사찰 특별 대작불사 동참">사찰 특별 대작불사 동참 (직접입력)</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-[#3D3630] mb-1">
+                          보시 금액 (원) *
+                        </label>
+                        <input
+                          type="number"
+                          value={simAmount}
+                          onChange={(e) => setSimAmount(Number(e.target.value))}
+                          required
+                          className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-mono font-bold text-[#D32F2F]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-[#3D3630] mb-1">
+                          유치 포교사 / 위원장 *
+                        </label>
+                        <select
+                          value={simAgentCode}
+                          onChange={(e) => setSimAgentCode(e.target.value)}
+                          className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-semibold text-[#1B1815]"
+                        >
+                          {agents.map((a) => (
+                            <option key={a.code} value={a.code}>
+                              {a.name} ({a.role === 'temple_admin' ? '신도회장' : a.role === 'master' ? '총괄위원장' : '포교위원장'})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#C59B27] via-[#8A6510] to-[#231F1C] text-[#FAF8F5] font-black text-sm shadow-md hover:brightness-105 active:scale-99 transition flex items-center justify-center gap-2"
+                    >
+                      <Save className="w-4 h-4 text-[#F5D061]" />
+                      <span>卍 사찰 불사 접수 등록 및 실시간 정산 실행하기</span>
+                    </button>
+                  </form>
+                </div>
+
+                {/* 📜 사찰 불사 및 위패 봉안 전체 접수 원장 목록 */}
+                <div className="space-y-2 pt-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-serif-kr font-bold text-sm text-[#1B1815] flex items-center gap-1.5">
+                      <span>📜 사찰 불사 및 위패 봉안 전체 접수 원장 ({settlements.length}건)</span>
+                    </h4>
+                    <span className="text-xs font-bold text-[#8A6510]">
+                      총 불사금: {settlements.reduce((sum, s) => sum + (Number(s.total_amount) || 0), 0).toLocaleString()}원
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto rounded-2xl border border-[#DDD4C4] bg-white">
+                    <table className="w-full text-left border-collapse text-xs">
+                      <thead className="bg-[#FAF8F5] text-[#5C4D3C] border-b border-[#DDD4C4] text-[11px] font-bold">
+                        <tr>
+                          <th className="p-2.5 text-center whitespace-nowrap">접수일자</th>
+                          <th className="p-2.5 whitespace-nowrap">동참 신도</th>
+                          <th className="p-2.5 whitespace-nowrap">불사 / 위패 항목</th>
+                          <th className="p-2.5 text-right whitespace-nowrap">보시 금액</th>
+                          <th className="p-2.5 text-center whitespace-nowrap">사찰 불사금(50%)</th>
+                          <th className="p-2.5 whitespace-nowrap">유치 위원장</th>
+                          <th className="p-2.5 text-center whitespace-nowrap">상태</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[#EFE7D8]">
+                        {settlements.map((s, idx) => {
+                          const templeAmt = Math.round((Number(s.total_amount) || 0) * 0.5)
+                          return (
+                            <tr key={s.id || idx} className="hover:bg-[#FAF8F5]">
+                              <td className="p-2.5 text-center whitespace-nowrap font-mono text-[11px] text-[#666]">
+                                {(s.created_at || '').slice(0, 10)}
+                              </td>
+                              <td className="p-2.5 font-bold text-[#1B1815] whitespace-nowrap">
+                                {s.believer_name}
+                              </td>
+                              <td className="p-2.5 font-bold text-[#8A6510]">
+                                {s.item_name || s.title || '사찰 특별불사'}
+                              </td>
+                              <td className="p-2.5 text-right font-mono font-bold text-[#D32F2F] whitespace-nowrap">
+                                {Number(s.total_amount || 0).toLocaleString()}원
+                              </td>
+                              <td className="p-2.5 text-center font-mono font-bold text-amber-900 bg-amber-50/50 whitespace-nowrap">
+                                {templeAmt.toLocaleString()}원
+                              </td>
+                              <td className="p-2.5 text-[#554E45] whitespace-nowrap">
+                                {s.agent_1st_name || '-'}
+                              </td>
+                              <td className="p-2.5 text-center whitespace-nowrap">
+                                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                                  완납·정산
+                                </span>
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </section>
             )}
           </main>
