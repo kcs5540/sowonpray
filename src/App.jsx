@@ -6460,8 +6460,8 @@ function normalizeMemberHierarchy(m) {
                         label: `⚪ 소등 (${members.filter((m) => !getMemberPrayerAndPaymentInfo(m).isLanternActive).length})`,
                       },
                       { id: 'believer', label: `일반신도 (${members.filter((m) => m.role === 'believer').length})` },
-                      { id: 'agent', label: `위원장 (${members.filter((m) => m.role === 'agent').length})` },
                       { id: 'committee_member', label: `포교위원 (${members.filter((m) => m.role === 'committee_member').length})` },
+                      { id: 'agent', label: `위원장 (${members.filter((m) => m.role === 'agent').length})` },
                       { id: 'admin', label: `본부임원 (${members.filter((m) => m.role === 'temple_admin' || m.role === 'master').length})` },
                     ].map((chip) => (
                       <button
@@ -11761,8 +11761,8 @@ function normalizeMemberHierarchy(m) {
                           id: 'lantern_off',
                           label: `⚪ 소등 (${members.filter((m) => !getMemberPrayerAndPaymentInfo(m).isLanternActive).length})`,
                         },
-                        { id: 'agent', label: `위원장 (${members.filter((m) => m.role === 'agent').length})` },
                         { id: 'committee_member', label: `포교위원 (${members.filter((m) => m.role === 'committee_member').length})` },
+                        { id: 'agent', label: `위원장 (${members.filter((m) => m.role === 'agent').length})` },
                         { id: 'believer', label: `일반신도 (${members.filter((m) => m.role === 'believer').length})` },
                         { id: 'admin', label: `본부임원 (${members.filter((m) => m.role === 'temple_admin' || m.role === 'master').length})` },
                       ].map((chip) => (
