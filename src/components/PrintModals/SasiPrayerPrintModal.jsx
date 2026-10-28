@@ -3,6 +3,18 @@ import { createPortal } from 'react-dom'
 import { Printer, X } from 'lucide-react'
 import { computeZodiacAndGanji } from '../../lib/supabase'
 
+// 📅 축원 접수일시 포맷팅 헬퍼
+function formatPrayerDate(dateStr) {
+  if (!dateStr) return '-'
+  const d = new Date(dateStr)
+  if (isNaN(d.getTime())) return dateStr
+  const m = d.getMonth() + 1
+  const day = d.getDate()
+  const h = d.getHours()
+  const min = d.getMinutes()
+  return `${m}/${day} ${h}:${min < 10 ? '0' : ''}${min}`
+}
+
 // 📿 [대웅전 사시예불 축원 명부 A4 공식 인쇄 모달]
 export default function SasiPrayerPrintModal({
   isOpen = true,
