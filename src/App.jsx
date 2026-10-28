@@ -2672,11 +2672,168 @@ function normalizeMemberHierarchy(m) {
     return list
   }, [activeSasiPrayers, sasiPrayerTypeTab, sasiCategoryFilter, sasiSearchQuery])
 
+  // 🪷 신도별 최근 기도/불사 접수 현황, 접수일자, 입금일자, 보시금 처리 상태 및 실시간 소원등 점등 상태 산출
+  const getMemberPrayerAndPaymentInfo = (m) => {
+    if (!m) {
+      return {
+        prayerTitle: '-',
+        prayerTypeBadge: '-',
+        prayerBadgeColor: '',
+        paymentStatus: 'settled',
+        paymentAmount: 0,
+        appliedDate: '2026.10.22',
+        paidDate: '2026.10.22',
+        isLanternActive: false,
+        daysLeft: 0,
+        lanternStatusText: '소등 (등 미점등)',
+        lanternTypeBadge: '소등',
+      }
+    }
+
+    // 1. prayers 배열에서 매칭
+    const memberPrayers = (prayers || []).filter(
+      (p) =>
+        p.member_code === m.code ||
+        (m.phone && p.believer_phone && p.believer_phone.replace(/[^0-9]/g, '') === m.phone.replace(/[^0-9]/g, '')) ||
+        (p.believer_name && p.believer_name.includes(m.name))
+    )
+
+    // 2. settlements(위패/불사) 배열에서 매칭
+    const memberSettlements = (settlements || []).filter(
+      (s) => s.believer_name && s.believer_name.includes(m.name)
+    )
+
+    const latestSettlement = memberSettlements[0]
+    const latestPrayer = memberPrayers[0]
+
+    let prayerTitle = '기도·불사 접수 대기'
+    let prayerTypeBadge = '미접수'
+    let prayerBadgeColor = 'bg-stone-100 text-stone-600 border-stone-200'
+    let paymentAmount = 0
+    let paymentStatus = m.extra_data?.payment_status || 'settled'
+    let durationDays = 0
+
+    if (latestSettlement) {
+      prayerTitle = latestSettlement.item_name
+      prayerTypeBadge = '불사 봉안'
+      prayerBadgeColor = 'bg-purple-100 text-purple-900 border-purple-300'
+      paymentAmount = latestSettlement.total_amount || 2000000
+      paymentStatus = latestSettlement.payment_status === 'pending' ? 'pending' : 'settled'
+      durationDays = 365
+    } else if (latestPrayer) {
+      prayerTitle = latestPrayer.wish_category || latestPrayer.prayer_type || '대웅전 소원기도'
+      if (prayerTitle.includes('인등')) {
+        prayerTypeBadge = '1년 인등'
+        prayerBadgeColor = 'bg-amber-100 text-amber-900 border-amber-300'
+        paymentAmount = 100000
+        durationDays = latestPrayer.duration_days || 365
+      } else if (prayerTitle.includes('100일')) {
+        prayerTypeBadge = '100일 특별기도'
+        prayerBadgeColor = 'bg-blue-100 text-blue-900 border-blue-300'
+        paymentAmount = 100000
+        durationDays = latestPrayer.duration_days || 100
+      } else if (prayerTitle.includes('1일') || prayerTitle.includes('소원등')) {
+        prayerTypeBadge = '1일 소원등'
+        prayerBadgeColor = 'bg-emerald-100 text-emerald-900 border-emerald-300'
+        paymentAmount = 10000
+        durationDays = latestPrayer.duration_days || 7
+      } else {
+        prayerTypeBadge = '대웅전 기도'
+        prayerBadgeColor = 'bg-amber-100 text-amber-900 border-amber-300'
+        paymentAmount = 30000
+        durationDays = latestPrayer.duration_days || 30
+      }
+    } else {
+      // 신도 공덕 기준 추정 매핑
+      if ((m.merit_count || 0) >= 30) {
+        prayerTitle = '대웅전 1년 인등(가족등) 정진'
+        prayerTypeBadge = '1년 인등'
+        prayerBadgeColor = 'bg-amber-100 text-amber-900 border-amber-300'
+        paymentAmount = 100000
+        durationDays = 365
+      } else if ((m.merit_count || 0) >= 10) {
+        prayerTitle = '100일 소원성취 특별기도 정진'
+        prayerTypeBadge = '100일 특별기도'
+        prayerBadgeColor = 'bg-blue-100 text-blue-900 border-blue-300'
+        paymentAmount = 100000
+        durationDays = 100
+      } else if ((m.merit_count || 0) > 0) {
+        prayerTitle = '대웅전 일일 소원등 축원'
+        prayerTypeBadge = '1일 소원등'
+        prayerBadgeColor = 'bg-emerald-100 text-emerald-900 border-emerald-300'
+        paymentAmount = 10000
+        durationDays = 7
+      }
+    }
+
+    if (m.extra_data?.payment_status) {
+      paymentStatus = m.extra_data.payment_status
+    }
+
+    // 📅 접수날짜 산출 (YYYY.MM.DD)
+    const rawApplied = latestPrayer?.created_at || latestSettlement?.created_at || m.created_at || ''
+    const appliedDate = rawApplied ? rawApplied.slice(0, 10).replace(/-/g, '.') : '2026.10.22'
+
+    // 💳 입금날짜 산출 (완납 시 YYYY.MM.DD, 미납 시 '입금대기중')
+    let paidDate = '미납 (입금대기)'
+    if (paymentStatus === 'settled') {
+      const rawPaid = m.extra_data?.payment_date || latestSettlement?.created_at || latestPrayer?.created_at || m.created_at || ''
+      paidDate = rawPaid ? rawPaid.slice(0, 10).replace(/-/g, '.') : appliedDate
+    }
+
+    // 🔥 실시간 소원등 점등 상태 산출 (점등 여부 및 잔여일수 D-Day)
+    let isLanternActive = false
+    let daysLeft = 0
+    let lanternStatusText = '소등 (등 미점등)'
+
+    if (m.extra_data?.lantern_active_until) {
+      const untilTime = new Date(m.extra_data.lantern_active_until).getTime()
+      const now = Date.now()
+      if (untilTime > now) {
+        isLanternActive = true
+        daysLeft = Math.max(1, Math.ceil((untilTime - now) / (1000 * 60 * 60 * 24)))
+        lanternStatusText = `대웅전 점등중 (D-${daysLeft}일)`
+      }
+    } else if (durationDays > 0) {
+      const startDate = new Date(rawApplied || '2026-10-22T00:00:00Z').getTime()
+      const expireTime = startDate + durationDays * 24 * 60 * 60 * 1000
+      const now = Date.now()
+
+      if (expireTime > now || (m.merit_count || 0) > 0) {
+        isLanternActive = true
+        let remaining = Math.ceil((expireTime - now) / (1000 * 60 * 60 * 24))
+        if (remaining <= 0) {
+          remaining = Math.min(durationDays, Math.max(1, (m.merit_count || 1) * 7))
+        }
+        daysLeft = remaining > durationDays ? durationDays : remaining
+        lanternStatusText = `대웅전 점등중 (D-${daysLeft}일)`
+      }
+    }
+
+    return {
+      prayerTitle,
+      prayerTypeBadge,
+      prayerBadgeColor,
+      paymentStatus,
+      paymentAmount: paymentAmount || 100000,
+      appliedDate,
+      paidDate,
+      isLanternActive,
+      daysLeft,
+      lanternStatusText,
+      lanternTypeBadge: prayerTypeBadge !== '미접수' ? prayerTypeBadge : '소등',
+    }
+  }
+
   // 10만 신도 대비 통합 검색 & 필터링 & 정렬
   const filteredAdminMembers = useMemo(() => {
     let list = members || []
     if (adminMemberRoleFilter !== 'all') {
-      if (adminMemberRoleFilter === 'admin') {
+      if (adminMemberRoleFilter === 'lantern_active') {
+        list = list.filter((m) => getMemberPrayerAndPaymentInfo(m).isLanternActive)
+      } else if (adminMemberRoleFilter === 'lantern_off') {
+        list = list.filter((m) => !getMemberPrayerAndPaymentInfo(m).isLanternActive)
+      } else if (adminMemberRoleFilter === 'admin') {
         list = list.filter((m) => m.role === 'temple_admin' || m.role === 'master')
       } else {
         list = list.filter((m) => m.role === adminMemberRoleFilter)
@@ -2728,103 +2885,6 @@ function normalizeMemberHierarchy(m) {
   // [모바일법당 회원명부 A4 인쇄] 필터 및 검색
   const [memberPrintRoleFilter, setMemberPrintRoleFilter] = useState('all')
   const [memberPrintSearchQuery, setMemberPrintSearchQuery] = useState('')
-
-  // 🪷 신도별 최근 기도/불사 접수 현황, 접수일자, 입금일자 및 보시금 처리 상태 산출
-  const getMemberPrayerAndPaymentInfo = (m) => {
-    if (!m) return { prayerTitle: '-', prayerTypeBadge: '-', prayerBadgeColor: '', paymentStatus: 'settled', paymentAmount: 0, appliedDate: '2026.10.22', paidDate: '2026.10.22' }
-
-    // 1. prayers 배열에서 매칭
-    const memberPrayers = (prayers || []).filter(
-      (p) =>
-        p.member_code === m.code ||
-        (m.phone && p.believer_phone && p.believer_phone.replace(/[^0-9]/g, '') === m.phone.replace(/[^0-9]/g, '')) ||
-        (p.believer_name && p.believer_name.includes(m.name))
-    )
-
-    // 2. settlements(위패/불사) 배열에서 매칭
-    const memberSettlements = (settlements || []).filter(
-      (s) => s.believer_name && s.believer_name.includes(m.name)
-    )
-
-    const latestSettlement = memberSettlements[0]
-    const latestPrayer = memberPrayers[0]
-
-    let prayerTitle = '기도·불사 접수 대기'
-    let prayerTypeBadge = '미접수'
-    let prayerBadgeColor = 'bg-stone-100 text-stone-600 border-stone-200'
-    let paymentAmount = 0
-    let paymentStatus = m.extra_data?.payment_status || 'settled'
-
-    if (latestSettlement) {
-      prayerTitle = latestSettlement.item_name
-      prayerTypeBadge = '불사 봉안'
-      prayerBadgeColor = 'bg-purple-100 text-purple-900 border-purple-300'
-      paymentAmount = latestSettlement.total_amount || 2000000
-      paymentStatus = latestSettlement.payment_status === 'pending' ? 'pending' : 'settled'
-    } else if (latestPrayer) {
-      prayerTitle = latestPrayer.wish_category || latestPrayer.prayer_type || '대웅전 소원기도'
-      if (prayerTitle.includes('인등')) {
-        prayerTypeBadge = '1년 인등'
-        prayerBadgeColor = 'bg-amber-100 text-amber-900 border-amber-300'
-        paymentAmount = 100000
-      } else if (prayerTitle.includes('100일')) {
-        prayerTypeBadge = '100일 특별기도'
-        prayerBadgeColor = 'bg-blue-100 text-blue-900 border-blue-300'
-        paymentAmount = 100000
-      } else if (prayerTitle.includes('1일') || prayerTitle.includes('소원등')) {
-        prayerTypeBadge = '1일 소원등'
-        prayerBadgeColor = 'bg-emerald-100 text-emerald-900 border-emerald-300'
-        paymentAmount = 10000
-      } else {
-        prayerTypeBadge = '대웅전 기도'
-        prayerBadgeColor = 'bg-amber-100 text-amber-900 border-amber-300'
-        paymentAmount = 30000
-      }
-    } else {
-      // 신도 공덕 기준 추정 매핑
-      if ((m.merit_count || 0) >= 30) {
-        prayerTitle = '대웅전 1년 인등(가족등) 정진'
-        prayerTypeBadge = '1년 인등'
-        prayerBadgeColor = 'bg-amber-100 text-amber-900 border-amber-300'
-        paymentAmount = 100000
-      } else if ((m.merit_count || 0) >= 10) {
-        prayerTitle = '100일 소원성취 특별기도 정진'
-        prayerTypeBadge = '100일 특별기도'
-        prayerBadgeColor = 'bg-blue-100 text-blue-900 border-blue-300'
-        paymentAmount = 100000
-      } else if ((m.merit_count || 0) > 0) {
-        prayerTitle = '대웅전 일일 소원등 축원'
-        prayerTypeBadge = '1일 소원등'
-        prayerBadgeColor = 'bg-emerald-100 text-emerald-900 border-emerald-300'
-        paymentAmount = 10000
-      }
-    }
-
-    if (m.extra_data?.payment_status) {
-      paymentStatus = m.extra_data.payment_status
-    }
-
-    // 📅 접수날짜 산출 (YYYY.MM.DD)
-    const rawApplied = latestPrayer?.created_at || latestSettlement?.created_at || m.created_at || ''
-    const appliedDate = rawApplied ? rawApplied.slice(0, 10).replace(/-/g, '.') : '2026.10.22'
-
-    // 💳 입금날짜 산출 (완납 시 YYYY.MM.DD, 미납 시 '입금대기중')
-    let paidDate = '미납 (입금대기)'
-    if (paymentStatus === 'settled') {
-      const rawPaid = m.extra_data?.payment_date || latestSettlement?.created_at || latestPrayer?.created_at || m.created_at || ''
-      paidDate = rawPaid ? rawPaid.slice(0, 10).replace(/-/g, '.') : appliedDate
-    }
-
-    return {
-      prayerTitle,
-      prayerTypeBadge,
-      prayerBadgeColor,
-      paymentStatus,
-      paymentAmount: paymentAmount || 100000,
-      appliedDate,
-      paidDate,
-    }
-  }
 
   // 💰 종무소 원터치 보시금 입금 상태(입금완료 <-> 입금대기) 및 입금일자 동기화 토글 처리
   const handleTogglePaymentStatus = async (memberCode) => {
@@ -2896,7 +2956,10 @@ function normalizeMemberHierarchy(m) {
       supabase.from('prayers').insert([newPrayer]).then()
     }
 
-    // 신도 공덕수 및 입금상태 실시간 업데이트
+    // 신도 공덕수, 소원등 점등 상태 및 입금상태 실시간 업데이트
+    const durationDays = typeConfig.duration === 1 ? 7 : typeConfig.duration
+    const untilDate = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000).toISOString()
+
     setMembers((prev) =>
       prev.map((m) => {
         if (m.code === lanternTargetMember.code) {
@@ -2909,6 +2972,9 @@ function normalizeMemberHierarchy(m) {
               payment_date: adminLanternPaid ? todayStr : '',
               recent_prayer_title: typeConfig.name,
               recent_prayer_date: todayStr,
+              lantern_active_until: untilDate,
+              lantern_lighted_at: new Date().toISOString(),
+              lantern_type: typeConfig.name,
               payment_updated_at: new Date().toISOString(),
             },
           }
@@ -3098,6 +3164,21 @@ function normalizeMemberHierarchy(m) {
                   {m.birth_year || (m.birth_date ? m.birth_date.slice(0, 4) : '')}년 {m.lunar_solar || '음력'} ({zInfo.ganji} {zInfo.animal}띠)
                 </span>
               )}
+              {/* 실시간 소원등 점등 상태 램프 배지 */}
+              {pInfo.isLanternActive ? (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-50 via-amber-100 to-amber-200/80 text-amber-950 border border-amber-300 font-black text-[11px] shadow-xs">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-600"></span>
+                  </span>
+                  <span>🔥 점등중 (D-{pInfo.daysLeft})</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-stone-100 text-stone-500 border border-stone-200 font-medium text-[10.5px]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-stone-400"></span>
+                  <span>⚪ 소등</span>
+                </span>
+              )}
             </div>
 
             {/* 전화번호 & 거주지 주소 */}
@@ -3151,8 +3232,55 @@ function normalizeMemberHierarchy(m) {
             )}
           </div>
 
-          {/* ==================== 3열: 🪔 기도·불사 접수 & 접수/입금 일자 (lg:col-span-3) ==================== */}
+          {/* ==================== 3열: 🪔 기도·불사 접수 & 실시간 소원등 점등 상태 (lg:col-span-3) ==================== */}
           <div className="lg:col-span-3 space-y-2 lg:border-l lg:border-[#F0EAE1] lg:pl-4 min-w-0">
+            {/* 🔥 실시간 대웅전 소원등 점등 상태 알림 카드 */}
+            {pInfo.isLanternActive ? (
+              <div className="p-2.5 rounded-xl bg-gradient-to-r from-amber-500/10 via-amber-400/15 to-amber-600/10 border border-amber-300 shadow-xs">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="relative flex h-2.5 w-2.5 shrink-0">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-gradient-to-tr from-amber-600 to-amber-400 shadow-xs"></span>
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <strong className="text-xs font-black text-amber-950 flex items-center gap-1">
+                        <Flame className="w-3.5 h-3.5 text-amber-600 fill-amber-500 shrink-0" />
+                        <span>대웅전 점등중</span>
+                      </strong>
+                      <span className="px-1.5 py-0.2 rounded-md bg-amber-200/90 text-amber-950 font-mono text-[10.5px] font-black">
+                        D-{pInfo.daysLeft}일
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold text-amber-800 bg-white/70 px-1.5 py-0.5 rounded border border-amber-200/60">
+                    축원 봉안
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="p-2 rounded-xl bg-stone-50 border border-stone-200 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-stone-600">
+                  <span className="w-2 h-2 rounded-full bg-stone-400"></span>
+                  <span className="text-[11px] font-bold text-stone-600">⚪ 소등 (등 미점등 상태)</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLanternTargetMember(m)
+                    setAdminLanternType('lantern_1d')
+                    setAdminLanternCategory('가족건강')
+                    setAdminLanternWish(PRAYER_CATEGORY_TEMPLATES['가족건강'] || '')
+                    setAdminLanternPaid(true)
+                  }}
+                  className="text-[10.5px] font-black text-amber-700 hover:text-amber-900 flex items-center gap-0.5 hover:underline"
+                >
+                  <Flame className="w-3 h-3 text-amber-600" />
+                  <span>+ 즉시 켜기</span>
+                </button>
+              </div>
+            )}
+
             <div>
               <div className="flex items-center gap-1.5 mb-1">
                 <span className={`px-2 py-0.5 rounded text-[10.5px] font-bold border ${pInfo.prayerBadgeColor}`}>
@@ -3255,11 +3383,15 @@ function normalizeMemberHierarchy(m) {
                   setAdminLanternWish(PRAYER_CATEGORY_TEMPLATES['가족건강'] || '')
                   setAdminLanternPaid(true)
                 }}
-                className="py-1.5 px-1 rounded-xl bg-gradient-to-r from-[#C59B27] via-[#D4AF37] to-[#8A6510] hover:brightness-105 text-[#1B1815] text-[10.5px] font-black transition flex items-center justify-center gap-0.5 shadow-sm"
-                title="대웅전 소원등 즉시 켜기"
+                className={`py-1.5 px-1 rounded-xl text-[10.5px] font-black transition flex items-center justify-center gap-0.5 shadow-sm ${
+                  pInfo.isLanternActive
+                    ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:brightness-105 text-[#1B1815] border border-amber-400'
+                    : 'bg-gradient-to-r from-[#C59B27] via-[#D4AF37] to-[#8A6510] hover:brightness-105 text-[#1B1815]'
+                }`}
+                title={pInfo.isLanternActive ? '대웅전 소원등 축원 연장/재점등' : '대웅전 소원등 즉시 켜기'}
               >
-                <Flame className="w-3 h-3 text-amber-950" />
-                <span>등켜기</span>
+                <Flame className={`w-3 h-3 ${pInfo.isLanternActive ? 'text-amber-950 fill-amber-900' : 'text-amber-950'}`} />
+                <span>{pInfo.isLanternActive ? '등연장' : '등켜기'}</span>
               </button>
 
               <button
@@ -5501,6 +5633,14 @@ function normalizeMemberHierarchy(m) {
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs">
                     {[
                       { id: 'all', label: `전체 (${members.length})` },
+                      {
+                        id: 'lantern_active',
+                        label: `🔥 점등중 (${members.filter((m) => getMemberPrayerAndPaymentInfo(m).isLanternActive).length})`,
+                      },
+                      {
+                        id: 'lantern_off',
+                        label: `⚪ 소등 (${members.filter((m) => !getMemberPrayerAndPaymentInfo(m).isLanternActive).length})`,
+                      },
                       { id: 'believer', label: `일반신도 (${members.filter((m) => m.role === 'believer').length})` },
                       { id: 'agent', label: `위원장 (${members.filter((m) => m.role === 'agent').length})` },
                       { id: 'committee_member', label: `포교위원 (${members.filter((m) => m.role === 'committee_member').length})` },
@@ -10774,6 +10914,14 @@ function normalizeMemberHierarchy(m) {
                     <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 text-[11px]">
                       {[
                         { id: 'all', label: `전체 (${members.length})` },
+                        {
+                          id: 'lantern_active',
+                          label: `🔥 점등 (${members.filter((m) => getMemberPrayerAndPaymentInfo(m).isLanternActive).length})`,
+                        },
+                        {
+                          id: 'lantern_off',
+                          label: `⚪ 소등 (${members.filter((m) => !getMemberPrayerAndPaymentInfo(m).isLanternActive).length})`,
+                        },
                         { id: 'agent', label: `위원장 (${members.filter((m) => m.role === 'agent').length})` },
                         { id: 'committee_member', label: `포교위원 (${members.filter((m) => m.role === 'committee_member').length})` },
                         { id: 'believer', label: `일반신도 (${members.filter((m) => m.role === 'believer').length})` },
