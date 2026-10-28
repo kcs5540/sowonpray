@@ -5056,7 +5056,6 @@ function normalizeMemberHierarchy(m) {
     return (
       <AdminERPView
         currentUser={currentUser}
-        setCurrentUser={setCurrentUser}
         isMasterOrTempleAdmin={isMasterOrTempleAdmin}
         isMaster={isMaster}
         isTempleAdmin={isTempleAdmin}

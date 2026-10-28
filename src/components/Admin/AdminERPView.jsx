@@ -37,7 +37,6 @@ import { computeZodiacAndGanji, formatPhone11 } from '../../lib/supabase'
 export default function AdminERPView(props) {
   const {
     currentUser,
-    setCurrentUser,
     isMasterOrTempleAdmin,
     isMaster,
     isTempleAdmin,
