@@ -2332,8 +2332,8 @@ export default function App() {
                   <Network className="w-4 h-4 text-emerald-700" />
                   <span>2. 소원사 공인 조직표 계보 (자동 매칭)</span>
                 </span>
-                <span className="text-[10.5px] font-bold text-emerald-800 bg-white px-2 py-0.5 rounded-full border border-emerald-200">
-                  조직표 계보 100% 자동 확정
+                <span className="text-[10.5px] font-bold text-emerald-800 bg-white px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1 shadow-2xs">
+                  <span>🔒 조직도 자동 확정 (임의 변경 불가)</span>
                 </span>
               </div>
               <div className="grid grid-cols-3 gap-2 text-center pt-0.5">
@@ -12477,19 +12477,14 @@ function normalizeMemberHierarchy(m) {
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                    직접 성사 유치 위원 (1차)
+                    직접 성사 유치 위원 (1차 30% · 조직도 고정)
                   </label>
-                  <select
-                    value={simAgentCode}
-                    onChange={(e) => setSimAgentCode(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs font-semibold"
-                  >
-                    {agents.map((a) => (
-                      <option key={a.code} value={a.code}>
-                        {a.name} ({a.role === 'committee_member' ? '포교위원 30%' : a.role === 'master' ? '김철수 총괄' : '포교위원장 40%'})
-                      </option>
-                    ))}
-                  </select>
+                  <div className="w-full px-3 py-2 rounded-xl bg-[#F0EAE1] border border-[#DDD4C4] text-xs font-bold text-[#3D3630] flex items-center justify-between">
+                    <span>{getRecommenderName(simAgentCode)}</span>
+                    <span className="text-[10px] text-emerald-800 font-bold bg-white px-1.5 py-0.5 rounded border border-emerald-200">
+                      🔒 조직도 자동 확정
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -14078,17 +14073,10 @@ function normalizeMemberHierarchy(m) {
                             required
                             className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs font-bold text-[#8A6510]"
                           />
-                          <select
-                            value={simAgentCode}
-                            onChange={(e) => setSimAgentCode(e.target.value)}
-                            className="p-2 rounded-lg border border-[#D5C59B] bg-white text-xs font-semibold"
-                          >
-                            {agents.map((a) => (
-                              <option key={a.code} value={a.code}>
-                                {a.name} ({a.role === 'temple_admin' ? '신도회장' : a.role === 'master' ? '총괄위원장' : '포교위원장'})
-                              </option>
-                            ))}
-                          </select>
+                          <div className="p-2 rounded-lg border border-[#D5C59B] bg-[#F5EEDB] text-xs font-bold text-[#1B1815] flex items-center justify-between">
+                            <span className="truncate">{getRecommenderName(simAgentCode)}</span>
+                            <span className="text-[9.5px] text-emerald-800 shrink-0 font-bold">🔒 조직도 자동확정</span>
+                          </div>
                         </div>
                         <button
                           type="submit"
