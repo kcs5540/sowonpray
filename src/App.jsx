@@ -2125,10 +2125,25 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => {
-                    setSimBelieverName(selectedMemberDetail.name || '')
+                    const targetAgent =
+                      selectedMemberDetail.role === 'agent' ||
+                      selectedMemberDetail.role === 'master' ||
+                      selectedMemberDetail.role === 'temple_admin'
+                        ? selectedMemberDetail.code
+                        : selectedMemberDetail.parent_code || '33065540'
+                    setSimBelieverName(
+                      `${selectedMemberDetail.name}${
+                        selectedMemberDetail.dharma_name
+                          ? ` (${selectedMemberDetail.dharma_name})`
+                          : ''
+                      }`
+                    )
+                    setSimAgentCode(targetAgent)
                     setSelectedMemberDetail(null)
                     setErpTab('settlement')
-                    showToast(`🏛️ ${selectedMemberDetail.name} 불자님의 사찰 불사 접수 화면으로 이동합니다.`)
+                    showToast(
+                      `🏛️ ${selectedMemberDetail.name} 불자님의 사찰 불사 접수 화면으로 이동합니다. (유치 위원장 자동 매칭 완료)`
+                    )
                   }}
                   className="w-full py-2.5 rounded-xl bg-[#FAF8F5] border border-[#C59B27] text-[#8A6510] font-bold text-xs hover:bg-[#F5EEDB] transition flex items-center justify-center gap-1.5"
                 >
@@ -4205,8 +4220,8 @@ function normalizeMemberHierarchy(m) {
               )}
             </div>
 
-            {/* 2줄: 바로가기 버튼 그룹 (소원등 켜기 / 명패 인쇄 / 상세 수정) */}
-            <div className="grid grid-cols-3 gap-1 pt-1 border-t border-[#F0EAE1]">
+            {/* 2줄: 바로가기 버튼 그룹 (등연장 / 명패 / 불사접수 / 상세수정) */}
+            <div className="grid grid-cols-4 gap-1 pt-1 border-t border-[#F0EAE1]">
               <button
                 type="button"
                 onClick={() => {
@@ -4244,13 +4259,33 @@ function normalizeMemberHierarchy(m) {
               <button
                 type="button"
                 onClick={() => {
+                  const targetAgent =
+                    m.role === 'agent' || m.role === 'master' || m.role === 'temple_admin'
+                      ? m.code
+                      : m.parent_code || '33065540'
+                  setSimBelieverName(`${m.name}${m.dharma_name ? ` (${m.dharma_name})` : ''}`)
+                  setSimAgentCode(targetAgent)
+                  setErpTab('settlement')
+                  showToast(`💰 ${m.name} 불자님의 불사 접수 모드로 전환 (유치 위원장 자동 매칭)`)
+                }}
+                className="py-1.5 px-1 rounded-xl bg-[#FAF3DF] hover:bg-[#F3E6C2] border border-[#D5C59B] text-[10.5px] font-black text-[#8A6510] transition flex items-center justify-center gap-0.5 shadow-xs"
+                title="사찰 불사·위패 접수하기 (유치 위원장 1초 자동 매칭)"
+              >
+                <PlusCircle className="w-3 h-3 text-[#8A6510]" />
+                <span>불사</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
                   setSelectedMemberDetail(m)
                   setIsEditingMember(false)
                 }}
                 className="py-1.5 px-1 rounded-xl bg-[#1B1815] text-[#F5D061] hover:bg-[#2C251F] text-[10.5px] font-bold transition flex items-center justify-center gap-0.5 shadow-xs"
+                title="신도 교적부 상세 조회 및 수정"
               >
                 <FileText className="w-3 h-3" />
-                <span>상세수정</span>
+                <span>수정</span>
               </button>
             </div>
           </div>
@@ -4262,9 +4297,12 @@ function normalizeMemberHierarchy(m) {
   const getRecommenderName = (parentCode) => {
     if (!parentCode) return '-'
     if (parentCode === '55570267') return '양영문 신도회장'
-    if (parentCode === '55400267') return '김철수 총괄대표'
+    if (parentCode === '33065540' || parentCode === '55400267') return '김철수 총괄위원장'
+    if (parentCode === '53872248') return '유광수 포교위원장'
+    if (parentCode === '83855838') return '오다혜 포교위원장'
+    if (parentCode === '35651669') return '임평종 포교위원장'
     const parent = (members || []).find((m) => m.code === parentCode)
-    return parent ? `${parent.name} (${parent.role === 'agent' ? '위원장' : parent.role === 'committee_member' ? '위원' : '신도'})` : parentCode
+    return parent ? `${parent.name} (${parent.role === 'agent' ? '포교위원장' : parent.role === 'master' ? '총괄위원장' : parent.role === 'temple_admin' ? '신도회장' : '포교위원'})` : parentCode
   }
 
 
@@ -4710,7 +4748,54 @@ function normalizeMemberHierarchy(m) {
   const [simBelieverName, setSimBelieverName] = useState('')
   const [simItemType, setSimItemType] = useState('생전예수재 황금위패 (1기)')
   const [simAmount, setSimAmount] = useState(2000000)
-  const [simAgentCode, setSimAgentCode] = useState('39110944')
+  const [simAgentCode, setSimAgentCode] = useState('33065540')
+
+  // 입력된 신도 성함에 따라 기존 신도 및 유치 포교위원장 실시간 자동 매칭
+  const matchedBelieverForSettlement = useMemo(() => {
+    if (!simBelieverName.trim()) return null
+    const raw = simBelieverName.trim()
+    const clean = raw.replace(/\s*\(.*?\).*/g, '').trim()
+    let found = members.find((m) => m.code === raw || m.code === clean)
+    if (found) return found
+    found = members.find((m) => m.name === raw || m.name === clean)
+    if (found) return found
+    found = members.find(
+      (m) =>
+        (clean.length >= 2 && m.name.includes(clean)) ||
+        (m.dharma_name && clean.length >= 2 && m.dharma_name.includes(clean))
+    )
+    return found || null
+  }, [simBelieverName, members])
+
+  // 신도 성함 입력 시 유치 위원장 자동 매칭 핸들러
+  const handleBelieverNameInput = (val) => {
+    setSimBelieverName(val)
+    if (!val.trim()) return
+    const raw = val.trim()
+    const clean = raw.replace(/\s*\(.*?\).*/g, '').trim()
+    const found =
+      members.find((m) => m.code === raw || m.code === clean) ||
+      members.find((m) => m.name === raw || m.name === clean) ||
+      (clean.length >= 2
+        ? members.find(
+            (m) =>
+              m.name.includes(clean) ||
+              (m.dharma_name && m.dharma_name.includes(clean))
+          )
+        : null)
+
+    if (found) {
+      if (
+        found.role === 'agent' ||
+        found.role === 'master' ||
+        found.role === 'temple_admin'
+      ) {
+        setSimAgentCode(found.code)
+      } else if (found.parent_code) {
+        setSimAgentCode(found.parent_code)
+      }
+    }
+  }
 
   // 총괄 관리자용 신규 포교사/회원 등록 입력 상태
   const [adminNewName, setAdminNewName] = useState('')
@@ -5548,11 +5633,11 @@ function normalizeMemberHierarchy(m) {
     showToast(`✅ [${updatedMember.name}] 신도님의 교적부 상세 정보가 성공적으로 저장되었습니다.`)
   }
 
-  // 총괄 관리자: 신규 위패 봉안 정산 시뮬레이션 추가
+  // 총괄 관리자: 신규 불사 접수 & 실시간 계보 정산 실행
   const handleAddSettlement = (e) => {
     e.preventDefault()
     if (!simBelieverName.trim()) {
-      showToast('봉안 신도님 성함을 입력해 주세요.')
+      showToast('동참 신도님 성함을 입력해 주세요.')
       return
     }
     const agent1 = members.find((a) => a.code === simAgentCode)
@@ -5563,32 +5648,46 @@ function normalizeMemberHierarchy(m) {
       ? members.find((a) => a.code === agent2.parent_code)
       : null
 
+    const targetMember = matchedBelieverForSettlement
+    const todayStr = new Date().toISOString().slice(0, 10)
+
     const newRecord = {
       id: 's-' + Date.now(),
       temple_id: DEFAULT_TEMPLE_ID,
+      member_code: targetMember ? targetMember.code : null,
       believer_name: simBelieverName.trim(),
+      believer_phone: targetMember ? targetMember.phone : '',
       item_name: simItemType,
       total_amount: Number(simAmount),
       agent_1st_code: agent1 ? agent1.code : null,
       agent_1st_name: agent1
-        ? `${agent1.name}${agent1.dharma_name ? `(${agent1.dharma_name})` : ''}`
+        ? `${agent1.name}${agent1.dharma_name ? `(${agent1.dharma_name})` : ''} (${agent1.role === 'temple_admin' ? '신도회장' : agent1.role === 'master' ? '총괄위원장' : '포교위원장'})`
         : '-',
       agent_2nd_code: agent2 ? agent2.code : null,
       agent_2nd_name: agent2
-        ? `${agent2.name}${agent2.dharma_name ? `(${agent2.dharma_name})` : ''}`
+        ? `${agent2.name}${agent2.dharma_name ? `(${agent2.dharma_name})` : ''} (${agent2.role === 'temple_admin' ? '신도회장' : '총괄위원장'})`
         : '-',
       agent_3rd_code: agent3 ? agent3.code : null,
       agent_3rd_name: agent3
-        ? `${agent3.name}${agent3.dharma_name ? `(${agent3.dharma_name})` : ''}`
+        ? `${agent3.name}${agent3.dharma_name ? `(${agent3.dharma_name})` : ''} (신도회장)`
         : '-',
       payment_status: 'confirmed',
-      created_at: '2026-10-21 (금일)',
+      created_at: todayStr,
     }
 
     setSettlements((prev) => [newRecord, ...prev])
+    if (targetMember) {
+      setMembers((prev) =>
+        prev.map((m) =>
+          m.code === targetMember.code
+            ? { ...m, merit_count: (m.merit_count || 0) + 1, wipae_count: (m.wipae_count || 0) + 1 }
+            : m
+        )
+      )
+    }
     setSimBelieverName('')
     playSingingBowlSound()
-    showToast('💰 신규 위패 봉안 및 1·2·3차 + 플랫폼 총괄(5%) 자동 정산 내역이 생성되었습니다.')
+    showToast(`💰 [${newRecord.believer_name}] 신도님의 불사 접수 및 1·2·3차 실시간 정산이 완료되었습니다.`)
   }
 
   // 요율 조정 핸들러
@@ -6637,20 +6736,89 @@ function normalizeMemberHierarchy(m) {
                     </span>
                   </div>
 
-                  <form onSubmit={handleAddSettlement} className="space-y-4">
+                  <form onSubmit={handleAddSettlement} className="space-y-3.5">
+                    {/* 상단: 교적부 신도 원터치 빠른 선택 드롭다운 */}
+                    <div className="p-3 rounded-2xl bg-[#FFF9E6] border border-[#E5D399] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-[#8A6510] shrink-0" />
+                        <div>
+                          <span className="font-bold text-xs text-[#1B1815]">
+                            신도 교적부 원터치 선택
+                          </span>
+                          <span className="text-[11px] text-[#8C8071] ml-1.5 hidden sm:inline">
+                            (신도 선택 시 유치 위원장 100% 자동 매칭)
+                          </span>
+                        </div>
+                      </div>
+                      <select
+                        onChange={(e) => {
+                          const code = e.target.value
+                          if (!code) return
+                          const m = members.find((x) => x.code === code)
+                          if (m) {
+                            handleBelieverNameInput(`${m.name}${m.dharma_name ? ` (${m.dharma_name})` : ''}`)
+                          }
+                        }}
+                        defaultValue=""
+                        className="w-full sm:w-auto px-3 py-1.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-semibold text-[#1B1815] shadow-xs"
+                      >
+                        <option value="">-- 📋 신도교적부에서 빠른 선택 (자동 매칭) --</option>
+                        <optgroup label="👑 포교위원장 / 임원 본인 접수">
+                          {agents.map((ag) => (
+                            <option key={ag.code} value={ag.code}>
+                              {ag.name} ({ag.role === 'temple_admin' ? '신도회장' : ag.role === 'master' ? '총괄위원장' : '포교위원장'})
+                            </option>
+                          ))}
+                        </optgroup>
+                        <optgroup label="🪷 등록 신도 명부 (소속 위원장 자동 연동)">
+                          {members
+                            .filter((m) => m.role === 'believer')
+                            .slice(0, 60)
+                            .map((m) => {
+                              const parentAgent = members.find((a) => a.code === m.parent_code)
+                              return (
+                                <option key={m.code} value={m.code}>
+                                  {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''} ➔ {parentAgent ? `${parentAgent.name} 위원장 소속` : '소원사 직속'}
+                                </option>
+                              )
+                            })}
+                        </optgroup>
+                      </select>
+                    </div>
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
                       <div>
-                        <label className="block font-bold text-[#3D3630] mb-1">
-                          동참 신도 성함 *
-                        </label>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="font-bold text-[#3D3630]">
+                            동참 신도 성함 *
+                          </label>
+                          {matchedBelieverForSettlement && (
+                            <span className="text-[10px] text-emerald-800 font-bold bg-emerald-100 px-1.5 py-0.5 rounded">
+                              교적 연동됨
+                            </span>
+                          )}
+                        </div>
                         <input
                           type="text"
+                          list="simBelieverDatalist"
                           value={simBelieverName}
-                          onChange={(e) => setSimBelieverName(e.target.value)}
-                          placeholder="예: 김연화 (연화심)"
+                          onChange={(e) => handleBelieverNameInput(e.target.value)}
+                          placeholder="예: 유광수 또는 이진우"
                           required
-                          className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-bold text-[#1B1815]"
+                          className="w-full px-3 py-2.5 rounded-xl bg-white border-2 border-[#D5C59B] text-xs font-bold text-[#1B1815] focus:border-[#C59B27] focus:outline-none"
                         />
+                        <datalist id="simBelieverDatalist">
+                          {members.map((m) => {
+                            const parentAg = members.find((a) => a.code === m.parent_code)
+                            return (
+                              <option
+                                key={m.code}
+                                value={m.name}
+                                label={`${m.dharma_name ? `(${m.dharma_name}) ` : ''}[${m.role === 'agent' ? '포교위원장' : m.role === 'master' ? '총괄위원장' : m.role === 'temple_admin' ? '신도회장' : (parentAg ? `${parentAg.name} 위원장 소속` : '일반신도')}] 📞 ${m.phone || ''}`}
+                              />
+                            )
+                          })}
+                        </datalist>
                       </div>
 
                       <div>
@@ -6693,13 +6861,18 @@ function normalizeMemberHierarchy(m) {
                       </div>
 
                       <div>
-                        <label className="block font-bold text-[#3D3630] mb-1">
-                          유치 포교사 / 위원장 *
-                        </label>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="font-bold text-[#3D3630]">
+                            유치 포교사 / 위원장 *
+                          </label>
+                          <span className="text-[10px] text-[#8A6510] font-bold">
+                            1차 30% 수수료
+                          </span>
+                        </div>
                         <select
                           value={simAgentCode}
                           onChange={(e) => setSimAgentCode(e.target.value)}
-                          className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-semibold text-[#1B1815]"
+                          className="w-full px-3 py-2.5 rounded-xl bg-white border-2 border-[#D5C59B] text-xs font-bold text-[#1B1815] focus:border-[#C59B27] focus:outline-none"
                         >
                           {agents.map((a) => (
                             <option key={a.code} value={a.code}>
@@ -6709,6 +6882,42 @@ function normalizeMemberHierarchy(m) {
                         </select>
                       </div>
                     </div>
+
+                    {/* 실시간 매칭 상태 안내 배너 */}
+                    {matchedBelieverForSettlement ? (
+                      matchedBelieverForSettlement.role === 'agent' ||
+                      matchedBelieverForSettlement.role === 'master' ||
+                      matchedBelieverForSettlement.role === 'temple_admin' ? (
+                        <div className="p-3 rounded-xl bg-amber-50 border border-amber-300 flex items-center justify-between text-xs text-amber-950 font-bold">
+                          <div className="flex items-center gap-2">
+                            <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
+                            <span>
+                              🪷 <strong>[{matchedBelieverForSettlement.name}]</strong> {matchedBelieverForSettlement.role === 'master' ? '총괄위원장' : matchedBelieverForSettlement.role === 'temple_admin' ? '신도회장' : '포교위원장'} 본인 불사 접수 ➔ 유치 위원장: <strong>[{matchedBelieverForSettlement.name}]</strong> 본인으로 100% 자동 매칭 완료
+                            </span>
+                          </div>
+                          <span className="text-[11px] font-mono bg-white px-2 py-0.5 rounded border border-amber-200 shrink-0">
+                            교적: {matchedBelieverForSettlement.code}
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-300 flex items-center justify-between text-xs text-emerald-950 font-bold">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                            <span>
+                              ✅ <strong>[{matchedBelieverForSettlement.name}{matchedBelieverForSettlement.dharma_name ? `(${matchedBelieverForSettlement.dharma_name})` : ''}]</strong> 신도 교적부 연동 완료 ➔ 소속: <strong>[{getRecommenderName(matchedBelieverForSettlement.parent_code)}]</strong> 유치 위원장으로 자동 매칭 완료
+                            </span>
+                          </div>
+                          <span className="text-[11px] font-mono bg-white px-2 py-0.5 rounded border border-emerald-200 shrink-0">
+                            📞 {matchedBelieverForSettlement.phone || '연락처 등록'}
+                          </span>
+                        </div>
+                      )
+                    ) : simBelieverName.trim() ? (
+                      <div className="p-2.5 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] flex items-center gap-2 text-xs text-[#777777]">
+                        <HelpCircle className="w-4 h-4 text-[#8C8071] shrink-0" />
+                        <span>💡 신규 직접입력 신도: 우측 '유치 포교사 / 위원장' 드롭다운에서 불사를 유치한 위원장을 선택해 주세요.</span>
+                      </div>
+                    ) : null}
 
                     <button
                       type="submit"
