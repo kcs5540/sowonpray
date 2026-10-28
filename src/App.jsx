@@ -3247,9 +3247,9 @@ function normalizeMemberHierarchy(m) {
         key={m.code}
         className="p-4 sm:p-5 rounded-2xl bg-white border border-[#EAE2D3] hover:border-[#C59B27] hover:shadow-md transition"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 items-center">
-          {/* ==================== 1열: 신도 기본 인적 & 연락처 (lg:col-span-4) ==================== */}
-          <div className="lg:col-span-4 space-y-1.5 min-w-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3.5 items-center">
+          {/* ==================== 1열: 신도 기본 인적 & 연락처 (lg:col-span-3) ==================== */}
+          <div className="lg:col-span-3 space-y-1.5 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-bold text-base text-[#1B1815]">
                 {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''}
@@ -3259,10 +3259,28 @@ function normalizeMemberHierarchy(m) {
                   {m.birth_year || (m.birth_date ? m.birth_date.slice(0, 4) : '')}년 {m.lunar_solar || '음력'} ({zInfo.ganji} {zInfo.animal}띠)
                 </span>
               )}
-              {/* 🪔 등 표시 앞 3개 램프(1일·100일·1년) + 제일 긴 등 표시 배지 */}
-              {pInfo.isLanternActive ? (
+            </div>
+
+            {/* 전화번호 & 거주지 주소 */}
+            <div className="text-xs text-[#555555] space-y-0.5 pt-0.5">
+              <div className="flex items-center gap-1.5">
+                <Phone className="w-3.5 h-3.5 text-[#8A6510] shrink-0" />
+                <span className="font-mono font-bold text-[#1B1815]">{m.phone}</span>
+                {m.tel && <span className="font-mono text-[#888888]">({m.tel})</span>}
+              </div>
+              <div className="text-[11.5px] text-[#777777] truncate" title={m.address}>
+                🏠 {m.address || '제주특별자치도 제주시'}
+              </div>
+            </div>
+          </div>
+
+          {/* ==================== 2열: 🪔 대웅전 점등 상태 (독립 열 - 수직 일직선 정렬!) (lg:col-span-2) ==================== */}
+          <div className="lg:col-span-2 space-y-1.5 lg:border-l lg:border-[#F0EAE1] lg:pl-3.5 min-w-0">
+            <span className="text-[10.5px] font-bold text-[#8C8071] block">대웅전 점등 상태:</span>
+            {pInfo.isLanternActive ? (
+              <div className="space-y-1">
                 <span
-                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-50 via-amber-100 to-amber-200/90 text-amber-950 border border-amber-300 font-black text-[11px] shadow-xs cursor-pointer hover:brightness-95 transition"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-50 via-amber-100 to-amber-200/90 text-amber-950 border border-amber-300 font-black text-xs shadow-xs cursor-pointer hover:brightness-95 transition"
                   onClick={() => {
                     setLanternTargetMember(m)
                     setAdminLanternType(pInfo.longestActiveLantern?.id || 'indeung_1yr')
@@ -3295,7 +3313,12 @@ function normalizeMemberHierarchy(m) {
                       : `${pInfo.longestActiveLantern?.label} (D-${pInfo.longestActiveLantern?.daysLeft})`}
                   </span>
                 </span>
-              ) : (
+                <span className="text-[10px] text-amber-800 font-medium block">
+                  대웅전 실시간 축원 봉안
+                </span>
+              </div>
+            ) : (
+              <div className="space-y-1">
                 <button
                   type="button"
                   onClick={() => {
@@ -3305,34 +3328,25 @@ function normalizeMemberHierarchy(m) {
                     setAdminLanternWish(PRAYER_CATEGORY_TEMPLATES['가족건강'] || '')
                     setAdminLanternPaid(true)
                   }}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-stone-100 hover:bg-amber-50 text-stone-500 hover:text-amber-800 border border-stone-200 hover:border-amber-300 transition text-[10.5px] font-medium shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-stone-100 hover:bg-amber-50 text-stone-500 hover:text-amber-800 border border-stone-200 hover:border-amber-300 transition text-[11px] font-medium shadow-xs"
                   title="3대 점등 미점등 상태 (클릭 시 소원등 즉시 켜기)"
                 >
-                  <span className="flex items-center gap-1 mr-0.5">
+                  <span className="flex items-center gap-1.5 mr-0.5">
                     <span className="w-2 h-2 rounded-full bg-stone-300" />
                     <span className="w-2 h-2 rounded-full bg-stone-300" />
                     <span className="w-2 h-2 rounded-full bg-stone-300" />
                   </span>
                   <span>⚪ 소등 (등 미점등)</span>
                 </button>
-              )}
-            </div>
-
-            {/* 전화번호 & 거주지 주소 */}
-            <div className="text-xs text-[#555555] space-y-0.5 pt-0.5">
-              <div className="flex items-center gap-1.5">
-                <Phone className="w-3.5 h-3.5 text-[#8A6510] shrink-0" />
-                <span className="font-mono font-bold text-[#1B1815]">{m.phone}</span>
-                {m.tel && <span className="font-mono text-[#888888]">({m.tel})</span>}
+                <span className="text-[10px] text-stone-400 block">
+                  부처님 전 점등 대기
+                </span>
               </div>
-              <div className="text-[11.5px] text-[#777777] truncate" title={m.address}>
-                🏠 {m.address || '제주특별자치도 제주시'}
-              </div>
-            </div>
+            )}
           </div>
 
-          {/* ==================== 2열: 가족 사주 & 소속 귀속처 (lg:col-span-3) ==================== */}
-          <div className="lg:col-span-3 space-y-2 lg:border-l lg:border-[#F0EAE1] lg:pl-4 min-w-0">
+          {/* ==================== 3열: 가족 사주 & 구성 (lg:col-span-2) ==================== */}
+          <div className="lg:col-span-2 space-y-2 lg:border-l lg:border-[#F0EAE1] lg:pl-3.5 min-w-0">
             {/* 세주(가장) 정보 */}
             <div className="space-y-1">
               <span className="text-[10.5px] font-bold text-[#8C8071] block">세주(가장) 및 가족구성:</span>
@@ -3369,53 +3383,8 @@ function normalizeMemberHierarchy(m) {
             )}
           </div>
 
-          {/* ==================== 3열: 🪔 기도·불사 접수 & 실시간 소원등 점등 상태 (lg:col-span-3) ==================== */}
-          <div className="lg:col-span-3 space-y-2 lg:border-l lg:border-[#F0EAE1] lg:pl-4 min-w-0">
-            {/* 🪔 대웅전 3대 점등(1일등·100일등·1년등) 개별 점등/소등 상태 슬롯 바 */}
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold text-[#8C8071] block">대웅전 3대 점등 현황:</span>
-              <div className="grid grid-cols-3 gap-1.5">
-                {(pInfo.lanterns || []).map((lt) =>
-                  lt.active ? (
-                    <div
-                      key={lt.id}
-                      className="p-1.5 rounded-xl bg-gradient-to-br from-amber-500/15 via-amber-400/20 to-amber-600/15 border border-amber-300 text-center shadow-xs"
-                      title={`${lt.fullName} 대웅전 실시간 점등중`}
-                    >
-                      <div className="flex items-center justify-center gap-0.5 text-[10.5px] font-black text-amber-950">
-                        <Flame className="w-3 h-3 text-amber-600 fill-amber-500 shrink-0" />
-                        <span>{lt.label}</span>
-                      </div>
-                      <div className="text-[9.5px] font-mono font-bold text-amber-900 mt-0.5">
-                        {lt.id === 'lantern_1d' ? '금일 점등' : `D-${lt.daysLeft}일`}
-                      </div>
-                    </div>
-                  ) : (
-                    <button
-                      key={lt.id}
-                      type="button"
-                      onClick={() => {
-                        setLanternTargetMember(m)
-                        setAdminLanternType(lt.id)
-                        setAdminLanternCategory('가족건강')
-                        setAdminLanternWish(PRAYER_CATEGORY_TEMPLATES['가족건강'] || '')
-                        setAdminLanternPaid(lt.id === 'lantern_1d')
-                      }}
-                      className="p-1.5 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] hover:border-amber-400 hover:bg-amber-50 text-center transition group"
-                      title={`클릭 시 ${lt.fullName} 즉시 켜기`}
-                    >
-                      <div className="text-[10px] font-bold text-stone-500 group-hover:text-amber-800">
-                        ⚪ {lt.label}
-                      </div>
-                      <div className="text-[9px] text-amber-700 font-bold mt-0.5">
-                        + 등켜기
-                      </div>
-                    </button>
-                  )
-                )}
-              </div>
-            </div>
-
+          {/* ==================== 4열: 🪔 기도·불사 접수 현황 & 일자 (lg:col-span-3) ==================== */}
+          <div className="lg:col-span-3 space-y-2 lg:border-l lg:border-[#F0EAE1] lg:pl-3.5 min-w-0">
             <div>
               <div className="flex items-center gap-1.5 mb-1">
                 <span className={`px-2 py-0.5 rounded text-[10.5px] font-bold border ${pInfo.prayerBadgeColor}`}>
@@ -3470,7 +3439,7 @@ function normalizeMemberHierarchy(m) {
             </div>
           </div>
 
-          {/* ==================== 4열: 💰 보시금·입금처리 & 종무소 액션 (lg:col-span-2) ==================== */}
+          {/* ==================== 5열: 💰 보시금·입금처리 & 종무소 액션 (lg:col-span-2) ==================== */}
           <div className="lg:col-span-2 space-y-2.5 lg:border-l lg:border-[#F0EAE1] lg:pl-4 min-w-0">
             {/* 입금 상태 배지 & 금액 */}
             <div className="space-y-1">
