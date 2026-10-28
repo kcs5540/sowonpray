@@ -4338,6 +4338,8 @@ function normalizeMemberHierarchy(m) {
       actualPaidAmount,
       unpaidAmt,
       todayStr,
+      settlementItemType,
+      settlementPaymentStatus,
     })
   }
 
@@ -12287,6 +12289,8 @@ function normalizeMemberHierarchy(m) {
           data={pendingSettlementConfirm}
           onClose={() => setPendingSettlementConfirm(null)}
           onConfirm={(data) => executeFinalSettlementRegistration(data)}
+          settlementItemType={settlementItemType}
+          settlementPaymentStatus={settlementPaymentStatus}
         />
         <BusinessCardModal
           isOpen={showBusinessCardModal}

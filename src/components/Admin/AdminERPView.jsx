@@ -1254,6 +1254,8 @@ export default function AdminERPView(props) {
           data={pendingSettlementConfirm}
           onClose={() => setPendingSettlementConfirm(null)}
           onConfirm={(data) => executeFinalSettlementRegistration(data)}
+          settlementItemType={settlementItemType}
+          settlementPaymentStatus={settlementPaymentStatus}
         />
         {showBulsaCategorySheet && renderBulsaCategorySheet()}
         <BusinessCardModal

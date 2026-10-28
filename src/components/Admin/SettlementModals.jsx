@@ -45,10 +45,14 @@ export function SettlementConfirmModal({
   data,
   onClose,
   onConfirm,
+  settlementItemType: propItemType,
+  settlementPaymentStatus: propPaymentStatus,
 }) {
   if (!isOpen || !data) return null
   if (typeof document === 'undefined') return null
-    const { m, stdAmount, actualPaidAmount, unpaidAmt, agent1 } = data
+  const { m, stdAmount = 0, actualPaidAmount = 0, unpaidAmt = 0, agent1 } = data
+  const settlementItemType = data.settlementItemType || data.itemType || propItemType || '기도 · 위패 · 불사'
+  const settlementPaymentStatus = data.settlementPaymentStatus || data.paymentStatus || propPaymentStatus || 'confirmed'
 
     return createPortal(
       <div
