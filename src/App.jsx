@@ -2711,7 +2711,7 @@ function normalizeMemberHierarchy(m) {
     let prayerBadgeColor = 'bg-stone-100 text-stone-600 border-stone-200'
     let paymentAmount = 0
     let paymentStatus = m.extra_data?.payment_status || 'settled'
-    let durationDays = 0
+    let lanternDurationDays = 0 // 🪔 순수 소원등/인등 점등 유효일수 (위패·천도재 불사는 점등 아님)
 
     if (latestSettlement) {
       prayerTitle = latestSettlement.item_name
@@ -2719,30 +2719,36 @@ function normalizeMemberHierarchy(m) {
       prayerBadgeColor = 'bg-purple-100 text-purple-900 border-purple-300'
       paymentAmount = latestSettlement.total_amount || 2000000
       paymentStatus = latestSettlement.payment_status === 'pending' ? 'pending' : 'settled'
-      durationDays = 365
+      // 위패/불사는 등이 아니므로, 별도 소원등(latestPrayer) 접수 이력이 있을 때만 점등 기간 부여
+      if (latestPrayer) {
+        const lpTitle = latestPrayer.wish_category || latestPrayer.prayer_type || ''
+        if (lpTitle.includes('인등')) lanternDurationDays = latestPrayer.duration_days || 365
+        else if (lpTitle.includes('100일')) lanternDurationDays = latestPrayer.duration_days || 100
+        else lanternDurationDays = latestPrayer.duration_days || 7
+      }
     } else if (latestPrayer) {
       prayerTitle = latestPrayer.wish_category || latestPrayer.prayer_type || '대웅전 소원기도'
       if (prayerTitle.includes('인등')) {
         prayerTypeBadge = '1년 인등'
         prayerBadgeColor = 'bg-amber-100 text-amber-900 border-amber-300'
         paymentAmount = 100000
-        durationDays = latestPrayer.duration_days || 365
+        lanternDurationDays = latestPrayer.duration_days || 365
       } else if (prayerTitle.includes('100일')) {
         prayerTypeBadge = '100일 특별기도'
         prayerBadgeColor = 'bg-blue-100 text-blue-900 border-blue-300'
         paymentAmount = 100000
-        durationDays = latestPrayer.duration_days || 100
+        lanternDurationDays = latestPrayer.duration_days || 100
       } else if (prayerTitle.includes('1일') || prayerTitle.includes('소원등')) {
         prayerTypeBadge = '1일 소원등'
         prayerBadgeColor = 'bg-emerald-100 text-emerald-900 border-emerald-300'
         paymentAmount = 0
         paymentStatus = 'settled'
-        durationDays = latestPrayer.duration_days || 7
+        lanternDurationDays = latestPrayer.duration_days || 7
       } else {
         prayerTypeBadge = '대웅전 기도'
         prayerBadgeColor = 'bg-amber-100 text-amber-900 border-amber-300'
         paymentAmount = 30000
-        durationDays = latestPrayer.duration_days || 30
+        lanternDurationDays = latestPrayer.duration_days || 30
       }
     } else {
       // 신도 공덕 기준 추정 매핑
@@ -2751,20 +2757,20 @@ function normalizeMemberHierarchy(m) {
         prayerTypeBadge = '1년 인등'
         prayerBadgeColor = 'bg-amber-100 text-amber-900 border-amber-300'
         paymentAmount = 100000
-        durationDays = 365
+        lanternDurationDays = 365
       } else if ((m.merit_count || 0) >= 10) {
         prayerTitle = '100일 소원성취 특별기도 정진'
         prayerTypeBadge = '100일 특별기도'
         prayerBadgeColor = 'bg-blue-100 text-blue-900 border-blue-300'
         paymentAmount = 100000
-        durationDays = 100
+        lanternDurationDays = 100
       } else if ((m.merit_count || 0) > 0) {
         prayerTitle = '대웅전 일일 소원등 축원 (무료)'
         prayerTypeBadge = '1일 소원등'
         prayerBadgeColor = 'bg-emerald-100 text-emerald-900 border-emerald-300'
         paymentAmount = 0
         paymentStatus = 'settled'
-        durationDays = 7
+        lanternDurationDays = 7
       }
     }
 
@@ -2796,18 +2802,18 @@ function normalizeMemberHierarchy(m) {
         daysLeft = Math.max(1, Math.ceil((untilTime - now) / (1000 * 60 * 60 * 24)))
         lanternStatusText = `대웅전 점등중 (D-${daysLeft}일)`
       }
-    } else if (durationDays > 0) {
+    } else if (lanternDurationDays > 0) {
       const startDate = new Date(rawApplied || '2026-10-22T00:00:00Z').getTime()
-      const expireTime = startDate + durationDays * 24 * 60 * 60 * 1000
+      const expireTime = startDate + lanternDurationDays * 24 * 60 * 60 * 1000
       const now = Date.now()
 
       if (expireTime > now || (m.merit_count || 0) > 0) {
         isLanternActive = true
         let remaining = Math.ceil((expireTime - now) / (1000 * 60 * 60 * 24))
         if (remaining <= 0) {
-          remaining = Math.min(durationDays, Math.max(1, (m.merit_count || 1) * 7))
+          remaining = Math.min(lanternDurationDays, Math.max(1, (m.merit_count || 1) * 7))
         }
-        daysLeft = remaining > durationDays ? durationDays : remaining
+        daysLeft = remaining > lanternDurationDays ? lanternDurationDays : remaining
         lanternStatusText = `대웅전 점등중 (D-${daysLeft}일)`
       }
     }
