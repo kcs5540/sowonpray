@@ -6113,7 +6113,7 @@ function normalizeMemberHierarchy(m) {
                 }`}
               >
                 <Search className="w-4 h-4" />
-                <span>📋 1. 10만 신도 교적부 검색 &amp; 수정</span>
+                <span>📋 1. 신도교적부 리스트&amp;검색.수정</span>
               </button>
               <button
                 type="button"
@@ -6404,13 +6404,13 @@ function normalizeMemberHierarchy(m) {
               </section>
             )}
 
-            {/* ==================== 2. 10만 신도 교적부 검색 & 수정 탭 ==================== */}
+            {/* ==================== 1. 신도교적부 리스트 & 검색·수정 탭 ==================== */}
             {erpTab === 'search' && (
               <section className="bg-white text-[#231F1C] rounded-3xl p-6 sm:p-8 shadow-sm border border-[#E6DEC8] space-y-5">
                 <div className="flex items-center justify-between pb-2 border-b border-[#E6DEC8]">
                   <div>
                     <h3 className="font-serif-kr font-bold text-lg text-[#1B1815] flex items-center gap-2 flex-wrap">
-                      <span>1. 10만 신도 실시간 교적부 검색 및 정보 수정</span>
+                      <span>1. 신도교적부 리스트 &amp; 검색·수정</span>
                       {adminMemberSearchQuery.trim() ? (
                         <span className="text-xs font-bold text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-lg border border-[#E8D4A2]">
                           검색 일치: {filteredAdminMembers.length}명 / 전체 {members.length}명
