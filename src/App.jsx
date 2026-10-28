@@ -2609,6 +2609,11 @@ function normalizeMemberHierarchy(m) {
   const [adminMemberRoleFilter, setAdminMemberRoleFilter] = useState('all') // 'all' | 'agent' | 'committee_member' | 'believer' | 'admin'
   const [adminMemberSort, setAdminMemberSort] = useState('latest') // 'latest' | 'name' | 'merit'
   const [selectedMemberDetail, setSelectedMemberDetail] = useState(null)
+  const [lanternTargetMember, setLanternTargetMember] = useState(null)
+  const [adminLanternType, setAdminLanternType] = useState('lantern_1d') // 'lantern_1d' | 'prayer_100d' | 'indeung_1yr'
+  const [adminLanternCategory, setAdminLanternCategory] = useState('가족건강')
+  const [adminLanternWish, setAdminLanternWish] = useState('')
+  const [adminLanternPaid, setAdminLanternPaid] = useState(true)
 
   // [전산 고도화] 사시예불 축원 명부 기도 유형 탭 ('all': 전체 | 'lantern': 1일 소원등 | 'prayer_100d': 100일 특별기도 | 'indeung_1yr': 1년 인등 명패)
   const [sasiPrayerTypeTab, setSasiPrayerTypeTab] = useState('all')
@@ -2857,6 +2862,219 @@ function normalizeMemberHierarchy(m) {
     )
   }
 
+  // 🪔 [종무행정 소원등 즉시 밝히기 처리 함수]
+  const handleAdminLightLantern = async () => {
+    if (!lanternTargetMember) return
+    playMoktakSound()
+
+    const typeConfig = {
+      lantern_1d: { name: '1일 소원등', duration: 1, amount: 10000, badge: '1일 소원등' },
+      prayer_100d: { name: '100일 특별기도', duration: 100, amount: 100000, badge: '100일 특별기도' },
+      indeung_1yr: { name: '대웅전 1년 인등(가족등)', duration: 365, amount: 100000, badge: '1년 인등' },
+    }[adminLanternType] || { name: '1일 소원등', duration: 1, amount: 10000, badge: '1일 소원등' }
+
+    const todayStr = new Date().toISOString().slice(0, 10).replace(/-/g, '.')
+    const newPrayer = {
+      id: 'p-' + Date.now(),
+      temple_id: DEFAULT_TEMPLE_ID,
+      member_code: lanternTargetMember.code,
+      believer_name: `${lanternTargetMember.name}${lanternTargetMember.dharma_name ? ` (${lanternTargetMember.dharma_name})` : ''}`,
+      believer_phone: lanternTargetMember.phone,
+      agent_code: lanternTargetMember.parent_code || '55570267',
+      wish_category: typeConfig.name,
+      prayer_type: adminLanternType,
+      duration_days: typeConfig.duration,
+      family_members_count: lanternTargetMember.family_members?.length || 1,
+      wish_text: adminLanternWish.trim() || PRAYER_CATEGORY_TEMPLATES[adminLanternCategory] || '지극정성으로 가내 평안과 소원성취를 발원합니다.',
+      status: 'prayed',
+      prayed_at: '종무소 대웅전 소원등 접수 (사시예불 축원 연동)',
+      created_at: new Date().toISOString().replace('T', ' ').slice(0, 16),
+    }
+
+    setPrayers((prev) => [newPrayer, ...prev])
+    if (supabase) {
+      supabase.from('prayers').insert([newPrayer]).then()
+    }
+
+    // 신도 공덕수 및 입금상태 실시간 업데이트
+    setMembers((prev) =>
+      prev.map((m) => {
+        if (m.code === lanternTargetMember.code) {
+          const updated = {
+            ...m,
+            merit_count: (m.merit_count || 0) + 1,
+            extra_data: {
+              ...(m.extra_data || {}),
+              payment_status: adminLanternPaid ? 'settled' : 'pending',
+              payment_date: adminLanternPaid ? todayStr : '',
+              recent_prayer_title: typeConfig.name,
+              recent_prayer_date: todayStr,
+              payment_updated_at: new Date().toISOString(),
+            },
+          }
+          if (supabase) {
+            supabase
+              .from('members')
+              .update({
+                merit_count: updated.merit_count,
+                extra_data: updated.extra_data,
+              })
+              .eq('code', m.code)
+              .then()
+          }
+          return updated
+        }
+        return m
+      })
+    )
+
+    showToast(`🪔 [${lanternTargetMember.name}] 불자님의 [${typeConfig.name}]이 대웅전에 정성껏 밝혀졌습니다!`)
+    setLanternTargetMember(null)
+  }
+
+  // 🪷 [종무행정 대웅전 소원등 켜기 접수 모달]
+  const renderLanternModal = () => {
+    if (!lanternTargetMember) return null
+    return (
+      <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-in zoom-in-95 duration-150">
+        <div className="bg-[#FAF8F5] text-[#231F1C] w-full max-w-lg rounded-3xl p-5 sm:p-7 shadow-2xl border-2 border-[#C59B27] space-y-4 my-auto">
+          <div className="flex items-center justify-between pb-2 border-b border-[#E6DEC8]">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-[#1B1815] text-[#F5D061] flex items-center justify-center font-bold text-sm shadow">
+                🪔
+              </div>
+              <div>
+                <h3 className="font-serif-kr font-bold text-base text-[#1B1815]">
+                  대웅전 소원등 즉시 접수
+                </h3>
+                <p className="text-[11px] text-[#8C8071]">
+                  {lanternTargetMember.name} {lanternTargetMember.dharma_name ? `(${lanternTargetMember.dharma_name})` : ''} 불자님 (대웅전 사시예불 축원 연동)
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setLanternTargetMember(null)}
+              className="p-1.5 rounded-xl bg-white border border-[#DDD4C4] text-[#7A6E5E] hover:text-[#1B1815] transition"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="space-y-3.5 text-xs">
+            {/* 소원등 종류 선택 */}
+            <div>
+              <label className="text-[11px] font-bold text-[#554E45] block mb-1">소원등 종류 선택</label>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { id: 'lantern_1d', label: '1일 소원등', price: '10,000원' },
+                  { id: 'prayer_100d', label: '100일 특별기도', price: '100,000원' },
+                  { id: 'indeung_1yr', label: '1년 인등(가족등)', price: '100,000원' },
+                ].map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setAdminLanternType(t.id)}
+                    className={`p-2.5 rounded-2xl text-center border transition ${
+                      adminLanternType === t.id
+                        ? 'bg-[#1B1815] text-[#F5D061] border-[#1B1815] font-bold shadow-md'
+                        : 'bg-white text-[#555555] border-[#DDD4C4] hover:bg-[#FAF3DF]'
+                    }`}
+                  >
+                    <div className="text-[11px] font-bold">{t.label}</div>
+                    <div className="text-[10px] text-[#A69B8D] mt-0.5">{t.price}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 소원 카테고리 6대 분야 */}
+            <div>
+              <label className="text-[11px] font-bold text-[#554E45] block mb-1">소원 기원 분야 (6대 발원)</label>
+              <div className="grid grid-cols-3 gap-1.5">
+                {[
+                  '가족건강',
+                  '사업번창',
+                  '학업/시험합격',
+                  '마음평안/소원성취',
+                  '자녀축복/취업성취',
+                  '액운소멸/무병장수',
+                ].map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => {
+                      setAdminLanternCategory(cat)
+                      setAdminLanternWish(PRAYER_CATEGORY_TEMPLATES[cat] || '')
+                    }}
+                    className={`py-2 px-1.5 rounded-xl text-center text-[11px] border transition ${
+                      adminLanternCategory === cat
+                        ? 'bg-[#FAF3DF] text-[#7A5B0B] border-[#E8D4A2] font-bold shadow-xs'
+                        : 'bg-white text-[#666666] border-[#DDD4C4] hover:bg-[#FAF8F5]'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 부처님 전 발원문 */}
+            <div>
+              <label className="text-[11px] font-bold text-[#554E45] block mb-1">부처님 전 축원 발원문</label>
+              <textarea
+                rows={3}
+                value={adminLanternWish}
+                onChange={(e) => setAdminLanternWish(e.target.value)}
+                className="w-full p-3 rounded-2xl bg-white border border-[#DDD4C4] text-xs text-[#222222] focus:outline-none focus:border-[#C59B27] shadow-inner"
+                placeholder="간절한 소원과 축원 내용을 작성하세요."
+              />
+            </div>
+
+            {/* 보시금 납부 여부 */}
+            <div className="p-3 rounded-2xl bg-white border border-[#E6DEC8] flex items-center justify-between">
+              <span className="font-bold text-[11px] text-[#554E45]">보시금 납부 상태</span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setAdminLanternPaid(true)}
+                  className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition ${
+                    adminLanternPaid
+                      ? 'bg-emerald-700 text-white shadow-sm'
+                      : 'bg-[#FAF8F5] text-[#888888] border border-[#DDD4C4]'
+                  }`}
+                >
+                  입금완료 ✅
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAdminLanternPaid(false)}
+                  className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition ${
+                    !adminLanternPaid
+                      ? 'bg-amber-600 text-white shadow-sm'
+                      : 'bg-[#FAF8F5] text-[#888888] border border-[#DDD4C4]'
+                  }`}
+                >
+                  입금대기 ⏳
+                </button>
+              </div>
+            </div>
+
+            {/* 점등 버튼 */}
+            <button
+              type="button"
+              onClick={handleAdminLightLantern}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#C59B27] via-[#D4AF37] to-[#8A6510] text-[#1B1815] font-black text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-2 mt-2"
+            >
+              <Flame className="w-4 h-4 text-amber-950" />
+              <span>대웅전 부처님 전에 소원등 즉시 밝히기</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   // 🪷 [종무행정 10만 신도 교적부 PC 와이드 4단 열(Multi-Column Grid) 종합 카드 컴포넌트]
   const renderMemberRowCard = (m) => {
     const pInfo = getMemberPrayerAndPaymentInfo(m)
@@ -2945,6 +3163,26 @@ function normalizeMemberHierarchy(m) {
               <strong className="text-xs text-[#1B1815] block truncate font-serif-kr" title={pInfo.prayerTitle}>
                 {pInfo.prayerTitle}
               </strong>
+              {pInfo.prayerTypeBadge === '미접수' ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLanternTargetMember(m)
+                    setAdminLanternType('lantern_1d')
+                    setAdminLanternCategory('가족건강')
+                    setAdminLanternWish(PRAYER_CATEGORY_TEMPLATES['가족건강'] || '')
+                    setAdminLanternPaid(true)
+                  }}
+                  className="mt-0.5 text-[10.5px] font-bold text-amber-700 hover:text-amber-900 flex items-center gap-1 hover:underline"
+                >
+                  <Flame className="w-3 h-3 text-amber-600" />
+                  <span>+ 소원등 켜기 접수</span>
+                </button>
+              ) : (
+                <span className="text-[10px] text-[#8C8071] block mt-0.5">
+                  매일 사시예불 축원 연동중
+                </span>
+              )}
             </div>
 
             {/* 📅 접수날짜 & 💳 입금날짜 분리 표기 */}
@@ -3006,8 +3244,24 @@ function normalizeMemberHierarchy(m) {
               </button>
             </div>
 
-            {/* 바로가기 버튼 그룹 */}
-            <div className="grid grid-cols-2 gap-1.5 pt-1 border-t border-[#F0EAE1]">
+            {/* 바로가기 버튼 그룹 (소원등 켜기 / 명패 인쇄 / 상세 수정) */}
+            <div className="grid grid-cols-3 gap-1 pt-1 border-t border-[#F0EAE1]">
+              <button
+                type="button"
+                onClick={() => {
+                  setLanternTargetMember(m)
+                  setAdminLanternType('lantern_1d')
+                  setAdminLanternCategory('가족건강')
+                  setAdminLanternWish(PRAYER_CATEGORY_TEMPLATES['가족건강'] || '')
+                  setAdminLanternPaid(true)
+                }}
+                className="py-1.5 px-1 rounded-xl bg-gradient-to-r from-[#C59B27] via-[#D4AF37] to-[#8A6510] hover:brightness-105 text-[#1B1815] text-[10.5px] font-black transition flex items-center justify-center gap-0.5 shadow-sm"
+                title="대웅전 소원등 즉시 켜기"
+              >
+                <Flame className="w-3 h-3 text-amber-950" />
+                <span>등켜기</span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => {
@@ -3015,7 +3269,7 @@ function normalizeMemberHierarchy(m) {
                   setShowSasiPrintModal(true)
                   setSasiPrayerTypeTab('indeung_1yr')
                 }}
-                className="py-1.5 px-2 rounded-xl bg-white hover:bg-[#FAF3DF] border border-[#D5C59B] text-[11px] font-bold text-[#8A6510] transition flex items-center justify-center gap-1 shadow-xs"
+                className="py-1.5 px-1 rounded-xl bg-white hover:bg-[#FAF3DF] border border-[#D5C59B] text-[10.5px] font-bold text-[#8A6510] transition flex items-center justify-center gap-0.5 shadow-xs"
                 title="대웅전 1년 인등 명패 A4 인쇄"
               >
                 <Printer className="w-3 h-3" />
@@ -3028,10 +3282,10 @@ function normalizeMemberHierarchy(m) {
                   setSelectedMemberDetail(m)
                   setIsEditingMember(false)
                 }}
-                className="py-1.5 px-2 rounded-xl bg-[#1B1815] text-[#F5D061] hover:bg-[#2C251F] text-[11px] font-bold transition flex items-center justify-center gap-1 shadow-xs"
+                className="py-1.5 px-1 rounded-xl bg-[#1B1815] text-[#F5D061] hover:bg-[#2C251F] text-[10.5px] font-bold transition flex items-center justify-center gap-0.5 shadow-xs"
               >
                 <FileText className="w-3 h-3" />
-                <span>상세·수정</span>
+                <span>상세수정</span>
               </button>
             </div>
           </div>
@@ -5651,6 +5905,7 @@ function normalizeMemberHierarchy(m) {
 
         {/* 신도 상세 및 가족 사주 수정 모달 */}
         {selectedMemberDetail && renderMemberDetailModal()}
+        {lanternTargetMember && renderLanternModal()}
       </div>
     )
   }
