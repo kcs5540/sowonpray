@@ -2872,8 +2872,15 @@ function normalizeMemberHierarchy(m) {
 
     const activeLanterns = lanterns.filter((l) => l.active)
     const isLanternActive = activeLanterns.length > 0
-    const primaryActiveLantern = activeLanterns[0]
-    const daysLeft = primaryActiveLantern?.daysLeft || 0
+
+    // 🪔 제일 긴 등 우선순위 산출: 1년등(365일) > 100일등(100일) > 1일등(1일)
+    const longestActiveLantern =
+      lanterns.find((l) => l.id === 'indeung_1yr' && l.active) ||
+      lanterns.find((l) => l.id === 'prayer_100d' && l.active) ||
+      lanterns.find((l) => l.id === 'lantern_1d' && l.active) ||
+      null
+
+    const daysLeft = longestActiveLantern?.daysLeft || 0
     const lanternStatusText = isLanternActive
       ? `점등중 (${activeLanterns.map((l) => (l.id === 'lantern_1d' ? `${l.label} (점등)` : `${l.label} D-${l.daysLeft}`)).join(', ')})`
       : '소등 (등 미점등)'
@@ -2892,6 +2899,7 @@ function normalizeMemberHierarchy(m) {
       lanternTypeBadge: prayerTypeBadge !== '미접수' ? prayerTypeBadge : '소등',
       lanterns,
       activeLanterns,
+      longestActiveLantern,
     }
   }
 
@@ -3251,42 +3259,62 @@ function normalizeMemberHierarchy(m) {
                   {m.birth_year || (m.birth_date ? m.birth_date.slice(0, 4) : '')}년 {m.lunar_solar || '음력'} ({zInfo.ganji} {zInfo.animal}띠)
                 </span>
               )}
-              {/* 🪔 3대 점등(1일등, 100일등, 1년등) 켜짐/꺼짐 개별 표시 배지 바 */}
-              <div className="flex items-center gap-1.5 flex-wrap">
-                {(pInfo.lanterns || []).map((lt) =>
-                  lt.active ? (
-                    <span
-                      key={lt.id}
-                      className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-50 via-amber-100 to-amber-200/90 text-amber-950 border border-amber-300 font-black text-[10.5px] shadow-xs"
-                      title={`${lt.fullName} 대웅전 실시간 점등중 (잔여 ${lt.daysLeft}일)`}
-                    >
-                      <span className="relative flex h-2 w-2 shrink-0">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-600"></span>
-                      </span>
-                      <Flame className="w-2.5 h-2.5 text-amber-600 fill-amber-500 shrink-0" />
-                      <span>{lt.id === 'lantern_1d' ? `${lt.label} (점등)` : `${lt.label} (D-${lt.daysLeft})`}</span>
-                    </span>
-                  ) : (
-                    <button
-                      key={lt.id}
-                      type="button"
-                      onClick={() => {
-                        setLanternTargetMember(m)
-                        setAdminLanternType(lt.id)
-                        setAdminLanternCategory('가족건강')
-                        setAdminLanternWish(PRAYER_CATEGORY_TEMPLATES['가족건강'] || '')
-                        setAdminLanternPaid(lt.id === 'lantern_1d')
-                      }}
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-stone-100 hover:bg-amber-50 text-stone-500 hover:text-amber-800 border border-stone-200 hover:border-amber-300 transition text-[10px] font-medium"
-                      title={`${lt.fullName} 미점등 상태 (클릭 시 즉시 켜기)`}
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-stone-400"></span>
-                      <span>{lt.label} 소등</span>
-                    </button>
-                  )
-                )}
-              </div>
+              {/* 🪔 등 표시 앞 3개 램프(1일·100일·1년) + 제일 긴 등 표시 배지 */}
+              {pInfo.isLanternActive ? (
+                <span
+                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-50 via-amber-100 to-amber-200/90 text-amber-950 border border-amber-300 font-black text-[11px] shadow-xs cursor-pointer hover:brightness-95 transition"
+                  onClick={() => {
+                    setLanternTargetMember(m)
+                    setAdminLanternType(pInfo.longestActiveLantern?.id || 'indeung_1yr')
+                    setAdminLanternCategory('가족건강')
+                    setAdminLanternWish(PRAYER_CATEGORY_TEMPLATES['가족건강'] || '')
+                    setAdminLanternPaid(true)
+                  }}
+                  title={`[대웅전 3대 점등 현황]\n1. 1일등: ${pInfo.lanterns[0].active ? '🔥 점등' : '⚪ 소등'}\n2. 100일등: ${pInfo.lanterns[1].active ? `🔥 점등 (D-${pInfo.lanterns[1].daysLeft})` : '⚪ 소등'}\n3. 1년등: ${pInfo.lanterns[2].active ? `🔥 점등 (D-${pInfo.lanterns[2].daysLeft})` : '⚪ 소등'}\n(클릭 시 등 연장/점등창 열기)`}
+                >
+                  {/* 등 표시 앞 3개 램프 도트 (1일등, 100일등, 1년등 순) */}
+                  <span className="flex items-center gap-1 mr-0.5" title="점등 램프: 1일등 | 100일등 | 1년등">
+                    {(pInfo.lanterns || []).map((lt) => (
+                      <span
+                        key={lt.id}
+                        className={`w-2 h-2 rounded-full transition ${
+                          lt.active
+                            ? 'bg-amber-600 shadow-[0_0_5px_rgba(217,119,6,0.9)] ring-1 ring-amber-400'
+                            : 'bg-stone-300 ring-1 ring-stone-300/80'
+                        }`}
+                        title={`${lt.fullName}: ${lt.active ? `점등중 (${lt.id === 'lantern_1d' ? '당일' : `D-${lt.daysLeft}`})` : '소등'}`}
+                      />
+                    ))}
+                  </span>
+
+                  <Flame className="w-3 h-3 text-amber-600 fill-amber-500 shrink-0" />
+                  <span>
+                    {pInfo.longestActiveLantern?.id === 'lantern_1d'
+                      ? '1일등 (점등)'
+                      : `${pInfo.longestActiveLantern?.label} (D-${pInfo.longestActiveLantern?.daysLeft})`}
+                  </span>
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLanternTargetMember(m)
+                    setAdminLanternType('lantern_1d')
+                    setAdminLanternCategory('가족건강')
+                    setAdminLanternWish(PRAYER_CATEGORY_TEMPLATES['가족건강'] || '')
+                    setAdminLanternPaid(true)
+                  }}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-stone-100 hover:bg-amber-50 text-stone-500 hover:text-amber-800 border border-stone-200 hover:border-amber-300 transition text-[10.5px] font-medium shadow-xs"
+                  title="3대 점등 미점등 상태 (클릭 시 소원등 즉시 켜기)"
+                >
+                  <span className="flex items-center gap-1 mr-0.5">
+                    <span className="w-2 h-2 rounded-full bg-stone-300" />
+                    <span className="w-2 h-2 rounded-full bg-stone-300" />
+                    <span className="w-2 h-2 rounded-full bg-stone-300" />
+                  </span>
+                  <span>⚪ 소등 (등 미점등)</span>
+                </button>
+              )}
             </div>
 
             {/* 전화번호 & 거주지 주소 */}
