@@ -8619,38 +8619,37 @@ function normalizeMemberHierarchy(m) {
                     )}
                   </div>
 
-                                    {/* 🪪 소원사 프리미엄 모바일 전자명함 바로가기 배너 */}
-                  <div className="pt-2">
+                  {/* 🪪 전자명함 & 전산 관제실 & PC 독립 ERP 핵심 3종 카드 (크기·여백·아이콘 규격 100% 일체화) */}
+                  <div className="relative z-10 pt-2 space-y-2.5">
+                    {/* 1) 🪪 나의 소원사 모바일 전자명함 */}
                     <button
                       type="button"
                       onClick={() => {
                         setBusinessCardTarget(currentUser || members.find((m) => m.code === '33065540'))
                         setShowBusinessCardModal(true)
                       }}
-                      className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#2A231C] via-[#352B21] to-[#221C16] hover:brightness-110 text-white font-bold text-xs flex items-center justify-between border-2 border-[#D4AF37] shadow-lg transition cursor-pointer"
+                      className="w-full min-h-[64px] py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#2A231C] via-[#352B21] to-[#221C16] hover:brightness-110 text-white font-bold text-xs flex items-center justify-between border-2 border-[#D4AF37] shadow-lg transition cursor-pointer active:scale-98"
                     >
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] flex items-center justify-center font-bold text-sm shrink-0 shadow">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] flex items-center justify-center font-bold text-base shrink-0 shadow">
                           🪪
                         </div>
                         <div className="text-left min-w-0">
-                          <span className="block text-xs font-bold text-[#F5D061]">
+                          <span className="block font-black text-xs sm:text-sm whitespace-nowrap leading-tight text-[#F5D061]">
                             나의 소원사 모바일 전자명함
                           </span>
-                          <span className="text-[10.5px] text-[#D6CEC2] block truncate">
+                          <span className="text-[10px] sm:text-[10.5px] text-[#D6CEC2] block mt-0.5 truncate">
                             원터치 통화·문자 · 추천인 QR · 카톡 1초 공유
                           </span>
                         </div>
                       </div>
-                      <span className="text-[11px] font-bold px-2.5 py-1 rounded-xl bg-[#F5D061] text-[#1B1815] shrink-0 shadow-xs">
+                      <span className="text-[11px] font-black px-3 py-1.5 rounded-xl bg-[#F5D061] text-[#1B1815] shrink-0 shadow-xs whitespace-nowrap">
                         명함 보기 &gt;
                       </span>
                     </button>
-                  </div>
 
-                  {/* 4행: 포교위원 / 위원장 / 관리자 전용 대형 전산 버튼 */}
-                  {(isMaster || currentUser.role === 'temple_admin' || currentUser.role === 'agent' || currentUser.role === 'committee_head' || currentUser.role === 'committee_member') && (
-                    <div className="relative z-10 pt-1 space-y-2">
+                    {/* 2) 🏛️ 포교 전산 관제실 */}
+                    {(isMaster || currentUser.role === 'temple_admin' || currentUser.role === 'agent' || currentUser.role === 'committee_head' || currentUser.role === 'committee_member') && (
                       <button
                         type="button"
                         onClick={() => {
@@ -8660,52 +8659,57 @@ function normalizeMemberHierarchy(m) {
                           else setAdminModalTab('common')
                           setShowUnifiedAdminModal(true)
                         }}
-                        className="w-full py-3 px-3.5 rounded-2xl bg-gradient-to-r from-[#F5D061] via-[#E8C568] to-[#D4AF37] text-[#1B1815] font-extrabold text-sm flex items-center justify-between shadow-[0_4px_16px_rgba(212,175,55,0.3)] hover:brightness-105 active:scale-98 transition border border-[#FFF3B8] gap-2"
+                        className="w-full min-h-[64px] py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#F5D061] via-[#E8C568] to-[#D4AF37] text-[#1B1815] font-extrabold text-sm flex items-center justify-between shadow-[0_4px_16px_rgba(212,175,55,0.3)] hover:brightness-105 active:scale-98 transition border-2 border-[#FFF3B8]"
                       >
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span className="text-base shrink-0">🏛️</span>
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-9 h-9 rounded-xl bg-[#1B1815] text-[#F5D061] border border-[#F5D061]/40 flex items-center justify-center font-bold text-base shrink-0 shadow">
+                            🏛️
+                          </div>
                           <div className="text-left min-w-0">
                             <span className="block font-black text-xs sm:text-sm whitespace-nowrap leading-tight text-[#1B1815]">
                               포교 전산 관제실
                             </span>
-                            <span className="text-[10px] sm:text-[10.5px] font-medium text-[#4A3D18] whitespace-nowrap block mt-0.5">
+                            <span className="text-[10px] sm:text-[10.5px] font-bold text-[#4A3D18] whitespace-nowrap block mt-0.5">
                               인연 {currentUserBelieversCount}명 · 위패 {currentUserWipaeCount}기
                             </span>
                           </div>
                         </div>
-                        <div className="flex items-center gap-0.5 text-[11px] font-black bg-[#1B1815] text-[#F5D061] px-2.5 py-1.5 rounded-xl shrink-0 whitespace-nowrap shadow-sm">
+                        <div className="flex items-center gap-0.5 text-[11px] font-black bg-[#1B1815] text-[#F5D061] px-3 py-1.5 rounded-xl shrink-0 whitespace-nowrap shadow-sm">
                           <span>입장</span>
                           <ChevronRight className="w-3.5 h-3.5 -mr-0.5" />
                         </div>
                       </button>
+                    )}
 
-                      {/* 🏛️ 사찰 최고책임자 및 마스터 전용: 종무행정 PC 독립 ERP 센터 바로가기 버튼 */}
-                      {isMasterOrTempleAdmin && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setIsStandaloneAdmin(true)
-                            window.history.pushState({}, '', '/admin')
-                            window.scrollTo({ top: 0, behavior: 'smooth' })
-                          }}
-                          className="w-full py-3 px-3.5 rounded-2xl bg-[#1B1815] text-[#F5D061] font-extrabold text-xs sm:text-sm flex items-center justify-between border-2 border-[#C59B27] shadow-lg hover:bg-[#2C241C] active:scale-98 transition gap-2"
-                        >
-                          <div className="flex items-center gap-2 min-w-0">
-                            <span className="text-base shrink-0">🖥️</span>
-                            <div className="text-left min-w-0">
-                              <span className="block font-black text-xs sm:text-sm whitespace-nowrap leading-tight text-[#F5D061]">
-                                종무행정 PC 독립 ERP 전산센터
-                              </span>
-                              <span className="text-[10px] text-[#D6CEC2] block mt-0.5">
-                                PC 모니터 100% 풀스크린 와이드 독립 전산망
-                              </span>
-                            </div>
+                    {/* 3) 🖥️ 사찰 최고책임자 및 마스터 전용: 종무행정 PC 독립 ERP 센터 */}
+                    {isMasterOrTempleAdmin && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsStandaloneAdmin(true)
+                          window.history.pushState({}, '', '/admin')
+                          window.scrollTo({ top: 0, behavior: 'smooth' })
+                        }}
+                        className="w-full min-h-[64px] py-3.5 px-4 rounded-2xl bg-[#1B1815] text-[#F5D061] font-extrabold text-xs sm:text-sm flex items-center justify-between border-2 border-[#D4AF37] shadow-lg hover:bg-[#2C241C] active:scale-98 transition cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] flex items-center justify-center font-bold text-base shrink-0 shadow">
+                            🖥️
                           </div>
-                          <span className="text-[11px] font-bold bg-[#C59B27] text-[#1B1815] px-2.5 py-1 rounded-lg shrink-0">
-                            ERP 진입 ▶
-                          </span>
-                        </button>
-                      )}
+                          <div className="text-left min-w-0">
+                            <span className="block font-black text-xs sm:text-sm whitespace-nowrap leading-tight text-[#F5D061]">
+                              종무행정 PC 독립 ERP 전산센터
+                            </span>
+                            <span className="text-[10px] sm:text-[10.5px] text-[#D6CEC2] block mt-0.5 truncate">
+                              PC 모니터 100% 풀스크린 와이드 독립 전산망
+                            </span>
+                          </div>
+                        </div>
+                        <span className="text-[11px] font-black bg-[#F5D061] text-[#1B1815] px-3 py-1.5 rounded-xl shrink-0 shadow-xs whitespace-nowrap">
+                          ERP 진입 ▶
+                        </span>
+                      </button>
+                    )}
 
                       {/* 대웅전 사시예불 축원 대상 요약 & A4 인쇄 원클릭 */}
                       <div className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs">
@@ -8723,7 +8727,6 @@ function normalizeMemberHierarchy(m) {
                         </button>
                       </div>
                     </div>
-                  )}
                 </section>
 
                 {/* 2. 🎁 도반에게 복(福) 선물하기 (카카오톡 최적화 원클릭 나눔) */}
