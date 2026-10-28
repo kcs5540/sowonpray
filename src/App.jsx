@@ -2305,6 +2305,15 @@ export default function App() {
 
   const handleConfirmSettlementPayment = (settlementId) => {
     const todayStr = new Date().toISOString().slice(0, 10)
+    const target = settlements.find((s) => s.id === settlementId)
+    if (target) {
+      const stdAmt = Number(target.standard_amount || target.total_amount || 0)
+      const believerName = target.believer_name || '신도'
+      const itemName = target.item_name || '불사 종목'
+      if (!window.confirm(`[${believerName}] 신도님의 [${itemName}]\n약정 잔액(${stdAmt.toLocaleString()}원) 완납 입금을 확인하고 실시간 정산을 집행하시겠습니까?`)) {
+        return
+      }
+    }
     setSettlements((prev) =>
       prev.map((s) => {
         if (s.id === settlementId) {
@@ -2347,6 +2356,27 @@ export default function App() {
     const stdAmount = Number(settlementStandardAmount) || 0
     const actualPaidAmount = settlementPaymentStatus === 'pending' ? 0 : Number(settlementPaidAmount) || 0
     const unpaidAmt = Math.max(0, stdAmount - actualPaidAmount)
+
+    const statusText =
+      settlementPaymentStatus === 'confirmed'
+        ? `완납 (실수납: ${actualPaidAmount.toLocaleString()}원 / 실시간 전액 정산 집행)`
+        : settlementPaymentStatus === 'partial'
+        ? `분납 (1차 수납: ${actualPaidAmount.toLocaleString()}원 / 미납 잔여: ${unpaidAmt.toLocaleString()}원)`
+        : `전액 미입금 (0원 / 입금 대기 · 정산 보류)`
+
+    const confirmMsg =
+      `[卍 소원사 불사 · 위패 정식 접수 확인]\n\n` +
+      `• 동참 신도: ${m.name} ${m.dharma_name ? `(${m.dharma_name})` : ''}\n` +
+      `• 동참 종목: ${settlementItemType}\n` +
+      `• 표준 약정액: ${stdAmount.toLocaleString()}원\n` +
+      `• 수납/납부 상태: ${statusText}\n` +
+      `• 실제 입금일자: ${settlementPaymentStatus === 'pending' ? '미입금 (입금 대기)' : (settlementPaidDate || todayStr)}\n` +
+      `• 직속 추천인: ${agent1 ? agent1.name : '소원사 본원'}\n\n` +
+      `위 내용으로 정식 등록 및 회계 장부에 반영하시겠습니까?`
+
+    if (!window.confirm(confirmMsg)) {
+      return
+    }
 
     const newRecord = {
       id: 's-' + Date.now(),
@@ -3080,8 +3110,29 @@ export default function App() {
                 type="submit"
                 className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] font-serif-kr font-bold text-sm shadow-md flex items-center justify-center gap-2 border border-[#C59B27] transition cursor-pointer"
               >
-                <Save className="w-4 h-4 text-[#F5D061]" />
-                <span>卍 기도 · 위패 · 불사 정식 접수 및 수납 완료</span>
+                <Save className="w-4 h-4 text-[#F5D061] shrink-0" />
+                {settlementPaymentStatus === 'confirmed' ? (
+                  <div className="flex items-center gap-2 flex-wrap justify-center">
+                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/25 text-emerald-300 text-xs font-bold border border-emerald-500/40">
+                      ✓ 완납 확인
+                    </span>
+                    <span>卍 기도 · 위패 · 불사 정식 접수 및 완납 수납 등록</span>
+                  </div>
+                ) : settlementPaymentStatus === 'partial' ? (
+                  <div className="flex items-center gap-2 flex-wrap justify-center">
+                    <span className="px-2 py-0.5 rounded-md bg-amber-500/25 text-amber-300 text-xs font-bold border border-amber-500/40">
+                      △ 분납 (1차 수납)
+                    </span>
+                    <span>卍 기도 · 위패 · 불사 정식 접수 및 분납 수납 등록</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 flex-wrap justify-center">
+                    <span className="px-2 py-0.5 rounded-md bg-stone-500/30 text-stone-300 text-xs font-bold border border-stone-500/40">
+                      ⏳ 입금 대기
+                    </span>
+                    <span>卍 기도 · 위패 · 불사 접수 등록 (정산 보류)</span>
+                  </div>
+                )}
               </button>
             </div>
           </form>
