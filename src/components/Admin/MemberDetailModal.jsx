@@ -37,6 +37,12 @@ export default function MemberDetailModal({
   onOpenIndividualRecordPrint,
   onOpenIndeungPrint,
   onOpenSettlement,
+  setSettlementTargetMember,
+  setShowSettlementModal,
+  setIndividualRecordTargetMember,
+  setShowIndividualRecordPrintModal,
+  setIndeungTargetMember,
+  setShowIndeungNameplateModal,
 }) {
   if (!isOpen || !member) return null
   if (typeof document === 'undefined') return null
@@ -850,10 +856,14 @@ export default function MemberDetailModal({
                 <button
                   type="button"
                   onClick={() => {
-                    setSettlementTargetMember(selectedMemberDetail)
-                    setShowSettlementModal(true)
+                    if (onOpenSettlement) {
+                      onOpenSettlement(selectedMemberDetail)
+                    } else if (typeof setSettlementTargetMember === 'function' && typeof setShowSettlementModal === 'function') {
+                      setSettlementTargetMember(selectedMemberDetail)
+                      setShowSettlementModal(true)
+                    }
                   }}
-                  className="w-full py-2.5 rounded-xl bg-[#FAF8F5] border border-[#C59B27] text-[#8A6510] font-bold text-xs hover:bg-[#F5EEDB] transition flex items-center justify-center gap-1.5"
+                  className="w-full py-2.5 rounded-xl bg-[#FAF8F5] border border-[#C59B27] text-[#8A6510] font-bold text-xs hover:bg-[#F5EEDB] transition flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <PlusCircle className="w-3.5 h-3.5 text-[#8A6510]" />
                   <span>➕ 이 신도님의 사찰 불사·위패 동참 접수하기</span>
@@ -863,10 +873,14 @@ export default function MemberDetailModal({
                 <button
                   type="button"
                   onClick={() => {
-                    setIndividualRecordTargetMember(selectedMemberDetail)
-                    setShowIndividualRecordPrintModal(true)
+                    if (onOpenIndividualRecordPrint) {
+                      onOpenIndividualRecordPrint(selectedMemberDetail)
+                    } else if (typeof setIndividualRecordTargetMember === 'function' && typeof setShowIndividualRecordPrintModal === 'function') {
+                      setIndividualRecordTargetMember(selectedMemberDetail)
+                      setShowIndividualRecordPrintModal(true)
+                    }
                   }}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2E2822] to-[#1B1815] border border-[#D4AF37] text-[#F5D061] font-bold text-xs shadow hover:brightness-110 active:scale-98 transition flex items-center justify-center gap-2"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2E2822] to-[#1B1815] border border-[#D4AF37] text-[#F5D061] font-bold text-xs shadow hover:brightness-110 active:scale-98 transition flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <FileText className="w-4 h-4 text-[#D4AF37]" />
                   <span>📜 개인 신도 교적대장(신적부) 종합 A4 원터치 인쇄하기</span>
@@ -878,10 +892,14 @@ export default function MemberDetailModal({
                 <button
                   type="button"
                   onClick={() => {
-                    setIndeungTargetMember(selectedMemberDetail)
-                    setShowIndeungNameplateModal(true)
+                    if (onOpenIndeungPrint) {
+                      onOpenIndeungPrint(selectedMemberDetail)
+                    } else if (typeof setIndeungTargetMember === 'function' && typeof setShowIndeungNameplateModal === 'function') {
+                      setIndeungTargetMember(selectedMemberDetail)
+                      setShowIndeungNameplateModal(true)
+                    }
                   }}
-                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#C59B27] via-[#D4AF37] to-[#8A6510] text-[#1B1815] font-black text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-2"
+                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#C59B27] via-[#D4AF37] to-[#8A6510] text-[#1B1815] font-black text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Printer className="w-4 h-4" />
                   <span>대웅전 1년 가족 인등 전통 명패 A4 원터치 인쇄하기</span>

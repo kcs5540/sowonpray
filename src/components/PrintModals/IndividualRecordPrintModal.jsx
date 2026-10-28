@@ -36,7 +36,7 @@ export default function IndividualRecordPrintModal({
     const totalDonation = histSettlements.reduce((sum, s) => sum + (Number(s.total_amount) || 0), 0)
 
     return createPortal(
-      <div id="individual-record-portal-root" className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+      <div id="individual-record-portal-root" className="fixed inset-0 z-[60] bg-black/85 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
         <div className="w-full max-w-4xl bg-white text-[#111111] rounded-2xl shadow-2xl flex flex-col my-auto border border-[#E5D399] overflow-hidden max-h-[92vh]">
           {/* 상단 조작 바 (인쇄 시 숨김) */}
           <div className="no-print bg-[#1B1815] text-[#FAF8F5] p-3.5 sm:p-4 flex items-center justify-between gap-3 border-b-2 border-[#D4AF37]">
