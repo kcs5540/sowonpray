@@ -5174,6 +5174,10 @@ function normalizeMemberHierarchy(m) {
         renderMemberRowCard={renderMemberRowCard}
         toggleSasiPrayedCheck={toggleSasiPrayedCheck}
         handleSaveMemberEdit={handleSaveMemberEdit}
+        adminKPIs={adminKPIs}
+        currentActiveBeliever={currentActiveBeliever}
+        setActiveBelieverCode={setActiveBelieverCode}
+        setCurrentUserCode={setCurrentUserCode}
       />
     )
   }

@@ -155,6 +155,10 @@ export default function AdminERPView(props) {
     renderMemberRowCard,
     toggleSasiPrayedCheck,
     handleSaveMemberEdit,
+    adminKPIs,
+    currentActiveBeliever,
+    setActiveBelieverCode,
+    setCurrentUserCode,
   } = props
 
   return (
