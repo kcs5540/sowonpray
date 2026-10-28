@@ -2665,7 +2665,7 @@ export default function App() {
     }
     return false
   })
-  const [erpTab, setErpTab] = useState('register') // 'register' | 'search' | 'excel' | 'settlement'
+  const [erpTab, setErpTab] = useState('search') // 'search' | 'register' | 'excel' | 'settlement'
 
   // 소원사 통합 전산 모달 상태 ('common': 1.포교사 공통, 'head': 2.포교위원장, 'temple': 3.사찰본부, 'master': 4.최고관제)
   const [showUnifiedAdminModal, setShowUnifiedAdminModal] = useState(false)
@@ -6105,18 +6105,6 @@ function normalizeMemberHierarchy(m) {
             <div className="flex items-center gap-2 p-1.5 bg-[#1F1B17] rounded-2xl border border-[#C59B27]/40 text-xs sm:text-sm overflow-x-auto no-scrollbar">
               <button
                 type="button"
-                onClick={() => setErpTab('register')}
-                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap ${
-                  erpTab === 'register'
-                    ? 'bg-[#F5D061] text-[#1B1815] shadow'
-                    : 'text-[#D6CEC2] hover:text-white'
-                }`}
-              >
-                <Heart className="w-4 h-4 text-amber-700" />
-                <span>🏮 1. 신도 &amp; 가족사주 신규 등록</span>
-              </button>
-              <button
-                type="button"
                 onClick={() => setErpTab('search')}
                 className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap ${
                   erpTab === 'search'
@@ -6125,7 +6113,19 @@ function normalizeMemberHierarchy(m) {
                 }`}
               >
                 <Search className="w-4 h-4" />
-                <span>📋 2. 10만 신도 교적부 검색 &amp; 수정</span>
+                <span>📋 1. 10만 신도 교적부 검색 &amp; 수정</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setErpTab('register')}
+                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                  erpTab === 'register'
+                    ? 'bg-[#F5D061] text-[#1B1815] shadow'
+                    : 'text-[#D6CEC2] hover:text-white'
+                }`}
+              >
+                <Heart className="w-4 h-4 text-amber-700" />
+                <span>🏮 2. 신도 &amp; 가족사주 신규 등록</span>
               </button>
               <button
                 type="button"
@@ -6159,7 +6159,7 @@ function normalizeMemberHierarchy(m) {
                 <div className="flex items-center justify-between pb-2 border-b border-[#E6DEC8]">
                   <div>
                     <h3 className="font-serif-kr font-bold text-lg text-[#1B1815]">
-                      1. 종무소 현장/전화 접수 신도 및 가족 사주 통합 등록
+                      2. 종무소 현장/전화 접수 신도 및 가족 사주 통합 등록
                     </h3>
                     <p className="text-xs text-[#8C8071] mt-0.5">
                       생년월일만 넣으면 띠와 육십간지가 100% 자동 산출되며, 세주(가장)부터 축원 명부에 자동 편성됩니다.
@@ -6410,7 +6410,7 @@ function normalizeMemberHierarchy(m) {
                 <div className="flex items-center justify-between pb-2 border-b border-[#E6DEC8]">
                   <div>
                     <h3 className="font-serif-kr font-bold text-lg text-[#1B1815] flex items-center gap-2 flex-wrap">
-                      <span>2. 10만 신도 실시간 교적부 검색 및 정보 수정</span>
+                      <span>1. 10만 신도 실시간 교적부 검색 및 정보 수정</span>
                       {adminMemberSearchQuery.trim() ? (
                         <span className="text-xs font-bold text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-lg border border-[#E8D4A2]">
                           검색 일치: {filteredAdminMembers.length}명 / 전체 {members.length}명
