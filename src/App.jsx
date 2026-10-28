@@ -2125,30 +2125,13 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => {
-                    const targetAgent =
-                      selectedMemberDetail.role === 'agent' ||
-                      selectedMemberDetail.role === 'master' ||
-                      selectedMemberDetail.role === 'temple_admin'
-                        ? selectedMemberDetail.code
-                        : selectedMemberDetail.parent_code || '33065540'
-                    setSimBelieverName(
-                      `${selectedMemberDetail.name}${
-                        selectedMemberDetail.dharma_name
-                          ? ` (${selectedMemberDetail.dharma_name})`
-                          : ''
-                      }`
-                    )
-                    setSimAgentCode(targetAgent)
-                    setSelectedMemberDetail(null)
-                    setErpTab('settlement')
-                    showToast(
-                      `🏛️ ${selectedMemberDetail.name} 불자님의 사찰 불사 접수 화면으로 이동합니다. (유치 위원장 자동 매칭 완료)`
-                    )
+                    setSettlementTargetMember(selectedMemberDetail)
+                    setShowSettlementModal(true)
                   }}
                   className="w-full py-2.5 rounded-xl bg-[#FAF8F5] border border-[#C59B27] text-[#8A6510] font-bold text-xs hover:bg-[#F5EEDB] transition flex items-center justify-center gap-1.5"
                 >
                   <PlusCircle className="w-3.5 h-3.5 text-[#8A6510]" />
-                  <span>➕ 이 신도님의 신규 사찰 불사·위패 동참 접수하기</span>
+                  <span>➕ 이 신도님의 사찰 불사·위패 동참 접수하기</span>
                 </button>
 
                 {/* 3. 개인 신도 교적대장 종합 A4 원터치 인쇄 버튼 */}
@@ -2203,6 +2186,277 @@ export default function App() {
         </div>
       </div>
     )  }
+
+  // ============================================================================
+  // 신도 교적부 기반 [사찰 불사 & 위패 봉안 정식 접수] 모달 렌더러
+  // ============================================================================
+  const handleRegisterSettlementForMember = (e) => {
+    e?.preventDefault()
+    if (!settlementTargetMember) {
+      showToast('접수할 신도 정보가 없습니다.')
+      return
+    }
+
+    const m = settlementTargetMember
+    // 조직표에 따른 직속 추천인(1차) 및 상위 관리자(2차, 3차) 자동 결정
+    const agent1Code = m.parent_code || '33065540'
+    const agent1 = members.find((a) => a.code === agent1Code) || members.find((a) => a.code === '33065540')
+    const agent2 = agent1?.parent_code ? members.find((a) => a.code === agent1.parent_code) : null
+    const agent3 = agent2?.parent_code ? members.find((a) => a.code === agent2.parent_code) : null
+
+    const todayStr = new Date().toISOString().slice(0, 10)
+
+    const newRecord = {
+      id: 's-' + Date.now(),
+      temple_id: DEFAULT_TEMPLE_ID,
+      member_code: m.code,
+      believer_name: `${m.name}${m.dharma_name ? ` (${m.dharma_name})` : ''}`,
+      believer_phone: m.phone || '',
+      item_name: settlementItemType,
+      total_amount: Number(settlementAmount),
+      agent_1st_code: agent1 ? agent1.code : null,
+      agent_1st_name: agent1
+        ? `${agent1.name}${agent1.dharma_name ? `(${agent1.dharma_name})` : ''} (${agent1.role === 'temple_admin' ? '신도회장' : agent1.role === 'master' ? '총괄위원장' : '포교위원장'})`
+        : '-',
+      agent_2nd_code: agent2 ? agent2.code : null,
+      agent_2nd_name: agent2
+        ? `${agent2.name}${agent2.dharma_name ? `(${agent2.dharma_name})` : ''} (${agent2.role === 'temple_admin' ? '신도회장' : '총괄위원장'})`
+        : '-',
+      agent_3rd_code: agent3 ? agent3.code : null,
+      agent_3rd_name: agent3
+        ? `${agent3.name}${agent3.dharma_name ? `(${agent3.dharma_name})` : ''} (신도회장)`
+        : '-',
+      payment_status: settlementPaymentStatus,
+      memo: settlementMemo,
+      created_at: todayStr,
+    }
+
+    setSettlements((prev) => [newRecord, ...prev])
+    setMembers((prev) =>
+      prev.map((item) =>
+        item.code === m.code
+          ? {
+              ...item,
+              merit_count: (item.merit_count || 0) + 1,
+              wipae_count: (item.wipae_count || 0) + (settlementItemType.includes('2기') ? 2 : 1),
+            }
+          : item
+      )
+    )
+
+    playSingingBowlSound()
+    setShowSettlementModal(false)
+    setSettlementTargetMember(null)
+    setSettlementMemo('')
+    showToast(`💰 [${m.name}] 신도님의 불사 접수 및 소원사 조직표 계보 정산이 완료되었습니다!`)
+  }
+
+  const renderSettlementModal = () => {
+    if (!settlementTargetMember) return null
+    const m = settlementTargetMember
+    const zInfo = computeZodiacAndGanji(m.birth_year || (m.birth_date ? m.birth_date.slice(0, 4) : ''))
+    
+    // 조직표 계보 매칭
+    const directAgent = members.find((a) => a.code === (m.parent_code || '33065540')) || members.find((a) => a.code === '33065540')
+    const upperAgent = directAgent?.parent_code ? members.find((a) => a.code === directAgent.parent_code) : null
+
+    return createPortal(
+      <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div className="w-full max-w-xl bg-white text-[#1B1815] rounded-3xl shadow-2xl border-2 border-[#D5C59B] overflow-hidden my-auto animate-in fade-in duration-200">
+          {/* 헤더 */}
+          <div className="bg-[#1B1815] text-[#FAF8F5] p-4 sm:p-5 flex items-center justify-between border-b-2 border-[#D4AF37]">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] flex items-center justify-center font-bold text-base shadow shrink-0">
+                卍
+              </div>
+              <div>
+                <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#F5D061]">
+                  사찰 불사 &amp; 위패 봉안 정식 접수
+                </h3>
+                <p className="text-xs text-[#D6CEC2]">
+                  신도교적부 등록 회원 기준 · 소원사 조직표 계보 실시간 정산 연동
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setShowSettlementModal(false)
+                setSettlementTargetMember(null)
+              }}
+              className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <form onSubmit={handleRegisterSettlementForMember} className="p-5 sm:p-6 space-y-4 text-xs">
+            {/* 1. 신도 기본 교적 정보 */}
+            <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-2">
+              <div className="flex items-center justify-between pb-1.5 border-b border-[#EAE2D3]">
+                <span className="font-bold text-[#8A6510] flex items-center gap-1.5">
+                  <UserCheck className="w-4 h-4 text-[#8A6510]" />
+                  <span>1. 동참 신도 교적 정보</span>
+                </span>
+                <span className="text-[11px] font-mono text-[#666] bg-white px-2 py-0.5 rounded border border-[#DDD4C4]">
+                  교적코드: {m.code}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1 text-[11.5px]">
+                <div>
+                  <span className="text-[#8C8071] block">성함 / 법명:</span>
+                  <strong className="text-sm font-bold text-[#1B1815]">
+                    {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''}
+                  </strong>
+                </div>
+                <div>
+                  <span className="text-[#8C8071] block">연락처:</span>
+                  <strong className="font-mono text-[#1B1815]">{m.phone || '-'}</strong>
+                </div>
+                <div>
+                  <span className="text-[#8C8071] block">생년 / 간지:</span>
+                  <span className="font-medium text-[#444]">
+                    {m.birth_year || (m.birth_date ? m.birth_date.slice(0, 4) : '-')}년 {zInfo.ganji ? `(${zInfo.ganji} ${zInfo.animal}띠)` : ''}
+                  </span>
+                </div>
+              </div>
+              <div className="text-[11px] text-[#777] truncate">
+                🏠 {m.address || '제주특별자치도 제주시'}
+              </div>
+            </div>
+
+            {/* 2. 소원사 공인 조직표 유치 계보 (100% 자동 확정 및 잠금) */}
+            <div className="p-3.5 rounded-2xl bg-emerald-50/80 border border-emerald-300 space-y-2">
+              <div className="flex items-center justify-between pb-1.5 border-b border-emerald-200">
+                <span className="font-bold text-emerald-950 flex items-center gap-1.5">
+                  <Network className="w-4 h-4 text-emerald-700" />
+                  <span>2. 소원사 공인 조직표 계보 (자동 매칭)</span>
+                </span>
+                <span className="text-[10.5px] font-bold text-emerald-800 bg-white px-2 py-0.5 rounded-full border border-emerald-200">
+                  조직표 계보 100% 자동 확정
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-center pt-0.5">
+                <div className="p-2 rounded-xl bg-white border border-emerald-200">
+                  <span className="text-[10px] text-[#8C8071] block">1차 직속추천 (30%)</span>
+                  <strong className="text-xs font-bold text-emerald-950 block mt-0.5">
+                    {directAgent?.name || '소원사 본원'}
+                  </strong>
+                  <span className="text-[9.5px] text-[#8A6510]">
+                    {directAgent?.role === 'temple_admin' ? '신도회장' : directAgent?.role === 'master' ? '총괄위원장' : '포교위원장'}
+                  </span>
+                </div>
+                <div className="p-2 rounded-xl bg-white border border-emerald-200">
+                  <span className="text-[10px] text-[#8C8071] block">2차 상위관리 (10%)</span>
+                  <strong className="text-xs font-bold text-emerald-950 block mt-0.5">
+                    {upperAgent?.name || '-'}
+                  </strong>
+                  <span className="text-[9.5px] text-[#8A6510]">
+                    {upperAgent?.role === 'temple_admin' ? '신도회장' : upperAgent?.role === 'master' ? '총괄위원장' : '-'}
+                  </span>
+                </div>
+                <div className="p-2 rounded-xl bg-amber-50 border border-amber-300">
+                  <span className="text-[10px] text-amber-800 block font-bold">사찰 본사 원천 (50%)</span>
+                  <strong className="text-xs font-black text-amber-950 block mt-0.5">
+                    소원사 본원
+                  </strong>
+                  <span className="text-[9.5px] text-amber-800">
+                    불사금 적립
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* 3. 불사 동참 항목 및 금액 */}
+            <div className="space-y-3 pt-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-[#3D3630] mb-1">
+                    불사 / 위패 동참 종목 *
+                  </label>
+                  <select
+                    value={settlementItemType}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      setSettlementItemType(val)
+                      if (val.includes('2기')) setSettlementAmount(4000000)
+                      else if (val.includes('단청') || val.includes('명패')) setSettlementAmount(1000000)
+                      else if (val.includes('기와')) setSettlementAmount(100000)
+                      else setSettlementAmount(2000000)
+                    }}
+                    className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-semibold text-[#1B1815]"
+                  >
+                    <option value="생전예수재 황금위패 1기 (200만원)">생전예수재 황금위패 1기 (200만원)</option>
+                    <option value="조상 영가 흑색 영구위패 1기 (200만원)">조상 영가 흑색 영구위패 1기 (200만원)</option>
+                    <option value="조상 영가 부부 영구위패 2기 (400만원)">조상 영가 부부 영구위패 2기 (400만원)</option>
+                    <option value="삼성각 성전 건립 소원기와 1장 (10만원)">삼성각 성전 건립 소원기와 1장 (10만원)</option>
+                    <option value="삼성각 대들보·기둥·단청 불사 (100만원)">삼성각 대들보·기둥·단청 불사 (100만원)</option>
+                    <option value="삼성각 가족 영구축원 명패 (100만원)">삼성각 가족 영구축원 명패 (100만원)</option>
+                    <option value="사찰 특별 대작불사 동참">사찰 특별 대작불사 동참 (직접입력)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-bold text-[#3D3630] mb-1">
+                    보시 금액 (원) *
+                  </label>
+                  <input
+                    type="number"
+                    value={settlementAmount}
+                    onChange={(e) => setSettlementAmount(Number(e.target.value))}
+                    required
+                    className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-mono font-bold text-[#D32F2F]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-[#3D3630] mb-1">
+                    보시금 납부 상태 *
+                  </label>
+                  <select
+                    value={settlementPaymentStatus}
+                    onChange={(e) => setSettlementPaymentStatus(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs font-bold text-emerald-900"
+                  >
+                    <option value="confirmed">완납 입금 확인 (실시간 정산 집행)</option>
+                    <option value="pending">분납 / 입금 대기 (접수 보류)</option>
+                    <option value="reserved">예약 동참 접수</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-bold text-[#3D3630] mb-1">
+                    축원 발원 메모 (선택)
+                  </label>
+                  <input
+                    type="text"
+                    value={settlementMemo}
+                    onChange={(e) => setSettlementMemo(e.target.value)}
+                    placeholder="예: 가족 건강 및 사업 번창, 조상 영가 극락왕생 발원"
+                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 제출 버튼 */}
+            <div className="pt-2">
+              <button
+                type="submit"
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#C59B27] via-[#8A6510] to-[#231F1C] text-[#FAF8F5] font-black text-sm shadow-md hover:brightness-105 active:scale-99 transition flex items-center justify-center gap-2"
+              >
+                <Save className="w-4 h-4 text-[#F5D061]" />
+                <span>卍 사찰 불사 접수 완료 및 실시간 계보 정산 실행하기</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>,
+      document.body
+    )
+  }
 
   // 📜 [개인 신도 교적대장(신적부)] 종합 A4 원터치 인쇄 모달
   const renderIndividualRecordPrintModal = () => {
@@ -3182,6 +3436,14 @@ function normalizeMemberHierarchy(m) {
   // [개인 신도 교적대장(신적부)] 다년간 전체 점등 및 불사 동참 원장 종합 A4 인쇄 모달 상태
   const [showIndividualRecordPrintModal, setShowIndividualRecordPrintModal] = useState(false)
   const [individualRecordTargetMember, setIndividualRecordTargetMember] = useState(null)
+
+  // [사찰 불사 & 위패 봉안 정식 접수] 전용 모달 상태 (신도교적부 검색·선택 기반)
+  const [showSettlementModal, setShowSettlementModal] = useState(false)
+  const [settlementTargetMember, setSettlementTargetMember] = useState(null)
+  const [settlementItemType, setSettlementItemType] = useState('생전예수재 황금위패 1기 (200만원)')
+  const [settlementAmount, setSettlementAmount] = useState(2000000)
+  const [settlementPaymentStatus, setSettlementPaymentStatus] = useState('confirmed')
+  const [settlementMemo, setSettlementMemo] = useState('')
 
   // [대웅전 1년 가족 인등 전통 명패] A4 원터치 인쇄 모달 상태
   const [showIndeungNameplateModal, setShowIndeungNameplateModal] = useState(false)
@@ -4259,14 +4521,11 @@ function normalizeMemberHierarchy(m) {
               <button
                 type="button"
                 onClick={() => {
-                  const targetAgent = m.parent_code || '33065540'
-                  setSimBelieverName(`${m.name}${m.dharma_name ? ` (${m.dharma_name})` : ''}`)
-                  setSimAgentCode(targetAgent)
-                  setErpTab('settlement')
-                  showToast(`💰 ${m.name} 불자님의 불사 접수 모드로 전환 (유치 위원장 자동 매칭)`)
+                  setSettlementTargetMember(m)
+                  setShowSettlementModal(true)
                 }}
                 className="py-1.5 px-1 rounded-xl bg-[#FAF3DF] hover:bg-[#F3E6C2] border border-[#D5C59B] text-[10.5px] font-black text-[#8A6510] transition flex items-center justify-center gap-0.5 shadow-xs"
-                title="사찰 불사·위패 접수하기 (유치 위원장 1초 자동 매칭)"
+                title="사찰 불사·위패 정식 접수하기 (조직표 1초 자동 매칭)"
               >
                 <PlusCircle className="w-3 h-3 text-[#8A6510]" />
                 <span>불사</span>
@@ -6717,221 +6976,54 @@ function normalizeMemberHierarchy(m) {
                   </span>
                 </div>
 
-                {/* 🪷 신규 사찰 불사 & 위패 봉안 접수 등록 폼 (상단 최우선 배치) */}
-                <div className="p-5 rounded-2xl bg-[#FCFAF6] border-2 border-[#D4AF37] shadow-md space-y-4">
-                  <div className="flex items-center justify-between border-b border-[#E6DEC8] pb-2">
-                    <div className="flex items-center gap-2">
-                      <Calculator className="w-5 h-5 text-[#8A6510]" />
-                      <h4 className="font-serif-kr font-bold text-base text-[#1B1815]">
-                        신규 사찰 불사 &amp; 위패 봉안 접수 등록
-                      </h4>
+                {/* 卍 사찰 불사 접수 업무 표준 프로세스 가이드 & 신도 검색 바로가기 바 */}
+                <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-[#FFF9E6] via-white to-[#FFF9E6] border-2 border-[#D5C59B] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+                  <div className="flex items-start sm:items-center gap-3.5">
+                    <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] flex items-center justify-center font-black text-lg shrink-0 shadow-sm">
+                      卍
                     </div>
-                    <span className="text-xs font-bold text-[#8A6510] bg-[#FAF3DF] px-2.5 py-1 rounded-lg border border-[#E8D4A2]">
-                      사찰 50% 불사금 원천 적립
-                    </span>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h4 className="font-serif-kr font-bold text-base text-[#1B1815]">
+                          사찰 불사 접수 및 실시간 정산 관제 프로세스
+                        </h4>
+                        <span className="text-[10.5px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">
+                          신도교적부 연동 필수
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#7A6E5E] mt-1 leading-relaxed">
+                        모든 사찰 불사 및 위패 봉안은 <strong>[신도교적부]에 정식 등록된 신도</strong>를 검색·선택하여 조직표에 따라 접수됩니다.<br className="hidden sm:inline" />
+                        (아직 교적부에 없는 신규 신도는 먼저 교적부에 등록 후 불사 접수가 진행됩니다.)
+                      </p>
+                    </div>
                   </div>
-
-                  <form onSubmit={handleAddSettlement} className="space-y-3.5">
-                    {/* 상단: 교적부 신도 원터치 빠른 선택 드롭다운 */}
-                    <div className="p-3 rounded-2xl bg-[#FFF9E6] border border-[#E5D399] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
-                      <div className="flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-[#8A6510] shrink-0" />
-                        <div>
-                          <span className="font-bold text-xs text-[#1B1815]">
-                            신도 교적부 원터치 선택
-                          </span>
-                          <span className="text-[11px] text-[#8C8071] ml-1.5 hidden sm:inline">
-                            (신도 선택 시 유치 위원장 100% 자동 매칭)
-                          </span>
-                        </div>
-                      </div>
-                      <select
-                        onChange={(e) => {
-                          const code = e.target.value
-                          if (!code) return
-                          const m = members.find((x) => x.code === code)
-                          if (m) {
-                            handleBelieverNameInput(`${m.name}${m.dharma_name ? ` (${m.dharma_name})` : ''}`)
-                          }
-                        }}
-                        defaultValue=""
-                        className="w-full sm:w-auto px-3 py-1.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-semibold text-[#1B1815] shadow-xs"
-                      >
-                        <option value="">-- 📋 신도교적부에서 빠른 선택 (자동 매칭) --</option>
-                        <optgroup label="👑 포교위원장 / 임원 접수 (상위 추천인 자동 매칭)">
-                          {agents.map((ag) => {
-                            const pName = getRecommenderName(ag.parent_code)
-                            return (
-                              <option key={ag.code} value={ag.code}>
-                                {ag.name} ({ag.role === 'temple_admin' ? '신도회장' : ag.role === 'master' ? '총괄위원장' : '포교위원장'}) ➔ 추천인: {pName}
-                              </option>
-                            )
-                          })}
-                        </optgroup>
-                        <optgroup label="🪷 등록 신도 명부 (소속 위원장 자동 연동)">
-                          {members
-                            .filter((m) => m.role === 'believer')
-                            .slice(0, 60)
-                            .map((m) => {
-                              const parentAgent = members.find((a) => a.code === m.parent_code)
-                              return (
-                                <option key={m.code} value={m.code}>
-                                  {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''} ➔ 추천인: {parentAgent ? `${parentAgent.name} 위원장` : '소원사 직속'}
-                                </option>
-                              )
-                            })}
-                        </optgroup>
-                      </select>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-                      <div>
-                        <div className="flex items-center justify-between mb-1">
-                          <label className="font-bold text-[#3D3630]">
-                            동참 신도 성함 *
-                          </label>
-                          {matchedBelieverForSettlement && (
-                            <span className="text-[10px] text-emerald-800 font-bold bg-emerald-100 px-1.5 py-0.5 rounded">
-                              교적 연동됨
-                            </span>
-                          )}
-                        </div>
-                        <input
-                          type="text"
-                          list="simBelieverDatalist"
-                          value={simBelieverName}
-                          onChange={(e) => handleBelieverNameInput(e.target.value)}
-                          placeholder="예: 유광수 또는 이진우"
-                          required
-                          className="w-full px-3 py-2.5 rounded-xl bg-white border-2 border-[#D5C59B] text-xs font-bold text-[#1B1815] focus:border-[#C59B27] focus:outline-none"
-                        />
-                        <datalist id="simBelieverDatalist">
-                          {members.map((m) => {
-                            const parentAg = members.find((a) => a.code === m.parent_code)
-                            return (
-                              <option
-                                key={m.code}
-                                value={m.name}
-                                label={`${m.dharma_name ? `(${m.dharma_name}) ` : ''}[${m.role === 'agent' ? '포교위원장' : m.role === 'master' ? '총괄위원장' : m.role === 'temple_admin' ? '신도회장' : '일반신도'}] ➔ 추천인: ${getRecommenderName(m.parent_code)}`}
-                              />
-                            )
-                          })}
-                        </datalist>
-                      </div>
-
-                      <div>
-                        <label className="block font-bold text-[#3D3630] mb-1">
-                          불사 / 위패 동참 종목 *
-                        </label>
-                        <select
-                          value={simItemType}
-                          onChange={(e) => {
-                            const val = e.target.value
-                            setSimItemType(val)
-                            if (val.includes('2기')) setSimAmount(4000000)
-                            else if (val.includes('단청') || val.includes('명패')) setSimAmount(1000000)
-                            else if (val.includes('기와')) setSimAmount(100000)
-                            else setSimAmount(2000000)
-                          }}
-                          className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-semibold text-[#1B1815]"
-                        >
-                          <option value="생전예수재 황금위패 (1기)">생전예수재 황금위패 1기 (200만원)</option>
-                          <option value="조상 영가 흑색 영구위패 (1기)">조상 영가 흑색 영구위패 1기 (200만원)</option>
-                          <option value="조상 영가 부부 영구위패 (2기)">조상 영가 부부 영구위패 2기 (400만원)</option>
-                          <option value="삼성각 성전 건립 소원기와 (1장)">삼성각 성전 건립 소원기와 1장 (10만원)</option>
-                          <option value="삼성각 대들보·기둥·단청 불사">삼성각 대들보·기둥·단청 불사 (100만원)</option>
-                          <option value="삼성각 가족 영구축원 명패">삼성각 가족 영구축원 명패 (100만원)</option>
-                          <option value="사찰 특별 대작불사 동참">사찰 특별 대작불사 동참 (직접입력)</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block font-bold text-[#3D3630] mb-1">
-                          보시 금액 (원) *
-                        </label>
-                        <input
-                          type="number"
-                          value={simAmount}
-                          onChange={(e) => setSimAmount(Number(e.target.value))}
-                          required
-                          className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-mono font-bold text-[#D32F2F]"
-                        />
-                      </div>
-
-                      <div>
-                        <div className="flex items-center justify-between mb-1">
-                          <label className="font-bold text-[#3D3630]">
-                            유치 포교사 / 위원장 (추천인) *
-                          </label>
-                          <span className="text-[10px] text-[#8A6510] font-bold">
-                            1차 30% 수수료
-                          </span>
-                        </div>
-                        <select
-                          value={simAgentCode}
-                          onChange={(e) => setSimAgentCode(e.target.value)}
-                          className="w-full px-3 py-2.5 rounded-xl bg-white border-2 border-[#D5C59B] text-xs font-bold text-[#1B1815] focus:border-[#C59B27] focus:outline-none"
-                        >
-                          {agents.map((a) => (
-                            <option key={a.code} value={a.code}>
-                              {a.name} ({a.role === 'temple_admin' ? '신도회장' : a.role === 'master' ? '총괄위원장' : '포교위원장'})
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
-                    {/* 실시간 조직표 매칭 상태 안내 배너 */}
-                    {matchedBelieverForSettlement ? (
-                      <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-300 space-y-2 text-xs text-emerald-950 font-bold">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                            <span>
-                              🌳 <strong>[소원사 조직표 계보 연동]</strong> {matchedBelieverForSettlement.name}{matchedBelieverForSettlement.dharma_name ? `(${matchedBelieverForSettlement.dharma_name})` : ''} ➔ 직속 추천인(유치): <strong>[{getRecommenderName(matchedBelieverForSettlement.parent_code || matchedBelieverForSettlement.code)}]</strong> 자동 매칭
-                            </span>
-                          </div>
-                          <span className="text-[11px] font-mono bg-white px-2 py-0.5 rounded border border-emerald-200 shrink-0">
-                            교적: {matchedBelieverForSettlement.code}
-                          </span>
-                        </div>
-                        {/* 조직표에 따른 1차·2차·사찰 정산 흐름 미리보기 */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] bg-white/85 p-2 rounded-xl border border-emerald-200 font-medium">
-                          <div>
-                            <span className="text-[#8C8071] block">1차 직속추천 (30%):</span>
-                            <strong className="text-emerald-900">{getRecommenderName(matchedBelieverForSettlement.parent_code || matchedBelieverForSettlement.code)}</strong>
-                          </div>
-                          <div>
-                            <span className="text-[#8C8071] block">2차 상위관리 (10%):</span>
-                            <strong className="text-emerald-900">
-                              {(() => {
-                                const p1 = members.find((a) => a.code === (matchedBelieverForSettlement.parent_code || matchedBelieverForSettlement.code))
-                                return p1?.parent_code ? getRecommenderName(p1.parent_code) : '-'
-                              })()}
-                            </strong>
-                          </div>
-                          <div>
-                            <span className="text-[#8C8071] block">사찰 본사 원천 (50%):</span>
-                            <strong className="text-amber-900">제주 소원사 본원</strong>
-                          </div>
-                        </div>
-                      </div>
-                    ) : simBelieverName.trim() ? (
-                      <div className="p-2.5 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] flex items-center gap-2 text-xs text-[#777777]">
-                        <HelpCircle className="w-4 h-4 text-[#8C8071] shrink-0" />
-                        <span>💡 신규 직접입력 신도: 우측 '유치 포교사 / 위원장 (추천인)' 드롭다운에서 불사를 유치한 위원장을 선택해 주세요.</span>
-                      </div>
-                    ) : null}
-
+                  <div className="flex items-center gap-2.5 shrink-0 w-full md:w-auto">
                     <button
-                      type="submit"
-                      className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#C59B27] via-[#8A6510] to-[#231F1C] text-[#FAF8F5] font-black text-sm shadow-md hover:brightness-105 active:scale-99 transition flex items-center justify-center gap-2"
+                      type="button"
+                      onClick={() => {
+                        setErpTab('search')
+                        showToast('🔍 신도교적부에서 불사를 접수하실 신도님을 검색 후 [불사] 버튼을 눌러주세요.')
+                      }}
+                      className="flex-1 md:flex-initial px-4 py-3 rounded-2xl bg-[#1B1815] text-[#F5D061] text-xs font-black hover:bg-[#2C251F] transition flex items-center justify-center gap-2 shadow-md hover:scale-[1.02]"
                     >
-                      <Save className="w-4 h-4 text-[#F5D061]" />
-                      <span>卍 사찰 불사 접수 등록 및 실시간 정산 실행하기</span>
+                      <Search className="w-4 h-4 text-[#F5D061]" />
+                      <span>신도 검색 후 불사 접수하기</span>
                     </button>
-                  </form>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setErpTab('search')
+                        setAdminRegMode('family')
+                        showToast('✍️ 신규 신도를 먼저 교적부에 등록합니다.')
+                      }}
+                      className="flex-1 md:flex-initial px-4 py-3 rounded-2xl bg-[#FAF8F5] border-2 border-[#C59B27] text-[#8A6510] text-xs font-bold hover:bg-[#FAF3DF] transition flex items-center justify-center gap-1.5 shadow-sm"
+                    >
+                      <UserPlus className="w-4 h-4 text-[#8A6510]" />
+                      <span>신규 신도 교적 등록</span>
+                    </button>
+                  </div>
                 </div>
+
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-center text-xs pt-1">
                   <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
                     <div className="text-[10.5px] text-[#8C8071]">1차 직속추천</div>
@@ -7270,6 +7362,7 @@ function normalizeMemberHierarchy(m) {
 
         {/* 신도 상세 및 가족 사주 수정 모달 */}
         {selectedMemberDetail && renderMemberDetailModal()}
+        {showSettlementModal && renderSettlementModal()}
         {showIndividualRecordPrintModal && renderIndividualRecordPrintModal()}
         {showIndeungNameplateModal && renderIndeungNameplateModal()}
         {lanternTargetMember && renderLanternModal()}
@@ -14600,6 +14693,7 @@ function normalizeMemberHierarchy(m) {
 
         {/* ==================== 10만 신도 고속 검색: 회원 상세 정보 & 가족 사주 관리 모달 ==================== */}
         {selectedMemberDetail && renderMemberDetailModal()}
+        {showSettlementModal && renderSettlementModal()}
         {showIndividualRecordPrintModal && renderIndividualRecordPrintModal()}
         {showIndeungNameplateModal && renderIndeungNameplateModal()}
 
