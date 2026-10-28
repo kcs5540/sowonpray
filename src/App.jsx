@@ -61,6 +61,13 @@ import {
 import QRCode from 'qrcode'
 import html2canvas from 'html2canvas'
 import BusinessCardModal from './components/BusinessCardModal'
+import AdminERPView from './components/Admin/AdminERPView'
+import MemberDetailModal from './components/Admin/MemberDetailModal'
+import {
+  SettlementModal,
+  SettlementEditModal,
+  SettlementConfirmModal,
+} from './components/Admin/SettlementModals'
 import {
   IndividualRecordPrintModal,
   IndeungNameplatePrintModal,
@@ -1339,1964 +1346,6 @@ export default function App() {
   // 🪪 [소원사 모바일 전자명함 시스템] 전용 상태
   const [showBusinessCardModal, setShowBusinessCardModal] = useState(false)
   const [businessCardTarget, setBusinessCardTarget] = useState(null)
-
-  // 🪷 [고급 사찰 통합 ERP 신도 교적부 & 가족 사주 상세/수정 모달]
-  const renderMemberDetailModal = () => {
-    if (!selectedMemberDetail) return null
-    const curComp = computeZodiacAndGanji(selectedMemberDetail.birth_year || selectedMemberDetail.birth_date)
-    const curGanji = curComp.ganji || selectedMemberDetail.ganji || ''
-    const curAnimal = curComp.animal || selectedMemberDetail.animal || ''
-
-    // 🪷 해당 신도의 다년간 역대 전체 소원등 & 기도 봉안 이력 추출 (연도별 누적)
-    const memberHistoryPrayers = (prayers || []).filter(
-      (p) =>
-        p.member_code === selectedMemberDetail.code ||
-        (selectedMemberDetail.phone && p.believer_phone && p.believer_phone.replace(/[^0-9]/g, '') === selectedMemberDetail.phone.replace(/[^0-9]/g, '')) ||
-        (p.believer_name && p.believer_name.includes(selectedMemberDetail.name))
-    ).sort((a, b) => new Date(b.created_at || '2026-01-01').getTime() - new Date(a.created_at || '2026-01-01').getTime())
-
-    // 🏛️ 해당 신도의 다년간 역대 전체 사찰 불사 & 위패 봉안 동참 이력 추출 (연도별 누적)
-    const memberHistorySettlements = (settlements || []).filter(
-      (s) =>
-        (s.member_code && s.member_code === selectedMemberDetail.code) ||
-        (s.believer_name && s.believer_name.includes(selectedMemberDetail.name))
-    ).sort((a, b) => new Date(b.created_at || '2026-01-01').getTime() - new Date(a.created_at || '2026-01-01').getTime())
-
-    const totalDonationAmount = memberHistorySettlements.reduce((sum, s) => sum + (Number(s.total_amount) || 0), 0)
-    const lanternInfo = getMemberPrayerAndPaymentInfo(selectedMemberDetail)
-
-    const openEditForm = () => {
-      setMemberEditForm({
-        name: selectedMemberDetail.name || '',
-        dharma_name: selectedMemberDetail.dharma_name || '',
-        gender: selectedMemberDetail.gender || selectedMemberDetail.extra_data?.gender || '여',
-        phone: selectedMemberDetail.phone || '',
-        tel: selectedMemberDetail.tel || selectedMemberDetail.extra_data?.tel || '',
-        birth_year: selectedMemberDetail.birth_year || (selectedMemberDetail.birth_date ? selectedMemberDetail.birth_date.slice(0, 4) : ''),
-        lunar_solar: selectedMemberDetail.lunar_solar || '음력',
-        address: selectedMemberDetail.address || '',
-        role: selectedMemberDetail.role || 'believer',
-        parent_code: selectedMemberDetail.parent_code || '55570267',
-        password_pin: selectedMemberDetail.password_pin || '0000',
-        family_memo: selectedMemberDetail.family_memo || '',
-        admin_notes: selectedMemberDetail.admin_notes || selectedMemberDetail.extra_data?.admin_notes || '',
-        family_members: selectedMemberDetail.family_members
-          ? selectedMemberDetail.family_members.map((f) => ({ ...f }))
-          : (selectedMemberDetail.extra_data?.family_members ? [...selectedMemberDetail.extra_data.family_members] : []),
-      })
-      setIsEditingMember(true)
-    }
-
-    return (
-      <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
-        <div className="w-full max-w-4xl bg-[#FAF8F5] text-[#231F1C] rounded-3xl p-5 sm:p-7 border-2 border-[#C59B27] shadow-2xl space-y-5 my-auto animate-in zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto">
-          {/* 모달 상단 헤더 */}
-          <div className="flex items-center justify-between pb-3 border-b border-[#E6DEC8] gap-3">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-9 h-9 rounded-full bg-[#1B1815] text-[#F5D061] flex items-center justify-center font-bold text-base shrink-0 shadow">
-                卍
-              </div>
-              <div className="min-w-0">
-                <h3 className="font-serif-kr text-base sm:text-xl font-black text-[#1B1815] truncate">
-                  {isEditingMember ? '신도 교적부 정보 및 가족 사주 수정' : '신도 신적부(교적부) 상세 대장'}
-                </h3>
-                <p className="text-[11px] text-[#8C8071] truncate">
-                  제주 소원사 본부 교적부 · 교적코드 #{selectedMemberDetail.code} · 누적 기도 공덕 {selectedMemberDetail.merit_count || 0}회
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                type="button"
-                onClick={() => {
-                  if (!isEditingMember) {
-                    openEditForm()
-                  } else {
-                    setIsEditingMember(false)
-                  }
-                }}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm ${
-                  isEditingMember
-                    ? 'bg-[#E0D8C8] text-[#554E45] hover:bg-[#D5CCBC]'
-                    : 'bg-[#1B1815] text-[#F5D061] hover:bg-[#2C251F]'
-                }`}
-              >
-                <Edit3 className="w-3.5 h-3.5" />
-                <span>{isEditingMember ? '수정 취소' : '정보 수정'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedMemberDetail(null)
-                  setIsEditingMember(false)
-                }}
-                className="p-2 rounded-xl bg-white border border-[#DDD4C4] text-[#7A6E5E] hover:text-[#1B1815] transition shadow-sm"
-                title="닫기"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* ==================== [수정 모드] ==================== */}
-          {isEditingMember && memberEditForm ? (
-            <div className="space-y-4 text-xs">
-              {/* 1. 기본 인적사항 & 사주 만세력 */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-white border border-[#E6DEC8] shadow-sm space-y-3">
-                <div className="text-xs font-bold text-[#8A6510] flex items-center justify-between border-b border-[#F0EAE1] pb-2">
-                  <div className="flex items-center gap-1.5">
-                    <User className="w-4 h-4 text-amber-700" />
-                    <span className="text-sm font-serif-kr">1. 신도 기본 신상 및 사주 만세력</span>
-                  </div>
-                  <span className="text-[11px] text-[#8C8071]">교적번호 #{selectedMemberDetail.code}</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div>
-                    <label className="text-[11px] font-bold text-[#554E45] block mb-1">성함 (본명) *</label>
-                    <input
-                      type="text"
-                      value={memberEditForm.name}
-                      onChange={(e) => setMemberEditForm({ ...memberEditForm, name: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] font-bold text-[#1B1815] focus:outline-none focus:border-[#C59B27]"
-                      placeholder="홍길동"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-[11px] font-bold text-[#554E45] block mb-1">법명 (불명)</label>
-                    <input
-                      type="text"
-                      value={memberEditForm.dharma_name}
-                      onChange={(e) => setMemberEditForm({ ...memberEditForm, dharma_name: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-[#8A6510] font-bold focus:outline-none focus:border-[#C59B27]"
-                      placeholder="예: 보현심, 원력행"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-[11px] font-bold text-[#554E45] block mb-1">성별 구분</label>
-                    <div className="grid grid-cols-2 gap-1.5">
-                      {['여', '남'].map((g) => (
-                        <button
-                          key={g}
-                          type="button"
-                          onClick={() => setMemberEditForm({ ...memberEditForm, gender: g })}
-                          className={`py-2 rounded-xl font-bold transition text-center ${
-                            (memberEditForm.gender || '여') === g
-                              ? 'bg-[#1B1815] text-[#F5D061] border border-[#1B1815]'
-                              : 'bg-[#FAF8F5] text-[#7A6E5E] border border-[#DDD4C4] hover:bg-white'
-                          }`}
-                        >
-                          {g === '여' ? '여성 (보살)' : '남성 (거사)'}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* 생년 & 사주 만세력 자동 계산 배지 */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-                  <div>
-                    <label className="text-[11px] font-bold text-[#554E45] block mb-1">생년 (4자리)</label>
-                    <input
-                      type="text"
-                      value={memberEditForm.birth_year || ''}
-                      onChange={(e) => setMemberEditForm({ ...memberEditForm, birth_year: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] font-mono font-bold focus:outline-none focus:border-[#C59B27]"
-                      placeholder="예: 1968"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-[11px] font-bold text-[#554E45] block mb-1">음력 / 양력 구분</label>
-                    <select
-                      value={memberEditForm.lunar_solar || '음력'}
-                      onChange={(e) => setMemberEditForm({ ...memberEditForm, lunar_solar: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] font-semibold text-[#8A6510]"
-                    >
-                      <option value="음력">음력 (사찰 전통)</option>
-                      <option value="양력">양력</option>
-                      <option value="윤달">윤달 (음력)</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="text-[11px] font-bold text-[#554E45] block mb-1">사주 간지 및 띠 (자동 계산)</label>
-                    <div className="px-3 py-2 rounded-xl bg-[#FAF3DF] border border-[#E8D4A2] flex items-center justify-center min-h-[38px]">
-                      {computeZodiacAndGanji(memberEditForm.birth_year).ganji ? (
-                        <span className="font-serif-kr font-bold text-xs text-[#7A5B0B]">
-                          {computeZodiacAndGanji(memberEditForm.birth_year).ganji} ({computeZodiacAndGanji(memberEditForm.birth_year).animal}띠)
-                        </span>
-                      ) : (
-                        <span className="text-[11px] text-[#A69B8D]">생년 입력 시 자동 산출</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                  <div>
-                    <label className="text-[11px] font-bold text-[#554E45] block mb-1">휴대폰 번호 *</label>
-                    <input
-                      type="tel"
-                      value={memberEditForm.phone}
-                      onChange={(e) => setMemberEditForm({ ...memberEditForm, phone: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] font-mono text-xs focus:outline-none focus:border-[#C59B27]"
-                      placeholder="010-0000-0000"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-[11px] font-bold text-[#554E45] block mb-1">일반 / 자택 전화 (선택)</label>
-                    <input
-                      type="tel"
-                      value={memberEditForm.tel || ''}
-                      onChange={(e) => setMemberEditForm({ ...memberEditForm, tel: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] font-mono text-xs focus:outline-none focus:border-[#C59B27]"
-                      placeholder="064-000-0000"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-[11px] font-bold text-[#554E45] block mb-1">거주지 주소 (도로명 및 동/호수)</label>
-                  <input
-                    type="text"
-                    value={memberEditForm.address}
-                    onChange={(e) => setMemberEditForm({ ...memberEditForm, address: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs focus:outline-none focus:border-[#C59B27]"
-                    placeholder="제주특별자치도 제주시 애월읍 애월로 12, 101동"
-                  />
-                </div>
-              </div>
-
-              {/* 2. 사찰 소속 행정 & 계정 관리 */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-white border border-[#E6DEC8] shadow-sm space-y-3">
-                <div className="text-xs font-bold text-[#8A6510] flex items-center justify-between border-b border-[#F0EAE1] pb-2">
-                  <div className="flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4 text-amber-700" />
-                    <span className="text-sm font-serif-kr">2. 사찰 소속 행정 & 계정 관리</span>
-                  </div>
-                  <span className="text-[11px] text-[#8C8071]">소원사 도량 귀속</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div>
-                    <label className="text-[11px] font-bold text-[#554E45] block mb-1">신도 구분 (등급)</label>
-                    <select
-                      value={memberEditForm.role || 'believer'}
-                      onChange={(e) => setMemberEditForm({ ...memberEditForm, role: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] font-semibold text-xs"
-                    >
-                      <option value="believer">일반신도</option>
-                      <option value="committee_member">포교위원 (30%)</option>
-                      <option value="agent">포교위원장 (40%)</option>
-                      <option value="temple_admin">사찰 본부임원</option>
-                      <option value="master">총괄대표 (마스터)</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="text-[11px] font-bold text-[#554E45] block mb-1">신도 귀속처 (추천인)</label>
-                    <select
-                      value={memberEditForm.parent_code || '55570267'}
-                      onChange={(e) => setMemberEditForm({ ...memberEditForm, parent_code: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] font-semibold text-[#8A6510] text-xs"
-                    >
-                      <option value="55570267">🏛️ 1. 본사 귀속: 양영문 창건주 회장 (사찰본부)</option>
-                      <option value="33065540">👑 2. 귀속: 김철수 총괄대표 (전국포교본부)</option>
-                      {agents
-                        .filter((a) => a.code !== '55570267' && a.code !== '33065540')
-                        .map((a) => (
-                          <option key={a.code} value={a.code}>
-                            귀속: {a.name} ({a.role === 'agent' ? '위원장' : '위원'})
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="text-[11px] font-bold text-[#554E45] block mb-1">모바일 법당 접속 PIN (4자리)</label>
-                    <input
-                      type="text"
-                      maxLength={4}
-                      value={memberEditForm.password_pin || '0000'}
-                      onChange={(e) => setMemberEditForm({ ...memberEditForm, password_pin: e.target.value.replace(/[^0-9]/g, '') })}
-                      className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] font-mono text-xs font-bold text-center tracking-widest focus:outline-none focus:border-[#C59B27]"
-                      placeholder="0000"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* 3. 가족 사주 명패 명단 (세주 · 배우자 · 자녀) */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-white border border-[#E6DEC8] shadow-sm space-y-3">
-                <div className="flex items-center justify-between border-b border-[#F0EAE1] pb-2">
-                  <div className="text-xs font-bold text-[#8A6510] flex items-center gap-1.5 flex-wrap">
-                    <Flame className="w-4 h-4 text-amber-700" />
-                    <span className="text-sm font-serif-kr">3. 가족 사주 명단 (세주 · 배우자 · 자녀)</span>
-                    <span className="text-[11px] font-normal text-[#8C8071]">
-                      *축원 시 세주(가장)부터 자동 낭독됩니다
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const next = [
-                        ...(memberEditForm.family_members || []),
-                        {
-                          id: `fm-${Date.now()}`,
-                          relation: '자녀',
-                          name: '',
-                          dharma_name: '',
-                          birth_year: '',
-                          lunar_solar: '음력',
-                          wish: '',
-                        },
-                      ]
-                      setMemberEditForm({ ...memberEditForm, family_members: next })
-                    }}
-                    className="px-3 py-1.5 rounded-xl bg-[#231F1C] text-[#F5D061] text-xs font-bold hover:bg-[#302A25] transition shadow-sm flex items-center gap-1 shrink-0"
-                  >
-                    <Plus className="w-3.5 h-3.5" />
-                    <span>+ 가족 추가</span>
-                  </button>
-                </div>
-
-                <div className="space-y-2.5">
-                  {(memberEditForm.family_members || []).length === 0 ? (
-                    <div className="p-6 text-center text-xs text-[#8C8071] bg-[#FAF8F5] rounded-xl border border-dashed border-[#DDD4C4]">
-                      등록된 가족 구성원이 없습니다. 위의 [+ 가족 추가] 버튼을 눌러 세주(가장), 배우자, 자녀를 등록하세요.
-                    </div>
-                  ) : (
-                    (memberEditForm.family_members || []).map((f, idx) => {
-                      const { ganji, animal } = computeZodiacAndGanji(f.birth_year || f.birth_date)
-                      return (
-                        <div
-                          key={f.id || idx}
-                          className="p-3 rounded-2xl bg-[#FAF8F5] border border-[#DDD4C4] hover:border-[#C59B27] transition space-y-2"
-                        >
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <select
-                              value={f.relation}
-                              onChange={(e) => {
-                                const next = memberEditForm.family_members.map((item, i) =>
-                                  i === idx ? { ...item, relation: e.target.value } : item
-                                )
-                                setMemberEditForm({ ...memberEditForm, family_members: next })
-                              }}
-                              className="px-2.5 py-1.5 rounded-lg bg-white border border-[#DDD4C4] text-xs font-bold text-[#8A6510]"
-                            >
-                              <option value="세주(가장)">세주(가장)</option>
-                              <option value="배우자">배우자</option>
-                              <option value="장남">장남</option>
-                              <option value="차남">차남</option>
-                              <option value="삼남">삼남</option>
-                              <option value="장녀">장녀</option>
-                              <option value="차녀">차녀</option>
-                              <option value="삼녀">삼녀</option>
-                              <option value="자녀">자녀</option>
-                              <option value="자부">자부</option>
-                              <option value="사위">사위</option>
-                              <option value="손자">손자</option>
-                              <option value="손녀">손녀</option>
-                              <option value="부모">부모</option>
-                              <option value="기타가족">기타가족</option>
-                            </select>
-
-                            <input
-                              type="text"
-                              value={f.name}
-                              onChange={(e) => {
-                                const next = memberEditForm.family_members.map((item, i) =>
-                                  i === idx ? { ...item, name: e.target.value } : item
-                                )
-                                setMemberEditForm({ ...memberEditForm, family_members: next })
-                              }}
-                              placeholder="성함"
-                              className="w-24 px-2.5 py-1.5 rounded-lg bg-white border border-[#DDD4C4] text-xs font-bold"
-                            />
-
-                            <input
-                              type="text"
-                              value={f.dharma_name || ''}
-                              onChange={(e) => {
-                                const next = memberEditForm.family_members.map((item, i) =>
-                                  i === idx ? { ...item, dharma_name: e.target.value } : item
-                                )
-                                setMemberEditForm({ ...memberEditForm, family_members: next })
-                              }}
-                              placeholder="법명(선택)"
-                              className="w-24 px-2.5 py-1.5 rounded-lg bg-white border border-[#DDD4C4] text-xs font-medium text-[#8A6510]"
-                            />
-
-                            <input
-                              type="text"
-                              value={f.birth_year || ''}
-                              onChange={(e) => {
-                                const y = e.target.value
-                                const comp = computeZodiacAndGanji(y)
-                                const next = memberEditForm.family_members.map((item, i) =>
-                                  i === idx
-                                    ? { ...item, birth_year: y, birth_date: `${y}-01-01`, ganji: comp.ganji, animal: comp.animal }
-                                    : item
-                                )
-                                setMemberEditForm({ ...memberEditForm, family_members: next })
-                              }}
-                              placeholder="생년(1984)"
-                              className="w-24 px-2.5 py-1.5 rounded-lg bg-white border border-[#DDD4C4] text-xs font-mono font-bold"
-                            />
-
-                            <select
-                              value={f.lunar_solar || '음력'}
-                              onChange={(e) => {
-                                const next = memberEditForm.family_members.map((item, i) =>
-                                  i === idx ? { ...item, lunar_solar: e.target.value } : item
-                                )
-                                setMemberEditForm({ ...memberEditForm, family_members: next })
-                              }}
-                              className="px-2 py-1.5 rounded-lg bg-white border border-[#DDD4C4] text-xs"
-                            >
-                              <option value="음력">음력</option>
-                              <option value="양력">양력</option>
-                              <option value="윤달">윤달</option>
-                            </select>
-
-                            <div className="min-w-[130px] flex items-center">
-                              {ganji ? (
-                                <span className="px-2.5 py-1 rounded-lg bg-[#FAF3DF] text-[#7A5B0B] border border-[#E8D4A2] font-bold text-[11px] font-serif-kr">
-                                  {ganji} ({animal}띠)
-                                </span>
-                              ) : (
-                                <span className="text-[10px] text-[#A69B8D]">생년 입력 시 간지 산출</span>
-                              )}
-                            </div>
-
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const next = memberEditForm.family_members.filter((_, i) => i !== idx)
-                                setMemberEditForm({ ...memberEditForm, family_members: next })
-                              }}
-                              className="p-1.5 rounded-lg text-red-500 hover:bg-red-50 ml-auto"
-                              title="가족 삭제"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            <span className="text-[11px] text-[#777777] shrink-0">개인 발원:</span>
-                            <input
-                              type="text"
-                              value={f.wish || ''}
-                              onChange={(e) => {
-                                const next = memberEditForm.family_members.map((item, i) =>
-                                  i === idx ? { ...item, wish: e.target.value } : item
-                                )
-                                setMemberEditForm({ ...memberEditForm, family_members: next })
-                              }}
-                              placeholder="예: 2027년 수능 대박, 사업 번창, 무병장수 발원"
-                              className="flex-1 px-2.5 py-1 rounded-lg bg-white border border-[#DDD4C4] text-xs text-[#555555]"
-                            />
-                          </div>
-                        </div>
-                      )
-                    })
-                  )}
-                </div>
-              </div>
-
-              {/* 4. 종무소 관리자 특이사항 & 상담 메모 */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-white border border-[#E6DEC8] shadow-sm space-y-2">
-                <div className="text-xs font-bold text-[#8A6510] flex items-center gap-1.5 border-b border-[#F0EAE1] pb-2">
-                  <BookOpen className="w-4 h-4 text-amber-700" />
-                  <span className="text-sm font-serif-kr">4. 종무소 관리자 특이사항 & 상담 메모 (사찰 내부용)</span>
-                </div>
-                <textarea
-                  rows={3}
-                  value={memberEditForm.admin_notes || memberEditForm.family_memo || ''}
-                  onChange={(e) =>
-                    setMemberEditForm({
-                      ...memberEditForm,
-                      admin_notes: e.target.value,
-                      family_memo: e.target.value,
-                    })
-                  }
-                  placeholder="예: 매월 초하루 정기법회 참석. 공양미 불사 1가마 동참. 차량번호: 12가 3456. 특별 상담 내용 등을 기록하세요."
-                  className="w-full p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-xs text-[#1B1815] focus:outline-none focus:border-[#C59B27]"
-                />
-              </div>
-
-              {/* 하단 저장 버튼 */}
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={handleSaveMemberEdit}
-                  className="w-full py-3.5 rounded-2xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-sm shadow-md hover:shadow-lg transition flex items-center justify-center gap-2"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>수정사항 소원사 DB에 즉시 저장하기</span>
-                </button>
-              </div>
-            </div>
-          ) : (
-            /* ==================== [열람 모드 (상세 대장)] ==================== */
-            <div className="space-y-4 text-xs">
-              {/* 대형 프로필 카드 */}
-              <div className="p-5 rounded-2xl bg-white border border-[#E6DEC8] shadow-sm space-y-3">
-                <div className="flex items-center justify-between gap-3 flex-wrap">
-                  <div className="flex items-center gap-2.5 flex-wrap">
-                    <span className="font-serif-kr text-xl sm:text-2xl font-black text-[#1B1815]">
-                      {selectedMemberDetail.name}
-                      {selectedMemberDetail.dharma_name && (
-                        <span className="text-[#8A6510] ml-1.5 font-bold">({selectedMemberDetail.dharma_name})</span>
-                      )}
-                    </span>
-                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#FAF3DF] text-[#7A5B0B] border border-[#E8D4A2]">
-                      {(selectedMemberDetail.gender || selectedMemberDetail.extra_data?.gender) === '남' ? '남성 (거사님)' : '여성 (보살님)'}
-                    </span>
-                    {curGanji && (
-                      <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200 font-serif-kr">
-                        {selectedMemberDetail.birth_year || (selectedMemberDetail.birth_date ? selectedMemberDetail.birth_date.slice(0, 4) : '')}년 {selectedMemberDetail.lunar_solar || '음력'} ({curGanji} {curAnimal}띠)
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-xs px-3 py-1 rounded-full bg-[#1B1815] text-[#F5D061] font-bold">
-                      {selectedMemberDetail.role === 'master'
-                        ? '총괄 마스터'
-                        : selectedMemberDetail.role === 'temple_admin'
-                        ? '사찰 본부임원'
-                        : selectedMemberDetail.role === 'agent'
-                        ? '포교위원장 (40%)'
-                        : selectedMemberDetail.role === 'committee_member'
-                        ? '포교위원 (30%)'
-                        : '일반신도'}
-                    </span>
-                    <span className="text-xs px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 font-bold">
-                      공덕 {selectedMemberDetail.merit_count || 0}회
-                    </span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-3 border-t border-[#F0EAE1]">
-                  <div>
-                    <span className="text-[10.5px] text-[#8C8071] block">휴대폰 번호</span>
-                    <strong className="text-sm font-mono text-[#1B1815]">{selectedMemberDetail.phone}</strong>
-                  </div>
-                  <div>
-                    <span className="text-[10.5px] text-[#8C8071] block">일반(자택) 전화</span>
-                    <strong className="text-sm font-mono text-[#1B1815]">{selectedMemberDetail.tel || selectedMemberDetail.extra_data?.tel || '-'}</strong>
-                  </div>
-                  <div>
-                    <span className="text-[10.5px] text-[#8C8071] block">소속 귀속처</span>
-                    <strong className="text-xs text-[#8A6510]">
-                      {selectedMemberDetail.parent_code === '55570267'
-                        ? '🏛️ 본사 (양영문 창건주 회장)'
-                        : selectedMemberDetail.parent_code === '33065540'
-                        ? '👑 포교본부 (김철수 총괄대표)'
-                        : agents.find((a) => a.code === selectedMemberDetail.parent_code)?.name
-                        ? `귀속: ${agents.find((a) => a.code === selectedMemberDetail.parent_code)?.name}`
-                        : '소원사 본부'}
-                    </strong>
-                  </div>
-                  <div>
-                    <span className="text-[10.5px] text-[#8C8071] block">모바일 법당 PIN</span>
-                    <strong className="text-xs font-mono text-[#1B1815] bg-[#FAF8F5] px-2 py-0.5 rounded border border-[#DDD4C4]">
-                      {selectedMemberDetail.password_pin || '0000'}
-                    </strong>
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-[#F0EAE1]">
-                  <span className="text-[10.5px] text-[#8C8071] block">거주지 주소</span>
-                  <p className="text-xs text-[#1B1815] font-semibold mt-0.5">
-                    {selectedMemberDetail.address || '제주특별자치도'}
-                  </p>
-                </div>
-              </div>
-
-              {/* 가족 사주 명패 명단 표 */}
-              <div className="p-5 rounded-2xl bg-white border border-[#E6DEC8] shadow-sm space-y-3">
-                <div className="flex items-center justify-between border-b border-[#F0EAE1] pb-2">
-                  <div className="text-xs font-bold text-[#8A6510] flex items-center gap-1.5">
-                    <Users className="w-4 h-4 text-amber-700" />
-                    <span className="text-sm font-serif-kr">가족 사주 명패 명단 (세주 · 배우자 · 자녀)</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={openEditForm}
-                    className="text-[11px] font-bold text-[#8A6510] hover:underline"
-                  >
-                    + 가족 사주 추가/수정
-                  </button>
-                </div>
-
-                {selectedMemberDetail.family_members && selectedMemberDetail.family_members.length > 0 ? (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse border border-[#DDD3C1] text-xs">
-                      <thead>
-                        <tr className="bg-[#F5EFE6] text-[#231F1C] text-center font-bold">
-                          <th className="p-2 border border-[#DDD3C1] w-24">관계</th>
-                          <th className="p-2 border border-[#DDD3C1] w-28">성함 (법명)</th>
-                          <th className="p-2 border border-[#DDD3C1] w-28">생년(음/양)</th>
-                          <th className="p-2 border border-[#DDD3C1] w-36">사주 간지 및 띠</th>
-                          <th className="p-2 border border-[#DDD3C1]">개인별 발원 내용</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {selectedMemberDetail.family_members.map((f, idx) => {
-                          const famComp = computeZodiacAndGanji(f.birth_year || f.birth_date)
-                          return (
-                            <tr key={idx} className="hover:bg-[#FAF8F5]">
-                              <td className="p-2 border border-[#DDD3C1] text-center font-bold text-[#8A6510]">
-                                {f.relation}
-                              </td>
-                              <td className="p-2 border border-[#DDD3C1] font-bold text-[#1B1815]">
-                                {f.name} {f.dharma_name ? `(${f.dharma_name})` : ''}
-                              </td>
-                              <td className="p-2 border border-[#DDD3C1] text-center text-[#555555]">
-                                {f.birth_year || (f.birth_date ? f.birth_date.slice(0, 4) : '-')}년 ({f.lunar_solar || '음력'})
-                              </td>
-                              <td className="p-2 border border-[#DDD3C1] font-serif-kr">
-                                <span className="px-2 py-0.5 rounded bg-[#FAF3DF] text-[#7A5B0B] border border-[#E8D4A2] font-bold text-[11px]">
-                                  {f.ganji || famComp.ganji} ({f.animal || famComp.animal}띠)
-                                </span>
-                              </td>
-                              <td className="p-2 border border-[#DDD3C1] text-[#666666]">
-                                {f.wish || '-'}
-                              </td>
-                            </tr>
-                          )
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <div className="p-5 text-center text-xs text-[#8C8071] bg-[#FAF8F5] rounded-xl border border-dashed border-[#DDD4C4]">
-                    등록된 가족 사주 정보가 없습니다. 상단의 [정보 수정]을 눌러 가족 사주를 등록하세요.
-                  </div>
-                )}
-              </div>
-
-              {/* 종무소 관리자 특이사항 메모 박스 */}
-              {(selectedMemberDetail.admin_notes || selectedMemberDetail.family_memo || selectedMemberDetail.extra_data?.admin_notes) && (
-                <div className="p-4 rounded-2xl bg-white border border-[#E6DEC8] shadow-sm space-y-1.5">
-                  <div className="text-[11px] font-bold text-[#8A6510] flex items-center gap-1.5">
-                    <BookOpen className="w-3.5 h-3.5" />
-                    <span>종무소 관리자 특이사항 & 상담 메모</span>
-                  </div>
-                  <p className="text-xs text-[#333333] leading-relaxed bg-[#FAF8F5] p-3 rounded-xl border border-[#EAE2D3] whitespace-pre-wrap">
-                    {selectedMemberDetail.admin_notes || selectedMemberDetail.extra_data?.admin_notes || selectedMemberDetail.family_memo}
-                  </p>
-                </div>
-              )}
-
-              {/* 🪷 다년간 신행 공덕 & 소원등·사찰불사 동참 누적 종합 대장 */}
-              <div className="p-4 rounded-2xl bg-[#FCFAF6] border-2 border-[#D4AF37]/50 shadow-sm space-y-3.5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-base">🪷</span>
-                    <span className="font-serif-kr font-bold text-sm text-[#1B1815]">
-                      신행 공덕 및 소원등·불사 누적 원장
-                    </span>
-                  </div>
-                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#EAE2D3] text-[#5C5349]">
-                    영구 보존 원장
-                  </span>
-                </div>
-
-                {/* 4대 종합 지표 카드 */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
-                  <div className="p-2.5 rounded-xl bg-white border border-[#E6DEC8] shadow-xs">
-                    <div className="text-[10px] text-[#7A6B58] font-medium">누적 소원등 봉안</div>
-                    <div className="text-sm font-black text-[#8A6510] mt-0.5">{memberHistoryPrayers.length}건</div>
-                  </div>
-                  <div className="p-2.5 rounded-xl bg-white border border-[#E6DEC8] shadow-xs">
-                    <div className="text-[10px] text-[#7A6B58] font-medium">누적 불사·위패 동참</div>
-                    <div className="text-sm font-black text-[#8A6510] mt-0.5">{memberHistorySettlements.length}건</div>
-                  </div>
-                  <div className="p-2.5 rounded-xl bg-white border border-[#E6DEC8] shadow-xs">
-                    <div className="text-[10px] text-[#7A6B58] font-medium">총 불사 보시액</div>
-                    <div className="text-sm font-black text-[#D32F2F] mt-0.5">{totalDonationAmount.toLocaleString()}원</div>
-                  </div>
-                  <div className="p-2.5 rounded-xl bg-white border border-[#E6DEC8] shadow-xs">
-                    <div className="text-[10px] text-[#7A6B58] font-medium">현재 점등 상태</div>
-                    <div className="text-xs font-bold text-[#1B1815] mt-1 truncate" title={lanternInfo.label}>{lanternInfo.label}</div>
-                  </div>
-                </div>
-
-                {/* 1. 역대 소원등 및 축원 기도 봉안 이력 표 */}
-                <div className="space-y-1.5">
-                  <div className="text-[11.5px] font-bold text-[#3B332B] flex items-center justify-between">
-                    <span>📜 역대 소원등·기도 봉안 이력 ({memberHistoryPrayers.length}건)</span>
-                    <span className="text-[10px] text-[#8C7A6B]">과거~현재 전체</span>
-                  </div>
-                  {memberHistoryPrayers.length === 0 ? (
-                    <div className="p-3 rounded-xl bg-white border border-[#EAE2D3] text-center text-xs text-[#8C7A6B]">
-                      등록된 소원등 봉안 내역이 없습니다.
-                    </div>
-                  ) : (
-                    <div className="max-h-48 overflow-y-auto rounded-xl border border-[#E6DEC8] bg-white">
-                      <table className="w-full text-left text-[11px]">
-                        <thead className="bg-[#F5EEDB] text-[#5C4D3C] text-[10px] sticky top-0 font-bold border-b border-[#E6DEC8]">
-                          <tr>
-                            <th className="p-1.5 text-center whitespace-nowrap">접수일</th>
-                            <th className="p-1.5 whitespace-nowrap">소원 분류</th>
-                            <th className="p-1.5">발원문 / 축원 내용</th>
-                            <th className="p-1.5 text-center whitespace-nowrap">기간</th>
-                            <th className="p-1.5 text-center whitespace-nowrap">상태</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[#EFE7D8]">
-                          {memberHistoryPrayers.map((p, idx) => (
-                            <tr key={p.id || idx} className="hover:bg-[#FAF8F5]">
-                              <td className="p-1.5 text-center whitespace-nowrap font-mono text-[10px] text-[#666]">
-                                {(p.created_at || '').slice(0, 10)}
-                              </td>
-                              <td className="p-1.5 whitespace-nowrap font-bold text-[#8A6510]">
-                                {p.wish_category || p.prayer_type || '인등기도'}
-                              </td>
-                              <td className="p-1.5 text-[#2B231D] max-w-[160px] truncate" title={p.wish_text || p.content}>
-                                {p.wish_text || p.content || '-'}
-                              </td>
-                              <td className="p-1.5 text-center whitespace-nowrap text-[#666]">
-                                {p.duration_days ? `${p.duration_days}일` : (p.period || '1년')}
-                              </td>
-                              <td className="p-1.5 text-center whitespace-nowrap">
-                                <span className={`px-1.5 py-0.5 rounded text-[9.5px] font-bold ${
-                                  p.status === 'completed' || p.status === 'active' || p.is_approved
-                                    ? 'bg-amber-100 text-amber-800'
-                                    : 'bg-stone-100 text-stone-600'
-                                }`}>
-                                  {p.status === 'completed' ? '봉안완료' : p.status === 'active' || p.is_approved ? '봉안중' : '접수'}
-                                </span>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </div>
-
-                {/* 2. 역대 사찰 불사 및 위패 봉안 동참 이력 표 */}
-                <div className="space-y-1.5 pt-1">
-                  <div className="text-[11.5px] font-bold text-[#3B332B] flex items-center justify-between">
-                    <span>🏛️ 사찰 불사·위패·특별기도 동참 이력 ({memberHistorySettlements.length}건)</span>
-                    <span className="text-[10px] text-[#8C7A6B]">누적 {totalDonationAmount.toLocaleString()}원</span>
-                  </div>
-                  {memberHistorySettlements.length === 0 ? (
-                    <div className="p-3 rounded-xl bg-white border border-[#EAE2D3] text-center text-xs text-[#8C7A6B]">
-                      등록된 사찰 불사 동참 내역이 없습니다.
-                    </div>
-                  ) : (
-                    <div className="max-h-48 overflow-y-auto rounded-xl border border-[#E6DEC8] bg-white">
-                      <table className="w-full text-left text-[11px]">
-                        <thead className="bg-[#F5EEDB] text-[#5C4D3C] text-[10px] sticky top-0 font-bold border-b border-[#E6DEC8]">
-                          <tr>
-                            <th className="p-1.5 text-center whitespace-nowrap">동참일자</th>
-                            <th className="p-1.5 whitespace-nowrap">불사 / 동참 항목</th>
-                            <th className="p-1.5 text-right whitespace-nowrap">보시 금액</th>
-                            <th className="p-1.5 text-center whitespace-nowrap">상태</th>
-                            <th className="p-1.5">비고</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[#EFE7D8]">
-                          {memberHistorySettlements.map((s, idx) => (
-                            <tr key={s.id || idx} className="hover:bg-[#FAF8F5]">
-                              <td className="p-1.5 text-center whitespace-nowrap font-mono text-[10px] text-[#666]">
-                                {(s.created_at || '').slice(0, 10)}
-                              </td>
-                              <td className="p-1.5 whitespace-nowrap font-bold text-[#1B1815]">
-                                {s.item_name || s.title || '사찰 특별불사'}
-                              </td>
-                              <td className="p-1.5 text-right whitespace-nowrap font-mono font-bold text-[#D32F2F]">
-                                {Number(s.total_amount || 0).toLocaleString()}원
-                              </td>
-                              <td className="p-1.5 text-center whitespace-nowrap">
-                                <span className="px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-emerald-100 text-emerald-800">
-                                  {s.payment_status === 'paid' || !s.payment_status ? '완납·동참' : s.payment_status}
-                                </span>
-                              </td>
-                              <td className="p-1.5 text-[#666] max-w-[140px] truncate" title={s.notes || s.memo}>
-                                {s.notes || s.memo || '-'}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSettlementTargetMember(selectedMemberDetail)
-                    setShowSettlementModal(true)
-                  }}
-                  className="w-full py-2.5 rounded-xl bg-[#FAF8F5] border border-[#C59B27] text-[#8A6510] font-bold text-xs hover:bg-[#F5EEDB] transition flex items-center justify-center gap-1.5"
-                >
-                  <PlusCircle className="w-3.5 h-3.5 text-[#8A6510]" />
-                  <span>➕ 이 신도님의 사찰 불사·위패 동참 접수하기</span>
-                </button>
-
-                {/* 3. 개인 신도 교적대장 종합 A4 원터치 인쇄 버튼 */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIndividualRecordTargetMember(selectedMemberDetail)
-                    setShowIndividualRecordPrintModal(true)
-                  }}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2E2822] to-[#1B1815] border border-[#D4AF37] text-[#F5D061] font-bold text-xs shadow hover:brightness-110 active:scale-98 transition flex items-center justify-center gap-2"
-                >
-                  <FileText className="w-4 h-4 text-[#D4AF37]" />
-                  <span>📜 개인 신도 교적대장(신적부) 종합 A4 원터치 인쇄하기</span>
-                </button>
-              </div>
-
-              {/* 원터치 A4 인쇄 & 통화/문자 액션 버튼바 */}
-              <div className="space-y-2 pt-1">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIndeungTargetMember(selectedMemberDetail)
-                    setShowIndeungNameplateModal(true)
-                  }}
-                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#C59B27] via-[#D4AF37] to-[#8A6510] text-[#1B1815] font-black text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-2"
-                >
-                  <Printer className="w-4 h-4" />
-                  <span>대웅전 1년 가족 인등 전통 명패 A4 원터치 인쇄하기</span>
-                </button>
-
-                <div className="grid grid-cols-2 gap-2">
-                  <a
-                    href={`tel:${selectedMemberDetail.phone}`}
-                    className="py-2.5 rounded-xl bg-[#231F1C] text-[#F5D061] font-bold text-xs flex items-center justify-center gap-1.5 shadow hover:bg-[#302A25] transition"
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                    <span>전화 연결</span>
-                  </a>
-                  <a
-                    href={`sms:${selectedMemberDetail.phone}?body=${encodeURIComponent(
-                      `[제주 소원사] 안녕하세요, ${selectedMemberDetail.name} 불자님. 부처님의 가피가 늘 충만하시기를 발원합니다.`
-                    )}`}
-                    className="py-2.5 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs flex items-center justify-center gap-1.5 shadow hover:brightness-105 transition"
-                  >
-                    <MessageSquare className="w-3.5 h-3.5" />
-                    <span>안내 문자 발송</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    )  }
-
-  // ============================================================================
-  // 신도 교적부 기반 [사찰 불사 & 위패 봉안 정식 접수] 모달 렌더러
-  // ============================================================================
-  // 동참 종목별 표준 권장 보시금 산정 헬퍼
-  const getItemStandardPrice = (itemType) => {
-    if (!itemType) return 100000
-    if (itemType.includes('2기')) return 4000000
-    if (itemType.includes('황금빛') || itemType.includes('흑색') || itemType.includes('생전예수재') || itemType.includes('영구위패')) return 2000000
-    if (itemType.includes('단청') || itemType.includes('명패') || itemType.includes('기둥')) return 1000000
-    if (itemType.includes('1년 인등') || itemType.includes('100일') || itemType.includes('기와')) return 100000
-    if (itemType.includes('공양미')) return 50000
-    return 100000
-  }
-
-  // 정산관제 원장에서 미입금 건 원터치 완납 처리
-  // 정산 원장 착오 수정사항 저장
-  const handleSaveEditedSettlement = (e) => {
-    e?.preventDefault()
-    if (!editingSettlement) return
-    const s = editingSettlement
-    const stdAmt = Number(s.standard_amount || s.total_amount || 0)
-    const paidAmt = s.payment_status === 'refunded' || s.payment_status === 'pending' ? 0 : Number(s.paid_amount || 0)
-    const unpaidAmt = Math.max(0, stdAmt - paidAmt)
-
-    setSettlements((prev) =>
-      prev.map((item) => (item.id === s.id ? { ...s, standard_amount: stdAmt, total_amount: stdAmt, paid_amount: paidAmt, unpaid_amount: unpaidAmt } : item))
-    )
-
-    // 신도 상태 동기화 (환불 시 위패/점등 원복)
-    setMembers((prev) =>
-      prev.map((m) => {
-        if (m.code === s.member_code) {
-          const isRefunded = s.payment_status === 'refunded'
-          const isPending = s.payment_status === 'pending' || paidAmt === 0
-          const isWipae = (s.item_name || '').includes('위패')
-          const isIndeung = (s.item_name || '').includes('인등') || (s.item_name || '').includes('100일')
-
-          return {
-            ...m,
-            wipae_count: isRefunded || isPending
-              ? Math.max(0, (m.wipae_count || 0) - (isWipae ? ((s.item_name || '').includes('2기') ? 2 : 1) : 0))
-              : m.wipae_count,
-            extra_data: {
-              ...(m.extra_data || {}),
-              payment_amount: paidAmt,
-              payment_status: isRefunded ? 'refunded' : isPending ? 'pending' : 'settled',
-              ...(isIndeung && (isRefunded || isPending) ? { lantern_active: false, lantern_active_until: null } : {}),
-            },
-          }
-        }
-        return m
-      })
-    )
-
-    setEditingSettlement(null)
-    showToast('✓ 원장 수정사항이 정상 반영되었습니다.')
-  }
-
-  // 정산 원장 환불/접수취소 원터치 처리
-  const handleRefundSettlement = (settlementId) => {
-    const todayStr = new Date().toISOString().slice(0, 10)
-    let targetMemberCode = null
-    let targetItemName = ''
-
-    setSettlements((prev) =>
-      prev.map((s) => {
-        if (s.id === settlementId) {
-          targetMemberCode = s.member_code
-          targetItemName = s.item_name || ''
-          return {
-            ...s,
-            payment_status: 'refunded',
-            paid_amount: 0,
-            unpaid_amount: 0,
-            paid_date: todayStr,
-            memo: (s.memo ? s.memo + ' ' : '') + `[${todayStr} 환불완료/수당회수]`,
-          }
-        }
-        return s
-      })
-    )
-
-    if (targetMemberCode) {
-      const isWipae = targetItemName.includes('위패')
-      const isIndeung = targetItemName.includes('인등') || targetItemName.includes('100일')
-      setMembers((prev) =>
-        prev.map((m) => {
-          if (m.code === targetMemberCode) {
-            return {
-              ...m,
-              wipae_count: isWipae ? Math.max(0, (m.wipae_count || 0) - (targetItemName.includes('2기') ? 2 : 1)) : m.wipae_count,
-              extra_data: {
-                ...(m.extra_data || {}),
-                payment_amount: 0,
-                payment_status: 'refunded',
-                ...(isIndeung ? { lantern_active: false, lantern_active_until: null } : {}),
-              },
-            }
-          }
-          return m
-        })
-      )
-    }
-
-    setEditingSettlement(null)
-    showToast('💸 환불 및 접수 취소 처리가 완료되었습니다. (추천인 수당 전액 회수)')
-  }
-
-  // 착오 입력 원장 기록 완전 삭제
-  const handleDeleteSettlement = (settlementId) => {
-    setSettlements((prev) => prev.filter((s) => s.id !== settlementId))
-    setEditingSettlement(null)
-    showToast('🗑️ 착오 입력 장부 기록이 완전히 삭제되었습니다.')
-  }
-
-  const handleConfirmSettlementPayment = (settlementId) => {
-    const todayStr = new Date().toISOString().slice(0, 10)
-    const target = settlements.find((s) => s.id === settlementId)
-    if (target) {
-      const stdAmt = Number(target.standard_amount || target.total_amount || 0)
-      const believerName = target.believer_name || '신도'
-      const itemName = target.item_name || '불사 종목'
-      if (!window.confirm(`[${believerName}] 신도님의 [${itemName}]\n약정 잔액(${stdAmt.toLocaleString()}원) 완납 입금을 확인하고 실시간 정산을 집행하시겠습니까?`)) {
-        return
-      }
-    }
-    setSettlements((prev) =>
-      prev.map((s) => {
-        if (s.id === settlementId) {
-          const stdAmt = Number(s.standard_amount || s.total_amount || 0)
-          return {
-            ...s,
-            payment_status: 'confirmed',
-            paid_amount: stdAmt,
-            unpaid_amount: 0,
-            paid_date: todayStr,
-          }
-        }
-        return s
-      })
-    )
-    showToast('✓ 입금 완납 확인 및 소원사 조직표 정산 집행이 완료되었습니다!')
-  }
-
-  // 1. 접수 등록 버튼 클릭 시 중앙 확인 모달 팝업 오픈
-  const handleRegisterSettlementForMember = (e) => {
-    e?.preventDefault()
-    if (!settlementTargetMember) {
-      showToast('접수할 신도 정보가 없습니다.')
-      return
-    }
-
-    const m = settlementTargetMember
-    const agent1Code = m.parent_code || '33065540'
-    const agent1 = members.find((a) => a.code === agent1Code) || members.find((a) => a.code === '33065540')
-    const isKimCheolSoo = agent1?.code === '33065540' || agent1?.code === '55400267'
-    const isYangYoungMoon = agent1?.code === '55570267'
-    const agent2 = (!isKimCheolSoo && !isYangYoungMoon)
-      ? (members.find((a) => a.code === (agent1?.parent_code || '33065540')) || members.find((a) => a.code === '33065540'))
-      : null
-    const agent3 = null
-
-    const todayStr = new Date().toISOString().slice(0, 10)
-    const stdAmount = Number(settlementStandardAmount) || 0
-    const actualPaidAmount = settlementPaymentStatus === 'pending' ? 0 : Number(settlementPaidAmount) || 0
-    const unpaidAmt = Math.max(0, stdAmount - actualPaidAmount)
-
-    // 브라우저 최상단 window.confirm 대신 화면 정중앙 전용 모달 팝업 오픈!
-    setPendingSettlementConfirm({
-      m,
-      agent1,
-      agent2,
-      agent3,
-      stdAmount,
-      actualPaidAmount,
-      unpaidAmt,
-      todayStr,
-    })
-  }
-
-  // 2. 중앙 확인 모달에서 [최종 등록 확인] 클릭 시 실제 회계 및 불사 집행
-  const executeFinalSettlementRegistration = (data) => {
-    const { m, agent1, agent2, agent3, stdAmount, actualPaidAmount, unpaidAmt, todayStr } = data
-
-    const newRecord = {
-      id: 's-' + Date.now(),
-      temple_id: DEFAULT_TEMPLE_ID,
-      member_code: m.code,
-      believer_name: `${m.name}${m.dharma_name ? ` (${m.dharma_name})` : ''}`,
-      believer_phone: m.phone || '',
-      item_name: settlementItemType,
-      standard_amount: stdAmount,
-      total_amount: stdAmount, // 표준 약정금액
-      paid_amount: actualPaidAmount, // 실제 입금금액
-      unpaid_amount: unpaidAmt, // 미납 잔액
-      applied_date: settlementAppliedDate || todayStr, // 신청/접수일자
-      paid_date: settlementPaymentStatus !== 'pending' ? (settlementPaidDate || todayStr) : null, // 실제 입금일자
-      payment_method: settlementPaymentMethod,
-      payment_status: settlementPaymentStatus, // confirmed, partial, pending
-      agent_1st_code: agent1 ? agent1.code : null,
-      agent_1st_name: agent1
-        ? `${agent1.name}${agent1.dharma_name ? `(${agent1.dharma_name})` : ''} (${agent1.role === 'temple_admin' ? '신도회장' : agent1.role === 'master' ? '총괄위원장' : '포교위원장'})`
-        : '-',
-      agent_2nd_code: agent2 ? agent2.code : null,
-      agent_2nd_name: agent2
-        ? `${agent2.name}${agent2.dharma_name ? `(${agent2.dharma_name})` : ''} (${agent2.role === 'temple_admin' ? '신도회장' : '총괄위원장'})`
-        : '-',
-      agent_3rd_code: agent3 ? agent3.code : null,
-      agent_3rd_name: agent3
-        ? `${agent3.name}${agent3.dharma_name ? `(${agent3.dharma_name})` : ''} (신도회장)`
-        : '-',
-      memo: settlementMemo,
-      created_at: settlementAppliedDate || todayStr,
-    }
-
-    const isIndeung = settlementItemType.includes('인등')
-    const is100d = settlementItemType.includes('100일')
-    const lanternId = isIndeung ? 'indeung_1yr' : is100d ? 'prayer_100d' : null
-    const durDays = isIndeung ? 365 : is100d ? 100 : 7
-    const untilIso = new Date(Date.now() + durDays * 86400000).toISOString()
-    const isPaymentActive = settlementPaymentStatus !== 'pending' && actualPaidAmount > 0
-
-    // 인등 및 100일 기도: 완납 또는 일부 납부(분납) 시 즉시 대웅전 점등 및 사시예불 축원 명부에 자동 편성!
-    if ((isIndeung || is100d) && isPaymentActive) {
-      const newPrayer = {
-        id: 'p-' + Date.now(),
-        temple_id: DEFAULT_TEMPLE_ID,
-        member_code: m.code,
-        believer_name: `${m.name}${m.dharma_name ? ` (${m.dharma_name})` : ''}`,
-        believer_phone: m.phone || '',
-        agent_code: m.parent_code || '33065540',
-        wish_category: isIndeung ? '대웅전 1년 인등(가족등)' : '100일 소원성취 특별기도',
-        prayer_type: lanternId,
-        duration_days: durDays,
-        family_members_count: m.family_members?.length || 1,
-        wish_text: settlementMemo || '지극정성으로 가내 평안과 소원성취를 발원합니다.',
-        status: 'prayed',
-        prayed_at: '종무소 정식 접수 (사시예불 축원 연동)',
-        created_at: new Date().toISOString().replace('T', ' ').slice(0, 16),
-      }
-      setPrayers((prev) => [newPrayer, ...prev])
-    setLatestSubmittedPrayerId(newPrayer.id)
-    }
-
-    setSettlements((prev) => [newRecord, ...prev])
-    setMembers((prev) =>
-      prev.map((item) =>
-        item.code === m.code
-          ? {
-              ...item,
-              merit_count: (item.merit_count || 0) + 1,
-              // 위패 봉안 수량: 완납 또는 일부 납부(분납) 시 향후 완납을 전제로 불사·위패 공식 집행 및 카운트 반영!
-              wipae_count: (item.wipae_count || 0) + (
-                isPaymentActive && settlementItemType.includes('위패')
-                  ? (settlementItemType.includes('2기') ? 2 : 1)
-                  : 0
-              ),
-              extra_data: {
-                ...(item.extra_data || {}),
-                prayer_title: settlementItemType,
-                payment_amount: actualPaidAmount,
-                standard_amount: stdAmount,
-                unpaid_amount: unpaidAmt,
-                applied_date: settlementAppliedDate || todayStr,
-                paid_date: isPaymentActive ? (settlementPaidDate || todayStr) : null,
-                payment_status: settlementPaymentStatus === 'confirmed' ? 'settled' : settlementPaymentStatus === 'partial' ? 'partial' : 'pending',
-                ...(lanternId ? {
-                  lantern_type: lanternId,
-                  lantern_active: isPaymentActive,
-                  lantern_active_until: isPaymentActive ? untilIso : null,
-                  lantern_started_at: todayStr,
-                } : {})
-              }
-            }
-          : item
-      )
-    )
-
-    playSingingBowlSound()
-    setPendingSettlementConfirm(null)
-    setShowSettlementModal(false)
-    setSettlementTargetMember(null)
-    setSettlementMemo('')
-    showToast(`🪷 [${m.name}] 신도님의 [${settlementItemType}] 접수 및 회계 처리가 완결되었습니다!`)
-  }
-
-  // 卍 [정식 접수 최종 확인 전용 중앙 팝업 모달]
-  const renderSettlementConfirmModal = () => {
-    if (!pendingSettlementConfirm) return null
-    const data = pendingSettlementConfirm
-    const { m, stdAmount, actualPaidAmount, unpaidAmt, agent1 } = data
-
-    return createPortal(
-      <div
-        className="fixed inset-0 z-[70] bg-black/80 flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-150"
-        onClick={(e) => {
-          if (e.target === e.currentTarget) setPendingSettlementConfirm(null)
-        }}
-      >
-        <div className="w-full max-w-md bg-white text-[#1B1815] rounded-3xl shadow-2xl border-2 border-[#D4AF37] overflow-hidden my-auto animate-in zoom-in-95 duration-150">
-          {/* 헤더 */}
-          <div className="bg-[#1B1815] text-[#FAF8F5] p-4 sm:p-5 flex items-center justify-between border-b-2 border-[#D4AF37]">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] flex items-center justify-center font-bold text-base shadow shrink-0">
-                卍
-              </div>
-              <div>
-                <h3 className="font-serif-kr text-base font-bold text-[#F5D061]">
-                  불사 · 위패 정식 접수 최종 확인
-                </h3>
-                <p className="text-xs text-[#D6CEC2]">
-                  장부 등록 전 입력하신 정보를 최종 확인합니다.
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setPendingSettlementConfirm(null)}
-              className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          {/* 본문 요약 카드 */}
-          <div className="p-5 space-y-3.5 text-xs">
-            {/* 신도 정보 */}
-            <div className="p-3 rounded-2xl bg-[#FAF8F5] border border-[#EAE2D3] flex items-center justify-between">
-              <div>
-                <span className="text-[11px] text-[#8C8071] block">동참 신도</span>
-                <strong className="text-sm font-bold text-[#1B1815]">
-                  {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''}
-                </strong>
-                {m.phone && <span className="font-mono text-xs text-[#666] ml-2">({m.phone})</span>}
-              </div>
-              <div className="text-right">
-                <span className="text-[10px] text-[#8C8071] block">담당 추천인</span>
-                <strong className="text-xs font-bold text-[#8A6510]">
-                  {agent1 ? agent1.name : '소원사 본원'}
-                </strong>
-              </div>
-            </div>
-
-            {/* 종목 및 표준 약정금 */}
-            <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[#666] font-semibold">동참 종목</span>
-                <strong className="font-bold text-[#1B1815] text-right max-w-[220px] truncate">
-                  {settlementItemType}
-                </strong>
-              </div>
-              <div className="flex items-center justify-between pt-1.5 border-t border-[#EAE2D3]">
-                <span className="text-[#666] font-semibold">표준 약정액</span>
-                <strong className="font-mono font-bold text-sm text-[#1B1815]">
-                  {stdAmount.toLocaleString()}원
-                </strong>
-              </div>
-            </div>
-
-            {/* 수납 상태 및 실제 입금액 */}
-            <div className={`p-3.5 rounded-2xl border space-y-2 ${
-              settlementPaymentStatus === 'confirmed'
-                ? 'bg-emerald-50/70 border-emerald-300'
-                : settlementPaymentStatus === 'partial'
-                ? 'bg-amber-50/70 border-amber-300'
-                : 'bg-stone-50 border-stone-300'
-            }`}>
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-[#333]">납부 / 수납 상태</span>
-                <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border shadow-2xs ${
-                  settlementPaymentStatus === 'confirmed'
-                    ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
-                    : settlementPaymentStatus === 'partial'
-                    ? 'bg-amber-100 text-amber-900 border-amber-300'
-                    : 'bg-stone-200 text-stone-700 border-stone-300'
-                }`}>
-                  {settlementPaymentStatus === 'confirmed'
-                    ? '✓ 완납 (실시간 전액 정산)'
-                    : settlementPaymentStatus === 'partial'
-                    ? '△ 분납 (1차 수납)'
-                    : '⏳ 미입금 (입금 대기)'}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between pt-1.5 border-t border-[#EAE2D3]">
-                <span className="font-bold text-[#333]">실제 사찰 수납액</span>
-                <strong className={`font-mono font-bold text-base ${
-                  settlementPaymentStatus === 'confirmed'
-                    ? 'text-emerald-700'
-                    : settlementPaymentStatus === 'partial'
-                    ? 'text-amber-700'
-                    : 'text-stone-500'
-                }`}>
-                  {actualPaidAmount.toLocaleString()}원
-                </strong>
-              </div>
-
-              {unpaidAmt > 0 && settlementPaymentStatus !== 'pending' && (
-                <div className="flex items-center justify-between text-[11px] text-amber-800 font-bold pt-1">
-                  <span>향후 완납 잔액</span>
-                  <span>{unpaidAmt.toLocaleString()}원 미납</span>
-                </div>
-              )}
-            </div>
-
-            <p className="text-[11px] text-center text-[#7A6E5E] pt-1">
-              위 내용으로 정식 등록 및 회계 장부에 반영하시겠습니까?
-            </p>
-
-            {/* 하단 버튼 2개 */}
-            <div className="grid grid-cols-2 gap-2.5 pt-1">
-              <button
-                type="button"
-                onClick={() => setPendingSettlementConfirm(null)}
-                className="py-3 px-4 rounded-xl bg-stone-100 hover:bg-stone-200 text-[#444] font-bold text-xs transition cursor-pointer"
-              >
-                돌아가서 수정
-              </button>
-              <button
-                type="button"
-                onClick={() => executeFinalSettlementRegistration(data)}
-                className="py-3 px-4 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] font-bold text-xs shadow-md border border-[#C59B27] transition cursor-pointer flex items-center justify-center gap-1.5"
-              >
-                <Check className="w-4 h-4 text-[#F5D061]" />
-                <span>최종 등록 확인</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>,
-      document.body
-    )
-  }
-
-  // ⚙️ [착오 수정 및 환불/취소 처리 전용 모달 렌더러]
-  const renderSettlementEditModal = () => {
-    if (!editingSettlement) return null
-    const s = editingSettlement
-    const stdAmt = Number(s.standard_amount || s.total_amount || 0)
-    const paidAmt = Number(s.paid_amount !== undefined ? s.paid_amount : stdAmt)
-    const unpaidAmt = Math.max(0, stdAmt - paidAmt)
-
-    return createPortal(
-      <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-3 sm:p-4 overflow-y-auto" onClick={(e) => { if (e.target === e.currentTarget) setEditingSettlement(null); }}>
-        <div className="w-full max-w-xl bg-white text-[#1B1815] rounded-3xl shadow-2xl border-2 border-[#D5C59B] overflow-hidden my-auto animate-in fade-in duration-200">
-          {/* 헤더 */}
-          <div className="bg-[#1B1815] text-[#FAF8F5] p-4 sm:p-5 flex items-center justify-between border-b-2 border-[#D4AF37]">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] flex items-center justify-center font-bold text-base shadow shrink-0">
-                ⚙️
-              </div>
-              <div>
-                <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#F5D061]">
-                  접수 원장 착오 수정 및 환불/취소 처리
-                </h3>
-                <p className="text-xs text-[#D6CEC2]">
-                  동참 신도: {s.believer_name} · 등록번호: {s.id}
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setEditingSettlement(null)}
-              className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          <form onSubmit={handleSaveEditedSettlement} className="p-5 sm:p-6 space-y-4 text-xs">
-            {/* 1. 신도 기본 정보 확인 */}
-            <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE2D3] flex items-center justify-between">
-              <div>
-                <span className="text-[11px] text-[#8C8071] block">동참 신도 성함 / 연락처</span>
-                <strong className="text-sm font-bold text-[#1B1815]">
-                  {s.believer_name}
-                </strong>
-                {s.believer_phone && <span className="font-mono text-xs text-[#666] ml-2">({s.believer_phone})</span>}
-              </div>
-              <div className="text-right">
-                <span className="text-[10px] text-[#8C8071] block">유치 추천인 (1차)</span>
-                <strong className="text-xs font-bold text-[#8A6510]">{s.agent_1st_name || '소원사 본원'}</strong>
-              </div>
-            </div>
-
-            {/* 2. 동참 종목 & 약정액 & 접수일 수정 */}
-            <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-3">
-              <span className="font-bold text-[#8A6510] block pb-1 border-b border-[#EAE2D3]">
-                동참 종목 및 표준 약정 정보 수정
-              </span>
-
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
-                <div className="sm:col-span-6">
-                  <label className="block font-bold text-[#3D3630] mb-1">동참 종목</label>
-                  <select
-                    value={s.item_name || ''}
-                    onChange={(e) => {
-                      const val = e.target.value
-                      const stdPrice = getItemStandardPrice(val)
-                      setEditingSettlement((prev) => ({
-                        ...prev,
-                        item_name: val,
-                        standard_amount: stdPrice,
-                        total_amount: stdPrice,
-                        paid_amount: prev.payment_status === 'confirmed' ? stdPrice : prev.paid_amount,
-                      }))
-                    }}
-                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs font-semibold text-[#1B1815]"
-                  >
-                    <optgroup label="🪷 1. 대웅전 상시 기도 및 공덕 불사">
-                      <option value="대웅전 공양미 / 불전시주">① 대웅전 공양미 / 불전시주 (50,000원)</option>
-                      <option value="대웅전 1년 인등 (가족등)">② 대웅전 1년 인등 (가족등) (100,000원)</option>
-                      <option value="100일 소원성취 특별기도">③ 100일 소원성취 특별기도 (100,000원)</option>
-                      <option value="49재 / 천도재 / 기일제사">④ 49재 / 천도재 / 기일제사</option>
-                    </optgroup>
-                    <optgroup label="🏛️ 2. 영구 위패 봉안 불사">
-                      <option value="생전예수재 황금빛 위패 (살아계신 분)">① 생전예수재 황금빛 위패 (살아계신 분) (200만원)</option>
-                      <option value="조상 영가 품격 흑색 영구위패">② 조상 영가 품격 흑색 영구위패 (200만원)</option>
-                      <option value="조상 영가 부부 영구위패 2기">③ 조상 영가 부부 영구위패 2기 (400만원)</option>
-                    </optgroup>
-                    <optgroup label="🏔️ 3. 삼성각 성전 건립 대작불사">
-                      <option value="삼성각 건립 소원 기와 불사 (1장)">① 삼성각 건립 소원 기와 불사 (1장) (10만원)</option>
-                      <option value="삼성각 대들보 · 기둥 · 오색단청 불사">② 삼성각 대들보 · 기둥 · 오색단청 불사 (100만원)</option>
-                      <option value="삼성각 가족 영구축원 명패 · 주춧돌">③ 삼성각 가족 영구축원 명패 · 주춧돌 (100만원)</option>
-                      <option value="기타 특별기도 및 맞춤 불사 상담">④ 기타 특별기도 및 맞춤 불사 상담</option>
-                    </optgroup>
-                  </select>
-                </div>
-
-                <div className="sm:col-span-3">
-                  <label className="block font-bold text-[#3D3630] mb-1">표준 약정액 (원)</label>
-                  <input
-                    type="number"
-                    value={s.standard_amount || s.total_amount || 0}
-                    onChange={(e) => {
-                      const val = Number(e.target.value)
-                      setEditingSettlement((prev) => ({
-                        ...prev,
-                        standard_amount: val,
-                        total_amount: val,
-                        paid_amount: prev.payment_status === 'confirmed' ? val : prev.paid_amount,
-                      }))
-                    }}
-                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs font-mono font-bold"
-                  />
-                </div>
-
-                <div className="sm:col-span-3">
-                  <label className="block font-bold text-[#3D3630] mb-1">접수일자</label>
-                  <input
-                    type="date"
-                    value={(s.applied_date || s.created_at || '').slice(0, 10)}
-                    onChange={(e) => setEditingSettlement((prev) => ({ ...prev, applied_date: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs font-mono"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* 3. 실제 수납 / 환불 상태 수정 */}
-            <div className={`p-3.5 rounded-2xl border space-y-3 ${
-              s.payment_status === 'refunded'
-                ? 'bg-red-50/70 border-red-300'
-                : s.payment_status === 'confirmed'
-                ? 'bg-emerald-50/70 border-emerald-300'
-                : s.payment_status === 'partial'
-                ? 'bg-amber-50/70 border-amber-300'
-                : 'bg-stone-50 border-stone-300'
-            }`}>
-              <div className="flex items-center justify-between pb-1.5 border-b border-[#EAE2D3]">
-                <span className="font-bold flex items-center gap-1.5 text-[#1B1815]">
-                  <CreditCard className="w-4 h-4 text-emerald-700" />
-                  <span>실제 입금 수납 및 환불 상태 처리</span>
-                </span>
-                <span className={`text-[10.5px] font-bold px-2 py-0.5 rounded-full border ${
-                  s.payment_status === 'refunded'
-                    ? 'bg-red-100 text-red-900 border-red-300'
-                    : s.payment_status === 'confirmed'
-                    ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
-                    : s.payment_status === 'partial'
-                    ? 'bg-amber-100 text-amber-900 border-amber-300'
-                    : 'bg-stone-100 text-stone-700 border-stone-300'
-                }`}>
-                  {s.payment_status === 'refunded'
-                    ? '💸 환불·취소 (정산회수)'
-                    : s.payment_status === 'confirmed'
-                    ? '✓ 완납 (실시간 정산집행)'
-                    : s.payment_status === 'partial'
-                    ? '△ 일부입금 (분납)'
-                    : '⏳ 미입금 (입금대기)'}
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
-                <div className="sm:col-span-4">
-                  <label className="block font-bold text-[#3D3630] mb-1">납부 / 환불 상태 *</label>
-                  <select
-                    value={s.payment_status || 'confirmed'}
-                    onChange={(e) => {
-                      const newStatus = e.target.value
-                      setEditingSettlement((prev) => {
-                        const curStd = Number(prev.standard_amount || prev.total_amount || 0)
-                        if (newStatus === 'confirmed') {
-                          return { ...prev, payment_status: newStatus, paid_amount: curStd, unpaid_amount: 0 }
-                        } else if (newStatus === 'refunded') {
-                          return { ...prev, payment_status: newStatus, paid_amount: 0, unpaid_amount: 0 }
-                        } else if (newStatus === 'pending') {
-                          return { ...prev, payment_status: newStatus, paid_amount: 0, unpaid_amount: curStd }
-                        } else {
-                          return { ...prev, payment_status: newStatus, paid_amount: Math.round(curStd / 2) }
-                        }
-                      })
-                    }}
-                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs font-bold"
-                  >
-                    <option value="confirmed">완납 입금 (실시간 정산 집행)</option>
-                    <option value="partial">분납 (일부 납부)</option>
-                    <option value="pending">미입금 (입금 대기 · 정산 보류)</option>
-                    <option value="refunded">💸 환불 / 접수 취소 (수당 전액 회수)</option>
-                  </select>
-                </div>
-
-                <div className="sm:col-span-4">
-                  <label className="block font-bold text-[#3D3630] mb-1">실제 입금금액 (수납액)</label>
-                  <input
-                    type="number"
-                    value={s.paid_amount !== undefined ? s.paid_amount : stdAmt}
-                    onChange={(e) => {
-                      const val = Number(e.target.value)
-                      setEditingSettlement((prev) => ({
-                        ...prev,
-                        paid_amount: val,
-                        unpaid_amount: Math.max(0, Number(prev.standard_amount || prev.total_amount || 0) - val),
-                      }))
-                    }}
-                    disabled={s.payment_status === 'refunded' || s.payment_status === 'pending'}
-                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs font-mono font-bold text-emerald-800"
-                  />
-                  <span className="text-[10px] text-[#8C8071] mt-0.5 block">
-                    {s.payment_status === 'refunded' ? '환불 처리되어 입금액 0원' : `미납: ${unpaidAmt.toLocaleString()}원`}
-                  </span>
-                </div>
-
-                <div className="sm:col-span-4">
-                  <label className="block font-bold text-[#3D3630] mb-1">실제 입금일자</label>
-                  <input
-                    type="date"
-                    value={(s.paid_date || '').slice(0, 10)}
-                    onChange={(e) => setEditingSettlement((prev) => ({ ...prev, paid_date: e.target.value }))}
-                    disabled={s.payment_status === 'refunded' || s.payment_status === 'pending'}
-                    className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs font-mono font-bold"
-                  />
-                  <span className="text-[10px] text-[#8C8071] mt-0.5 block">실제 수납 완료일</span>
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-bold text-[#3D3630] mb-1">수정 사유 및 축원/환불 메모</label>
-                <input
-                  type="text"
-                  value={s.memo || ''}
-                  onChange={(e) => setEditingSettlement((prev) => ({ ...prev, memo: e.target.value }))}
-                  placeholder="예: 신도 요청으로 환불 완료 / 착오 금액 정정 등 사유 기록"
-                  className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs text-[#1B1815]"
-                />
-              </div>
-            </div>
-
-            {/* 하단 버튼 그룹 */}
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-2.5">
-              <div className="flex items-center gap-2 w-full sm:w-auto">
-                {/* 환불 원터치 버튼 */}
-                {s.payment_status !== 'refunded' && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (window.confirm(`[${s.believer_name}] 신도님의 이 접수 건을 '환불/접수취소' 처리하시겠습니까?\n사찰 본사 및 추천인 수당이 전액 회수(취소)되고 신도의 점등/위패가 소등·원복됩니다.`)) {
-                        handleRefundSettlement(s.id)
-                      }
-                    }}
-                    className="px-3.5 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-300 font-bold text-xs transition cursor-pointer"
-                  >
-                    💸 환불/취소 처리
-                  </button>
-                )}
-
-                {/* 착오 입력 완전 삭제 버튼 */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (window.confirm(`[${s.believer_name}] 신도님의 이 원장 기록을 완전히 삭제하시겠습니까?\n(착오로 잘못 등록된 테스트 건이나 중복 건 삭제 전용)`)) {
-                      handleDeleteSettlement(s.id)
-                    }
-                  }}
-                  className="px-3 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-600 font-bold text-xs transition cursor-pointer"
-                >
-                  <Trash2 className="w-3.5 h-3.5 inline mr-1" />
-                  <span>장부 삭제</span>
-                </button>
-              </div>
-
-              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                <button
-                  type="button"
-                  onClick={() => setEditingSettlement(null)}
-                  className="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-[#555] font-bold text-xs transition cursor-pointer"
-                >
-                  닫기
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] font-bold text-xs shadow-md border border-[#C59B27] transition cursor-pointer"
-                >
-                  <Save className="w-3.5 h-3.5 inline mr-1 text-[#F5D061]" />
-                  <span>수정사항 저장</span>
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>,
-      document.body
-    )
-  }
-
-  const renderSettlementModal = () => {
-    if (!settlementTargetMember) return null
-    const m = settlementTargetMember
-    const zInfo = computeZodiacAndGanji(m.birth_year || (m.birth_date ? m.birth_date.slice(0, 4) : ''))
-    
-    // 조직표 계보 매칭
-    const directAgent = members.find((a) => a.code === (m.parent_code || '33065540')) || members.find((a) => a.code === '33065540')
-    const upperAgent = directAgent?.parent_code ? members.find((a) => a.code === directAgent.parent_code) : null
-
-    return createPortal(
-      <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-        <div className="w-full max-w-xl bg-white text-[#1B1815] rounded-3xl shadow-2xl border-2 border-[#D5C59B] overflow-hidden my-auto animate-in fade-in duration-200">
-          {/* 헤더 */}
-          <div className="bg-[#1B1815] text-[#FAF8F5] p-4 sm:p-5 flex items-center justify-between border-b-2 border-[#D4AF37]">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] flex items-center justify-center font-bold text-base shadow shrink-0">
-                卍
-              </div>
-              <div>
-                <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#F5D061]">
-                  기도 · 위패 · 불사 정식 접수
-                </h3>
-                <p className="text-xs text-[#D6CEC2]">
-                  신도교적부 등록 회원 기준 · 소원사 조직표 계보 실시간 정산 연동 (모바일 신청란 표준 100% 일치)
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                setShowSettlementModal(false)
-                setSettlementTargetMember(null)
-              }}
-              className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          <form onSubmit={handleRegisterSettlementForMember} className="p-5 sm:p-6 space-y-4 text-xs">
-            {/* 1. 신도 기본 교적 정보 */}
-            <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-2">
-              <div className="flex items-center justify-between pb-1.5 border-b border-[#EAE2D3]">
-                <span className="font-bold text-[#8A6510] flex items-center gap-1.5">
-                  <UserCheck className="w-4 h-4 text-[#8A6510]" />
-                  <span>1. 동참 신도 교적 정보</span>
-                </span>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] font-bold text-[#554E45] bg-white px-2.5 py-0.5 rounded border border-[#DDD4C4]">
-                    담당 추천인: {directAgent ? `${directAgent.name} (${directAgent.role === 'master' ? '총괄위원장' : directAgent.role === 'temple_admin' ? '신도회장' : '포교위원장'})` : '소원사 본원'}
-                  </span>
-                  <span className="text-[11px] font-mono text-[#666] bg-white px-2 py-0.5 rounded border border-[#DDD4C4]">
-                    교적: {m.code}
-                  </span>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1 text-[11.5px]">
-                <div>
-                  <span className="text-[#8C8071] block">성함 / 법명:</span>
-                  <strong className="text-sm font-bold text-[#1B1815]">
-                    {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''}
-                  </strong>
-                </div>
-                <div>
-                  <span className="text-[#8C8071] block">연락처:</span>
-                  <strong className="font-mono text-[#1B1815]">{m.phone || '-'}</strong>
-                </div>
-                <div>
-                  <span className="text-[#8C8071] block">생년 / 간지:</span>
-                  <span className="font-medium text-[#444]">
-                    {m.birth_year || (m.birth_date ? m.birth_date.slice(0, 4) : '-')}년 {zInfo.ganji ? `(${zInfo.ganji} ${zInfo.animal}띠)` : ''}
-                  </span>
-                </div>
-              </div>
-              <div className="text-[11px] text-[#777] truncate">
-                🏠 {m.address || '제주특별자치도 제주시'}
-              </div>
-            </div>
-
-            {/* 2. 동참 종목 및 접수·약정 표준금액 */}
-            <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-3">
-              <div className="flex items-center justify-between pb-1.5 border-b border-[#EAE2D3]">
-                <span className="font-bold text-[#8A6510] flex items-center gap-1.5">
-                  <BookOpen className="w-4 h-4 text-[#8A6510]" />
-                  <span>2. 동참 종목 및 접수·약정 표준 정보</span>
-                </span>
-                <span className="text-[10.5px] font-bold text-[#8A6510] bg-[#FAF3DF] px-2 py-0.5 rounded border border-[#E8D4A2]">
-                  모바일 신청란 표준
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
-                {/* 동참 종목 선택 (sm:col-span-6) */}
-                <div className="sm:col-span-6">
-                  <label className="block font-bold text-[#3D3630] mb-1">
-                    동참 종목 선택 *
-                  </label>
-                  <select
-                    value={settlementItemType}
-                    onChange={(e) => {
-                      const val = e.target.value
-                      const stdPrice = getItemStandardPrice(val)
-                      setSettlementItemType(val)
-                      setSettlementStandardAmount(stdPrice)
-                      if (settlementPaymentStatus === 'confirmed') {
-                        setSettlementPaidAmount(stdPrice)
-                      } else if (settlementPaymentStatus === 'partial') {
-                        setSettlementPaidAmount(Math.round(stdPrice / 2))
-                      }
-                    }}
-                    className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-semibold text-[#1B1815] shadow-inner"
-                  >
-                    <optgroup label="🪷 1. 대웅전 상시 기도 및 공덕 불사">
-                      <option value="대웅전 공양미 / 불전시주">① 대웅전 공양미 / 불전시주 (50,000원)</option>
-                      <option value="대웅전 1년 인등 (가족등)">② 대웅전 1년 인등 (가족등) (100,000원)</option>
-                      <option value="100일 소원성취 특별기도">③ 100일 소원성취 특별기도 (100,000원)</option>
-                      <option value="49재 / 천도재 / 기일제사">④ 49재 / 천도재 / 기일제사 (상담 및 직접입력)</option>
-                    </optgroup>
-                    <optgroup label="🏛️ 2. 영구 위패 봉안 불사">
-                      <option value="생전예수재 황금빛 위패 (살아계신 분)">① 생전예수재 황금빛 위패 (살아계신 분) (200만원)</option>
-                      <option value="조상 영가 품격 흑색 영구위패">② 조상 영가 품격 흑색 영구위패 (200만원)</option>
-                      <option value="조상 영가 부부 영구위패 2기">③ 조상 영가 부부 영구위패 2기 (400만원)</option>
-                    </optgroup>
-                    <optgroup label="🏔️ 3. 삼성각 성전 건립 대작불사">
-                      <option value="삼성각 건립 소원 기와 불사 (1장)">① 삼성각 건립 소원 기와 불사 (1장) (10만원)</option>
-                      <option value="삼성각 대들보 · 기둥 · 오색단청 불사">② 삼성각 대들보 · 기둥 · 오색단청 불사 (100만원)</option>
-                      <option value="삼성각 가족 영구축원 명패 · 주춧돌">③ 삼성각 가족 영구축원 명패 · 주춧돌 (100만원)</option>
-                      <option value="기타 특별기도 및 맞춤 불사 상담">④ 기타 특별기도 및 맞춤 불사 상담</option>
-                    </optgroup>
-                  </select>
-                </div>
-
-                {/* 표준 약정금액 (sm:col-span-3) */}
-                <div className="sm:col-span-3">
-                  <label className="block font-bold text-[#3D3630] mb-1">
-                    표준 약정금액 (원) *
-                  </label>
-                  <input
-                    type="number"
-                    value={settlementStandardAmount}
-                    onChange={(e) => {
-                      const val = Number(e.target.value)
-                      setSettlementStandardAmount(val)
-                      if (settlementPaymentStatus === 'confirmed') setSettlementPaidAmount(val)
-                    }}
-                    required
-                    className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-mono font-bold text-[#1B1815]"
-                  />
-                  <span className="text-[10px] text-[#8C8071] mt-0.5 block">
-                    종목 권장 기준금액
-                  </span>
-                </div>
-
-                {/* 접수일자 (sm:col-span-3) */}
-                <div className="sm:col-span-3">
-                  <label className="block font-bold text-[#3D3630] mb-1">
-                    접수일자 (신청일) *
-                  </label>
-                  <input
-                    type="date"
-                    value={settlementAppliedDate}
-                    onChange={(e) => setSettlementAppliedDate(e.target.value)}
-                    required
-                    className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-mono font-bold text-[#1B1815]"
-                  />
-                  <span className="text-[10px] text-[#8C8071] mt-0.5 block">
-                    현장/온라인 신청일
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* 3. 실제 입금 수납 처리 (회계 및 정산 집행) */}
-            <div className={`p-3.5 rounded-2xl border space-y-3 transition ${
-              settlementPaymentStatus === 'confirmed'
-                ? 'bg-emerald-50/70 border-emerald-300'
-                : settlementPaymentStatus === 'partial'
-                ? 'bg-amber-50/70 border-amber-300'
-                : 'bg-stone-50 border-stone-300'
-            }`}>
-              <div className="flex items-center justify-between pb-1.5 border-b border-[#EAE2D3]">
-                <span className="font-bold flex items-center gap-1.5 text-[#1B1815]">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-                  <span>3. 실제 입금 수납 처리 (회계 및 정산 집행)</span>
-                </span>
-                <span className={`text-[10.5px] font-bold px-2.5 py-0.5 rounded-full border shadow-2xs ${
-                  settlementPaymentStatus === 'confirmed'
-                    ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
-                    : settlementPaymentStatus === 'partial'
-                    ? 'bg-amber-100 text-amber-900 border-amber-300'
-                    : 'bg-stone-100 text-stone-700 border-stone-300'
-                }`}>
-                  {settlementPaymentStatus === 'confirmed'
-                    ? '✓ 완납 확인 (실시간 전액 정산 집행)'
-                    : settlementPaymentStatus === 'partial'
-                    ? '✓ 일부 납부 (불사·위패 공식 집행 및 1차 정산)'
-                    : '⏳ 전액 미입금 (불사 및 정산 보류)'}
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
-                {/* 납부/수납 상태 (sm:col-span-4) */}
-                <div className="sm:col-span-4">
-                  <label className="block font-bold text-[#3D3630] mb-1">
-                    납부/수납 상태 *
-                  </label>
-                  <select
-                    value={settlementPaymentStatus}
-                    onChange={(e) => {
-                      const newStatus = e.target.value
-                      setSettlementPaymentStatus(newStatus)
-                      if (newStatus === 'confirmed') {
-                        setSettlementPaidAmount(settlementStandardAmount)
-                        if (!settlementPaidDate) setSettlementPaidDate(new Date().toISOString().slice(0, 10))
-                      } else if (newStatus === 'pending') {
-                        setSettlementPaidAmount(0)
-                      } else if (newStatus === 'partial') {
-                        if (settlementPaidAmount === settlementStandardAmount || settlementPaidAmount === 0) {
-                          setSettlementPaidAmount(Math.round(settlementStandardAmount / 2))
-                        }
-                        if (!settlementPaidDate) setSettlementPaidDate(new Date().toISOString().slice(0, 10))
-                      }
-                    }}
-                    className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-bold text-[#1B1815]"
-                  >
-                    <option value="confirmed">완납 입금 (실시간 정산 집행)</option>
-                    <option value="partial">분납 (일부 입금 처리)</option>
-                    <option value="pending">미입금 (입금 대기 · 정산 보류)</option>
-                  </select>
-                </div>
-
-                {/* 실제 입금금액 (sm:col-span-4) */}
-                <div className="sm:col-span-4">
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="font-bold text-[#3D3630]">
-                      실제 입금금액 (수납액) *
-                    </label>
-                    {settlementStandardAmount - settlementPaidAmount > 0 && (
-                      <span className="text-[10px] font-bold text-amber-700">
-                        미납: {(settlementStandardAmount - settlementPaidAmount).toLocaleString()}원
-                      </span>
-                    )}
-                  </div>
-                  <input
-                    type="number"
-                    value={settlementPaidAmount}
-                    onChange={(e) => setSettlementPaidAmount(Number(e.target.value))}
-                    disabled={settlementPaymentStatus === 'pending'}
-                    required
-                    className={`w-full px-3 py-2.5 rounded-xl border text-xs font-mono font-bold ${
-                      settlementPaymentStatus === 'pending'
-                        ? 'bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed'
-                        : 'bg-white border-[#D5C59B] text-emerald-800'
-                    }`}
-                  />
-                  <div className="flex items-center justify-between text-[10px] mt-0.5">
-                    <span className="text-[#8C8071]">
-                      {settlementPaymentStatus === 'pending' ? '미입금 상태 (0원)' : '실제 사찰 수납 금액'}
-                    </span>
-                    <strong className={settlementStandardAmount - settlementPaidAmount === 0 ? 'text-emerald-700 font-bold' : 'text-amber-800 font-bold'}>
-                      {settlementStandardAmount - settlementPaidAmount === 0
-                        ? '완납 (잔액 0원)'
-                        : `잔여 ${(settlementStandardAmount - settlementPaidAmount).toLocaleString()}원 미납`}
-                    </strong>
-                  </div>
-                </div>
-
-                {/* 실제 입금일자 (sm:col-span-4) */}
-                <div className="sm:col-span-4">
-                  <label className="block font-bold text-[#3D3630] mb-1">
-                    실제 입금일자 *
-                  </label>
-                  <input
-                    type="date"
-                    value={settlementPaymentStatus === 'pending' ? '' : settlementPaidDate}
-                    onChange={(e) => setSettlementPaidDate(e.target.value)}
-                    disabled={settlementPaymentStatus === 'pending'}
-                    className={`w-full px-3 py-2.5 rounded-xl border text-xs font-mono font-bold ${
-                      settlementPaymentStatus === 'pending'
-                        ? 'bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed'
-                        : 'bg-white border-[#D5C59B] text-[#1B1815]'
-                    }`}
-                  />
-                  <span className="text-[10px] text-[#8C8071] mt-0.5 block">
-                    {settlementPaymentStatus === 'pending' ? '입금 시 일자 입력' : '통장 수납 완료일'}
-                  </span>
-                </div>
-              </div>
-
-              {/* 결제 수단 선택 & 회계 안내 */}
-              <div className="pt-2 border-t border-[#EAE2D3] flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] font-bold text-[#554E45]">입금/수납 수단:</span>
-                  <div className="flex items-center gap-1">
-                    {['계좌이체 (사찰통장)', '현금 (종무소)', '신용카드', '기타'].map((method) => (
-                      <button
-                        key={method}
-                        type="button"
-                        onClick={() => setSettlementPaymentMethod(method)}
-                        className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold transition border ${
-                          settlementPaymentMethod === method
-                            ? 'bg-[#1B1815] text-[#F5D061] border-[#1B1815] shadow-xs'
-                            : 'bg-white text-[#666] border-[#DDD4C4] hover:bg-[#FAF8F5]'
-                        }`}
-                      >
-                        {method}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="text-[10.5px] text-[#8C8071]">
-                  {settlementPaymentStatus === 'confirmed'
-                    ? '💡 완납 확인 즉시 불사 집행 및 조직도 수당이 전액 집행됩니다.'
-                    : settlementPaymentStatus === 'partial'
-                    ? '💡 일부 납부(분납) 시에도 향후 완납을 전제로 불사·위패가 공식 집행되며, 납부액 기준으로 1차 수당이 실시간 집행됩니다.'
-                    : '⚠️ 전액 미입금 건은 신도 입금 완료 시까지 불사 및 수당 정산이 자동 보류됩니다.'}
-                </div>
-              </div>
-            </div>
-
-            {/* 5. 축원 발원 메모 */}
-            <div>
-              <label className="block font-bold text-[#3D3630] mb-1">
-                축원 발원문 및 종무 메모 (선택)
-              </label>
-              <input
-                type="text"
-                value={settlementMemo}
-                onChange={(e) => setSettlementMemo(e.target.value)}
-                placeholder="예: 가족 건강 및 사업 번창, 조상 영가 극락왕생 발원 (사시예불 축원 연동)"
-                className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-serif-kr text-[#1B1815] placeholder:text-[#A89D8E]"
-              />
-            </div>
-
-            {/* 6. 제출 및 정산 집행 버튼 */}
-            <div className="pt-2">
-              <button
-                type="submit"
-                className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] font-serif-kr font-bold text-sm shadow-md flex items-center justify-center gap-2 border border-[#C59B27] transition cursor-pointer"
-              >
-                <Save className="w-4 h-4 text-[#F5D061] shrink-0" />
-                {settlementPaymentStatus === 'confirmed' ? (
-                  <div className="flex items-center gap-2 flex-wrap justify-center">
-                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/25 text-emerald-300 text-xs font-bold border border-emerald-500/40">
-                      ✓ 완납 확인
-                    </span>
-                    <span>卍 기도 · 위패 · 불사 정식 접수 및 완납 수납 등록</span>
-                  </div>
-                ) : settlementPaymentStatus === 'partial' ? (
-                  <div className="flex items-center gap-2 flex-wrap justify-center">
-                    <span className="px-2 py-0.5 rounded-md bg-amber-500/25 text-amber-300 text-xs font-bold border border-amber-500/40">
-                      △ 분납 (1차 수납)
-                    </span>
-                    <span>卍 기도 · 위패 · 불사 정식 접수 및 분납 수납 등록</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2 flex-wrap justify-center">
-                    <span className="px-2 py-0.5 rounded-md bg-stone-500/30 text-stone-300 text-xs font-bold border border-stone-500/40">
-                      ⏳ 입금 대기
-                    </span>
-                    <span>卍 기도 · 위패 · 불사 접수 등록 (정산 보류)</span>
-                  </div>
-                )}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>,
-      document.body
-    )
-  }
 
   // 🏛️ [독립형 종무행정 ERP 모드]: URL이 /admin 또는 ?tab=admin 일 때 모바일 틀을 벗어나 PC 100% 와이드 단독 전산 화면으로 가동
   const [isStandaloneAdmin, setIsStandaloneAdmin] = useState(() => {
@@ -6112,6 +4161,293 @@ function normalizeMemberHierarchy(m) {
     )
   }
 
+  // ============================================================================
+  // 신도 교적부 기반 [사찰 불사 & 위패 봉안 정식 접수] 모달 렌더러
+  // ============================================================================
+  // 동참 종목별 표준 권장 보시금 산정 헬퍼
+  const getItemStandardPrice = (itemType) => {
+    if (!itemType) return 100000
+    if (itemType.includes('2기')) return 4000000
+    if (itemType.includes('황금빛') || itemType.includes('흑색') || itemType.includes('생전예수재') || itemType.includes('영구위패')) return 2000000
+    if (itemType.includes('단청') || itemType.includes('명패') || itemType.includes('기둥')) return 1000000
+    if (itemType.includes('1년 인등') || itemType.includes('100일') || itemType.includes('기와')) return 100000
+    if (itemType.includes('공양미')) return 50000
+    return 100000
+  }
+
+  // 정산관제 원장에서 미입금 건 원터치 완납 처리
+  // 정산 원장 착오 수정사항 저장
+  const handleSaveEditedSettlement = (e) => {
+    e?.preventDefault()
+    if (!editingSettlement) return
+    const s = editingSettlement
+    const stdAmt = Number(s.standard_amount || s.total_amount || 0)
+    const paidAmt = s.payment_status === 'refunded' || s.payment_status === 'pending' ? 0 : Number(s.paid_amount || 0)
+    const unpaidAmt = Math.max(0, stdAmt - paidAmt)
+
+    setSettlements((prev) =>
+      prev.map((item) => (item.id === s.id ? { ...s, standard_amount: stdAmt, total_amount: stdAmt, paid_amount: paidAmt, unpaid_amount: unpaidAmt } : item))
+    )
+
+    // 신도 상태 동기화 (환불 시 위패/점등 원복)
+    setMembers((prev) =>
+      prev.map((m) => {
+        if (m.code === s.member_code) {
+          const isRefunded = s.payment_status === 'refunded'
+          const isPending = s.payment_status === 'pending' || paidAmt === 0
+          const isWipae = (s.item_name || '').includes('위패')
+          const isIndeung = (s.item_name || '').includes('인등') || (s.item_name || '').includes('100일')
+
+          return {
+            ...m,
+            wipae_count: isRefunded || isPending
+              ? Math.max(0, (m.wipae_count || 0) - (isWipae ? ((s.item_name || '').includes('2기') ? 2 : 1) : 0))
+              : m.wipae_count,
+            extra_data: {
+              ...(m.extra_data || {}),
+              payment_amount: paidAmt,
+              payment_status: isRefunded ? 'refunded' : isPending ? 'pending' : 'settled',
+              ...(isIndeung && (isRefunded || isPending) ? { lantern_active: false, lantern_active_until: null } : {}),
+            },
+          }
+        }
+        return m
+      })
+    )
+
+    setEditingSettlement(null)
+    showToast('✓ 원장 수정사항이 정상 반영되었습니다.')
+  }
+
+  // 정산 원장 환불/접수취소 원터치 처리
+  const handleRefundSettlement = (settlementId) => {
+    const todayStr = new Date().toISOString().slice(0, 10)
+    let targetMemberCode = null
+    let targetItemName = ''
+
+    setSettlements((prev) =>
+      prev.map((s) => {
+        if (s.id === settlementId) {
+          targetMemberCode = s.member_code
+          targetItemName = s.item_name || ''
+          return {
+            ...s,
+            payment_status: 'refunded',
+            paid_amount: 0,
+            unpaid_amount: 0,
+            paid_date: todayStr,
+            memo: (s.memo ? s.memo + ' ' : '') + `[${todayStr} 환불완료/수당회수]`,
+          }
+        }
+        return s
+      })
+    )
+
+    if (targetMemberCode) {
+      const isWipae = targetItemName.includes('위패')
+      const isIndeung = targetItemName.includes('인등') || targetItemName.includes('100일')
+      setMembers((prev) =>
+        prev.map((m) => {
+          if (m.code === targetMemberCode) {
+            return {
+              ...m,
+              wipae_count: isWipae ? Math.max(0, (m.wipae_count || 0) - (targetItemName.includes('2기') ? 2 : 1)) : m.wipae_count,
+              extra_data: {
+                ...(m.extra_data || {}),
+                payment_amount: 0,
+                payment_status: 'refunded',
+                ...(isIndeung ? { lantern_active: false, lantern_active_until: null } : {}),
+              },
+            }
+          }
+          return m
+        })
+      )
+    }
+
+    setEditingSettlement(null)
+    showToast('💸 환불 및 접수 취소 처리가 완료되었습니다. (추천인 수당 전액 회수)')
+  }
+
+  // 착오 입력 원장 기록 완전 삭제
+  const handleDeleteSettlement = (settlementId) => {
+    setSettlements((prev) => prev.filter((s) => s.id !== settlementId))
+    setEditingSettlement(null)
+    showToast('🗑️ 착오 입력 장부 기록이 완전히 삭제되었습니다.')
+  }
+
+  const handleConfirmSettlementPayment = (settlementId) => {
+    const todayStr = new Date().toISOString().slice(0, 10)
+    const target = settlements.find((s) => s.id === settlementId)
+    if (target) {
+      const stdAmt = Number(target.standard_amount || target.total_amount || 0)
+      const believerName = target.believer_name || '신도'
+      const itemName = target.item_name || '불사 종목'
+      if (!window.confirm(`[${believerName}] 신도님의 [${itemName}]\n약정 잔액(${stdAmt.toLocaleString()}원) 완납 입금을 확인하고 실시간 정산을 집행하시겠습니까?`)) {
+        return
+      }
+    }
+    setSettlements((prev) =>
+      prev.map((s) => {
+        if (s.id === settlementId) {
+          const stdAmt = Number(s.standard_amount || s.total_amount || 0)
+          return {
+            ...s,
+            payment_status: 'confirmed',
+            paid_amount: stdAmt,
+            unpaid_amount: 0,
+            paid_date: todayStr,
+          }
+        }
+        return s
+      })
+    )
+    showToast('✓ 입금 완납 확인 및 소원사 조직표 정산 집행이 완료되었습니다!')
+  }
+
+  // 1. 접수 등록 버튼 클릭 시 중앙 확인 모달 팝업 오픈
+  const handleRegisterSettlementForMember = (e) => {
+    e?.preventDefault()
+    if (!settlementTargetMember) {
+      showToast('접수할 신도 정보가 없습니다.')
+      return
+    }
+
+    const m = settlementTargetMember
+    const agent1Code = m.parent_code || '33065540'
+    const agent1 = members.find((a) => a.code === agent1Code) || members.find((a) => a.code === '33065540')
+    const isKimCheolSoo = agent1?.code === '33065540' || agent1?.code === '55400267'
+    const isYangYoungMoon = agent1?.code === '55570267'
+    const agent2 = (!isKimCheolSoo && !isYangYoungMoon)
+      ? (members.find((a) => a.code === (agent1?.parent_code || '33065540')) || members.find((a) => a.code === '33065540'))
+      : null
+    const agent3 = null
+
+    const todayStr = new Date().toISOString().slice(0, 10)
+    const stdAmount = Number(settlementStandardAmount) || 0
+    const actualPaidAmount = settlementPaymentStatus === 'pending' ? 0 : Number(settlementPaidAmount) || 0
+    const unpaidAmt = Math.max(0, stdAmount - actualPaidAmount)
+
+    // 브라우저 최상단 window.confirm 대신 화면 정중앙 전용 모달 팝업 오픈!
+    setPendingSettlementConfirm({
+      m,
+      agent1,
+      agent2,
+      agent3,
+      stdAmount,
+      actualPaidAmount,
+      unpaidAmt,
+      todayStr,
+    })
+  }
+
+  // 2. 중앙 확인 모달에서 [최종 등록 확인] 클릭 시 실제 회계 및 불사 집행
+  const executeFinalSettlementRegistration = (data) => {
+    const { m, agent1, agent2, agent3, stdAmount, actualPaidAmount, unpaidAmt, todayStr } = data
+
+    const newRecord = {
+      id: 's-' + Date.now(),
+      temple_id: DEFAULT_TEMPLE_ID,
+      member_code: m.code,
+      believer_name: `${m.name}${m.dharma_name ? ` (${m.dharma_name})` : ''}`,
+      believer_phone: m.phone || '',
+      item_name: settlementItemType,
+      standard_amount: stdAmount,
+      total_amount: stdAmount, // 표준 약정금액
+      paid_amount: actualPaidAmount, // 실제 입금금액
+      unpaid_amount: unpaidAmt, // 미납 잔액
+      applied_date: settlementAppliedDate || todayStr, // 신청/접수일자
+      paid_date: settlementPaymentStatus !== 'pending' ? (settlementPaidDate || todayStr) : null, // 실제 입금일자
+      payment_method: settlementPaymentMethod,
+      payment_status: settlementPaymentStatus, // confirmed, partial, pending
+      agent_1st_code: agent1 ? agent1.code : null,
+      agent_1st_name: agent1
+        ? `${agent1.name}${agent1.dharma_name ? `(${agent1.dharma_name})` : ''} (${agent1.role === 'temple_admin' ? '신도회장' : agent1.role === 'master' ? '총괄위원장' : '포교위원장'})`
+        : '-',
+      agent_2nd_code: agent2 ? agent2.code : null,
+      agent_2nd_name: agent2
+        ? `${agent2.name}${agent2.dharma_name ? `(${agent2.dharma_name})` : ''} (${agent2.role === 'temple_admin' ? '신도회장' : '총괄위원장'})`
+        : '-',
+      agent_3rd_code: agent3 ? agent3.code : null,
+      agent_3rd_name: agent3
+        ? `${agent3.name}${agent3.dharma_name ? `(${agent3.dharma_name})` : ''} (신도회장)`
+        : '-',
+      memo: settlementMemo,
+      created_at: settlementAppliedDate || todayStr,
+    }
+
+    const isIndeung = settlementItemType.includes('인등')
+    const is100d = settlementItemType.includes('100일')
+    const lanternId = isIndeung ? 'indeung_1yr' : is100d ? 'prayer_100d' : null
+    const durDays = isIndeung ? 365 : is100d ? 100 : 7
+    const untilIso = new Date(Date.now() + durDays * 86400000).toISOString()
+    const isPaymentActive = settlementPaymentStatus !== 'pending' && actualPaidAmount > 0
+
+    // 인등 및 100일 기도: 완납 또는 일부 납부(분납) 시 즉시 대웅전 점등 및 사시예불 축원 명부에 자동 편성!
+    if ((isIndeung || is100d) && isPaymentActive) {
+      const newPrayer = {
+        id: 'p-' + Date.now(),
+        temple_id: DEFAULT_TEMPLE_ID,
+        member_code: m.code,
+        believer_name: `${m.name}${m.dharma_name ? ` (${m.dharma_name})` : ''}`,
+        believer_phone: m.phone || '',
+        agent_code: m.parent_code || '33065540',
+        wish_category: isIndeung ? '대웅전 1년 인등(가족등)' : '100일 소원성취 특별기도',
+        prayer_type: lanternId,
+        duration_days: durDays,
+        family_members_count: m.family_members?.length || 1,
+        wish_text: settlementMemo || '지극정성으로 가내 평안과 소원성취를 발원합니다.',
+        status: 'prayed',
+        prayed_at: '종무소 정식 접수 (사시예불 축원 연동)',
+        created_at: new Date().toISOString().replace('T', ' ').slice(0, 16),
+      }
+      setPrayers((prev) => [newPrayer, ...prev])
+    setLatestSubmittedPrayerId(newPrayer.id)
+    }
+
+    setSettlements((prev) => [newRecord, ...prev])
+    setMembers((prev) =>
+      prev.map((item) =>
+        item.code === m.code
+          ? {
+              ...item,
+              merit_count: (item.merit_count || 0) + 1,
+              // 위패 봉안 수량: 완납 또는 일부 납부(분납) 시 향후 완납을 전제로 불사·위패 공식 집행 및 카운트 반영!
+              wipae_count: (item.wipae_count || 0) + (
+                isPaymentActive && settlementItemType.includes('위패')
+                  ? (settlementItemType.includes('2기') ? 2 : 1)
+                  : 0
+              ),
+              extra_data: {
+                ...(item.extra_data || {}),
+                prayer_title: settlementItemType,
+                payment_amount: actualPaidAmount,
+                standard_amount: stdAmount,
+                unpaid_amount: unpaidAmt,
+                applied_date: settlementAppliedDate || todayStr,
+                paid_date: isPaymentActive ? (settlementPaidDate || todayStr) : null,
+                payment_status: settlementPaymentStatus === 'confirmed' ? 'settled' : settlementPaymentStatus === 'partial' ? 'partial' : 'pending',
+                ...(lanternId ? {
+                  lantern_type: lanternId,
+                  lantern_active: isPaymentActive,
+                  lantern_active_until: isPaymentActive ? untilIso : null,
+                  lantern_started_at: todayStr,
+                } : {})
+              }
+            }
+          : item
+      )
+    )
+
+    playSingingBowlSound()
+    setPendingSettlementConfirm(null)
+    setShowSettlementModal(false)
+    setSettlementTargetMember(null)
+    setSettlementMemo('')
+    showToast(`🪷 [${m.name}] 신도님의 [${settlementItemType}] 접수 및 회계 처리가 완결되었습니다!`)
+  }
+
+
   // 🏛️ 종무소 신도 & 가족 사주 통합 신적부 등록 핸들러 (현장/전화 접수용)
   const handleRegisterFamilyMember = (e) => {
     e.preventDefault()
@@ -6714,1044 +5050,131 @@ function normalizeMemberHierarchy(m) {
   const isAdmin = isMasterOrTempleAdmin
 
   // =========================================================================
-  // 🏛️ [독립형 종무행정 ERP 풀스크린 데스크톱 모드 분기]
+  // 🏛️ [독립형 종무행정 ERP 풀스크린 데스크톱 모드 분기 - AdminERPView 모듈 호출]
   // =========================================================================
   if (isStandaloneAdmin) {
     return (
-      <div className="min-h-screen bg-[#161310] text-[#FAF8F5] w-full selection:bg-[#C59B27] selection:text-white flex flex-col font-sans">
-        {/* ==================== 🏛️ ERP 전용 최상단 데스크톱 헤더 ==================== */}
-        <header className="sticky top-0 z-40 bg-[#1B1815] text-[#FAF8F5] px-4 sm:px-6 py-3 border-b-2 border-[#C59B27] flex items-center justify-between gap-4 shadow-xl">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2D241C] via-[#221C16] to-[#17130F] flex items-center justify-center border border-[#C59B27]/70 p-1 shrink-0 shadow-md">
-              <span className="text-xl text-[#F5D061] font-bold">卍</span>
-            </div>
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-serif-kr font-extrabold text-base sm:text-lg tracking-tight text-[#F5D061]">
-                  제주 소원사 종무행정 종합 ERP 전산센터
-                </span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/50 font-bold font-mono">
-                  temple_id: sowonsa (사찰 단독 격리 100%)
-                </span>
-              </div>
-              <p className="text-[11px] text-[#C5BBAF]">
-                신도 신적부 · 가족 사주 만세력 · 사시예불 축원 및 대웅전 인등 명패 원스톱 관제
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 shrink-0">
-            {isMasterOrTempleAdmin && (
-              <span className="text-xs px-2.5 py-1 rounded-lg bg-[#2C241C] text-[#F5D061] border border-[#C59B27]/50 font-bold hidden md:inline">
-                {isTempleAdmin ? '🏛️ 양영문 창건주 본부' : '👑 김철수 총괄대표 (마스터)'}
-              </span>
-            )}
-            <button
-              type="button"
-              onClick={() => {
-                setIsStandaloneAdmin(false)
-                window.history.pushState({}, '', '/')
-                window.scrollTo({ top: 0, behavior: 'smooth' })
-              }}
-              className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] border border-white/20 text-xs font-bold transition flex items-center gap-1.5"
-            >
-              <span>📱 모바일 법당 보기</span>
-            </button>
-            {isMasterOrTempleAdmin && (
-              <button
-                type="button"
-                onClick={() => {
-                  setCurrentUserCode('82341088')
-                  localStorage.removeItem('sowonpray_current_user_v3')
-                  setIsStandaloneAdmin(false)
-                  window.history.pushState({}, '', '/')
-                  showToast('종무행정 전산에서 로그아웃되었습니다.')
-                }}
-                className="px-3 py-1.5 rounded-xl bg-red-950/60 hover:bg-red-900 text-red-200 border border-red-700/60 text-xs font-bold transition flex items-center gap-1"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">로그아웃</span>
-              </button>
-            )}
-          </div>
-        </header>
-
-        {/* ==================== 본문 분기: 관리자 로그인 vs ERP 대시보드 ==================== */}
-        {!isMasterOrTempleAdmin ? (
-          <main className="flex-1 flex items-center justify-center p-4">
-            <div className="w-full max-w-md bg-[#FAF8F5] text-[#231F1C] rounded-3xl p-6 sm:p-8 border-2 border-[#C59B27] shadow-2xl space-y-5 text-center">
-              <div className="w-14 h-14 rounded-2xl bg-[#1B1815] text-[#F5D061] flex items-center justify-center text-2xl font-bold mx-auto border-2 border-[#C59B27] shadow">
-                卍
-              </div>
-              <div>
-                <h2 className="font-serif-kr text-xl font-black text-[#1B1815]">
-                  종무행정 전산 보안 로그인
-                </h2>
-                <p className="text-xs text-[#7A6E5E] mt-1 leading-relaxed">
-                  사찰 최고책임자(창건주 양영문 회장) 및 총괄대표(김철수 위원장) 전용 행정 전산망입니다.
-                </p>
-              </div>
-
-              <form onSubmit={handleLogin} className="space-y-3 text-left">
-                <div>
-                  <label className="text-xs font-bold text-[#4A3D2A] block mb-1">
-                    관리자 전화번호 (아이디)
-                  </label>
-                  <input
-                    type="tel"
-                    value={loginIdInput}
-                    onChange={(e) => setLoginIdInput(e.target.value)}
-                    placeholder="010-3306-5540 또는 010-5557-0267"
-                    required
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-bold font-mono focus:outline-none focus:border-[#C59B27]"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-[#4A3D2A] block mb-1">
-                    전산 비밀번호
-                  </label>
-                  <input
-                    type="password"
-                    value={loginPwInput}
-                    onChange={(e) => setLoginPwInput(e.target.value)}
-                    placeholder="비밀번호 입력 (초기: 0000 / 0267)"
-                    required
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-bold font-mono focus:outline-none focus:border-[#C59B27]"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#C59B27] via-[#8A6510] to-[#231F1C] text-[#FAF8F5] font-extrabold text-sm shadow-md hover:brightness-105 transition"
-                >
-                  종무행정 ERP 관제센터 접속하기
-                </button>
-              </form>
-
-              {/* 원클릭 테스트 계정 버튼 */}
-              <div className="pt-2 border-t border-[#E6DEC8] space-y-1.5">
-                <div className="text-[11px] text-[#8C8071] font-semibold">
-                  원클릭 테스트 로그인:
-                </div>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCurrentUserCode('33065540')
-                      localStorage.setItem('sowonpray_current_user_v3', '33065540')
-                      showToast('김철수 총괄대표님(마스터)으로 접속되었습니다.')
-                    }}
-                    className="p-2 rounded-xl bg-white border border-[#D5C59B] font-bold text-[#8A6510] hover:bg-[#FAF3DF] transition"
-                  >
-                    👑 김철수 총괄대표
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCurrentUserCode('55570267')
-                      localStorage.setItem('sowonpray_current_user_v3', '55570267')
-                      showToast('양영문 창건주 회장님(사찰최고대표)으로 접속되었습니다.')
-                    }}
-                    className="p-2 rounded-xl bg-white border border-[#D5C59B] font-bold text-[#231F1C] hover:bg-[#FAF3DF] transition"
-                  >
-                    🏛️ 양영문 창건주 본부
-                  </button>
-                </div>
-              </div>
-            </div>
-          </main>
-        ) : (
-          /* ==================== 🏛️ ERP 메인 와이드 작업 화면 ==================== */
-          <main className="flex-1 w-full max-w-[1600px] mx-auto p-4 sm:p-6 space-y-6">
-            {/* 상단 4종 KPI 대시보드 */}
-            <section className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-              <div className="p-4 rounded-2xl bg-[#1F1B17] border border-[#C59B27]/40 shadow-sm">
-                <div className="text-xs text-[#C5BBAF] font-semibold flex items-center justify-between">
-                  <span>총 등록 신도</span>
-                  <Users className="w-4 h-4 text-[#F5D061]" />
-                </div>
-                <div className="text-2xl font-black text-white mt-1">
-                  {adminKPIs.totalMembers.toLocaleString()}
-                  <span className="text-sm font-normal text-[#C5BBAF] ml-1">명</span>
-                </div>
-                <div className="text-[11px] text-[#A69B8D] mt-1 truncate">
-                  일반신도 {adminKPIs.totalBelievers} · 위원 {adminKPIs.totalAgents} · 본부 {adminKPIs.totalAdmins}
-                </div>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-[#1F1B17] border border-[#C59B27]/40 shadow-sm">
-                <div className="text-xs text-[#C5BBAF] font-semibold flex items-center justify-between">
-                  <span>사시예불 축원 대상</span>
-                  <Flame className="w-4 h-4 text-amber-500" />
-                </div>
-                <div className="text-2xl font-black text-[#F5D061] mt-1">
-                  {adminKPIs.totalPrayersCount}
-                  <span className="text-sm font-normal text-[#C5BBAF] ml-1">위</span>
-                </div>
-                <div className="text-[11px] text-emerald-400 font-bold mt-1 truncate">
-                  금일 축원완료: {sasiPrayedCheckedIds.size}위 회향
-                </div>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-[#1F1B17] border border-[#C59B27]/40 shadow-sm">
-                <div className="text-xs text-[#C5BBAF] font-semibold flex items-center justify-between">
-                  <span>누적 불사 접수금</span>
-                  <Award className="w-4 h-4 text-[#F5D061]" />
-                </div>
-                <div className="text-2xl font-black text-white mt-1">
-                  {(adminKPIs.totalSettlementAmount / 10000).toLocaleString()}
-                  <span className="text-sm font-normal text-[#C5BBAF] ml-1">만원</span>
-                </div>
-                <div className="text-[11px] text-[#A69B8D] mt-1 truncate">
-                  총 {settlements.length}건 봉안 접수완료
-                </div>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-[#2D241C] to-[#221C16] border border-[#F5D061]/50 shadow-sm">
-                <div className="text-xs text-[#F5D061] font-bold flex items-center justify-between">
-                  <span>소원사 사찰 귀속금</span>
-                  <span className="text-sm font-bold text-[#F5D061]">卍</span>
-                </div>
-                <div className="text-2xl font-black text-[#F5D061] mt-1">
-                  {(adminKPIs.templeFund / 10000).toLocaleString()}
-                  <span className="text-sm font-normal text-[#C5BBAF] ml-1">만원</span>
-                </div>
-                <div className="text-[11px] text-[#F5D061]/80 font-semibold mt-1 truncate">
-                  실입금액 50% 사찰 계좌 직속
-                </div>
-              </div>
-            </section>
-
-            {/* 원클릭 대웅전 축원 & 1년 인등 명패 인쇄 퀵 바 */}
-            <section className="bg-gradient-to-r from-[#241E17] via-[#2F2417] to-[#1C160F] text-white rounded-2xl p-4 sm:p-5 border-2 border-[#D4AF37] shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2 mb-1 flex-wrap">
-                  <span className="px-2.5 py-0.5 rounded-full bg-[#D4AF37] text-[#1B1815] text-[11px] font-extrabold whitespace-nowrap">
-                    대웅전 불단 축원 &amp; 인등단 연동
-                  </span>
-                  <span className="text-xs text-[#F5D061] font-bold">
-                    매일 오전 10:00 사시예불 실시간 연동
-                  </span>
-                </div>
-                <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white">
-                  오늘의 사시예불 축원 명부 ({activeSasiPrayers.length}위) &amp; 대웅전 1년 인등 명패
-                </h3>
-                <p className="text-xs text-[#D6CEC2] mt-0.5">
-                  1일 소원등, 100일 특별기도, 1년 가족인등을 대웅전 규격 A4로 즉시 인쇄합니다.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2.5 flex-wrap w-full md:w-auto">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSasiPrayerTypeTab('all')
-                    setShowSasiPrintModal(true)
-                  }}
-                  className="flex-1 md:flex-initial px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs shadow hover:brightness-105 transition flex items-center justify-center gap-1.5 whitespace-nowrap"
-                >
-                  <Printer className="w-4 h-4" />
-                  <span>📿 사시예불 명부 A4 인쇄</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSasiPrayerTypeTab('indeung_1yr')
-                    setShowSasiPrintModal(true)
-                  }}
-                  className="flex-1 md:flex-initial px-4 py-2.5 rounded-xl bg-[#FAF8F5] text-[#231F1C] border border-[#D5C59B] font-extrabold text-xs shadow hover:bg-white transition flex items-center justify-center gap-1.5 whitespace-nowrap"
-                >
-                  <span>🏮 1년 인등 명패 A4 인쇄</span>
-                </button>
-              </div>
-            </section>
-
-            {/* ERP 서브 메뉴 탭 바 (와이드 버튼 4종) */}
-            <div className="flex items-center gap-2 p-1.5 bg-[#1F1B17] rounded-2xl border border-[#C59B27]/40 text-xs sm:text-sm overflow-x-auto no-scrollbar">
-              <button
-                type="button"
-                onClick={() => setErpTab('search')}
-                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap ${
-                  erpTab === 'search'
-                    ? 'bg-[#F5D061] text-[#1B1815] shadow'
-                    : 'text-[#D6CEC2] hover:text-white'
-                }`}
-              >
-                <Search className="w-4 h-4" />
-                <span>📋 1. 신도교적부 리스트 &amp; 검색·수정</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setErpTab('register')}
-                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap ${
-                  erpTab === 'register'
-                    ? 'bg-[#F5D061] text-[#1B1815] shadow'
-                    : 'text-[#D6CEC2] hover:text-white'
-                }`}
-              >
-                <Heart className="w-4 h-4 text-amber-700" />
-                <span>🏮 2. 신도 &amp; 가족사주 신규 등록</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setErpTab('excel')}
-                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap ${
-                  erpTab === 'excel'
-                    ? 'bg-[#F5D061] text-[#1B1815] shadow'
-                    : 'text-[#D6CEC2] hover:text-white'
-                }`}
-              >
-                <Upload className="w-4 h-4" />
-                <span>📂 3. 기존 전산 엑셀 일괄 이관</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setErpTab('settlement')}
-                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap ${
-                  erpTab === 'settlement'
-                    ? 'bg-[#F5D061] text-[#1B1815] shadow'
-                    : 'text-[#D6CEC2] hover:text-white'
-                }`}
-              >
-                <Calculator className="w-4 h-4 text-[#C59B27]" />
-                <span>💰 4. 정산관제</span>
-              </button>
-            </div>
-
-            {/* ==================== 1. 신도 & 가족 사주 신규 등록 탭 ==================== */}
-            {erpTab === 'register' && (
-              <section className="bg-white text-[#231F1C] rounded-3xl p-6 sm:p-8 shadow-sm border border-[#E6DEC8] space-y-6">
-                <div className="flex items-center justify-between pb-2 border-b border-[#E6DEC8]">
-                  <div>
-                    <h3 className="font-serif-kr font-bold text-lg text-[#1B1815]">
-                      2. 종무소 현장/전화 접수 신도 및 가족 사주 통합 등록
-                    </h3>
-                    <p className="text-xs text-[#8C8071] mt-0.5">
-                      생년월일만 넣으면 띠와 육십간지가 100% 자동 산출되며, 세주(가장)부터 축원 명부에 자동 편성됩니다.
-                    </p>
-                  </div>
-                  <span className="text-xs text-[#8A6510] font-bold bg-[#FAF8F5] px-3 py-1.5 rounded-xl border border-[#D5C59B]">
-                    추천인 기본 배정: 김철수 총괄대표(33065540) 직속
-                  </span>
-                </div>
-
-                <form onSubmit={handleRegisterFamilyMember} className="space-y-6">
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    {/* 왼쪽: 대표 신도 정보 */}
-                    <div className="lg:col-span-5 space-y-4 p-4 rounded-2xl bg-[#FAF8F5] border border-[#DDD4C4]">
-                      <div className="text-xs font-bold text-[#8A6510] flex items-center gap-1.5">
-                        <User className="w-4 h-4" />
-                        <span>대표 신도 기본 인적사항</span>
-                      </div>
-
-                      <div className="space-y-2.5">
-                        <div>
-                          <label className="text-[11px] font-bold text-[#554E45] block mb-1">
-                            대표 신도 성함 <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            value={regBelieverName}
-                            onChange={(e) => setRegBelieverName(e.target.value)}
-                            placeholder="성함 (예: 이정숙)"
-                            required
-                            className="w-full px-3 py-2 rounded-xl bg-white border border-[#DDD4C4] text-xs font-bold focus:outline-none focus:border-[#C59B27]"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="text-[11px] font-bold text-[#554E45] block mb-1">
-                            법명 (선택사항)
-                          </label>
-                          <input
-                            type="text"
-                            value={regBelieverDharma}
-                            onChange={(e) => setRegBelieverDharma(e.target.value)}
-                            placeholder="법명 (예: 무량화)"
-                            className="w-full px-3 py-2 rounded-xl bg-white border border-[#DDD4C4] text-xs focus:outline-none focus:border-[#C59B27]"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="text-[11px] font-bold text-[#554E45] block mb-1">
-                            휴대폰 번호 <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="tel"
-                            value={regBelieverPhone}
-                            onChange={(e) => setRegBelieverPhone(e.target.value)}
-                            placeholder="전화번호 (예: 010-8234-1088)"
-                            required
-                            className="w-full px-3 py-2 rounded-xl bg-white border border-[#DDD4C4] text-xs font-mono focus:outline-none focus:border-[#C59B27]"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="text-[11px] font-bold text-[#554E45] block mb-1">
-                            거주지 주소
-                          </label>
-                          <input
-                            type="text"
-                            value={regBelieverAddress}
-                            onChange={(e) => setRegBelieverAddress(e.target.value)}
-                            placeholder="주소 (예: 제주특별자치도 제주시 애월읍)"
-                            className="w-full px-3 py-2 rounded-xl bg-white border border-[#DDD4C4] text-xs focus:outline-none focus:border-[#C59B27]"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="text-[11px] font-bold text-[#554E45] block mb-1">
-                            신도 귀속처 (본사 사찰본부 / 포교위원장)
-                          </label>
-                          <select
-                            value={regBelieverParent}
-                            onChange={(e) => setRegBelieverParent(e.target.value)}
-                            className="w-full px-3 py-2 rounded-xl bg-white border border-[#DDD4C4] text-xs font-semibold text-[#8A6510]"
-                          >
-                            <option value="55570267">🏛️ 1. 본사 귀속: 양영문 창건주 회장 (55570267 · 사찰본부 직속)</option>
-                            <option value="33065540">👑 2. 귀속: 김철수 총괄대표 (33065540 · 전국포교본부 / 자연유입)</option>
-                            {agents
-                              .filter((a) => a.code !== '55570267' && a.code !== '33065540')
-                              .map((a) => (
-                                <option key={a.code} value={a.code}>
-                                  귀속: {a.name} ({a.role === 'agent' ? '위원장' : '위원'})
-                                </option>
-                              ))}
-                          </select>
-                        </div>
-                      </div>
-
-                      <div className="pt-2 border-t border-[#E6DEC8] space-y-2">
-                        <div className="text-xs font-bold text-[#8A6510] flex items-center gap-1.5">
-                          <Flame className="w-4 h-4 text-amber-600" />
-                          <span>대웅전 기도 동시 접수 (선택)</span>
-                        </div>
-                        <select
-                          value={regPrayerType}
-                          onChange={(e) => setRegPrayerType(e.target.value)}
-                          className="w-full px-3 py-2 rounded-xl bg-white border border-[#DDD4C4] text-xs font-bold text-[#8A6510]"
-                        >
-                          <option value="none">기도 동시 접수 없음 (신적부만 등록)</option>
-                          <option value="indeung_1yr">🏮 대웅전 1년 인등 (가족등 · 365일 상시축원)</option>
-                          <option value="prayer_100d">📿 100일 특별기도 (입재 · D-100일 정진)</option>
-                          <option value="lantern_1d">🪔 1일 소원등 (사시예불 당일 1회 축원)</option>
-                          <option value="jesujae">⚱️ 생전예수재 황금위패 봉안</option>
-                        </select>
-                        {regPrayerType !== 'none' && (
-                          <input
-                            type="text"
-                            value={regWishText}
-                            onChange={(e) => setRegWishText(e.target.value)}
-                            placeholder="발원문 (예: 온 가족 무병장수 및 사업번창 발원)"
-                            className="w-full px-3 py-2 rounded-xl bg-white border border-[#DDD4C4] text-xs focus:outline-none focus:border-[#C59B27]"
-                          />
-                        )}
-                      </div>
-                    </div>
-
-                    {/* 오른쪽: 가족 사주 명단 */}
-                    <div className="lg:col-span-7 space-y-4 p-4 rounded-2xl bg-[#FAF8F5] border border-[#DDD4C4]">
-                      <div className="flex items-center justify-between">
-                        <div className="text-xs font-bold text-[#8A6510] flex items-center gap-1.5">
-                          <Heart className="w-4 h-4 text-[#8A6510]" />
-                          <span>가족 사주 명단 (세주 · 배우자 · 자녀)</span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={handleAddFamilyRow}
-                          className="px-3 py-1.5 rounded-xl bg-[#231F1C] text-[#F5D061] text-xs font-bold hover:bg-[#302A25] transition flex items-center gap-1"
-                        >
-                          <PlusCircle className="w-3.5 h-3.5" />
-                          <span>+ 가족 추가</span>
-                        </button>
-                      </div>
-
-                      <div className="space-y-2">
-                        {regFamilyList.map((f, idx) => {
-                          const { ganji, animal } = computeZodiacAndGanji(f.birth_year || f.birth_date)
-                          return (
-                            <div
-                              key={f.id || idx}
-                              className="p-3 rounded-xl bg-white border border-[#DDD3C1] flex items-center gap-2 flex-wrap text-xs shadow-sm"
-                            >
-                              <select
-                                value={f.relation}
-                                onChange={(e) => handleUpdateFamilyRow(f.id, 'relation', e.target.value)}
-                                className="px-2 py-1.5 rounded-lg bg-[#FAF8F5] border border-[#DDD4C4] text-[11px] font-bold text-[#8A6510] shrink-0"
-                              >
-                                <option value="세주(가장)">세주(가장)</option>
-                                <option value="배우자">배우자</option>
-                                <option value="장남">장남</option>
-                                <option value="차남">차남</option>
-                                <option value="장녀">장녀</option>
-                                <option value="차녀">차녀</option>
-                                <option value="부">부(아버지)</option>
-                                <option value="모">모(어머니)</option>
-                                <option value="자녀">자녀</option>
-                                <option value="가족">기타가족</option>
-                              </select>
-
-                              <input
-                                type="text"
-                                value={f.name}
-                                onChange={(e) => handleUpdateFamilyRow(f.id, 'name', e.target.value)}
-                                placeholder="성함"
-                                className="w-24 px-2.5 py-1.5 rounded-lg bg-white border border-[#DDD4C4] text-xs font-bold"
-                              />
-
-                              <input
-                                type="text"
-                                value={f.dharma_name}
-                                onChange={(e) => handleUpdateFamilyRow(f.id, 'dharma_name', e.target.value)}
-                                placeholder="법명"
-                                className="w-20 px-2.5 py-1.5 rounded-lg bg-white border border-[#DDD4C4] text-xs"
-                              />
-
-                              <input
-                                type="text"
-                                value={f.birth_year}
-                                onChange={(e) => handleUpdateFamilyRow(f.id, 'birth_year', e.target.value)}
-                                placeholder="출생연도(1959)"
-                                className="w-28 px-2.5 py-1.5 rounded-lg bg-white border border-[#DDD4C4] text-xs font-mono font-bold"
-                              />
-
-                              <select
-                                value={f.lunar_solar}
-                                onChange={(e) => handleUpdateFamilyRow(f.id, 'lunar_solar', e.target.value)}
-                                className="px-2 py-1.5 rounded-lg bg-[#FAF8F5] border border-[#DDD4C4] text-[11px]"
-                              >
-                                <option value="음력">음력</option>
-                                <option value="양력">양력</option>
-                              </select>
-
-                              <div className="flex-1 min-w-[140px]">
-                                {ganji ? (
-                                  <span className="px-2.5 py-1 rounded-lg bg-[#FFF5DC] text-[#7A5B0B] border border-[#E8D4A2] font-black text-xs inline-flex items-center gap-1">
-                                    <span>{ganji}</span>
-                                    <span className="font-normal text-[#8A6510]">({animal})</span>
-                                  </span>
-                                ) : (
-                                  <span className="text-[10.5px] text-[#A69B8D]">
-                                    생년 입력 시 간지 자동계산
-                                  </span>
-                                )}
-                              </div>
-
-                              {regFamilyList.length > 1 && (
-                                <button
-                                  type="button"
-                                  onClick={() => handleRemoveFamilyRow(f.id)}
-                                  className="p-1 rounded-lg text-[#999999] hover:text-red-600 hover:bg-red-50 transition shrink-0"
-                                  title="가족 삭제"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </button>
-                              )}
-                            </div>
-                          )
-                        })}
-                      </div>
-
-                      <p className="text-[11px] text-[#7A6E5E] leading-relaxed pt-1">
-                        ※ 스님 예불 축원 시 세주(가장)부터 자동 낭독되며, 1년 인등 명패에 가족 전체 사주가 일괄 정렬됩니다.
-                      </p>
-                    </div>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#C59B27] via-[#8A6510] to-[#231F1C] text-[#FAF8F5] font-black text-sm shadow-xl hover:brightness-105 active:scale-99 transition flex items-center justify-center gap-2"
-                  >
-                    <Save className="w-4 h-4" />
-                    <span>卍 소원사 종무전산에 신도 및 가족 신적부 등록하기</span>
-                  </button>
-                </form>
-              </section>
-            )}
-
-            {/* ==================== 1. 신도교적부 리스트 & 검색·수정 탭 ==================== */}
-            {erpTab === 'search' && (
-              <section className="bg-white text-[#231F1C] rounded-3xl p-6 sm:p-8 shadow-sm border border-[#E6DEC8] space-y-5">
-                <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3.5 pb-3 border-b border-[#E6DEC8]">
-                  <div>
-                    <h3 className="font-serif-kr font-bold text-lg text-[#1B1815] flex items-center gap-2 flex-wrap">
-                      <span>1. 신도교적부 리스트 &amp; 검색·수정</span>
-                      {adminMemberSearchQuery.trim() ? (
-                        <span className="text-xs font-bold text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-lg border border-[#E8D4A2]">
-                          검색 일치: {filteredAdminMembers.length}명 / 전체 {members.length}명
-                        </span>
-                      ) : (
-                        <span className="text-xs font-normal text-[#8C8071]">
-                          (전체 {members.length}명)
-                        </span>
-                      )}
-                    </h3>
-                    <p className="text-xs text-[#8C8071] mt-0.5">
-                      본인 이름뿐 아니라 남편(세주) 이름, 자녀 이름, 전화번호 뒷4자리 아무거나 검색해도 1초 만에 가족 전체가 호출됩니다.
-                    </p>
-                  </div>
-
-                  {/* 🌟 대표님 요청: 페이지 상단 오른쪽 종무원 공통 액션 툴바 (4대 핵심 버튼) */}
-                  <div className="flex items-center gap-2 flex-wrap shrink-0">
-                    {/* 현재 선택 신도 안내 배지 */}
-                    {currentActiveBeliever && (
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#FAF8F5] border border-[#D5C59B] text-xs shadow-2xs">
-                        <span className="w-2 h-2 rounded-full bg-[#C59B27] animate-pulse shrink-0" />
-                        <span className="text-[#8C8071]">선택 신도:</span>
-                        <strong className="text-[#1B1815] font-bold">
-                          {currentActiveBeliever.name} {currentActiveBeliever.dharma_name ? `(${currentActiveBeliever.dharma_name})` : ''}
-                        </strong>
-                      </div>
-                    )}
-
-                    {/* 1. 기도 · 위패 · 불사 정식 접수 (모바일 신청란 표준 100% 통합 일치) */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!currentActiveBeliever) return
-                        setActiveBelieverCode(currentActiveBeliever.code)
-                        setSettlementTargetMember(currentActiveBeliever)
-                        setShowSettlementModal(true)
-                      }}
-                      className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:brightness-105 text-[#1B1815] font-black text-xs transition flex items-center gap-1.5 shadow-sm border border-amber-400 active:scale-95 cursor-pointer"
-                      title={currentActiveBeliever ? `[${currentActiveBeliever.name} 신도] 기도·위패·불사 동참 정식 접수 (상시기도/인등 · 영구위패 · 삼성각대작불사 100% 통합)` : '기도 · 위패 · 불사 접수'}
-                    >
-                      <Sparkles className="w-3.5 h-3.5 text-amber-950 fill-amber-900" />
-                      <span>기도 · 위패 · 불사 접수</span>
-                    </button>
-
-                    {/* 3. 인등 명패 */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!currentActiveBeliever) return
-                        setActiveBelieverCode(currentActiveBeliever.code)
-                        setIndeungTargetMember(currentActiveBeliever)
-                        setShowIndeungNameplateModal(true)
-                      }}
-                      className="px-3.5 py-2 rounded-xl bg-white hover:bg-[#FAF3DF] border-2 border-[#D5C59B] text-[#8A6510] font-bold text-xs transition flex items-center gap-1.5 shadow-xs active:scale-95 cursor-pointer"
-                      title={currentActiveBeliever ? `[${currentActiveBeliever.name} 신도] 대웅전 1년 가족인등 전통 명패 A4 원터치 인쇄` : '인등 명패 인쇄'}
-                    >
-                      <Printer className="w-3.5 h-3.5" />
-                      <span>인등 명패</span>
-                    </button>
-
-                    {/* 4. 교적 수정 */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!currentActiveBeliever) return
-                        setActiveBelieverCode(currentActiveBeliever.code)
-                        setSelectedMemberDetail(currentActiveBeliever)
-                        setIsEditingMember(false)
-                      }}
-                      className="px-3.5 py-2 rounded-xl bg-[#1B1815] hover:bg-[#2C251F] text-[#F5D061] font-bold text-xs transition flex items-center gap-1.5 shadow-xs active:scale-95 cursor-pointer"
-                      title={currentActiveBeliever ? `[${currentActiveBeliever.name} 신도] 신도교적부 상세 조회 및 수정` : '교적 상세수정'}
-                    >
-                      <FileText className="w-3.5 h-3.5" />
-                      <span>교적 수정</span>
-                    </button>
-
-                    {/* 5. 신규 등록 */}
-                    <button
-                      type="button"
-                      onClick={() => setErpTab('register')}
-                      className="px-3 py-2 rounded-xl bg-[#FAF8F5] hover:bg-[#EAE2D3] text-[#555] font-bold text-xs transition flex items-center gap-1.5 border border-[#DDD4C4] active:scale-95 cursor-pointer"
-                      title="신규 신도 교적 새로 등록하기"
-                    >
-                      <UserPlus className="w-3.5 h-3.5 text-[#777]" />
-                      <span>신규 등록</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="relative">
-                  <Search className="w-5 h-5 text-[#8C8071] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  <input
-                    type="text"
-                    value={adminMemberSearchQuery}
-                    onChange={(e) => setAdminMemberSearchQuery(e.target.value)}
-                    placeholder="성함, 법명, 남편(세주)/자녀 이름, 전화번호 뒷4자리, 고유코드, 주소 검색 (1초 고속 검색)"
-                    className="w-full pl-11 pr-10 py-3 rounded-2xl bg-[#FAF8F5] border-2 border-[#D5C59B] text-sm placeholder:text-[#A89D8E] focus:outline-none focus:border-[#C59B27] shadow-inner font-semibold"
-                  />
-                  {adminMemberSearchQuery && (
-                    <button
-                      type="button"
-                      onClick={() => setAdminMemberSearchQuery('')}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#8C8071] hover:text-[#1B1815] p-1"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs">
-                    {[
-                      { id: 'all', label: `전체 (${members.length})` },
-                      {
-                        id: 'lantern_active',
-                        label: `🔥 점등중 (${members.filter((m) => getMemberPrayerAndPaymentInfo(m).isLanternActive).length})`,
-                      },
-                      {
-                        id: 'lantern_off',
-                        label: `⚪ 소등 (${members.filter((m) => !getMemberPrayerAndPaymentInfo(m).isLanternActive).length})`,
-                      },
-                      { id: 'believer', label: `일반신도 (${members.filter((m) => m.role === 'believer').length})` },
-                      { id: 'committee_member', label: `포교위원 (${members.filter((m) => m.role === 'committee_member').length})` },
-                      { id: 'agent', label: `위원장 (${members.filter((m) => m.role === 'agent').length})` },
-                      { id: 'admin', label: `본부임원 (${members.filter((m) => m.role === 'temple_admin' || m.role === 'master').length})` },
-                    ].map((chip) => (
-                      <button
-                        key={chip.id}
-                        type="button"
-                        onClick={() => setAdminMemberRoleFilter(chip.id)}
-                        className={`px-3 py-1.5 rounded-xl font-bold transition ${
-                          adminMemberRoleFilter === chip.id
-                            ? 'bg-[#1B1815] text-[#F5D061] shadow-sm'
-                            : 'bg-[#FAF8F5] text-[#6B6155] border border-[#DDD4C4] hover:bg-white'
-                        }`}
-                      >
-                        {chip.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  <select
-                    value={adminMemberSort}
-                    onChange={(e) => setAdminMemberSort(e.target.value)}
-                    className="px-3 py-1.5 rounded-xl bg-white border border-[#DDD4C4] text-xs font-semibold text-[#231F1C] ml-auto shrink-0"
-                  >
-                    <option value="latest">최신 등록순</option>
-                    <option value="name">성함 가나다순</option>
-                    <option value="merit">공덕(기도) 많은순</option>
-                  </select>
-                </div>
-
-                {/* 🪷 10만 신도 교적부 종합 5단 열 헤더 (각 행 중복 제목을 상단 헤더로 일괄 통합!) */}
-                <div className="hidden lg:grid grid-cols-12 gap-3.5 px-4 sm:px-5 py-2.5 rounded-xl bg-[#FAF5EB] border border-[#E6DEC8] text-xs font-bold text-[#7A6E5E] tracking-tight shadow-xs select-none">
-                  <div className="col-span-2 flex items-center gap-1.5">
-                    <span>신도 기본 인적</span>
-                  </div>
-                  <div className="col-span-2 border-l border-[#E6DEC8] pl-3.5 flex items-center gap-1.5">
-                    <span>대웅전 점등 상태</span>
-                  </div>
-                  <div className="col-span-2 border-l border-[#E6DEC8] pl-3.5 flex items-center gap-1.5">
-                    <span>부처님 전 축원 발원</span>
-                  </div>
-                  <div className="col-span-4 border-l border-[#E6DEC8] pl-3.5 flex items-center gap-1.5">
-                    <span>기도·불사 접수 현황 & 일자</span>
-                  </div>
-                  <div className="col-span-2 border-l border-[#E6DEC8] pl-3.5 flex items-center gap-1.5">
-                    <span>보시금 입금 상태 & 관리</span>
-                  </div>
-                </div>
-
-                <div className="space-y-2.5 max-h-[600px] overflow-y-auto pr-1">
-                  {filteredAdminMembers.length === 0 ? (
-                    <div className="p-12 text-center text-sm text-[#8C8071] border border-dashed border-[#DDD4C4] rounded-2xl">
-                      일치하는 신도 또는 가족이 없습니다.
-                    </div>
-                  ) : (
-                    filteredAdminMembers.map(renderMemberRowCard)
-                  )}
-                </div>
-              </section>
-            )}
-
-            {/* ==================== 3. 기존 전산 엑셀 일괄 이관 탭 ==================== */}
-            {erpTab === 'excel' && (
-              <section className="bg-white text-[#231F1C] rounded-3xl p-6 sm:p-8 shadow-sm border border-[#E6DEC8] space-y-5">
-                <div className="flex items-center justify-between pb-2 border-b border-[#E6DEC8]">
-                  <div>
-                    <h3 className="font-serif-kr font-bold text-lg text-[#1B1815]">
-                      3. 기존 사찰 전산(모아소프트 등) 신도 명부 엑셀 일괄 이관
-                    </h3>
-                    <p className="text-xs text-[#8C8071] mt-0.5">
-                      기존 프로그램에서 내보낸 엑셀 내용을 복사하여 아래에 붙여넣기만 하면, 수백~수천 명의 신도가 소원사 DB로 1초 만에 이관됩니다.
-                    </p>
-                  </div>
-                  <span className="text-xs text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200 font-bold">
-                    복사 &amp; 붙여넣기 원터치 이관
-                  </span>
-                </div>
-
-                <div className="space-y-4">
-                  <textarea
-                    rows={6}
-                    value={excelPasteText}
-                    onChange={(e) => setExcelPasteText(e.target.value)}
-                    placeholder="기존 전산 엑셀에서 복사(Ctrl+C) 후 여기에 붙여넣기(Ctrl+V) 하세요.&#10;예시:&#10;홍길동	010-1234-5678	보현심	제주특별자치도 제주시&#10;김성수	010-9876-5432	법륜	제주특별자치도 서귀포시"
-                    className="w-full p-4 rounded-2xl bg-[#FAF8F5] border-2 border-[#DDD4C4] text-xs font-mono placeholder:text-[#AAAAAA] focus:outline-none focus:border-[#C59B27]"
-                  />
-
-                  <div className="flex items-center gap-3">
-                    <button
-                      type="button"
-                      onClick={handleParseExcel}
-                      className="px-5 py-2.5 rounded-xl bg-[#231F1C] text-[#F5D061] text-xs font-bold hover:bg-[#302A25] transition shadow"
-                    >
-                      1. 엑셀 데이터 분석 및 미리보기
-                    </button>
-                    {excelParsedRows.length > 0 && (
-                      <button
-                        type="button"
-                        onClick={handleBatchImportExcel}
-                        disabled={isExcelUploading}
-                        className="px-5 py-2.5 rounded-xl bg-emerald-700 text-white text-xs font-bold hover:bg-emerald-800 transition flex items-center gap-1.5 shadow"
-                      >
-                        <CheckCircle2 className="w-4 h-4" />
-                        <span>
-                          2. {excelParsedRows.length}명 소원사 DB로 즉시 일괄 등록
-                        </span>
-                      </button>
-                    )}
-                  </div>
-
-                  {excelParsedRows.length > 0 && (
-                    <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#DDD4C4] space-y-2 max-h-60 overflow-y-auto">
-                      <div className="text-xs font-bold text-[#8A6510]">
-                        분석된 신도 미리보기 (총 {excelParsedRows.length}명):
-                      </div>
-                      <div className="space-y-1.5 text-xs">
-                        {excelParsedRows.slice(0, 10).map((r, i) => (
-                          <div key={i} className="flex items-center gap-3 text-[#444444] p-1.5 bg-white rounded-lg border border-[#EAE2D3]">
-                            <span className="font-bold text-[#111111]">{r.name}</span>
-                            <span className="font-mono">{r.phone}</span>
-                            {r.dharma_name && <span className="text-[#8A6510]">({r.dharma_name})</span>}
-                            <span className="text-[#888888] truncate flex-1">{r.address}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </section>
-            )}
-
-            {/* ==================== 4. 정산관제 탭 ==================== */}
-            {erpTab === 'settlement' && (
-              <section className="bg-white text-[#231F1C] rounded-3xl p-6 sm:p-8 shadow-sm border border-[#E6DEC8] space-y-5">
-                <div className="flex items-center justify-between pb-2 border-b border-[#E6DEC8]">
-                  <div>
-                    <h3 className="font-serif-kr font-bold text-lg text-[#1B1815]">
-                      4. 정산관제
-                    </h3>
-                    <p className="text-xs text-[#8C8071] mt-0.5">
-                      사찰 불사금 50% 원천 적립 및 전국 포교위원회 1·2·3차 조직표 요율제 실시간 정산 집행 및 감사 원장입니다.
-                    </p>
-                  </div>
-                  <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
-                    실입금액 100% 완전 분배·정산
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-center text-xs pt-1">
-                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
-                    <div className="text-[10.5px] text-[#8C8071]">1차 직속추천</div>
-                    <div className="text-base font-black text-[#1B1815] mt-0.5">30%</div>
-                  </div>
-                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
-                    <div className="text-[10.5px] text-[#8C8071]">2차 상위추천</div>
-                    <div className="text-base font-black text-[#1B1815] mt-0.5">10%</div>
-                  </div>
-                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
-                    <div className="text-[10.5px] text-[#8C8071]">3차 상위추천</div>
-                    <div className="text-base font-black text-[#1B1815] mt-0.5">5%</div>
-                  </div>
-                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
-                    <div className="text-[10.5px] text-[#8A6510]">전산 인프라</div>
-                    <div className="text-base font-black text-[#8A6510] mt-0.5">5%</div>
-                  </div>
-                  <div className="p-3 rounded-xl bg-amber-50 border border-amber-300">
-                    <div className="text-[10.5px] text-amber-900 font-bold">소원사 사찰불사</div>
-                    <div className="text-base font-black text-amber-900 mt-0.5">50%</div>
-                  </div>
-                </div>
-
-                {/* 📜 사찰 불사 및 위패 봉안 전체 접수 원장 목록 */}
-                <div className="space-y-2 pt-2">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-serif-kr font-bold text-sm text-[#1B1815] flex items-center gap-1.5">
-                      <span>📜 사찰 불사 및 위패 봉안 전체 정산 원장 ({settlements.length}건)</span>
-                    </h4>
-                    <span className="text-xs font-bold text-[#8A6510]">
-                      총 불사금: {settlements.reduce((sum, s) => sum + (Number(s.total_amount) || 0), 0).toLocaleString()}원
-                    </span>
-                  </div>
-
-                  <div className="overflow-x-auto rounded-2xl border border-[#DDD4C4] bg-white">
-                    <table className="w-full text-left border-collapse text-xs">
-                      <thead className="bg-[#FAF8F5] text-[#5C4D3C] border-b border-[#DDD4C4] text-[11px] font-bold">
-                        <tr>
-                          <th className="p-2.5 text-center whitespace-nowrap">접수일 / 입금일</th>
-                          <th className="p-2.5 whitespace-nowrap">동참 신도</th>
-                          <th className="p-2.5 whitespace-nowrap">기도·불사·위패 종목</th>
-                          <th className="p-2.5 text-right whitespace-nowrap">표준 약정액</th>
-                          <th className="p-2.5 text-right whitespace-nowrap">실제 입금액</th>
-                          <th className="p-2.5 text-center whitespace-nowrap">사찰 본원(50%)</th>
-                          <th className="p-2.5 whitespace-nowrap">1차 직속추천 (30%)</th>
-                          <th className="p-2.5 whitespace-nowrap">2차 상위관리 (10%)</th>
-                          <th className="p-2.5 text-center whitespace-nowrap">수납·정산상태</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-[#EFE7D8]">
-                        {settlements.map((s, idx) => {
-                          const stdAmt = Number(s.standard_amount || s.total_amount || 0)
-                          const actualPaid = s.paid_amount !== undefined ? Number(s.paid_amount) : (s.payment_status === 'pending' ? 0 : stdAmt)
-                          const templeAmt = Math.round(actualPaid * 0.5)
-                          const agent1Amt = Math.round(actualPaid * 0.3)
-                          const isConfirmed = s.payment_status === 'confirmed' || (!s.payment_status && actualPaid > 0)
-                          const isPartial = s.payment_status === 'partial'
-                          const isPending = s.payment_status === 'pending' || actualPaid === 0
-
-                          return (
-                            <tr key={s.id || idx} className="hover:bg-[#FAF8F5]">
-                              <td className="p-2.5 text-center whitespace-nowrap font-mono text-[11px]">
-                                <div className="text-[#666]" title="접수일자">
-                                  접수: {(s.applied_date || s.created_at || '').slice(0, 10)}
-                                </div>
-                                <div className={`text-[10.5px] font-bold ${s.paid_date ? 'text-emerald-700' : 'text-amber-700'}`} title="입금일자">
-                                  {s.paid_date ? `입금: ${s.paid_date.slice(0, 10)}` : '미입금 (대기)'}
-                                </div>
-                              </td>
-                              <td className="p-2.5 font-bold text-[#1B1815] whitespace-nowrap">
-                                <div>{s.believer_name}</div>
-                                {s.believer_phone && (
-                                  <div className="font-mono text-[10.5px] text-[#8C8071]">{s.believer_phone}</div>
-                                )}
-                              </td>
-                              <td className="p-2.5 font-bold text-[#8A6510]">
-                                <div>{s.item_name || s.title || '사찰 특별불사'}</div>
-                                {s.memo && (
-                                  <div className="text-[10px] text-[#888] font-normal italic truncate max-w-[200px]" title={s.memo}>
-                                    축원: {s.memo}
-                                  </div>
-                                )}
-                              </td>
-                              <td className="p-2.5 text-right font-mono font-bold text-[#555] whitespace-nowrap">
-                                {stdAmt.toLocaleString()}원
-                              </td>
-                              <td className="p-2.5 text-right font-mono font-bold whitespace-nowrap">
-                                <span className={isConfirmed ? 'text-emerald-700' : isPartial ? 'text-amber-700' : 'text-stone-400'}>
-                                  {actualPaid.toLocaleString()}원
-                                </span>
-                                {stdAmt - actualPaid > 0 && (
-                                  <div className="text-[10px] text-red-600 font-bold">
-                                    미납: {(stdAmt - actualPaid).toLocaleString()}원
-                                  </div>
-                                )}
-                              </td>
-                              <td className="p-2.5 text-center font-mono font-bold text-amber-900 bg-amber-50/50 whitespace-nowrap">
-                                {templeAmt.toLocaleString()}원
-                              </td>
-                              <td className="p-2.5 text-[#554E45] whitespace-nowrap font-bold">
-                                <div>{s.agent_1st_name || '-'}</div>
-                                {actualPaid > 0 && (
-                                  <div className="font-mono text-[10px] text-emerald-700 font-semibold">
-                                    +{agent1Amt.toLocaleString()}원
-                                  </div>
-                                )}
-                              </td>
-                              <td className="p-2.5 text-[#777777] whitespace-nowrap text-[11px]">
-                                {s.agent_2nd_name || '-'}
-                              </td>
-                              <td className="p-2.5 text-center whitespace-nowrap">
-                                <div className="flex flex-col items-center gap-1">
-                                  {s.payment_status === 'refunded' ? (
-                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-900 border border-red-300">
-                                      환불·취소 (정산회수)
-                                    </span>
-                                  ) : isConfirmed ? (
-                                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                                      완납·정산완료
-                                    </span>
-                                  ) : isPartial ? (
-                                    <>
-                                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
-                                        분납(1차정산)
-                                      </span>
-                                      <button
-                                        type="button"
-                                        onClick={() => handleConfirmSettlementPayment(s.id)}
-                                        className="px-2 py-0.5 rounded-lg text-[9.5px] font-bold bg-emerald-700 hover:bg-emerald-800 text-white shadow-xs transition cursor-pointer"
-                                        title="신도가 남은 잔액을 완납했을 때 클릭"
-                                      >
-                                        잔액완납✓
-                                      </button>
-                                    </>
-                                  ) : (
-                                    <button
-                                      type="button"
-                                      onClick={() => handleConfirmSettlementPayment(s.id)}
-                                      className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-stone-100 hover:bg-emerald-600 hover:text-white text-stone-700 border border-stone-300 transition cursor-pointer shadow-2xs"
-                                      title="신도가 입금했을 때 클릭하여 완납 처리"
-                                    >
-                                      입금대기(완납✓)
-                                    </button>
-                                  )}
-
-                                  {/* 착오 수정 및 환불/취소 관리 버튼 */}
-                                  <button
-                                    type="button"
-                                    onClick={() => setEditingSettlement(s)}
-                                    className="px-2 py-0.5 rounded-md text-[9.5px] font-bold bg-[#FAF8F5] hover:bg-[#F0EAE1] text-[#8A6510] border border-[#D5C59B] transition cursor-pointer"
-                                    title="착오 금액 수정, 환불 처리, 장부 삭제"
-                                  >
-                                    ⚙️ 수정/환불
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          )
-                        })}
-                      </tbody></table>
-                  </div>
-                </div>
-              </section>
-            )}
-          </main>
-        )}
-
-        {/* ==================== 대웅전 사시예불 축원 명부 A4 인쇄 모달 ==================== */}
-        <SasiPrayerPrintModal
-          isOpen={showSasiPrintModal}
-          onClose={() => setShowSasiPrintModal(false)}
-          activeSasiPrayers={activeSasiPrayers}
-          filteredSasiPrayers={filteredSasiPrayers}
-          sasiPrayedCheckedIds={sasiPrayedCheckedIds}
-          toggleSasiPrayedCheck={toggleSasiPrayedCheck}
-          sasiPrayerTypeTab={sasiPrayerTypeTab}
-          setSasiPrayerTypeTab={setSasiPrayerTypeTab}
-        />
-
-                {/* 신도 상세 및 가족 사주 수정 모달 */}
-        {selectedMemberDetail && renderMemberDetailModal()}
-        {showSettlementModal && renderSettlementModal()}
-        {editingSettlement && renderSettlementEditModal()}
-        {pendingSettlementConfirm && renderSettlementConfirmModal()}
-        {showBulsaCategorySheet && renderBulsaCategorySheet()}
-        <BusinessCardModal
-          isOpen={showBusinessCardModal}
-          isModal={true}
-          member={businessCardTarget || currentUser || members.find((m) => m.code === '33065540')}
-          onClose={() => setShowBusinessCardModal(false)}
-          onNavigateTab={(tab) => setActiveTab(tab)}
-          showToast={showToast}
-        />
-        <IndividualRecordPrintModal
-          isOpen={showIndividualRecordPrintModal}
-          onClose={() => setShowIndividualRecordPrintModal(false)}
-          member={individualRecordTargetMember}
-          prayers={prayers}
-          settlements={settlements}
-        />
-        <IndeungNameplatePrintModal
-          isOpen={showIndeungNameplateModal}
-          onClose={() => setShowIndeungNameplateModal(false)}
-          member={indeungTargetMember}
-        />
-        {lanternTargetMember && renderLanternModal()}
-      </div>
+      <AdminERPView
+        currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
+        isMasterOrTempleAdmin={isMasterOrTempleAdmin}
+        isMaster={isMaster}
+        isTempleAdmin={isTempleAdmin}
+        loginIdInput={loginIdInput}
+        setLoginIdInput={setLoginIdInput}
+        loginPwInput={loginPwInput}
+        setLoginPwInput={setLoginPwInput}
+        handleLogin={handleLogin}
+        handleLogout={handleLogout}
+        members={members}
+        setMembers={setMembers}
+        prayers={prayers}
+        setPrayers={setPrayers}
+        settlements={settlements}
+        setSettlements={setSettlements}
+        activeSasiPrayers={activeSasiPrayers}
+        filteredSasiPrayers={filteredSasiPrayers}
+        isStandaloneAdmin={isStandaloneAdmin}
+        setIsStandaloneAdmin={setIsStandaloneAdmin}
+        erpTab={erpTab}
+        setErpTab={setErpTab}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        showToast={showToast}
+        adminMemberRoleFilter={adminMemberRoleFilter}
+        setAdminMemberRoleFilter={setAdminMemberRoleFilter}
+        adminMemberSearchQuery={adminMemberSearchQuery}
+        setAdminMemberSearchQuery={setAdminMemberSearchQuery}
+        adminMemberSort={adminMemberSort}
+        setAdminMemberSort={setAdminMemberSort}
+        filteredAdminMembers={filteredAdminMembers}
+        businessCardTarget={businessCardTarget}
+        setBusinessCardTarget={setBusinessCardTarget}
+        editingSettlement={editingSettlement}
+        setEditingSettlement={setEditingSettlement}
+        excelParsedRows={excelParsedRows}
+        setExcelParsedRows={setExcelParsedRows}
+        excelPasteText={excelPasteText}
+        setExcelPasteText={setExcelPasteText}
+        indeungTargetMember={indeungTargetMember}
+        setIndeungTargetMember={setIndeungTargetMember}
+        individualRecordTargetMember={individualRecordTargetMember}
+        setIndividualRecordTargetMember={setIndividualRecordTargetMember}
+        isEditingMember={isEditingMember}
+        setIsEditingMember={setIsEditingMember}
+        isExcelUploading={isExcelUploading}
+        setIsExcelUploading={setIsExcelUploading}
+        lanternTargetMember={lanternTargetMember}
+        setLanternTargetMember={setLanternTargetMember}
+        memberEditForm={memberEditForm}
+        setMemberEditForm={setMemberEditForm}
+        pendingSettlementConfirm={pendingSettlementConfirm}
+        setPendingSettlementConfirm={setPendingSettlementConfirm}
+        regBelieverAddress={regBelieverAddress}
+        setRegBelieverAddress={setRegBelieverAddress}
+        regBelieverDharma={regBelieverDharma}
+        setRegBelieverDharma={setRegBelieverDharma}
+        regBelieverName={regBelieverName}
+        setRegBelieverName={setRegBelieverName}
+        regBelieverParent={regBelieverParent}
+        setRegBelieverParent={setRegBelieverParent}
+        regBelieverPhone={regBelieverPhone}
+        setRegBelieverPhone={setRegBelieverPhone}
+        regFamilyList={regFamilyList}
+        setRegFamilyList={setRegFamilyList}
+        regPrayerType={regPrayerType}
+        setRegPrayerType={setRegPrayerType}
+        regWishText={regWishText}
+        setRegWishText={setRegWishText}
+        sasiPrayedCheckedIds={sasiPrayedCheckedIds}
+        setSasiPrayedCheckedIds={setSasiPrayedCheckedIds}
+        sasiPrayerTypeTab={sasiPrayerTypeTab}
+        setSasiPrayerTypeTab={setSasiPrayerTypeTab}
+        selectedMemberDetail={selectedMemberDetail}
+        setSelectedMemberDetail={setSelectedMemberDetail}
+        settlementItemType={settlementItemType}
+        setSettlementItemType={setSettlementItemType}
+        settlementMemo={settlementMemo}
+        setSettlementMemo={setSettlementMemo}
+        settlementPaidAmount={settlementPaidAmount}
+        setSettlementPaidAmount={setSettlementPaidAmount}
+        settlementPaymentStatus={settlementPaymentStatus}
+        setSettlementPaymentStatus={setSettlementPaymentStatus}
+        settlementStandardAmount={settlementStandardAmount}
+        setSettlementStandardAmount={setSettlementStandardAmount}
+        settlementTargetMember={settlementTargetMember}
+        setSettlementTargetMember={setSettlementTargetMember}
+        showBulsaCategorySheet={showBulsaCategorySheet}
+        setShowBulsaCategorySheet={setShowBulsaCategorySheet}
+        showBusinessCardModal={showBusinessCardModal}
+        setShowBusinessCardModal={setShowBusinessCardModal}
+        showIndeungNameplateModal={showIndeungNameplateModal}
+        setShowIndeungNameplateModal={setShowIndeungNameplateModal}
+        showIndividualRecordPrintModal={showIndividualRecordPrintModal}
+        setShowIndividualRecordPrintModal={setShowIndividualRecordPrintModal}
+        showSasiPrintModal={showSasiPrintModal}
+        setShowSasiPrintModal={setShowSasiPrintModal}
+        showSettlementModal={showSettlementModal}
+        setShowSettlementModal={setShowSettlementModal}
+        executeFinalSettlementRegistration={executeFinalSettlementRegistration}
+        getMemberPrayerAndPaymentInfo={getMemberPrayerAndPaymentInfo}
+        handleAddFamilyRow={handleAddFamilyRow}
+        handleConfirmSettlementPayment={handleConfirmSettlementPayment}
+        handleDeleteSettlement={handleDeleteSettlement}
+        handleParseExcel={handleParseExcel}
+        handleBatchImportExcel={handleBatchImportExcel}
+        handleRefundSettlement={handleRefundSettlement}
+        handleRegisterFamilyMember={handleRegisterFamilyMember}
+        handleRegisterSettlementForMember={handleRegisterSettlementForMember}
+        handleRemoveFamilyRow={handleRemoveFamilyRow}
+        handleSaveEditedSettlement={handleSaveEditedSettlement}
+        handleUpdateFamilyRow={handleUpdateFamilyRow}
+        renderBulsaCategorySheet={renderBulsaCategorySheet}
+        renderLanternModal={renderLanternModal}
+        renderMemberRowCard={renderMemberRowCard}
+        toggleSasiPrayedCheck={toggleSasiPrayedCheck}
+        handleSaveMemberEdit={handleSaveMemberEdit}
+      />
     )
   }
 
@@ -14793,8 +12216,68 @@ function normalizeMemberHierarchy(m) {
         />
 
                 {/* ==================== 10만 신도 고속 검색: 회원 상세 정보 & 가족 사주 관리 모달 ==================== */}
-        {selectedMemberDetail && renderMemberDetailModal()}
-        {showSettlementModal && renderSettlementModal()}
+        <MemberDetailModal
+          isOpen={!!selectedMemberDetail}
+          member={selectedMemberDetail}
+          onClose={() => setSelectedMemberDetail(null)}
+          isEditingMember={isEditingMember}
+          setIsEditingMember={setIsEditingMember}
+          memberEditForm={memberEditForm}
+          setMemberEditForm={setMemberEditForm}
+          onSaveMemberEdit={handleSaveMemberEdit}
+          prayers={prayers}
+          settlements={settlements}
+          members={members}
+          getMemberPrayerAndPaymentInfo={getMemberPrayerAndPaymentInfo}
+          onOpenIndividualRecordPrint={(m) => {
+            setIndividualRecordTargetMember(m)
+            setShowIndividualRecordPrintModal(true)
+          }}
+          onOpenIndeungPrint={(m) => {
+            setIndeungTargetMember(m)
+            setShowIndeungNameplateModal(true)
+          }}
+          onOpenSettlement={(m) => {
+            setSettlementTargetMember(m)
+            setShowSettlementModal(true)
+          }}
+        />
+        <SettlementModal
+          isOpen={showSettlementModal && !!settlementTargetMember}
+          member={settlementTargetMember}
+          onClose={() => {
+            setShowSettlementModal(false)
+            setSettlementTargetMember(null)
+          }}
+          members={members}
+          settlementItemType={settlementItemType}
+          setSettlementItemType={setSettlementItemType}
+          settlementStandardAmount={settlementStandardAmount}
+          setSettlementStandardAmount={setSettlementStandardAmount}
+          settlementPaidAmount={settlementPaidAmount}
+          setSettlementPaidAmount={setSettlementPaidAmount}
+          settlementPaymentStatus={settlementPaymentStatus}
+          setSettlementPaymentStatus={setSettlementPaymentStatus}
+          settlementMemo={settlementMemo}
+          setSettlementMemo={setSettlementMemo}
+          onSubmit={handleRegisterSettlementForMember}
+          onOpenCategorySheet={() => setShowBulsaCategorySheet(true)}
+        />
+        <SettlementEditModal
+          isOpen={!!editingSettlement}
+          settlement={editingSettlement}
+          setEditingSettlement={setEditingSettlement}
+          onClose={() => setEditingSettlement(null)}
+          onSave={handleSaveEditedSettlement}
+          onRefund={handleRefundSettlement}
+          onDelete={handleDeleteSettlement}
+        />
+        <SettlementConfirmModal
+          isOpen={!!pendingSettlementConfirm}
+          data={pendingSettlementConfirm}
+          onClose={() => setPendingSettlementConfirm(null)}
+          onConfirm={(data) => executeFinalSettlementRegistration(data)}
+        />
         <BusinessCardModal
           isOpen={showBusinessCardModal}
           isModal={true}
