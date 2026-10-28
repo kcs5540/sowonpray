@@ -13921,18 +13921,62 @@ function normalizeMemberHierarchy(m) {
                   🙏 도량에 오시기 전날 미리 연락 주시면 따뜻한 차와 공양을 대접해 드립니다. (010-4912-1083)
                 </div>
 
-                {/* 가족·지인에게 알리기 (카카오톡 공유) */}
+                {/* 가족·지인에게 알리기 (카카오톡 공식 피드 카드 및 전문 전송) */}
                 <button
                   type="button"
                   onClick={() => {
+                    const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
+                    const code = currentUser?.code || referralCode || '33065540'
+                    const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
+                    const shareUrl = `${origin}/?ref=${code}`
+                    const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=3'
+
+                    // 1) 카카오톡 공식 JavaScript SDK 피드 카드 전송 (사진 + 제목 + 축원문 + 바로가기 버튼 완벽 전송)
+                    if (typeof window !== 'undefined' && window.Kakao) {
+                      try {
+                        if (!window.Kakao.isInitialized()) {
+                          window.Kakao.init(kakaoKey)
+                        }
+                        if (window.Kakao.isInitialized() && window.Kakao.Share) {
+                          window.Kakao.Share.sendDefault({
+                            objectType: 'feed',
+                            content: {
+                              title: `🪷 [제주 소원사] ${wishCategory || '불사·기도'} 정식 접수`,
+                              description: `"${wishName.trim()} 불자님의 거룩한 공덕이 부처님 전에 정식 봉안되었습니다.\n매일 오전 10시 사시예불마다 스님께서 정성껏 축원 올립니다."`,
+                              imageUrl: altarImageUrl,
+                              imageWidth: 1024,
+                              imageHeight: 693,
+                              link: {
+                                mobileWebUrl: shareUrl,
+                                webUrl: shareUrl,
+                              },
+                            },
+                            buttons: [
+                              {
+                                title: '🪷 소원사 모바일 법당 함께하기',
+                                link: {
+                                  mobileWebUrl: shareUrl,
+                                  webUrl: shareUrl,
+                                },
+                              },
+                            ],
+                          })
+                          return
+                        }
+                      } catch (err) {
+                        console.warn('Kakao share fallback error:', err)
+                      }
+                    }
+
+                    // 2) 일반 브라우저 공유 fallback (본문+링크 통합 전송하여 카톡 링크 전락 방지!)
+                    const fullText = `${shareMsg}\n\n👉 제주 소원사 모바일 법당:\n${shareUrl}`
                     if (navigator.share) {
                       navigator.share({
                         title: shareTitle,
-                        text: shareMsg,
-                        url: 'https://sowonpray.vercel.app',
+                        text: fullText,
                       }).catch(() => {})
                     } else if (navigator.clipboard) {
-                      navigator.clipboard.writeText(shareMsg)
+                      navigator.clipboard.writeText(fullText)
                       showToast('📋 축원 메시지가 복사되었습니다! 카카오톡 가족방에 붙여넣어 보세요.')
                     }
                   }}
