@@ -131,15 +131,66 @@ p, span, h1, h2, h3, h4, h5, h6, label, button {
     background: #ffffff !important;
     color: #000000 !important;
   }
-  body * {
+
+  /* 📜 개인 신도 교적대장(신적부) 인쇄 시: 메인 앱(#root)을 완전히 제거(display:none)하여 2페이지 복제/중복 인쇄 원천 차단 */
+  body.print-individual-open > #root {
+    display: none !important;
+  }
+  body.print-individual-open #individual-record-portal-root {
+    position: static !important;
+    display: block !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  body.print-individual-open #individual-record-portal-root > div {
+    position: static !important;
+    display: block !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+  body.print-individual-open .no-print {
+    display: none !important;
+  }
+  body.print-individual-open #printable-individual-record {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #111111 !important;
+    box-shadow: none !important;
+    border: none !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  body.print-individual-open #printable-individual-record tr {
+    page-break-inside: avoid !important;
+  }
+
+  /* 기존 사시예불 및 회원명부 호환 출력 규칙 */
+  body:not(.print-individual-open) * {
     visibility: hidden !important;
   }
-  #printable-sasi-sheet, #printable-sasi-sheet *,
-  #printable-member-sheet, #printable-member-sheet *,
-  #printable-individual-record, #printable-individual-record * {
+  body:not(.print-individual-open) #printable-sasi-sheet,
+  body:not(.print-individual-open) #printable-sasi-sheet *,
+  body:not(.print-individual-open) #printable-member-sheet,
+  body:not(.print-individual-open) #printable-member-sheet * {
     visibility: visible !important;
   }
-  #printable-sasi-sheet, #printable-member-sheet {
+  body:not(.print-individual-open) #printable-sasi-sheet,
+  body:not(.print-individual-open) #printable-member-sheet {
     position: absolute !important;
     left: 0 !important;
     top: 0 !important;
@@ -151,22 +202,8 @@ p, span, h1, h2, h3, h4, h5, h6, label, button {
     box-shadow: none !important;
     border: none !important;
   }
-  #printable-individual-record {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #ffffff !important;
-    color: #111111 !important;
-    box-shadow: none !important;
-    border: none !important;
-    page-break-inside: avoid !important;
-    page-break-after: avoid !important;
-    break-inside: avoid !important;
-  }
-  #printable-sasi-sheet tr, #printable-member-sheet tr, #printable-individual-record tr {
+  body:not(.print-individual-open) #printable-sasi-sheet tr,
+  body:not(.print-individual-open) #printable-member-sheet tr {
     page-break-inside: avoid !important;
   }
   .no-print {

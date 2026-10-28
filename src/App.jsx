@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import {
   Flame,
   Sparkles,
@@ -2199,8 +2200,8 @@ export default function App() {
 
     const totalDonation = histSettlements.reduce((sum, s) => sum + (Number(s.total_amount) || 0), 0)
 
-    return (
-      <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+    return createPortal(
+      <div id="individual-record-portal-root" className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
         <div className="w-full max-w-4xl bg-white text-[#111111] rounded-2xl shadow-2xl flex flex-col my-auto border border-[#E5D399] overflow-hidden max-h-[92vh]">
           {/* 상단 조작 바 (인쇄 시 숨김) */}
           <div className="no-print bg-[#1B1815] text-[#FAF8F5] p-3.5 sm:p-4 flex items-center justify-between gap-3 border-b-2 border-[#D4AF37]">
@@ -2466,7 +2467,8 @@ export default function App() {
             </div>
           </div>
         </div>
-      </div>
+      </div>,
+      document.body
     )
   }
 
@@ -2967,6 +2969,18 @@ function normalizeMemberHierarchy(m) {
   // [개인 신도 교적대장(신적부)] 다년간 전체 점등 및 불사 동참 원장 종합 A4 인쇄 모달 상태
   const [showIndividualRecordPrintModal, setShowIndividualRecordPrintModal] = useState(false)
   const [individualRecordTargetMember, setIndividualRecordTargetMember] = useState(null)
+
+  // 개인 신도 교적대장 인쇄 시 배경 앱(#root) 숨김 및 단 1장 완결 출력 전용 클래스 토글
+  useEffect(() => {
+    if (showIndividualRecordPrintModal) {
+      document.body.classList.add('print-individual-open')
+    } else {
+      document.body.classList.remove('print-individual-open')
+    }
+    return () => {
+      document.body.classList.remove('print-individual-open')
+    }
+  }, [showIndividualRecordPrintModal])
 
   // 7일 정진 기간 내(D-7 ~ D-1) 유효 신도만 자동 필터링 (7일 지난 만료 신도는 자동 제외)
   const activeSasiPrayers = useMemo(() => {
