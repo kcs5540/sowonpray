@@ -125,7 +125,7 @@ p, span, h1, h2, h3, h4, h5, h6, label, button {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 8mm;
+    margin: 8mm 10mm;
   }
   body {
     background: #ffffff !important;
@@ -139,7 +139,7 @@ p, span, h1, h2, h3, h4, h5, h6, label, button {
   #printable-individual-record, #printable-individual-record * {
     visibility: visible !important;
   }
-  #printable-sasi-sheet, #printable-member-sheet, #printable-individual-record {
+  #printable-sasi-sheet, #printable-member-sheet {
     position: absolute !important;
     left: 0 !important;
     top: 0 !important;
@@ -150,6 +150,21 @@ p, span, h1, h2, h3, h4, h5, h6, label, button {
     color: #111111 !important;
     box-shadow: none !important;
     border: none !important;
+  }
+  #printable-individual-record {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #111111 !important;
+    box-shadow: none !important;
+    border: none !important;
+    page-break-inside: avoid !important;
+    page-break-after: avoid !important;
+    break-inside: avoid !important;
   }
   #printable-sasi-sheet tr, #printable-member-sheet tr, #printable-individual-record tr {
     page-break-inside: avoid !important;
