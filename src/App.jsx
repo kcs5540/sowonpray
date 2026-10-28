@@ -2289,7 +2289,12 @@ export default function App() {
           ? {
               ...item,
               merit_count: (item.merit_count || 0) + 1,
-              wipae_count: (item.wipae_count || 0) + (settlementItemType.includes('2기') ? 2 : settlementItemType.includes('위패') ? 1 : 0),
+              // 위패 봉안 수량: 실제로 '위패' 종목을 신청하고 완납했을 때만 정확히 1기 또는 2기 증가 (인등, 기도, 기와 등 일반 불사는 0 증가)
+              wipae_count: (item.wipae_count || 0) + (
+                settlementPaymentStatus === 'confirmed' && settlementItemType.includes('위패')
+                  ? (settlementItemType.includes('2기') ? 2 : 1)
+                  : 0
+              ),
               extra_data: {
                 ...(item.extra_data || {}),
                 prayer_title: settlementItemType,
@@ -2653,7 +2658,7 @@ export default function App() {
                 className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] font-serif-kr font-bold text-sm shadow-md flex items-center justify-center gap-2 border border-[#C59B27] transition cursor-pointer"
               >
                 <Save className="w-4 h-4 text-[#F5D061]" />
-                <span>卍 사찰 기도·위패·불사 접수 완료 및 실시간 계보 정산 실행하기</span>
+                <span>卍 기도 · 위패 · 불사 정식 접수 및 수납 완료</span>
               </button>
             </div>
           </form>
