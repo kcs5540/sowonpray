@@ -3478,55 +3478,49 @@ function normalizeMemberHierarchy(m) {
             </div>
           </div>
 
-          {/* ==================== 5열: 💰 보시금·입금처리 & 종무소 액션 (lg:col-span-2) ==================== */}
-          <div className="lg:col-span-2 space-y-2 lg:border-l lg:border-[#F0EAE1] lg:pl-3.5 min-w-0">
-            {/* 입금 상태 배지 & 금액 */}
-            <div className="space-y-1">
-              <span className="lg:hidden text-[10.5px] text-[#8C8071] block">보시금 입금 상태:</span>
-              <div className="flex items-center gap-1.5 flex-wrap">
+          {/* ==================== 5열: 💰 보시금·입금처리 & 종무소 액션 (간략 2줄 구성!) (lg:col-span-2) ==================== */}
+          <div className="lg:col-span-2 space-y-1.5 lg:border-l lg:border-[#F0EAE1] lg:pl-3.5 min-w-0">
+            {/* 1줄: 보시금 입금 상태 배지 & 금액 & 원터치 토글 버튼 */}
+            <div className="flex items-center justify-between gap-1.5">
+              <div className="flex items-center gap-1.5 min-w-0">
                 {pInfo.paymentAmount === 0 ? (
-                  <span className="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-950 border border-emerald-300 font-black text-[10.5px] flex items-center gap-1">
+                  <span className="px-1.5 py-0.5 rounded-lg bg-emerald-100 text-emerald-950 border border-emerald-300 font-black text-[10.5px] flex items-center gap-0.5 shrink-0">
                     <CheckCircle2 className="w-3 h-3 text-emerald-700 shrink-0" />
-                    <span>무료 발원</span>
+                    <span>무료</span>
                   </span>
                 ) : pInfo.paymentStatus === 'settled' ? (
-                  <span className="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold text-[10.5px] flex items-center gap-1">
+                  <span className="px-1.5 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold text-[10.5px] flex items-center gap-0.5 shrink-0">
                     <CheckCircle2 className="w-3 h-3 text-emerald-700 shrink-0" />
-                    <span>입금완료</span>
+                    <span>완납</span>
                   </span>
                 ) : (
-                  <span className="px-2 py-0.5 rounded-lg bg-amber-100 text-amber-900 border border-amber-300 font-bold text-[10.5px] flex items-center gap-1">
+                  <span className="px-1.5 py-0.5 rounded-lg bg-amber-100 text-amber-900 border border-amber-300 font-bold text-[10.5px] flex items-center gap-0.5 shrink-0">
                     <Clock className="w-3 h-3 text-amber-700 shrink-0" />
-                    <span>입금대기</span>
+                    <span>대기</span>
                   </span>
                 )}
-                <span className="font-mono font-bold text-xs text-[#1B1815]">
-                  {pInfo.paymentAmount === 0 ? '0원 (무료)' : `${pInfo.paymentAmount.toLocaleString()}원`}
+                <span className="font-mono font-bold text-xs text-[#1B1815] truncate">
+                  {pInfo.paymentAmount === 0 ? '0원' : `${pInfo.paymentAmount.toLocaleString()}원`}
                 </span>
               </div>
 
-              {/* 원터치 입금확인 토글 버튼 (무료 발원인 경우 입금 불요 안내) */}
-              {pInfo.paymentAmount === 0 ? (
-                <div className="w-full mt-1 py-1 px-2 rounded-lg text-[10.5px] font-bold text-center bg-emerald-50 text-emerald-800 border border-emerald-200">
-                  무료 발원 (입금 불요)
-                </div>
-              ) : (
+              {pInfo.paymentAmount > 0 && (
                 <button
                   type="button"
                   onClick={() => handleTogglePaymentStatus(m.code)}
-                  className={`w-full mt-1 py-1 px-2 rounded-lg text-[10.5px] font-bold transition border ${
+                  className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition border shrink-0 ${
                     pInfo.paymentStatus === 'settled'
-                      ? 'bg-[#FAF8F5] hover:bg-[#F2ECE1] text-[#666666] border-[#DDD4C4]'
-                      : 'bg-emerald-700 hover:bg-emerald-800 text-white border-emerald-800 shadow-sm'
+                      ? 'bg-[#FAF8F5] hover:bg-[#F2ECE1] text-[#777777] border-[#DDD4C4]'
+                      : 'bg-emerald-700 hover:bg-emerald-800 text-white border-emerald-800 shadow-xs'
                   }`}
-                  title="입금 상태 변경"
+                  title={pInfo.paymentStatus === 'settled' ? '입금 대기 상태로 변경' : '입금 완납 확인 처리'}
                 >
-                  {pInfo.paymentStatus === 'settled' ? '상태변경 (대기로)' : '입금확인 처리 ✓'}
+                  {pInfo.paymentStatus === 'settled' ? '대기로' : '완납확인✓'}
                 </button>
               )}
             </div>
 
-            {/* 바로가기 버튼 그룹 (소원등 켜기 / 명패 인쇄 / 상세 수정) */}
+            {/* 2줄: 바로가기 버튼 그룹 (소원등 켜기 / 명패 인쇄 / 상세 수정) */}
             <div className="grid grid-cols-3 gap-1 pt-1 border-t border-[#F0EAE1]">
               <button
                 type="button"
