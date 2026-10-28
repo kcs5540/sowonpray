@@ -4501,67 +4501,11 @@ function normalizeMemberHierarchy(m) {
               )}
             </div>
 
-            {/* 2줄: 바로가기 버튼 그룹 (등연장 / 명패 / 불사접수 / 상세수정) */}
-            <div className="grid grid-cols-4 gap-1 pt-1 border-t border-[#F0EAE1]">
-              <button
-                type="button"
-                onClick={() => {
-                  setLanternTargetMember(m)
-                  setAdminLanternType('lantern_1d')
-                  setAdminLanternCategory('가족건강')
-                  setAdminLanternWish(PRAYER_CATEGORY_TEMPLATES['가족건강'] || '')
-                  setAdminLanternPaid(true)
-                }}
-                className={`py-1.5 px-1 rounded-xl text-[10.5px] font-black transition flex items-center justify-center gap-0.5 shadow-sm ${
-                  pInfo.isLanternActive
-                    ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:brightness-105 text-[#1B1815] border border-amber-400'
-                    : 'bg-gradient-to-r from-[#C59B27] via-[#D4AF37] to-[#8A6510] hover:brightness-105 text-[#1B1815]'
-                }`}
-                title={pInfo.isLanternActive ? '대웅전 소원등 축원 연장/재점등' : '대웅전 소원등 즉시 켜기'}
-              >
-                <Flame className={`w-3 h-3 ${pInfo.isLanternActive ? 'text-amber-950 fill-amber-900' : 'text-amber-950'}`} />
-                <span>{pInfo.isLanternActive ? '등연장' : '등켜기'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedMemberDetail(m)
-                  setShowSasiPrintModal(true)
-                  setSasiPrayerTypeTab('indeung_1yr')
-                }}
-                className="py-1.5 px-1 rounded-xl bg-white hover:bg-[#FAF3DF] border border-[#D5C59B] text-[10.5px] font-bold text-[#8A6510] transition flex items-center justify-center gap-0.5 shadow-xs"
-                title="대웅전 1년 인등 명패 A4 인쇄"
-              >
-                <Printer className="w-3 h-3" />
-                <span>명패</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setSettlementTargetMember(m)
-                  setShowSettlementModal(true)
-                }}
-                className="py-1.5 px-1 rounded-xl bg-[#FAF3DF] hover:bg-[#F3E6C2] border border-[#D5C59B] text-[10.5px] font-black text-[#8A6510] transition flex items-center justify-center gap-0.5 shadow-xs"
-                title="사찰 불사·위패 정식 접수하기 (조직표 1초 자동 매칭)"
-              >
-                <PlusCircle className="w-3 h-3 text-[#8A6510]" />
-                <span>불사</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedMemberDetail(m)
-                  setIsEditingMember(false)
-                }}
-                className="py-1.5 px-1 rounded-xl bg-[#1B1815] text-[#F5D061] hover:bg-[#2C251F] text-[10.5px] font-bold transition flex items-center justify-center gap-0.5 shadow-xs"
-                title="신도 교적부 상세 조회 및 수정"
-              >
-                <FileText className="w-3 h-3" />
-                <span>수정</span>
-              </button>
+            <div className="pt-1 border-t border-[#F0EAE1] flex items-center justify-between text-[11px]">
+              <span className="text-[10px] text-[#A09383]">클릭 시 선택</span>
+              <span className="text-[10px] font-bold text-[#8A6510] bg-[#FAF3DF] px-2 py-0.5 rounded-md border border-[#E8D4A2]">
+                상단 툴바 대상
+              </span>
             </div>
           </div>
         </div>
