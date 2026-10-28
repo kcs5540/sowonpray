@@ -2429,6 +2429,7 @@ export default function App() {
         created_at: new Date().toISOString().replace('T', ' ').slice(0, 16),
       }
       setPrayers((prev) => [newPrayer, ...prev])
+    setLatestSubmittedPrayerId(newPrayer.id)
     }
 
     setSettlements((prev) => [newRecord, ...prev])
@@ -4256,6 +4257,7 @@ function normalizeMemberHierarchy(m) {
     () => PRAYER_CATEGORY_TEMPLATES['가족건강'] || ''
   )
   const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [latestSubmittedPrayerId, setLatestSubmittedPrayerId] = useState(null)
 
   // [사시예불 축원 명부] 7일 이내 유효 신도 전용 인쇄 모달 상태
   const [showSasiPrintModal, setShowSasiPrintModal] = useState(false)
@@ -6333,6 +6335,16 @@ function normalizeMemberHierarchy(m) {
       ? '🪔 [대웅전 1년 인등 불사]가 정식 접수되었습니다. 365일 무량광명을 밝힙니다.'
       : '🙏 간절한 발원이 정식 접수되었습니다. 사시예불마다 정성껏 축원 올립니다.'
     showToast(toastMsg)
+  }
+
+  // 소원등/불사 신청 완료 팝업에서 [접수 취소] 클릭 시 방금 신청한 기록 롤백 취소
+  const handleCancelSubmittedPrayer = () => {
+    if (latestSubmittedPrayerId) {
+      setPrayers((prev) => prev.filter((p) => p.id !== latestSubmittedPrayerId))
+      setLatestSubmittedPrayerId(null)
+    }
+    setShowSuccessModal(false)
+    showToast('신청 접수가 정상적으로 취소되었습니다.')
   }
 
   // 전날 도량 방문 & 차담·사찰 공양(식사) 사전 예약 접수 핸들러
@@ -13810,8 +13822,22 @@ function normalizeMemberHierarchy(m) {
             : `🪔 [제주 소원사 대웅전]\n${wishName.trim()}${shareTarget} 불자님의 간절한 소원등이 부처님 전에 밝혀졌습니다.\n\n"앞으로 7일 동안 매일 오전 10시 사시예불마다 스님께서 정성껏 축원 올립니다."\n\n🙏 함께 소원등 켜고 축원 받기:\nhttps://sowonpray.vercel.app`
 
           return (
-            <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4">
-              <div className="w-full max-w-[390px] bg-[#1F1B17] text-white rounded-3xl p-6 border border-[#F5D061] text-center space-y-4 shadow-2xl animate-in zoom-in-95 duration-150">
+            <div
+              className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) setShowSuccessModal(false)
+              }}
+            >
+              <div className="w-full max-w-[390px] bg-[#1F1B17] text-white rounded-3xl p-6 border border-[#F5D061] text-center space-y-4 shadow-2xl animate-in zoom-in-95 duration-150 relative">
+                {/* 상단 우측 X 닫기/취소 버튼 */}
+                <button
+                  type="button"
+                  onClick={() => setShowSuccessModal(false)}
+                  className="absolute top-4 right-4 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition cursor-pointer"
+                  title="닫기"
+                >
+                  <X className="w-4 h-4" />
+                </button>
                 <div className="w-16 h-16 rounded-full bg-[#F5D061]/20 border border-[#F5D061] mx-auto flex items-center justify-center text-2xl">
                   {isWipaeCat ? '🏛️' : isSamseongCat ? '🏔️' : isIndeungCat ? '🪔' : (is100dCat || is49jaeCat || isRiceCat) ? '🪷' : <Flame className="w-8 h-8 text-[#F5D061] fill-[#F5D061]" />}
                 </div>
@@ -13916,12 +13942,24 @@ function normalizeMemberHierarchy(m) {
                   <span>가족·지인에게 내 발원 알리기 (카톡 공유)</span>
                 </button>
 
-                <button
-                  onClick={() => setShowSuccessModal(false)}
-                  className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs transition cursor-pointer"
-                >
-                  합장하며 확인 (나무아미타불)
-                </button>
+                {/* 하단 접수 취소 및 합장 확인 2단 버튼 */}
+                <div className="grid grid-cols-2 gap-2.5 pt-1">
+                  <button
+                    type="button"
+                    onClick={handleCancelSubmittedPrayer}
+                    className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-red-500/20 text-[#D6CEC2] hover:text-red-300 border border-white/10 font-bold text-xs transition cursor-pointer"
+                    title="방금 접수한 내용을 취소하고 장부에서 제외합니다"
+                  >
+                    접수 취소
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowSuccessModal(false)}
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] border border-[#C59B27] font-bold text-xs transition cursor-pointer shadow-md"
+                  >
+                    합장하며 확인
+                  </button>
+                </div>
               </div>
             </div>
           )
