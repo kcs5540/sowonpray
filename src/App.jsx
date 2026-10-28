@@ -6881,26 +6881,40 @@ function normalizeMemberHierarchy(m) {
                       </div>
                     </div>
 
-                    {/* 실시간 매칭 상태 안내 배너 */}
+                    {/* 실시간 조직표 매칭 상태 안내 배너 */}
                     {matchedBelieverForSettlement ? (
-                      <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-300 flex items-center justify-between text-xs text-emerald-950 font-bold">
-                        <div className="flex items-center gap-2">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                          <span>
-                            ✅ <strong>[{matchedBelieverForSettlement.name}{matchedBelieverForSettlement.dharma_name ? `(${matchedBelieverForSettlement.dharma_name})` : ''}]</strong>
-                            {matchedBelieverForSettlement.role === 'agent'
-                              ? ' 포교위원장님'
-                              : matchedBelieverForSettlement.role === 'master'
-                              ? ' 총괄위원장님'
-                              : matchedBelieverForSettlement.role === 'temple_admin'
-                              ? ' 신도회장님'
-                              : ' 불자님'}
-                            {' '}➔ 직속 추천인(유치): <strong>[{getRecommenderName(matchedBelieverForSettlement.parent_code || matchedBelieverForSettlement.code)}]</strong> 자동 매칭 완료
+                      <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-300 space-y-2 text-xs text-emerald-950 font-bold">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                            <span>
+                              🌳 <strong>[소원사 조직표 계보 연동]</strong> {matchedBelieverForSettlement.name}{matchedBelieverForSettlement.dharma_name ? `(${matchedBelieverForSettlement.dharma_name})` : ''} ➔ 직속 추천인(유치): <strong>[{getRecommenderName(matchedBelieverForSettlement.parent_code || matchedBelieverForSettlement.code)}]</strong> 자동 매칭
+                            </span>
+                          </div>
+                          <span className="text-[11px] font-mono bg-white px-2 py-0.5 rounded border border-emerald-200 shrink-0">
+                            교적: {matchedBelieverForSettlement.code}
                           </span>
                         </div>
-                        <span className="text-[11px] font-mono bg-white px-2 py-0.5 rounded border border-emerald-200 shrink-0">
-                          교적: {matchedBelieverForSettlement.code}
-                        </span>
+                        {/* 조직표에 따른 1차·2차·사찰 정산 흐름 미리보기 */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] bg-white/85 p-2 rounded-xl border border-emerald-200 font-medium">
+                          <div>
+                            <span className="text-[#8C8071] block">1차 직속추천 (30%):</span>
+                            <strong className="text-emerald-900">{getRecommenderName(matchedBelieverForSettlement.parent_code || matchedBelieverForSettlement.code)}</strong>
+                          </div>
+                          <div>
+                            <span className="text-[#8C8071] block">2차 상위관리 (10%):</span>
+                            <strong className="text-emerald-900">
+                              {(() => {
+                                const p1 = members.find((a) => a.code === (matchedBelieverForSettlement.parent_code || matchedBelieverForSettlement.code))
+                                return p1?.parent_code ? getRecommenderName(p1.parent_code) : '-'
+                              })()}
+                            </strong>
+                          </div>
+                          <div>
+                            <span className="text-[#8C8071] block">사찰 본사 원천 (50%):</span>
+                            <strong className="text-amber-900">제주 소원사 본원</strong>
+                          </div>
+                        </div>
                       </div>
                     ) : simBelieverName.trim() ? (
                       <div className="p-2.5 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] flex items-center gap-2 text-xs text-[#777777]">
@@ -6961,7 +6975,8 @@ function normalizeMemberHierarchy(m) {
                           <th className="p-2.5 whitespace-nowrap">불사 / 위패 항목</th>
                           <th className="p-2.5 text-right whitespace-nowrap">보시 금액</th>
                           <th className="p-2.5 text-center whitespace-nowrap">사찰 불사금(50%)</th>
-                          <th className="p-2.5 whitespace-nowrap">유치 위원장</th>
+                          <th className="p-2.5 whitespace-nowrap">유치 추천인 (1차)</th>
+                          <th className="p-2.5 whitespace-nowrap">상위 관리 (2차)</th>
                           <th className="p-2.5 text-center whitespace-nowrap">상태</th>
                         </tr>
                       </thead>
@@ -6985,8 +7000,11 @@ function normalizeMemberHierarchy(m) {
                               <td className="p-2.5 text-center font-mono font-bold text-amber-900 bg-amber-50/50 whitespace-nowrap">
                                 {templeAmt.toLocaleString()}원
                               </td>
-                              <td className="p-2.5 text-[#554E45] whitespace-nowrap">
+                              <td className="p-2.5 text-[#554E45] whitespace-nowrap font-bold">
                                 {s.agent_1st_name || '-'}
+                              </td>
+                              <td className="p-2.5 text-[#777777] whitespace-nowrap text-[11px]">
+                                {s.agent_2nd_name || '-'}
                               </td>
                               <td className="p-2.5 text-center whitespace-nowrap">
                                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
