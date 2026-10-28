@@ -6322,7 +6322,17 @@ function normalizeMemberHierarchy(m) {
     setWishText(PRAYER_CATEGORY_TEMPLATES[wishCategory] || '')
     setWishTarget('')
     setShowSuccessModal(true)
-    showToast('🙏 대웅전 소원등이 밝게 점등되었습니다. 사시예불마다 정성껏 축원 올립니다.')
+    const isWipaeToast = (wishCategory || '').includes('위패') || (wishCategory || '').includes('생전예수재')
+    const isSamseongToast = (wishCategory || '').includes('삼성각') || (wishCategory || '').includes('기와') || (wishCategory || '').includes('단청') || (wishCategory || '').includes('명패')
+    const isIndeungToast = (wishCategory || '').includes('인등')
+    const toastMsg = isWipaeToast
+      ? '🏛️ [영구 위패 봉안 불사]가 정식 접수되었습니다. 사시예불마다 축원 올립니다.'
+      : isSamseongToast
+      ? '🏔️ [삼성각 성전 건립 불사] 동참이 정식 접수되었습니다. 무량공덕을 축원합니다.'
+      : isIndeungToast
+      ? '🪔 [대웅전 1년 인등 불사]가 정식 접수되었습니다. 365일 무량광명을 밝힙니다.'
+      : '🙏 간절한 발원이 정식 접수되었습니다. 사시예불마다 정성껏 축원 올립니다.'
+    showToast(toastMsg)
   }
 
   // 전날 도량 방문 & 차담·사찰 공양(식사) 사전 예약 접수 핸들러
@@ -13731,85 +13741,191 @@ function normalizeMemberHierarchy(m) {
           </main>
         )}
 
-        {/* 축원 완료 모달 */}
-        {showSuccessModal && (
-          <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4">
-            <div className="w-full max-w-[380px] bg-[#1F1B17] text-white rounded-3xl p-6 border border-[#F5D061] text-center space-y-4 shadow-2xl">
-              <div className="w-16 h-16 rounded-full bg-[#F5D061]/20 border border-[#F5D061] mx-auto flex items-center justify-center">
-                <Flame className="w-8 h-8 text-[#F5D061] fill-[#F5D061]" />
-              </div>
-              <h3 className="font-serif-kr text-xl font-bold text-[#F5D061]">
-                대웅전 소원등 점등 완료
-              </h3>
+        {/* 축원 완료 모달 (선택한 종목에 맞춰 100% 맞춤 렌더링) */}
+        {showSuccessModal && (() => {
+          const isWipaeCat = (wishCategory || '').includes('위패') || (wishCategory || '').includes('생전예수재')
+          const isSamseongCat = (wishCategory || '').includes('삼성각') || (wishCategory || '').includes('기와') || (wishCategory || '').includes('단청') || (wishCategory || '').includes('명패')
+          const isIndeungCat = (wishCategory || '').includes('인등')
+          const is100dCat = (wishCategory || '').includes('100일')
+          const is49jaeCat = (wishCategory || '').includes('49재') || (wishCategory || '').includes('천도재') || (wishCategory || '').includes('기일')
+          const isRiceCat = (wishCategory || '').includes('공양미')
 
-              {/* 연속 정진 칭찬 뱃지 (한 줄) */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F5D061]/15 border border-[#F5D061]/50 text-xs font-bold text-[#F5D061]">
-                <span>🪔</span>
-                <span>{lanternStreak || 1}일 연속 정진 중! (공덕 +100)</span>
-              </div>
+          const title = isWipaeCat
+            ? '🏛️ 영구 위패 봉안 불사 접수 완료'
+            : isSamseongCat
+            ? '🏔️ 삼성각 성전 건립 대작불사 접수 완료'
+            : isIndeungCat
+            ? '🪔 대웅전 1년 인등(가족등) 접수 완료'
+            : is100dCat
+            ? '🪷 100일 소원성취 특별기도 접수 완료'
+            : is49jaeCat
+            ? '🪷 49재 · 천도재 · 기일제사 접수 완료'
+            : isRiceCat
+            ? '🪷 대웅전 공양미 / 불전시주 접수 완료'
+            : '대웅전 소원등 점등 완료'
 
-              <p className="text-xs text-[#E2DAD0] leading-relaxed break-keep">
-                <strong>{wishName.trim()} 불자님</strong>의 간절한 발원이 <strong>제주 소원사 대웅전</strong>에 봉안되었습니다. 오늘 하루 부처님의 자비광명이 온 가족과 늘 함께하시길 정성껏 축원 올립니다.
-              </p>
+          const badge = isWipaeCat
+            ? '🏛️ 영구 봉안 대원력 (사시예불 영구 축원)'
+            : isSamseongCat
+            ? '🏔️ 칠성·산신·독성 성전 건립 무량공덕'
+            : isIndeungCat
+            ? '🪔 365일 대웅전 무량광명 가족등'
+            : is100dCat
+            ? '🪷 100일 지극정성 소원성취 특별기도'
+            : is49jaeCat
+            ? '🪷 영가 극락왕생 및 칠칠재 천도발원'
+            : isRiceCat
+            ? '🪷 부처님 전 공양 공덕 및 복덕구족'
+            : `🪔 ${lanternStreak || 1}일 연속 정진 중! (공덕 +100)`
 
-              {/* 365일 꺼지지 않는 1년 인등 불사 안내 배너 (깔끔한 골드 박스) */}
-              <div
-                onClick={() => {
-                  setShowSuccessModal(false)
-                  setNavTab('bulsa')
-                }}
-                className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left cursor-pointer hover:border-[#F5D061] transition group shadow-md"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815]">
-                    상시 정진
-                  </span>
-                  <span className="text-[10.5px] text-[#F5D061] font-bold group-hover:translate-x-0.5 transition">
-                    상세보기 &gt;
-                  </span>
+          const desc = isWipaeCat
+            ? `${wishName.trim()} 불자님의 영구 위패 봉안 발원이 제주 소원사에 정식 접수되었습니다. 주지 스님께서 소원사 법당에 정결하게 위패를 봉안하고, 매일 오전 10시 사시예불마다 온 가족의 무병장수와 영가 극락왕생을 정성껏 축원 올립니다.`
+            : isSamseongCat
+            ? `${wishName.trim()} 불자님의 성전 건립 대작불사 공덕이 소원사 삼성각 영전에 영구 봉안됩니다. 칠성·산신·독성 성인의 거룩한 가피가 불자님 가정에 대대손손 만복으로 깃들기를 간절히 축원합니다.`
+            : isIndeungCat
+            ? `${wishName.trim()} 불자님 가정의 대웅전 1년 인등(가족등)이 부처님 전에 정식 접수되었습니다. 365일 꺼지지 않는 지혜와 자비의 등불로 온 가족의 평생 무량광명을 밝히며 매일 사시예불마다 축원합니다.`
+            : is100dCat
+            ? `${wishName.trim()} 불자님의 100일 소원성취 특별기도가 정식 접수되었습니다. 앞으로 100일 동안 매일 오전 10시 사시예불마다 스님께서 불자님의 간절한 서원을 부처님 전에 축원 올립니다.`
+            : is49jaeCat
+            ? `${wishName.trim()} 불자님의 49재/천도재 천도발원이 정식 접수되었습니다. 영가님의 왕생극락과 유가족의 업장소멸·평안을 위해 여법하게 기도 의식을 봉행합니다.`
+            : isRiceCat
+            ? `${wishName.trim()} 불자님의 대웅전 공양미 시주 공덕이 부처님 전에 여법하게 공양되었습니다. 부처님의 자비광명이 온 가족과 늘 함께하시길 축원합니다.`
+            : `${wishName.trim()} 불자님의 간절한 발원이 제주 소원사 대웅전에 봉안되었습니다. 오늘 하루 부처님의 자비광명이 온 가족과 늘 함께하시길 정성껏 축원 올립니다.`
+
+          const shareTarget = wishTarget && wishTarget !== '본인' ? ` (${wishTarget})` : ''
+          const shareTitle = isWipaeCat
+            ? '제주 소원사 영구 위패 봉안 접수'
+            : isSamseongCat
+            ? '제주 소원사 삼성각 성전 건립 대작불사 동참'
+            : isIndeungCat
+            ? '제주 소원사 대웅전 1년 인등(가족등) 접수'
+            : is100dCat
+            ? '제주 소원사 100일 소원성취 특별기도 접수'
+            : '제주 소원사 소원등 점등'
+
+          const shareMsg = isWipaeCat
+            ? `🏛️ [제주 소원사 영구 위패 봉안]\n${wishName.trim()} 불자님의 영구 위패 봉안 불사가 부처님 전에 정식 접수되었습니다.\n\n"매일 오전 10시 사시예불마다 스님께서 극락왕생과 가내 평안을 영구 축원합니다."\n\n🙏 소원사 모바일 법당:\nhttps://sowonpray.vercel.app`
+            : isSamseongCat
+            ? `🏔️ [제주 소원사 삼성각 건립 불사]\n${wishName.trim()} 불자님의 성전 건립 동참 공덕이 정식 접수되었습니다.\n\n"칠성·산신·독성 성인의 무량가피가 온 가족과 함께하시길 축원합니다."\n\n🙏 소원사 모바일 법당:\nhttps://sowonpray.vercel.app`
+            : `🪔 [제주 소원사 대웅전]\n${wishName.trim()}${shareTarget} 불자님의 간절한 소원등이 부처님 전에 밝혀졌습니다.\n\n"앞으로 7일 동안 매일 오전 10시 사시예불마다 스님께서 정성껏 축원 올립니다."\n\n🙏 함께 소원등 켜고 축원 받기:\nhttps://sowonpray.vercel.app`
+
+          return (
+            <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4">
+              <div className="w-full max-w-[390px] bg-[#1F1B17] text-white rounded-3xl p-6 border border-[#F5D061] text-center space-y-4 shadow-2xl animate-in zoom-in-95 duration-150">
+                <div className="w-16 h-16 rounded-full bg-[#F5D061]/20 border border-[#F5D061] mx-auto flex items-center justify-center text-2xl">
+                  {isWipaeCat ? '🏛️' : isSamseongCat ? '🏔️' : isIndeungCat ? '🪔' : (is100dCat || is49jaeCat || isRiceCat) ? '🪷' : <Flame className="w-8 h-8 text-[#F5D061] fill-[#F5D061]" />}
                 </div>
-                <div className="font-serif-kr text-xs font-bold text-[#FAF8F5] mt-1.5">
-                  🪔 365일 꺼지지 않는 대웅전 1년 인등 불사
-                </div>
-                <div className="text-[10.5px] text-[#A89D8E] mt-0.5 leading-snug">
-                  매일 켜는 정성을 넘어, 부처님 전에 온 가족의 평생 광명을 밝히세요.
-                </div>
-              </div>
 
-              <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-[11px] text-[#D4AF37]">
-                🙏 도량에 오시기 전날 미리 연락 주시면 따뜻한 차와 공양을 대접해 드립니다. (010-4912-1083)
+                <h3 className="font-serif-kr text-xl font-bold text-[#F5D061]">
+                  {title}
+                </h3>
+
+                {/* 뱃지 */}
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F5D061]/15 border border-[#F5D061]/50 text-xs font-bold text-[#F5D061]">
+                  <span>{badge}</span>
+                </div>
+
+                <p className="text-xs text-[#E2DAD0] leading-relaxed break-keep">
+                  {desc}
+                </p>
+
+                {/* 중간 안내 카드: 불사/위패인 경우 접수 안내, 일반인 경우 1년 인등 추천 */}
+                {isWipaeCat ? (
+                  <div className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left shadow-md">
+                    <div className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815] inline-block mb-1">
+                      영구 봉안 접수 안내
+                    </div>
+                    <div className="font-serif-kr text-xs font-bold text-[#FAF8F5]">
+                      📜 {wishCategory}
+                    </div>
+                    <div className="text-[10.5px] text-[#A89D8E] mt-0.5 leading-snug">
+                      소원사 종무소에서 접수 확인 후 위패 각명 및 사시예불 축원 명부에 정식 등재됩니다.
+                    </div>
+                  </div>
+                ) : isSamseongCat ? (
+                  <div className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left shadow-md">
+                    <div className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815] inline-block mb-1">
+                      대작불사 공덕 안내
+                    </div>
+                    <div className="font-serif-kr text-xs font-bold text-[#FAF8F5]">
+                      🏔️ {wishCategory}
+                    </div>
+                    <div className="text-[10.5px] text-[#A89D8E] mt-0.5 leading-snug">
+                      불자님의 정성 어린 불사금은 삼성각 성전 건립에 쓰이며, 공덕 명패에 영구 보존됩니다.
+                    </div>
+                  </div>
+                ) : isIndeungCat || is100dCat || is49jaeCat || isRiceCat ? (
+                  <div className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left shadow-md">
+                    <div className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815] inline-block mb-1">
+                      사시예불 축원 안내
+                    </div>
+                    <div className="font-serif-kr text-xs font-bold text-[#FAF8F5]">
+                      🪷 {wishCategory}
+                    </div>
+                    <div className="text-[10.5px] text-[#A89D8E] mt-0.5 leading-snug">
+                      매일 오전 10시 대웅전 사시예불 시 주지스님께서 불자님의 발원문을 정성껏 축원 올립니다.
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => {
+                      setShowSuccessModal(false)
+                      setNavTab('bulsa')
+                    }}
+                    className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left cursor-pointer hover:border-[#F5D061] transition group shadow-md"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815]">
+                        상시 정진
+                      </span>
+                      <span className="text-[10.5px] text-[#F5D061] font-bold group-hover:translate-x-0.5 transition">
+                        상세보기 &gt;
+                      </span>
+                    </div>
+                    <div className="font-serif-kr text-xs font-bold text-[#FAF8F5] mt-1.5">
+                      🪔 365일 꺼지지 않는 대웅전 1년 인등 불사
+                    </div>
+                    <div className="text-[10.5px] text-[#A89D8E] mt-0.5 leading-snug">
+                      매일 켜는 정성을 넘어, 부처님 전에 온 가족의 평생 광명을 밝히세요.
+                    </div>
+                  </div>
+                )}
+
+                <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-[11px] text-[#D4AF37]">
+                  🙏 도량에 오시기 전날 미리 연락 주시면 따뜻한 차와 공양을 대접해 드립니다. (010-4912-1083)
+                </div>
+
+                {/* 가족·지인에게 알리기 (카카오톡 공유) */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (navigator.share) {
+                      navigator.share({
+                        title: shareTitle,
+                        text: shareMsg,
+                        url: 'https://sowonpray.vercel.app',
+                      }).catch(() => {})
+                    } else if (navigator.clipboard) {
+                      navigator.clipboard.writeText(shareMsg)
+                      showToast('📋 축원 메시지가 복사되었습니다! 카카오톡 가족방에 붙여넣어 보세요.')
+                    }
+                  }}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow flex items-center justify-center gap-1.5 active:scale-95 transition cursor-pointer"
+                >
+                  <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
+                  <span>가족·지인에게 내 발원 알리기 (카톡 공유)</span>
+                </button>
+
+                <button
+                  onClick={() => setShowSuccessModal(false)}
+                  className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs transition cursor-pointer"
+                >
+                  합장하며 확인 (나무아미타불)
+                </button>
               </div>
-              {/* 가족·지인에게 소원등 알리기 (카카오톡 공유) */}
-              <button
-                type="button"
-                onClick={() => {
-                  const shareTarget = wishTarget && wishTarget !== '본인' ? ` (${wishTarget})` : ''
-                  const shareMsg = `🪔 [제주 소원사 대웅전]\n${wishName.trim()}${shareTarget} 불자님의 간절한 소원등이 부처님 전에 밝혀졌습니다.\n\n"앞으로 7일 동안 매일 오전 10시 사시예불마다 스님께서 정성껏 축원 올립니다."\n\n🙏 함께 소원등 켜고 축원 받기:\nhttps://sowonpray.vercel.app`
-                  if (navigator.share) {
-                    navigator.share({
-                      title: '제주 소원사 7일 소원등 점등',
-                      text: shareMsg,
-                      url: 'https://sowonpray.vercel.app',
-                    }).catch(() => {})
-                  } else if (navigator.clipboard) {
-                    navigator.clipboard.writeText(shareMsg)
-                    showToast('📋 소원등 축원 메시지가 복사되었습니다! 카카오톡 가족방에 붙여넣어 보세요.')
-                  }
-                }}
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow flex items-center justify-center gap-1.5 active:scale-95 transition"
-              >
-                <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
-                <span>가족·지인에게 내 소원등 알리기 (카톡 공유)</span>
-              </button>
-              <button
-                onClick={() => setShowSuccessModal(false)}
-                className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs transition"
-              >
-                합장하며 확인 (나무아미타불)
-              </button>
             </div>
-          </div>
-        )}
+          )
+        })()}
 
         {/* 사경 회향 공덕장 (황금 인증서) 모달 */}
         {showMeritCertModal && (
