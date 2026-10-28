@@ -2724,6 +2724,268 @@ function normalizeMemberHierarchy(m) {
   const [memberPrintRoleFilter, setMemberPrintRoleFilter] = useState('all')
   const [memberPrintSearchQuery, setMemberPrintSearchQuery] = useState('')
 
+  // 🪷 신도별 최근 기도/불사 접수 현황 및 보시금 입금처리 상태 산출
+  const getMemberPrayerAndPaymentInfo = (m) => {
+    if (!m) return { prayerTitle: '-', prayerTypeBadge: '-', prayerBadgeColor: '', paymentStatus: 'settled', paymentAmount: 0 }
+
+    // 1. prayers 배열에서 매칭
+    const memberPrayers = (prayers || []).filter(
+      (p) =>
+        p.member_code === m.code ||
+        (m.phone && p.believer_phone && p.believer_phone.replace(/[^0-9]/g, '') === m.phone.replace(/[^0-9]/g, '')) ||
+        (p.believer_name && p.believer_name.includes(m.name))
+    )
+
+    // 2. settlements(위패/불사) 배열에서 매칭
+    const memberSettlements = (settlements || []).filter(
+      (s) => s.believer_name && s.believer_name.includes(m.name)
+    )
+
+    const latestSettlement = memberSettlements[0]
+    const latestPrayer = memberPrayers[0]
+
+    let prayerTitle = '기도·불사 접수 대기'
+    let prayerTypeBadge = '미접수'
+    let prayerBadgeColor = 'bg-stone-100 text-stone-600 border-stone-200'
+    let paymentAmount = 0
+    let paymentStatus = m.extra_data?.payment_status || 'settled'
+
+    if (latestSettlement) {
+      prayerTitle = latestSettlement.item_name
+      prayerTypeBadge = '불사 봉안'
+      prayerBadgeColor = 'bg-purple-100 text-purple-900 border-purple-300'
+      paymentAmount = latestSettlement.total_amount || 2000000
+      paymentStatus = latestSettlement.payment_status === 'pending' ? 'pending' : 'settled'
+    } else if (latestPrayer) {
+      prayerTitle = latestPrayer.wish_category || latestPrayer.prayer_type || '대웅전 소원기도'
+      if (prayerTitle.includes('인등')) {
+        prayerTypeBadge = '1년 인등'
+        prayerBadgeColor = 'bg-amber-100 text-amber-900 border-amber-300'
+        paymentAmount = 100000
+      } else if (prayerTitle.includes('100일')) {
+        prayerTypeBadge = '100일 특별기도'
+        prayerBadgeColor = 'bg-blue-100 text-blue-900 border-blue-300'
+        paymentAmount = 100000
+      } else if (prayerTitle.includes('1일') || prayerTitle.includes('소원등')) {
+        prayerTypeBadge = '1일 소원등'
+        prayerBadgeColor = 'bg-emerald-100 text-emerald-900 border-emerald-300'
+        paymentAmount = 10000
+      } else {
+        prayerTypeBadge = '대웅전 기도'
+        prayerBadgeColor = 'bg-amber-100 text-amber-900 border-amber-300'
+        paymentAmount = 30000
+      }
+    } else {
+      // 신도 공덕 기준 추정 매핑
+      if ((m.merit_count || 0) >= 30) {
+        prayerTitle = '대웅전 1년 인등(가족등) 정진'
+        prayerTypeBadge = '1년 인등'
+        prayerBadgeColor = 'bg-amber-100 text-amber-900 border-amber-300'
+        paymentAmount = 100000
+      } else if ((m.merit_count || 0) >= 10) {
+        prayerTitle = '100일 소원성취 특별기도 정진'
+        prayerTypeBadge = '100일 특별기도'
+        prayerBadgeColor = 'bg-blue-100 text-blue-900 border-blue-300'
+        paymentAmount = 100000
+      } else if ((m.merit_count || 0) > 0) {
+        prayerTitle = '대웅전 일일 소원등 축원'
+        prayerTypeBadge = '1일 소원등'
+        prayerBadgeColor = 'bg-emerald-100 text-emerald-900 border-emerald-300'
+        paymentAmount = 10000
+      }
+    }
+
+    if (m.extra_data?.payment_status) {
+      paymentStatus = m.extra_data.payment_status
+    }
+
+    return {
+      prayerTitle,
+      prayerTypeBadge,
+      prayerBadgeColor,
+      paymentStatus,
+      paymentAmount: paymentAmount || 100000,
+    }
+  }
+
+  // 💰 종무소 원터치 보시금 입금 상태(입금완료 <-> 입금대기) 토글 처리
+  const handleTogglePaymentStatus = async (memberCode) => {
+    setMembers((prev) =>
+      prev.map((m) => {
+        if (m.code === memberCode) {
+          const currentStatus = m.extra_data?.payment_status || 'settled'
+          const nextStatus = currentStatus === 'settled' ? 'pending' : 'settled'
+          const updated = {
+            ...m,
+            extra_data: {
+              ...(m.extra_data || {}),
+              payment_status: nextStatus,
+              payment_updated_at: new Date().toISOString(),
+            },
+          }
+          if (supabase) {
+            supabase
+              .from('members')
+              .update({ extra_data: updated.extra_data })
+              .eq('code', memberCode)
+              .then()
+          }
+          showToast(
+            nextStatus === 'settled'
+              ? `✅ [${m.name}] 신도님의 보시금 입금이 [완납 처리]되었습니다.`
+              : `⏳ [${m.name}] 신도님의 상태가 [입금 대기]로 변경되었습니다.`
+          )
+          return updated
+        }
+        return m
+      })
+    )
+  }
+
+  // 🪷 [종무행정 10만 신도 교적부 종합 카드 컴포넌트]
+  const renderMemberRowCard = (m) => {
+    const pInfo = getMemberPrayerAndPaymentInfo(m)
+    const zInfo = computeZodiacAndGanji(m.birth_year || (m.birth_date ? m.birth_date.slice(0, 4) : ''))
+    const seju = m.family_members?.find((f) => f.relation?.includes('세주'))
+
+    return (
+      <div
+        key={m.code}
+        className="p-4 sm:p-5 rounded-2xl bg-[#FAF8F5] border border-[#EAE2D3] hover:border-[#C59B27] hover:shadow-md transition space-y-3"
+      >
+        {/* 1열: 신도 성함, 법명, 코드, 등급, 사주간지, 귀속처, 가족일치 배지 */}
+        <div className="flex items-center justify-between gap-2.5 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap min-w-0">
+            <span className="font-bold text-base text-[#1B1815]">
+              {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''}
+            </span>
+            <span className="text-[11px] text-[#8A6510] font-mono font-bold bg-[#FAF3DF] px-2 py-0.5 rounded border border-[#E8D4A2]">
+              #{m.code}
+            </span>
+            <span className="text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-[#1B1815] text-[#F5D061]">
+              {m.role === 'master'
+                ? '총괄 마스터'
+                : m.role === 'temple_admin'
+                ? '사찰 본부임원'
+                : m.role === 'agent'
+                ? '포교위원장'
+                : m.role === 'committee_member'
+                ? '포교위원'
+                : '일반신도'}
+            </span>
+            {zInfo.ganji && (
+              <span className="text-[11px] px-2 py-0.5 rounded font-serif-kr font-bold bg-amber-50 text-amber-900 border border-amber-200">
+                {zInfo.ganji} ({zInfo.animal}띠)
+              </span>
+            )}
+            <span className="text-[10.5px] px-2 py-0.5 rounded bg-white text-[#7A6E5E] border border-[#DDD4C4] font-medium">
+              귀속: {m.parent_code === '55570267' ? '🏛️ 본사(양영문 회장)' : m.parent_code === '33065540' ? '👑 포교본부(김철수 대표)' : agents.find((a) => a.code === m.parent_code)?.name ? `귀속: ${agents.find((a) => a.code === m.parent_code)?.name}` : '소원사 본부'}
+            </span>
+            {m._matchedFamily && (
+              <span className="text-[10.5px] px-2 py-0.5 rounded bg-purple-100 text-purple-900 border border-purple-300 font-bold flex items-center gap-1">
+                <span>가족일치:</span>
+                <strong>{m._matchedFamily.name}</strong>
+                <span className="text-purple-700">({m._matchedFamily.relation})</span>
+              </span>
+            )}
+            {m.family_members && m.family_members.length > 0 && (
+              <span className="text-[10.5px] px-2 py-0.5 rounded bg-stone-100 text-stone-700 border border-stone-300 font-semibold">
+                가족 {m.family_members.length}인
+              </span>
+            )}
+          </div>
+
+          {/* 우측 상단 액션 버튼 그룹 */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedMemberDetail(m)
+                setShowSasiPrintModal(true)
+                setSasiPrayerTypeTab('indeung_1yr')
+              }}
+              className="px-2.5 py-1.5 rounded-xl bg-white hover:bg-[#FAF3DF] border border-[#D5C59B] text-xs font-bold text-[#8A6510] transition flex items-center gap-1 shadow-sm"
+              title="대웅전 1년 인등 명패 A4 인쇄"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">인등명패</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedMemberDetail(m)
+                setIsEditingMember(false)
+              }}
+              className="px-3 py-1.5 rounded-xl bg-[#1B1815] text-[#F5D061] hover:bg-[#2C251F] text-xs font-bold transition flex items-center gap-1 shadow-sm"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>상세·수정</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 2열: 연락처 & 주소 & 세주 정보 */}
+        <div className="text-xs text-[#786E63] flex items-center gap-2.5 flex-wrap">
+          <span className="font-mono font-bold text-[#1B1815]">{m.phone}</span>
+          <span>·</span>
+          <span className="text-[#555555]">{m.address || '제주특별자치도 제주시'}</span>
+          {seju && (
+            <>
+              <span>·</span>
+              <span className="text-[#8A6510] font-semibold">
+                세주(가장): {seju.name} {seju.birth_year ? `(${seju.birth_year}년생)` : ''}
+              </span>
+            </>
+          )}
+        </div>
+
+        {/* 3열: 🪔 기도/불사 접수 현황 & 💰 입금 처리 상태 (종무소 핵심!) */}
+        <div className="p-3 rounded-xl bg-white border border-[#E8DFD1] flex items-center justify-between gap-3 flex-wrap text-xs">
+          {/* 기도 & 불사 상태 */}
+          <div className="flex items-center gap-2 flex-wrap min-w-0">
+            <span className="text-[11px] font-bold text-[#8C8071] shrink-0">기도·불사 접수:</span>
+            <span className={`px-2 py-0.5 rounded text-[11px] font-bold border ${pInfo.prayerBadgeColor}`}>
+              {pInfo.prayerTypeBadge}
+            </span>
+            <strong className="text-xs text-[#1B1815] truncate">
+              {pInfo.prayerTitle}
+            </strong>
+            <span className="text-[10.5px] text-[#8C8071]">
+              (누적 공덕 {m.merit_count || 0}회)
+            </span>
+          </div>
+
+          {/* 보시금 입금 처리 상태 & 원터치 전환 버튼 */}
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-[11px] font-bold text-[#8C8071]">보시금 입금:</span>
+            {pInfo.paymentStatus === 'settled' ? (
+              <span className="px-2.5 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold text-[11px] flex items-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+                <span>입금완료 ({pInfo.paymentAmount.toLocaleString()}원)</span>
+              </span>
+            ) : (
+              <span className="px-2.5 py-0.5 rounded-lg bg-amber-100 text-amber-900 border border-amber-300 font-bold text-[11px] flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5 text-amber-700" />
+                <span>입금대기 ({pInfo.paymentAmount.toLocaleString()}원)</span>
+              </span>
+            )}
+
+            {/* 원터치 입금확인/전환 토글 버튼 */}
+            <button
+              type="button"
+              onClick={() => handleTogglePaymentStatus(m.code)}
+              className="px-2.5 py-1 rounded-lg bg-[#FAF8F5] hover:bg-[#FAF3DF] border border-[#DDD4C4] text-[11px] font-bold text-[#6B5E4F] transition shadow-xs"
+              title="입금완료/대기 상태 전환"
+            >
+              {pInfo.paymentStatus === 'settled' ? '상태변경' : '입금확인 ✓'}
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   const getRecommenderName = (parentCode) => {
     if (!parentCode) return '-'
     if (parentCode === '55570267') return '양영문 신도회장'
@@ -4968,52 +5230,7 @@ function normalizeMemberHierarchy(m) {
                       일치하는 신도 또는 가족이 없습니다.
                     </div>
                   ) : (
-                    filteredAdminMembers.map((m) => (
-                      <div
-                        key={m.code}
-                        className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#EAE2D3] hover:border-[#C59B27] transition flex items-center justify-between gap-4 text-xs"
-                      >
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-bold text-sm text-[#1B1815]">
-                              {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''}
-                            </span>
-                            <span className="text-[11px] text-[#8A6510] font-mono font-bold">
-                              #{m.code}
-                            </span>
-                            <span className="text-[10.5px] px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300 font-bold">
-                              공덕 {m.merit_count || 0}
-                            </span>
-                            {m._matchedFamily && (
-                              <span className="text-[10.5px] px-2 py-0.5 rounded bg-purple-100 text-purple-900 border border-purple-300 font-bold flex items-center gap-1">
-                                <span>가족일치:</span>
-                                <strong>{m._matchedFamily.name}</strong>
-                                <span className="text-purple-700">({m._matchedFamily.relation})</span>
-                              </span>
-                            )}
-                            {m.family_members && m.family_members.length > 0 && (
-                              <span className="text-[10.5px] px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200 font-medium">
-                                가족 {m.family_members.length}인 등록
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-xs text-[#786E63] truncate mt-1">
-                            {m.phone} · {m.address || '제주특별자치도'}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2 shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => setSelectedMemberDetail(m)}
-                            className="px-3 py-2 rounded-xl bg-white hover:bg-[#FAF8F5] border border-[#D5C59B] text-xs font-bold text-[#8A6510] transition flex items-center gap-1 shadow-sm"
-                          >
-                            <FileText className="w-3.5 h-3.5" />
-                            <span>상세·수정</span>
-                          </button>
-                        </div>
-                      </div>
-                    ))
+                    filteredAdminMembers.map(renderMemberRowCard)
                   )}
                 </div>
               </section>
