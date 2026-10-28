@@ -55,6 +55,7 @@ import {
   Edit3,
   Trash2,
   Upload,
+  CreditCard,
 } from 'lucide-react'
 import QRCode from 'qrcode'
 import html2canvas from 'html2canvas'
@@ -2456,7 +2457,7 @@ export default function App() {
     const unpaidAmt = Math.max(0, stdAmt - paidAmt)
 
     return createPortal(
-      <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+      <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-3 sm:p-4 overflow-y-auto" onClick={(e) => { if (e.target === e.currentTarget) setEditingSettlement(null); }}>
         <div className="w-full max-w-xl bg-white text-[#1B1815] rounded-3xl shadow-2xl border-2 border-[#D5C59B] overflow-hidden my-auto animate-in fade-in duration-200">
           {/* 헤더 */}
           <div className="bg-[#1B1815] text-[#FAF8F5] p-4 sm:p-5 flex items-center justify-between border-b-2 border-[#D4AF37]">
