@@ -2923,19 +2923,14 @@ function normalizeMemberHierarchy(m) {
               </div>
             </div>
 
-            {/* 소속 귀속처 */}
-            <div className="pt-1 border-t border-[#F5F0E8] text-xs">
-              <span className="text-[10.5px] text-[#8C8071] block">소속 귀속처:</span>
-              <strong className="text-[#8A6510] text-[11.5px] block truncate">
-                {m.parent_code === '55570267'
-                  ? '🏛️ 본사 (양영문 창건주 회장)'
-                  : m.parent_code === '33065540'
-                  ? '👑 전국포교본부 (김철수 총괄대표)'
-                  : agents.find((a) => a.code === m.parent_code)?.name
-                  ? `귀속: ${agents.find((a) => a.code === m.parent_code)?.name}`
-                  : '소원사 본부'}
-              </strong>
-            </div>
+            {m.family_members && m.family_members.length > 0 && (
+              <div className="pt-1 border-t border-[#F5F0E8] text-xs">
+                <span className="text-[10.5px] text-[#8C8071] block">가족 명단:</span>
+                <p className="text-[11px] text-[#555555] truncate" title={m.family_members.map((f) => `${f.name}(${f.relation})`).join(', ')}>
+                  {m.family_members.map((f) => `${f.name}(${f.relation})`).join(', ')}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* ==================== 3열: 🪔 기도·불사 접수 & 접수/입금 일자 (lg:col-span-3) ==================== */}
