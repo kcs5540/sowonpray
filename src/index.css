@@ -125,11 +125,58 @@ p, span, h1, h2, h3, h4, h5, h6, label, button {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 8mm 10mm;
+    margin: 12mm 10mm 10mm 10mm; /* 상단 여백 12mm로 넉넉하게 내려서 출력양식이 종이 상단에 바짝 붙지 않도록 최적화 */
   }
   body {
     background: #ffffff !important;
     color: #000000 !important;
+  }
+
+  /* 📿 [대웅전 사시예불 축원 명부] 인쇄 전용 규칙: 메인 앱(#root) 숨김 및 출력 명부 100% 보장 */
+  body.print-sasi-open > #root {
+    display: none !important;
+  }
+  body.print-sasi-open #sasi-print-portal-root {
+    position: static !important;
+    display: block !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  body.print-sasi-open #sasi-print-portal-root > div {
+    position: static !important;
+    display: block !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+  body.print-sasi-open .no-print {
+    display: none !important;
+  }
+  body.print-sasi-open #printable-sasi-sheet {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #111111 !important;
+    box-shadow: none !important;
+    border: none !important;
+    page-break-after: auto !important;
+    page-break-inside: auto !important;
+  }
+  body.print-sasi-open #printable-sasi-sheet tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   /* 📜 개인 신도 교적대장(신적부) 인쇄 시: 메인 앱(#root)을 완전히 제거(display:none)하여 2페이지 복제/중복 인쇄 원천 차단 */
@@ -179,18 +226,18 @@ p, span, h1, h2, h3, h4, h5, h6, label, button {
     page-break-inside: avoid !important;
   }
 
-  /* 기존 사시예불 및 회원명부 호환 출력 규칙 */
-  body:not(.print-individual-open) * {
+  /* 기존 사시예불 및 회원명부 호환 출력 규칙 (모달이 닫힌 상태에서 다른 전용 인쇄 호출 시) */
+  body:not(.print-individual-open):not(.print-sasi-open) * {
     visibility: hidden !important;
   }
-  body:not(.print-individual-open) #printable-sasi-sheet,
-  body:not(.print-individual-open) #printable-sasi-sheet *,
-  body:not(.print-individual-open) #printable-member-sheet,
-  body:not(.print-individual-open) #printable-member-sheet * {
+  body:not(.print-individual-open):not(.print-sasi-open) #printable-sasi-sheet,
+  body:not(.print-individual-open):not(.print-sasi-open) #printable-sasi-sheet *,
+  body:not(.print-individual-open):not(.print-sasi-open) #printable-member-sheet,
+  body:not(.print-individual-open):not(.print-sasi-open) #printable-member-sheet * {
     visibility: visible !important;
   }
-  body:not(.print-individual-open) #printable-sasi-sheet,
-  body:not(.print-individual-open) #printable-member-sheet {
+  body:not(.print-individual-open):not(.print-sasi-open) #printable-sasi-sheet,
+  body:not(.print-individual-open):not(.print-sasi-open) #printable-member-sheet {
     position: absolute !important;
     left: 0 !important;
     top: 0 !important;
@@ -202,8 +249,8 @@ p, span, h1, h2, h3, h4, h5, h6, label, button {
     box-shadow: none !important;
     border: none !important;
   }
-  body:not(.print-individual-open) #printable-sasi-sheet tr,
-  body:not(.print-individual-open) #printable-member-sheet tr {
+  body:not(.print-individual-open):not(.print-sasi-open) #printable-sasi-sheet tr,
+  body:not(.print-individual-open):not(.print-sasi-open) #printable-member-sheet tr {
     page-break-inside: avoid !important;
   }
   .no-print {

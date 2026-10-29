@@ -2035,8 +2035,13 @@ function normalizeMemberHierarchy(m) {
         list = list.filter((p) => p.prayer_type === 'indeung_1yr' || p.wish_category?.includes('인등'))
       } else if (sasiPrayerTypeTab === 'prayer_100d') {
         list = list.filter((p) => p.prayer_type === 'prayer_100d' || p.wish_category?.includes('100일'))
-      } else if (sasiPrayerTypeTab === 'lantern') {
-        list = list.filter((p) => !p.prayer_type || p.prayer_type === 'lantern')
+      } else if (sasiPrayerTypeTab === 'lantern' || sasiPrayerTypeTab === 'lantern_1d') {
+        list = list.filter((p) => {
+          if (p.prayer_type === 'lantern_1d' || p.prayer_type === 'lantern') return true;
+          if (p.duration_days === 1 || p.duration_days === 7) return true;
+          const c = p.wish_category || '';
+          return !c.includes('100일') && !c.includes('인등') && !c.includes('위패') && !c.includes('재') && !c.includes('불사') && !c.includes('공양미');
+        });
       }
     }
     if (sasiCategoryFilter !== 'all') {
