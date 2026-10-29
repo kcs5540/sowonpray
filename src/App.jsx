@@ -1881,29 +1881,56 @@ function normalizeMemberHierarchy(m) {
     }
   }, [showIndividualRecordPrintModal, showIndeungNameplateModal])
 
-  // 7일 정진 기간 내(D-7 ~ D-1) 유효 신도만 자동 필터링 (7일 지난 만료 신도는 자동 제외)
+  // 📿 [대웅전 부처님 전 사시마지 축원 명부]
+  // 정통 사찰 원칙: 상단(부처님단) 길상 축원 3대 종목(1일 무료소원등 · 100일 특별기도 · 1년 가족인등)만 엄격히 선별
   const activeSasiPrayers = useMemo(() => {
     const now = Date.now()
-    const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000
 
     return (prayers || [])
+      .filter((p) => {
+        if (!p) return false
+        const c = p.wish_category || ''
+        // 영단(위패/천도재/49재) 및 단순 시주(공양미/불전시주/기와/단청)는 사시예불 축원 명부에서 제외
+        if (c.includes('위패') || c.includes('천도재') || c.includes('49재') || c.includes('기일') || c.includes('예수재')) {
+          return false
+        }
+        if (c.includes('공양미') || c.includes('불전시주') || c.includes('시주') || c.includes('기와') || c.includes('단청')) {
+          return false
+        }
+        return true
+      })
       .map((p) => {
         let pTime = now
         if (p.created_at) {
           const parsed = new Date(p.created_at).getTime()
           if (!isNaN(parsed)) pTime = parsed
         }
-        const diffMs = now - pTime
-        const isWithin7Days = diffMs >= 0 && diffMs <= SEVEN_DAYS_MS
-        const daysLeft = Math.max(1, Math.ceil((SEVEN_DAYS_MS - diffMs) / (1000 * 60 * 60 * 24)))
+        const diffMs = Math.max(0, now - pTime)
+
+        let maxDays = 2 // 1일 소원등 (무료) 기본 유효 (접수 당일 및 전일 축원 보장)
+        const c = p.wish_category || ''
+        const t = p.prayer_type || ''
+        if (t === 'indeung_1yr' || c.includes('인등') || p.duration_days === 365) {
+          maxDays = 365
+        } else if (t === 'prayer_100d' || c.includes('100일') || p.duration_days === 100) {
+          maxDays = 100
+        } else if (p.duration_days) {
+          maxDays = p.duration_days
+        }
+
+        const maxMs = maxDays * 24 * 60 * 60 * 1000
+        const isActive = diffMs <= maxMs
+        const daysLeft = Math.max(1, Math.ceil((maxMs - diffMs) / (1000 * 60 * 60 * 24)))
+
         return {
           ...p,
           pTime,
-          isWithin7Days,
+          maxDays,
+          isActive,
           daysLeft,
         }
       })
-      .filter((p) => p.isWithin7Days)
+      .filter((p) => p.isActive)
       .sort((a, b) => b.pTime - a.pTime)
   }, [prayers])
 
