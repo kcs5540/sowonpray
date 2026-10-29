@@ -201,7 +201,7 @@ export default function SasiPrayerPrintModal({
                   : 'bg-white/10 text-[#C5BBAF] hover:bg-white/20'
               }`}
             >
-              🏮 대웅전 1년 인등 명패 ({count1yr}위)
+              대웅전 1년 인등 ({count1yr}위)
             </button>
           </div>
         </div>
@@ -232,85 +232,6 @@ export default function SasiPrayerPrintModal({
           {filteredSasiPrayers.length === 0 ? (
             <div className="p-8 text-center text-sm text-[#777777] border border-dashed border-[#CCCCCC] rounded-xl">
               현재 조건에 해당하는 사시예불 접수 내역이 없습니다.
-            </div>
-          ) : sasiPrayerTypeTab === 'indeung_1yr' ? (
-            <div className="space-y-4">
-              {filteredSasiPrayers.map((p, idx) => {
-                const member = (members || []).find((m) => m.code === p.member_code) || null
-                const familyList =
-                  member?.family_members && member.family_members.length > 0
-                    ? member.family_members
-                    : [
-                        {
-                          id: 'fm-default',
-                          relation: '세주(가장)',
-                          name: p.believer_name?.split(' ')[0] || '불자',
-                          birth_year: member?.birth_date?.slice(0, 4) || '1964',
-                          lunar_solar: member?.lunar_solar || '음력',
-                          ganji: computeZodiacAndGanji(member?.birth_date?.slice(0, 4) || '1964').ganji,
-                          animal: computeZodiacAndGanji(member?.birth_date?.slice(0, 4) || '1964').animal,
-                          dharma_name: member?.dharma_name || '',
-                        },
-                      ]
-
-                return (
-                  <div
-                    key={p.id || idx}
-                    className="border-2 border-[#C59B27] p-4 sm:p-5 rounded-2xl bg-[#FAF6EE] relative shadow-sm page-break-inside-avoid"
-                  >
-                    <div className="flex items-center justify-between border-b border-[#D5C59B] pb-2 mb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-base text-[#8A6510]">🏮</span>
-                        <span className="font-serif-kr font-extrabold text-sm sm:text-base text-[#241E17]">
-                          제주 소원사 대웅전 1년 인등(가족등) 봉안 명패 #{idx + 1}
-                        </span>
-                      </div>
-                      <span className="px-2.5 py-0.5 rounded-full bg-[#EFE3C3] text-[#7A5B0B] text-xs font-bold border border-[#D5C59B]">
-                        365일 상시 축원등
-                      </span>
-                    </div>
-
-                    <div className="text-xs text-[#554E45] font-serif-kr mb-3 flex items-center gap-2">
-                      <span className="font-bold text-[#8A6510]">주소:</span>
-                      <span>{member?.address || '제주특별자치도 제주시 (소원사 도량)'}</span>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-3.5">
-                      {familyList.map((f, fIdx) => (
-                        <div
-                          key={f.id || fIdx}
-                          className="p-3 rounded-xl bg-white border border-[#DDD3C1] text-xs font-serif-kr space-y-1"
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="font-bold text-[#8A6510] text-[11px] px-1.5 py-0.2 rounded bg-[#FAF3DF]">
-                              {f.relation}
-                            </span>
-                            <span className="text-[10.5px] text-[#777777]">
-                              {f.lunar_solar || '음력'}
-                            </span>
-                          </div>
-                          <div className="text-sm font-black text-[#1B1815] pt-0.5">
-                            {f.name}
-                            {f.dharma_name && (
-                              <span className="text-xs text-[#8A6510] font-normal ml-1">
-                                ({f.dharma_name})
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-[11px] text-[#554E45]">
-                            {f.ganji ? `${f.ganji} (${f.animal})` : `${f.birth_year || '연도'}생`}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="p-2.5 rounded-xl bg-[#F0EAE1] border border-[#DDD3C1] text-xs text-[#3A3228] font-serif-kr leading-relaxed flex items-start gap-2">
-                      <span className="font-bold text-[#8A6510] shrink-0">가내 길상 발원:</span>
-                      <span>“{p.wish_text || '사시사철 온 가족 무병장수하고 가업이 날로 번창하기를 지심 축원합니다.'}”</span>
-                    </div>
-                  </div>
-                )
-              })}
             </div>
           ) : (
             <div className="overflow-x-auto">

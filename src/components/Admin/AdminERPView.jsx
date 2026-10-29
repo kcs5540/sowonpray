@@ -415,10 +415,18 @@ export default function AdminERPView(props) {
                 <button
                   type="button"
                   onClick={() => {
-                    setSasiPrayerTypeTab('indeung_1yr')
-                    setShowSasiPrintModal(true)
+                    const firstIndeungMember =
+                      (members || []).find((m) =>
+                        (prayers || []).some(
+                          (p) =>
+                            (p.member_code === m.code || (p.believer_name && p.believer_name.includes(m.name))) &&
+                            (p.wish_category?.includes('인등') || p.prayer_type === 'indeung_1yr')
+                        )
+                      ) || (members || [])[0]
+                    setIndeungTargetMember(firstIndeungMember)
+                    setShowIndeungNameplateModal(true)
                   }}
-                  className="flex-1 md:flex-initial px-4 py-2.5 rounded-xl bg-[#FAF8F5] text-[#231F1C] border border-[#D5C59B] font-extrabold text-xs shadow hover:bg-white transition flex items-center justify-center gap-1.5 whitespace-nowrap"
+                  className="flex-1 md:flex-initial px-4 py-2.5 rounded-xl bg-[#FAF8F5] text-[#231F1C] border border-[#D5C59B] font-extrabold text-xs shadow hover:bg-white transition flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
                 >
                   <span>🏮 1년 인등 명패 A4 인쇄</span>
                 </button>
