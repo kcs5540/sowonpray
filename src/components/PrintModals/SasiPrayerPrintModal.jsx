@@ -45,7 +45,7 @@ export default function SasiPrayerPrintModal({
                         오늘의 대웅전 사시예불 축원 명부 (7일 유효 신도 전용)
                       </h3>
                       <p className="text-[11px] text-[#D6CEC2] truncate">
-                        접수 7일 이내 정진 불자 (총 {activeSasiPrayers.length}위 중 {filteredSasiPrayers.length}위 표시 · {sasiPrayedCheckedIds.size}위 축원 완료)
+                        대웅전 부처님 전 사시마지 축원 대상 정진 불자 (총 {filteredSasiPrayers.length}위 전원 출력 대상)
                       </p>
                     </div>
                   </div>
@@ -205,7 +205,6 @@ export default function SasiPrayerPrintModal({
                     <table className="w-full text-left border-collapse border border-[#333333] text-xs">
                       <thead>
                         <tr className="bg-[#F0EDE4] text-[#111111] font-bold text-center border-b border-[#333333]">
-                          <th className="p-2 border-r border-[#333333] w-12 text-center no-print">축원</th>
                           <th className="p-2 border-r border-[#333333] w-12 text-center">연번</th>
                           <th className="p-2 border-r border-[#333333] w-36">신청자 / 축원대상</th>
                           <th className="p-2 border-r border-[#333333] w-28 text-center">기원 분야</th>
@@ -224,14 +223,6 @@ export default function SasiPrayerPrintModal({
                                 isPrayed ? 'bg-amber-50/50' : ''
                               }`}
                             >
-                              <td className="p-2 text-center border-r border-[#DDDDDD] no-print">
-                                <input
-                                  type="checkbox"
-                                  checked={isPrayed}
-                                  onChange={() => toggleSasiPrayedCheck(p.id)}
-                                  className="w-4 h-4 accent-[#8A6510] cursor-pointer"
-                                />
-                              </td>
                               <td className="p-2.5 text-center font-bold border-r border-[#DDDDDD] text-[#555555]">
                                 {idx + 1}
                               </td>

@@ -4623,7 +4623,7 @@ function normalizeMemberHierarchy(m) {
       address: r.address,
       family_memo: r.family_memo,
       role: 'believer',
-      parent_code: '33065540', // 기본 김철수 대표님 귀속 원칙 100% 준수
+      parent_code: r.parent_code || '55570267', // 구전산 이관 신도는 양영문 창건주 회장(사찰본부) 직속 산하로 100% 귀속
       bank_name: '',
       bank_account: '',
       account_holder: r.name,

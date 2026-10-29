@@ -997,7 +997,7 @@ export default function AdminERPView(props) {
                       4. 정산관제
                     </h3>
                     <p className="text-xs text-[#8C8071] mt-0.5">
-                      사찰 불사금 50% 원천 적립 및 전국 포교위원회 1·2·3차 조직표 요율제 실시간 정산 집행 및 감사 원장입니다.
+                      소원사 사찰 불사금 50% 원천 적립 및 김철수 총괄대표 독점 판권 50% 풀 [포교사 30% · 포교위원장 40% (차액 10%) · 산하 계보 그룹매출 차액 전액 롤업] 실시간 정산 감사 원장입니다.
                     </p>
                   </div>
                   <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
@@ -1005,26 +1005,39 @@ export default function AdminERPView(props) {
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-center text-xs pt-1">
-                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
-                    <div className="text-[10.5px] text-[#8C8071]">1차 직속추천</div>
-                    <div className="text-base font-black text-[#1B1815] mt-0.5">30%</div>
-                  </div>
-                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
-                    <div className="text-[10.5px] text-[#8C8071]">2차 상위추천</div>
-                    <div className="text-base font-black text-[#1B1815] mt-0.5">10%</div>
-                  </div>
-                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
-                    <div className="text-[10.5px] text-[#8C8071]">3차 상위추천</div>
-                    <div className="text-base font-black text-[#1B1815] mt-0.5">5%</div>
-                  </div>
-                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
-                    <div className="text-[10.5px] text-[#8A6510]">전산 인프라</div>
-                    <div className="text-base font-black text-[#8A6510] mt-0.5">5%</div>
-                  </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center text-xs pt-1">
                   <div className="p-3 rounded-xl bg-amber-50 border border-amber-300">
-                    <div className="text-[10.5px] text-amber-900 font-bold">소원사 사찰불사</div>
-                    <div className="text-base font-black text-amber-900 mt-0.5">50%</div>
+                    <div className="text-[10.5px] text-amber-900 font-bold">🪷 소원사 사찰불사</div>
+                    <div className="text-base font-black text-amber-900 mt-0.5">50% 고정</div>
+                    <div className="text-[9.5px] text-amber-700 mt-0.5">본원 도량 수납 원천 적립</div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
+                    <div className="text-[10.5px] text-[#8C8071]">👤 1차 포교사</div>
+                    <div className="text-base font-black text-[#1B1815] mt-0.5">30%</div>
+                    <div className="text-[9.5px] text-[#8C8071] mt-0.5">산하 계보 그룹 전체 매출</div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4]">
+                    <div className="text-[10.5px] text-[#8C8071]">🎖️ 2차 포교위원장</div>
+                    <div className="text-base font-black text-[#1B1815] mt-0.5">40% (+10%)</div>
+                    <div className="text-[9.5px] text-[#8C8071] mt-0.5">산하 포교사 매출 차액 관리</div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-[#FFFDF7] border-2 border-[#D5B038] shadow-xs">
+                    <div className="text-[10.5px] text-[#8A6510] font-black">👑 김철수 총괄대표</div>
+                    <div className="text-base font-black text-[#8A6510] mt-0.5">50% (판권총괄)</div>
+                    <div className="text-[9.5px] text-[#8A6510] font-bold mt-0.5">상위 차액 및 미지정 전액 롤업</div>
+                  </div>
+                </div>
+
+                {/* 📜 산하 계보 그룹 매출 정산 & 롤업(Roll-up) 철칙 배너 */}
+                <div className="p-3.5 rounded-xl bg-gradient-to-r from-[#FAF8F5] to-[#F5EEDC] border border-[#E0D3B8] text-xs text-[#5C4D3C] flex items-start gap-2.5 shadow-xs">
+                  <span className="text-base">⭐</span>
+                  <div className="leading-relaxed">
+                    <strong className="text-[#8A6510]">산하 계보 그룹 매출 정산 &amp; 롤업(Roll-up) 철칙:</strong> 모든 요율은 1회성 개인 소개비가 아닌 <span className="underline decoration-[#C59B27] font-bold text-[#1B1815]">해당 직급 산하 계보 그룹 전체에서 발생한 매출 기준</span>입니다.
+                    <div className="mt-1 space-y-0.5 text-[11.5px]">
+                      <div>• <strong>앱 자연유입 신도:</strong> 추천인 없이 모바일 앱을 통해 가입한 온라인 신도는 <span className="font-bold text-[#8A6510]">김철수 총괄대표 직속 산하</span>로 자동 등록되며, 50% 판권 마진이 전액 롤업됩니다.</div>
+                      <div>• <strong>사찰 본원 신도:</strong> 구전산 엑셀 이관 신도 및 종무소 직접 방문 신도는 <span className="font-bold text-[#554E45]">양영문 창건주 회장(사찰본부) 직속 산하</span>로 등록 및 귀속됩니다.</div>
+                      <div>• <strong>포교 조직 라인:</strong> 김철수 대표 산하 포교 계보에서 중간 직급이 부재한 경우, 미지급된 차액 전액(10%~20%)은 100% 김철수 총괄대표에게 전액 롤업 귀속됩니다.</div>
+                    </div>
                   </div>
                 </div>
 
@@ -1049,8 +1062,9 @@ export default function AdminERPView(props) {
                           <th className="p-2.5 text-right whitespace-nowrap">표준 약정액</th>
                           <th className="p-2.5 text-right whitespace-nowrap">실제 입금액</th>
                           <th className="p-2.5 text-center whitespace-nowrap">사찰 본원(50%)</th>
-                          <th className="p-2.5 whitespace-nowrap">1차 직속추천 (30%)</th>
-                          <th className="p-2.5 whitespace-nowrap">2차 상위관리 (10%)</th>
+                          <th className="p-2.5 whitespace-nowrap">1차 포교사 (산하 30%)</th>
+                          <th className="p-2.5 whitespace-nowrap">2차 위원장 (차액 10%)</th>
+                          <th className="p-2.5 text-center whitespace-nowrap bg-amber-50/60 font-black text-[#8A6510]">👑 김철수 총괄 (10%~50% 롤업)</th>
                           <th className="p-2.5 text-center whitespace-nowrap">수납·정산상태</th>
                         </tr>
                       </thead>
@@ -1059,7 +1073,13 @@ export default function AdminERPView(props) {
                           const stdAmt = Number(s.standard_amount || s.total_amount || 0)
                           const actualPaid = s.paid_amount !== undefined ? Number(s.paid_amount) : (s.payment_status === 'pending' ? 0 : stdAmt)
                           const templeAmt = Math.round(actualPaid * 0.5)
-                          const agent1Amt = Math.round(actualPaid * 0.3)
+                          const hasAgent1 = !!s.agent_1st_name
+                          const hasAgent2 = !!s.agent_2nd_name
+                          const agent1Amt = hasAgent1 ? Math.round(actualPaid * 0.3) : 0
+                          const agent2Amt = hasAgent2 ? Math.round(actualPaid * 0.1) : 0
+                          // 👑 롤업(Roll-up) 철칙: 판권 풀 50% 중 미지급된 하부 직급 차액 전액은 100% 김철수 총괄대표에게 귀속
+                          const masterAmt = Math.max(0, Math.round(actualPaid * 0.5) - agent1Amt - agent2Amt)
+                          const masterRateLabel = !hasAgent1 && !hasAgent2 ? '50% 전액롤업' : (!hasAgent2 ? '20% 롤업' : '10% 차액')
                           const isConfirmed = s.payment_status === 'confirmed' || (!s.payment_status && actualPaid > 0)
                           const isPartial = s.payment_status === 'partial'
                           const isPending = s.payment_status === 'pending' || actualPaid === 0
@@ -1105,15 +1125,29 @@ export default function AdminERPView(props) {
                                 {templeAmt.toLocaleString()}원
                               </td>
                               <td className="p-2.5 text-[#554E45] whitespace-nowrap font-bold">
-                                <div>{s.agent_1st_name || '-'}</div>
-                                {actualPaid > 0 && (
+                                <div>{s.agent_1st_name || <span className="text-[#AAA] font-normal">직속(미지정)</span>}</div>
+                                {actualPaid > 0 && hasAgent1 && (
                                   <div className="font-mono text-[10px] text-emerald-700 font-semibold">
-                                    +{agent1Amt.toLocaleString()}원
+                                    +{agent1Amt.toLocaleString()}원 <span className="text-[9px] text-[#888] font-normal">(30%)</span>
                                   </div>
                                 )}
                               </td>
-                              <td className="p-2.5 text-[#777777] whitespace-nowrap text-[11px]">
-                                {s.agent_2nd_name || '-'}
+                              <td className="p-2.5 text-[#777777] whitespace-nowrap text-[11px] font-bold">
+                                <div>{s.agent_2nd_name || <span className="text-[#AAA] font-normal">-</span>}</div>
+                                {actualPaid > 0 && hasAgent2 && (
+                                  <div className="font-mono text-[10px] text-indigo-700 font-semibold">
+                                    +{agent2Amt.toLocaleString()}원 <span className="text-[9px] text-[#888] font-normal">(10%)</span>
+                                  </div>
+                                )}
+                              </td>
+                              <td className="p-2.5 text-center whitespace-nowrap bg-amber-50/40 border-x border-[#EADFC7]">
+                                <div className="text-[11px] font-black text-[#8A6510]">김철수 총괄</div>
+                                {actualPaid > 0 && (
+                                  <div className="font-mono text-[11px] font-black text-[#A1730B]">
+                                    +{masterAmt.toLocaleString()}원
+                                    <span className="block text-[9px] font-semibold text-[#8C8071]">{masterRateLabel}</span>
+                                  </div>
+                                )}
                               </td>
                               <td className="p-2.5 text-center whitespace-nowrap">
                                 <div className="flex flex-col items-center gap-1">
