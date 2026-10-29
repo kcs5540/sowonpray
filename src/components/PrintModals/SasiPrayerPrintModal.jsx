@@ -15,6 +15,33 @@ function formatPrayerDate(dateStr) {
   return `${m}/${day} ${h}:${min < 10 ? '0' : ''}${min}`
 }
 
+// 📿 [정진 기간 한글 사찰 표준 명칭 헬퍼]
+function getPrayerPeriodLabel(p) {
+  const c = p.wish_category || ''
+  const t = p.prayer_type || ''
+  
+  if (c.includes('위패') || c.includes('영구')) {
+    return '영구 봉안'
+  }
+  if (c.includes('1년') || c.includes('인등') || t === 'indeung_1yr' || p.duration_days === 365) {
+    return '1년 (상시)'
+  }
+  if (c.includes('100일') || t === 'prayer_100d' || p.duration_days === 100) {
+    return '100일 정진'
+  }
+  if (c.includes('49재') || c.includes('천도재') || c.includes('기일') || c.includes('예수재')) {
+    return '특별재'
+  }
+  if (c.includes('공양미') || c.includes('시주') || c.includes('불사')) {
+    return '불전 시주'
+  }
+  // 1일 소원등 (무료)
+  if (t === 'lantern_1d' || t === 'lantern' || p.duration_days === 1 || !t) {
+    return '1일 (당일)'
+  }
+  return p.duration_days ? `${p.duration_days}일` : '1일 (당일)'
+}
+
 // 📿 [대웅전 사시예불 축원 명부 A4 공식 인쇄 모달]
 export default function SasiPrayerPrintModal({
   isOpen = true,
@@ -67,7 +94,7 @@ export default function SasiPrayerPrintModal({
       `"${(p.believer_name || '').replace(/"/g, '""')}"`,
       `"${(p.wish_category || '').replace(/"/g, '""')}"`,
       `"${(p.wish_text || '').replace(/"/g, '""')}"`,
-      `"${p.duration_days ? `${p.duration_days}일` : `D-${p.daysLeft || 1}`}"`,
+      `"${getPrayerPeriodLabel(p)}"`,
       `"${formatPrayerDate(p.created_at)}"`,
     ])
     const csvContent = '\uFEFF' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\r\n')
@@ -320,8 +347,8 @@ export default function SasiPrayerPrintModal({
                         <td className="p-2.5 text-[#222222] leading-snug border-r border-[#DDDDDD] break-keep font-serif-kr">
                           “{p.wish_text}”
                         </td>
-                        <td className="p-2.5 text-center font-bold border-r border-[#DDDDDD] text-[#B8860B]">
-                          {p.duration_days ? `${p.duration_days}일` : `D-${p.daysLeft || 1}`}
+                        <td className="p-2.5 text-center font-bold border-r border-[#DDDDDD] text-[#8A6510] whitespace-nowrap">
+                          {getPrayerPeriodLabel(p)}
                         </td>
                         <td className="p-2.5 text-center text-[11px] text-[#666666] whitespace-nowrap">
                           {formatPrayerDate(p.created_at)}
