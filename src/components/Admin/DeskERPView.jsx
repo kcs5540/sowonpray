@@ -510,6 +510,40 @@ export default function DeskERPView({
                 ))}
               </select>
             </div>
+
+            {/* 전체 보기: 모든 필터 + 검색어 한 번에 초기화 */}
+            {(() => {
+              const anyFilterOn =
+                mailFilter !== 'all' ||
+                smsFilter !== 'all' ||
+                believerFilter !== 'all' ||
+                younggaFilter !== 'all' ||
+                hwajuFilter !== 'all' ||
+                searchQuery.trim() !== ''
+              return (
+                <button
+                  type="button"
+                  disabled={!anyFilterOn}
+                  onClick={() => {
+                    setMailFilter('all')
+                    setSmsFilter('all')
+                    setBelieverFilter('all')
+                    setYounggaFilter('all')
+                    setHwajuFilter('all')
+                    setSearchQuery('')
+                  }}
+                  title="켜진 필터와 검색어를 모두 지우고 전체 신도를 봅니다"
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border text-[11px] font-bold transition ${
+                    anyFilterOn
+                      ? 'bg-[#C59B27] text-black border-[#F5D061] hover:brightness-110 cursor-pointer'
+                      : 'bg-black/40 text-[#6B6257] border-white/10 cursor-default'
+                  }`}
+                >
+                  <X className="w-3 h-3" />
+                  <span>전체 보기</span>
+                </button>
+              )
+            })()}
           </div>
 
           {/* 우측 검색 인풋 (5컬럼) */}
