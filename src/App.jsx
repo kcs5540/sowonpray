@@ -6318,17 +6318,17 @@ function normalizeMemberHierarchy(m) {
                 </form>
               )}
 
-              {/* 전화 예약 통합 바로가기 바 */}
-              <div className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-white text-[#3D352B] text-xs font-bold border border-[#D8C28E] shadow-xs flex-wrap">
-                <span className="inline-flex items-center gap-1 text-[#7A5608] font-extrabold">
-                  <Phone className="w-3.5 h-3.5 text-[#B8860B] fill-current shrink-0" />
+              {/* 전화 예약 통합 바로가기 바 (좁은 스마트폰에서도 1줄 고정) */}
+              <div className="flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl bg-white text-[#3D352B] text-[11px] sm:text-xs tracking-tight font-bold border border-[#D8C28E] shadow-xs whitespace-nowrap overflow-hidden">
+                <span className="inline-flex items-center gap-1 text-[#7A5608] font-extrabold shrink-0">
+                  <Phone className="w-3 h-3 text-[#B8860B] fill-current shrink-0" />
                   <span>종무소</span>
                 </span>
-                <a href="tel:064-805-2007" className="text-[#231F1C] hover:text-[#7A5608] font-extrabold transition">
+                <a href="tel:064-805-2007" className="text-[#231F1C] hover:text-[#7A5608] font-extrabold transition shrink-0">
                   064-805-2007
                 </a>
-                <span className="text-[#C8BFA8]">·</span>
-                <a href="tel:010-4912-1083" className="text-[#7A5608] hover:text-[#5C3F05] font-extrabold transition">
+                <span className="text-[#C8BFA8] shrink-0">·</span>
+                <a href="tel:010-4912-1083" className="text-[#7A5608] hover:text-[#5C3F05] font-extrabold transition shrink-0">
                   010-4912-1083
                 </a>
               </div>
