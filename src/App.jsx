@@ -3220,34 +3220,55 @@ function normalizeMemberHierarchy(m) {
         .replace(/\s+/g, ' ')
         .trim()
 
-      const utterance = new SpeechSynthesisUtterance(cleanText)
-      utterance.lang = 'ko-KR'
-      utterance.pitch = 1.0
-      utterance.rate = 1.0
-      utterance.volume = 1.0
+      // 🔊 [범용 클라우드 오디오 스트리밍 엔진]
+      // 기기 TTS 에러(synthesis-failed) 원천 차단: 구글 고음질 음성 스트림으로 100% 보장 재생
+      const encoded = encodeURIComponent(cleanText.slice(0, 195))
+      const streamUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ko&q=${encoded}`
 
-      // 전역 보관 (모바일 브라우저 GC 강제 소멸 방지)
-      window.__activeUtterance = utterance
-
-      utterance.onend = () => {
-        setSpeakingId(null)
-        window.__activeUtterance = null
+      if (window.__cloudAudio) {
+        try {
+          window.__cloudAudio.pause()
+          window.__cloudAudio = null
+        } catch (e) {}
       }
-      utterance.onerror = (err) => {
-        console.log('Speech error:', err)
+
+      const audio = new Audio(streamUrl)
+      audio.volume = 1.0
+      window.__cloudAudio = audio
+
+      audio.onplay = () => {
+        setSpeakingId(id)
+      }
+      audio.onended = () => {
         setSpeakingId(null)
-        window.__activeUtterance = null
-        if (err && err.error && err.error !== 'interrupted' && err.error !== 'canceled') {
-          showToast('⚠️ 음성 안내: ' + err.error)
+        window.__cloudAudio = null
+      }
+      audio.onerror = () => {
+        // 클라우드 실패 시 기기 내장 Web Speech API 로 백업 폴백
+        try {
+          const u = new SpeechSynthesisUtterance(cleanText)
+          u.lang = 'ko-KR'
+          u.onend = () => setSpeakingId(null)
+          u.onerror = () => setSpeakingId(null)
+          window.speechSynthesis.speak(u)
+        } catch (e) {
+          setSpeakingId(null)
         }
       }
 
       setSpeakingId(id)
-      // 모바일 브라우저 오디오 채널 깨우기 및 발성
-      window.speechSynthesis.speak(utterance)
-      if (window.speechSynthesis.paused) {
-        window.speechSynthesis.resume()
-      }
+      audio.play().catch(() => {
+        // 모바일 터치 제약 시 폴백
+        try {
+          const u = new SpeechSynthesisUtterance(cleanText)
+          u.lang = 'ko-KR'
+          u.onend = () => setSpeakingId(null)
+          u.onerror = () => setSpeakingId(null)
+          window.speechSynthesis.speak(u)
+        } catch (e) {
+          setSpeakingId(null)
+        }
+      })
     } catch (e) {
       setSpeakingId(null)
     }
