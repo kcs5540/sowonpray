@@ -12701,7 +12701,7 @@ function normalizeMemberHierarchy(m) {
           {/* 하단 플랫폼 크레딧 & 카피라이트 (전국 사찰 B2B 홍보 겸용) */}
           <div className="pt-2 border-t border-[#EAE2D3] space-y-0.5">
             <p className="text-[10.5px] font-bold text-[#5C4F40]">
-              모바일법당 개발 및 총괄: <span className="text-[#8A6510]">제주AI파트너</span>
+              전산 개발 및 총괄: <span className="text-[#8A6510]">제주AI파트너</span>
             </p>
             <p className="tracking-wider text-[#8C8071] text-[10px]">
               Platform © Jeju AI Partner. All rights reserved.
