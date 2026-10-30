@@ -5828,16 +5828,16 @@ function normalizeMemberHierarchy(m) {
                   playSingingBowlSound()
                   setActiveTab('sutra')
                 }}
-                className="bg-gradient-to-br from-[#F6F1E4] to-[#EAE0C8] text-[#231F1C] p-2.5 sm:p-3 rounded-2xl text-left border border-[#D5C59B] shadow-md hover:brightness-105 active:scale-95 transition flex items-center gap-2 overflow-hidden"
+                className="bg-gradient-to-br from-[#FFFBF2] via-[#F7EFE0] to-[#EFE2C6] text-[#231F1C] p-2.5 sm:p-3 rounded-2xl text-left border border-[#DEC896] shadow-md hover:brightness-105 active:scale-95 transition flex items-center gap-2 overflow-hidden relative"
               >
-                <div className="w-8 h-8 rounded-xl bg-[#9A7418]/15 border border-[#9A7418]/30 flex items-center justify-center shrink-0">
-                  <BookOpen className="w-4 h-4 text-[#8A6510]" />
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#9A7418] to-[#6E500B] text-[#FFF8E7] border border-[#E8C568]/60 flex items-center justify-center shrink-0 shadow-sm">
+                  <BookOpen className="w-4 h-4 text-[#FFF8E7]" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <span className="block text-[10px] text-[#8A6510] font-semibold tracking-tight whitespace-nowrap leading-none">
-                    나의 공덕 {currentMeritCount}회
+                  <span className="block text-[10px] text-[#8A6510] font-extrabold tracking-tight whitespace-nowrap leading-none">
+                    📖 나의 공덕 {currentMeritCount}회
                   </span>
-                  <h3 className="font-serif-kr font-bold text-[13px] sm:text-sm mt-1 tracking-tight whitespace-nowrap leading-tight text-[#231F1C]">
+                  <h3 className="font-serif-kr font-extrabold text-[13.5px] sm:text-[14.5px] mt-1 tracking-tight whitespace-nowrap leading-tight text-[#231F1C]">
                     한 줄 사경
                   </h3>
                 </div>
@@ -6093,24 +6093,24 @@ function normalizeMemberHierarchy(m) {
               )}
             </section>
 
-            {/* 따뜻한 차와 사찰 공양(식사) 대접 온라인 사전예약 카드 (평소에는 깔끔하게 접혀 있고 버튼 터치 시 열림) */}
-            <section className="rounded-2xl bg-gradient-to-br from-[#29231E] to-[#1C1814] text-white p-4 sm:p-5 border border-[#C59B27]/50 shadow-lg space-y-3.5">
-              <div className="flex items-start gap-2.5">
-                <div className="w-10 h-10 rounded-full bg-[#C59B27]/20 border border-[#F5D061]/40 flex items-center justify-center shrink-0 mt-0.5">
+            {/* 따뜻한 차와 사찰 공양(식사) 대접 온라인 사전예약 카드 (온화한 전통 한지 다실 톤으로 상단 먹색 플레이어와 명암 대비 조화) */}
+            <section className="rounded-2xl bg-gradient-to-br from-[#FFFDF9] via-[#FAF3E3] to-[#F3E7CC] text-[#231F1C] p-4 sm:p-5 border-2 border-[#DEC896] shadow-md space-y-3.5 relative overflow-hidden">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#2A221A] to-[#1B1612] border border-[#C59B27] flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
                   <Coffee className="w-5 h-5 text-[#F5D061]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="block text-[11px] text-[#F5D061] font-semibold break-keep">
-                    전날 예약 시 차(茶) · 사찰 공양(식사) 무료 대접
+                  <span className="inline-block text-[10.5px] text-[#8A6510] bg-[#FAF0D7] px-2 py-0.5 rounded-full border border-[#E5D399] font-extrabold break-keep">
+                    🍵 전날 예약 시 차(茶) · 사찰 공양 무료 대접
                   </span>
-                  <h3 className="font-serif-kr text-base sm:text-lg font-bold mt-0.5 break-keep">
+                  <h3 className="font-serif-kr text-base sm:text-lg font-extrabold text-[#1F1A14] mt-1 break-keep">
                     “도량에서 따뜻한 차 한 잔 나누세요”
                   </h3>
-                  <p className="text-xs text-[#D6CEC2] mt-1 leading-relaxed break-keep">
+                  <p className="text-xs text-[#574E42] mt-1 leading-relaxed break-keep">
                     제주 소원사는 모든 불자님께 언제나 열려 있습니다.{' '}
-                    <span className="text-[#F5D061] font-semibold">
+                    <strong className="text-[#7A5608] font-bold">
                       오시기 전날 미리 방문 예약을 남겨주시면 따뜻한 차와 정성스러운 사찰 공양(식사)을 무료로 준비해 드립니다.
-                    </span>
+                    </strong>
                   </p>
                 </div>
               </div>
@@ -6119,13 +6119,13 @@ function normalizeMemberHierarchy(m) {
               <button
                 type="button"
                 onClick={() => setShowVisitForm((prev) => !prev)}
-                className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#C59B27] text-[#1B1815] font-extrabold text-xs shadow hover:brightness-105 transition flex items-center justify-between gap-1.5"
+                className="w-full py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#26201A] via-[#332A21] to-[#26201A] text-[#F5D061] border border-[#C59B27] font-extrabold text-xs shadow hover:brightness-110 transition flex items-center justify-between gap-1.5 cursor-pointer"
               >
                 <span className="flex items-center gap-1.5 whitespace-nowrap">
-                  <Calendar className="w-4 h-4 shrink-0" />
-                  <span>전날 방문 · 사찰 공양(식사) 예약</span>
+                  <Calendar className="w-4 h-4 text-[#F5D061] shrink-0" />
+                  <span className="text-[#FAF8F5]">전날 방문 · 사찰 공양(식사) 예약</span>
                 </span>
-                <span className="px-2 py-1 rounded-lg bg-[#1B1815] text-[#F5D061] text-[10.5px] font-bold whitespace-nowrap shrink-0">
+                <span className="px-2.5 py-1 rounded-lg bg-[#F5D061] text-[#1B1815] text-[10.5px] font-extrabold whitespace-nowrap shrink-0">
                   {showVisitForm ? '창 닫기 ▲' : '창 열기 ▼'}
                 </span>
               </button>
@@ -6321,16 +6321,16 @@ function normalizeMemberHierarchy(m) {
               <div className="grid grid-cols-2 gap-2">
                 <a
                   href="tel:010-4912-1083"
-                  className="flex items-center justify-center gap-1 py-2.5 px-2 rounded-xl bg-white/15 text-[#F5D061] font-bold text-[11px] border border-[#F5D061]/40 hover:bg-white/20 transition whitespace-nowrap"
+                  className="flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl bg-white text-[#7A5608] font-extrabold text-[11.5px] border border-[#D8C28E] shadow-xs hover:bg-[#FAF3DF] transition whitespace-nowrap"
                 >
-                  <Phone className="w-3.5 h-3.5 fill-current shrink-0" />
+                  <Phone className="w-3.5 h-3.5 text-[#B8860B] fill-current shrink-0" />
                   <span>예약 010-4912-1083</span>
                 </a>
                 <a
                   href="tel:064-805-2007"
-                  className="flex items-center justify-center gap-1 py-2.5 px-2 rounded-xl bg-white/10 text-white font-semibold text-[11px] border border-white/20 hover:bg-white/15 transition whitespace-nowrap"
+                  className="flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl bg-white text-[#3D352B] font-bold text-[11.5px] border border-[#DDD2BE] shadow-xs hover:bg-[#FAF8F5] transition whitespace-nowrap"
                 >
-                  <Phone className="w-3.5 h-3.5 shrink-0" />
+                  <Phone className="w-3.5 h-3.5 text-[#7A6E5E] shrink-0" />
                   <span>종무소 064-805-2007</span>
                 </a>
               </div>
