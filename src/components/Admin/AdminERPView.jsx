@@ -324,8 +324,8 @@ export default function AdminERPView(props) {
         ) : (
           /* ==================== 🏛️ ERP 메인 와이드 작업 화면 ==================== */
           <main className="flex-1 w-full max-w-[1600px] mx-auto p-4 sm:p-6 space-y-6">
-            {/* 상단 4종 KPI 대시보드 */}
-            <section className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            {/* 상단 5종 KPI 대시보드 (포교비 포함) */}
+            <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
               <div className="p-4 rounded-2xl bg-[#1F1B17] border border-[#C59B27]/40 shadow-sm">
                 <div className="text-xs text-[#C5BBAF] font-semibold flex items-center justify-between">
                   <span>총 등록 신도</span>
@@ -365,6 +365,21 @@ export default function AdminERPView(props) {
                 </div>
                 <div className="text-[11px] text-[#A69B8D] mt-1 truncate">
                   총 {settlements?.length || 0}건 봉안 접수완료
+                </div>
+              </div>
+
+              {/* 🌟 [사용자 요청] 누적 불사금과 사찰 귀속금 사이 포교비 항목 */}
+              <div className="p-4 rounded-2xl bg-[#1F1B17] border border-[#C59B27]/40 shadow-sm">
+                <div className="text-xs text-[#C5BBAF] font-semibold flex items-center justify-between">
+                  <span className="text-[#F5D061]">포교비 (포교활동금)</span>
+                  <Sparkles className="w-4 h-4 text-[#F5D061]" />
+                </div>
+                <div className="text-2xl font-black text-[#F5D061] mt-1">
+                  {Math.round(Number(adminKPIs?.missionFund || (Number(adminKPIs?.totalSettlementAmount || 0) - Number(adminKPIs?.templeFund || 0))) / 10000).toLocaleString()}
+                  <span className="text-sm font-normal text-[#C5BBAF] ml-1">만원</span>
+                </div>
+                <div className="text-[11px] text-[#A69B8D] mt-1 truncate">
+                  불사금 50% 포교위원장·위원 지원
                 </div>
               </div>
 

@@ -2998,6 +2998,7 @@ function normalizeMemberHierarchy(m) {
     const settledCount = settlements.filter((s) => s.payment_status === 'settled').length
     const confirmedCount = settlements.filter((s) => s.payment_status === 'confirmed').length
     const templeFund = Math.round(totalSettlementAmount * 0.5)
+    const missionFund = totalSettlementAmount - templeFund
     return {
       totalMembers,
       totalBelievers,
@@ -3008,6 +3009,7 @@ function normalizeMemberHierarchy(m) {
       settledCount,
       confirmedCount,
       templeFund,
+      missionFund,
     }
   }, [members, activeSasiPrayers, settlements])
 
