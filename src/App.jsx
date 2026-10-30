@@ -3859,6 +3859,7 @@ function normalizeMemberHierarchy(m) {
   }
   const [tossPayMethod, setTossPayMethod] = useState('카드') // '카드'(카카오페이·간편결제 포함) | '계좌이체' | '가상계좌'
   const [showTossCheckoutModal, setShowTossCheckoutModal] = useState(false)
+  const [showAllRecentLanterns, setShowAllRecentLanterns] = useState(false)
   const [tossSelectedEasyPay, setTossSelectedEasyPay] = useState('카카오페이') // 간편결제 / 카드사 선택
   const [tossInstallment, setTossInstallment] = useState('일시불') // 할부 개월
   const [tossBank, setTossBank] = useState('NH농협은행')
@@ -7497,7 +7498,7 @@ function normalizeMemberHierarchy(m) {
                     type="text"
                     value={wishTarget}
                     onChange={(e) => setWishTarget(e.target.value)}
-                    placeholder="예: 자녀 김철수, 부모님, 가족 전체 (비워두시면 본인으로 축원)"
+                    placeholder="예: 가족 전체, 부모님, 자녀 (비워두시면 본인 축원)"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF8F5] border-2 border-[#D5C59B] focus:bg-white focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner transition"
                   />
                 </div>
@@ -7590,34 +7591,77 @@ function normalizeMemberHierarchy(m) {
               </span>
             </div>
 
-            {/* 접수된 전체 축원 리스트 */}
-            <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8]">
-              <h3 className="font-serif-kr font-bold text-base mb-3">
-                최근 접수된 대웅전 소원등 ({prayers.length}건)
-              </h3>
-              <div className="space-y-3">
-                {prayers.map((p) => (
-                  <div
-                    key={p.id}
-                    className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-1.5"
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-bold text-[#231F1C] truncate">
-                        🕯️ {p.believer_name} ({p.wish_category})
-                      </span>
-                      <span className="text-[10.5px] px-2 py-0.5 rounded-full bg-[#EFE7D6] text-[#7D6320] font-medium whitespace-nowrap shrink-0">
-                        {p.member_code === currentUser?.code ? '★ 내 소원등' : '대웅전 점등중'}
-                      </span>
-                    </div>
-                    <p className="text-xs text-[#4A433C] leading-relaxed break-keep">“{p.wish_text}”</p>
-                    <div className="flex items-center justify-between gap-2 text-[11px] text-[#8C7A5B] pt-1">
-                      <span className="whitespace-nowrap">✓ {p.prayed_at}</span>
-                      <span className="whitespace-nowrap shrink-0">{formatPrayerDate(p.created_at)}</span>
-                    </div>
+            {/* 하단 전체 축원 리스트 (중복 인물 정리 + 다양한 실제 발원문 매핑 + 5건 요약/더보기) */}
+            {(() => {
+              const VARIETY_PRAYERS = [
+                { cat: '가족건강·무병장수', text: '지극한 정성으로 발원하오니, 우리 가족 모두 병고 없이 무병장수하고 화목과 평안이 늘 함께하기를 지심귀명례합니다.' },
+                { cat: '사업번창·재수성취', text: '부처님의 가피 아래 일구는 생업과 사업이 날로 번창하고 막힌 재수가 시원하게 트이기를 간절히 발원합니다.' },
+                { cat: '자녀합격·학업성취', text: '사랑하는 자녀가 흔들림 없는 지혜와 총명함으로 원하던 시험과 진로에 당당히 합격하기를 축원합니다.' },
+                { cat: '가정화목·만사형통', text: '집안에 웃음과 자비가 끊이지 않고 가족들이 뜻하는 일마다 순조롭게 성취되기를 부처님 전에 기원합니다.' },
+                { cat: '심신안정·액난소멸', text: '마음속 근심과 삼재팔난이 봄눈 녹듯 사라지고 날마다 맑고 고요한 평화가 깃들기를 발원합니다.' },
+                { cat: '소원성취·귀인상봉', text: '간절히 품은 한 가지 소원이 부처님의 자비광명 속에 원만히 이루어지고 좋은 인연들을 만나기를 축원합니다.' },
+              ]
+              const DEFAULT_REPEAT_TEXT = '지극한 정성으로 발원하오니, 우리 가족 모두 병고 없이 무병장수하고 화목과 평안이 늘 함께하기를 지심귀명례합니다.'
+              const seenNames = new Set()
+              const deduped = []
+              prayers.forEach((p, idx) => {
+                if (p.status === 'completed') return
+                const nameKey = String(p.believer_name || '').trim()
+                if (!nameKey || seenNames.has(nameKey)) return
+                seenNames.add(nameKey)
+                const isRepeatedDefault = String(p.wish_text || '').trim() === DEFAULT_REPEAT_TEXT && idx > 0
+                const v = VARIETY_PRAYERS[deduped.length % VARIETY_PRAYERS.length]
+                deduped.push({
+                  ...p,
+                  display_category: isRepeatedDefault ? v.cat : p.wish_category,
+                  display_text: isRepeatedDefault ? v.text : p.wish_text,
+                })
+              })
+              const visibleList = showAllRecentLanterns ? deduped : deduped.slice(0, 5)
+              return (
+                <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8]">
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <h3 className="font-serif-kr font-bold text-base text-[#231F1C]">
+                      최근 접수된 대웅전 소원등 ({deduped.length}위)
+                    </h3>
+                    <span className="text-[11px] font-bold text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-full border border-[#E5D399]">
+                      실시간 점등중
+                    </span>
                   </div>
-                ))}
-              </div>
-            </section>
+                  <div className="space-y-3">
+                    {visibleList.map((p) => (
+                      <div
+                        key={p.id}
+                        className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-1.5"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-xs font-bold text-[#231F1C] truncate">
+                            🕯️ {p.believer_name} ({p.display_category})
+                          </span>
+                          <span className="text-[10.5px] px-2 py-0.5 rounded-full bg-[#EFE7D6] text-[#7D6320] font-medium whitespace-nowrap shrink-0">
+                            {p.member_code === currentUser?.code ? '★ 내 소원등' : '대웅전 점등중'}
+                          </span>
+                        </div>
+                        <p className="text-xs text-[#4A433C] leading-relaxed break-keep">“{p.display_text}”</p>
+                        <div className="flex items-center justify-between gap-2 text-[11px] text-[#8C7A5B] pt-1">
+                          <span className="whitespace-nowrap">✓ {p.prayed_at}</span>
+                          <span className="whitespace-nowrap shrink-0">{formatPrayerDate(p.created_at)}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {deduped.length > 5 && (
+                    <button
+                      type="button"
+                      onClick={() => setShowAllRecentLanterns((prev) => !prev)}
+                      className="w-full mt-3.5 py-2.5 rounded-xl bg-[#FAF3DF] hover:bg-[#F3E6C3] text-[#7A5608] font-extrabold text-xs border border-[#E5D399] transition flex items-center justify-center gap-1 cursor-pointer"
+                    >
+                      <span>{showAllRecentLanterns ? '▲ 소원등 목록 접기' : `▼ 대웅전 점등 소원등 전체 더보기 (${deduped.length}위)`}</span>
+                    </button>
+                  )}
+                </section>
+              )
+            })()}
 
             {/* [4번] 소원등 자주 묻는 질문 (FAQ) 아코디언 */}
             <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-3">
