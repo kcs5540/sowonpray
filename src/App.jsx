@@ -3920,26 +3920,38 @@ function normalizeMemberHierarchy(m) {
     window.history.replaceState({}, '', window.location.pathname)
   }, [])
 
-  const handleTossTestPayment = () => {
-    if (!wishName.trim() || !wishPhone.trim()) {
-      showToast('결제 전 신청자 성함과 연락처를 먼저 입력해 주세요.')
-      return
+  const handleTossTestPayment = async () => {
+    // 성함·연락처가 비어 있어도 바로 테스트 결제창이 열리도록 자동 기본값 처리
+    const effectiveName = wishName.trim() || currentUser?.name || '홍길동 불자'
+    const effectivePhone = wishPhone.trim() || currentUser?.phone || '010-1234-5678'
+    if (!wishName.trim()) setWishName(effectiveName)
+    if (!wishPhone.trim()) setWishPhone(effectivePhone)
+
+    // SDK가 아직 로드되지 않았으면 동적으로 즉시 로드
+    if (typeof window.TossPayments !== 'function') {
+      await new Promise((resolve) => {
+        const sc = document.createElement('script')
+        sc.src = 'https://js.tosspayments.com/v1/payment'
+        sc.onload = resolve
+        sc.onerror = resolve
+        document.head.appendChild(sc)
+      })
     }
     if (typeof window.TossPayments !== 'function') {
-      showToast('결제 모듈을 불러오는 중입니다. 잠시 후 다시 눌러주세요.')
+      showToast('결제 모듈 로드에 실패했습니다. 새로고침 후 다시 시도해 주세요.')
       return
     }
     const amount = Math.max(1000, Number(customPayAmount) || 100000)
     const finalTarget = wishTarget.trim()
     const formattedBelieverName =
       finalTarget && finalTarget !== '본인'
-        ? `${wishName.trim()} (대상: ${finalTarget})`
-        : wishName.trim()
+        ? `${effectiveName} (대상: ${finalTarget})`
+        : effectiveName
     const finalWishText =
       wishText.trim() ||
       PRAYER_CATEGORY_TEMPLATES[wishCategory] ||
       '우리 가족 모두 건강하고 뜻하는 일마다 밝게 풀리기를 발원합니다.'
-    const writerCode = currentUser?.code || extractPhone8Code(wishPhone)
+    const writerCode = currentUser?.code || extractPhone8Code(effectivePhone)
     const matchedMember = members.find((m) => m.code === writerCode)
     const assignedAgentCode = currentUser?.parent_code || matchedMember?.parent_code || referralCode || '33065540'
     try {
@@ -3950,7 +3962,7 @@ function normalizeMemberHierarchy(m) {
           agent_code: assignedAgentCode,
           believer_name: formattedBelieverName,
           wish_target: finalTarget || '본인',
-          believer_phone: wishPhone.trim(),
+          believer_phone: effectivePhone,
           wish_category: wishCategory || '대웅전 1년 인등(가족등)',
           wish_text: finalWishText,
         })
@@ -3962,8 +3974,8 @@ function normalizeMemberHierarchy(m) {
       .requestPayment(tossPayMethod, {
         amount,
         orderId: `sowonsa-${Date.now()}`,
-        orderName: `제주 소원사 - ${wishCategory || '기도·불사 보시'}`,
-        customerName: wishName.trim(),
+        orderName: `제주 소원사 - ${wishCategory || '대웅전 1년 인등'}`,
+        customerName: effectiveName,
         successUrl: window.location.origin + window.location.pathname,
         failUrl: window.location.origin + window.location.pathname,
       })
