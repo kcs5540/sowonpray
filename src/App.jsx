@@ -3266,7 +3266,7 @@ function normalizeMemberHierarchy(m) {
       setSpeakingId(id)
 
       // 목탁 소리처럼 HTML5 Audio 객체로 즉시 재생
-      const audioUrl = '/api/tts?text=' + encodeURIComponent(cleanText)
+      const audioUrl = '/api/tts?v=monk1&text=' + encodeURIComponent(cleanText)
       const audio = new Audio(audioUrl)
       audio.preload = 'auto'
       speechAudioRef.current = audio
