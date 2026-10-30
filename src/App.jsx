@@ -7113,25 +7113,57 @@ function normalizeMemberHierarchy(m) {
                     ))}
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 flex items-center bg-white rounded-xl border border-[#D5C59B] px-3 py-2">
-                      <span className="text-[11px] font-bold text-[#6E655C] mr-2 shrink-0">보시금액(원)</span>
-                      <input
-                        type="number"
-                        step="10000"
-                        min="1000"
-                        value={customPayAmount}
-                        onChange={(e) => setCustomPayAmount(e.target.value)}
-                        className="w-full text-right font-mono font-extrabold text-sm text-[#231F1C] focus:outline-none"
-                      />
+                  {/* 빠른 금액 선택 칩 + 잘림 없는 천단위 콤마 금액 입력란 */}
+                  <div className="space-y-2">
+                    <div className="grid grid-cols-5 gap-1">
+                      {[
+                        { label: '3만', val: '30000' },
+                        { label: '5만', val: '50000' },
+                        { label: '10만', val: '100000' },
+                        { label: '30만', val: '300000' },
+                        { label: '50만', val: '500000' },
+                      ].map((chip) => {
+                        const active = String(customPayAmount) === chip.val
+                        return (
+                          <button
+                            key={chip.val}
+                            type="button"
+                            onClick={() => setCustomPayAmount(chip.val)}
+                            className={`py-1.5 rounded-lg text-[11px] font-extrabold border transition cursor-pointer ${
+                              active
+                                ? 'bg-[#FAF0D7] text-[#8A6510] border-[#C59B27]'
+                                : 'bg-white text-[#6E655C] border-[#E4DDD0] hover:bg-[#FAF8F5]'
+                            }`}
+                          >
+                            +{chip.label}
+                          </button>
+                        )
+                      })}
+                    </div>
+                    <div className="flex items-center justify-between bg-white rounded-xl border-2 border-[#D5C59B] focus-within:border-[#C59B27] px-3.5 py-2.5">
+                      <span className="text-xs font-bold text-[#6E655C] shrink-0">보시금액 입력</span>
+                      <div className="flex items-center gap-1 flex-1 justify-end min-w-0">
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          value={customPayAmount ? Number(customPayAmount).toLocaleString() : ''}
+                          onChange={(e) => {
+                            const raw = e.target.value.replace(/[^0-9]/g, '')
+                            setCustomPayAmount(raw)
+                          }}
+                          placeholder="100,000"
+                          className="w-full text-right font-mono font-extrabold text-base text-[#231F1C] focus:outline-none min-w-0"
+                        />
+                        <span className="text-xs font-extrabold text-[#231F1C] shrink-0">원</span>
+                      </div>
                     </div>
                     <button
                       type="button"
                       onClick={handleTossTestPayment}
-                      className="px-4 py-2.5 rounded-xl bg-[#231F1C] hover:bg-[#322C26] text-[#F5D061] border border-[#C59B27] font-extrabold text-xs sm:text-sm shadow flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition"
+                      className="w-full py-3 rounded-xl bg-[#231F1C] hover:bg-[#322C26] text-[#F5D061] border border-[#C59B27] font-extrabold text-xs sm:text-sm shadow flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer transition active:scale-98"
                     >
                       <CreditCard className="w-4 h-4 shrink-0" />
-                      <span>{Number(customPayAmount || 0).toLocaleString()}원 보시 결제</span>
+                      <span>{Number(customPayAmount || 0).toLocaleString()}원 온라인 보시 결제하기</span>
                     </button>
                   </div>
                   <p className="text-[10.5px] text-[#7A6E5D] leading-snug">
