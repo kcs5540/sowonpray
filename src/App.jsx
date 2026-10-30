@@ -12671,7 +12671,7 @@ function normalizeMemberHierarchy(m) {
               <span>☸ 대한불교 조계종</span>
             </div>
             <div className="font-serif-kr font-extrabold text-[#231F1C] text-[13px]">
-              제주 소원사 · 모바일 법당 <span className="text-[#9A7418] font-semibold text-xs">(소원성취 기도도량)</span>
+              제주 소원사 · 모바일 법당
             </div>
             <p className="text-[11px] text-[#5C5349] flex items-center justify-center gap-1 flex-wrap">
               <MapPin className="w-3 h-3 text-[#9A7418] shrink-0" />
