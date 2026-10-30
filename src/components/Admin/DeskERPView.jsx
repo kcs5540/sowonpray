@@ -32,6 +32,24 @@ import {
 import { computeZodiacAndGanji } from '../../lib/supabase'
 
 // 🏛️ [소원사 종무소 구형 전산(두손모아) 친화형 4분할 데스크 ERP 전산망]
+// 🗓️ 삼재(三災) 계산: 띠(지지) 그룹별로 12년 중 3년 연속 삼재가 듭니다.
+//   신자진(원숭이·쥐·용) → 인묘진년 / 사유축(뱀·닭·소) → 해자축년
+//   인오술(호랑이·말·개) → 신유술년 / 해묘미(돼지·토끼·양) → 사오미년
+//   ※ 양력 연도 기준 간이 계산 (입춘·음력 설 경계는 반영하지 않음)
+const JIJI_ANIMALS = ['원숭이', '닭', '개', '돼지', '쥐', '소', '호랑이', '토끼', '용', '뱀', '말', '양'] // year % 12 순서
+const SAMJAE_START = { 0: 2, 4: 2, 8: 2, 9: 3, 1: 3, 5: 3, 6: 0, 10: 0, 2: 0, 3: 9, 7: 9, 11: 9 } // 띠(year%12) → 들삼재 시작 해의 year%12
+function getSamjaeStage(birthYear, targetYear) {
+  const y = parseInt(String(birthYear || '').match(/\d{4}/)?.[0] || '', 10)
+  if (!y) return null
+  const start = SAMJAE_START[y % 12]
+  const diff = (((targetYear % 12) - start) % 12 + 12) % 12
+  return diff === 0 ? '들삼재' : diff === 1 ? '눌삼재' : diff === 2 ? '날삼재' : null
+}
+function getAnimal(birthYear) {
+  const y = parseInt(String(birthYear || '').match(/\d{4}/)?.[0] || '', 10)
+  return y ? JIJI_ANIMALS[y % 12] : ''
+}
+
 export default function DeskERPView({
   onOpenSasiPrint,
   onOpenIndeungPrint,
@@ -62,6 +80,9 @@ export default function DeskERPView({
   const [believerFilter, setBelieverFilter] = useState('all') // 'all', 'believer', 'non'
   const [younggaFilter, setYounggaFilter] = useState('all') // 'all', 'has', 'none'
   const [hwajuFilter, setHwajuFilter] = useState('all')
+  const [listMode, setListMode] = useState('daeju') // 'daeju' (가구 단위) | 'family' (가족 개인 단위)
+  const [samjaeOnly, setSamjaeOnly] = useState(false) // 올해 삼재 대상자만
+  const samjaeYear = new Date().getFullYear()
 
   // 현재 선택된 신도 (Active Member)
   const [selectedMemberCode, setSelectedMemberCode] = useState(() => {
@@ -181,6 +202,40 @@ export default function DeskERPView({
     younggaFilter,
     hwajuFilter,
   ])
+
+  // 가구 단위 목록 (삼재 필터: 가족 중 1명이라도 올해 삼재면 표시)
+  const householdsShown = useMemo(() => {
+    if (!samjaeOnly) return filteredMembers
+    return filteredMembers.filter((m) =>
+      (m.families?.length ? m.families : [{ birth_year: m.birth_year }]).some((f) =>
+        getSamjaeStage(f.birth_year, samjaeYear)
+      )
+    )
+  }, [filteredMembers, samjaeOnly, samjaeYear])
+
+  // 가족 개인 단위 목록 (두손모아 "대상: 가족" 대응)
+  const familyRows = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase()
+    const rows = []
+    filteredMembers.forEach((m) => {
+      const people = m.families?.length
+        ? m.families
+        : [{ id: `${m.code}-self`, relation: '대주', name: m.name, dharma_name: m.dharma_name, birth_year: m.birth_year, phone: m.phone }]
+      const personMatches = (f) =>
+        (f.name || '').toLowerCase().includes(q) ||
+        (f.dharma_name || '').toLowerCase().includes(q) ||
+        (f.phone || '').includes(q)
+      // 검색어가 특정 가족 이름에 맞으면 그 사람만, 주소·번호 등 가구 정보로 맞았으면 가족 전원 표시
+      const anyPersonMatch = q && people.some(personMatches)
+      people.forEach((f, idx) => {
+        if (anyPersonMatch && !personMatches(f)) return
+        const samjae = getSamjaeStage(f.birth_year, samjaeYear)
+        if (samjaeOnly && !samjae) return
+        rows.push({ key: `${m.code}-${f.id || idx}`, member: m, person: f, samjae })
+      })
+    })
+    return rows
+  }, [filteredMembers, searchQuery, samjaeOnly, samjaeYear])
 
   // 가족 추가 실행
   const handleAddFamily = () => {
@@ -438,6 +493,49 @@ export default function DeskERPView({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs items-center">
           {/* 좌측 필터 조건 그룹 (7컬럼) */}
           <div className="lg:col-span-8 flex flex-wrap items-center gap-3">
+            {/* 목록 대상: 대주(가구 단위) / 가족(개인 단위) — 두손모아 신도명부관리 "대상" 대응 */}
+            <div
+              className="flex items-center gap-1 bg-black/40 px-2 py-1 rounded-lg border border-white/10"
+              title="대주: 한 가정을 한 줄로 / 가족: 가족 한 사람을 한 줄씩"
+            >
+              <span className="text-[#8C8071] text-[11px]">대상:</span>
+              <button
+                type="button"
+                onClick={() => setListMode('daeju')}
+                className={`px-1.5 py-0.5 rounded text-[11px] font-bold cursor-pointer ${
+                  listMode === 'daeju' ? 'bg-[#C59B27] text-black' : 'text-[#A69B8D] hover:text-white'
+                }`}
+              >
+                대주
+              </button>
+              <button
+                type="button"
+                onClick={() => setListMode('family')}
+                className={`px-1.5 py-0.5 rounded text-[11px] font-bold cursor-pointer ${
+                  listMode === 'family' ? 'bg-[#C59B27] text-black' : 'text-[#A69B8D] hover:text-white'
+                }`}
+              >
+                가족
+              </button>
+            </div>
+
+            {/* 삼재 대상자 조회 */}
+            <div
+              className="flex items-center gap-1 bg-black/40 px-2 py-1 rounded-lg border border-white/10"
+              title={`${samjaeYear}년 삼재(들·눌·날삼재)에 해당하는 사람만 표시`}
+            >
+              <span className="text-[#8C8071] text-[11px]">삼재:</span>
+              <button
+                type="button"
+                onClick={() => setSamjaeOnly(!samjaeOnly)}
+                className={`px-1.5 py-0.5 rounded text-[11px] font-bold cursor-pointer ${
+                  samjaeOnly ? 'bg-rose-600 text-white' : 'text-[#A69B8D] hover:text-white'
+                }`}
+              >
+                {samjaeYear}년 대상자
+              </button>
+            </div>
+
             {/* 우편발송 */}
             <div className="flex items-center gap-1 bg-black/40 px-2 py-1 rounded-lg border border-white/10">
               <span className="text-[#8C8071] text-[11px]">우편:</span>
@@ -519,6 +617,8 @@ export default function DeskERPView({
                 believerFilter !== 'all' ||
                 younggaFilter !== 'all' ||
                 hwajuFilter !== 'all' ||
+                samjaeOnly ||
+                listMode !== 'daeju' ||
                 searchQuery.trim() !== ''
               return (
                 <button
@@ -530,6 +630,8 @@ export default function DeskERPView({
                     setBelieverFilter('all')
                     setYounggaFilter('all')
                     setHwajuFilter('all')
+                    setSamjaeOnly(false)
+                    setListMode('daeju')
                     setSearchQuery('')
                   }}
                   title="켜진 필터와 검색어를 모두 지우고 전체 신도를 봅니다"
@@ -577,7 +679,10 @@ export default function DeskERPView({
           <div className="bg-[#241D17] px-3.5 py-2.5 border-b border-[#C59B27]/40 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <span className="font-serif-kr font-bold text-xs text-[#F5D061]">
-                §. 신도명부 대장 ({filteredMembers.length} / 총 {memberList.length}가구)
+                §. 신도명부 대장 {listMode === 'family'
+                  ? `(가족 ${familyRows.length}명 · ${new Set(familyRows.map((r) => r.member.code)).size}가구)`
+                  : `(${householdsShown.length} / 총 ${memberList.length}가구)`}
+                {samjaeOnly && <span className="ml-1.5 text-rose-400">· {samjaeYear}년 삼재</span>}
               </span>
               <span className="text-[10px] text-[#8C8071] hidden sm:inline">
                 (원하는 행 클릭 시 가족/영가/동참 즉시 동기화)
@@ -590,6 +695,67 @@ export default function DeskERPView({
 
           {/* 테이블 */}
           <div className="overflow-x-auto flex-1 max-h-[410px] overflow-y-auto">
+            {listMode === 'family' ? (
+              <table className="w-full text-left text-xs border-collapse">
+                <thead className="sticky top-0 bg-[#29211A] text-[#C5BBAF] text-[11px] font-bold border-b border-[#C59B27]/30 z-10 shadow-sm">
+                  <tr>
+                    <th className="p-2 whitespace-nowrap">신도번호</th>
+                    <th className="p-2 whitespace-nowrap">대주명</th>
+                    <th className="p-2 whitespace-nowrap">관계</th>
+                    <th className="p-2 whitespace-nowrap">성명</th>
+                    <th className="p-2 whitespace-nowrap">생년</th>
+                    <th className="p-2 whitespace-nowrap">띠</th>
+                    <th className="p-2 whitespace-nowrap text-center">삼재</th>
+                    <th className="p-2 whitespace-nowrap">휴대폰</th>
+                    <th className="p-2 whitespace-nowrap">화주</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {familyRows.length === 0 && (
+                    <tr>
+                      <td colSpan={9} className="p-6 text-center text-[#8C8071]">
+                        조건에 맞는 가족이 없습니다.
+                      </td>
+                    </tr>
+                  )}
+                  {familyRows.map(({ key, member: m, person: f, samjae }) => {
+                    const isSelected = m.code === selectedMember?.code
+                    return (
+                      <tr
+                        key={key}
+                        onClick={() => setSelectedMemberCode(m.code)}
+                        className={`cursor-pointer transition select-none ${
+                          isSelected
+                            ? 'bg-[#3A2D1F] text-white font-bold border-l-4 border-l-[#F5D061]'
+                            : 'hover:bg-white/5 text-[#D6CEC2]'
+                        }`}
+                      >
+                        <td className="p-2 font-mono text-[11px] whitespace-nowrap text-[#F5D061]">{m.code}</td>
+                        <td className="p-2 whitespace-nowrap text-[#A69B8D]">{m.name}</td>
+                        <td className="p-2 whitespace-nowrap text-[11px]">{f.relation || '-'}</td>
+                        <td className="p-2 font-bold whitespace-nowrap text-white">
+                          {f.name}
+                          {f.dharma_name && (
+                            <span className="text-[10px] text-[#A69B8D] font-normal ml-1">({f.dharma_name})</span>
+                          )}
+                        </td>
+                        <td className="p-2 font-mono text-[11px] whitespace-nowrap">{f.birth_year || '-'}</td>
+                        <td className="p-2 text-[11px] whitespace-nowrap">{getAnimal(f.birth_year) || '-'}</td>
+                        <td className="p-2 text-center whitespace-nowrap">
+                          {samjae ? (
+                            <span className="px-1.5 py-0.5 rounded bg-rose-600/80 text-white text-[10px] font-bold">{samjae}</span>
+                          ) : (
+                            <span className="text-[#8C8071] text-[10px]">-</span>
+                          )}
+                        </td>
+                        <td className="p-2 font-mono text-[11px] whitespace-nowrap">{f.phone || m.phone || '-'}</td>
+                        <td className="p-2 text-[10px] text-[#F5D061]/80 truncate max-w-[80px]">{m.hwaju || '종무소'}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            ) : (
             <table className="w-full text-left text-xs border-collapse">
               <thead className="sticky top-0 bg-[#29211A] text-[#C5BBAF] text-[11px] font-bold border-b border-[#C59B27]/30 z-10 shadow-sm">
                 <tr>
@@ -605,7 +771,7 @@ export default function DeskERPView({
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {filteredMembers.map((m) => {
+                {householdsShown.map((m) => {
                   const isSelected = m.code === selectedMember?.code
                   const famCount = m.families?.length || 1
                   const ygCount = m.younggas?.length || 0
@@ -669,11 +835,12 @@ export default function DeskERPView({
                 })}
               </tbody>
             </table>
+            )}
           </div>
 
           {/* 테이블 하단 상태줄 */}
           <div className="bg-[#1F1813] px-3.5 py-1.5 border-t border-white/10 flex items-center justify-between text-[11px] text-[#8C8071]">
-            <span>표시: {filteredMembers.length}가구</span>
+            <span>표시: {listMode === 'family' ? `${familyRows.length}명` : `${householdsShown.length}가구`}</span>
             <span>소원사 종무원 공식 신적부</span>
           </div>
         </section>
