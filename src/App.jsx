@@ -6638,6 +6638,7 @@ function normalizeMemberHierarchy(m) {
                       onClick={() => {
                         playMoktakSound()
                         setWishCategory(item.key)
+                        document.getElementById('bulsa-application-form')?.scrollIntoView({ behavior: 'smooth' })
                       }}
                       className={`p-3.5 rounded-xl border transition cursor-pointer ${
                         isSelected
@@ -6649,8 +6650,12 @@ function normalizeMemberHierarchy(m) {
                         <span className="text-xs font-bold text-[#231F1C] break-keep">
                           {item.title}
                         </span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-white text-[#8A6510] border border-[#E5D399] font-bold shrink-0">
-                          {item.badge}
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold shrink-0 ${
+                          isSelected
+                            ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
+                            : 'bg-white text-[#8A6510] border-[#E5D399]'
+                        }`}>
+                          {isSelected ? `✓ 선택됨 · ${item.badge}` : item.badge}
                         </span>
                       </div>
                       <p className="text-xs text-[#575049] leading-relaxed break-keep">{item.desc}</p>
@@ -6695,6 +6700,7 @@ function normalizeMemberHierarchy(m) {
                   onClick={() => {
                     playMoktakSound()
                     setWishCategory('생전예수재(황금위패)')
+                    document.getElementById('bulsa-application-form')?.scrollIntoView({ behavior: 'smooth' })
                   }}
                   className={`rounded-xl border-2 p-4 space-y-2 cursor-pointer transition ${
                     wishCategory === '생전예수재(황금위패)'
@@ -6723,6 +6729,7 @@ function normalizeMemberHierarchy(m) {
                   onClick={() => {
                     playMoktakSound()
                     setWishCategory('조상영구위패(흑색)')
+                    document.getElementById('bulsa-application-form')?.scrollIntoView({ behavior: 'smooth' })
                   }}
                   className={`rounded-xl border p-4 space-y-2 cursor-pointer transition bg-gradient-to-br from-[#3D3731] to-[#2B2621] text-[#FAF8F5] shadow-sm ${
                     wishCategory === '조상영구위패(흑색)'
@@ -6826,6 +6833,7 @@ function normalizeMemberHierarchy(m) {
                       onClick={() => {
                         playMoktakSound()
                         setWishCategory(item.key)
+                        document.getElementById('bulsa-application-form')?.scrollIntoView({ behavior: 'smooth' })
                       }}
                       className={`p-3.5 rounded-xl border transition cursor-pointer ${
                         isSelected
@@ -6837,8 +6845,12 @@ function normalizeMemberHierarchy(m) {
                         <span className="text-xs font-bold text-[#231F1C] break-keep">
                           {item.title}
                         </span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-white text-[#8A6510] border border-[#E5D399] font-bold whitespace-nowrap shrink-0">
-                          {item.badge}
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold whitespace-nowrap shrink-0 ${
+                          isSelected
+                            ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
+                            : 'bg-white text-[#8A6510] border-[#E5D399]'
+                        }`}>
+                          {isSelected ? `✓ 선택됨 · ${item.badge}` : item.badge}
                         </span>
                       </div>
                       <p className="text-xs text-[#575049] leading-relaxed break-keep">
@@ -6852,8 +6864,9 @@ function normalizeMemberHierarchy(m) {
 
             {/* 기도·위패·불사 통합 신청란 */}
             <form
+              id="bulsa-application-form"
               onSubmit={handlePrayerSubmit}
-              className="bg-white rounded-2xl p-4 sm:p-5 shadow-md border-2 border-[#C59B27] space-y-4"
+              className="bg-white rounded-2xl p-4 sm:p-5 shadow-md border-2 border-[#C59B27] space-y-4 scroll-mt-20"
             >
               <div className="border-b border-[#EFE9DD] pb-3 flex flex-wrap items-center justify-between gap-2">
                 <div className="min-w-0">
@@ -6979,7 +6992,7 @@ function normalizeMemberHierarchy(m) {
                       type="text"
                       value={wishName}
                       onChange={(e) => setWishName(e.target.value)}
-                      placeholder="예: 홍길동 (무량심) 또는 김영희 (부모: 이상원)"
+                      placeholder="예: 홍길동 (무량심)"
                       className="w-full px-3.5 py-2.5 rounded-lg bg-white border-2 border-[#C8BFA8] focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner"
                     />
                   </div>
@@ -7069,17 +7082,17 @@ function normalizeMemberHierarchy(m) {
                   <span>① [{wishCategory}] 먼저 상담·무통장 접수하기</span>
                 </button>
 
-                {/* 💳 토스페이먼츠 즉시 결제 (카카오페이 · 신용카드 할부 · 가상계좌 테스트) */}
-                <div className="p-3.5 rounded-2xl bg-[#F8FAFC] border-2 border-[#3182F6]/40 space-y-2.5">
+                {/* 💳 간편 온라인 시주 · 보시 결제 (카카오페이 · 신용카드 · 계좌이체) */}
+                <div className="p-3.5 sm:p-4 rounded-2xl bg-[#FAF6EC] border border-[#DFCFA8] space-y-2.5">
                   <div className="flex items-center justify-between gap-2 flex-wrap">
                     <div className="flex items-center gap-1.5">
-                      <CreditCard className="w-4 h-4 text-[#3182F6]" />
-                      <span className="text-xs font-extrabold text-[#191F28]">
-                        ② 토스페이먼츠 즉시 보시 결제 (카카오페이 · 카드할부 · 가상계좌)
+                      <CreditCard className="w-4 h-4 text-[#8A6510]" />
+                      <span className="text-xs font-extrabold text-[#231F1C]">
+                        ② 간편 온라인 시주 · 보시 결제 (카카오페이 · 카드 · 계좌이체)
                       </span>
                     </div>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E8F3FF] text-[#1B64DA]">
-                      실제 출금 안 되는 안전한 테스트 모드
+                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#231F1C] text-[#F5D061] border border-[#C59B27]/50">
+                      종무소 실시간 자동 등재
                     </span>
                   </div>
 
@@ -7091,38 +7104,38 @@ function normalizeMemberHierarchy(m) {
                         onClick={() => setTossPayMethod(m)}
                         className={`py-2 rounded-lg font-bold border transition cursor-pointer ${
                           tossPayMethod === m
-                            ? 'bg-[#3182F6] text-white border-[#3182F6] shadow-sm'
-                            : 'bg-white text-[#4E5968] border-[#D1D6DB] hover:bg-gray-50'
+                            ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-sm'
+                            : 'bg-white text-[#5C5349] border-[#DDD4C4] hover:bg-[#FAF8F5]'
                         }`}
                       >
-                        {m === '카드' ? '카드 · 카카오페이' : m === '계좌이체' ? '실시간 계좌이체' : '가상계좌(무통장)'}
+                        {m === '카드' ? '카드 · 간편결제' : m === '계좌이체' ? '실시간 계좌이체' : '가상계좌(무통장)'}
                       </button>
                     ))}
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <div className="flex-1 flex items-center bg-white rounded-xl border border-[#D1D6DB] px-3 py-2">
-                      <span className="text-[11px] font-bold text-[#4E5968] mr-2 shrink-0">보시금액(원)</span>
+                    <div className="flex-1 flex items-center bg-white rounded-xl border border-[#D5C59B] px-3 py-2">
+                      <span className="text-[11px] font-bold text-[#6E655C] mr-2 shrink-0">보시금액(원)</span>
                       <input
                         type="number"
                         step="10000"
                         min="1000"
                         value={customPayAmount}
                         onChange={(e) => setCustomPayAmount(e.target.value)}
-                        className="w-full text-right font-mono font-extrabold text-sm text-[#191F28] focus:outline-none"
+                        className="w-full text-right font-mono font-extrabold text-sm text-[#231F1C] focus:outline-none"
                       />
                     </div>
                     <button
                       type="button"
                       onClick={handleTossTestPayment}
-                      className="px-4 py-2.5 rounded-xl bg-[#3182F6] hover:bg-[#1B64DA] text-white font-extrabold text-xs sm:text-sm shadow flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition"
+                      className="px-4 py-2.5 rounded-xl bg-[#231F1C] hover:bg-[#322C26] text-[#F5D061] border border-[#C59B27] font-extrabold text-xs sm:text-sm shadow flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition"
                     >
                       <CreditCard className="w-4 h-4 shrink-0" />
-                      <span>{Number(customPayAmount || 0).toLocaleString()}원 결제창 열기</span>
+                      <span>{Number(customPayAmount || 0).toLocaleString()}원 보시 결제</span>
                     </button>
                   </div>
-                  <p className="text-[10.5px] text-[#6B7684] leading-snug">
-                    ※ 결제 완료 시 대웅전 사시예불 축원 명부와 종무소 정산관제(사찰 50% · 포교비 50%)에 1초 만에 자동 등재됩니다.
+                  <p className="text-[10.5px] text-[#7A6E5D] leading-snug">
+                    ※ 결제 완료 즉시 대웅전 사시예불 축원 명부와 종무소 전산에 자동 등재됩니다.
                   </p>
                 </div>
               </div>
@@ -8978,6 +8991,15 @@ function normalizeMemberHierarchy(m) {
                       </span>
                       <span className="text-[#8C8071]">|</span>
                       <span className="font-mono text-[11px] text-[#D6CEC2]">{currentUser.phone}</span>
+                      <span className="text-[#8C8071]">|</span>
+                      <button
+                        type="button"
+                        onClick={() => setShowMeritCertModal(true)}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#F5D061]/15 hover:bg-[#F5D061]/25 border border-[#F5D061]/40 text-[11px] font-bold text-[#F5D061] transition cursor-pointer"
+                      >
+                        <Award className="w-3 h-3" />
+                        <span>수행공덕 {currentMeritCount}회 ›</span>
+                      </button>
                     </div>
                   </div>
 
@@ -9079,8 +9101,9 @@ function normalizeMemberHierarchy(m) {
                           </span>
                         </div>
                       </div>
-                      <span className="text-[11px] font-black px-3 py-1.5 rounded-xl bg-[#F5D061] text-[#1B1815] shrink-0 shadow-xs whitespace-nowrap">
-                        명함 보기 &gt;
+                      <span className="flex items-center gap-0.5 text-[11px] font-black px-3 py-1.5 rounded-xl bg-[#F5D061] text-[#1B1815] shrink-0 shadow-xs whitespace-nowrap">
+                        <span>명함 보기</span>
+                        <ChevronRight className="w-3.5 h-3.5 -mr-0.5" />
                       </span>
                     </button>
 
