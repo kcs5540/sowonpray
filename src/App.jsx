@@ -3222,28 +3222,12 @@ function normalizeMemberHierarchy(m) {
 
       const utterance = new SpeechSynthesisUtterance(cleanText)
       utterance.lang = 'ko-KR'
-      // 모바일 안드로이드/삼성인터넷 호환성: 표준 피치(1.0)와 안정된 독송 속도(0.88)
       utterance.pitch = 1.0
-      utterance.rate = 0.88
+      utterance.rate = 1.0
       utterance.volume = 1.0
 
       // 전역 보관 (모바일 브라우저 GC 강제 소멸 방지)
       window.__activeUtterance = utterance
-
-      const voices = window.speechSynthesis.getVoices()
-      if (voices && voices.length > 0) {
-        const koVoices = voices.filter(
-          (v) => v.lang && (v.lang.toLowerCase().includes('ko') || v.lang.toLowerCase().includes('kr'))
-        )
-        const maleKoVoice =
-          koVoices.find((v) =>
-            /male|injoon|minsoo|kpb|kod|cjm|nam|man|남성/i.test(`${v.name} ${v.voiceURI}`)
-          ) || koVoices[0]
-
-        if (maleKoVoice) {
-          utterance.voice = maleKoVoice
-        }
-      }
 
       utterance.onend = () => {
         setSpeakingId(null)
