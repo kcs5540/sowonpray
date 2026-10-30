@@ -12668,7 +12668,7 @@ function normalizeMemberHierarchy(m) {
           {/* 종단 배지 & 사찰 공식 명칭 */}
           <div className="space-y-1 leading-relaxed break-keep">
             <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#FAF0D7] border border-[#E5D399] text-[10px] font-extrabold text-[#8A6510]">
-              <span>☸ 대한불교 본원종</span>
+              <span>☸ 대한불교 조계종</span>
             </div>
             <div className="font-serif-kr font-extrabold text-[#231F1C] text-[13px]">
               제주 소원사 · 모바일 법당 <span className="text-[#9A7418] font-semibold text-xs">(소원성취 기도도량)</span>
@@ -12682,7 +12682,7 @@ function normalizeMemberHierarchy(m) {
           {/* 원터치 통합 통화 연결 바 */}
           <div className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-[#E2D8C5] text-[11px] font-bold text-[#3D352B] shadow-2xs flex-wrap">
             <Phone className="w-3 h-3 text-[#B8860B] fill-current shrink-0" />
-            <span className="text-[#786E63] font-semibold">종무소·차담예약</span>
+            <span className="text-[#786E63] font-semibold">종무소</span>
             <a
               href="tel:064-805-2007"
               className="text-[#3D352B] hover:text-[#8A6510] underline decoration-[#D8CEBE] underline-offset-2 transition"
@@ -12701,7 +12701,7 @@ function normalizeMemberHierarchy(m) {
           {/* 하단 플랫폼 크레딧 & 카피라이트 (전국 사찰 B2B 홍보 겸용) */}
           <div className="pt-2 border-t border-[#EAE2D3] space-y-0.5">
             <p className="text-[10.5px] font-bold text-[#5C4F40]">
-              디지털 법당 · 종무전산 구축 및 총괄: <span className="text-[#8A6510]">제주AI파트너</span>
+              모바일법당 개발 및 총괄: <span className="text-[#8A6510]">제주AI파트너</span>
             </p>
             <p className="tracking-wider text-[#8C8071] text-[10px]">
               Platform © Jeju AI Partner. All rights reserved.
