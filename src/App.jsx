@@ -12763,51 +12763,30 @@ function normalizeMemberHierarchy(m) {
           member={indeungTargetMember}
         />
 
-        {/* 통합 공식 푸터 (대한불교 본원종 종단 명시 · 원터치 전화/지도 연결 · 제주AI파트너 플랫폼 브랜딩) */}
-        <footer className="px-4 pt-4 pb-6 text-center text-[11px] text-[#786E63] border-t border-[#E6DEC8] space-y-2.5 bg-[#FAF7F0]/70">
-          {/* 종단 배지 & 사찰 공식 명칭 */}
-          <div className="space-y-1 leading-relaxed break-keep">
-            <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#FAF0D7] border border-[#E5D399] text-[10px] font-extrabold text-[#8A6510]">
-              <span>☸ 대한불교 조계종</span>
+        {/* 통합 공식 푸터 ([신행홈] 탭에서만 노출 · 장식 없는 미니멀 타이포그래피) */}
+        {activeTab === 'home' && (
+          <footer className="px-4 py-5 text-center text-[11px] text-[#786E63] border-t border-[#EAE2D3] space-y-2">
+            <div className="space-y-0.5 leading-relaxed">
+              <div className="font-serif-kr font-bold text-[#231F1C] text-xs">
+                대한불교 조계종 · 제주 소원사
+              </div>
+              <p className="text-[11px] text-[#6E655C]">
+                제주특별자치도 제주시 죽성서길 75 (오등동 935)
+              </p>
+              <p className="text-[11px] text-[#5C5349]">
+                종무소 <a href="tel:064-805-2007" className="hover:text-[#8A6510]">064-805-2007</a> · <a href="tel:010-4912-1083" className="hover:text-[#8A6510]">010-4912-1083</a>
+              </p>
             </div>
-            <div className="font-serif-kr font-extrabold text-[#231F1C] text-[13px]">
-              제주 소원사 · 모바일 법당
+            <div className="space-y-0.5 pt-1">
+              <p className="text-[10.5px] font-semibold text-[#5C5349]">
+                전산 개발 및 총괄: 제주AI파트너
+              </p>
+              <p className="tracking-wider text-[#9A8F82] text-[10px]">
+                Platform © Jeju AI Partner. All rights reserved.
+              </p>
             </div>
-            <p className="text-[11px] text-[#5C5349] flex items-center justify-center gap-1 flex-wrap">
-              <MapPin className="w-3 h-3 text-[#9A7418] shrink-0" />
-              <span>제주특별자치도 제주시 죽성서길 75 (오등동 935)</span>
-            </p>
-          </div>
-
-          {/* 원터치 통합 통화 연결 바 */}
-          <div className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-[#E2D8C5] text-[11px] font-bold text-[#3D352B] shadow-2xs flex-wrap">
-            <Phone className="w-3 h-3 text-[#B8860B] fill-current shrink-0" />
-            <span className="text-[#786E63] font-semibold">종무소</span>
-            <a
-              href="tel:064-805-2007"
-              className="text-[#3D352B] hover:text-[#8A6510] underline decoration-[#D8CEBE] underline-offset-2 transition"
-            >
-              064-805-2007
-            </a>
-            <span className="text-[#D8CEBE]">·</span>
-            <a
-              href="tel:010-4912-1083"
-              className="text-[#8A6510] hover:text-[#6B4E0B] underline decoration-[#E5D399] underline-offset-2 transition"
-            >
-              010-4912-1083
-            </a>
-          </div>
-
-          {/* 하단 플랫폼 크레딧 & 카피라이트 (전국 사찰 B2B 홍보 겸용) */}
-          <div className="pt-2 border-t border-[#EAE2D3] space-y-0.5">
-            <p className="text-[10.5px] font-bold text-[#5C4F40]">
-              전산 개발 및 총괄: <span className="text-[#8A6510]">제주AI파트너</span>
-            </p>
-            <p className="tracking-wider text-[#8C8071] text-[10px]">
-              Platform © Jeju AI Partner. All rights reserved.
-            </p>
-          </div>
-        </footer>
+          </footer>
+        )}
 
         {/* 하단 백그라운드 미니 플레이어 바 (화면 이동 시에도 끊김 없이 힐링 법음 재생 유지) */}
         {isHealingPlaying && (
