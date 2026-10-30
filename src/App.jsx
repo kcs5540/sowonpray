@@ -1356,7 +1356,7 @@ export default function App() {
     }
     return false
   })
-  const [erpTab, setErpTab] = useState('search') // 'search' | 'register' | 'excel' | 'settlement'
+  const [erpTab, setErpTab] = useState('desk') // 'desk' | 'seatmap' | 'search' | 'register' | 'excel' | 'settlement'
 
   // 소원사 통합 전산 모달 상태 ('common': 1.포교사 공통, 'head': 2.포교위원장, 'temple': 3.사찰본부, 'master': 4.최고관제)
   const [showUnifiedAdminModal, setShowUnifiedAdminModal] = useState(false)

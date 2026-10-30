@@ -19,6 +19,8 @@ import {
   Users,
   X,
 } from 'lucide-react'
+import DeskERPView from './DeskERPView'
+import SeatMapView from './SeatMapView'
 import MemberDetailModal from './MemberDetailModal'
 import {
   SettlementModal,
@@ -433,57 +435,115 @@ export default function AdminERPView(props) {
               </div>
             </section>
 
-            {/* ERP 서브 메뉴 탭 바 (와이드 버튼 4종) */}
+            {/* ERP 서브 메뉴 탭 바 (종무 4분할 데스크 & 위패/인등 자리배치도 포함) */}
             <div className="flex items-center gap-2 p-1.5 bg-[#1F1B17] rounded-2xl border border-[#C59B27]/40 text-xs sm:text-sm overflow-x-auto no-scrollbar">
               <button
                 type="button"
+                onClick={() => setErpTab('desk')}
+                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                  erpTab === 'desk'
+                    ? 'bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] shadow-lg font-black'
+                    : 'text-[#D6CEC2] hover:text-white'
+                }`}
+              >
+                <span>🖥️ 1. 종무 4분할 데스크 (두손모아)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setErpTab('seatmap')}
+                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                  erpTab === 'seatmap'
+                    ? 'bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] shadow-lg font-black'
+                    : 'text-[#D6CEC2] hover:text-white'
+                }`}
+              >
+                <span>🏮 2. 위패·인등 자리배치도</span>
+              </button>
+              <button
+                type="button"
                 onClick={() => setErpTab('search')}
-                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer ${
                   erpTab === 'search'
                     ? 'bg-[#F5D061] text-[#1B1815] shadow'
                     : 'text-[#D6CEC2] hover:text-white'
                 }`}
               >
                 <Search className="w-4 h-4" />
-                <span>📋 1. 신도교적부 리스트 &amp; 검색·수정</span>
+                <span>📋 3. 신도교적부 리스트</span>
               </button>
               <button
                 type="button"
                 onClick={() => setErpTab('register')}
-                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer ${
                   erpTab === 'register'
                     ? 'bg-[#F5D061] text-[#1B1815] shadow'
                     : 'text-[#D6CEC2] hover:text-white'
                 }`}
               >
                 <Heart className="w-4 h-4 text-amber-700" />
-                <span>🏮 2. 신도 &amp; 가족사주 신규 등록</span>
+                <span>🏮 4. 신도 &amp; 가족사주 신규 등록</span>
               </button>
               <button
                 type="button"
                 onClick={() => setErpTab('excel')}
-                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer ${
                   erpTab === 'excel'
                     ? 'bg-[#F5D061] text-[#1B1815] shadow'
                     : 'text-[#D6CEC2] hover:text-white'
                 }`}
               >
                 <Upload className="w-4 h-4" />
-                <span>📂 3. 기존 전산 엑셀 일괄 이관</span>
+                <span>📂 5. 엑셀 일괄 이관</span>
               </button>
               <button
                 type="button"
                 onClick={() => setErpTab('settlement')}
-                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer ${
                   erpTab === 'settlement'
                     ? 'bg-[#F5D061] text-[#1B1815] shadow'
                     : 'text-[#D6CEC2] hover:text-white'
                 }`}
               >
                 <Calculator className="w-4 h-4 text-[#C59B27]" />
-                <span>💰 4. 정산관제</span>
+                <span>💰 6. 정산관제</span>
               </button>
             </div>
+
+            {/* ==================== 0. 종무 4분할 데스크 ERP (두손모아 모드) ==================== */}
+            {erpTab === 'desk' && (
+              <DeskERPView
+                onOpenSasiPrint={() => {
+                  setSasiPrayerTypeTab('all')
+                  setShowSasiPrintModal(true)
+                }}
+                onOpenIndeungPrint={() => {
+                  const firstIndeungMember =
+                    (members || []).find((m) =>
+                      (prayers || []).some(
+                        (p) =>
+                          (p.member_code === m.code || (p.believer_name && p.believer_name.includes(m.name))) &&
+                          (p.wish_category?.includes('인등') || p.prayer_type === 'indeung_1yr')
+                      )
+                    ) || (members || [])[0]
+                  setIndeungTargetMember(firstIndeungMember)
+                  setShowIndeungNameplateModal(true)
+                }}
+                onSwitchToSeatMap={() => setErpTab('seatmap')}
+                showToast={showToast}
+              />
+            )}
+
+            {/* ==================== 0.5. 디지털 위패·인등 자리배치도 ==================== */}
+            {erpTab === 'seatmap' && (
+              <SeatMapView
+                onSelectMemberForDetail={(m) => {
+                  setSelectedMemberDetail(m)
+                }}
+                onOpenPrintModal={() => {
+                  setShowSasiPrintModal(true)
+                }}
+              />
+            )}
 
             {/* ==================== 1. 신도 & 가족 사주 신규 등록 탭 ==================== */}
             {erpTab === 'register' && (

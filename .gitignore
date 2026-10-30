@@ -13,6 +13,7 @@ dist
 # [보안 필터링] 김철수 대표님 개인정보 / 사업보안 / 기밀문서 보호
 # ----------------------------------------------------
 docs/intellectual_property/
+docs/sowonsa_legacy_erp_screens/
 *.pdf
 *.docx
 *.xlsx

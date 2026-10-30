@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { Printer, Download, X } from 'lucide-react'
 import { computeZodiacAndGanji } from '../../lib/supabase'
+import PrintScaleControls from './PrintScaleControls'
 
 // 📅 축원 접수일시 포맷팅 헬퍼
 function formatPrayerDate(dateStr) {
@@ -35,7 +36,6 @@ function getPrayerPeriodLabel(p) {
   if (c.includes('공양미') || c.includes('시주') || c.includes('불사')) {
     return '불전 시주'
   }
-  // 1일 소원등 (무료)
   if (t === 'lantern_1d' || t === 'lantern' || p.duration_days === 1 || !t) {
     return '1일 (당일)'
   }
@@ -54,6 +54,19 @@ export default function SasiPrayerPrintModal({
   setSasiPrayerTypeTab,
   members = [],
 }) {
+  // 🖨️ 인쇄 미세조절 슬라이더 상태
+  const [fontSize, setFontSize] = useState(100)
+  const [marginVertical, setMarginVertical] = useState(15)
+  const [marginHorizontal, setMarginHorizontal] = useState(15)
+  const [lineHeight, setLineHeight] = useState(1.4)
+
+  const handleResetScale = () => {
+    setFontSize(100)
+    setMarginVertical(15)
+    setMarginHorizontal(15)
+    setLineHeight(1.4)
+  }
+
   // A4 인쇄 시 메인 앱 숨김 및 본 모달 전용 출력 스타일 활성화
   useEffect(() => {
     if (isOpen) {
@@ -112,6 +125,21 @@ export default function SasiPrayerPrintModal({
       id="sasi-print-portal-root"
       className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-2 sm:p-4 overflow-y-auto"
     >
+      {/* 동적 인쇄 스타일 주입 */}
+      <style>
+        {`
+          @media print {
+            @page {
+              margin: ${marginVertical}mm ${marginHorizontal}mm !important;
+            }
+            #printable-sasi-sheet {
+              font-size: ${fontSize}% !important;
+              line-height: ${lineHeight} !important;
+            }
+          }
+        `}
+      </style>
+
       <div className="w-full max-w-4xl bg-white text-[#111111] rounded-2xl shadow-2xl flex flex-col my-auto border border-[#E5D399] overflow-hidden max-h-[92vh]">
         {/* 상단 조작 바 (인쇄 시 숨김: no-print) */}
         <div className="no-print bg-[#1B1815] text-[#FAF8F5] p-3.5 sm:p-4 flex flex-col gap-2.5 border-b-2 border-[#D4AF37]">
@@ -206,12 +234,29 @@ export default function SasiPrayerPrintModal({
           </div>
         </div>
 
+        {/* 🖨️ 인쇄 미세조절 슬라이더 컨트롤 바 */}
+        <PrintScaleControls
+          fontSize={fontSize}
+          setFontSize={setFontSize}
+          marginVertical={marginVertical}
+          setMarginVertical={setMarginVertical}
+          marginHorizontal={marginHorizontal}
+          setMarginHorizontal={setMarginHorizontal}
+          lineHeight={lineHeight}
+          setLineHeight={setLineHeight}
+          onReset={handleResetScale}
+        />
+
         {/* ==================== A4 인쇄 대상 본문 (id="printable-sasi-sheet") ==================== */}
         <div
           id="printable-sasi-sheet"
+          style={{
+            fontSize: `${fontSize}%`,
+            lineHeight: lineHeight,
+          }}
           className="p-4 sm:p-6 space-y-4 max-h-[75vh] overflow-y-auto print:max-h-none print:overflow-visible font-serif-kr bg-white"
         >
-          {/* A4 인쇄 시 공식 상단 서식 (출력양식 상단 여백 및 정통 사찰 공식 헤더) */}
+          {/* A4 인쇄 시 공식 상단 서식 */}
           <div className="hidden print:block pb-3 mb-2 border-b-2 border-[#1B1815] text-center font-serif-kr">
             <div className="flex justify-between items-center text-[10px] text-[#666666] mb-1 pb-1 border-b border-[#CCCCCC]">
               <span>대한불교 본원종 제주 소원사 종무원</span>
@@ -248,30 +293,43 @@ export default function SasiPrayerPrintModal({
                 </thead>
                 <tbody>
                   {filteredSasiPrayers.map((p, idx) => {
-                    const isPrayed = sasiPrayedCheckedIds.has(p.id)
+                    const isChecked = sasiPrayedCheckedIds.has(p.id)
                     return (
                       <tr
                         key={p.id || idx}
-                        className={`border-b border-[#DDDDDD] hover:bg-[#FAF8F4] transition ${
-                          isPrayed ? 'bg-amber-50/50' : ''
-                        }`}
+                        className={`border-b border-[#CCCCCC] transition ${
+                          idx % 2 === 1 ? 'bg-[#FAFAFA]' : 'bg-white'
+                        } ${isChecked ? 'bg-amber-50/70' : ''}`}
                       >
-                        <td className="p-2.5 text-center font-bold border-r border-[#DDDDDD] text-[#555555]">
-                          {idx + 1}
+                        <td className="p-2 border-r border-[#CCCCCC] text-center font-mono font-bold">
+                          <div className="flex items-center justify-center gap-1.5">
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={() => toggleSasiPrayedCheck(p.id)}
+                              className="no-print w-3.5 h-3.5 text-[#C59B27] rounded cursor-pointer"
+                              title="사시예불 축원 회향 체크"
+                            />
+                            <span>{idx + 1}</span>
+                          </div>
                         </td>
-                        <td className="p-2.5 font-bold font-serif-kr border-r border-[#DDDDDD] text-sm text-[#111111]">
-                          {p.believer_name}
+                        <td className="p-2 border-r border-[#CCCCCC] font-bold text-[#111111]">
+                          <div className="flex items-center gap-1">
+                            <span>{p.believer_name || '신도'}</span>
+                          </div>
                         </td>
-                        <td className="p-2.5 font-semibold text-center border-r border-[#DDDDDD] text-[#8A6510]">
-                          [{p.wish_category}]
+                        <td className="p-2 border-r border-[#CCCCCC] text-center text-[#555555]">
+                          <span className="px-1.5 py-0.5 rounded bg-[#F3EFE6] border border-[#DDD] text-[10px] font-semibold text-[#8A6510]">
+                            {p.wish_category || '일반소원'}
+                          </span>
                         </td>
-                        <td className="p-2.5 text-[#222222] leading-snug border-r border-[#DDDDDD] break-keep font-serif-kr">
-                          “{p.wish_text}”
+                        <td className="p-2 border-r border-[#CCCCCC] text-[#222222] font-serif-kr">
+                          {p.wish_text || '가정평안 및 소원성취'}
                         </td>
-                        <td className="p-2.5 text-center font-bold border-r border-[#DDDDDD] text-[#8A6510] whitespace-nowrap">
+                        <td className="p-2 border-r border-[#CCCCCC] text-center text-[#555555] font-semibold">
                           {getPrayerPeriodLabel(p)}
                         </td>
-                        <td className="p-2.5 text-center text-[11px] text-[#666666] whitespace-nowrap">
+                        <td className="p-2 text-center font-mono text-[11px] text-[#666666]">
                           {formatPrayerDate(p.created_at)}
                         </td>
                       </tr>
@@ -282,17 +340,25 @@ export default function SasiPrayerPrintModal({
             </div>
           )}
 
-          {/* 사찰 공식 증명 직인 박스 */}
-          <div className="pt-4 border-t-2 border-[#222222] grid grid-cols-2 gap-3 text-center text-[11px] font-serif-kr">
-            <div className="border border-[#444444] p-2.5 rounded-lg bg-[#FAF8F5]">
-              <div className="text-[10px] text-[#666666]">대웅전 축원 증명</div>
-              <div className="font-extrabold text-[#111111] mt-1 text-xs">대한불교 본원종 제주 소원사</div>
-              <div className="text-[10.5px] font-bold text-[#8A6510] mt-0.5">주지스님 직인 (인)</div>
+          {/* 하단 사찰 공식 직인란 */}
+          <div className="pt-6 border-t-2 border-[#1B1815] flex items-center justify-between text-xs text-[#444444] font-serif-kr">
+            <div>
+              <div className="font-bold text-[#1B1815]">대한불교 본원종 제주 소원사</div>
+              <div className="text-[10px] text-[#777777]">제주특별자치도 제주시 죽성서길 75 (오등동)</div>
             </div>
-            <div className="border border-[#444444] p-2.5 rounded-lg bg-[#FAF8F5]">
-              <div className="text-[10px] text-[#666666]">사찰 본부 증명</div>
-              <div className="font-extrabold text-[#111111] mt-1 text-xs">소원사 창건주 양영문 본부</div>
-              <div className="text-[10.5px] font-bold text-[#8A6510] mt-0.5">창건주 회장 직인 (인)</div>
+            <div className="flex items-center gap-6 text-center">
+              <div>
+                <div className="text-[10px] text-[#888888] mb-1">소원사 창건주</div>
+                <div className="w-14 h-14 rounded-full border border-red-500/70 text-red-600 font-bold flex items-center justify-center text-[10px] mx-auto shadow-sm">
+                  창건주<br />양영문
+                </div>
+              </div>
+              <div>
+                <div className="text-[10px] text-[#888888] mb-1">소원사 주지스님</div>
+                <div className="w-14 h-14 rounded-full border border-red-500/70 text-red-600 font-bold flex items-center justify-center text-[10px] mx-auto shadow-sm">
+                  소원사<br />주지인
+                </div>
+              </div>
             </div>
           </div>
         </div>
