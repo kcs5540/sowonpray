@@ -3253,6 +3253,9 @@ function normalizeMemberHierarchy(m) {
         console.log('Speech error:', err)
         setSpeakingId(null)
         window.__activeUtterance = null
+        if (err && err.error && err.error !== 'interrupted' && err.error !== 'canceled') {
+          showToast('⚠️ 음성 안내: ' + err.error)
+        }
       }
 
       setSpeakingId(id)
