@@ -7768,12 +7768,22 @@ function normalizeMemberHierarchy(m) {
             {/* 상단 나의 공덕장 & 싱잉볼/목탁 버튼 */}
             <div className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-4 sm:p-5 border border-[#C59B27]/40 shadow-md flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <span className="block text-[11px] text-[#F5D061] font-semibold truncate">
-                  {currentUser
-                    ? `${currentUser.name}${currentUser.dharma_name ? `(${currentUser.dharma_name})` : ''}님의 신행 공덕장`
-                    : '나의 온라인 신행 공덕장'}
-                </span>
-                <h2 className="font-serif-kr text-xl sm:text-2xl font-bold mt-0.5 break-keep">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[11px] text-[#F5D061] font-semibold truncate">
+                    {currentUser
+                      ? `${currentUser.name}${currentUser.dharma_name ? `(${currentUser.dharma_name})` : ''}님의 신행 공덕장`
+                      : '나의 온라인 신행 공덕장'}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowMeritCertModal(true)}
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#F5D061]/15 hover:bg-[#F5D061]/25 text-[#F5D061] border border-[#F5D061]/40 text-[10px] font-extrabold transition active:scale-95 shrink-0"
+                  >
+                    <Award className="w-3 h-3" />
+                    <span>공덕장 보기 ›</span>
+                  </button>
+                </div>
+                <h2 className="font-serif-kr text-xl sm:text-2xl font-bold mt-1 break-keep">
                   누적 수행 공덕 <span className="text-[#F5D061]">{currentMeritCount}</span>회
                 </h2>
                 <p className="text-[11px] text-[#BFB6AA] mt-0.5 break-keep">
@@ -7793,8 +7803,8 @@ function normalizeMemberHierarchy(m) {
               </button>
             </div>
 
-            {/* 4대 코너 선택 미니 탭 (① 사경·목탁 / ② 불교명언 / ③ 경전공부 / ④ 지혜퀴즈) */}
-            <div className="grid grid-cols-4 gap-1.5 p-1.5 rounded-2xl bg-[#231F1C] border border-[#C59B27]/40 shadow-sm">
+            {/* 4대 코너 선택 미니 탭 (한지 크림톤 배경으로 상단 다크 카드와 시각적 대비 강화) */}
+            <div className="grid grid-cols-4 gap-1.5 p-1.5 rounded-2xl bg-[#EFE7D6] border border-[#DFD3BA] shadow-inner">
               {[
                 { id: 'copy', label: '✍️ 한줄사경' },
                 { id: 'wisdom', label: '🪷 불교명언' },
@@ -7809,8 +7819,8 @@ function normalizeMemberHierarchy(m) {
                     onClick={() => setSutraSubTab(sub.id)}
                     className={`py-2.5 px-1 rounded-xl text-[11px] font-extrabold transition whitespace-nowrap text-center ${
                       isSelected
-                        ? 'bg-[#F5D061] text-[#1B1815] shadow-md'
-                        : 'text-[#D6CEC2] hover:text-white hover:bg-white/5'
+                        ? 'bg-[#231F1C] text-[#F5D061] border border-[#C59B27] shadow-md'
+                        : 'text-[#5C5145] hover:text-[#231F1C] hover:bg-white/60'
                     }`}
                   >
                     {sub.label}
@@ -7896,32 +7906,51 @@ function normalizeMemberHierarchy(m) {
                     onClick={handleTouchStepSutra}
                     className="p-4 rounded-2xl bg-gradient-to-b from-[#26211B] to-[#1A1612] border-2 border-[#C59B27]/60 text-center cursor-pointer select-none shadow-inner active:scale-[0.99] transition"
                   >
-                    <div className="flex items-center justify-between text-[10.5px] text-[#F5D061] font-semibold mb-2.5 px-1">
+                    <div className="flex items-center justify-between text-[10.5px] text-[#F5D061] font-semibold mb-1.5 px-1">
                       <span>👆 글자판을 터치하면 목탁 소리와 함께 사경됩니다</span>
-                      <span className="shrink-0">
+                      <span className="shrink-0 font-extrabold">
                         {Math.min(100, Math.round((sutraInput.length / currentSutra.text.length) * 100))}%
                       </span>
                     </div>
+                    {/* 황금 사경 진행률 게이지 바 */}
+                    <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden mb-3">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-[#C59B27] via-[#F5D061] to-[#FFF2B2] transition-all duration-300"
+                        style={{
+                          width: `${Math.min(100, Math.round((sutraInput.length / currentSutra.text.length) * 100))}%`,
+                        }}
+                      />
+                    </div>
                     <div className="font-serif-kr text-lg font-bold tracking-wide leading-relaxed flex flex-wrap justify-center gap-0.5 py-1">
-                      {currentSutra.text.split('').map((char, i) => {
-                        const typedChar = sutraInput[i]
-                        const isMatched = typedChar === char
-                        const isWrong = typedChar !== undefined && typedChar !== char
-                        return (
-                          <span
-                            key={i}
-                            className={`px-1 py-0.5 rounded transition-all duration-200 ${
-                              isMatched
-                                ? 'text-[#1B1815] bg-[#F5D061] font-extrabold shadow-[0_0_10px_rgba(245,208,97,0.6)] scale-105'
-                                : isWrong
-                                ? 'text-red-300 bg-red-900/60'
-                                : 'text-[#8E8377]'
-                            }`}
-                          >
-                            {char === ' ' ? '\u00A0' : char}
-                          </span>
-                        )
-                      })}
+                      {(() => {
+                        const chars = currentSutra.text.split('')
+                        let nextCursorIdx = sutraInput.length
+                        while (nextCursorIdx < chars.length && chars[nextCursorIdx] === ' ') {
+                          nextCursorIdx++
+                        }
+                        return chars.map((char, i) => {
+                          const typedChar = sutraInput[i]
+                          const isMatched = typedChar === char
+                          const isWrong = typedChar !== undefined && typedChar !== char
+                          const isCurrentTarget = !sutraCompleted && i === nextCursorIdx
+                          return (
+                            <span
+                              key={i}
+                              className={`px-1 py-0.5 rounded transition-all duration-200 ${
+                                isMatched
+                                  ? 'text-[#1B1815] bg-[#F5D061] font-extrabold shadow-[0_0_10px_rgba(245,208,97,0.6)] scale-105'
+                                  : isWrong
+                                  ? 'text-red-300 bg-red-900/60'
+                                  : isCurrentTarget
+                                  ? 'text-[#F5D061] bg-[#F5D061]/15 ring-1 ring-[#F5D061]/70 font-extrabold'
+                                  : 'text-[#8E8377]'
+                              }`}
+                            >
+                              {char === ' ' ? '\u00A0' : char}
+                            </span>
+                          )
+                        })
+                      })()}
                     </div>
                   </div>
 
@@ -8016,6 +8045,22 @@ function normalizeMemberHierarchy(m) {
                       오늘 친 목탁: <strong className="text-[#F5D061]">{moktakCount}타</strong> (다음 공덕까지{' '}
                       <strong className="text-[#F5D061]">{9 - (moktakCount % 9)}타</strong>)
                     </p>
+                    {/* 9타 황금 염주 알 시각화 */}
+                    <div className="flex items-center gap-1.5 mt-2">
+                      {Array.from({ length: 9 }).map((_, beadIdx) => {
+                        const filled = beadIdx < (moktakCount % 9)
+                        return (
+                          <span
+                            key={beadIdx}
+                            className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${
+                              filled
+                                ? 'bg-gradient-to-br from-[#FFF3B8] via-[#F5D061] to-[#C59B27] shadow-[0_0_6px_rgba(245,208,97,0.8)] scale-110'
+                                : 'bg-white/15 border border-[#C59B27]/40'
+                            }`}
+                          />
+                        )
+                      })}
+                    </div>
                   </div>
                   <button
                     type="button"
