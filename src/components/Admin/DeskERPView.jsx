@@ -109,6 +109,17 @@ export default function DeskERPView({
   const [smsTargetMode, setSmsTargetMode] = useState('filtered') // 'selected' | 'filtered'
   const [smsText, setSmsText] = useState('[대한불교 본원종 제주 소원사] 부처님의 자비광명이 가정에 늘 함께하시기를 축원드립니다.')
 
+  // 인쇄 모달이 열려 있을 때 body.print-desk-modal-open 클래스를 자동 부착하여 백지 현상 방지
+  useEffect(() => {
+    const anyPrintModal = showCheonhonModal || showReceiptModal || showDonationCertModal || showMailLabelModal
+    if (anyPrintModal) {
+      document.body.classList.add('print-desk-modal-open')
+    } else {
+      document.body.classList.remove('print-desk-modal-open')
+    }
+    return () => document.body.classList.remove('print-desk-modal-open')
+  }, [showCheonhonModal, showReceiptModal, showDonationCertModal, showMailLabelModal])
+
   // 4번(신규등록)·5번(엑셀등록)·클라우드 DB의 신도를 데스크 명부에 자동 병합
   useEffect(() => {
     if (!Array.isArray(externalMembers) || externalMembers.length === 0) return
@@ -1717,7 +1728,7 @@ export default function DeskERPView({
               </button>
             </div>
 
-            <div className="p-5 rounded-2xl bg-white border border-[#E6DEC8] font-serif-kr text-sm leading-relaxed text-[#231F1C] space-y-3 whitespace-pre-line shadow-inner">
+            <div id="printable-desk-sheet" className="p-5 rounded-2xl bg-white border border-[#E6DEC8] font-serif-kr text-sm leading-relaxed text-[#231F1C] space-y-3 whitespace-pre-line shadow-inner">
               <p className="text-center font-bold text-base text-[#8A6510]">
                 【 濟州特別自治道 濟州市 召願寺 薦魂文 】
               </p>
@@ -1777,7 +1788,7 @@ export default function DeskERPView({
               </button>
             </div>
 
-            <div className="p-4 bg-white rounded-2xl border border-[#D5C59B] text-xs space-y-2">
+            <div id="printable-desk-sheet" className="p-4 bg-white rounded-2xl border border-[#D5C59B] text-xs space-y-2">
               <div className="flex justify-between border-b pb-1">
                 <span className="text-[#7A6E5E]">신도명 / 신도번호:</span>
                 <span className="font-bold text-[#1B1815]">
@@ -1860,7 +1871,7 @@ export default function DeskERPView({
               </div>
 
               {/* 인쇄 영역 */}
-              <div className="border-2 border-black p-5 space-y-4 text-xs">
+              <div id="printable-desk-sheet" className="border-2 border-black p-5 space-y-4 text-xs">
                 <div className="flex items-center justify-between border-b border-black pb-3">
                   <span className="font-mono text-[11px]">일련번호: 제 {issueNo} 호</span>
                   <h2 className="font-serif-kr text-xl font-black tracking-widest">기 부 금 영 수 증</h2>
@@ -1997,7 +2008,7 @@ export default function DeskERPView({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[60vh] overflow-y-auto print:max-h-none p-1">
+              <div id="printable-desk-sheet" className="grid grid-cols-2 gap-3 max-h-[60vh] overflow-y-auto print:max-h-none p-1">
                 {mailTargets.map((m) => (
                   <div key={m.code} className="border border-gray-400 rounded-lg p-3.5 flex flex-col justify-between min-h-[105px] bg-white text-xs">
                     <div className="text-[11px] text-gray-700 leading-snug">{m.address}</div>
