@@ -6318,21 +6318,18 @@ function normalizeMemberHierarchy(m) {
                 </form>
               )}
 
-              {/* 전화 예약 바로가기 버튼 2종 */}
-              <div className="grid grid-cols-2 gap-2">
-                <a
-                  href="tel:010-4912-1083"
-                  className="flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl bg-white text-[#7A5608] font-extrabold text-[11.5px] border border-[#D8C28E] shadow-xs hover:bg-[#FAF3DF] transition whitespace-nowrap"
-                >
+              {/* 전화 예약 통합 바로가기 바 */}
+              <div className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-white text-[#3D352B] text-xs font-bold border border-[#D8C28E] shadow-xs flex-wrap">
+                <span className="inline-flex items-center gap-1 text-[#7A5608] font-extrabold">
                   <Phone className="w-3.5 h-3.5 text-[#B8860B] fill-current shrink-0" />
-                  <span>예약 010-4912-1083</span>
+                  <span>종무소·예약</span>
+                </span>
+                <a href="tel:064-805-2007" className="text-[#231F1C] hover:text-[#7A5608] font-extrabold transition">
+                  064-805-2007
                 </a>
-                <a
-                  href="tel:064-805-2007"
-                  className="flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl bg-white text-[#3D352B] font-bold text-[11.5px] border border-[#DDD2BE] shadow-xs hover:bg-[#FAF8F5] transition whitespace-nowrap"
-                >
-                  <Phone className="w-3.5 h-3.5 text-[#7A6E5E] shrink-0" />
-                  <span>종무소 064-805-2007</span>
+                <span className="text-[#C8BFA8]">·</span>
+                <a href="tel:010-4912-1083" className="text-[#7A5608] hover:text-[#5C3F05] font-extrabold transition">
+                  010-4912-1083
                 </a>
               </div>
             </section>
