@@ -3844,6 +3844,136 @@ function normalizeMemberHierarchy(m) {
   }
 
   // 소원등 점등 및 대웅전 축원 접수 핸들러 (7일간 대웅전 점등 유지)
+  // 💳 [토스페이먼츠 공식 테스트 결제창 연동] 종목별 기본 보시금 매핑
+  const CATEGORY_DEFAULT_AMOUNT = {
+    '대웅전 공양미/불전시주': 30000,
+    '대웅전 1년 인등(가족등)': 100000,
+    '100일 소원성취 특별기도': 100000,
+    '49재/천도재/기일제사': 300000,
+    '생전예수재(황금위패)': 500000,
+    '조상영구위패(흑색)': 500000,
+    '삼성각 소원기와불사': 30000,
+    '삼성각 기둥·단청불사': 300000,
+    '삼성각 영구축원명패': 500000,
+    '기타 특별기도 상담': 50000,
+  }
+  const [tossPayMethod, setTossPayMethod] = useState('카드') // '카드'(카카오페이·간편결제 포함) | '계좌이체' | '가상계좌'
+  const [customPayAmount, setCustomPayAmount] = useState(100000)
+  useEffect(() => {
+    setCustomPayAmount(CATEGORY_DEFAULT_AMOUNT[wishCategory] || 100000)
+  }, [wishCategory])
+
+  // 토스페이먼츠 결제 성공 리다이렉트(?paymentKey=...&orderId=...&amount=...) 자동 수납·축원·정산 처리
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const paymentKey = params.get('paymentKey')
+    const orderId = params.get('orderId')
+    const amount = Number(params.get('amount') || 0)
+    if (!paymentKey || !orderId || !amount) return
+    try {
+      const pendingRaw = sessionStorage.getItem('sowonsa_toss_pending_order')
+      const pending = pendingRaw ? JSON.parse(pendingRaw) : {}
+      sessionStorage.removeItem('sowonsa_toss_pending_order')
+      const bName = pending.believer_name || '불자님'
+      const bPhone = pending.believer_phone || '010-0000-0000'
+      const bCat = pending.wish_category || '대웅전 1년 인등(가족등)'
+      const bText = pending.wish_text || '가정의 평안과 소원성취를 발원합니다.'
+      const writerCode = pending.member_code || extractPhone8Code(bPhone) || '00000000'
+      const agentCode = pending.agent_code || '33065540'
+      const paidPrayer = {
+        id: 'p-toss-' + Date.now(),
+        member_code: writerCode,
+        believer_name: bName,
+        wish_target: pending.wish_target || '본인',
+        believer_phone: bPhone,
+        agent_code: agentCode,
+        wish_category: bCat,
+        wish_text: bText,
+        amount,
+        payment_status: 'paid',
+        status: 'prayed',
+        prayed_at: `💳 토스페이먼츠 결제완납 (${amount.toLocaleString()}원) · 대웅전 축원 등재`,
+        created_at: new Date().toISOString(),
+      }
+      setPrayers((prev) => [paidPrayer, ...prev])
+      const templeShare = Math.round(amount * 0.5)
+      const newSettlement = {
+        id: 'st-toss-' + Date.now(),
+        believer_code: writerCode,
+        believer_name: bName,
+        item_name: `[온라인결제] ${bCat}`,
+        amount,
+        temple_share: templeShare,
+        agent_code: agentCode,
+        agent_name: '김철수 총괄본부',
+        agent_share: amount - templeShare,
+        head_code: null,
+        head_name: null,
+        head_override_share: 0,
+        master_override_share: 0,
+        status: 'completed',
+        created_at: new Date().toISOString().slice(0, 10),
+      }
+      setSettlements((prev) => [newSettlement, ...prev])
+      showToast(`🎉 [${bName}] ${bCat} (${amount.toLocaleString()}원) 결제가 완료되어 대웅전 축원 명부 및 정산원장에 자동 등재되었습니다!`)
+    } catch (e) {}
+    window.history.replaceState({}, '', window.location.pathname)
+  }, [])
+
+  const handleTossTestPayment = () => {
+    if (!wishName.trim() || !wishPhone.trim()) {
+      showToast('결제 전 신청자 성함과 연락처를 먼저 입력해 주세요.')
+      return
+    }
+    if (typeof window.TossPayments !== 'function') {
+      showToast('결제 모듈을 불러오는 중입니다. 잠시 후 다시 눌러주세요.')
+      return
+    }
+    const amount = Math.max(1000, Number(customPayAmount) || 100000)
+    const finalTarget = wishTarget.trim()
+    const formattedBelieverName =
+      finalTarget && finalTarget !== '본인'
+        ? `${wishName.trim()} (대상: ${finalTarget})`
+        : wishName.trim()
+    const finalWishText =
+      wishText.trim() ||
+      PRAYER_CATEGORY_TEMPLATES[wishCategory] ||
+      '우리 가족 모두 건강하고 뜻하는 일마다 밝게 풀리기를 발원합니다.'
+    const writerCode = currentUser?.code || extractPhone8Code(wishPhone)
+    const matchedMember = members.find((m) => m.code === writerCode)
+    const assignedAgentCode = currentUser?.parent_code || matchedMember?.parent_code || referralCode || '33065540'
+    try {
+      sessionStorage.setItem(
+        'sowonsa_toss_pending_order',
+        JSON.stringify({
+          member_code: writerCode,
+          agent_code: assignedAgentCode,
+          believer_name: formattedBelieverName,
+          wish_target: finalTarget || '본인',
+          believer_phone: wishPhone.trim(),
+          wish_category: wishCategory || '대웅전 1년 인등(가족등)',
+          wish_text: finalWishText,
+        })
+      )
+    } catch (e) {}
+    // 토스페이먼츠 공식 공개 테스트 클라이언트 키
+    const tossPayments = window.TossPayments('test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq')
+    tossPayments
+      .requestPayment(tossPayMethod, {
+        amount,
+        orderId: `sowonsa-${Date.now()}`,
+        orderName: `제주 소원사 - ${wishCategory || '기도·불사 보시'}`,
+        customerName: wishName.trim(),
+        successUrl: window.location.origin + window.location.pathname,
+        failUrl: window.location.origin + window.location.pathname,
+      })
+      .catch((err) => {
+        if (err?.code !== 'USER_CANCEL') {
+          showToast(err?.message || '결제창 호출 중 오류가 발생했습니다.')
+        }
+      })
+  }
+
   const handlePrayerSubmit = (e) => {
     e.preventDefault()
     if (!wishName.trim() || !wishPhone.trim()) {
@@ -6844,17 +6974,71 @@ function normalizeMemberHierarchy(m) {
                 </div>
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-3">
                 <button
                   type="submit"
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-extrabold text-xs sm:text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-1.5 whitespace-nowrap"
+                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-extrabold text-xs sm:text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
                 >
                   <Award className="w-4 h-4 shrink-0" />
-                  <span>[{wishCategory}] 무료상담 신청하기</span>
+                  <span>① [{wishCategory}] 먼저 상담·무통장 접수하기</span>
                 </button>
-                <p className="text-center text-[11px] text-[#7A7065] font-medium break-keep">
-                  ※ 접수 완료 시 종무소에서 안내 전화를 드리며, 상담 후 편안하게 동참을 진행하실 수 있습니다.
-                </p>
+
+                {/* 💳 토스페이먼츠 즉시 결제 (카카오페이 · 신용카드 할부 · 가상계좌 테스트) */}
+                <div className="p-3.5 rounded-2xl bg-[#F8FAFC] border-2 border-[#3182F6]/40 space-y-2.5">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <div className="flex items-center gap-1.5">
+                      <CreditCard className="w-4 h-4 text-[#3182F6]" />
+                      <span className="text-xs font-extrabold text-[#191F28]">
+                        ② 토스페이먼츠 즉시 보시 결제 (카카오페이 · 카드할부 · 가상계좌)
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E8F3FF] text-[#1B64DA]">
+                      실제 출금 안 되는 안전한 테스트 모드
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-1.5 text-xs">
+                    {['카드', '계좌이체', '가상계좌'].map((m) => (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => setTossPayMethod(m)}
+                        className={`py-2 rounded-lg font-bold border transition cursor-pointer ${
+                          tossPayMethod === m
+                            ? 'bg-[#3182F6] text-white border-[#3182F6] shadow-sm'
+                            : 'bg-white text-[#4E5968] border-[#D1D6DB] hover:bg-gray-50'
+                        }`}
+                      >
+                        {m === '카드' ? '카드 · 카카오페이' : m === '계좌이체' ? '실시간 계좌이체' : '가상계좌(무통장)'}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 flex items-center bg-white rounded-xl border border-[#D1D6DB] px-3 py-2">
+                      <span className="text-[11px] font-bold text-[#4E5968] mr-2 shrink-0">보시금액(원)</span>
+                      <input
+                        type="number"
+                        step="10000"
+                        min="1000"
+                        value={customPayAmount}
+                        onChange={(e) => setCustomPayAmount(e.target.value)}
+                        className="w-full text-right font-mono font-extrabold text-sm text-[#191F28] focus:outline-none"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleTossTestPayment}
+                      className="px-4 py-2.5 rounded-xl bg-[#3182F6] hover:bg-[#1B64DA] text-white font-extrabold text-xs sm:text-sm shadow flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition"
+                    >
+                      <CreditCard className="w-4 h-4 shrink-0" />
+                      <span>{Number(customPayAmount || 0).toLocaleString()}원 결제창 열기</span>
+                    </button>
+                  </div>
+                  <p className="text-[10.5px] text-[#6B7684] leading-snug">
+                    ※ 결제 완료 시 대웅전 사시예불 축원 명부와 종무소 정산관제(사찰 50% · 포교비 50%)에 1초 만에 자동 등재됩니다.
+                  </p>
+                </div>
               </div>
             </form>
 
