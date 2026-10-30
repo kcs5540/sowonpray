@@ -3169,7 +3169,8 @@ function normalizeMemberHierarchy(m) {
   const [quizSelectedOption, setQuizSelectedOption] = useState(null)
   const [solvedQuizIds, setSolvedQuizIds] = useState([])
 
-  // 한국어 음성 낭독 상태 및 오디오 제어 (클라우드 고음질 MP3 + Web Speech 하이브리드 100% 무조건 재생)
+  // 한국어 음성 낭독 상태 및 오디오 제어 (클라우드 고음질 MP3 + Web Speech 하이브리드)
+  // autoVoiceEnabled: 사용자가 🔊 소리를 켜둔 상태를 기억하여 '다른 말씀'이나 다른 경전 클릭 시에도 자동으로 낭독 유지
   const [speakingId, setSpeakingId] = useState(null)
   const [autoVoiceEnabled, setAutoVoiceEnabled] = useState(false)
   const speechAudioRef = useRef(null)
@@ -3230,16 +3231,23 @@ function normalizeMemberHierarchy(m) {
     }
   }
 
-  // 1차 최우선: 대한민국 모든 기기 100% 무조건 소리 나는 클라우드 고음질 오디오 엔진
-  const toggleSpeech = (id, rawText) => {
+  // 강제 새 낭독 시작 (다른 말씀 / 다른 경전 클릭 시 음성 모드 유지하면서 즉시 새 말씀 낭독)
+  const startSpeech = (id, rawText) => {
     try {
-      if (speakingId === id) {
-        stopSpeech()
-        return
+      // 진행 중인 이전 음성만 멈춤 (autoVoiceEnabled 유지)
+      if (speechAudioRef.current) {
+        try {
+          speechAudioRef.current.pause()
+          speechAudioRef.current = null
+        } catch (e) {}
       }
-      stopSpeech()
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel()
+        } catch (e) {}
+      }
 
-      // 괄호 안 한자 제거 및 자연스러운 낭독 정제
+      // 괄호 한자 등 정제
       const cleanText = String(rawText || '')
         .replace(/\([一-龥\s·,]+\)/g, '')
         .replace(/[《》“”"']/g, ' ')
@@ -3248,11 +3256,14 @@ function normalizeMemberHierarchy(m) {
         .replace(/\s+/g, ' ')
         .trim()
 
-      if (!cleanText) return
+      if (!cleanText) {
+        setSpeakingId(null)
+        return
+      }
 
       setSpeakingId(id)
 
-      // 목탁 소리처럼 HTML5 Audio 객체로 즉시 재생 (사용자 터치 시점 즉시 실행으로 100% 모바일 권한 통과)
+      // 목탁 소리처럼 HTML5 Audio 객체로 즉시 재생
       const audioUrl = '/api/tts?text=' + encodeURIComponent(cleanText)
       const audio = new Audio(audioUrl)
       audio.preload = 'auto'
@@ -3280,8 +3291,16 @@ function normalizeMemberHierarchy(m) {
     }
   }
 
-  const startSpeech = (id, rawText) => {
-    toggleSpeech(id, rawText)
+  // 사용자가 🔊 스피커 버튼을 직접 눌렀을 때 토글:
+  // - 켜져 있거나 자동 음성 모드일 때 누르면: 완전히 소리를 끄고 비활성화 (autoVoiceEnabled = false)
+  // - 꺼져 있을 때 누르면: 소리를 켜고 자동 음성 모드 활성화 (autoVoiceEnabled = true) -> 다른 말씀 넘겨도 계속 낭독!
+  const toggleSpeech = (id, rawText) => {
+    if (speakingId === id || autoVoiceEnabled) {
+      stopSpeech(true)
+      return
+    }
+    setAutoVoiceEnabled(true)
+    startSpeech(id, rawText)
   }
 
   // 탭 전환 시 낭독 자동 정지
