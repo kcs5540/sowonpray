@@ -3201,86 +3201,50 @@ function normalizeMemberHierarchy(m) {
     }
   }
 
-  const startSpeech = (id, rawText) => {
+  const toggleSpeech = (id, rawText) => {
     try {
       if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
-        playSingingBowlSound()
-        showToast('💡 카카오톡 등 인앱 브라우저는 음성 낭독이 제한됩니다. 우측 상단(⋮) [다른 브라우저로 열기]를 이용해 주세요.')
+        showToast('현재 브라우저에서는 음성 낭독 기능을 지원하지 않습니다.')
+        return
+      }
+      if (speakingId === id) {
+        stopSpeech()
         return
       }
       window.speechSynthesis.cancel()
 
-      // 괄호 안 한자 제거 및 스님 법문처럼 차분한 호흡(쉼표·여백) 정제
+      // 괄호 안 한자 제거 및 자연스러운 한국어 낭독을 위한 정제
       const cleanText = String(rawText)
         .replace(/\([一-龥\s·,]+\)/g, '')
         .replace(/[《》“”"']/g, ' ')
         .replace(/[①②③④⑤]/g, '')
         .replace(/·/g, ', ')
-        .replace(/\.\s*/g, '. ... ')
         .replace(/\s+/g, ' ')
         .trim()
 
-      // 안드로이드 크롬/삼성인터넷의 synthesis-failed 에러 완벽 해결:
-      // 모바일에서는 getVoices() 로딩 전에 speak()를 부르면 synthesis-failed 가 뜸.
-      // 따라서 시스템 음성 목록이 1개라도 로드된 후 speak()를 호출해야 100% 정상 발성됨!
-      const executeSpeech = () => {
-        try {
-          window.speechSynthesis.cancel()
+      const utterance = new SpeechSynthesisUtterance(cleanText)
+      utterance.lang = 'ko-KR'
+      utterance.rate = 0.92
+      utterance.pitch = 1.0
 
-          const u = new SpeechSynthesisUtterance(cleanText)
-          u.lang = 'ko-KR'
-          u.pitch = 1.0
-          u.rate = 0.95
-          u.volume = 1.0
-
-          window.__activeUtterance = u
-
-          u.onstart = () => {
-            setSpeakingId(id)
-          }
-          u.onend = () => {
-            setSpeakingId(null)
-            window.__activeUtterance = null
-          }
-          u.onerror = (e) => {
-            console.log('Speech error:', e)
-            setSpeakingId(null)
-            window.__activeUtterance = null
-          }
-
-          setSpeakingId(id)
-          window.speechSynthesis.speak(u)
-          if (window.speechSynthesis.paused) {
-            window.speechSynthesis.resume()
-          }
-        } catch (err) {
-          setSpeakingId(null)
-        }
+      const voices = window.speechSynthesis.getVoices()
+      const koVoice = voices.find((v) => v.lang && (v.lang.includes('ko') || v.lang.includes('KR')))
+      if (koVoice) {
+        utterance.voice = koVoice
       }
 
-      const currentVoices = window.speechSynthesis.getVoices()
-      if (currentVoices && currentVoices.length > 0) {
-        executeSpeech()
-      } else {
-        // 모바일 브라우저에서 voices가 아직 비동기 로딩 중인 경우 0.1초 대기
-        window.speechSynthesis.onvoiceschanged = () => {
-          window.speechSynthesis.onvoiceschanged = null
-          executeSpeech()
-        }
-        setTimeout(executeSpeech, 150)
-      }
+      utterance.onend = () => setSpeakingId(null)
+      utterance.onerror = () => setSpeakingId(null)
+
+      setSpeakingId(id)
+      window.speechSynthesis.speak(utterance)
     } catch (e) {
       setSpeakingId(null)
     }
   }
 
-  const toggleSpeech = (id, rawText) => {
-    if (speakingId === id || (id === 'home-quote' && autoVoiceEnabled)) {
-      stopSpeech(true)
-      return
-    }
-    setAutoVoiceEnabled(true)
-    startSpeech(id, rawText)
+  const startSpeech = (id, rawText) => {
+    toggleSpeech(id, rawText)
   }
 
   // 탭 전환 시 낭독 자동 정지
