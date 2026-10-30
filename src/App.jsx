@@ -12663,23 +12663,46 @@ function normalizeMemberHierarchy(m) {
           member={indeungTargetMember}
         />
 
-        {/* 통합 공식 푸터 (사찰 안내 & 제주AI파트너 디지털 전산 파트너십) */}
-        <footer className="px-4 pt-3.5 pb-5 text-center text-[11px] text-[#786E63] border-t border-[#E6DEC8] space-y-1.5">
-          {/* 사찰 및 종무소 정보 (통합 단일화) */}
-          <div className="space-y-0.5 leading-relaxed break-keep">
-            <div className="font-bold text-[#231F1C] text-xs">
-              제주 소원사 · 모바일 법당 <span className="text-[#9A7418] font-normal">(소원성취 기도도량)</span>
+        {/* 통합 공식 푸터 (대한불교 본원종 종단 명시 · 원터치 전화/지도 연결 · 제주AI파트너 플랫폼 브랜딩) */}
+        <footer className="px-4 pt-4 pb-6 text-center text-[11px] text-[#786E63] border-t border-[#E6DEC8] space-y-2.5 bg-[#FAF7F0]/70">
+          {/* 종단 배지 & 사찰 공식 명칭 */}
+          <div className="space-y-1 leading-relaxed break-keep">
+            <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#FAF0D7] border border-[#E5D399] text-[10px] font-extrabold text-[#8A6510]">
+              <span>☸ 대한불교 본원종</span>
             </div>
-            <p>제주특별자치도 제주시 죽성서길 75 (오등동 935)</p>
-            <div className="flex items-center justify-center text-[10.5px] text-[#5C5349] pt-0.5">
-              <span>종무소(신행·차담예약) 064-805-2007 / 010-4912-1083</span>
+            <div className="font-serif-kr font-extrabold text-[#231F1C] text-[13px]">
+              제주 소원사 · 모바일 법당 <span className="text-[#9A7418] font-semibold text-xs">(소원성취 기도도량)</span>
             </div>
+            <p className="text-[11px] text-[#5C5349] flex items-center justify-center gap-1 flex-wrap">
+              <MapPin className="w-3 h-3 text-[#9A7418] shrink-0" />
+              <span>제주특별자치도 제주시 죽성서길 75 (오등동 935)</span>
+            </p>
           </div>
 
-          {/* 하단 단정한 전산 크레딧 & 카피라이트 (플랫폼 소프트웨어 소유권: 제주AI파트너 명시) */}
-          <div className="pt-1 space-y-0.5">
-            <p className="text-[10.5px] font-medium text-[#63574A]">디지털 전산 총괄: 제주AI파트너</p>
-            <p className="tracking-wider text-[#786C5E] text-[10px]">
+          {/* 원터치 통화 연결 바 */}
+          <div className="flex items-center justify-center gap-2 text-[11px] font-bold text-[#3D352B] flex-wrap">
+            <a
+              href="tel:064-805-2007"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-[#E2D8C5] hover:bg-[#FAF3DF] transition shadow-2xs"
+            >
+              <Phone className="w-3 h-3 text-[#8A6510]" />
+              <span>종무소 064-805-2007</span>
+            </a>
+            <a
+              href="tel:010-4912-1083"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-[#E2D8C5] hover:bg-[#FAF3DF] transition shadow-2xs"
+            >
+              <Phone className="w-3 h-3 text-[#B8860B] fill-current" />
+              <span>신행·차담예약 010-4912-1083</span>
+            </a>
+          </div>
+
+          {/* 하단 플랫폼 크레딧 & 카피라이트 (전국 사찰 B2B 홍보 겸용) */}
+          <div className="pt-2 border-t border-[#EAE2D3] space-y-0.5">
+            <p className="text-[10.5px] font-bold text-[#5C4F40]">
+              디지털 법당 · 종무전산 구축 및 총괄: <span className="text-[#8A6510]">제주AI파트너</span>
+            </p>
+            <p className="tracking-wider text-[#8C8071] text-[10px]">
               Platform © Jeju AI Partner. All rights reserved.
             </p>
           </div>
