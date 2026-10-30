@@ -56,7 +56,6 @@ export default function DeskERPView({
   }
 
   // 검색 & 필터 상태
-  const [searchTarget, setSearchTarget] = useState('all') // 'all', 'daeju', 'family'
   const [searchQuery, setSearchQuery] = useState('')
   const [mailFilter, setMailFilter] = useState('all') // 'all', 'yes', 'no'
   const [smsFilter, setSmsFilter] = useState('all') // 'all', 'yes', 'no'
@@ -439,29 +438,6 @@ export default function DeskERPView({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs items-center">
           {/* 좌측 필터 조건 그룹 (7컬럼) */}
           <div className="lg:col-span-8 flex flex-wrap items-center gap-3">
-            {/* 검색 대상 */}
-            <div className="flex items-center gap-1 bg-black/40 px-2 py-1 rounded-lg border border-white/10">
-              <span className="text-[#8C8071] text-[11px]">대상:</span>
-              <button
-                type="button"
-                onClick={() => setSearchTarget('all')}
-                className={`px-1.5 py-0.5 rounded text-[11px] font-bold ${
-                  searchTarget === 'all' ? 'bg-[#C59B27] text-black' : 'text-[#A69B8D]'
-                }`}
-              >
-                전체
-              </button>
-              <button
-                type="button"
-                onClick={() => setSearchTarget('daeju')}
-                className={`px-1.5 py-0.5 rounded text-[11px] font-bold ${
-                  searchTarget === 'daeju' ? 'bg-[#C59B27] text-black' : 'text-[#A69B8D]'
-                }`}
-              >
-                대주
-              </button>
-            </div>
-
             {/* 우편발송 */}
             <div className="flex items-center gap-1 bg-black/40 px-2 py-1 rounded-lg border border-white/10">
               <span className="text-[#8C8071] text-[11px]">우편:</span>
