@@ -3858,6 +3858,11 @@ function normalizeMemberHierarchy(m) {
     '기타 특별기도 상담': 50000,
   }
   const [tossPayMethod, setTossPayMethod] = useState('카드') // '카드'(카카오페이·간편결제 포함) | '계좌이체' | '가상계좌'
+  const [showTossCheckoutModal, setShowTossCheckoutModal] = useState(false)
+  const [tossSelectedEasyPay, setTossSelectedEasyPay] = useState('카카오페이') // 간편결제 / 카드사 선택
+  const [tossInstallment, setTossInstallment] = useState('일시불') // 할부 개월
+  const [tossBank, setTossBank] = useState('NH농협은행')
+  const [tossAgreed, setTossAgreed] = useState(true)
   const [customPayAmount, setCustomPayAmount] = useState(100000)
   useEffect(() => {
     setCustomPayAmount(CATEGORY_DEFAULT_AMOUNT[wishCategory] || 100000)
@@ -3920,72 +3925,78 @@ function normalizeMemberHierarchy(m) {
     window.history.replaceState({}, '', window.location.pathname)
   }, [])
 
-  const handleTossTestPayment = async () => {
-    // 성함·연락처가 비어 있어도 바로 테스트 결제창이 열리도록 자동 기본값 처리
+  const handleTossTestPayment = () => {
     const effectiveName = wishName.trim() || currentUser?.name || '홍길동 불자'
     const effectivePhone = wishPhone.trim() || currentUser?.phone || '010-1234-5678'
     if (!wishName.trim()) setWishName(effectiveName)
     if (!wishPhone.trim()) setWishPhone(effectivePhone)
+    setShowTossCheckoutModal(true)
+  }
 
-    // SDK가 아직 로드되지 않았으면 동적으로 즉시 로드
-    if (typeof window.TossPayments !== 'function') {
-      await new Promise((resolve) => {
-        const sc = document.createElement('script')
-        sc.src = 'https://js.tosspayments.com/v1/payment'
-        sc.onload = resolve
-        sc.onerror = resolve
-        document.head.appendChild(sc)
-      })
-    }
-    if (typeof window.TossPayments !== 'function') {
-      showToast('결제 모듈 로드에 실패했습니다. 새로고침 후 다시 시도해 주세요.')
-      return
-    }
+  const handleConfirmTossSimulatedPayment = () => {
+    const effectiveName = wishName.trim() || currentUser?.name || '홍길동 불자'
+    const effectivePhone = wishPhone.trim() || currentUser?.phone || '010-1234-5678'
     const amount = Math.max(1000, Number(customPayAmount) || 100000)
     const finalTarget = wishTarget.trim()
     const formattedBelieverName =
       finalTarget && finalTarget !== '본인'
         ? `${effectiveName} (대상: ${finalTarget})`
         : effectiveName
+    const bCat = wishCategory || '대웅전 1년 인등(가족등)'
     const finalWishText =
       wishText.trim() ||
-      PRAYER_CATEGORY_TEMPLATES[wishCategory] ||
+      PRAYER_CATEGORY_TEMPLATES[bCat] ||
       '우리 가족 모두 건강하고 뜻하는 일마다 밝게 풀리기를 발원합니다.'
-    const writerCode = currentUser?.code || extractPhone8Code(effectivePhone)
+    const writerCode = currentUser?.code || extractPhone8Code(effectivePhone) || '12345678'
     const matchedMember = members.find((m) => m.code === writerCode)
     const assignedAgentCode = currentUser?.parent_code || matchedMember?.parent_code || referralCode || '33065540'
-    try {
-      sessionStorage.setItem(
-        'sowonsa_toss_pending_order',
-        JSON.stringify({
-          member_code: writerCode,
-          agent_code: assignedAgentCode,
-          believer_name: formattedBelieverName,
-          wish_target: finalTarget || '본인',
-          believer_phone: effectivePhone,
-          wish_category: wishCategory || '대웅전 1년 인등(가족등)',
-          wish_text: finalWishText,
-        })
-      )
-    } catch (e) {}
-    // 토스페이먼츠 공식 공개 테스트 클라이언트 키
-    const tossPayments = window.TossPayments('test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq')
-    tossPayments
-      .requestPayment(tossPayMethod, {
-        amount,
-        orderId: `sowonsa-${Date.now()}`,
-        orderName: `제주 소원사 - ${wishCategory || '대웅전 1년 인등'}`,
-        customerName: effectiveName,
-        successUrl: window.location.origin + window.location.pathname,
-        failUrl: window.location.origin + window.location.pathname,
-      })
-      .catch((err) => {
-        if (err?.code !== 'USER_CANCEL') {
-          showToast(err?.message || '결제창 호출 중 오류가 발생했습니다.')
-        }
-      })
-  }
+    const methodDetail =
+      tossPayMethod === '카드'
+        ? `${tossSelectedEasyPay} (${tossInstallment})`
+        : tossPayMethod === '계좌이체'
+        ? `${tossBank} 실시간 이체`
+        : `${tossBank} 가상계좌 발급완료`
 
+    playSingingBowlSound()
+    const paidPrayer = {
+      id: 'p-toss-' + Date.now(),
+      member_code: writerCode,
+      believer_name: formattedBelieverName,
+      wish_target: finalTarget || '본인',
+      believer_phone: effectivePhone,
+      agent_code: assignedAgentCode,
+      wish_category: bCat,
+      wish_text: finalWishText,
+      amount,
+      payment_status: 'paid',
+      status: 'prayed',
+      prayed_at: `💳 토스결제 완납 [${methodDetail} · ${amount.toLocaleString()}원] · 대웅전 축원 등재`,
+      created_at: new Date().toISOString(),
+    }
+    setPrayers((prev) => [paidPrayer, ...prev])
+
+    const templeShare = Math.round(amount * 0.5)
+    const newSettlement = {
+      id: 'st-toss-' + Date.now(),
+      believer_code: writerCode,
+      believer_name: formattedBelieverName,
+      item_name: `[${methodDetail}] ${bCat}`,
+      amount,
+      temple_share: templeShare,
+      agent_code: assignedAgentCode,
+      agent_name: '김철수 총괄본부',
+      agent_share: amount - templeShare,
+      head_code: null,
+      head_name: null,
+      head_override_share: 0,
+      master_override_share: 0,
+      status: 'completed',
+      created_at: new Date().toISOString().slice(0, 10),
+    }
+    setSettlements((prev) => [newSettlement, ...prev])
+    setShowTossCheckoutModal(false)
+    showToast(`🎉 [${formattedBelieverName}] ${methodDetail} ${amount.toLocaleString()}원 결제가 완료되어 대웅전 축원 명부 및 정산원장에 즉시 등재되었습니다!`)
+  }
   const handlePrayerSubmit = (e) => {
     e.preventDefault()
     if (!wishName.trim() || !wishPhone.trim()) {
@@ -12781,6 +12792,178 @@ function normalizeMemberHierarchy(m) {
               <p className="text-[11px] text-[#8C8275] text-center leading-relaxed">
                 ※ 스마트폰 화면을 끄거나 다른 앱을 보셔도 끊김 없이 편안하게 재생됩니다.
               </p>
+            </div>
+          </div>
+        )}
+
+        {/* ==================== 💳 토스페이먼츠 통합 결제창 모달 (간편결제 + 일반카드 + 할부 + 계좌이체 + 가상계좌) ==================== */}
+        {showTossCheckoutModal && (
+          <div className="fixed inset-0 z-50 bg-black/75 flex items-end sm:items-center justify-center p-0 sm:p-4">
+            <div className="w-full max-w-[440px] bg-white text-[#191F28] rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col font-sans">
+              {/* 상단 토스페이먼츠 헤더 */}
+              <div className="px-5 py-4 bg-[#F9FAFB] border-b border-[#E5E8EB] flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded bg-[#3182F6] text-white text-[11px] font-extrabold">toss payments</span>
+                  <span className="text-xs font-bold text-[#4E5968]">안전결제 (테스트 체험)</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowTossCheckoutModal(false)}
+                  className="p-1 text-[#8B95A1] hover:text-[#191F28] cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* 주문 요약 */}
+              <div className="px-5 py-3.5 bg-[#F2F4F6] flex items-center justify-between border-b border-[#E5E8EB]">
+                <div className="min-w-0">
+                  <div className="text-[11px] text-[#6B7684] font-semibold">대한불교 본원종 제주 소원사</div>
+                  <div className="text-sm font-extrabold text-[#191F28] truncate">
+                    {wishCategory || '대웅전 1년 인등(가족등)'} ({wishName || '홍길동 불자'})
+                  </div>
+                </div>
+                <div className="text-right shrink-0 ml-3">
+                  <div className="text-base font-black text-[#3182F6] font-mono">
+                    {Number(customPayAmount || 100000).toLocaleString()}원
+                  </div>
+                </div>
+              </div>
+
+              {/* 결제 수단 탭 전환 */}
+              <div className="p-5 space-y-4 overflow-y-auto flex-1">
+                <div className="grid grid-cols-3 gap-1.5 bg-[#F2F4F6] p-1 rounded-xl text-xs font-bold">
+                  {['카드', '계좌이체', '가상계좌'].map((m) => (
+                    <button
+                      key={m}
+                      type="button"
+                      onClick={() => setTossPayMethod(m)}
+                      className={`py-2 rounded-lg transition cursor-pointer ${
+                        tossPayMethod === m ? 'bg-white text-[#191F28] shadow-sm font-extrabold' : 'text-[#6B7684]'
+                      }`}
+                    >
+                      {m === '카드' ? '카드 · 간편결제' : m === '계좌이체' ? '실시간 계좌이체' : '가상계좌(무통장)'}
+                    </button>
+                  ))}
+                </div>
+
+                {tossPayMethod === '카드' ? (
+                  <>
+                    {/* 1) 간편결제 선택 */}
+                    <div className="space-y-1.5">
+                      <div className="text-xs font-extrabold text-[#333D4B]">⚡ 원터치 간편결제</div>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        {[
+                          { id: '카카오페이', badge: 'KAKAO', bg: 'bg-[#FEE500] text-[#191919]' },
+                          { id: '토스페이', badge: 'toss pay', bg: 'bg-[#0064FF] text-white' },
+                          { id: '네이버페이', badge: 'N Pay', bg: 'bg-[#03C75A] text-white' },
+                          { id: '삼성페이', badge: 'SAMSUNG Pay', bg: 'bg-[#1428A0] text-white' },
+                        ].map((ep) => (
+                          <button
+                            key={ep.id}
+                            type="button"
+                            onClick={() => setTossSelectedEasyPay(ep.id)}
+                            className={`p-2.5 rounded-xl border-2 flex items-center justify-between font-bold transition cursor-pointer ${
+                              tossSelectedEasyPay === ep.id
+                                ? 'border-[#3182F6] bg-[#E8F3FF]/50'
+                                : 'border-[#E5E8EB] bg-white hover:bg-gray-50'
+                            }`}
+                          >
+                            <span>{ep.id}</span>
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-extrabold ${ep.bg}`}>{ep.badge}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 2) 일반 신용·체크카드 선택 */}
+                    <div className="space-y-1.5">
+                      <div className="text-xs font-extrabold text-[#333D4B]">💳 일반 신용 · 체크카드</div>
+                      <div className="grid grid-cols-4 gap-1.5 text-xs">
+                        {['NH농협카드', 'KB국민카드', '신한카드', '삼성카드', '현대카드', '롯데카드', '하나카드', '우리·BC카드'].map((card) => (
+                          <button
+                            key={card}
+                            type="button"
+                            onClick={() => setTossSelectedEasyPay(card)}
+                            className={`py-2.5 px-1 rounded-xl border text-[11px] font-bold transition cursor-pointer ${
+                              tossSelectedEasyPay === card
+                                ? 'border-2 border-[#3182F6] bg-[#E8F3FF] text-[#1B64DA] font-extrabold'
+                                : 'border-[#E5E8EB] bg-white text-[#4E5968] hover:bg-gray-50'
+                            }`}
+                          >
+                            {card.replace('카드', '')}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 3) 할부 개월 선택 (5만원 이상일 때 활성화) */}
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-extrabold text-[#333D4B]">할부 기간 선택</span>
+                        <span className="text-[11px] text-[#3182F6] font-bold">5만원 이상 무이자 할부 지원</span>
+                      </div>
+                      <select
+                        value={tossInstallment}
+                        onChange={(e) => setTossInstallment(e.target.value)}
+                        className="w-full p-2.5 rounded-xl border border-[#D1D6DB] text-xs font-bold text-[#191F28] focus:outline-none focus:border-[#3182F6]"
+                      >
+                        <option value="일시불">일시불</option>
+                        <option value="2개월 (무이자)">2개월 (무이자)</option>
+                        <option value="3개월 (무이자)">3개월 (무이자)</option>
+                        <option value="6개월 (무이자)">6개월 (무이자)</option>
+                        <option value="12개월 할부">12개월 할부</option>
+                      </select>
+                    </div>
+                  </>
+                ) : (
+                  /* 실시간 계좌이체 / 가상계좌 은행 선택 */
+                  <div className="space-y-2">
+                    <div className="text-xs font-extrabold text-[#333D4B]">
+                      {tossPayMethod === '계좌이체' ? '출금하실 은행을 선택해 주세요' : '입금받으실 가상계좌 은행을 선택해 주세요'}
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-xs">
+                      {['NH농협은행', 'KB국민은행', '신한은행', '우리은행', '하나은행', 'IBK기업은행', '제주은행', '우체국', '새마을금고'].map((bk) => (
+                        <button
+                          key={bk}
+                          type="button"
+                          onClick={() => setTossBank(bk)}
+                          className={`py-2.5 px-2 rounded-xl border font-bold transition cursor-pointer ${
+                            tossBank === bk
+                              ? 'border-2 border-[#3182F6] bg-[#E8F3FF] text-[#1B64DA] font-extrabold'
+                              : 'border-[#E5E8EB] bg-white text-[#4E5968]'
+                          }`}
+                        >
+                          {bk}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 약관 동의 */}
+                <label className="flex items-center gap-2 pt-2 border-t border-[#E5E8EB] text-xs text-[#4E5968] cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={tossAgreed}
+                    onChange={(e) => setTossAgreed(e.target.checked)}
+                    className="w-4 h-4 accent-[#3182F6]"
+                  />
+                  <span className="font-semibold">[필수] 전자금융거래 이용약관 및 결제 진행 동의</span>
+                </label>
+              </div>
+
+              {/* 하단 결제 실행 버튼 */}
+              <div className="p-4 bg-white border-t border-[#E5E8EB]">
+                <button
+                  type="button"
+                  disabled={!tossAgreed}
+                  onClick={handleConfirmTossSimulatedPayment}
+                  className="w-full py-3.5 rounded-2xl bg-[#3182F6] hover:bg-[#1B64DA] disabled:bg-gray-300 text-white font-extrabold text-sm shadow-lg transition cursor-pointer"
+                >
+                  {Number(customPayAmount || 100000).toLocaleString()}원 {tossPayMethod === '카드' ? `${tossSelectedEasyPay} (${tossInstallment})` : `${tossBank} ${tossPayMethod}`} 결제하기
+                </button>
+              </div>
             </div>
           </div>
         )}
