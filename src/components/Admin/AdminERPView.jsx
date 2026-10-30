@@ -461,7 +461,7 @@ export default function AdminERPView(props) {
                     : 'text-[#D6CEC2] hover:text-white'
                 }`}
               >
-                <span>🖥️ 1. 종무 4분할 데스크 (두손모아)</span>
+                <span>🖥️ 1. 종무 4분할 스마트 데스크</span>
               </button>
               <button
                 type="button"
@@ -524,7 +524,7 @@ export default function AdminERPView(props) {
               </button>
             </div>
 
-            {/* ==================== 0. 종무 4분할 데스크 ERP (두손모아 모드) ==================== */}
+            {/* ==================== 0. 소원사 종무 4분할 스마트 데스크 ERP ==================== */}
             {erpTab === 'desk' && (
               <DeskERPView
                 onOpenSasiPrint={() => {

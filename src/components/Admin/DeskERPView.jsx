@@ -396,10 +396,10 @@ export default function DeskERPView({
             </span>
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-serif-kr font-bold text-sm text-[#F5D061]">
-                두손모아 Ver 4.22.1.23 호환 종무 4분할 데스크
+                소원사 종무행정 4분할 스마트 데스크
               </span>
               <span className="text-[11px] px-2 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-600/40 font-mono">
-                사찰코드: 10167 (소원사)
+                소원사 종무원 본원
               </span>
               <span className="text-[11px] text-[#A69B8D] hidden md:inline">
                 오늘: 2026-10-30 (음력 9월 20일, 丙午/戊戌/丁丑)
@@ -664,7 +664,7 @@ export default function DeskERPView({
           {/* 테이블 하단 상태줄 */}
           <div className="bg-[#1F1813] px-3.5 py-1.5 border-t border-white/10 flex items-center justify-between text-[11px] text-[#8C8071]">
             <span>표시: {filteredMembers.length}가구</span>
-            <span>소원사 구형 전산 마스터 연동</span>
+            <span>소원사 종무원 공식 신적부</span>
           </div>
         </section>
 
