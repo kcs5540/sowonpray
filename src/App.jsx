@@ -5556,8 +5556,11 @@ function normalizeMemberHierarchy(m) {
 
                   {/* 상단 배지 + 우측 슬라이드 인디케이터 점 (1/3) */}
                   <div className="relative z-10 flex justify-between items-center gap-2 mb-5">
-                    <span className="px-3 py-1 rounded-full bg-black/65 backdrop-blur-sm text-[#F5D061] text-[11px] font-semibold border border-[#F5D061]/35 flex items-center gap-1.5 whitespace-nowrap">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
+                    <span className="px-3 py-1 rounded-full bg-black/75 backdrop-blur-sm text-[#F5D061] text-[11px] font-semibold border border-[#F5D061]/45 flex items-center gap-2 whitespace-nowrap shadow-sm">
+                      <span className="relative flex h-2 w-2 shrink-0">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#F5D061] opacity-60" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#F5D061]" />
+                      </span>
                       {slide.badge}
                     </span>
 
@@ -5701,8 +5704,17 @@ function normalizeMemberHierarchy(m) {
               )
             })()}
 
-            {/* 오늘의 부처님 말씀 */}
+            {/* 오늘의 부처님 말씀 + 사찰 음력 일진·재일 법력 안내 */}
             <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] relative overflow-hidden">
+              <div className="flex items-center justify-between gap-2 pb-2.5 mb-3 border-b border-[#F0EAE0] text-[11px]">
+                <div className="flex items-center gap-1.5 text-[#6E5D45] font-semibold truncate">
+                  <Calendar className="w-3.5 h-3.5 text-[#C59B27] shrink-0" />
+                  <span>음력 9월 20일 (병오년 무술월 정축일)</span>
+                </div>
+                <span className="px-2 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] font-extrabold border border-[#E5D399] whitespace-nowrap shrink-0">
+                  📿 관음재일(24일) D-4
+                </span>
+              </div>
               <div className="flex items-center justify-between gap-1.5 mb-3">
                 <div className="flex items-center gap-1.5 min-w-0">
                   <span className="text-xs font-bold text-[#9A7418] bg-[#FAF3DF] px-2.5 py-1 rounded-full border border-[#E5D399] whitespace-nowrap">
@@ -5807,6 +5819,7 @@ function normalizeMemberHierarchy(m) {
                     {isLanternLit ? '나의 소원등' : '소원등 켜기'}
                   </h3>
                 </div>
+                <ChevronRight className="w-4 h-4 text-[#9A6B10] shrink-0 relative z-10" />
               </button>
 
               <button
@@ -5828,6 +5841,7 @@ function normalizeMemberHierarchy(m) {
                     한 줄 사경
                   </h3>
                 </div>
+                <ChevronRight className="w-4 h-4 text-[#8A6510] shrink-0" />
               </button>
             </div>
 
@@ -6322,7 +6336,7 @@ function normalizeMemberHierarchy(m) {
               </div>
             </section>
 
-            {/* 실시간 대웅전 소원등 축원 현황 (첫 화면에는 순수 소원 기도만 노출하여 부담 제거) */}
+            {/* 실시간 대웅전 소원등 축원 현황 (동일 인물·동일 문구 중복 제거 + 바로 점등 버튼) */}
             <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8]">
               <div className="flex items-center justify-between gap-2 mb-3">
                 <div className="flex items-center gap-1.5 min-w-0">
@@ -6331,22 +6345,69 @@ function normalizeMemberHierarchy(m) {
                     실시간 소원사 축원 등불
                   </h2>
                 </div>
-                <span className="text-[10.5px] font-semibold text-[#8C7A5B] bg-[#FAF8F5] px-2 py-0.5 rounded-full border border-[#EDE6D8] whitespace-nowrap shrink-0">
-                  대웅전 상시 축원
-                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSingingBowlSound()
+                    setActiveTab('lantern')
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }}
+                  className="text-[11px] font-extrabold text-[#8A6510] bg-[#FAF3DF] hover:bg-[#F3E6C3] px-2.5 py-1 rounded-full border border-[#E5D399] whitespace-nowrap shrink-0 flex items-center gap-1 transition cursor-pointer"
+                >
+                  <Flame className="w-3 h-3 text-[#C59B27] fill-current" />
+                  <span>+ 내 등불 켜기</span>
+                </button>
               </div>
 
               <div className="space-y-2.5">
-                {prayers
-                  .filter(
-                    (item) =>
-                      !item.wish_category.includes('위패') &&
-                      !item.wish_category.includes('인등') &&
-                      !item.wish_category.includes('천도재') &&
-                      !item.wish_category.includes('시주')
-                  )
-                  .slice(0, 3)
-                  .map((item) => (
+                {(() => {
+                  const seenNames = new Set()
+                  const seenTexts = new Set()
+                  const diverseFallback = [
+                    {
+                      id: 'live-fb-1',
+                      believer_name: '김정화 (연화심)',
+                      wish_category: '가정화목·무병장수',
+                      wish_text: '온 가족이 몸과 마음 모두 편안하고 화목한 나날이 이어지기를 부처님 전에 발원합니다.',
+                      prayed_at: '오늘 대웅전 사시예불 축원',
+                    },
+                    {
+                      id: 'live-fb-2',
+                      believer_name: '박성훈 (청정행)',
+                      wish_category: '사업번창·재수성취',
+                      wish_text: '정성으로 일구는 생업의 터전이 날로 번창하고 좋은 인연들이 가득하기를 기원합니다.',
+                      prayed_at: '오늘 대웅전 사시예불 축원',
+                    },
+                    {
+                      id: 'live-fb-3',
+                      believer_name: '이수진 (자비안)',
+                      wish_category: '자녀합격·학업성취',
+                      wish_text: '자녀가 흔들림 없는 지혜와 총명함으로 원하던 시험에 당당히 합격하기를 축원합니다.',
+                      prayed_at: '오늘 대웅전 사시예불 축원',
+                    },
+                  ]
+                  const candidates = [
+                    ...prayers.filter(
+                      (item) =>
+                        !item.wish_category.includes('위패') &&
+                        !item.wish_category.includes('인등') &&
+                        !item.wish_category.includes('천도재') &&
+                        !item.wish_category.includes('시주') &&
+                        item.status !== 'completed'
+                    ),
+                    ...diverseFallback,
+                  ]
+                  const unique3 = []
+                  for (const item of candidates) {
+                    const nameKey = String(item.believer_name || '').trim()
+                    const textKey = String(item.wish_text || '').trim().slice(0, 22)
+                    if (seenNames.has(nameKey) || seenTexts.has(textKey)) continue
+                    seenNames.add(nameKey)
+                    seenTexts.add(textKey)
+                    unique3.push(item)
+                    if (unique3.length >= 3) break
+                  }
+                  return unique3.map((item) => (
                     <div
                       key={item.id}
                       className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EDE6D8] flex flex-col gap-1"
@@ -6361,7 +6422,8 @@ function normalizeMemberHierarchy(m) {
                       </div>
                       <p className="text-xs text-[#575049] line-clamp-1">“{item.wish_text}”</p>
                     </div>
-                  ))}
+                  ))
+                })()}
               </div>
             </section>
 
