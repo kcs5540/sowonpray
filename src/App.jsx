@@ -3222,29 +3222,45 @@ function normalizeMemberHierarchy(m) {
 
       const utterance = new SpeechSynthesisUtterance(cleanText)
       utterance.lang = 'ko-KR'
-      // 중후한 스님 톤: 낮고 묵직한 음높이(0.62)와 차분하고 여유로운 독송 속도(0.82)
-      utterance.pitch = 0.62
-      utterance.rate = 0.82
+      // 모바일 안드로이드/삼성인터넷 호환성: 표준 피치(1.0)와 안정된 독송 속도(0.88)
+      utterance.pitch = 1.0
+      utterance.rate = 0.88
+      utterance.volume = 1.0
+
+      // 전역 보관 (모바일 브라우저 GC 강제 소멸 방지)
+      window.__activeUtterance = utterance
 
       const voices = window.speechSynthesis.getVoices()
-      const koVoices = voices.filter(
-        (v) => v.lang && (v.lang.toLowerCase().includes('ko') || v.lang.toLowerCase().includes('kr'))
-      )
-      // 기기에 남성 한국어 음성이 있으면 우선 선택, 없으면 기본 한국어 음성에 저음 피치 적용
-      const maleKoVoice =
-        koVoices.find((v) =>
-          /male|injoon|minsoo|kpb|kod|cjm|nam|man|남성/i.test(`${v.name} ${v.voiceURI}`)
-        ) || koVoices[0]
+      if (voices && voices.length > 0) {
+        const koVoices = voices.filter(
+          (v) => v.lang && (v.lang.toLowerCase().includes('ko') || v.lang.toLowerCase().includes('kr'))
+        )
+        const maleKoVoice =
+          koVoices.find((v) =>
+            /male|injoon|minsoo|kpb|kod|cjm|nam|man|남성/i.test(`${v.name} ${v.voiceURI}`)
+          ) || koVoices[0]
 
-      if (maleKoVoice) {
-        utterance.voice = maleKoVoice
+        if (maleKoVoice) {
+          utterance.voice = maleKoVoice
+        }
       }
 
-      utterance.onend = () => setSpeakingId(null)
-      utterance.onerror = () => setSpeakingId(null)
+      utterance.onend = () => {
+        setSpeakingId(null)
+        window.__activeUtterance = null
+      }
+      utterance.onerror = (err) => {
+        console.log('Speech error:', err)
+        setSpeakingId(null)
+        window.__activeUtterance = null
+      }
 
       setSpeakingId(id)
+      // 모바일 브라우저 오디오 채널 깨우기 및 발성
       window.speechSynthesis.speak(utterance)
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume()
+      }
     } catch (e) {
       setSpeakingId(null)
     }
