@@ -3220,55 +3220,55 @@ function normalizeMemberHierarchy(m) {
         .replace(/\s+/g, ' ')
         .trim()
 
-      // 🔊 [범용 클라우드 오디오 스트리밍 엔진]
-      // 기기 TTS 에러(synthesis-failed) 원천 차단: 구글 고음질 음성 스트림으로 100% 보장 재생
-      const encoded = encodeURIComponent(cleanText.slice(0, 195))
-      const streamUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ko&q=${encoded}`
-
-      if (window.__cloudAudio) {
+      // 안드로이드 크롬/삼성인터넷의 synthesis-failed 에러 완벽 해결:
+      // 모바일에서는 getVoices() 로딩 전에 speak()를 부르면 synthesis-failed 가 뜸.
+      // 따라서 시스템 음성 목록이 1개라도 로드된 후 speak()를 호출해야 100% 정상 발성됨!
+      const executeSpeech = () => {
         try {
-          window.__cloudAudio.pause()
-          window.__cloudAudio = null
-        } catch (e) {}
-      }
+          window.speechSynthesis.cancel()
 
-      const audio = new Audio(streamUrl)
-      audio.volume = 1.0
-      window.__cloudAudio = audio
-
-      audio.onplay = () => {
-        setSpeakingId(id)
-      }
-      audio.onended = () => {
-        setSpeakingId(null)
-        window.__cloudAudio = null
-      }
-      audio.onerror = () => {
-        // 클라우드 실패 시 기기 내장 Web Speech API 로 백업 폴백
-        try {
           const u = new SpeechSynthesisUtterance(cleanText)
           u.lang = 'ko-KR'
-          u.onend = () => setSpeakingId(null)
-          u.onerror = () => setSpeakingId(null)
+          u.pitch = 1.0
+          u.rate = 0.95
+          u.volume = 1.0
+
+          window.__activeUtterance = u
+
+          u.onstart = () => {
+            setSpeakingId(id)
+          }
+          u.onend = () => {
+            setSpeakingId(null)
+            window.__activeUtterance = null
+          }
+          u.onerror = (e) => {
+            console.log('Speech error:', e)
+            setSpeakingId(null)
+            window.__activeUtterance = null
+          }
+
+          setSpeakingId(id)
           window.speechSynthesis.speak(u)
-        } catch (e) {
+          if (window.speechSynthesis.paused) {
+            window.speechSynthesis.resume()
+          }
+        } catch (err) {
           setSpeakingId(null)
         }
       }
 
-      setSpeakingId(id)
-      audio.play().catch(() => {
-        // 모바일 터치 제약 시 폴백
-        try {
-          const u = new SpeechSynthesisUtterance(cleanText)
-          u.lang = 'ko-KR'
-          u.onend = () => setSpeakingId(null)
-          u.onerror = () => setSpeakingId(null)
-          window.speechSynthesis.speak(u)
-        } catch (e) {
-          setSpeakingId(null)
+      const currentVoices = window.speechSynthesis.getVoices()
+      if (currentVoices && currentVoices.length > 0) {
+        executeSpeech()
+      } else {
+        // 모바일 브라우저에서 voices가 아직 비동기 로딩 중인 경우 0.1초 대기
+        window.speechSynthesis.onvoiceschanged = () => {
+          window.speechSynthesis.onvoiceschanged = null
+          executeSpeech()
         }
-      })
+        setTimeout(executeSpeech, 150)
+      }
     } catch (e) {
       setSpeakingId(null)
     }
