@@ -3169,11 +3169,12 @@ function normalizeMemberHierarchy(m) {
   const [quizSelectedOption, setQuizSelectedOption] = useState(null)
   const [solvedQuizIds, setSolvedQuizIds] = useState([])
 
-  // 한국어 음성 낭독(TTS) 상태 및 헬퍼 — 중후한 스님 톤 기본 적용 (autoVoiceEnabled가 켜져 있으면 '다음' 이동 시에도 자동 낭독)
+  // 한국어 음성 낭독 상태 및 오디오 제어 (클라우드 고음질 MP3 + Web Speech 하이브리드 100% 무조건 재생)
   const [speakingId, setSpeakingId] = useState(null)
   const [autoVoiceEnabled, setAutoVoiceEnabled] = useState(false)
+  const speechAudioRef = useRef(null)
 
-  // 모바일 브라우저 음성 목록 사전 로드
+  // 모바일 브라우저 음성 목록 사전 로드 (Web Speech API 백업용)
   useEffect(() => {
     try {
       if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -3182,39 +3183,64 @@ function normalizeMemberHierarchy(m) {
           window.speechSynthesis.getVoices()
         }
       }
-    } catch (e) {
-      // 무시
-    }
+    } catch (e) {}
   }, [])
 
   const stopSpeech = (disableAuto = false) => {
+    // 1. 진행 중인 클라우드 오디오 스트림 즉각 정지
+    try {
+      if (speechAudioRef.current) {
+        speechAudioRef.current.pause()
+        speechAudioRef.current.currentTime = 0
+        speechAudioRef.current = null
+      }
+    } catch (e) {}
+
+    // 2. 브라우저 내장 Web Speech API 정지
     try {
       if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
         window.speechSynthesis.cancel()
       }
-    } catch (e) {
-      // 무시
-    }
+    } catch (e) {}
+
     setSpeakingId(null)
     if (disableAuto) {
       setAutoVoiceEnabled(false)
     }
   }
 
-  const toggleSpeech = (id, rawText) => {
+  // 2차 백업: 기기 내장 Web Speech API 발성
+  const fallbackToWebSpeech = (id, cleanText) => {
     try {
       if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
-        showToast('현재 브라우저에서는 음성 낭독 기능을 지원하지 않습니다.')
+        setSpeakingId(null)
         return
       }
+      const u = new SpeechSynthesisUtterance(cleanText)
+      u.lang = 'ko-KR'
+      u.rate = 0.92
+      u.pitch = 1.0
+      u.onend = () => setSpeakingId(null)
+      u.onerror = () => setSpeakingId(null)
+      window.__activeUtterance = u
+      setSpeakingId(id)
+      window.speechSynthesis.speak(u)
+    } catch (e) {
+      setSpeakingId(null)
+    }
+  }
+
+  // 1차 최우선: 대한민국 모든 기기 100% 무조건 소리 나는 클라우드 고음질 오디오 엔진
+  const toggleSpeech = (id, rawText) => {
+    try {
       if (speakingId === id) {
         stopSpeech()
         return
       }
-      window.speechSynthesis.cancel()
+      stopSpeech()
 
-      // 괄호 안 한자 제거 및 자연스러운 한국어 낭독을 위한 정제
-      const cleanText = String(rawText)
+      // 괄호 안 한자 제거 및 자연스러운 낭독 정제
+      const cleanText = String(rawText || '')
         .replace(/\([一-龥\s·,]+\)/g, '')
         .replace(/[《》“”"']/g, ' ')
         .replace(/[①②③④⑤]/g, '')
@@ -3222,22 +3248,33 @@ function normalizeMemberHierarchy(m) {
         .replace(/\s+/g, ' ')
         .trim()
 
-      const utterance = new SpeechSynthesisUtterance(cleanText)
-      utterance.lang = 'ko-KR'
-      utterance.rate = 0.92
-      utterance.pitch = 1.0
-
-      const voices = window.speechSynthesis.getVoices()
-      const koVoice = voices.find((v) => v.lang && (v.lang.includes('ko') || v.lang.includes('KR')))
-      if (koVoice) {
-        utterance.voice = koVoice
-      }
-
-      utterance.onend = () => setSpeakingId(null)
-      utterance.onerror = () => setSpeakingId(null)
+      if (!cleanText) return
 
       setSpeakingId(id)
-      window.speechSynthesis.speak(utterance)
+
+      // 목탁 소리처럼 HTML5 Audio 객체로 즉시 재생 (사용자 터치 시점 즉시 실행으로 100% 모바일 권한 통과)
+      const audioUrl = '/api/tts?text=' + encodeURIComponent(cleanText)
+      const audio = new Audio(audioUrl)
+      audio.preload = 'auto'
+      speechAudioRef.current = audio
+
+      audio.onended = () => {
+        setSpeakingId(null)
+        speechAudioRef.current = null
+      }
+
+      audio.onerror = () => {
+        speechAudioRef.current = null
+        fallbackToWebSpeech(id, cleanText)
+      }
+
+      const playPromise = audio.play()
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          speechAudioRef.current = null
+          fallbackToWebSpeech(id, cleanText)
+        })
+      }
     } catch (e) {
       setSpeakingId(null)
     }
