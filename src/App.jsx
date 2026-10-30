@@ -12679,21 +12679,22 @@ function normalizeMemberHierarchy(m) {
             </p>
           </div>
 
-          {/* 원터치 통화 연결 바 */}
-          <div className="flex items-center justify-center gap-2 text-[11px] font-bold text-[#3D352B] flex-wrap">
+          {/* 원터치 통합 통화 연결 바 */}
+          <div className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-[#E2D8C5] text-[11px] font-bold text-[#3D352B] shadow-2xs flex-wrap">
+            <Phone className="w-3 h-3 text-[#B8860B] fill-current shrink-0" />
+            <span className="text-[#786E63] font-semibold">종무소·차담예약</span>
             <a
               href="tel:064-805-2007"
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-[#E2D8C5] hover:bg-[#FAF3DF] transition shadow-2xs"
+              className="text-[#3D352B] hover:text-[#8A6510] underline decoration-[#D8CEBE] underline-offset-2 transition"
             >
-              <Phone className="w-3 h-3 text-[#8A6510]" />
-              <span>종무소 064-805-2007</span>
+              064-805-2007
             </a>
+            <span className="text-[#D8CEBE]">·</span>
             <a
               href="tel:010-4912-1083"
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-[#E2D8C5] hover:bg-[#FAF3DF] transition shadow-2xs"
+              className="text-[#8A6510] hover:text-[#6B4E0B] underline decoration-[#E5D399] underline-offset-2 transition"
             >
-              <Phone className="w-3 h-3 text-[#B8860B] fill-current" />
-              <span>신행·차담예약 010-4912-1083</span>
+              010-4912-1083
             </a>
           </div>
 
