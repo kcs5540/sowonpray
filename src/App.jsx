@@ -6322,7 +6322,7 @@ function normalizeMemberHierarchy(m) {
               <div className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-white text-[#3D352B] text-xs font-bold border border-[#D8C28E] shadow-xs flex-wrap">
                 <span className="inline-flex items-center gap-1 text-[#7A5608] font-extrabold">
                   <Phone className="w-3.5 h-3.5 text-[#B8860B] fill-current shrink-0" />
-                  <span>종무소·예약</span>
+                  <span>종무소</span>
                 </span>
                 <a href="tel:064-805-2007" className="text-[#231F1C] hover:text-[#7A5608] font-extrabold transition">
                   064-805-2007
