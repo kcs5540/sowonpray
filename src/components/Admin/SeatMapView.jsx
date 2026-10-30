@@ -464,7 +464,7 @@ export default function SeatMapView({
       </section>
 
       {/* ==================== 3. 바둑판 시각적 좌석 배치도 그리드 ==================== */}
-      <section className="bg-[#1A1612] border border-[#C59B27]/40 rounded-2xl p-4 sm:p-6 shadow-2xl space-y-6 overflow-hidden">
+      <section id="printable-desk-sheet" className="bg-[#1A1612] border border-[#C59B27]/40 rounded-2xl p-4 sm:p-6 shadow-2xl space-y-6 overflow-hidden">
         {/* 인등단 범례(Legend) 안내 */}
         <div className="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-white/10 text-xs">
           <div className="flex items-center gap-2">
