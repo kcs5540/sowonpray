@@ -182,7 +182,8 @@ export default function AdminERPView(props) {
   return (
       <div className="min-h-screen bg-[#161310] text-[#FAF8F5] w-full selection:bg-[#C59B27] selection:text-white flex flex-col font-sans">
         {/* ==================== 🏛️ ERP 전용 최상단 데스크톱 헤더 ==================== */}
-        <header className="sticky top-0 z-40 bg-[#1B1815] text-[#FAF8F5] px-4 sm:px-6 py-3 border-b-2 border-[#C59B27] flex items-center justify-between gap-4 shadow-xl">
+        <header className="sticky top-0 z-40 bg-[#1B1815] text-[#FAF8F5] border-b-2 border-[#C59B27] shadow-xl">
+          <div className="px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2D241C] via-[#221C16] to-[#17130F] flex items-center justify-center border border-[#C59B27]/70 p-1 shrink-0 shadow-md">
               <span className="text-xl text-[#F5D061] font-bold">卍</span>
@@ -229,14 +230,93 @@ export default function AdminERPView(props) {
                   window.history.pushState({}, '', '/')
                   showToast('종무행정 전산에서 로그아웃되었습니다.')
                 }}
-                className="px-3 py-1.5 rounded-xl bg-red-950/60 hover:bg-red-900 text-red-200 border border-red-700/60 text-xs font-bold transition flex items-center gap-1"
+                className="px-3 py-1.5 rounded-xl bg-red-950/60 hover:bg-red-900 text-red-200 border border-red-700/60 text-xs font-bold transition flex items-center gap-1 cursor-pointer"
               >
                 <LogOut className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">로그아웃</span>
               </button>
             )}
           </div>
-        </header>
+        </div>
+
+        {/* 🌟 [김철수 대표님 특급 지시] 최상단 고정 글로벌 내비게이션 바 (GNB) */}
+        {isMasterOrTempleAdmin && (
+          <nav className="bg-[#120F0D] border-t border-[#C59B27]/40 px-4 sm:px-6 py-1.5 shadow-inner">
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar max-w-[1600px] mx-auto text-xs sm:text-sm">
+              <button
+                type="button"
+                onClick={() => setErpTab('desk')}
+                className={`py-2 px-3.5 rounded-xl font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                  erpTab === 'desk'
+                    ? 'bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] shadow-lg font-black'
+                    : 'text-[#D6CEC2] hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <span>🖥️ 1. 종무 4분할 스마트 데스크</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setErpTab('seatmap')}
+                className={`py-2 px-3.5 rounded-xl font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                  erpTab === 'seatmap'
+                    ? 'bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] shadow-lg font-black'
+                    : 'text-[#D6CEC2] hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <span>🏮 2. 위패·인등 자리배치도</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setErpTab('search')}
+                className={`py-2 px-3.5 rounded-xl font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                  erpTab === 'search'
+                    ? 'bg-[#F5D061] text-[#1B1815] shadow font-black'
+                    : 'text-[#D6CEC2] hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <Search className="w-4 h-4" />
+                <span>📋 3. 신도교적부 리스트</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setErpTab('register')}
+                className={`py-2 px-3.5 rounded-xl font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                  erpTab === 'register'
+                    ? 'bg-[#F5D061] text-[#1B1815] shadow font-black'
+                    : 'text-[#D6CEC2] hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <Heart className="w-4 h-4 text-amber-500" />
+                <span>🏮 4. 신도 &amp; 가족사주 신규 등록</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setErpTab('excel')}
+                className={`py-2 px-3.5 rounded-xl font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                  erpTab === 'excel'
+                    ? 'bg-[#F5D061] text-[#1B1815] shadow font-black'
+                    : 'text-[#D6CEC2] hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <Upload className="w-4 h-4" />
+                <span>📂 5. 엑셀 일괄 이관</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setErpTab('settlement')}
+                className={`py-2 px-3.5 rounded-xl font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                  erpTab === 'settlement'
+                    ? 'bg-[#F5D061] text-[#1B1815] shadow font-black'
+                    : 'text-[#D6CEC2] hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <Calculator className="w-4 h-4 text-[#C59B27]" />
+                <span>💰 6. 정산관제</span>
+              </button>
+            </div>
+          </nav>
+        )}
+      </header>
 
         {/* ==================== 본문 분기: 관리자 로그인 vs ERP 대시보드 ==================== */}
         {!isMasterOrTempleAdmin ? (
@@ -449,80 +529,6 @@ export default function AdminERPView(props) {
                 </button>
               </div>
             </section>
-
-            {/* ERP 서브 메뉴 탭 바 (종무 4분할 데스크 & 위패/인등 자리배치도 포함) */}
-            <div className="flex items-center gap-2 p-1.5 bg-[#1F1B17] rounded-2xl border border-[#C59B27]/40 text-xs sm:text-sm overflow-x-auto no-scrollbar">
-              <button
-                type="button"
-                onClick={() => setErpTab('desk')}
-                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer ${
-                  erpTab === 'desk'
-                    ? 'bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] shadow-lg font-black'
-                    : 'text-[#D6CEC2] hover:text-white'
-                }`}
-              >
-                <span>🖥️ 1. 종무 4분할 스마트 데스크</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setErpTab('seatmap')}
-                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer ${
-                  erpTab === 'seatmap'
-                    ? 'bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] shadow-lg font-black'
-                    : 'text-[#D6CEC2] hover:text-white'
-                }`}
-              >
-                <span>🏮 2. 위패·인등 자리배치도</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setErpTab('search')}
-                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer ${
-                  erpTab === 'search'
-                    ? 'bg-[#F5D061] text-[#1B1815] shadow'
-                    : 'text-[#D6CEC2] hover:text-white'
-                }`}
-              >
-                <Search className="w-4 h-4" />
-                <span>📋 3. 신도교적부 리스트</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setErpTab('register')}
-                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer ${
-                  erpTab === 'register'
-                    ? 'bg-[#F5D061] text-[#1B1815] shadow'
-                    : 'text-[#D6CEC2] hover:text-white'
-                }`}
-              >
-                <Heart className="w-4 h-4 text-amber-700" />
-                <span>🏮 4. 신도 &amp; 가족사주 신규 등록</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setErpTab('excel')}
-                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer ${
-                  erpTab === 'excel'
-                    ? 'bg-[#F5D061] text-[#1B1815] shadow'
-                    : 'text-[#D6CEC2] hover:text-white'
-                }`}
-              >
-                <Upload className="w-4 h-4" />
-                <span>📂 5. 엑셀 일괄 이관</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setErpTab('settlement')}
-                className={`flex-1 py-3 px-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer ${
-                  erpTab === 'settlement'
-                    ? 'bg-[#F5D061] text-[#1B1815] shadow'
-                    : 'text-[#D6CEC2] hover:text-white'
-                }`}
-              >
-                <Calculator className="w-4 h-4 text-[#C59B27]" />
-                <span>💰 6. 정산관제</span>
-              </button>
-            </div>
 
             {/* ==================== 0. 소원사 종무 4분할 스마트 데스크 ERP ==================== */}
             {erpTab === 'desk' && (

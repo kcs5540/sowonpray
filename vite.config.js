@@ -3,6 +3,11 @@ import react from '@vitejs/plugin-react'
 import https from 'https'
 
 export default defineConfig({
+  server: {
+    watch: {
+      ignored: ['**/docs/**', '**/*.jpg', '**/*.png'],
+    },
+  },
   plugins: [
     react(),
     {
