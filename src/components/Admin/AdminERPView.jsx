@@ -407,6 +407,8 @@ export default function AdminERPView(props) {
             {/* ==================== 0. 소원사 종무 4분할 스마트 데스크 ERP ==================== */}
             {erpTab === 'desk' && (
               <DeskERPView
+                externalMembers={members}
+                externalPrayers={prayers}
                 onOpenSasiPrint={() => {
                   setSasiPrayerTypeTab('all')
                   setShowSasiPrintModal(true)

@@ -51,6 +51,8 @@ function getAnimal(birthYear) {
 }
 
 export default function DeskERPView({
+  externalMembers = [],
+  externalPrayers = [],
   onOpenSasiPrint,
   onOpenIndeungPrint,
   onSwitchToSeatMap,
@@ -99,6 +101,91 @@ export default function DeskERPView({
   const [showCheonhonModal, setShowCheonhonModal] = useState(false)
   const [showReceiptModal, setShowReceiptModal] = useState(false)
   const [selectedPrayerForReceipt, setSelectedPrayerForReceipt] = useState(null)
+  const [showDonationCertModal, setShowDonationCertModal] = useState(false)
+  const [donationYear, setDonationYear] = useState(String(new Date().getFullYear()))
+  const [donationJumin, setDonationJumin] = useState('')
+  const [showMailLabelModal, setShowMailLabelModal] = useState(false)
+  const [showSmsModal, setShowSmsModal] = useState(false)
+  const [smsTargetMode, setSmsTargetMode] = useState('filtered') // 'selected' | 'filtered'
+  const [smsText, setSmsText] = useState('[대한불교 본원종 제주 소원사] 부처님의 자비광명이 가정에 늘 함께하시기를 축원드립니다.')
+
+  // 4번(신규등록)·5번(엑셀등록)·클라우드 DB의 신도를 데스크 명부에 자동 병합
+  useEffect(() => {
+    if (!Array.isArray(externalMembers) || externalMembers.length === 0) return
+    setMemberList((prev) => {
+      const existingCodes = new Set(prev.map((m) => m.code))
+      const existingNamesPhones = new Set(prev.map((m) => `${m.name}|${m.phone || ''}`))
+      const added = []
+      externalMembers.forEach((em) => {
+        if (!em || !em.code || existingCodes.has(em.code)) return
+        if (existingNamesPhones.has(`${em.name}|${em.phone || ''}`)) return
+        const { ganji, animal } = computeZodiacAndGanji(em.birth_date || em.birth_year || '')
+        const birthYear = String(em.birth_date || em.birth_year || '').slice(0, 4)
+        const famFromJson = Array.isArray(em.family_members) ? em.family_members : []
+        const families = [
+          {
+            id: `f-${em.code}-0`,
+            relation: '대주',
+            name: em.name,
+            dharma_name: em.dharma_name || '',
+            birth_year: birthYear,
+            lunar_solar: em.lunar_solar || '음력',
+            ganji,
+            zodiac: animal ? `${animal}띠` : '',
+            phone: em.phone || '',
+          },
+          ...famFromJson.map((f, idx) => {
+            const fy = String(f.birth_date || f.birth_year || '').slice(0, 4)
+            const fg = computeZodiacAndGanji(fy)
+            return {
+              id: `f-${em.code}-${idx + 1}`,
+              relation: f.relation || '가족',
+              name: f.name || '',
+              dharma_name: f.dharma_name || '',
+              birth_year: fy,
+              lunar_solar: f.lunar_solar || '음력',
+              ganji: fg.ganji,
+              zodiac: fg.animal ? `${fg.animal}띠` : '',
+              phone: f.phone || '',
+            }
+          }),
+        ]
+        const matchedPrayers = (externalPrayers || [])
+          .filter((p) => p.member_code === em.code || p.believer_name === em.name)
+          .map((p, idx) => ({
+            id: p.id || `pr-${em.code}-${idx}`,
+            year: String(p.created_at || new Date().getFullYear()).slice(0, 4),
+            category: p.wish_category || '대웅전 축원',
+            title: p.wish_title || p.wish_category || '기도 접수',
+            applied_at: String(p.created_at || new Date().toISOString()).slice(0, 10),
+            live_count: families.length,
+            youngga_count: 0,
+            amount: Number(p.amount || 100000),
+            paid_amount: Number(p.amount || 100000),
+            unpaid_amount: 0,
+          }))
+        added.push({
+          code: em.code,
+          name: em.name,
+          dharma_name: em.dharma_name || '',
+          phone: em.phone || '',
+          address: em.address || '제주특별자치도',
+          mail_receive: true,
+          sms_receive: true,
+          is_believer: true,
+          hwaju: em.recommender_name || '종무소',
+          registered_at: String(em.created_at || new Date().toISOString()).slice(0, 10),
+          families,
+          younggas: [],
+          prayers: matchedPrayers,
+        })
+      })
+      if (added.length === 0) return prev
+      const merged = [...prev, ...added]
+      try { localStorage.setItem('sowonsa_desk_members_v1', JSON.stringify(merged)) } catch (e) {}
+      return merged
+    })
+  }, [externalMembers, externalPrayers])
 
   // 가족 추가 폼
   const [famRelation, setFamRelation] = useState('자')
@@ -485,6 +572,33 @@ export default function DeskERPView({
             >
               <FileText className="w-3.5 h-3.5 text-amber-300" />
               <span>인등명패 A4</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowDonationCertModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] font-bold text-xs border border-white/20 flex items-center gap-1 transition cursor-pointer"
+              title="선택한 신도의 연말정산용 기부금영수증 A4 발급"
+            >
+              <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
+              <span>기부금영수증</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowMailLabelModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] font-bold text-xs border border-white/20 flex items-center gap-1 transition cursor-pointer"
+              title="우편 수신 동의 신도 주소 라벨지 A4 인쇄"
+            >
+              <Home className="w-3.5 h-3.5 text-sky-300" />
+              <span>우편라벨 A4</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowSmsModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FAF8F5] font-bold text-xs border border-white/20 flex items-center gap-1 transition cursor-pointer"
+              title="단체/개별 안내 문자 발송"
+            >
+              <Phone className="w-3.5 h-3.5 text-pink-300" />
+              <span>문자발송</span>
             </button>
           </div>
         </div>
@@ -1713,6 +1827,282 @@ export default function DeskERPView({
           </div>
         </div>
       )}
+
+      {/* ==================== 9. 모달: 연말정산용 기부금영수증 (두손모아 기부금관리 대체) ==================== */}
+      {showDonationCertModal && selectedMember && (() => {
+        const yearPrayers = (selectedMember.prayers || []).filter(
+          (p) => !donationYear || String(p.year || p.applied_at || '').startsWith(donationYear)
+        )
+        const totalDonated = yearPrayers.reduce((acc, p) => acc + Number(p.paid_amount || p.amount || 0), 0)
+        const issueNo = `${donationYear}-${selectedMember.code}`
+        return (
+          <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4 overflow-y-auto">
+            <div className="w-full max-w-2xl bg-white text-[#1B1815] rounded-3xl border-2 border-[#C59B27] p-6 sm:p-8 space-y-5 shadow-2xl my-8">
+              <div className="flex items-center justify-between pb-3 border-b-2 border-[#1B1815] print:hidden">
+                <div>
+                  <h3 className="font-serif-kr font-bold text-lg">🧾 종교단체 기부금영수증 발급 (연말정산용)</h3>
+                  <p className="text-xs text-gray-600">소득세법 시행규칙 별지 제45호의2서식 호환 · 선택 신도: {selectedMember.name}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <select
+                    value={donationYear}
+                    onChange={(e) => setDonationYear(e.target.value)}
+                    className="px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold"
+                  >
+                    <option value="2026">2026년 귀속</option>
+                    <option value="2025">2025년 귀속</option>
+                    <option value="">전체 누적</option>
+                  </select>
+                  <button type="button" onClick={() => setShowDonationCertModal(false)} className="text-gray-500 hover:text-black">
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* 인쇄 영역 */}
+              <div className="border-2 border-black p-5 space-y-4 text-xs">
+                <div className="flex items-center justify-between border-b border-black pb-3">
+                  <span className="font-mono text-[11px]">일련번호: 제 {issueNo} 호</span>
+                  <h2 className="font-serif-kr text-xl font-black tracking-widest">기 부 금 영 수 증</h2>
+                  <span className="text-[11px] font-bold">종교단체 기부금 (코드 41)</span>
+                </div>
+
+                {/* 1. 기부자 */}
+                <div>
+                  <div className="font-bold bg-gray-100 px-2 py-1 border border-black border-b-0">1. 기부자 (신도 인적사항)</div>
+                  <table className="w-full border-collapse border border-black text-xs">
+                    <tbody>
+                      <tr>
+                        <th className="border border-black bg-gray-50 p-2 w-24">성 명</th>
+                        <td className="border border-black p-2 font-bold">{selectedMember.name} {selectedMember.dharma_name ? `(${selectedMember.dharma_name})` : ''}</td>
+                        <th className="border border-black bg-gray-50 p-2 w-28">주민등록번호</th>
+                        <td className="border border-black p-2">
+                          <input
+                            type="text"
+                            value={donationJumin}
+                            onChange={(e) => setDonationJumin(e.target.value)}
+                            placeholder="예: 650101-2****** (인쇄 전 입력)"
+                            className="w-full text-xs font-mono border-b border-dashed border-gray-400 focus:outline-none"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th className="border border-black bg-gray-50 p-2">주 소</th>
+                        <td colSpan={3} className="border border-black p-2">{selectedMember.address || '-'} (연락처: {selectedMember.phone || '-'})</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* 2. 기부금 단체 */}
+                <div>
+                  <div className="font-bold bg-gray-100 px-2 py-1 border border-black border-b-0">2. 기부금 모집처 (사찰)</div>
+                  <table className="w-full border-collapse border border-black text-xs">
+                    <tbody>
+                      <tr>
+                        <th className="border border-black bg-gray-50 p-2 w-24">단 체 명</th>
+                        <td className="border border-black p-2 font-bold">대한불교 본원종 제주 소원사</td>
+                        <th className="border border-black bg-gray-50 p-2 w-28">고유번호</th>
+                        <td className="border border-black p-2 font-mono">616-82-00000 (종교단체)</td>
+                      </tr>
+                      <tr>
+                        <th className="border border-black bg-gray-50 p-2">소 재 지</th>
+                        <td colSpan={3} className="border border-black p-2">제주특별자치도 제주시 · 대표자(주지): 성진 합장</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* 3. 기부내용 */}
+                <div>
+                  <div className="font-bold bg-gray-100 px-2 py-1 border border-black border-b-0">3. 기부금 명세 ({donationYear || '전체'}년)</div>
+                  <table className="w-full border-collapse border border-black text-xs text-center">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="border border-black p-1.5">연월일</th>
+                        <th className="border border-black p-1.5">기도·불사 적요</th>
+                        <th className="border border-black p-1.5">구분</th>
+                        <th className="border border-black p-1.5 text-right">기부금액(원)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {yearPrayers.length === 0 ? (
+                        <tr><td colSpan={4} className="border border-black p-3 text-gray-500">해당 연도 수납 내역이 없습니다.</td></tr>
+                      ) : yearPrayers.map((p) => (
+                        <tr key={p.id}>
+                          <td className="border border-black p-1.5 font-mono">{p.applied_at}</td>
+                          <td className="border border-black p-1.5 text-left font-bold">{p.category} ({p.title})</td>
+                          <td className="border border-black p-1.5">금전(보시)</td>
+                          <td className="border border-black p-1.5 text-right font-mono font-bold">{Number(p.paid_amount || p.amount || 0).toLocaleString()}</td>
+                        </tr>
+                      ))}
+                      <tr className="bg-amber-50 font-black">
+                        <td colSpan={3} className="border border-black p-2">합 계 금 액</td>
+                        <td className="border border-black p-2 text-right font-mono text-sm">금 {totalDonated.toLocaleString()} 원정</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="text-center pt-3 space-y-2">
+                  <p className="text-[11px]">위와 같이 종교단체 지정기부금(보시금)을 기부하였음을 증명합니다.</p>
+                  <p className="font-mono text-xs">{new Date().toISOString().slice(0, 10)}</p>
+                  <p className="font-serif-kr text-base font-black pt-1">대한불교 본원종 제주 소원사 주지 (직인)</p>
+                </div>
+              </div>
+
+              <div className="flex gap-2 print:hidden">
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#C59B27] to-[#8A6510] text-white font-extrabold text-xs shadow cursor-pointer"
+                >
+                  🖨️ 기부금영수증 A4 인쇄
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowDonationCertModal(false)}
+                  className="py-2.5 px-5 rounded-xl bg-gray-200 text-black font-bold text-xs cursor-pointer"
+                >
+                  닫기
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* ==================== 10. 모달: 우편 발송용 주소 라벨 A4 인쇄 (두손모아 우편출력 대체) ==================== */}
+      {showMailLabelModal && (() => {
+        const mailTargets = householdsShown.filter((m) => m.mail_receive && m.address)
+        return (
+          <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4 overflow-y-auto">
+            <div className="w-full max-w-3xl bg-white text-[#1B1815] rounded-3xl border-2 border-[#C59B27] p-6 sm:p-8 space-y-4 shadow-2xl my-8">
+              <div className="flex items-center justify-between pb-3 border-b border-gray-300 print:hidden">
+                <div>
+                  <h3 className="font-serif-kr font-bold text-lg">✉️ 우편 발송 주소 라벨 A4 일괄 인쇄 (2열 규격)</h3>
+                  <p className="text-xs text-gray-600">현재 필터된 가구 중 우편 수신 동의(☑) 대상: 총 {mailTargets.length}가구</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => window.print()}
+                    className="px-4 py-2 rounded-xl bg-[#C59B27] text-black font-extrabold text-xs cursor-pointer"
+                  >
+                    🖨️ 라벨지 A4 인쇄
+                  </button>
+                  <button type="button" onClick={() => setShowMailLabelModal(false)} className="text-gray-500 hover:text-black">
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[60vh] overflow-y-auto print:max-h-none p-1">
+                {mailTargets.map((m) => (
+                  <div key={m.code} className="border border-gray-400 rounded-lg p-3.5 flex flex-col justify-between min-h-[105px] bg-white text-xs">
+                    <div className="text-[11px] text-gray-700 leading-snug">{m.address}</div>
+                    <div className="text-right font-serif-kr text-sm font-black mt-2">
+                      {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''} 귀하
+                    </div>
+                    <div className="flex justify-between text-[10px] text-gray-400 font-mono border-t border-dashed border-gray-200 pt-1 mt-1">
+                      <span>대한불교 본원종 소원사</span>
+                      <span>{m.code}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* ==================== 11. 모달: 단체/개별 안내 문자 발송 (두손모아 문자관리 대체) ==================== */}
+      {showSmsModal && (() => {
+        const smsTargets = smsTargetMode === 'selected' && selectedMember
+          ? [selectedMember]
+          : householdsShown.filter((m) => m.sms_receive && m.phone)
+        const templates = [
+          { label: '사시예불 축원', text: '[제주 소원사] 금일 오전 10시 대웅전 사시예불에 가정의 생축 발원 축원을 여법히 올렸습니다. 성불하십시오.' },
+          { label: '초파일 연등 안내', text: '[제주 소원사] 부처님오신날 봉축 연등 및 가족 인등 접수 안내드립니다. 종무소로 문의 바랍니다.' },
+          { label: '삼재 풀이 안내', text: `[제주 소원사] ${samjaeYear}년 삼재(돼지·토끼·양띠) 소멸 특별기도 안내드립니다. 가내 평안을 축원합니다.` },
+          { label: '합동 천도재 안내', text: '[제주 소원사] 선망 조상 영가 극락왕생 합동 천도재 법회 일정을 안내드립니다.' },
+        ]
+        return (
+          <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4">
+            <div className="w-full max-w-lg bg-[#1F1A15] text-[#FAF8F5] rounded-3xl border-2 border-[#C59B27] p-6 space-y-4 shadow-2xl">
+              <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                <div>
+                  <h3 className="font-serif-kr font-bold text-base text-[#F5D061]">💬 종무소 안내 문자 발송</h3>
+                  <p className="text-[11px] text-[#A69B8D]">수신 동의 신도 단체 발송 또는 현재 선택 신도 개별 발송</p>
+                </div>
+                <button type="button" onClick={() => setShowSmsModal(false)} className="text-[#8C8071] hover:text-white">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="flex gap-2 text-xs">
+                <button
+                  type="button"
+                  onClick={() => setSmsTargetMode('filtered')}
+                  className={`flex-1 py-2 rounded-xl font-bold border cursor-pointer ${smsTargetMode === 'filtered' ? 'bg-[#C59B27] text-black border-[#F5D061]' : 'bg-black/40 text-[#A69B8D] border-white/10'}`}
+                >
+                  필터된 수신동의 전체 ({householdsShown.filter((m) => m.sms_receive && m.phone).length}명)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSmsTargetMode('selected')}
+                  className={`flex-1 py-2 rounded-xl font-bold border cursor-pointer ${smsTargetMode === 'selected' ? 'bg-[#C59B27] text-black border-[#F5D061]' : 'bg-black/40 text-[#A69B8D] border-white/10'}`}
+                >
+                  선택 신도만 ({selectedMember?.name || '-'})
+                </button>
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="text-[11px] text-[#A69B8D]">빠른 문구 선택:</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {templates.map((t) => (
+                    <button
+                      key={t.label}
+                      type="button"
+                      onClick={() => setSmsText(t.text)}
+                      className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-bold text-[#F5D061] cursor-pointer"
+                    >
+                      {t.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <textarea
+                rows={4}
+                value={smsText}
+                onChange={(e) => setSmsText(e.target.value)}
+                className="w-full p-3 rounded-xl bg-black/50 border border-[#C59B27]/50 text-xs text-white focus:outline-none"
+              />
+
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    showToast(`총 ${smsTargets.length}명에게 안내 문자 발송 요청이 접수되었습니다.`)
+                    setShowSmsModal(false)
+                  }}
+                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs shadow cursor-pointer"
+                >
+                  📨 {smsTargets.length}명 문자 발송 실행
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowSmsModal(false)}
+                  className="py-2.5 px-4 rounded-xl bg-white/10 text-white font-bold text-xs cursor-pointer"
+                >
+                  닫기
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
     </div>
   )
 }
