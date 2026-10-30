@@ -404,22 +404,33 @@ export default function AdminERPView(props) {
         ) : (
           /* ==================== 🏛️ ERP 메인 와이드 작업 화면 ==================== */
           <main className="flex-1 w-full max-w-[1600px] mx-auto p-4 sm:p-6 space-y-6">
-            {/* 상단 5종 KPI 대시보드 (포교비 포함) */}
-            <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-              <div className="p-4 rounded-2xl bg-[#1F1B17] border border-[#C59B27]/40 shadow-sm">
-                <div className="text-xs text-[#C5BBAF] font-semibold flex items-center justify-between">
-                  <span>총 등록 신도</span>
-                  <Users className="w-4 h-4 text-[#F5D061]" />
-                </div>
-                <div className="text-2xl font-black text-white mt-1">
-                  {Number(adminKPIs?.totalMembers || 0).toLocaleString()}
-                  <span className="text-sm font-normal text-[#C5BBAF] ml-1">명</span>
-                </div>
-                <div className="text-[11px] text-[#A69B8D] mt-1 truncate">
-                  일반신도 {adminKPIs?.totalBelievers || 0} · 위원 {adminKPIs?.totalAgents || 0} · 본부 {adminKPIs?.totalAdmins || 0}
-                </div>
-              </div>
+            {/* ==================== 0. 소원사 종무 4분할 스마트 데스크 ERP ==================== */}
+            {erpTab === 'desk' && (
+              <DeskERPView
+                onOpenSasiPrint={() => {
+                  setSasiPrayerTypeTab('all')
+                  setShowSasiPrintModal(true)
+                }}
+                onOpenIndeungPrint={() => {
+                  const firstIndeungMember =
+                    (members || []).find((m) =>
+                      (prayers || []).some(
+                        (p) =>
+                          (p.member_code === m.code || (p.believer_name && p.believer_name.includes(m.name))) &&
+                          (p.wish_category?.includes('인등') || p.prayer_type === 'indeung_1yr')
+                      )
+                    ) || (members || [])[0]
+                  setIndeungTargetMember(firstIndeungMember)
+                  setShowIndeungNameplateModal(true)
+                }}
+                onSwitchToSeatMap={() => setErpTab('seatmap')}
+                showToast={showToast}
+              />
+            )}
 
+            {/* 자리배치도 탭 상단: 사시예불 축원 현황 + 축원 명부·인등 명패 인쇄 퀵 바 */}
+            {erpTab === 'seatmap' && (
+              <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-3 items-stretch">
               <div className="p-4 rounded-2xl bg-[#1F1B17] border border-[#C59B27]/40 shadow-sm">
                 <div className="text-xs text-[#C5BBAF] font-semibold flex items-center justify-between">
                   <span>사시예불 축원 대상</span>
@@ -433,51 +444,6 @@ export default function AdminERPView(props) {
                   금일 축원완료: {sasiPrayedCheckedIds?.size || 0}위 회향
                 </div>
               </div>
-
-              <div className="p-4 rounded-2xl bg-[#1F1B17] border border-[#C59B27]/40 shadow-sm">
-                <div className="text-xs text-[#C5BBAF] font-semibold flex items-center justify-between">
-                  <span>누적 불사 접수금</span>
-                  <Award className="w-4 h-4 text-[#F5D061]" />
-                </div>
-                <div className="text-2xl font-black text-white mt-1">
-                  {Math.round(Number(adminKPIs?.totalSettlementAmount || 0) / 10000).toLocaleString()}
-                  <span className="text-sm font-normal text-[#C5BBAF] ml-1">만원</span>
-                </div>
-                <div className="text-[11px] text-[#A69B8D] mt-1 truncate">
-                  총 {settlements?.length || 0}건 봉안 접수완료
-                </div>
-              </div>
-
-              {/* 🌟 [사용자 요청] 누적 불사금과 사찰 귀속금 사이 포교비 항목 */}
-              <div className="p-4 rounded-2xl bg-[#1F1B17] border border-[#C59B27]/40 shadow-sm">
-                <div className="text-xs text-[#C5BBAF] font-semibold flex items-center justify-between">
-                  <span className="text-[#F5D061]">포교비 (포교활동금)</span>
-                  <Sparkles className="w-4 h-4 text-[#F5D061]" />
-                </div>
-                <div className="text-2xl font-black text-[#F5D061] mt-1">
-                  {Math.round(Number(adminKPIs?.missionFund || (Number(adminKPIs?.totalSettlementAmount || 0) - Number(adminKPIs?.templeFund || 0))) / 10000).toLocaleString()}
-                  <span className="text-sm font-normal text-[#C5BBAF] ml-1">만원</span>
-                </div>
-                <div className="text-[11px] text-[#A69B8D] mt-1 truncate">
-                  불사금 50% 포교위원장·위원 지원
-                </div>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-[#2D241C] to-[#221C16] border border-[#F5D061]/50 shadow-sm">
-                <div className="text-xs text-[#F5D061] font-bold flex items-center justify-between">
-                  <span>소원사 사찰 귀속금</span>
-                  <span className="text-sm font-bold text-[#F5D061]">卍</span>
-                </div>
-                <div className="text-2xl font-black text-[#F5D061] mt-1">
-                  {Math.round(Number(adminKPIs?.templeFund || 0) / 10000).toLocaleString()}
-                  <span className="text-sm font-normal text-[#C5BBAF] ml-1">만원</span>
-                </div>
-                <div className="text-[11px] text-[#F5D061]/80 font-semibold mt-1 truncate">
-                  실입금액 50% 사찰 계좌 직속
-                </div>
-              </div>
-            </section>
-
             {/* 원클릭 대웅전 축원 & 1년 인등 명패 인쇄 퀵 바 */}
             <section className="bg-gradient-to-r from-[#241E17] via-[#2F2417] to-[#1C160F] text-white rounded-2xl p-4 sm:p-5 border-2 border-[#D4AF37] shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="min-w-0">
@@ -496,7 +462,7 @@ export default function AdminERPView(props) {
                   1일 소원등, 100일 특별기도, 1년 가족인등을 대웅전 규격 A4로 즉시 인쇄합니다.
                 </p>
               </div>
-
+  
               <div className="flex items-center gap-2.5 flex-wrap w-full md:w-auto">
                 <button
                   type="button"
@@ -529,29 +495,7 @@ export default function AdminERPView(props) {
                 </button>
               </div>
             </section>
-
-            {/* ==================== 0. 소원사 종무 4분할 스마트 데스크 ERP ==================== */}
-            {erpTab === 'desk' && (
-              <DeskERPView
-                onOpenSasiPrint={() => {
-                  setSasiPrayerTypeTab('all')
-                  setShowSasiPrintModal(true)
-                }}
-                onOpenIndeungPrint={() => {
-                  const firstIndeungMember =
-                    (members || []).find((m) =>
-                      (prayers || []).some(
-                        (p) =>
-                          (p.member_code === m.code || (p.believer_name && p.believer_name.includes(m.name))) &&
-                          (p.wish_category?.includes('인등') || p.prayer_type === 'indeung_1yr')
-                      )
-                    ) || (members || [])[0]
-                  setIndeungTargetMember(firstIndeungMember)
-                  setShowIndeungNameplateModal(true)
-                }}
-                onSwitchToSeatMap={() => setErpTab('seatmap')}
-                showToast={showToast}
-              />
+              </div>
             )}
 
             {/* ==================== 0.5. 디지털 위패·인등 자리배치도 ==================== */}
@@ -817,6 +761,25 @@ export default function AdminERPView(props) {
               </section>
             )}
 
+            {/* 신도교적부 탭 상단 신도 현황 KPI */}
+            {erpTab === 'search' && (
+              <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div className="p-4 rounded-2xl bg-[#1F1B17] border border-[#C59B27]/40 shadow-sm">
+                <div className="text-xs text-[#C5BBAF] font-semibold flex items-center justify-between">
+                  <span>총 등록 신도</span>
+                  <Users className="w-4 h-4 text-[#F5D061]" />
+                </div>
+                <div className="text-2xl font-black text-white mt-1">
+                  {Number(adminKPIs?.totalMembers || 0).toLocaleString()}
+                  <span className="text-sm font-normal text-[#C5BBAF] ml-1">명</span>
+                </div>
+                <div className="text-[11px] text-[#A69B8D] mt-1 truncate">
+                  일반신도 {adminKPIs?.totalBelievers || 0} · 위원 {adminKPIs?.totalAgents || 0} · 본부 {adminKPIs?.totalAdmins || 0}
+                </div>
+              </div>
+              </section>
+            )}
+
             {/* ==================== 1. 신도교적부 리스트 & 검색·수정 탭 ==================== */}
             {erpTab === 'search' && (
               <section className="bg-white text-[#231F1C] rounded-3xl p-6 sm:p-8 shadow-sm border border-[#E6DEC8] space-y-5">
@@ -1074,6 +1037,54 @@ export default function AdminERPView(props) {
                     </div>
                   )}
                 </div>
+              </section>
+            )}
+
+            {/* 정산관제 탭 상단 재무 KPI (누적 불사금 · 포교비 · 사찰 귀속금) */}
+            {erpTab === 'settlement' && (
+              <section className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="p-4 rounded-2xl bg-[#1F1B17] border border-[#C59B27]/40 shadow-sm">
+                <div className="text-xs text-[#C5BBAF] font-semibold flex items-center justify-between">
+                  <span>누적 불사 접수금</span>
+                  <Award className="w-4 h-4 text-[#F5D061]" />
+                </div>
+                <div className="text-2xl font-black text-white mt-1">
+                  {Math.round(Number(adminKPIs?.totalSettlementAmount || 0) / 10000).toLocaleString()}
+                  <span className="text-sm font-normal text-[#C5BBAF] ml-1">만원</span>
+                </div>
+                <div className="text-[11px] text-[#A69B8D] mt-1 truncate">
+                  총 {settlements?.length || 0}건 봉안 접수완료
+                </div>
+              </div>
+  
+              {/* 🌟 [사용자 요청] 누적 불사금과 사찰 귀속금 사이 포교비 항목 */}
+              <div className="p-4 rounded-2xl bg-[#1F1B17] border border-[#C59B27]/40 shadow-sm">
+                <div className="text-xs text-[#C5BBAF] font-semibold flex items-center justify-between">
+                  <span className="text-[#F5D061]">포교비 (포교활동금)</span>
+                  <Sparkles className="w-4 h-4 text-[#F5D061]" />
+                </div>
+                <div className="text-2xl font-black text-[#F5D061] mt-1">
+                  {Math.round(Number(adminKPIs?.missionFund || (Number(adminKPIs?.totalSettlementAmount || 0) - Number(adminKPIs?.templeFund || 0))) / 10000).toLocaleString()}
+                  <span className="text-sm font-normal text-[#C5BBAF] ml-1">만원</span>
+                </div>
+                <div className="text-[11px] text-[#A69B8D] mt-1 truncate">
+                  불사금 50% 포교위원장·위원 지원
+                </div>
+              </div>
+  
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-[#2D241C] to-[#221C16] border border-[#F5D061]/50 shadow-sm">
+                <div className="text-xs text-[#F5D061] font-bold flex items-center justify-between">
+                  <span>소원사 사찰 귀속금</span>
+                  <span className="text-sm font-bold text-[#F5D061]">卍</span>
+                </div>
+                <div className="text-2xl font-black text-[#F5D061] mt-1">
+                  {Math.round(Number(adminKPIs?.templeFund || 0) / 10000).toLocaleString()}
+                  <span className="text-sm font-normal text-[#C5BBAF] ml-1">만원</span>
+                </div>
+                <div className="text-[11px] text-[#F5D061]/80 font-semibold mt-1 truncate">
+                  실입금액 50% 사찰 계좌 직속
+                </div>
+              </div>
               </section>
             )}
 
