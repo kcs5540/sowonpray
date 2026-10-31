@@ -2071,6 +2071,8 @@ function normalizeMemberHierarchy(m) {
   const [visitHeadcount, setVisitHeadcount] = useState(2)
   const [visitPurpose, setVisitPurpose] = useState('따뜻한 차 & 사찰 공양(식사) 대접 예약')
   const [visitMemo, setVisitMemo] = useState('')
+  const [showVisitSuccessModal, setShowVisitSuccessModal] = useState(false)
+  const pendingVisitDraftRef = useRef(null)
 
   // 로그인 계정이 바뀔 때마다 소원등 신청자 이름·연락처 및 내 정보 수정 폼 자동 세팅
   const [profileForm, setProfileForm] = useState({
@@ -4407,7 +4409,7 @@ function normalizeMemberHierarchy(m) {
     showToast('접수가 취소되었습니다.')
   }
 
-  // 전날 도량 방문 & 차담·사찰 공양(식사) 사전 예약 접수 핸들러
+  // 전날 도량 방문 & 차담·사찰 공양(식사) 사전 예약 1단계: 입력 검증 후 예약 확인 모달 오픈 (아직 DB 저장/문자 발송 안 함)
   const handleVisitSubmit = (e) => {
     e.preventDefault()
     const exactHeadcount = Math.max(1, Number(visitHeadcount) || 1)
@@ -4418,96 +4420,145 @@ function normalizeMemberHierarchy(m) {
     const writerCode = currentUser?.code || extractPhone8Code(wishPhone)
     const matchedMember = members.find((m) => m.code === writerCode)
     const assignedAgentCode = currentUser?.parent_code || matchedMember?.parent_code || referralCode || '33065540'
+    const finalMemo =
+      visitMemo.trim() ||
+      `방문 인원 총 ${exactHeadcount}명 따뜻한 차와 사찰 공양(${exactHeadcount}인분) 부탁드립니다.`
 
-    const newVisit = {
-      id: 'v-' + Date.now(),
-      member_code: writerCode,
-      visitor_name: wishName.trim(),
-      visitor_phone: wishPhone.trim(),
-      agent_code: assignedAgentCode,
-      visit_date: visitDate,
-      visit_time: visitTime,
-      headcount: exactHeadcount,
-      visit_purpose: visitPurpose,
-      memo:
-        visitMemo.trim() ||
-        `방문 인원 총 ${exactHeadcount}명 따뜻한 차와 사찰 공양(${exactHeadcount}인분) 부탁드립니다.`,
-      status: 'reserved',
-      created_at: '방금 전',
-    }
+    playSingingBowlSound()
+    setVisitHeadcount(exactHeadcount)
 
-    setVisits((prev) => [newVisit, ...prev])
-
-    // Supabase 클라우드 실시간 저장
-    if (supabase) {
-      supabase
-        .from('visits')
-        .insert([
-          {
-            temple_id: 'sowonsa',
-            member_code: writerCode,
-            agent_code: assignedAgentCode,
-            visitor_name: wishName.trim(),
-            visitor_phone: wishPhone.trim(),
-            visit_date: visitDate,
-            visit_time: visitTime,
-            headcount: exactHeadcount,
-            visit_purpose: visitPurpose,
-            memo: newVisit.memo,
-            status: 'reserved',
-          },
-        ])
-        .then()
-    }
-
-    // 신규 방문자 전산 자동 등록 처리 (신규 불자 DB 등재)
-    const cleanVisitPhone = wishPhone.replace(/[^0-9]/g, '')
-    const visitCode8 = extractPhone8Code(cleanVisitPhone)
-    const existingVisitMember = members.find((m) => m.code === visitCode8)
-    if (!existingVisitMember) {
-      const newBeliever = {
-        code: visitCode8,
-        phone: formatPhone11(wishPhone),
-        password_pin: visitCode8.slice(-4) || '1234',
-        name: wishName.trim(),
-        dharma_name: '',
-        birth_date: '',
-        lunar_solar: '음력',
-        address: '',
-        family_memo: `도량 방문 및 사찰 공양(${exactHeadcount}인분) 예약으로 전산 등록됨 (${visitDate})`,
-        role: 'believer',
-        parent_code: assignedAgentCode,
-        bank_name: '',
-        bank_account: '',
-        account_holder: '',
-        merit_count: 1,
-        believers_count: 0,
-        wipae_count: 0,
-        extra_data: { registered_via: 'visit_reservation' },
-      }
-      setMembers((prev) => [newBeliever, ...prev])
-      if (supabase) {
-        supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
-      }
-    }
-
-    // 🔔 종무소(010-4912-1083) 및 방문 예약 신도님 휴대폰으로 예약 확인 문자 자동 발송
-    notifyVisitReservation({
+    pendingVisitDraftRef.current = {
       visitorName: wishName.trim(),
       visitorPhone: wishPhone.trim(),
       visitDate,
       visitTime,
-      headcount: exactHeadcount,
-      purpose: visitPurpose,
-      memo: newVisit.memo,
-    }).catch(() => {})
+      exactHeadcount,
+      visitPurpose,
+      memo: finalMemo,
+      writerCode,
+      assignedAgentCode,
+      committed: false,
+    }
 
-    setVisitHeadcount(exactHeadcount)
-    setVisitMemo('')
-    playSingingBowlSound()
-    showToast(
-      `🍵 [${visitDate} ${visitTime.split(' ')[0]}] 총 ${exactHeadcount}명 방문 및 사찰 공양(${exactHeadcount}인분) 예약이 접수되었습니다!`
-    )
+    setShowVisitSuccessModal(true)
+  }
+
+  // 방문 예약 2단계-A: [합장하며 예약 확인] (또는 카톡 공유 / 종무소 문자 전송) 클릭 시 장부/DB 정식 등록 및 알림 발송
+  const handleConfirmSubmittedVisit = ({ closeModal = true } = {}) => {
+    const draft = pendingVisitDraftRef.current
+    if (draft && !draft.committed) {
+      draft.committed = true
+
+      const {
+        visitorName,
+        visitorPhone,
+        visitDate: vDate,
+        visitTime: vTime,
+        exactHeadcount,
+        visitPurpose: vPurpose,
+        memo,
+        writerCode,
+        assignedAgentCode,
+      } = draft
+
+      const newVisit = {
+        id: 'v-' + Date.now(),
+        member_code: writerCode,
+        visitor_name: visitorName,
+        visitor_phone: visitorPhone,
+        agent_code: assignedAgentCode,
+        visit_date: vDate,
+        visit_time: vTime,
+        headcount: exactHeadcount,
+        visit_purpose: vPurpose,
+        memo,
+        status: 'reserved',
+        created_at: '방금 전',
+      }
+
+      setVisits((prev) => [newVisit, ...prev])
+
+      // Supabase 클라우드 실시간 저장
+      if (supabase) {
+        supabase
+          .from('visits')
+          .insert([
+            {
+              temple_id: 'sowonsa',
+              member_code: writerCode,
+              agent_code: assignedAgentCode,
+              visitor_name: visitorName,
+              visitor_phone: visitorPhone,
+              visit_date: vDate,
+              visit_time: vTime,
+              headcount: exactHeadcount,
+              visit_purpose: vPurpose,
+              memo,
+              status: 'reserved',
+            },
+          ])
+          .then()
+      }
+
+      // 신규 방문자 전산 자동 등록 처리 (신규 불자 DB 등재)
+      const cleanVisitPhone = visitorPhone.replace(/[^0-9]/g, '')
+      const visitCode8 = extractPhone8Code(cleanVisitPhone)
+      const existingVisitMember = members.find((m) => m.code === visitCode8)
+      if (!existingVisitMember) {
+        const newBeliever = {
+          code: visitCode8,
+          phone: formatPhone11(visitorPhone),
+          password_pin: visitCode8.slice(-4) || '1234',
+          name: visitorName,
+          dharma_name: '',
+          birth_date: '',
+          lunar_solar: '음력',
+          address: '',
+          family_memo: `도량 방문 및 사찰 공양(${exactHeadcount}인분) 예약으로 전산 등록됨 (${vDate})`,
+          role: 'believer',
+          parent_code: assignedAgentCode,
+          bank_name: '',
+          bank_account: '',
+          account_holder: '',
+          merit_count: 1,
+          believers_count: 0,
+          wipae_count: 0,
+          extra_data: { registered_via: 'visit_reservation' },
+        }
+        setMembers((prev) => [newBeliever, ...prev])
+        if (supabase) {
+          supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
+        }
+      }
+
+      // 🔔 종무소(010-4912-1083) 및 방문 예약 신도님 휴대폰으로 예약 확인 문자 자동 발송
+      notifyVisitReservation({
+        visitorName,
+        visitorPhone,
+        visitDate: vDate,
+        visitTime: vTime,
+        headcount: exactHeadcount,
+        purpose: vPurpose,
+        memo,
+      }).catch(() => {})
+
+      setVisitMemo('')
+      showToast(
+        `🍵 [${vDate} ${vTime.split(' ')[0]}] 총 ${exactHeadcount}명 방문 및 사찰 공양(${exactHeadcount}인분) 예약이 정식 접수되었습니다!`
+      )
+    }
+
+    if (closeModal) {
+      pendingVisitDraftRef.current = null
+      setShowVisitSuccessModal(false)
+    }
+  }
+
+  // 방문 예약 2단계-B: [예약 취소] 또는 X 클릭 시 아무런 DB 등록/문자 발송 없이 깔끔하게 창만 닫기
+  const handleCancelSubmittedVisit = () => {
+    pendingVisitDraftRef.current = null
+    setShowVisitSuccessModal(false)
+    showToast('방문 예약 접수가 취소되었습니다.')
   }
 
   // 사경 입력 체크 및 공덕 적립 헬퍼 (본인 계정 공덕 횟수에 누적)
@@ -11598,6 +11649,189 @@ function normalizeMemberHierarchy(m) {
                     className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] border border-[#C59B27] font-bold text-xs transition cursor-pointer shadow-md"
                   >
                     합장하며 확인
+                  </button>
+                </div>
+              </div>
+            </div>
+          )
+        })()}
+
+        {/* 도량 방문 & 사찰 공양(식사) 사전 예약 확인 모달 */}
+        {showVisitSuccessModal && (() => {
+          const draft = pendingVisitDraftRef.current || {}
+          const vName = draft.visitorName || wishName.trim()
+          const vPhone = draft.visitorPhone || wishPhone.trim()
+          const vDate = draft.visitDate || visitDate
+          const vTime = draft.visitTime || visitTime
+          const vCount = draft.exactHeadcount || Math.max(1, Number(visitHeadcount) || 1)
+          const vPurpose = draft.visitPurpose || visitPurpose
+          const vMemo =
+            draft.memo ||
+            visitMemo.trim() ||
+            `방문 인원 총 ${vCount}명 따뜻한 차와 사찰 공양(${vCount}인분) 부탁드립니다.`
+
+          const visitShareMsg = `🍵 [제주 소원사 도량 방문 · 사찰 공양 예약]\n${vName} 불자님 외 총 ${vCount}명 방문 및 사찰 공양 예약이 접수되었습니다.\n\n• 방문 일시: ${vDate} ${vTime}\n• 방문 인원: 총 ${vCount}명 (${vPurpose})\n• 요청 메모: "${vMemo}"\n• 종무소 문의: 064-805-2007 / 010-4912-1083`
+
+          return (
+            <div
+              className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) handleCancelSubmittedVisit()
+              }}
+            >
+              <div className="w-full max-w-[385px] max-h-[84dvh] sm:max-h-[90vh] overflow-y-auto bg-[#1F1B17] text-white rounded-3xl p-4 sm:p-6 border border-[#F5D061] text-center space-y-2.5 sm:space-y-3 shadow-2xl animate-in zoom-in-95 duration-150 relative my-auto">
+                {/* 상단 우측 X 닫기/취소 버튼 */}
+                <button
+                  type="button"
+                  onClick={handleCancelSubmittedVisit}
+                  className="absolute top-3 right-3 sm:top-4 sm:right-4 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition cursor-pointer z-10"
+                  title="닫기"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+
+                <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#F5D061]/20 border border-[#F5D061] mx-auto flex items-center justify-center text-xl sm:text-2xl">
+                  🍵
+                </div>
+
+                <h3 className="font-serif-kr text-lg sm:text-xl font-bold text-[#F5D061] leading-snug px-4">
+                  도량 방문 · 사찰 공양 예약 확인
+                </h3>
+
+                <div className="inline-flex items-center gap-1.5 px-3 py-0.5 sm:py-1 rounded-full bg-[#F5D061]/15 border border-[#F5D061]/50 text-[11px] sm:text-xs font-bold text-[#F5D061]">
+                  <span>🍵 {vDate} · {vTime.split(' ')[0]} 방문 (총 {vCount}명)</span>
+                </div>
+
+                <p className="text-[11.5px] sm:text-xs text-[#E2DAD0] leading-snug break-keep px-1">
+                  도량에 오시는 날 따뜻한 차와 정성스러운 사찰 공양({vCount}인분)을 대접해 드릴 수 있도록 공양간과 종무소에 예약을 전달합니다.
+                </p>
+
+                {/* 예약 확인 내역 카드 */}
+                <div className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left shadow-md space-y-1.5 text-xs">
+                  <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-1.5 flex-wrap">
+                    <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815] shrink-0">
+                      예약 확인 내역
+                    </span>
+                    <span className="text-[11px] font-bold text-[#F5D061] text-right break-keep">
+                      총 {vCount}명 · {vPurpose}
+                    </span>
+                  </div>
+                  <div className="flex items-start justify-between gap-2 text-[11.5px] pt-0.5">
+                    <span className="text-[#A89D8E] shrink-0">방문 일시</span>
+                    <span className="font-bold text-emerald-300 text-right break-keep">
+                      {vDate} · {vTime}
+                    </span>
+                  </div>
+                  <div className="flex items-start justify-between gap-2 text-[11.5px] pt-0.5">
+                    <span className="text-[#A89D8E] shrink-0">예약 불자</span>
+                    <span className="font-bold text-[#FAF8F5] text-right break-keep">
+                      {vName} · {vPhone}
+                    </span>
+                  </div>
+                  <div className="pt-1 border-t border-white/5">
+                    <div className="text-[10.5px] text-[#A89D8E] mb-0.5">요청 메모</div>
+                    <div className="text-[11px] text-[#E8DFD1] leading-relaxed break-keep whitespace-pre-wrap">
+                      “{vMemo}”
+                    </div>
+                  </div>
+                </div>
+
+                {/* 1) 카카오톡 공유 버튼 (동행 가족·지인 또는 종무소 공유) */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleConfirmSubmittedVisit({ closeModal: false })
+                    const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
+                    const code = currentUser?.code || referralCode || '33065540'
+                    const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
+                    const shareUrl = `${origin}/?ref=${code}`
+                    const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=3'
+
+                    if (typeof window !== 'undefined' && window.Kakao) {
+                      try {
+                        if (!window.Kakao.isInitialized()) {
+                          window.Kakao.init(kakaoKey)
+                        }
+                        if (window.Kakao.isInitialized() && window.Kakao.Share) {
+                          window.Kakao.Share.sendDefault({
+                            objectType: 'feed',
+                            content: {
+                              title: `🍵 [제주 소원사] 도량 방문 · 사찰 공양 예약 (${vCount}명)`,
+                              description: `"${vName} 불자님 외 총 ${vCount}명 (${vDate} ${vTime}) 도량 방문 및 사찰 공양 예약이 접수되었습니다."`,
+                              imageUrl: altarImageUrl,
+                              imageWidth: 1024,
+                              imageHeight: 693,
+                              link: {
+                                mobileWebUrl: shareUrl,
+                                webUrl: shareUrl,
+                              },
+                            },
+                            buttons: [
+                              {
+                                title: '🪷 소원사 모바일 법당 보기',
+                                link: {
+                                  mobileWebUrl: shareUrl,
+                                  webUrl: shareUrl,
+                                },
+                              },
+                            ],
+                          })
+                          return
+                        }
+                      } catch (err) {
+                        console.warn('Kakao visit share fallback error:', err)
+                      }
+                    }
+
+                    const fullText = `${visitShareMsg}\n\n👉 제주 소원사 모바일 법당:\n${shareUrl}`
+                    if (navigator.share) {
+                      navigator.share({
+                        title: '제주 소원사 방문 · 사찰 공양 예약',
+                        text: fullText,
+                      }).catch(() => {})
+                    } else if (navigator.clipboard) {
+                      navigator.clipboard.writeText(fullText)
+                      showToast('📋 방문 예약 내역이 복사되었습니다! 카카오톡에 붙여넣어 공유하세요.')
+                    }
+                  }}
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow flex items-center justify-center gap-1.5 active:scale-95 transition cursor-pointer"
+                >
+                  <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
+                  <span>가족·지인에게 방문 예약 알리기 (카톡 공유)</span>
+                </button>
+
+                {/* 2) 종무소(010-4912-1083)로 휴대폰 문자(SMS) 즉시 보내기 버튼 (유료 API 없이도 100% 무료 직통 발송) */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleConfirmSubmittedVisit({ closeModal: false })
+                    const smsBody = `[제주 소원사 방문·공양 예약]\n• 예약자: ${vName} (${vPhone})\n• 방문일시: ${vDate} ${vTime}\n• 방문인원: 총 ${vCount}명 (${vPurpose})\n• 요청사항: ${vMemo}`
+                    const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent || '')
+                    const sep = isIOS ? '&' : '?'
+                    window.location.href = `sms:010-4912-1083${sep}body=${encodeURIComponent(smsBody)}`
+                  }}
+                  className="w-full py-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 border border-emerald-400/50 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition cursor-pointer"
+                >
+                  <PhoneCall className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
+                  <span>📩 종무소(010-4912-1083)로 예약 문자 바로 보내기</span>
+                </button>
+
+                {/* 하단 예약 취소 및 합장 확인 2단 버튼 */}
+                <div className="grid grid-cols-2 gap-2.5 pt-1">
+                  <button
+                    type="button"
+                    onClick={handleCancelSubmittedVisit}
+                    className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-red-500/20 text-[#D6CEC2] hover:text-red-300 border border-white/10 font-bold text-xs transition cursor-pointer"
+                    title="방금 입력한 방문 예약을 취소합니다"
+                  >
+                    예약 취소
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleConfirmSubmittedVisit({ closeModal: true })}
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] border border-[#C59B27] font-bold text-xs transition cursor-pointer shadow-md"
+                  >
+                    합장하며 예약 확인
                   </button>
                 </div>
               </div>
