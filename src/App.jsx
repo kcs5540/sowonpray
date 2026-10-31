@@ -6822,17 +6822,23 @@ function normalizeMemberHierarchy(m) {
                   </div>
                 </div>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] whitespace-nowrap shrink-0">
-                  제주 애월 납읍리
+                  제주 오등동
                 </span>
               </div>
 
-              {/* 사찰 도로명 주소 박스 */}
-              <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EDE6D8] flex items-center justify-between gap-2">
-                <div className="min-w-0 flex-1">
-                  <div className="text-[10px] font-bold text-[#A89880] mb-0.5">도로명 주소</div>
-                  <div className="text-xs font-bold text-[#231F1C] truncate">
-                    제주특별자치도 제주시 애월읍 납읍로2길 24-9
-                  </div>
+              {/* 사찰 도로명 및 지번 주소 박스 */}
+              <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EDE6D8] space-y-1">
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-[10.5px] font-bold text-[#A89880] shrink-0">도로명</span>
+                  <span className="text-xs font-bold text-[#231F1C] text-right break-keep">
+                    제주특별자치도 제주시 죽성서길 75 (우: 63242)
+                  </span>
+                </div>
+                <div className="flex items-start justify-between gap-2 border-t border-black/5 pt-1">
+                  <span className="text-[10.5px] font-bold text-[#A89880] shrink-0">지번</span>
+                  <span className="text-xs text-[#5C5349] text-right break-keep">
+                    제주특별자치도 제주시 오등동 935
+                  </span>
                 </div>
               </div>
 
@@ -6841,7 +6847,7 @@ function normalizeMemberHierarchy(m) {
                 <button
                   type="button"
                   onClick={() => {
-                    const addr = '제주특별자치도 제주시 애월읍 납읍로2길 24-9'
+                    const addr = '제주특별자치도 제주시 죽성서길 75 (오등동 935)'
                     if (navigator.clipboard) {
                       navigator.clipboard.writeText(addr)
                       showToast('📋 소원사 주소가 복사되었습니다! 차량 내비나 카카오톡에 붙여넣으세요.')
