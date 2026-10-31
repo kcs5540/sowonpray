@@ -1786,13 +1786,88 @@ function normalizeMemberHierarchy(m) {
   const [quoteIdx, setQuoteIdx] = useState(0)
   const currentQuote = DAILY_QUOTES[quoteIdx]
 
-  // 1일 1소원등 축원 상태 (매일 대웅전에 광명 점등 유지 및 연속 정진 일수 카운트)
+  // 📿 [사시예불 주기 계산 헬퍼]
+  // - 오전 09:00 이전 점등: 당일 오전 10시 사시예불 배정 -> 당일 오전 11:00 회향(미점등 전환)
+  // - 오전 09:00 이후 점등: 익일(내일) 오전 10시 사시예불 배정 -> 익일 오전 11:00 회향(미점등 전환)
+  const formatLocalDateKey = (dateObj) => {
+    const y = dateObj.getFullYear()
+    const m = String(dateObj.getMonth() + 1).padStart(2, '0')
+    const d = String(dateObj.getDate()).padStart(2, '0')
+    return `${y}-${m}-${d}`
+  }
+
+  const computeSasiSchedule = (litTimestamp = Date.now()) => {
+    const d = new Date(litTimestamp)
+    const isBefore9AM = d.getHours() < 9
+    const sasiDate = isBefore9AM
+      ? new Date(d.getFullYear(), d.getMonth(), d.getDate())
+      : new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)
+    const expireDate = new Date(
+      sasiDate.getFullYear(),
+      sasiDate.getMonth(),
+      sasiDate.getDate(),
+      11,
+      0,
+      0,
+      0
+    )
+    const prevDate = new Date(
+      sasiDate.getFullYear(),
+      sasiDate.getMonth(),
+      sasiDate.getDate() - 1
+    )
+    const sasiDateKey = formatLocalDateKey(sasiDate)
+    const prevSasiDateKey = formatLocalDateKey(prevDate)
+    return {
+      isBefore9AM,
+      sasiDateKey,
+      prevSasiDateKey,
+      expireAt: expireDate.getTime(),
+    }
+  }
+
+  const getSasiDisplayInfo = (sasiDateKey) => {
+    const todayKey = formatLocalDateKey(new Date())
+    const isTodaySasi = sasiDateKey
+      ? sasiDateKey === todayKey
+      : new Date().getHours() < 9
+    return {
+      isTodaySasi,
+      shortLabel: isTodaySasi ? '오늘 오전 10시 사시예불' : '내일 오전 10시 사시예불',
+      detailLabel: isTodaySasi
+        ? '오늘 오전 10시 대웅전 사시예불 축원 (오전 11시 회향)'
+        : '내일 오전 10시 대웅전 사시예불 축원 (내일 오전 11시 회향)',
+    }
+  }
+
+  const previewNextStreakCount = (targetSasiDateKey, prevSasiDateKey) => {
+    try {
+      const raw = localStorage.getItem('sowonsa_lantern_streak_v2')
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        if (parsed && parsed.lastSasiDateKey === targetSasiDateKey) {
+          return Math.max(1, Number(parsed.count) || 1)
+        }
+        if (parsed && parsed.lastSasiDateKey === prevSasiDateKey) {
+          return Math.max(1, (Number(parsed.count) || 1) + 1)
+        }
+      }
+    } catch (e) {}
+    return 1
+  }
+
+  // 1일 1소원등 축원 상태 (사시예불 회차 기준 연속 정진 일수 카운트)
   const [lanternStreak, setLanternStreak] = useState(() => {
     try {
-      return Number(localStorage.getItem('sowonsa_lantern_streak')) || 1
-    } catch (e) {
-      return 1
-    }
+      const raw = localStorage.getItem('sowonsa_lantern_streak_v2')
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        if (parsed && Number(parsed.count) > 0) {
+          return Number(parsed.count)
+        }
+      }
+    } catch (e) {}
+    return 1
   })
 
   const [lanternData, setLanternData] = useState(() => {
@@ -3093,6 +3168,25 @@ function normalizeMemberHierarchy(m) {
     if (!cleanUserPhone && !userCode && !userName) return
 
     const myLatestPrayer = prayers.find((p) => {
+      if (!p || !p.created_at) return false
+      const parsedTime = new Date(p.created_at).getTime()
+      if (isNaN(parsedTime)) return false
+      const pCat = p.wish_category || ''
+      if (
+        pCat.includes('위패') ||
+        pCat.includes('생전예수재') ||
+        pCat.includes('삼성각') ||
+        pCat.includes('기와') ||
+        pCat.includes('단청') ||
+        pCat.includes('명패') ||
+        pCat.includes('인등') ||
+        pCat.includes('100일') ||
+        pCat.includes('49재') ||
+        pCat.includes('천도재') ||
+        pCat.includes('공양미')
+      ) {
+        return false
+      }
       const pPhone = (p.believer_phone || '').replace(/[^0-9]/g, '')
       const pCode = p.member_code || ''
       const pName = p.believer_name || ''
@@ -3105,17 +3199,10 @@ function normalizeMemberHierarchy(m) {
     })
 
     if (myLatestPrayer) {
-      let prayerTime = Date.now()
-      if (myLatestPrayer.created_at) {
-        const parsed = new Date(myLatestPrayer.created_at).getTime()
-        if (!isNaN(parsed)) prayerTime = parsed
-      }
-      const prayerDate = new Date(prayerTime)
-      const expireDate = new Date(prayerTime)
-      expireDate.setHours(23, 59, 59, 999)
-      const expireAt = Math.max(expireDate.getTime(), prayerTime + 12 * 60 * 60 * 1000)
+      const prayerTime = new Date(myLatestPrayer.created_at).getTime()
+      const schedule = computeSasiSchedule(prayerTime)
 
-      if (expireAt > Date.now()) {
+      if (schedule.expireAt > Date.now()) {
         const syncedLantern = {
           member_code: myLatestPrayer.member_code || currentUser?.code || '',
           believer_name: myLatestPrayer.believer_name,
@@ -3123,7 +3210,9 @@ function normalizeMemberHierarchy(m) {
           wish_category: myLatestPrayer.wish_category || '가족건강',
           wish_text: myLatestPrayer.wish_text || '',
           lit_at: prayerTime,
-          expire_at: expireAt,
+          expire_at: schedule.expireAt,
+          sasi_date_key: schedule.sasiDateKey,
+          streak: lanternData?.streak || lanternStreak || 1,
         }
         setLanternData(syncedLantern)
         try {
@@ -3684,6 +3773,8 @@ function normalizeMemberHierarchy(m) {
         wish_text:
           lanternData?.wish_text ||
           '우리 가족 모두 건강하고 화목과 평안이 늘 함께하기를 발원합니다.',
+        sasi_date_key: lanternData?.sasi_date_key || computeSasiSchedule(lanternData?.lit_at || Date.now()).sasiDateKey,
+        streak: lanternData?.streak || lanternStreak || 1,
       })
     } else {
       showToast('🙏 아래 발원문을 접수하시면 오늘 대웅전 소원등이 환하게 밝혀집니다.')
@@ -4032,30 +4123,33 @@ function normalizeMemberHierarchy(m) {
       (wishCategory || '').includes('천도재') ||
       (wishCategory || '').includes('공양미')
 
-    // 🔥 [1일 소원등 중복 점등 방지] 미점등 회원은 그대로 진행하고, 이미 오늘 점등 중인 회원은 중복 등록 없이 '점등 중' 안내 메시지 표시
+    // 🔥 [1일 소원등 중복 점등 방지] 미점등 회원은 그대로 진행하고, 현재 사시예불 회차에 이미 점등 중인 회원은 중복 등록 없이 '점등 중' 안내 메시지 표시
     if (activeTab === 'lantern' && !isPaidBulsaCategory) {
       const inputPhoneClean = wishPhone.replace(/[^0-9]/g, '')
       const inputNameClean = wishName.trim()
-      const todayDateStr = new Date().toDateString()
 
-      // 1) 현재 기기에 점등 중인 소원등과 일치하는지 확인
+      // 1) 현재 기기에 유효하게 점등 중인 소원등(expire_at > Date.now())과 일치하는지 확인
       const lanternPhoneClean = (lanternData?.believer_phone || '').replace(/[^0-9]/g, '')
       const isSameAsActiveLantern =
         isLanternLit &&
         lanternData &&
+        lanternData.expire_at > Date.now() &&
         ((inputPhoneClean && lanternPhoneClean && inputPhoneClean === lanternPhoneClean) ||
           (inputNameClean && (lanternData.believer_name || '').includes(inputNameClean)))
 
-      // 2) 오늘 날짜로 접수된 1일 소원등 기록이 장부(prayers)에 이미 있는지 확인
-      const existingTodayPrayer = prayers.find((p) => {
-        if (!p.created_at) return false
-        const pDate = new Date(p.created_at)
-        if (isNaN(pDate.getTime()) || pDate.toDateString() !== todayDateStr) return false
+      // 2) 장부(prayers)에 아직 회향 시각(오전 11시)이 지나지 않은 1일 소원등이 있는지 확인
+      const existingActiveCyclePrayer = prayers.find((p) => {
+        if (!p || !p.created_at) return false
+        const pTime = new Date(p.created_at).getTime()
+        if (isNaN(pTime)) return false
         const pCat = p.wish_category || ''
         if (
           pCat.includes('위패') ||
           pCat.includes('생전예수재') ||
           pCat.includes('삼성각') ||
+          pCat.includes('기와') ||
+          pCat.includes('단청') ||
+          pCat.includes('명패') ||
           pCat.includes('인등') ||
           pCat.includes('100일') ||
           pCat.includes('49재') ||
@@ -4064,6 +4158,8 @@ function normalizeMemberHierarchy(m) {
         ) {
           return false
         }
+        const pSchedule = computeSasiSchedule(pTime)
+        if (pSchedule.expireAt <= Date.now()) return false
         const pPhone = (p.believer_phone || '').replace(/[^0-9]/g, '')
         return (
           (inputPhoneClean && pPhone && inputPhoneClean === pPhone) ||
@@ -4071,9 +4167,13 @@ function normalizeMemberHierarchy(m) {
         )
       })
 
-      if (isSameAsActiveLantern || existingTodayPrayer) {
+      if (isSameAsActiveLantern || existingActiveCyclePrayer) {
         playSingingBowlSound()
-        const activeRecord = existingTodayPrayer || lanternData
+        const activeRecord = existingActiveCyclePrayer || lanternData
+        const activeLitTime = activeRecord?.created_at
+          ? new Date(activeRecord.created_at).getTime()
+          : activeRecord?.lit_at || Date.now()
+        const activeSchedule = computeSasiSchedule(activeLitTime)
         setAlreadyLitModalData({
           believer_name: activeRecord?.believer_name || inputNameClean,
           believer_phone: activeRecord?.believer_phone || wishPhone.trim(),
@@ -4083,6 +4183,8 @@ function normalizeMemberHierarchy(m) {
             wishText.trim() ||
             PRAYER_CATEGORY_TEMPLATES[wishCategory] ||
             '온 가족 무병장수와 소원성취를 발원합니다.',
+          sasi_date_key: activeRecord?.sasi_date_key || activeSchedule.sasiDateKey,
+          streak: lanternData?.streak || lanternStreak || 1,
         })
         return
       }
@@ -4110,18 +4212,7 @@ function normalizeMemberHierarchy(m) {
       formattedBelieverName,
       wishCategory,
       finalWishText,
-      isPaidPrayer:
-        (wishCategory || '').includes('위패') ||
-        (wishCategory || '').includes('생전예수재') ||
-        (wishCategory || '').includes('삼성각') ||
-        (wishCategory || '').includes('기와') ||
-        (wishCategory || '').includes('단청') ||
-        (wishCategory || '').includes('명패') ||
-        (wishCategory || '').includes('인등') ||
-        (wishCategory || '').includes('100일') ||
-        (wishCategory || '').includes('49재') ||
-        (wishCategory || '').includes('천도재') ||
-        (wishCategory || '').includes('공양미'),
+      isPaidPrayer: isPaidBulsaCategory,
       committed: false,
     }
 
@@ -4145,13 +4236,20 @@ function normalizeMemberHierarchy(m) {
       } = draft
 
       const now = Date.now()
-      const endOfToday = new Date()
-      endOfToday.setHours(23, 59, 59, 999)
-      const expireAt = Math.max(endOfToday.getTime(), now + 12 * 60 * 60 * 1000)
+      const schedule = computeSasiSchedule(now)
+      const sasiInfo = getSasiDisplayInfo(schedule.sasiDateKey)
 
-      const nextStreak = (lanternStreak || 0) + 1
+      // 사시예불 회차(sasiDateKey) 기준 정확한 연속 정진 일수 계산 (하루에 여러 번 올라가지 않음)
+      const nextStreak = previewNextStreakCount(
+        schedule.sasiDateKey,
+        schedule.prevSasiDateKey
+      )
       setLanternStreak(nextStreak)
       try {
+        localStorage.setItem(
+          'sowonsa_lantern_streak_v2',
+          JSON.stringify({ count: nextStreak, lastSasiDateKey: schedule.sasiDateKey })
+        )
         localStorage.setItem('sowonsa_lantern_streak', String(nextStreak))
       } catch (e) {}
 
@@ -4163,7 +4261,8 @@ function normalizeMemberHierarchy(m) {
         wish_category: cat,
         wish_text: finalWishText,
         lit_at: now,
-        expire_at: expireAt,
+        expire_at: schedule.expireAt,
+        sasi_date_key: schedule.sasiDateKey,
         streak: nextStreak,
       }
       try {
@@ -4190,7 +4289,7 @@ function normalizeMemberHierarchy(m) {
         prayed_at:
           cat.includes('위패') || cat.includes('삼성각')
             ? '종무소 위패·삼성각 불사 우선 상담 배정됨'
-            : '오늘 제주 소원사 대웅전 축원 접수완료',
+            : `${sasiInfo.shortLabel} 축원 배정완료`,
         created_at: new Date().toISOString(),
       }
 
@@ -5973,7 +6072,7 @@ function normalizeMemberHierarchy(m) {
                 <div className="min-w-0 flex-1 relative z-10">
                   <span className="block text-[10px] font-extrabold tracking-tight whitespace-nowrap leading-none text-[#A86E0B]">
                     {isLanternLit
-                      ? `✨ 축원점등 (D-${lanternDaysRemaining})`
+                      ? `🔥 ${lanternData?.streak || lanternStreak || 1}일 연속 정진 중`
                       : '대웅전 1일 무료'}
                   </span>
                   <h3 className="font-serif-kr font-extrabold text-[13.5px] sm:text-[14.5px] mt-1 tracking-tight whitespace-nowrap leading-tight text-[#2B1F11]">
@@ -7547,12 +7646,14 @@ function normalizeMemberHierarchy(m) {
               <div className="mt-3">
                 {isLanternLit ? (
                   <div className="bg-[#FAF3DF]/10 border border-[#F5D061]/35 rounded-xl p-3 text-xs text-[#FAF8F5] leading-relaxed break-keep">
-                    <div className="flex items-center justify-center gap-1.5 font-bold text-[#F5D061] mb-1">
+                    <div className="flex items-center justify-center gap-1.5 font-bold text-[#F5D061] mb-1 flex-wrap">
                       <Sparkles className="w-3.5 h-3.5 shrink-0" />
-                      <span>{lanternData?.believer_name} 불자님의 오늘 소원등이 밝게 축원 중입니다</span>
+                      <span>
+                        {lanternData?.believer_name} 불자님의 소원등 점등 중 (🔥 {lanternData?.streak || lanternStreak || 1}일 연속 정진)
+                      </span>
                     </div>
                     <p className="text-[11px] text-[#D6CEC2]">
-                      매일 오전 10시 사시예불에서 제주 소원사 스님께서 정성껏 축원해 드립니다. (내일 새 원력으로 또 켜실 수 있습니다)
+                      📅 <strong>{getSasiDisplayInfo(lanternData?.sasi_date_key).detailLabel}</strong>되며, 예불 회향 후 오전 11시에 다음 등불을 밝히실 수 있습니다.
                     </p>
                   </div>
                 ) : isLanternExpired ? (
@@ -9188,24 +9289,27 @@ function normalizeMemberHierarchy(m) {
                     </div>
                   </div>
 
-                  {/* 3행: 🔥 나의 7일 소원등 정진 현황 카드 (좁은 모바일 화면에서도 글자 잘림 없는 2단 분리 레이아웃) */}
+                  {/* 3행: 🔥 나의 1일 소원등 연속 정진 현황 카드 (며칠 연속 정진 중인지 + 배정된 사시예불 시간 표시) */}
                   <div className="relative z-10 pt-0.5">
                     {isLanternLit ? (
                       <div className="rounded-2xl p-3 sm:p-3.5 bg-gradient-to-r from-[#3D2914] via-[#483318] to-[#2D1E0E] border border-[#F5D061]/50 shadow-[0_4px_16px_rgba(245,208,97,0.18)] space-y-2">
-                        {/* 상단: 상태 및 D-Day + [내 등불 보기] 버튼 */}
+                        {/* 상단: 연속 정진 일수 및 사시예불 배정 상태 + [내 등불 보기] 버튼 */}
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2 min-w-0">
                             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#E25C2B] to-[#F4B41A] text-white flex items-center justify-center shadow-[0_0_10px_rgba(233,130,39,0.5)] shrink-0">
                               <Flame className="w-4 h-4 fill-current text-[#FFF7CE] flame-flicker" />
                             </div>
                             <div className="min-w-0">
-                              <div className="text-xs font-extrabold text-[#F5D061] tracking-wide whitespace-nowrap">
-                                오늘 소원등 정진중
-                              </div>
-                              <div className="mt-0.5">
-                                <span className="px-1.5 py-0.5 rounded-full bg-[#F5D061] text-[#1B1815] text-[10px] font-black whitespace-nowrap inline-block">
-                                  오늘 점등 완료
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className="text-xs font-extrabold text-[#F5D061] tracking-wide whitespace-nowrap">
+                                  소원등 점등 중
                                 </span>
+                                <span className="px-2 py-0.5 rounded-full bg-[#F5D061] text-[#1B1815] text-[10px] font-black whitespace-nowrap">
+                                  🔥 {lanternData?.streak || lanternStreak || 1}일 연속 정진 중
+                                </span>
+                              </div>
+                              <div className="text-[10.5px] text-[#E5DCD0] mt-0.5">
+                                📅 {getSasiDisplayInfo(lanternData?.sasi_date_key).shortLabel} 축원 (오전 11시 회향)
                               </div>
                             </div>
                           </div>
@@ -9223,7 +9327,7 @@ function normalizeMemberHierarchy(m) {
                           </button>
                         </div>
 
-                        {/* 하단: 발원문 전체 너비 카드 (좁은 화면에서도 잘림 없이 여유롭게 표시) */}
+                        {/* 하단: 발원문 전체 너비 카드 */}
                         <div className="p-2.5 rounded-xl bg-black/25 border border-white/10 text-xs text-[#FAF8F5] leading-snug">
                           <span className="text-[#FFE58A] font-extrabold mr-1">
                             [{lanternData?.wish_category || '가족건강'}]
@@ -9240,11 +9344,18 @@ function normalizeMemberHierarchy(m) {
                             <Flame className="w-4 h-4 text-[#D4AF37]" />
                           </div>
                           <div className="min-w-0">
-                            <span className="text-xs font-bold text-[#E8DFD1] block">
-                              🕯️ 오늘 부처님 전 소원등 미점등
-                            </span>
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="text-xs font-bold text-[#E8DFD1]">
+                                🕯️ 현재 소원등 미점등
+                              </span>
+                              <span className="px-1.5 py-0.5 rounded-md bg-[#F5D061]/15 border border-[#F5D061]/40 text-[10px] font-bold text-[#F5D061]">
+                                직전 {lanternStreak || 1}일 정진
+                              </span>
+                            </div>
                             <p className="text-[11px] text-[#A89880] truncate mt-0.5">
-                              오늘 하루의 평안을 위해 소원등을 켜보세요.
+                              {new Date().getHours() < 9
+                                ? '오전 9시 전 점등 시 오늘 10시 사시예불에 축원됩니다.'
+                                : '지금 점등 시 내일 오전 10시 사시예불에 축원됩니다.'}
                             </p>
                           </div>
                         </div>
@@ -11176,88 +11287,98 @@ function normalizeMemberHierarchy(m) {
           </main>
         )}
 
-        {/* 이미 오늘 1일 소원등이 점등 중인 회원에게 띄우는 안내 팝업 (중복 DB 등록 및 중복 문자 발송 없음) */}
-        {alreadyLitModalData && (
-          <div
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
-            onClick={(e) => {
-              if (e.target === e.currentTarget) setAlreadyLitModalData(null)
-            }}
-          >
-            <div className="w-full max-w-[385px] max-h-[84dvh] overflow-y-auto bg-[#1F1B17] text-white rounded-3xl p-5 sm:p-6 border-2 border-[#F5D061] text-center space-y-3 shadow-2xl animate-in zoom-in-95 duration-150 relative my-auto">
-              <button
-                type="button"
-                onClick={() => setAlreadyLitModalData(null)}
-                className="absolute top-3.5 right-3.5 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition cursor-pointer"
-                title="닫기"
-              >
-                <X className="w-4 h-4" />
-              </button>
+        {/* 이미 현재 사시예불 회차에 1일 소원등이 점등 중인 회원에게 띄우는 안내 팝업 (중복 DB 등록 및 중복 문자 발송 없음) */}
+        {alreadyLitModalData && (() => {
+          const sasiInfo = getSasiDisplayInfo(alreadyLitModalData.sasi_date_key)
+          return (
+            <div
+              className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) setAlreadyLitModalData(null)
+              }}
+            >
+              <div className="w-full max-w-[385px] max-h-[84dvh] overflow-y-auto bg-[#1F1B17] text-white rounded-3xl p-5 sm:p-6 border-2 border-[#F5D061] text-center space-y-3 shadow-2xl animate-in zoom-in-95 duration-150 relative my-auto">
+                <button
+                  type="button"
+                  onClick={() => setAlreadyLitModalData(null)}
+                  className="absolute top-3.5 right-3.5 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition cursor-pointer"
+                  title="닫기"
+                >
+                  <X className="w-4 h-4" />
+                </button>
 
-              <div className="w-12 h-12 rounded-full bg-gradient-to-b from-[#FFE27A] to-[#D48817] border-2 border-[#FFF3B8] mx-auto flex items-center justify-center shadow-[0_0_20px_rgba(245,208,97,0.5)]">
-                <Flame className="w-6 h-6 text-[#1B1815] fill-[#1B1815]" />
-              </div>
-
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-xs font-extrabold text-emerald-300">
-                <span>✨ 오늘 대웅전 점등 · 축원 진행 중</span>
-              </div>
-
-              <h3 className="font-serif-kr text-lg sm:text-xl font-bold text-[#F5D061] leading-snug">
-                현재 소원등이 점등 중입니다
-              </h3>
-
-              <p className="text-xs text-[#E2DAD0] leading-relaxed break-keep">
-                <strong className="text-[#FAF8F5]">{alreadyLitModalData.believer_name}</strong> 불자님의 오늘 1일 소원등이 이미 대웅전에 밝게 켜져 축원 중입니다.
-                <br />
-                <span className="text-[11px] text-[#B8AEA0]">
-                  (중복 접수되지 않으며, 내일 다시 새 소원등을 밝히실 수 있습니다.)
-                </span>
-              </p>
-
-              <div className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left shadow-md space-y-1.5 text-xs">
-                <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-1.5">
-                  <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815]">
-                    현재 점등 내역
-                  </span>
-                  <span className="text-[11px] font-bold text-[#F5D061]">
-                    {alreadyLitModalData.wish_category}
-                  </span>
+                <div className="w-12 h-12 rounded-full bg-gradient-to-b from-[#FFE27A] to-[#D48817] border-2 border-[#FFF3B8] mx-auto flex items-center justify-center shadow-[0_0_20px_rgba(245,208,97,0.5)]">
+                  <Flame className="w-6 h-6 text-[#1B1815] fill-[#1B1815]" />
                 </div>
-                <div className="flex items-start justify-between gap-2 text-[11.5px] pt-0.5">
-                  <span className="text-[#A89D8E] shrink-0">점등 불자</span>
-                  <span className="font-bold text-[#FAF8F5] text-right break-keep">
-                    {alreadyLitModalData.believer_name}
-                    {alreadyLitModalData.believer_phone ? ` · ${alreadyLitModalData.believer_phone}` : ''}
-                  </span>
+
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-xs font-extrabold text-emerald-300">
+                  <span>✨ 🔥 {alreadyLitModalData.streak || lanternStreak || 1}일 연속 정진 · 점등 중</span>
                 </div>
-                <div className="pt-1 border-t border-white/5">
-                  <div className="text-[10.5px] text-[#A89D8E] mb-0.5">발원 내용</div>
-                  <div className="text-[11px] text-[#E8DFD1] leading-relaxed break-keep whitespace-pre-wrap">
-                    “{alreadyLitModalData.wish_text}”
+
+                <h3 className="font-serif-kr text-lg sm:text-xl font-bold text-[#F5D061] leading-snug">
+                  현재 소원등이 점등 중입니다
+                </h3>
+
+                <p className="text-xs text-[#E2DAD0] leading-relaxed break-keep">
+                  <strong className="text-[#FAF8F5]">{alreadyLitModalData.believer_name}</strong> 불자님의 1일 소원등이 이미 대웅전에 밝게 켜져 있으며,{' '}
+                  <strong className="text-[#F5D061]">{sasiInfo.shortLabel}</strong>에 스님께서 정성껏 축원 올립니다.
+                  <br />
+                  <span className="text-[11px] text-[#B8AEA0]">
+                    (예불이 끝나는 오전 11시에 미점등으로 전환되며, 이후 다시 밝히실 수 있습니다.)
+                  </span>
+                </p>
+
+                <div className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left shadow-md space-y-1.5 text-xs">
+                  <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-1.5">
+                    <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815]">
+                      현재 점등 내역
+                    </span>
+                    <span className="text-[11px] font-bold text-[#F5D061]">
+                      {alreadyLitModalData.wish_category}
+                    </span>
+                  </div>
+                  <div className="flex items-start justify-between gap-2 text-[11.5px] pt-0.5">
+                    <span className="text-[#A89D8E] shrink-0">점등 불자</span>
+                    <span className="font-bold text-[#FAF8F5] text-right break-keep">
+                      {alreadyLitModalData.believer_name}
+                      {alreadyLitModalData.believer_phone ? ` · ${alreadyLitModalData.believer_phone}` : ''}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 text-[11px] pt-0.5">
+                    <span className="text-[#A89D8E] shrink-0">축원 일정</span>
+                    <span className="font-bold text-emerald-300 text-right">
+                      {sasiInfo.detailLabel}
+                    </span>
+                  </div>
+                  <div className="pt-1 border-t border-white/5">
+                    <div className="text-[10.5px] text-[#A89D8E] mb-0.5">발원 내용</div>
+                    <div className="text-[11px] text-[#E8DFD1] leading-relaxed break-keep whitespace-pre-wrap">
+                      “{alreadyLitModalData.wish_text}”
+                    </div>
                   </div>
                 </div>
+
+                {/* 가족·지인에게 내 소원등 알리기 (카카오톡 피드 카드 공유) */}
+                <button
+                  type="button"
+                  onClick={() => handleShareMyLantern(alreadyLitModalData.believer_name)}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow flex items-center justify-center gap-1.5 active:scale-95 transition cursor-pointer"
+                >
+                  <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
+                  <span>가족·지인에게 내 발원 알리기 (카톡 공유)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setAlreadyLitModalData(null)}
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] border border-[#C59B27] font-bold text-xs transition cursor-pointer shadow-md"
+                >
+                  합장하며 확인 (닫기)
+                </button>
               </div>
-
-              {/* 가족·지인에게 내 소원등 알리기 (카카오톡 피드 카드 공유) */}
-              <button
-                type="button"
-                onClick={() => handleShareMyLantern(alreadyLitModalData.believer_name)}
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow flex items-center justify-center gap-1.5 active:scale-95 transition cursor-pointer"
-              >
-                <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
-                <span>가족·지인에게 내 발원 알리기 (카톡 공유)</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setAlreadyLitModalData(null)}
-                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] border border-[#C59B27] font-bold text-xs transition cursor-pointer shadow-md"
-              >
-                합장하며 확인 (닫기)
-              </button>
             </div>
-          </div>
-        )}
+          )
+        })()}
 
         {/* 축원 완료 모달 (선택한 종목에 맞춰 100% 맞춤 렌더링) */}
         {showSuccessModal && (() => {
@@ -11268,19 +11389,26 @@ function normalizeMemberHierarchy(m) {
           const is49jaeCat = (wishCategory || '').includes('49재') || (wishCategory || '').includes('천도재') || (wishCategory || '').includes('기일')
           const isRiceCat = (wishCategory || '').includes('공양미')
 
+          const nowSchedule = computeSasiSchedule(Date.now())
+          const nowSasiInfo = getSasiDisplayInfo(nowSchedule.sasiDateKey)
+          const previewStreak = previewNextStreakCount(
+            nowSchedule.sasiDateKey,
+            nowSchedule.prevSasiDateKey
+          )
+
           const title = isWipaeCat
-            ? '🏛️ 영구 위패 봉안 불사 접수 완료'
+            ? '🏛️ 영구 위패 봉안 불사 접수 확인'
             : isSamseongCat
-            ? '🏔️ 삼성각 성전 건립 대작불사 접수 완료'
+            ? '🏔️ 삼성각 성전 건립 대작불사 접수 확인'
             : isIndeungCat
-            ? '🪔 대웅전 1년 인등(가족등) 접수 완료'
+            ? '🪔 대웅전 1년 인등(가족등) 접수 확인'
             : is100dCat
-            ? '🪷 100일 소원성취 특별기도 접수 완료'
+            ? '🪷 100일 소원성취 특별기도 접수 확인'
             : is49jaeCat
-            ? '🪷 49재 · 천도재 · 기일제사 접수 완료'
+            ? '🪷 49재 · 천도재 · 기일제사 접수 확인'
             : isRiceCat
-            ? '🪷 대웅전 공양미 / 불전시주 접수 완료'
-            : '대웅전 소원등 점등 완료'
+            ? '🪷 대웅전 공양미 / 불전시주 접수 확인'
+            : '대웅전 소원등 점등 확인'
 
           const badge = isWipaeCat
             ? '🏛️ 영구 봉안 대원력 (사시예불 영구 축원)'
@@ -11294,7 +11422,7 @@ function normalizeMemberHierarchy(m) {
             ? '🪷 영가 극락왕생 및 칠칠재 천도발원'
             : isRiceCat
             ? '🪷 부처님 전 공양 공덕 및 복덕구족'
-            : `🪔 ${lanternStreak || 1}일 연속 정진 중! (공덕 +100)`
+            : `🪔 ${previewStreak}일 연속 정진! (${nowSasiInfo.shortLabel} 축원)`
 
           const desc = isWipaeCat
             ? '소원사 법당에 정결하게 위패를 봉안하고, 매일 오전 10시 사시예불마다 영가 극락왕생과 가내 평안을 정성껏 축원합니다.'
@@ -11302,7 +11430,7 @@ function normalizeMemberHierarchy(m) {
             ? '성전 건립 대작불사 공덕이 삼성각 영전에 영구 봉안되며, 칠성·산신·독성 성인의 가피가 가정에 늘 함께하시길 축원합니다.'
             : isIndeungCat || is100dCat || is49jaeCat || isRiceCat
             ? '매일 오전 10시 대웅전 사시예불에서 주지스님께서 불자님 가정의 간절한 서원을 부처님 전에 정성껏 축원 올립니다.'
-            : '오늘 하루 부처님의 자비광명이 불자님과 온 가족에게 늘 함께하시길 정성껏 축원 올립니다.'
+            : `소원등이 즉시 점등되며, ${nowSasiInfo.shortLabel}에서 스님께서 불자님과 가족의 발원을 정성껏 축원 올립니다.`
 
           const previewWishText =
             (wishText || '').trim() ||
