@@ -2301,6 +2301,7 @@ function normalizeMemberHierarchy(m) {
   const [isProfileEditOpen, setIsProfileEditOpen] = useState(false)
   const [isOrgTreeOpen, setIsOrgTreeOpen] = useState(false)
   const [isAgentPrayerListExpanded, setIsAgentPrayerListExpanded] = useState(false)
+  const [isAgentVisitListExpanded, setIsAgentVisitListExpanded] = useState(false)
 
   // [전산 고도화] 10만 신도 대비 초고속 검색 & 등급 필터 & 정렬 & 상세 모달
   const [adminMemberSearchQuery, setAdminMemberSearchQuery] = useState('')
@@ -10553,76 +10554,113 @@ function normalizeMemberHierarchy(m) {
             </section>
 
             {/* 나의 인연 신도 도량 방문 & 사찰 공양(식사) 예약 현황 */}
-            <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8]">
-              <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <Coffee className="w-4 h-4 text-[#9A7418] shrink-0" />
-                  <h3 className="font-serif-kr font-bold text-sm sm:text-base break-keep">
-                    인연 신도 방문 · 공양(식사) 예약 현황
-                  </h3>
-                </div>
-                <span className="text-xs text-[#9A7418] font-bold shrink-0">
-                  총 {visits.filter((v) => isAdmin || v.agent_code === activeAgent.code).length}건 ·{' '}
-                  총{' '}
-                  {visits
-                    .filter((v) => isAdmin || v.agent_code === activeAgent.code)
-                    .reduce((acc, cur) => acc + (Number(cur.headcount) || 1), 0)}
-                  명 준비
-                </span>
-              </div>
+            {(() => {
+              const agentVisits = visits.filter((v) => isAdmin || v.agent_code === activeAgent.code)
+              const displayVisits = isAgentVisitListExpanded ? agentVisits : agentVisits.slice(0, 5)
+              const totalHeadcount = agentVisits.reduce((acc, cur) => acc + (Number(cur.headcount) || 1), 0)
 
-              <div className="space-y-2.5">
-                {visits
-                  .filter((v) => isAdmin || v.agent_code === activeAgent.code)
-                  .map((v) => (
-                    <div
-                      key={v.id}
-                      className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] flex flex-col gap-1.5"
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-1.5 min-w-0">
-                          <span className="text-xs font-bold text-[#231F1C] truncate">
-                            🍵 {v.visitor_name} ({v.visitor_phone})
-                          </span>
-                          <span className="px-2 py-0.5 rounded-md bg-[#231F1C] text-[#F5D061] text-[11px] font-extrabold whitespace-nowrap shrink-0">
-                            방문 {v.headcount}명 (공양 {v.headcount}인분)
-                          </span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setVisits((prev) =>
-                              prev.map((item) =>
-                                item.id === v.id
-                                  ? {
-                                      ...item,
-                                      status:
-                                        item.status === 'confirmed' ? 'reserved' : 'confirmed',
-                                    }
-                                  : item
-                              )
-                            )
-                            showToast('방문 및 사찰 공양 준비 상태가 변경되었습니다.')
-                          }}
-                          className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full whitespace-nowrap shrink-0 ${
-                            v.status === 'confirmed'
-                              ? 'bg-emerald-100 text-emerald-800'
-                              : 'bg-amber-100 text-amber-800'
-                          }`}
-                        >
-                          {v.status === 'confirmed' ? '✓ 공양준비확정' : '예약접수 (터치시 확정)'}
-                        </button>
-                      </div>
-                      <div className="text-xs text-[#8A6510] font-semibold">
-                        방문일시: {v.visit_date} · {v.visit_time} · 정확히 {v.headcount}명 방문
-                      </div>
-                      <div className="text-xs text-[#4A433C]">
-                        목적: {v.visit_purpose} / “{v.memo}”
+              return (
+                <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <Coffee className="w-4 h-4 text-[#9A7418] shrink-0" />
+                      <div>
+                        <h3 className="font-serif-kr font-bold text-sm sm:text-base text-[#231F1C]">
+                          인연 신도 방문 · 공양(식사) 예약 현황
+                        </h3>
+                        <p className="text-[11px] text-[#8C7A5B] mt-0.5">
+                          기본 5건 표시 (총 {agentVisits.length}건 · 총 {totalHeadcount}명 준비)
+                        </p>
                       </div>
                     </div>
-                  ))}
-              </div>
-            </section>
+                    {agentVisits.length > 5 && (
+                      <button
+                        type="button"
+                        onClick={() => setIsAgentVisitListExpanded(!isAgentVisitListExpanded)}
+                        className="px-2.5 py-1 rounded-lg bg-[#FAF8F5] hover:bg-[#F3EFE6] text-[#6E5617] border border-[#DDD4C4] text-xs font-bold flex items-center gap-1 transition shrink-0"
+                      >
+                        <span>{isAgentVisitListExpanded ? '접기 ▲' : '펼치기 ▼'}</span>
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="space-y-2.5">
+                    {displayVisits.length === 0 ? (
+                      <div className="p-8 text-center text-sm text-[#8C7A5B] bg-[#FAF8F5] rounded-xl border border-dashed border-[#EAE2D3]">
+                        접수된 방문 및 공양 예약 내역이 없습니다.
+                      </div>
+                    ) : (
+                      displayVisits.map((v) => {
+                        const visitorDisplayName = v.visitor_name && v.visitor_name !== '.' ? v.visitor_name : '인연 신도'
+                        return (
+                          <div
+                            key={v.id}
+                            className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] flex flex-col gap-1.5"
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <span className="text-xs font-bold text-[#231F1C] truncate">
+                                  🍵 {visitorDisplayName} {v.visitor_phone && v.visitor_phone !== '.' ? `(${v.visitor_phone})` : ''}
+                                </span>
+                                <span className="px-2 py-0.5 rounded-md bg-[#231F1C] text-[#F5D061] text-[11px] font-extrabold whitespace-nowrap shrink-0">
+                                  방문 {v.headcount}명 (공양 {v.headcount}인분)
+                                </span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setVisits((prev) =>
+                                    prev.map((item) =>
+                                      item.id === v.id
+                                        ? {
+                                            ...item,
+                                            status:
+                                              item.status === 'confirmed' ? 'reserved' : 'confirmed',
+                                          }
+                                        : item
+                                    )
+                                  )
+                                  showToast('방문 및 사찰 공양 준비 상태가 변경되었습니다.')
+                                }}
+                                className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full whitespace-nowrap shrink-0 ${
+                                  v.status === 'confirmed'
+                                    ? 'bg-emerald-100 text-emerald-800'
+                                    : 'bg-amber-100 text-amber-800'
+                                }`}
+                              >
+                                {v.status === 'confirmed' ? '✓ 공양준비확정' : '예약접수 (터치시 확정)'}
+                              </button>
+                            </div>
+                            <div className="text-xs text-[#8A6510] font-semibold">
+                              방문일시: {v.visit_date} · {v.visit_time} · 정확히 {v.headcount}명 방문
+                            </div>
+                            <div className="text-xs text-[#4A433C]">
+                              목적: {v.visit_purpose} / “{v.memo}”
+                            </div>
+                          </div>
+                        )
+                      })
+                    )}
+                  </div>
+
+                  {agentVisits.length > 5 && (
+                    <div className="pt-2 border-t border-[#EAE2D3]">
+                      <button
+                        type="button"
+                        onClick={() => setIsAgentVisitListExpanded(!isAgentVisitListExpanded)}
+                        className="w-full py-2.5 rounded-xl bg-[#FAF8F5] hover:bg-[#F3EFE6] text-[#6E5617] border border-[#DDD4C4] text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-2xs"
+                      >
+                        <span>
+                          {isAgentVisitListExpanded
+                            ? '예약 목록 5개만 보기 (접기) ▲'
+                            : `예약 명단 더보기 (+${agentVisits.length - 5}건 모두 펼치기) ▼`}
+                        </span>
+                      </button>
+                    </div>
+                  )}
+                </section>
+              )
+            })()}
 
             {/* 뷰 모드 전환 버튼: 조직도 트리 vs 인연 신도 축원 리스트 */}
             <div className="flex items-center justify-between gap-2 p-1 bg-[#231F1C] rounded-xl border border-[#C59B27]/40">
