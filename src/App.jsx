@@ -11206,25 +11206,25 @@ function normalizeMemberHierarchy(m) {
                   {desc}
                 </p>
 
-                {/* 중간 확인 카드: 중복 인사말 대신 [내가 입력한 접수 확인 내역]을 깔끔하게 표시 */}
+                {/* 중간 확인 카드: 중복 인사말 대신 [내가 입력한 접수 확인 내역] 전문을 말줄임표(...) 없이 전부 표시 */}
                 <div className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left shadow-md space-y-1.5 text-xs">
-                  <div className="flex items-center justify-between border-b border-white/10 pb-1.5">
-                    <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815]">
+                  <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-1.5 flex-wrap">
+                    <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815] shrink-0">
                       접수 확인 내역
                     </span>
-                    <span className="text-[11px] font-bold text-[#F5D061] truncate max-w-[200px]">
+                    <span className="text-[11px] font-bold text-[#F5D061] text-right break-keep">
                       {wishCategory || '대웅전 소원등'}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-[11.5px] pt-0.5">
+                  <div className="flex items-start justify-between gap-2 text-[11.5px] pt-0.5">
                     <span className="text-[#A89D8E] shrink-0">신청 불자</span>
-                    <span className="font-bold text-[#FAF8F5] truncate ml-2">
+                    <span className="font-bold text-[#FAF8F5] text-right break-keep">
                       {wishName.trim()}{wishTarget && wishTarget !== '본인' ? ` (${wishTarget.trim()})` : ''} · {wishPhone.trim()}
                     </span>
                   </div>
                   <div className="pt-1 border-t border-white/5">
                     <div className="text-[10.5px] text-[#A89D8E] mb-0.5">발원 내용</div>
-                    <div className="text-[11px] text-[#E8DFD1] leading-snug line-clamp-2 break-keep">
+                    <div className="text-[11px] text-[#E8DFD1] leading-relaxed break-keep whitespace-pre-wrap">
                       “{previewWishText}”
                     </div>
                   </div>
