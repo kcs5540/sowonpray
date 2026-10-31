@@ -3364,6 +3364,72 @@ function normalizeMemberHierarchy(m) {
     }
   }, [currentUser])
 
+  // 🪷 [오전 11시 사시예불 축원 원만회향 알림 팝업 감지 엔진]
+  // 소원등을 켰던 신도님이 11:00 예불 회향 이후 접속 시 감동의 회향 팝업 1회 노출
+  useEffect(() => {
+    const now = new Date()
+    const todayKey = formatLocalDateKey(now)
+    const isPast11AM = now.getHours() >= 11
+
+    // 이미 오늘 회향 팝업을 확인했으면 재노출 안 함
+    const seenKey = `sowonsa_hoehang_seen_${todayKey}`
+    try {
+      if (localStorage.getItem(seenKey)) return
+    } catch (e) {}
+
+    // 1) localStorage 7일 소원등 데이터 확인
+    let candidate = null
+    try {
+      const raw = localStorage.getItem('sowonsa_7day_lantern')
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        // 오늘이 회향일(sasi_date_key === todayKey)이고 11시가 지났거나 회향 만료된 경우
+        if (parsed.sasi_date_key === todayKey && isPast11AM) {
+          candidate = parsed
+        }
+      }
+    } catch (e) {}
+
+    // 2) prayers 배열에서 본인 최근 기도 확인
+    if (!candidate && prayers && prayers.length > 0) {
+      const cleanUserPhone = (currentUser?.phone || wishPhone || '').replace(/[^0-9]/g, '')
+      const userCode = currentUser?.code || ''
+      const userName = currentUser?.name || wishName || ''
+
+      if (cleanUserPhone || userCode || userName) {
+        const myPrayer = prayers.find((p) => {
+          if (!p || !p.created_at) return false
+          const pTime = new Date(p.created_at).getTime()
+          if (isNaN(pTime)) return false
+          const pPhone = (p.believer_phone || '').replace(/[^0-9]/g, '')
+          const pCode = p.member_code || ''
+          const pName = p.believer_name || ''
+          const isMe =
+            (cleanUserPhone && pPhone && cleanUserPhone === pPhone) ||
+            (userCode && pCode && userCode === pCode) ||
+            (userName && pName && (pName.includes(userName) || userName.includes(pName)))
+          if (!isMe) return false
+          const sched = computeSasiSchedule(pTime)
+          return sched.sasiDateKey === todayKey && isPast11AM
+        })
+        if (myPrayer) {
+          candidate = {
+            believer_name: myPrayer.believer_name,
+            believer_phone: myPrayer.believer_phone || currentUser?.phone || '',
+            wish_category: myPrayer.wish_category || '대웅전 소원등',
+            wish_text: myPrayer.wish_text || '',
+            streak: lanternData?.streak || lanternStreak || 1,
+            sasi_date_key: todayKey,
+          }
+        }
+      }
+    }
+
+    if (candidate) {
+      setHoehangModalData(candidate)
+    }
+  }, [currentUser, prayers, wishPhone, wishName, lanternData])
+
   // 클라우드 및 계정 연동 7일 소원등 자동 동기화 (기기 간 실시간 동기화: PC에서 켜면 폰에서도 자동 점등)
   useEffect(() => {
     if (!prayers || prayers.length === 0) return
@@ -4310,6 +4376,7 @@ function normalizeMemberHierarchy(m) {
   // 임시 접수 대기 데이터 보관 (1번 접수 버튼 클릭 시에는 팝업만 띄우고, [합장하며 확인] 클릭 시에만 DB 및 문자 발송 실행)
   const pendingPrayerDraftRef = useRef(null)
   const [alreadyLitModalData, setAlreadyLitModalData] = useState(null)
+  const [hoehangModalData, setHoehangModalData] = useState(null)
 
   const handlePrayerSubmit = (e) => {
     e.preventDefault()
@@ -11629,6 +11696,173 @@ function normalizeMemberHierarchy(m) {
             </section>
           </main>
         )}
+
+        {/* 🪷 사시예불 축원 원만회향 안내 팝업 (오전 11시 이후 소원등 신청 신도님 본인에게만 감동 노출) */}
+        {hoehangModalData && (() => {
+          const dismissHoehang = () => {
+            const todayKey = formatLocalDateKey(new Date())
+            try {
+              localStorage.setItem(`sowonsa_hoehang_seen_${todayKey}`, 'true')
+            } catch (e) {}
+            setHoehangModalData(null)
+          }
+
+          const shareHoehangCard = () => {
+            const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
+            const code = currentUser?.code || referralCode || '33065540'
+            const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
+            const shareUrl = `${origin}/?ref=${code}&tab=home`
+            const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=3'
+
+            if (typeof window !== 'undefined' && window.Kakao) {
+              try {
+                if (!window.Kakao.isInitialized()) {
+                  window.Kakao.init(kakaoKey)
+                }
+                if (window.Kakao.isInitialized() && window.Kakao.Share) {
+                  window.Kakao.Share.sendDefault({
+                    objectType: 'feed',
+                    content: {
+                      title: '🪷 [제주 소원사] 대웅전 사시예불 축원 원만회향',
+                      description: `"${hoehangModalData.believer_name} 불자님의 소원등이 오늘 오전 10시 사시예불에서 주지스님의 지극한 축원 속에 원만히 회향되었습니다."`,
+                      imageUrl: altarImageUrl,
+                      imageWidth: 1024,
+                      imageHeight: 693,
+                      link: {
+                        mobileWebUrl: shareUrl,
+                        webUrl: shareUrl,
+                      },
+                    },
+                    itemContent: {
+                      profileText: '제주 소원사 대웅전 축원회향증',
+                      titleImageText: hoehangModalData.wish_category || '대웅전 소원등',
+                      titleImageCategory: '오늘 오전 10시 사시예불 회향',
+                      items: [
+                        { item: '축원불자', itemOp: hoehangModalData.believer_name },
+                        { item: '소원종목', itemOp: hoehangModalData.wish_category || '가족건강' },
+                        { item: '회향상태', itemOp: '원만회향 (축원완료)' },
+                        { item: '기도도량', itemOp: '제주 소원사 대웅전' },
+                        { item: '종무소', itemOp: '010-4912-1083' },
+                      ],
+                    },
+                    buttons: [
+                      {
+                        title: '🪷 소원사 모바일 법당 함께하기',
+                        link: {
+                          mobileWebUrl: shareUrl,
+                          webUrl: shareUrl,
+                        },
+                      },
+                    ],
+                  })
+                  return
+                }
+              } catch (err) {
+                console.warn('Kakao hoehang share error:', err)
+              }
+            }
+
+            const fullText = `🪷 [제주 소원사 사시예불 원만회향]\n${hoehangModalData.believer_name} 불자님의 간절한 소원등(${hoehangModalData.wish_category})이 오늘 오전 10시 대웅전 사시예불에서 주지스님의 지극한 축원 속에 원만히 회향되었습니다.\n\n부처님의 자비광명이 온 가족과 늘 함께하시기를 축원합니다.\n👉 ${shareUrl}`
+            if (navigator.share) {
+              navigator.share({ title: '제주 소원사 사시예불 회향', text: fullText }).catch(() => {})
+            } else if (navigator.clipboard) {
+              navigator.clipboard.writeText(fullText)
+              showToast('📋 회향 축복 메시지가 복사되었습니다! 가족 카톡방에 붙여넣어 보세요.')
+            }
+          }
+
+          return (
+            <div
+              className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) dismissHoehang()
+              }}
+            >
+              <div className="w-full max-w-[385px] max-h-[85dvh] overflow-y-auto bg-[#1F1B17] text-white rounded-3xl p-5 sm:p-6 border-2 border-[#F5D061] text-center space-y-3 shadow-2xl animate-in zoom-in-95 duration-150 relative my-auto">
+                <button
+                  type="button"
+                  onClick={dismissHoehang}
+                  className="absolute top-3.5 right-3.5 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition cursor-pointer"
+                  title="닫기"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+
+                <div className="w-13 h-13 rounded-full bg-gradient-to-b from-[#FFE27A] to-[#D48817] border-2 border-[#FFF3B8] mx-auto flex items-center justify-center shadow-[0_0_25px_rgba(245,208,97,0.6)] text-2xl">
+                  🪷
+                </div>
+
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-xs font-extrabold text-emerald-300">
+                  <span>✨ 오늘 오전 10시 사시예불 원만회향</span>
+                </div>
+
+                <h3 className="font-serif-kr text-lg sm:text-xl font-bold text-[#F5D061] leading-snug">
+                  소원등 축원이 원만히 회향되었습니다
+                </h3>
+
+                <p className="text-xs text-[#E2DAD0] leading-relaxed break-keep px-1">
+                  <strong className="text-[#FAF8F5]">{hoehangModalData.believer_name}</strong> 불자님께서 부처님 전에 밝혀주신 간절한 발원이 대웅전 사시예불에서 주지스님의 정성스러운 축원 속에 원만히 회향되었습니다.
+                </p>
+
+                {/* 회향 상세 확인 카드 */}
+                <div className="p-3.5 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left shadow-md space-y-1.5 text-xs">
+                  <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-1.5">
+                    <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815]">
+                      축원 회향 내역
+                    </span>
+                    <span className="text-[11px] font-bold text-[#F5D061]">
+                      {hoehangModalData.wish_category || '대웅전 소원등'}
+                    </span>
+                  </div>
+                  <div className="flex items-start justify-between gap-2 text-[11.5px] pt-0.5">
+                    <span className="text-[#A89D8E] shrink-0">축원 불자</span>
+                    <span className="font-bold text-[#FAF8F5] text-right break-keep">
+                      {hoehangModalData.believer_name}
+                      {hoehangModalData.believer_phone ? ` · ${hoehangModalData.believer_phone}` : ''}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 text-[11px] pt-0.5">
+                    <span className="text-[#A89D8E] shrink-0">축원 일시</span>
+                    <span className="font-bold text-emerald-300 text-right">
+                      오늘 오전 10:00 사시예불
+                    </span>
+                  </div>
+                  {hoehangModalData.wish_text && (
+                    <div className="pt-1 border-t border-white/5">
+                      <div className="text-[10.5px] text-[#A89D8E] mb-0.5">발원 내용</div>
+                      <div className="text-[11px] text-[#E8DFD1] leading-relaxed break-keep line-clamp-2">
+                        “{hoehangModalData.wish_text}”
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="p-2 rounded-xl bg-white/5 border border-white/10 text-[11px] text-[#D4AF37]">
+                  🙏 부처님의 대자대비하신 가피가 온 가족과 늘 함께하시기를 축원합니다.
+                </div>
+
+                {/* 1) 가족에게 회향 복덕 전하기 (카톡 피드 카드 공유) */}
+                <button
+                  type="button"
+                  onClick={shareHoehangCard}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow flex items-center justify-center gap-1.5 active:scale-95 transition cursor-pointer"
+                >
+                  <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
+                  <span>가족에게 회향 복덕 전하기 (카톡 공유)</span>
+                </button>
+
+                {/* 2) 합장하며 확인 (닫기) */}
+                <button
+                  type="button"
+                  onClick={dismissHoehang}
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] border border-[#C59B27] font-bold text-xs transition cursor-pointer shadow-md"
+                >
+                  합장하며 확인 (닫기)
+                </button>
+              </div>
+            </div>
+          )
+        })()}
 
         {/* 이미 현재 사시예불 회차에 1일 소원등이 점등 중인 회원에게 띄우는 안내 팝업 (중복 DB 등록 및 중복 문자 발송 없음) */}
         {alreadyLitModalData && (() => {
