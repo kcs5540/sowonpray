@@ -9784,26 +9784,29 @@ function normalizeMemberHierarchy(m) {
 
                           {/* 4) 장기 기도 (1년 인등 / 100일 기도) 럭셔리 하단 띠배너 */}
                           {(activeIndeung || active100d) && (
-                            <div className="pt-2 border-t border-white/10 flex items-center justify-between gap-2 text-xs">
-                              <div className="flex items-center gap-2 min-w-0">
-                                <span className="text-base shrink-0">🪔</span>
-                                <div className="min-w-0">
-                                  <div className="flex items-center gap-1.5">
-                                    <span className="font-extrabold text-[#F5D061] text-[11px]">
-                                      {activeIndeung ? '대웅전 1년 인등(가족등)' : '100일 특별기도'}
-                                    </span>
-                                    <span className="text-[9.5px] px-1.5 py-0.2 rounded bg-[#FAF3DF] text-[#8A6510] font-bold shrink-0">
-                                      대웅전 봉안
-                                    </span>
-                                  </div>
-                                  <div className="text-[10px] text-[#C5BBAE] truncate">
-                                    {activeIndeung ? '365일 24시간 상시 점등 · 사시예불 영구 축원' : '100일간 매일 특별 축원 봉행'}
-                                  </div>
+                            <div className="p-2.5 rounded-xl bg-black/30 border border-white/10 space-y-1.5">
+                              {/* 1행: 등불 명칭 & D-Day 배지 (양 끝 칼정렬, 줄바꿈 완전 방지) */}
+                              <div className="flex items-center justify-between gap-2">
+                                <div className="flex items-center gap-1.5 min-w-0">
+                                  <span className="text-sm shrink-0">🪔</span>
+                                  <span className="font-extrabold text-[#F5D061] text-xs whitespace-nowrap tracking-tight">
+                                    {activeIndeung ? '대웅전 1년 인등 (가족등)' : '100일 소원성취 특별기도'}
+                                  </span>
                                 </div>
+                                <span className="px-2 py-0.5 rounded-full bg-emerald-500/25 border border-emerald-400/50 text-emerald-300 text-[10.5px] font-black whitespace-nowrap shrink-0">
+                                  ✨ D-{activeIndeung ? activeIndeung.daysLeft : active100d.daysLeft}일 점등
+                                </span>
                               </div>
-                              <span className="px-2 py-0.5 rounded-full bg-emerald-500/25 border border-emerald-400/50 text-emerald-300 text-[10.5px] font-black whitespace-nowrap shrink-0">
-                                ✨ D-{activeIndeung ? activeIndeung.daysLeft : active100d.daysLeft}일 점등
-                              </span>
+
+                              {/* 2행: 봉안 위치 배지 + 상세 축원 안내 */}
+                              <div className="flex items-center gap-1.5 text-[10.5px] text-[#C5BBAE] pt-0.5 pl-0.5">
+                                <span className="px-1.5 py-0.2 rounded bg-[#FAF3DF]/15 text-[#FFE58A] border border-[#E5D399]/30 text-[9.5px] font-bold shrink-0 whitespace-nowrap">
+                                  대웅전 봉안
+                                </span>
+                                <span className="truncate">
+                                  {activeIndeung ? '365일 24시간 상시 점등 · 사시예불 영구 축원' : '100일간 매일 특별 축원 봉행'}
+                                </span>
+                              </div>
                             </div>
                           )}
                         </div>
