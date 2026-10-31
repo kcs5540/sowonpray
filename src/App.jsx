@@ -9748,27 +9748,24 @@ function normalizeMemberHierarchy(m) {
                             </button>
                           </div>
 
-                          {/* 2) 배지 라인 (가로 1줄 단정하게 정렬) */}
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            {isLanternLit && (
-                              <span className="px-2 py-0.5 rounded-full bg-[#F5D061] text-[#1B1815] text-[10.5px] font-black whitespace-nowrap shadow-xs">
-                                🔥 {currentStreak}일 연속 정진
-                              </span>
-                            )}
+                          {/* 2) 1일 정진 & 총 점등 횟수 통합 단일 버튼 (대표님 지시: 1번 내용을 2번에 통합) */}
+                          <div className="flex items-center">
                             <button
                               type="button"
                               onClick={() => {
                                 setMeritCertType('lantern')
                                 setShowMeritCertModal(true)
                               }}
-                              className="px-2 py-0.5 rounded-full bg-white/10 hover:bg-white/20 border border-[#F5D061]/50 text-[#F5D061] text-[10.5px] font-bold whitespace-nowrap flex items-center gap-1 transition cursor-pointer"
-                              title="수행공덕증 보기"
+                              className="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/15 border border-[#F5D061]/50 text-[#F5D061] text-[11px] font-bold whitespace-nowrap flex items-center gap-1.5 transition cursor-pointer active:scale-95 shadow-xs"
+                              title="소원등 정진 공덕장 보기"
                             >
-                              <Award className="w-3 h-3 text-[#F5D061]" />
-                              <span>총 {totalMerit}회 점등</span>
-                              <ChevronRight className="w-2.5 h-2.5 text-[#F5D061]" />
+                              <Award className="w-3.5 h-3.5 text-[#F5D061] shrink-0" />
+                              <span>
+                                {isLanternLit ? `🔥 ${currentStreak}일 연속 정진 (총 ${totalMerit}회 점등)` : `총 ${totalMerit}회 점등`}
+                              </span>
+                              <ChevronRight className="w-3 h-3 text-[#F5D061] -ml-0.5 shrink-0" />
                             </button>
-                            </div>
+                          </div>
 
                           {/* 3) 소원등 발원문 본문 */}
                           {isLanternLit && (
