@@ -9967,8 +9967,8 @@ function normalizeMemberHierarchy(m) {
                   )}
                 </section>
 
-                {/* 3. 📊 포교위원 전용 활동 요약 (포교위원/위원장일 때만 노출) */}
-                {isAgentOrAbove && (
+                {/* 3. 📊 포교 현황 (포교위원/임원) OR 🌱 인연 공덕 & 50명 포교위원 승급 도전 (일반 신도) */}
+                {isAgentOrAbove ? (
                   <section className="bg-gradient-to-br from-[#231F1C] to-[#151210] text-white rounded-3xl p-5 border border-[#C59B27]/40 shadow-sm space-y-3">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-1.5 min-w-0">
@@ -10016,6 +10016,61 @@ function normalizeMemberHierarchy(m) {
                       <span className="text-white font-medium">
                         {currentUser.bank_name ? `${currentUser.bank_name} ${currentUser.bank_account} (예금주: ${currentUser.account_holder || currentUser.name})` : '미등록 (아래 내정보 수정에서 입력)'}
                       </span>
+                    </div>
+                  </section>
+                ) : (
+                  <section className="bg-gradient-to-br from-[#231F1C] via-[#2A231C] to-[#171310] text-white rounded-3xl p-5 border border-[#C59B27]/40 shadow-sm space-y-3.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="text-sm shrink-0">🌱</span>
+                        <h3 className="font-serif-kr text-sm sm:text-base font-bold text-[#F5D061] whitespace-nowrap">
+                          나의 인연 공덕 현황
+                        </h3>
+                      </div>
+                      <span className="text-[10.5px] font-bold text-[#FFE58A] bg-[#C59B27]/25 px-2.5 py-0.5 rounded-full border border-[#F5D061]/40 shrink-0">
+                        {currentUserBelieversCount >= 50 ? '위촉 자격 달성' : '포교위원 승급 도전'}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2 pt-0.5">
+                      <div className="bg-white/5 border border-white/10 rounded-2xl p-2.5 text-center">
+                        <div className="text-[10px] sm:text-[10.5px] text-[#BFB6AA]">맺은 법연(신도)</div>
+                        <div className="text-base sm:text-lg font-extrabold text-[#F5D061] mt-0.5">
+                          {currentUserBelieversCount}명
+                        </div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-2xl p-2.5 text-center">
+                        <div className="text-[10px] sm:text-[10.5px] text-[#BFB6AA]">위패/불사 봉안</div>
+                        <div className="text-base sm:text-lg font-extrabold text-white mt-0.5">
+                          {currentUserWipaeCount}기
+                        </div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-2xl p-2.5 text-center">
+                        <div className="text-[10px] sm:text-[10.5px] text-[#BFB6AA]">포교위원 승급</div>
+                        <div className="text-base sm:text-lg font-extrabold text-emerald-400 mt-0.5">
+                          {currentUserBelieversCount >= 50 ? '자격 획득' : `D-${Math.max(0, 50 - currentUserBelieversCount)}명`}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 rounded-2xl bg-black/35 border border-white/10 space-y-2.5">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-[#D6CEC2] font-semibold text-[11px]">
+                          정식 포교위원 위촉 목표 (50명)
+                        </span>
+                        <span className="font-mono font-bold text-[#F5D061] text-[11px]">
+                          {currentUserBelieversCount} / 50명 ({Math.min(100, Math.round((currentUserBelieversCount / 50) * 100))}%)
+                        </span>
+                      </div>
+                      <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-[#C59B27] via-[#F5D061] to-[#FFE58A] transition-all duration-500 rounded-full"
+                          style={{ width: `${Math.min(100, Math.max(currentUserBelieversCount > 0 ? 5 : 0, Math.round((currentUserBelieversCount / 50) * 100)))}%` }}
+                        />
+                      </div>
+                      <p className="text-[11px] text-[#A89880] leading-snug break-keep pt-0.5">
+                        소원등을 선물하여 부처님 법연을 맺은 인연이 <strong className="text-[#F5D061]">50명</strong>에 도달하면 제주 소원사 <strong className="text-white">정식 포교위원</strong>으로 명예 위촉되며 매월 포교 활동 공덕금이 보시 지원됩니다.
+                      </p>
                     </div>
                   </section>
                 )}
