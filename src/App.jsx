@@ -1967,9 +1967,30 @@ function normalizeMemberHierarchy(m) {
     }
   }, [])
 
-  // 오늘의 법문 선택
-  const [quoteIdx, setQuoteIdx] = useState(0)
-  const currentQuote = DAILY_QUOTES[quoteIdx]
+  // 오늘의 법문 선택: 마지막 읽은 구절을 localStorage에 기억하고, 처음 방문 시에는 오늘의 날짜(1~31일)에 맞춰 자동 매칭
+  const [quoteIdx, setQuoteIdx] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sowonpray_last_quote_idx_v1')
+      if (saved !== null) {
+        const parsed = parseInt(saved, 10)
+        if (!isNaN(parsed) && parsed >= 0 && parsed < DAILY_QUOTES.length) {
+          return parsed
+        }
+      }
+    } catch (e) {}
+    // 저장된 기록이 없을 때는 오늘 날짜(1일~31일) 구절로 매칭
+    const todayDate = new Date().getDate()
+    return (todayDate - 1) % DAILY_QUOTES.length
+  })
+
+  // 구절이 바뀔 때마다 브라우저에 저장하여 앱을 껐다 켜거나 다른 탭을 갔다 와도 마지막 구절 유지
+  useEffect(() => {
+    try {
+      localStorage.setItem('sowonpray_last_quote_idx_v1', String(quoteIdx))
+    } catch (e) {}
+  }, [quoteIdx])
+
+  const currentQuote = DAILY_QUOTES[quoteIdx] || DAILY_QUOTES[0]
 
   // 📿 [사시예불 주기 계산 헬퍼]
   // - 오전 09:00 이전 점등: 당일 오전 10시 사시예불 배정 -> 당일 오전 11:00 회향(미점등 전환)
