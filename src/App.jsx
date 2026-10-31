@@ -4072,8 +4072,9 @@ function normalizeMemberHierarchy(m) {
     }
 
     setPrayers((prev) => [newPrayer, ...prev])
+    setLatestSubmittedPrayerId(newPrayer.id)
 
-    // Supabase 클라우드 실시간 저장
+    // Supabase 클라우드 실시간 저장 (반환된 DB id도 연동하여 접수 취소 시 DB에서도 즉시 삭제 보장)
     if (supabase) {
       supabase
         .from('prayers')
@@ -4090,7 +4091,16 @@ function normalizeMemberHierarchy(m) {
             prayed_at: newPrayer.prayed_at,
           },
         ])
-        .then()
+        .select('id')
+        .single()
+        .then(({ data }) => {
+          if (data?.id) {
+            setPrayers((prev) =>
+              prev.map((p) => (p.id === newPrayer.id ? { ...p, db_id: data.id } : p))
+            )
+          }
+        })
+        .catch(() => {})
     }
 
     // 신규 신청자 전산 자동 등록 처리 (신규 불자 DB 등재)
@@ -4149,14 +4159,31 @@ function normalizeMemberHierarchy(m) {
     showToast(toastMsg)
   }
 
-  // 소원등/불사 신청 완료 팝업에서 [접수 취소] 클릭 시 방금 신청한 기록 롤백 취소
+  // 소원등/불사 신청 완료 팝업에서 [접수 취소] 클릭 시 방금 신청한 기록을 로컬 장부 + Supabase DB에서 즉시 삭제 롤백
   const handleCancelSubmittedPrayer = () => {
     if (latestSubmittedPrayerId) {
+      const targetPrayer = prayers.find((p) => p.id === latestSubmittedPrayerId)
       setPrayers((prev) => prev.filter((p) => p.id !== latestSubmittedPrayerId))
+      if (supabase && targetPrayer) {
+        if (targetPrayer.db_id) {
+          supabase.from('prayers').delete().eq('id', targetPrayer.db_id).then()
+        } else {
+          supabase
+            .from('prayers')
+            .delete()
+            .eq('believer_name', targetPrayer.believer_name)
+            .eq('wish_category', targetPrayer.wish_category)
+            .then()
+        }
+      }
       setLatestSubmittedPrayerId(null)
     }
+    try {
+      localStorage.removeItem('sowonsa_7day_lantern')
+    } catch (e) {}
+    setLanternData(null)
     setShowSuccessModal(false)
-    showToast('신청 접수가 정상적으로 취소되었습니다.')
+    showToast('🗑️ 신청 접수가 취소되어 장부 및 DB에서 완전히 제외되었습니다.')
   }
 
   // 전날 도량 방문 & 차담·사찰 공양(식사) 사전 예약 접수 핸들러
