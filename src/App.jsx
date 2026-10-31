@@ -11238,10 +11238,20 @@ function normalizeMemberHierarchy(m) {
                 </div>
               </div>
 
+              {/* 가족·지인에게 내 소원등 알리기 (카카오톡 피드 카드 공유) */}
+              <button
+                type="button"
+                onClick={() => handleShareMyLantern(alreadyLitModalData.believer_name)}
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow flex items-center justify-center gap-1.5 active:scale-95 transition cursor-pointer"
+              >
+                <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
+                <span>가족·지인에게 내 발원 알리기 (카톡 공유)</span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => setAlreadyLitModalData(null)}
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs shadow-md hover:brightness-105 transition cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] border border-[#C59B27] font-bold text-xs transition cursor-pointer shadow-md"
               >
                 합장하며 확인 (닫기)
               </button>
