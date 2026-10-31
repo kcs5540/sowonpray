@@ -10032,6 +10032,7 @@ function normalizeMemberHierarchy(m) {
                       </span>
                     </div>
 
+                    {/* 1. 3개 핵심 지표 (법연 신도 / 적립 공덕금 / 승급 D-Day) */}
                     <div className="grid grid-cols-3 gap-2 pt-0.5">
                       <div className="bg-white/5 border border-white/10 rounded-2xl p-2.5 text-center">
                         <div className="text-[10px] sm:text-[10.5px] text-[#BFB6AA]">맺은 법연(신도)</div>
@@ -10040,9 +10041,9 @@ function normalizeMemberHierarchy(m) {
                         </div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-2xl p-2.5 text-center">
-                        <div className="text-[10px] sm:text-[10.5px] text-[#BFB6AA]">위패/불사 봉안</div>
-                        <div className="text-base sm:text-lg font-extrabold text-white mt-0.5">
-                          {currentUserWipaeCount}기
+                        <div className="text-[10px] sm:text-[10.5px] text-[#BFB6AA]">적립 공덕금</div>
+                        <div className="text-base sm:text-lg font-extrabold text-[#FFE58A] mt-0.5">
+                          {(currentUserBelieversCount * 1000).toLocaleString()}원
                         </div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-2xl p-2.5 text-center">
@@ -10053,6 +10054,25 @@ function normalizeMemberHierarchy(m) {
                       </div>
                     </div>
 
+                    {/* 2. 🎁 1인 추천 보시 혜택 안내 (현금 또는 사찰 공덕 마일리지 선택) */}
+                    <div className="p-3 rounded-2xl bg-gradient-to-r from-[#C59B27]/15 via-[#F5D061]/10 to-transparent border border-[#F5D061]/30 flex items-start gap-2.5">
+                      <span className="text-lg shrink-0 mt-0.5">🎁</span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-1 flex-wrap">
+                          <span className="text-xs font-bold text-[#F5D061]">
+                            1인 법연 추천 시 1,000원 상당 보시
+                          </span>
+                          <span className="text-[10px] text-[#E5D7B5] bg-white/10 px-1.5 py-0.5 rounded font-medium">
+                            현금 정산 or 기도·불사 공덕 차감
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-[#BFB6AA] mt-1 leading-relaxed break-keep">
+                          소원등을 선물하여 부처님 법연을 맺을 때마다 <strong className="text-white">1인당 1,000원</strong>의 포교 공덕금이 적립됩니다. (적립금은 현금 계좌 정산 또는 사찰 기도·등공양 보시금으로 자유롭게 사용 가능합니다.)
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* 3. 🏆 30명 달성 시 정식 포교위원 위촉 목표 게이지 */}
                     <div className="p-3.5 rounded-2xl bg-black/35 border border-white/10 space-y-2.5">
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-[#D6CEC2] font-semibold text-[11px]">
@@ -10069,7 +10089,7 @@ function normalizeMemberHierarchy(m) {
                         />
                       </div>
                       <p className="text-[11px] text-[#A89880] leading-snug break-keep pt-0.5">
-                        소원등을 선물하여 부처님 법연을 맺은 인연이 <strong className="text-[#F5D061]">30명</strong>에 도달하면 제주 소원사 <strong className="text-white">정식 포교위원</strong>으로 명예 위촉되며 매월 포교 활동 공덕금이 보시 지원됩니다.
+                        법연을 맺은 인연이 <strong className="text-[#F5D061]">30명</strong>에 도달하면 제주 소원사 <strong className="text-white">정식 포교위원</strong>으로 명예 위촉되며 매월 포교 활동 공덕금이 보시 지원됩니다.
                       </p>
                     </div>
                   </section>
