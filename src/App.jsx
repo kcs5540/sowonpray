@@ -9793,16 +9793,14 @@ function normalizeMemberHierarchy(m) {
                                     {activeIndeung ? '대웅전 1년 인등 (가족등)' : '100일 소원성취 특별기도'}
                                   </span>
                                 </div>
-                                <span className="px-2 py-0.5 rounded-full bg-emerald-500/25 border border-emerald-400/50 text-emerald-300 text-[10.5px] font-black whitespace-nowrap shrink-0">
-                                  ✨ D-{activeIndeung ? activeIndeung.daysLeft : active100d.daysLeft}일 점등
+                                <span className="text-emerald-400 font-extrabold text-xs font-mono shrink-0">
+                                  D-{activeIndeung ? activeIndeung.daysLeft : active100d.daysLeft}일
                                 </span>
                               </div>
 
                               {/* 2행: 봉안 위치 배지 + 상세 축원 안내 */}
-                              <div className="flex items-center gap-1.5 text-[10.5px] text-[#C5BBAE] pt-0.5 pl-0.5">
-                                <span className="px-1.5 py-0.2 rounded bg-[#FAF3DF]/15 text-[#FFE58A] border border-[#E5D399]/30 text-[9.5px] font-bold shrink-0 whitespace-nowrap">
-                                  대웅전 봉안
-                                </span>
+                              <div className="flex items-center gap-1.5 text-[10.5px] text-[#C5BBAE] pt-0.5">
+                                <span className="text-[#FFE58A] font-bold shrink-0">대웅전 봉안 ·</span>
                                 <span className="truncate">
                                   {activeIndeung ? '365일 24시간 상시 점등 · 사시예불 영구 축원' : '100일간 매일 특별 축원 봉행'}
                                 </span>
