@@ -11812,7 +11812,7 @@ function normalizeMemberHierarchy(m) {
                   }}
                   className="w-full py-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 border border-emerald-400/50 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition cursor-pointer"
                 >
-                  <PhoneCall className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
+                  <Phone className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
                   <span>📩 종무소(010-4912-1083)로 예약 문자 바로 보내기</span>
                 </button>
 
