@@ -7076,7 +7076,7 @@ function normalizeMemberHierarchy(m) {
                   className="w-full py-3.5 px-3 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-extrabold text-xs sm:text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-1.5 cursor-pointer overflow-hidden"
                 >
                   <Award className="w-4 h-4 shrink-0" />
-                  <span className="truncate">① 상담 · 무통장 불사 신청 접수하기</span>
+                  <span className="truncate">기도 · 위패 · 불사 신청 접수하기</span>
                 </button>
 
                 {/* 💳 간편 온라인 시주 · 보시 결제 (카카오페이 · 신용카드 · 계좌이체) */}
@@ -7085,7 +7085,7 @@ function normalizeMemberHierarchy(m) {
                     <div className="flex items-center gap-1.5 min-w-0">
                       <CreditCard className="w-4 h-4 text-[#8A6510] shrink-0" />
                       <span className="text-xs font-extrabold text-[#231F1C] truncate">
-                        ② 간편 온라인 보시 결제
+                        간편 온라인 시주 · 보시 결제
                       </span>
                     </div>
                     <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#231F1C] text-[#F5D061] border border-[#C59B27]/50 shrink-0 whitespace-nowrap">
