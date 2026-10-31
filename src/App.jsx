@@ -9788,7 +9788,7 @@ function normalizeMemberHierarchy(m) {
                               {/* 1행: 등불 명칭 & D-Day 배지 (양 끝 칼정렬, 줄바꿈 완전 방지) */}
                               <div className="flex items-center justify-between gap-2">
                                 <div className="flex items-center gap-1.5 min-w-0">
-                                  <span className="text-sm shrink-0">🪔</span>
+                                  
                                   <span className="font-extrabold text-[#F5D061] text-xs whitespace-nowrap tracking-tight">
                                     {activeIndeung ? '대웅전 1년 인등 (가족등)' : '100일 소원성취 특별기도'}
                                   </span>
