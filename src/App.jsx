@@ -9872,24 +9872,24 @@ function normalizeMemberHierarchy(m) {
                           else setAdminModalTab('common')
                           setShowUnifiedAdminModal(true)
                         }}
-                        className="w-full min-h-[64px] py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#F5D061] via-[#E8C568] to-[#D4AF37] text-[#1B1815] font-extrabold text-sm flex items-center justify-between shadow-[0_4px_16px_rgba(212,175,55,0.3)] hover:brightness-105 active:scale-98 transition border-2 border-[#FFF3B8]"
+                        className="w-full py-2 px-3.5 rounded-xl bg-gradient-to-r from-[#F5D061] via-[#E8C568] to-[#D4AF37] text-[#1B1815] font-extrabold flex items-center justify-between shadow-sm hover:brightness-105 active:scale-98 transition border border-[#FFF3B8]"
                       >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-9 h-9 rounded-xl bg-[#1B1815] text-[#F5D061] border border-[#F5D061]/40 flex items-center justify-center font-bold text-base shrink-0 shadow">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-7 h-7 rounded-lg bg-[#1B1815] text-[#F5D061] border border-[#F5D061]/40 flex items-center justify-center text-sm shrink-0 shadow-xs">
                             🏛️
                           </div>
                           <div className="text-left min-w-0">
-                            <span className="block font-black text-xs sm:text-sm whitespace-nowrap leading-tight text-[#1B1815]">
+                            <span className="block font-black text-xs whitespace-nowrap leading-tight text-[#1B1815]">
                               포교 전산 관제실
                             </span>
-                            <span className="text-[10px] sm:text-[10.5px] font-bold text-[#4A3D18] whitespace-nowrap block mt-0.5">
+                            <span className="text-[10px] font-bold text-[#4A3D18] whitespace-nowrap block mt-0.5">
                               인연 {currentUserBelieversCount}명 · 위패 {currentUserWipaeCount}기
                             </span>
                           </div>
                         </div>
-                        <div className="flex items-center gap-0.5 text-[11px] font-black bg-[#1B1815] text-[#F5D061] px-3 py-1.5 rounded-xl shrink-0 whitespace-nowrap shadow-sm">
+                        <div className="flex items-center gap-0.5 text-[10.5px] font-black bg-[#1B1815] text-[#F5D061] px-2.5 py-1 rounded-lg shrink-0 whitespace-nowrap shadow-xs">
                           <span>입장</span>
-                          <ChevronRight className="w-3.5 h-3.5 -mr-0.5" />
+                          <ChevronRight className="w-3 h-3 -mr-0.5" />
                         </div>
                       </button>
                     )}
@@ -9917,12 +9917,12 @@ function normalizeMemberHierarchy(m) {
                   <button
                     type="button"
                     onClick={() => handleShareKakao(currentUser.code, currentUser.name)}
-                    className="w-full py-3.5 px-4 rounded-2xl bg-[#FEE500] hover:bg-[#FADA0A] text-[#191919] font-extrabold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-sm transition active:scale-98 border border-[#E6CE00]"
+                    className="w-full py-2.5 px-3 rounded-xl bg-[#FEE500] hover:bg-[#FADA0A] text-[#191919] font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition active:scale-98 border border-[#E6CE00]"
                   >
-                    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-[#3A1D1D] shrink-0" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-[#3A1D1D] shrink-0" aria-hidden="true">
                       <path d="M12 3C6.477 3 2 6.477 2 10.767c0 2.766 1.874 5.19 4.678 6.558l-1.18 4.337a.5.5 0 0 0 .768.528l5.105-3.374c.206.015.414.024.629.024 5.523 0 10-3.477 10-7.767C22 6.477 17.523 3 12 3z"/>
                     </svg>
-                    <span>카카오톡으로 1일 소원등 복(福) 선물하기</span>
+                    <span className="whitespace-nowrap">카카오톡으로 소원등 선물하기</span>
                   </button>
 
                   {/* 2) 보조 버튼 2종: 링크 복사 & QR코드 보기 */}
