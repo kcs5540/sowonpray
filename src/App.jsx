@@ -5665,18 +5665,23 @@ function normalizeMemberHierarchy(m) {
     const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
     const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=3'
 
-    // 1) Kakao JavaScript SDK 정식 피드 카드 전송
+    // 1) Kakao JavaScript SDK 정식 피드 카드 전송 (1번 접수증처럼 itemContent 지혜법문표 탑재!)
     if (typeof window !== 'undefined' && window.Kakao) {
       try {
         if (!window.Kakao.isInitialized()) {
           window.Kakao.init(kakaoKey)
         }
         if (window.Kakao.isInitialized() && window.Kakao.Share) {
+          const { lunarText, jaeilBadge } = getTodayLunarAndJaeil()
+          const senderLabel = currentUser?.name
+            ? `${currentUser.name}${currentUser.dharma_name ? ` (${currentUser.dharma_name})` : ''}`
+            : '소원사 도반'
+
           window.Kakao.Share.sendDefault({
             objectType: 'feed',
             content: {
-              title: '🪷 제주 소원사 오늘의 부처님 말씀',
-              description: `"${quote.verse}"\n— ${quote.source}`,
+              title: `🪷 [제주 소원사] 오늘의 부처님 말씀`,
+              description: `해설: "${quote.commentary}"`,
               imageUrl: altarImageUrl,
               imageWidth: 1024,
               imageHeight: 693,
@@ -5684,6 +5689,18 @@ function normalizeMemberHierarchy(m) {
                 mobileWebUrl: shareUrl,
                 webUrl: shareUrl,
               },
+            },
+            itemContent: {
+              profileText: '제주 소원사 모바일 법당 · 일일 법공양',
+              titleImageText: quote.source,
+              titleImageCategory: `${lunarText} · ${jaeilBadge}`,
+              items: [
+                { item: '보낸도반', itemOp: senderLabel },
+                { item: '경전출처', itemOp: quote.source },
+                { item: '핵심법문', itemOp: quote.verse.slice(0, 24) + (quote.verse.length > 24 ? '…' : '') },
+                { item: '사찰위치', itemOp: '제주시 오등동 935' },
+                { item: '종무소', itemOp: '010-4912-1083' },
+              ],
             },
             buttons: [
               {
