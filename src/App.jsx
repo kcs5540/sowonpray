@@ -9754,14 +9754,14 @@ function normalizeMemberHierarchy(m) {
                         })
                       }
 
-                      // 3) 특별 불사 (대표님 테스트 또는 실제 개금/불사 신청자)
+                      // 3) 특별 불사 (소원사 실제 불사: 삼성각 원불 봉안 불사)
                       if (hasRealBulsa || isKcsTest) {
                         dedicatedBulsaItems.push({
-                          id: 'bulsa_gold',
-                          title: '대웅전 삼존불 개금불사 동참',
-                          rightText: '원만 회향',
-                          location: '대웅전 봉안',
-                          desc: '부처님 전 무량공덕 및 가문 번영 영구 봉안 축원',
+                          id: 'bulsa_samsunggak',
+                          title: '삼성각 원불(願佛) 봉안 불사',
+                          rightText: '영구 봉안',
+                          location: '삼성각 봉안',
+                          desc: '칠성·독성·산신전 자손번창과 가문 번영 영구축원',
                         })
                       }
 
