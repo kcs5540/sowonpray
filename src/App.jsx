@@ -4003,6 +4003,9 @@ function normalizeMemberHierarchy(m) {
     setShowTossCheckoutModal(false)
     showToast(`🎉 [${formattedBelieverName}] ${methodDetail} ${amount.toLocaleString()}원 결제가 완료되어 대웅전 축원 명부 및 정산원장에 즉시 등재되었습니다!`)
   }
+  // 임시 접수 대기 데이터 보관 (1번 접수 버튼 클릭 시에는 팝업만 띄우고, [합장하며 확인] 클릭 시에만 DB 및 문자 발송 실행)
+  const pendingPrayerDraftRef = useRef(null)
+
   const handlePrayerSubmit = (e) => {
     e.preventDefault()
     if (!wishName.trim() || !wishPhone.trim()) {
@@ -4016,195 +4019,218 @@ function normalizeMemberHierarchy(m) {
         ? `${wishName.trim()} (대상: ${finalTarget})`
         : wishName.trim()
 
-    // 소원 발원문을 직접 쓰지 않고 비워둔 경우, 선택된 기원 분야의 정통 예시 발원문으로 자동 접수!
+    // 소원 발원문을 직접 쓰지 않고 비워둔 경우, 선택된 기원 분야의 정통 예시 발원문으로 자동 준비
     const finalWishText =
       wishText.trim() ||
       PRAYER_CATEGORY_TEMPLATES[wishCategory] ||
       '우리 가족 올 한 해 무병장수하고 하는 일마다 순조롭게 풀리기를 발원합니다.'
 
     playSingingBowlSound()
-    const now = Date.now()
-    // 1일 1소원등: 오늘 밤 자정(23:59:59)까지 유지된 후 내일 다시 새 원력으로 점등 가능
-    const endOfToday = new Date()
-    endOfToday.setHours(23, 59, 59, 999)
-    const expireAt = Math.max(endOfToday.getTime(), now + 12 * 60 * 60 * 1000) // 최소 12시간~당일 자정 유지
 
-    // 연속 정진 일수 계산 및 공덕 가산
-    const nextStreak = (lanternStreak || 0) + 1
-    setLanternStreak(nextStreak)
-    try {
-      localStorage.setItem('sowonsa_lantern_streak', String(nextStreak))
-    } catch (e) {}
-
-    const newLanternInfo = {
-      member_code: currentUser?.code || '',
-      believer_name: formattedBelieverName,
-      wish_target: finalTarget || '본인',
-      believer_phone: wishPhone.trim(),
-      wish_category: wishCategory,
-      wish_text: finalWishText,
-      lit_at: now,
-      expire_at: expireAt,
-      streak: nextStreak,
-    }
-    try {
-      localStorage.setItem('sowonsa_7day_lantern', JSON.stringify(newLanternInfo))
-    } catch (err) {}
-    setLanternData(newLanternInfo)
-
-    const writerCode = currentUser?.code || extractPhone8Code(wishPhone)
-    const matchedMember = members.find((m) => m.code === writerCode)
-    const assignedAgentCode = currentUser?.parent_code || matchedMember?.parent_code || referralCode || '33065540'
-
-    const newPrayer = {
-      id: 'p-' + Date.now(),
-      member_code: writerCode,
-      believer_name: formattedBelieverName,
-      wish_target: finalTarget || '본인',
-      believer_phone: wishPhone.trim(),
-      agent_code: assignedAgentCode,
-      wish_category: wishCategory,
-      wish_text: finalWishText,
-      status:
-        wishCategory.includes('위패') || wishCategory.includes('삼성각')
-          ? 'consulting'
-          : 'prayed',
-      prayed_at:
-        wishCategory.includes('위패') || wishCategory.includes('삼성각')
-          ? '종무소 위패·삼성각 불사 우선 상담 배정됨'
-          : '오늘 제주 소원사 대웅전 축원 접수완료',
-      created_at: new Date().toISOString(),
+    // 1단계: 아직 DB 저장이나 문자 발송을 하지 않고 대기(Draft) 상태만 생성 후 확인 모달 오픈
+    pendingPrayerDraftRef.current = {
+      wishNameClean: wishName.trim(),
+      wishPhoneClean: wishPhone.trim(),
+      finalTarget,
+      formattedBelieverName,
+      wishCategory,
+      finalWishText,
+      isPaidPrayer:
+        (wishCategory || '').includes('위패') ||
+        (wishCategory || '').includes('생전예수재') ||
+        (wishCategory || '').includes('삼성각') ||
+        (wishCategory || '').includes('기와') ||
+        (wishCategory || '').includes('단청') ||
+        (wishCategory || '').includes('명패') ||
+        (wishCategory || '').includes('인등') ||
+        (wishCategory || '').includes('100일') ||
+        (wishCategory || '').includes('49재') ||
+        (wishCategory || '').includes('천도재') ||
+        (wishCategory || '').includes('공양미'),
+      committed: false,
     }
 
-    setPrayers((prev) => [newPrayer, ...prev])
-    setLatestSubmittedPrayerId(newPrayer.id)
-
-    // Supabase 클라우드 실시간 저장 (반환된 DB id도 연동하여 접수 취소 시 DB에서도 즉시 삭제 보장)
-    if (supabase) {
-      supabase
-        .from('prayers')
-        .insert([
-          {
-            temple_id: 'sowonsa',
-            member_code: writerCode,
-            agent_code: assignedAgentCode,
-            believer_name: formattedBelieverName,
-            believer_phone: wishPhone.trim(),
-            wish_category: wishCategory,
-            wish_text: finalWishText,
-            status: newPrayer.status,
-            prayed_at: newPrayer.prayed_at,
-          },
-        ])
-        .select('id')
-        .single()
-        .then(({ data }) => {
-          if (data?.id) {
-            setPrayers((prev) =>
-              prev.map((p) => (p.id === newPrayer.id ? { ...p, db_id: data.id } : p))
-            )
-          }
-        })
-        .catch(() => {})
-    }
-
-    // 신규 신청자 전산 자동 등록 처리 (신규 불자 DB 등재)
-    const cleanPrayerPhone = wishPhone.replace(/[^0-9]/g, '')
-    const prayerCode8 = extractPhone8Code(cleanPrayerPhone)
-    const existingPrayerMember = members.find((m) => m.code === prayerCode8)
-    if (!existingPrayerMember) {
-      const newBeliever = {
-        code: prayerCode8,
-        phone: formatPhone11(wishPhone),
-        password_pin: prayerCode8.slice(-4) || '1234',
-        name: wishName.trim(),
-        dharma_name: '',
-        birth_date: '',
-        lunar_solar: '음력',
-        address: '',
-        family_memo: `대웅전 소원등(${wishCategory}) 신청으로 전산 자동 등록됨`,
-        role: 'believer',
-        parent_code: assignedAgentCode,
-        bank_name: '',
-        bank_account: '',
-        account_holder: '',
-        merit_count: 1,
-        believers_count: 0,
-        wipae_count: 0,
-        extra_data: { registered_via: 'wish_lantern' },
-      }
-      setMembers((prev) => [newBeliever, ...prev])
-      if (supabase) {
-        supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
-      }
-    }
-
-    // 담당 포교사 인연 신도수 업데이트
-    setMembers((prev) =>
-      prev.map((m) =>
-        m.code === assignedAgentCode
-          ? { ...m, believers_count: (m.believers_count || 0) + 1 }
-          : m
-      )
-    )
-
-    // 🔔 종무소(010-4912-1083) 및 신청 신도님 휴대폰으로 접수 안내 문자·알림톡 자동 발송
-    notifyPrayerSubmission({
-      believerName: formattedBelieverName,
-      believerPhone: wishPhone.trim(),
-      category: wishCategory,
-      wishText: finalWishText,
-      isPaidPrayer,
-    }).catch(() => {})
-
-    setWishText(PRAYER_CATEGORY_TEMPLATES[wishCategory] || '')
-    setWishTarget('')
     setShowSuccessModal(true)
-    const isWipaeToast = (wishCategory || '').includes('위패') || (wishCategory || '').includes('생전예수재')
-    const isSamseongToast = (wishCategory || '').includes('삼성각') || (wishCategory || '').includes('기와') || (wishCategory || '').includes('단청') || (wishCategory || '').includes('명패')
-    const isIndeungToast = (wishCategory || '').includes('인등')
-    const toastMsg = isWipaeToast
-      ? '🏛️ [영구 위패 봉안 불사]가 정식 접수되었습니다. 사시예불마다 축원 올립니다.'
-      : isSamseongToast
-      ? '🏔️ [삼성각 성전 건립 불사] 동참이 정식 접수되었습니다. 무량공덕을 축원합니다.'
-      : isIndeungToast
-      ? '🪔 [대웅전 1년 인등 불사]가 정식 접수되었습니다. 365일 무량광명을 밝힙니다.'
-      : '🙏 간절한 발원이 정식 접수되었습니다. 사시예불마다 정성껏 축원 올립니다.'
-    showToast(toastMsg)
   }
 
-  // 소원등/불사 신청 완료 팝업에서 [접수 취소] 클릭 시 방금 신청한 기록을 로컬 장부 + Supabase DB에서 즉시 삭제 롤백
-  const handleCancelSubmittedPrayer = () => {
-    if (latestSubmittedPrayerId) {
-      const targetPrayer = prayers.find((p) => p.id === latestSubmittedPrayerId)
-      setPrayers((prev) => prev.filter((p) => p.id !== latestSubmittedPrayerId))
-      if (targetPrayer) {
-        notifyPrayerCancellation({
-          believerName: targetPrayer.believer_name,
-          believerPhone: targetPrayer.believer_phone,
-          category: targetPrayer.wish_category,
-        }).catch(() => {})
+  // 2단계-A: [합장하며 확인] (또는 카톡 공유) 클릭 시 비로소 장부/DB 정식 등록 및 종무소·신도 문자 알람 발송
+  const handleConfirmSubmittedPrayer = ({ closeModal = true } = {}) => {
+    const draft = pendingPrayerDraftRef.current
+    if (draft && !draft.committed) {
+      draft.committed = true
+
+      const {
+        wishNameClean,
+        wishPhoneClean,
+        finalTarget,
+        formattedBelieverName,
+        wishCategory: cat,
+        finalWishText,
+        isPaidPrayer: paidFlag,
+      } = draft
+
+      const now = Date.now()
+      const endOfToday = new Date()
+      endOfToday.setHours(23, 59, 59, 999)
+      const expireAt = Math.max(endOfToday.getTime(), now + 12 * 60 * 60 * 1000)
+
+      const nextStreak = (lanternStreak || 0) + 1
+      setLanternStreak(nextStreak)
+      try {
+        localStorage.setItem('sowonsa_lantern_streak', String(nextStreak))
+      } catch (e) {}
+
+      const newLanternInfo = {
+        member_code: currentUser?.code || '',
+        believer_name: formattedBelieverName,
+        wish_target: finalTarget || '본인',
+        believer_phone: wishPhoneClean,
+        wish_category: cat,
+        wish_text: finalWishText,
+        lit_at: now,
+        expire_at: expireAt,
+        streak: nextStreak,
       }
-      if (supabase && targetPrayer) {
-        if (targetPrayer.db_id) {
-          supabase.from('prayers').delete().eq('id', targetPrayer.db_id).then()
-        } else {
-          supabase
-            .from('prayers')
-            .delete()
-            .eq('believer_name', targetPrayer.believer_name)
-            .eq('wish_category', targetPrayer.wish_category)
-            .then()
+      try {
+        localStorage.setItem('sowonsa_7day_lantern', JSON.stringify(newLanternInfo))
+      } catch (err) {}
+      setLanternData(newLanternInfo)
+
+      const writerCode = currentUser?.code || extractPhone8Code(wishPhoneClean)
+      const matchedMember = members.find((m) => m.code === writerCode)
+      const assignedAgentCode =
+        currentUser?.parent_code || matchedMember?.parent_code || referralCode || '33065540'
+
+      const newPrayer = {
+        id: 'p-' + Date.now(),
+        member_code: writerCode,
+        believer_name: formattedBelieverName,
+        wish_target: finalTarget || '본인',
+        believer_phone: wishPhoneClean,
+        agent_code: assignedAgentCode,
+        wish_category: cat,
+        wish_text: finalWishText,
+        status:
+          cat.includes('위패') || cat.includes('삼성각') ? 'consulting' : 'prayed',
+        prayed_at:
+          cat.includes('위패') || cat.includes('삼성각')
+            ? '종무소 위패·삼성각 불사 우선 상담 배정됨'
+            : '오늘 제주 소원사 대웅전 축원 접수완료',
+        created_at: new Date().toISOString(),
+      }
+
+      setPrayers((prev) => [newPrayer, ...prev])
+      setLatestSubmittedPrayerId(newPrayer.id)
+
+      // Supabase 클라우드 실시간 정식 저장
+      if (supabase) {
+        supabase
+          .from('prayers')
+          .insert([
+            {
+              temple_id: 'sowonsa',
+              member_code: writerCode,
+              agent_code: assignedAgentCode,
+              believer_name: formattedBelieverName,
+              believer_phone: wishPhoneClean,
+              wish_category: cat,
+              wish_text: finalWishText,
+              status: newPrayer.status,
+              prayed_at: newPrayer.prayed_at,
+            },
+          ])
+          .select('id')
+          .single()
+          .then(({ data }) => {
+            if (data?.id) {
+              setPrayers((prev) =>
+                prev.map((p) => (p.id === newPrayer.id ? { ...p, db_id: data.id } : p))
+              )
+            }
+          })
+          .catch(() => {})
+      }
+
+      // 신규 신청자 전산 자동 등록 처리 (신규 불자 DB 등재)
+      const cleanPrayerPhone = wishPhoneClean.replace(/[^0-9]/g, '')
+      const prayerCode8 = extractPhone8Code(cleanPrayerPhone)
+      const existingPrayerMember = members.find((m) => m.code === prayerCode8)
+      if (!existingPrayerMember) {
+        const newBeliever = {
+          code: prayerCode8,
+          phone: formatPhone11(wishPhoneClean),
+          password_pin: prayerCode8.slice(-4) || '1234',
+          name: wishNameClean,
+          dharma_name: '',
+          birth_date: '',
+          lunar_solar: '음력',
+          address: '',
+          family_memo: `대웅전 소원등(${cat}) 신청으로 전산 자동 등록됨`,
+          role: 'believer',
+          parent_code: assignedAgentCode,
+          bank_name: '',
+          bank_account: '',
+          account_holder: '',
+          merit_count: 1,
+          believers_count: 0,
+          wipae_count: 0,
+          extra_data: { registered_via: 'wish_lantern' },
+        }
+        setMembers((prev) => [newBeliever, ...prev])
+        if (supabase) {
+          supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
         }
       }
-      setLatestSubmittedPrayerId(null)
+
+      // 담당 포교사 인연 신도수 업데이트
+      setMembers((prev) =>
+        prev.map((m) =>
+          m.code === assignedAgentCode
+            ? { ...m, believers_count: (m.believers_count || 0) + 1 }
+            : m
+        )
+      )
+
+      // 🔔 [합장하며 확인] 시점에 종무소(010-4912-1083) 및 신청 신도님 휴대폰으로 접수 안내 문자·알림톡 자동 발송
+      notifyPrayerSubmission({
+        believerName: formattedBelieverName,
+        believerPhone: wishPhoneClean,
+        category: cat,
+        wishText: finalWishText,
+        isPaidPrayer: paidFlag,
+      }).catch(() => {})
+
+      setWishText(PRAYER_CATEGORY_TEMPLATES[cat] || '')
+      setWishTarget('')
+
+      const isWipaeToast = (cat || '').includes('위패') || (cat || '').includes('생전예수재')
+      const isSamseongToast =
+        (cat || '').includes('삼성각') ||
+        (cat || '').includes('기와') ||
+        (cat || '').includes('단청') ||
+        (cat || '').includes('명패')
+      const isIndeungToast = (cat || '').includes('인등')
+      const toastMsg = isWipaeToast
+        ? '🏛️ [영구 위패 봉안 불사]가 정식 접수되어 종무소로 알림이 전송되었습니다.'
+        : isSamseongToast
+        ? '🏔️ [삼성각 성전 건립 불사] 동참이 정식 접수되어 종무소로 알림이 전송되었습니다.'
+        : isIndeungToast
+        ? '🪔 [대웅전 1년 인등 불사]가 정식 접수되어 종무소로 알림이 전송되었습니다.'
+        : '🙏 간절한 발원이 정식 접수되어 사시예불 축원 명부에 등재되었습니다.'
+      showToast(toastMsg)
     }
-    try {
-      localStorage.removeItem('sowonsa_7day_lantern')
-    } catch (e) {}
-    setLanternData(null)
+
+    if (closeModal) {
+      pendingPrayerDraftRef.current = null
+      setShowSuccessModal(false)
+    }
+  }
+
+  // 2단계-B: [접수 취소] 또는 X 클릭 시 아무런 DB 등록/문자 발송 없이 깔끔하게 창만 닫기
+  const handleCancelSubmittedPrayer = () => {
+    pendingPrayerDraftRef.current = null
     setShowSuccessModal(false)
-    showToast('🗑️ 신청 접수가 취소되어 장부 및 DB에서 완전히 제외되었습니다.')
+    showToast('접수가 취소되었습니다.')
   }
 
   // 전날 도량 방문 & 차담·사찰 공양(식사) 사전 예약 접수 핸들러
@@ -11151,14 +11177,14 @@ function normalizeMemberHierarchy(m) {
             <div
               className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
               onClick={(e) => {
-                if (e.target === e.currentTarget) setShowSuccessModal(false)
+                if (e.target === e.currentTarget) handleCancelSubmittedPrayer()
               }}
             >
               <div className="w-full max-w-[385px] max-h-[84dvh] sm:max-h-[90vh] overflow-y-auto bg-[#1F1B17] text-white rounded-3xl p-4 sm:p-6 border border-[#F5D061] text-center space-y-2.5 sm:space-y-3.5 shadow-2xl animate-in zoom-in-95 duration-150 relative my-auto">
                 {/* 상단 우측 X 닫기/취소 버튼 */}
                 <button
                   type="button"
-                  onClick={() => setShowSuccessModal(false)}
+                  onClick={handleCancelSubmittedPrayer}
                   className="absolute top-3 right-3 sm:top-4 sm:right-4 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition cursor-pointer z-10"
                   title="닫기"
                 >
@@ -11252,6 +11278,7 @@ function normalizeMemberHierarchy(m) {
                 <button
                   type="button"
                   onClick={() => {
+                    handleConfirmSubmittedPrayer({ closeModal: false })
                     const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
                     const code = currentUser?.code || referralCode || '33065540'
                     const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
@@ -11325,7 +11352,7 @@ function normalizeMemberHierarchy(m) {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setShowSuccessModal(false)}
+                    onClick={() => handleConfirmSubmittedPrayer({ closeModal: true })}
                     className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] border border-[#C59B27] font-bold text-xs transition cursor-pointer shadow-md"
                   >
                     합장하며 확인
