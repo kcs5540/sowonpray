@@ -3677,9 +3677,14 @@ function normalizeMemberHierarchy(m) {
   const handleLanternClick = () => {
     playSingingBowlSound()
     if (isLanternLit) {
-      showToast(
-        `✨ ${lanternData?.believer_name || '불자'}님의 소원등이 오늘 제주 소원사 대웅전에서 축원 중입니다 (내일 새 원력으로 또 켜실 수 있습니다)`
-      )
+      setAlreadyLitModalData({
+        believer_name: lanternData?.believer_name || wishName.trim() || '불자',
+        believer_phone: lanternData?.believer_phone || wishPhone.trim() || '',
+        wish_category: lanternData?.wish_category || wishCategory || '가족건강',
+        wish_text:
+          lanternData?.wish_text ||
+          '우리 가족 모두 건강하고 화목과 평안이 늘 함께하기를 발원합니다.',
+      })
     } else {
       showToast('🙏 아래 발원문을 접수하시면 오늘 대웅전 소원등이 환하게 밝혀집니다.')
       const formEl = document.getElementById('lantern-prayer-form')
@@ -4005,12 +4010,82 @@ function normalizeMemberHierarchy(m) {
   }
   // 임시 접수 대기 데이터 보관 (1번 접수 버튼 클릭 시에는 팝업만 띄우고, [합장하며 확인] 클릭 시에만 DB 및 문자 발송 실행)
   const pendingPrayerDraftRef = useRef(null)
+  const [alreadyLitModalData, setAlreadyLitModalData] = useState(null)
 
   const handlePrayerSubmit = (e) => {
     e.preventDefault()
     if (!wishName.trim() || !wishPhone.trim()) {
       showToast('성함과 연락처를 입력해 주세요.')
       return
+    }
+
+    const isPaidBulsaCategory =
+      (wishCategory || '').includes('위패') ||
+      (wishCategory || '').includes('생전예수재') ||
+      (wishCategory || '').includes('삼성각') ||
+      (wishCategory || '').includes('기와') ||
+      (wishCategory || '').includes('단청') ||
+      (wishCategory || '').includes('명패') ||
+      (wishCategory || '').includes('인등') ||
+      (wishCategory || '').includes('100일') ||
+      (wishCategory || '').includes('49재') ||
+      (wishCategory || '').includes('천도재') ||
+      (wishCategory || '').includes('공양미')
+
+    // 🔥 [1일 소원등 중복 점등 방지] 미점등 회원은 그대로 진행하고, 이미 오늘 점등 중인 회원은 중복 등록 없이 '점등 중' 안내 메시지 표시
+    if (activeTab === 'lantern' && !isPaidBulsaCategory) {
+      const inputPhoneClean = wishPhone.replace(/[^0-9]/g, '')
+      const inputNameClean = wishName.trim()
+      const todayDateStr = new Date().toDateString()
+
+      // 1) 현재 기기에 점등 중인 소원등과 일치하는지 확인
+      const lanternPhoneClean = (lanternData?.believer_phone || '').replace(/[^0-9]/g, '')
+      const isSameAsActiveLantern =
+        isLanternLit &&
+        lanternData &&
+        ((inputPhoneClean && lanternPhoneClean && inputPhoneClean === lanternPhoneClean) ||
+          (inputNameClean && (lanternData.believer_name || '').includes(inputNameClean)))
+
+      // 2) 오늘 날짜로 접수된 1일 소원등 기록이 장부(prayers)에 이미 있는지 확인
+      const existingTodayPrayer = prayers.find((p) => {
+        if (!p.created_at) return false
+        const pDate = new Date(p.created_at)
+        if (isNaN(pDate.getTime()) || pDate.toDateString() !== todayDateStr) return false
+        const pCat = p.wish_category || ''
+        if (
+          pCat.includes('위패') ||
+          pCat.includes('생전예수재') ||
+          pCat.includes('삼성각') ||
+          pCat.includes('인등') ||
+          pCat.includes('100일') ||
+          pCat.includes('49재') ||
+          pCat.includes('천도재') ||
+          pCat.includes('공양미')
+        ) {
+          return false
+        }
+        const pPhone = (p.believer_phone || '').replace(/[^0-9]/g, '')
+        return (
+          (inputPhoneClean && pPhone && inputPhoneClean === pPhone) ||
+          (inputNameClean && (p.believer_name || '').includes(inputNameClean))
+        )
+      })
+
+      if (isSameAsActiveLantern || existingTodayPrayer) {
+        playSingingBowlSound()
+        const activeRecord = existingTodayPrayer || lanternData
+        setAlreadyLitModalData({
+          believer_name: activeRecord?.believer_name || inputNameClean,
+          believer_phone: activeRecord?.believer_phone || wishPhone.trim(),
+          wish_category: activeRecord?.wish_category || wishCategory || '가족건강',
+          wish_text:
+            activeRecord?.wish_text ||
+            wishText.trim() ||
+            PRAYER_CATEGORY_TEMPLATES[wishCategory] ||
+            '온 가족 무병장수와 소원성취를 발원합니다.',
+        })
+        return
+      }
     }
 
     const finalTarget = wishTarget.trim()
@@ -7683,11 +7758,7 @@ function normalizeMemberHierarchy(m) {
                 className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-bold text-xs sm:text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-2 whitespace-nowrap"
               >
                 <Flame className="w-4 h-4 fill-current shrink-0" />
-                <span>
-                  {isLanternLit
-                    ? '대웅전에 소원등 새로 켜고 축원 올리기'
-                    : '대웅전 소원등 켜고 사시예불 축원 올리기'}
-                </span>
+                <span>대웅전 소원등 켜고 사시예불 축원 올리기</span>
               </button>
             </form>
 
@@ -11103,6 +11174,79 @@ function normalizeMemberHierarchy(m) {
               </div>
             </section>
           </main>
+        )}
+
+        {/* 이미 오늘 1일 소원등이 점등 중인 회원에게 띄우는 안내 팝업 (중복 DB 등록 및 중복 문자 발송 없음) */}
+        {alreadyLitModalData && (
+          <div
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setAlreadyLitModalData(null)
+            }}
+          >
+            <div className="w-full max-w-[385px] max-h-[84dvh] overflow-y-auto bg-[#1F1B17] text-white rounded-3xl p-5 sm:p-6 border-2 border-[#F5D061] text-center space-y-3 shadow-2xl animate-in zoom-in-95 duration-150 relative my-auto">
+              <button
+                type="button"
+                onClick={() => setAlreadyLitModalData(null)}
+                className="absolute top-3.5 right-3.5 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition cursor-pointer"
+                title="닫기"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              <div className="w-12 h-12 rounded-full bg-gradient-to-b from-[#FFE27A] to-[#D48817] border-2 border-[#FFF3B8] mx-auto flex items-center justify-center shadow-[0_0_20px_rgba(245,208,97,0.5)]">
+                <Flame className="w-6 h-6 text-[#1B1815] fill-[#1B1815]" />
+              </div>
+
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-xs font-extrabold text-emerald-300">
+                <span>✨ 오늘 대웅전 점등 · 축원 진행 중</span>
+              </div>
+
+              <h3 className="font-serif-kr text-lg sm:text-xl font-bold text-[#F5D061] leading-snug">
+                현재 소원등이 점등 중입니다
+              </h3>
+
+              <p className="text-xs text-[#E2DAD0] leading-relaxed break-keep">
+                <strong className="text-[#FAF8F5]">{alreadyLitModalData.believer_name}</strong> 불자님의 오늘 1일 소원등이 이미 대웅전에 밝게 켜져 축원 중입니다.
+                <br />
+                <span className="text-[11px] text-[#B8AEA0]">
+                  (중복 접수되지 않으며, 내일 다시 새 소원등을 밝히실 수 있습니다.)
+                </span>
+              </p>
+
+              <div className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left shadow-md space-y-1.5 text-xs">
+                <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-1.5">
+                  <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815]">
+                    현재 점등 내역
+                  </span>
+                  <span className="text-[11px] font-bold text-[#F5D061]">
+                    {alreadyLitModalData.wish_category}
+                  </span>
+                </div>
+                <div className="flex items-start justify-between gap-2 text-[11.5px] pt-0.5">
+                  <span className="text-[#A89D8E] shrink-0">점등 불자</span>
+                  <span className="font-bold text-[#FAF8F5] text-right break-keep">
+                    {alreadyLitModalData.believer_name}
+                    {alreadyLitModalData.believer_phone ? ` · ${alreadyLitModalData.believer_phone}` : ''}
+                  </span>
+                </div>
+                <div className="pt-1 border-t border-white/5">
+                  <div className="text-[10.5px] text-[#A89D8E] mb-0.5">발원 내용</div>
+                  <div className="text-[11px] text-[#E8DFD1] leading-relaxed break-keep whitespace-pre-wrap">
+                    “{alreadyLitModalData.wish_text}”
+                  </div>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setAlreadyLitModalData(null)}
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs shadow-md hover:brightness-105 transition cursor-pointer"
+              >
+                합장하며 확인 (닫기)
+              </button>
+            </div>
+          </div>
         )}
 
         {/* 축원 완료 모달 (선택한 종목에 맞춰 100% 맞춤 렌더링) */}
