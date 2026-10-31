@@ -11090,35 +11090,35 @@ function normalizeMemberHierarchy(m) {
 
           return (
             <div
-              className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4"
+              className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
               onClick={(e) => {
                 if (e.target === e.currentTarget) setShowSuccessModal(false)
               }}
             >
-              <div className="w-full max-w-[390px] bg-[#1F1B17] text-white rounded-3xl p-6 border border-[#F5D061] text-center space-y-4 shadow-2xl animate-in zoom-in-95 duration-150 relative">
+              <div className="w-full max-w-[385px] max-h-[84dvh] sm:max-h-[90vh] overflow-y-auto bg-[#1F1B17] text-white rounded-3xl p-4 sm:p-6 border border-[#F5D061] text-center space-y-2.5 sm:space-y-3.5 shadow-2xl animate-in zoom-in-95 duration-150 relative my-auto">
                 {/* 상단 우측 X 닫기/취소 버튼 */}
                 <button
                   type="button"
                   onClick={() => setShowSuccessModal(false)}
-                  className="absolute top-4 right-4 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition cursor-pointer"
+                  className="absolute top-3 right-3 sm:top-4 sm:right-4 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition cursor-pointer z-10"
                   title="닫기"
                 >
                   <X className="w-4 h-4" />
                 </button>
-                <div className="w-16 h-16 rounded-full bg-[#F5D061]/20 border border-[#F5D061] mx-auto flex items-center justify-center text-2xl">
-                  {isWipaeCat ? '🏛️' : isSamseongCat ? '🏔️' : isIndeungCat ? '🪔' : (is100dCat || is49jaeCat || isRiceCat) ? '🪷' : <Flame className="w-8 h-8 text-[#F5D061] fill-[#F5D061]" />}
+                <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-[#F5D061]/20 border border-[#F5D061] mx-auto flex items-center justify-center text-xl sm:text-2xl">
+                  {isWipaeCat ? '🏛️' : isSamseongCat ? '🏔️' : isIndeungCat ? '🪔' : (is100dCat || is49jaeCat || isRiceCat) ? '🪷' : <Flame className="w-6 h-6 sm:w-7 sm:h-7 text-[#F5D061] fill-[#F5D061]" />}
                 </div>
 
-                <h3 className="font-serif-kr text-xl font-bold text-[#F5D061]">
+                <h3 className="font-serif-kr text-lg sm:text-xl font-bold text-[#F5D061] leading-snug px-4">
                   {title}
                 </h3>
 
                 {/* 뱃지 */}
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F5D061]/15 border border-[#F5D061]/50 text-xs font-bold text-[#F5D061]">
+                <div className="inline-flex items-center gap-1.5 px-3 py-0.5 sm:py-1 rounded-full bg-[#F5D061]/15 border border-[#F5D061]/50 text-[11px] sm:text-xs font-bold text-[#F5D061]">
                   <span>{badge}</span>
                 </div>
 
-                <p className="text-xs text-[#E2DAD0] leading-relaxed break-keep">
+                <p className="text-[11.5px] sm:text-xs text-[#E2DAD0] leading-snug sm:leading-relaxed break-keep">
                   {desc}
                 </p>
 
@@ -11163,7 +11163,7 @@ function normalizeMemberHierarchy(m) {
                   <div
                     onClick={() => {
                       setShowSuccessModal(false)
-                      setNavTab('bulsa')
+                      setActiveTab('bulsa')
                     }}
                     className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left cursor-pointer hover:border-[#F5D061] transition group shadow-md"
                   >
@@ -11278,8 +11278,8 @@ function normalizeMemberHierarchy(m) {
 
         {/* 사경 회향 공덕장 (황금 인증서) 모달 */}
         {showMeritCertModal && (
-          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3.5 sm:p-4 animate-fadeIn">
-            <div className="w-full max-w-[390px] bg-gradient-to-b from-[#251F19] via-[#1B1713] to-[#120F0D] text-white rounded-3xl p-5 sm:p-6 border-2 border-[#D4AF37] shadow-[0_0_35px_rgba(212,175,55,0.35)] relative overflow-hidden">
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn">
+            <div className="w-full max-w-[390px] max-h-[85dvh] sm:max-h-[90vh] overflow-y-auto bg-gradient-to-b from-[#251F19] via-[#1B1713] to-[#120F0D] text-white rounded-3xl p-4 sm:p-6 border-2 border-[#D4AF37] shadow-[0_0_35px_rgba(212,175,55,0.35)] relative my-auto">
               {/* 상단 장식 빛무리 */}
               <div className="absolute -top-12 -left-12 w-36 h-36 bg-[#F5D061]/15 rounded-full blur-2xl pointer-events-none" />
               <div className="absolute -bottom-12 -right-12 w-36 h-36 bg-[#D4AF37]/15 rounded-full blur-2xl pointer-events-none" />
