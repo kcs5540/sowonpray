@@ -2540,9 +2540,6 @@ function normalizeMemberHierarchy(m) {
         active1d = true
         daysLeft1d = Math.max(1, Math.ceil((end - now) / 86400000))
       }
-    } else if ((m.merit_count || 0) > 0 && (m.merit_count || 0) < 10) {
-      active1d = true
-      daysLeft1d = 6
     }
 
     // 2) 100일 특별기도 (100일)
@@ -2564,9 +2561,6 @@ function normalizeMemberHierarchy(m) {
         active100d = true
         daysLeft100d = Math.max(1, Math.ceil((end - now) / 86400000))
       }
-    } else if ((m.merit_count || 0) >= 10 && (m.merit_count || 0) < 30) {
-      active100d = true
-      daysLeft100d = 95
     }
 
     // 3) 대웅전 1년 인등 (365일)
@@ -2588,9 +2582,6 @@ function normalizeMemberHierarchy(m) {
         active1yr = true
         daysLeft1yr = Math.max(1, Math.ceil((end - now) / 86400000))
       }
-    } else if ((m.merit_count || 0) >= 30) {
-      active1yr = true
-      daysLeft1yr = 364
     }
 
     const lanterns = [
