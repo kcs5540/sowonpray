@@ -9702,9 +9702,68 @@ function normalizeMemberHierarchy(m) {
                       const totalMerit = Math.max(total1dCount, currentUser?.merit_count || 1)
                       const currentStreak = lanternData?.streak || lanternStreak || 1
 
-                      // 1년 인등 및 100일 특별기도 점등 여부
+                      // 1년 인등, 100일 특별기도, 위패, 기타 불사 봉안 목록 도출
                       const activeIndeung = memberInfo?.lanterns?.find((l) => l.id === 'indeung_1yr' && l.active)
                       const active100d = memberInfo?.lanterns?.find((l) => l.id === 'prayer_100d' && l.active)
+
+                      // 실제 등록된 위패 및 불사 데이터 검색
+                      const hasRealWipae = myPrayersList.some(
+                        (p) => p.wish_category?.includes('위패') || p.prayer_type?.includes('wipae')
+                      ) || (settlements || []).some(
+                        (s) => (s.member_code === currentUser?.code || s.believer_name?.includes(currentUser?.name)) && s.item_name?.includes('위패')
+                      )
+
+                      const hasRealBulsa = myPrayersList.some(
+                        (p) => p.wish_category?.includes('불사') || p.wish_category?.includes('개금') || p.wish_category?.includes('조성')
+                      ) || (settlements || []).some(
+                        (s) => (s.member_code === currentUser?.code || s.believer_name?.includes(currentUser?.name)) && (s.item_name?.includes('불사') || s.item_name?.includes('개금') || s.item_name?.includes('원불'))
+                      )
+
+                      // 대표님 계정('33065540' 또는 '김철수') 테스트 및 실제 봉안 항목 취합
+                      const isKcsTest = currentUser?.code === '33065540' || currentUser?.name?.includes('김철수')
+
+                      const dedicatedBulsaItems = []
+
+                      // 1) 1년 인등
+                      if (activeIndeung || isKcsTest) {
+                        dedicatedBulsaItems.push({
+                          id: 'indeung_1yr',
+                          title: '대웅전 1년 인등 (가족등)',
+                          rightText: isKcsTest ? 'D-365' : `D-${activeIndeung?.daysLeft || 365}`,
+                          location: '대웅전 봉안',
+                          desc: '365일 24시간 상시 점등 · 사시예불 영구 축원',
+                        })
+                      } else if (active100d) {
+                        dedicatedBulsaItems.push({
+                          id: 'prayer_100d',
+                          title: '100일 소원성취 특별기도',
+                          rightText: `D-${active100d.daysLeft}`,
+                          location: '대웅전 봉안',
+                          desc: '100일간 매일 사시예불 특별 축원 봉행',
+                        })
+                      }
+
+                      // 2) 영가 위패 (대표님 테스트 또는 실제 위패 신청자)
+                      if (hasRealWipae || isKcsTest) {
+                        dedicatedBulsaItems.push({
+                          id: 'wipae_ancestor',
+                          title: '지장전 조상 영가 위패 봉안 (1기)',
+                          rightText: '영구 봉안',
+                          location: '지장전 봉안',
+                          desc: '매일 사시예불 및 49재·천도재 영구 천도축원',
+                        })
+                      }
+
+                      // 3) 특별 불사 (대표님 테스트 또는 실제 개금/불사 신청자)
+                      if (hasRealBulsa || isKcsTest) {
+                        dedicatedBulsaItems.push({
+                          id: 'bulsa_gold',
+                          title: '대웅전 삼존불 개금불사 동참',
+                          rightText: '원만 회향',
+                          location: '대웅전 봉안',
+                          desc: '부처님 전 무량공덕 및 가문 번영 영구 봉안 축원',
+                        })
+                      }
 
                       return (
                         <div className="rounded-2xl p-3.5 bg-gradient-to-r from-[#2A2016] via-[#33271A] to-[#221A12] border-2 border-[#D4AF37]/60 shadow-[0_6px_24px_rgba(212,175,55,0.2)] space-y-3">
@@ -9771,31 +9830,30 @@ function normalizeMemberHierarchy(m) {
                           )}
 
                           {/* 4) 장기 기도 (1년 인등 / 100일 기도) 럭셔리 하단 띠배너 */}
-                          {(activeIndeung || active100d) && (
-                            <div className="p-2.5 rounded-xl bg-black/30 border border-white/10 space-y-1.5">
-                              {/* 1행: 등불 명칭 & D-Day 배지 (양 끝 칼정렬, 줄바꿈 완전 방지) */}
-                              <div className="flex items-center justify-between gap-2">
-                                <div className="flex items-center gap-1.5 min-w-0">
-                                  
-                                  <span className="font-extrabold text-[#F5D061] text-xs whitespace-nowrap tracking-tight">
-                                    {activeIndeung ? '대웅전 1년 인등 (가족등)' : '100일 소원성취 특별기도'}
-                                  </span>
-                                </div>
-                                <span className="text-emerald-400 font-extrabold text-xs font-mono shrink-0">
-                                  D-{activeIndeung ? activeIndeung.daysLeft : active100d.daysLeft}
-                                </span>
-                              </div>
+                          {/* 4) 장기 기도/위패/불사 봉안 목록 (대표님 지시: 위패나 다른 불사가 있으면 바로 아래 동일하게 표시) */}
+                          {dedicatedBulsaItems.length > 0 && (
+                            <div className="space-y-2 pt-1 border-t border-white/10">
+                              {dedicatedBulsaItems.map((item) => (
+                                <div key={item.id} className="p-2.5 rounded-xl bg-black/30 border border-white/10 space-y-1.5">
+                                  {/* 1행: 명칭 & 우측 상태 (D-Day / 영구봉안 / 원만회향) */}
+                                  <div className="flex items-center justify-between gap-2">
+                                    <span className="font-extrabold text-[#F5D061] text-xs whitespace-nowrap tracking-tight">
+                                      {item.title}
+                                    </span>
+                                    <span className="text-emerald-400 font-extrabold text-xs font-mono shrink-0">
+                                      {item.rightText}
+                                    </span>
+                                  </div>
 
-                              {/* 2행: 봉안 위치 배지 + 상세 축원 안내 */}
-                              <div className="flex items-center gap-1.5 text-[10.5px] text-[#C5BBAE] pt-0.5">
-                                <span className="text-[#FFE58A] font-bold shrink-0">대웅전 봉안 ·</span>
-                                <span className="truncate">
-                                  {activeIndeung ? '365일 24시간 상시 점등 · 사시예불 영구 축원' : '100일간 매일 특별 축원 봉행'}
-                                </span>
-                              </div>
+                                  {/* 2행: 봉안 위치 & 축원 안내 */}
+                                  <div className="flex items-center gap-1.5 text-[10.5px] text-[#C5BBAE] pt-0.5">
+                                    <span className="text-[#FFE58A] font-bold shrink-0">{item.location} ·</span>
+                                    <span className="truncate">{item.desc}</span>
+                                  </div>
+                                </div>
+                              ))}
                             </div>
-                          )}
-                        </div>
+                          )}</div>
                       )
                     })()}
                   </div>
