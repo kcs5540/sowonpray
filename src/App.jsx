@@ -10556,7 +10556,7 @@ function normalizeMemberHierarchy(m) {
             {/* 나의 인연 신도 도량 방문 & 사찰 공양(식사) 예약 현황 */}
             {(() => {
               const agentVisits = visits.filter((v) => isAdmin || v.agent_code === activeAgent.code)
-              const displayVisits = isAgentVisitListExpanded ? agentVisits : agentVisits.slice(0, 5)
+              const displayVisits = isAgentVisitListExpanded ? agentVisits : agentVisits.slice(0, 3)
               const totalHeadcount = agentVisits.reduce((acc, cur) => acc + (Number(cur.headcount) || 1), 0)
 
               return (
@@ -10569,11 +10569,11 @@ function normalizeMemberHierarchy(m) {
                           인연 신도 방문 · 공양(식사) 예약 현황
                         </h3>
                         <p className="text-[11px] text-[#8C7A5B] mt-0.5">
-                          기본 5건 표시 (총 {agentVisits.length}건 · 총 {totalHeadcount}명 준비)
+                          기본 3건 표시 (총 {agentVisits.length}건 · 총 {totalHeadcount}명 준비)
                         </p>
                       </div>
                     </div>
-                    {agentVisits.length > 5 && (
+                    {agentVisits.length > 3 && (
                       <button
                         type="button"
                         onClick={() => setIsAgentVisitListExpanded(!isAgentVisitListExpanded)}
@@ -10643,7 +10643,7 @@ function normalizeMemberHierarchy(m) {
                     )}
                   </div>
 
-                  {agentVisits.length > 5 && (
+                  {agentVisits.length > 3 && (
                     <div className="pt-2 border-t border-[#EAE2D3]">
                       <button
                         type="button"
@@ -10652,8 +10652,8 @@ function normalizeMemberHierarchy(m) {
                       >
                         <span>
                           {isAgentVisitListExpanded
-                            ? '예약 목록 5개만 보기 (접기) ▲'
-                            : `예약 명단 더보기 (+${agentVisits.length - 5}건 모두 펼치기) ▼`}
+                            ? '예약 목록 3개만 보기 (접기) ▲'
+                            : `예약 명단 더보기 (+${agentVisits.length - 3}건 모두 펼치기) ▼`}
                         </span>
                       </button>
                     </div>
