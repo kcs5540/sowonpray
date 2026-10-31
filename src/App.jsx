@@ -9794,7 +9794,7 @@ function normalizeMemberHierarchy(m) {
                                   </span>
                                 </div>
                                 <span className="text-emerald-400 font-extrabold text-xs font-mono shrink-0">
-                                  D-{activeIndeung ? activeIndeung.daysLeft : active100d.daysLeft}일
+                                  D-{activeIndeung ? activeIndeung.daysLeft : active100d.daysLeft}
                                 </span>
                               </div>
 
