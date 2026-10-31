@@ -9699,88 +9699,151 @@ function normalizeMemberHierarchy(m) {
                     </div>
                   </div>
 
-                  {/* 3행: 🔥 나의 1일 소원등 연속 정진 현황 카드 (며칠 연속 정진 중인지 + 배정된 사시예불 시간 표시) */}
+                  {/* 3행: 🪔 나의 소원등 및 100일 기도·1년 인등 통합 점등 현황 카드 (대표님 요청: 1일등 + 총횟수/연속횟수 + 인등/100일등 완벽 표기) */}
                   <div className="relative z-10 pt-0.5">
-                    {isLanternLit ? (
-                      <div className="rounded-2xl p-3 sm:p-3.5 bg-gradient-to-r from-[#3D2914] via-[#483318] to-[#2D1E0E] border border-[#F5D061]/50 shadow-[0_4px_16px_rgba(245,208,97,0.18)] space-y-2">
-                        {/* 상단: 연속 정진 일수 및 사시예불 배정 상태 + [내 등불 보기] 버튼 */}
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#E25C2B] to-[#F4B41A] text-white flex items-center justify-center shadow-[0_0_10px_rgba(233,130,39,0.5)] shrink-0">
-                              <Flame className="w-4 h-4 fill-current text-[#FFF7CE] flame-flicker" />
-                            </div>
-                            <div className="min-w-0">
-                              <div className="flex items-center gap-1.5 flex-wrap">
-                                <span className="text-xs font-extrabold text-[#F5D061] tracking-wide whitespace-nowrap">
-                                  소원등 점등 중
+                    {(() => {
+                      const memberInfo = getMemberPrayerAndPaymentInfo(currentUser)
+                      const myPrayersList = (prayers || []).filter(
+                        (p) =>
+                          p.member_code === currentUser?.code ||
+                          (currentUser?.phone && p.believer_phone && p.believer_phone.replace(/[^0-9]/g, '') === currentUser.phone.replace(/[^0-9]/g, ''))
+                      )
+                      const total1dCount = myPrayersList.filter(
+                        (p) =>
+                          !p.wish_category?.includes('인등') &&
+                          !p.wish_category?.includes('100일') &&
+                          !p.wish_category?.includes('위패') &&
+                          !p.wish_category?.includes('생전예수재') &&
+                          !p.wish_category?.includes('삼성각')
+                      ).length
+                      const totalMerit = Math.max(total1dCount, currentUser?.merit_count || 1)
+                      const currentStreak = lanternData?.streak || lanternStreak || 1
+
+                      // 1년 인등 및 100일 특별기도 점등 여부 파악
+                      const activeIndeung = memberInfo?.lanterns?.find((l) => l.id === 'indeung_1yr' && l.active)
+                      const active100d = memberInfo?.lanterns?.find((l) => l.id === 'prayer_100d' && l.active)
+
+                      return (
+                        <div className="space-y-2.5">
+                          {/* [카드 1] 1일 소원등 현황 카드 (총 횟수 + 연속 횟수 + 축원 일정 + 발원문) */}
+                          {isLanternLit ? (
+                            <div className="rounded-2xl p-3 sm:p-3.5 bg-gradient-to-r from-[#3D2914] via-[#483318] to-[#2D1E0E] border border-[#F5D061]/50 shadow-[0_4px_16px_rgba(245,208,97,0.18)] space-y-2">
+                              <div className="flex items-center justify-between gap-2">
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#E25C2B] to-[#F4B41A] text-white flex items-center justify-center shadow-[0_0_10px_rgba(233,130,39,0.5)] shrink-0">
+                                    <Flame className="w-4 h-4 fill-current text-[#FFF7CE] flame-flicker" />
+                                  </div>
+                                  <div className="min-w-0">
+                                    <div className="flex items-center gap-1.5 flex-wrap">
+                                      <span className="text-xs font-extrabold text-[#F5D061] tracking-wide whitespace-nowrap">
+                                        소원등 점등 중
+                                      </span>
+                                      <span className="px-2 py-0.5 rounded-full bg-[#F5D061] text-[#1B1815] text-[10px] font-black whitespace-nowrap">
+                                        🔥 {currentStreak}일 연속 정진
+                                      </span>
+                                      <span className="px-1.5 py-0.2 rounded-md bg-white/10 text-[#FFE58A] border border-[#F5D061]/30 text-[9.5px] font-bold whitespace-nowrap">
+                                        총 {totalMerit}회 점등
+                                      </span>
+                                    </div>
+                                    <div className="text-[10.5px] text-[#E5DCD0] mt-0.5">
+                                      📅 {getSasiDisplayInfo(lanternData?.sasi_date_key).shortLabel} 축원 (오전 11시 회향)
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setActiveTab('lantern')
+                                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                                  }}
+                                  className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-black text-[11px] shrink-0 shadow hover:brightness-105 active:scale-95 transition whitespace-nowrap flex items-center gap-1"
+                                >
+                                  <span>내 등불 보기</span>
+                                  <ChevronRight className="w-3.5 h-3.5 -mr-0.5" />
+                                </button>
+                              </div>
+
+                              {/* 발원문 내용 */}
+                              <div className="p-2.5 rounded-xl bg-black/25 border border-white/10 text-xs text-[#FAF8F5] leading-snug">
+                                <span className="text-[#FFE58A] font-extrabold mr-1">
+                                  [{lanternData?.wish_category || '가족건강'}]
                                 </span>
-                                <span className="px-2 py-0.5 rounded-full bg-[#F5D061] text-[#1B1815] text-[10px] font-black whitespace-nowrap">
-                                  🔥 {lanternData?.streak || lanternStreak || 1}일 연속 정진 중
+                                <span className="text-[#E8DFD1] font-serif-kr">
+                                  “{lanternData?.wish_text || '지극정성으로 가내 평안과 소원성취를 발원합니다.'}”
                                 </span>
                               </div>
-                              <div className="text-[10.5px] text-[#E5DCD0] mt-0.5">
-                                📅 {getSasiDisplayInfo(lanternData?.sasi_date_key).shortLabel} 축원 (오전 11시 회향)
+                            </div>
+                          ) : (
+                            <div className="rounded-2xl p-3 sm:p-3.5 bg-white/5 border border-white/10 flex items-center justify-between gap-3">
+                              <div className="min-w-0 flex items-center gap-2.5">
+                                <div className="w-8 h-8 rounded-lg bg-white/10 text-[#C59B27] flex items-center justify-center shrink-0 border border-white/10">
+                                  <Flame className="w-4 h-4 text-[#D4AF37]" />
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="flex items-center gap-1.5 flex-wrap">
+                                    <span className="text-xs font-bold text-[#E8DFD1]">
+                                      🕯️ 1일 소원등 미점등
+                                    </span>
+                                    <span className="px-1.5 py-0.5 rounded-md bg-[#FAF3DF]/15 text-[#F5D061] text-[10px] font-extrabold border border-[#E5D399]/30">
+                                      총 {totalMerit}회 점등 이력
+                                    </span>
+                                  </div>
+                                  <p className="text-[10.5px] text-[#B0A596] mt-0.5">
+                                    오늘의 소원등을 켜고 연속 정진 기록을 이어가세요.
+                                  </p>
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setActiveTab('lantern')
+                                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                                }}
+                                className="px-3 py-1.5 rounded-xl bg-[#F5D061] hover:bg-[#F3E7C4] text-[#1B1815] font-black text-xs shrink-0 transition"
+                              >
+                                등불 켜기
+                              </button>
+                            </div>
+                          )}
+
+                          {/* [카드 2] 🪔 대웅전 1년 인등 또는 100일 특별기도 점등 중일 때 함께 노출되는 프리미엄 불사 카드 */}
+                          {(activeIndeung || active100d) && (
+                            <div className="rounded-2xl p-3 sm:p-3.5 bg-gradient-to-r from-[#201B15] via-[#2A231C] to-[#1A1612] border-2 border-[#D4AF37] shadow-[0_4px_20px_rgba(212,175,55,0.22)] space-y-2">
+                              <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2">
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <div className="w-8 h-8 rounded-lg bg-[#D4AF37]/25 text-[#F5D061] border border-[#D4AF37]/50 flex items-center justify-center shrink-0 text-base">
+                                    🪔
+                                  </div>
+                                  <div className="min-w-0">
+                                    <div className="flex items-center gap-1.5 flex-wrap">
+                                      <span className="text-xs font-extrabold text-[#F5D061]">
+                                        {activeIndeung ? '대웅전 1년 인등(가족등)' : '100일 소원성취 특별기도'}
+                                      </span>
+                                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/25 border border-emerald-400/50 text-emerald-300 text-[10px] font-black whitespace-nowrap">
+                                        ✨ {activeIndeung ? `D-${activeIndeung.daysLeft}일 점등중` : `D-${active100d.daysLeft}일 정진중`}
+                                      </span>
+                                    </div>
+                                    <div className="text-[10px] text-[#C5BBAE] mt-0.5">
+                                      365일 대웅전 부처님 전 무량광명 · 사시예불 영구 연동 축원
+                                    </div>
+                                  </div>
+                                </div>
+                                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] whitespace-nowrap shrink-0">
+                                  대웅전 봉안
+                                </span>
+                              </div>
+                              <div className="text-[11px] text-[#E5DCD0] flex items-center justify-between gap-2 bg-white/5 px-2.5 py-1.5 rounded-xl border border-white/10">
+                                <span className="text-[#A89880]">기도 기간</span>
+                                <span className="font-bold text-[#FAF8F5]">
+                                  {activeIndeung ? '1년 (365일간 24시간 상시 점등)' : '100일간 특별 축원 봉행'}
+                                </span>
                               </div>
                             </div>
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setActiveTab('lantern')
-                              window.scrollTo({ top: 0, behavior: 'smooth' })
-                            }}
-                            className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-black text-[11px] shrink-0 shadow hover:brightness-105 active:scale-95 transition whitespace-nowrap flex items-center gap-1"
-                          >
-                            <span>내 등불 보기</span>
-                            <ChevronRight className="w-3.5 h-3.5 -mr-0.5" />
-                          </button>
+                          )}
                         </div>
-
-                        {/* 하단: 발원문 전체 너비 카드 */}
-                        <div className="p-2.5 rounded-xl bg-black/25 border border-white/10 text-xs text-[#FAF8F5] leading-snug">
-                          <span className="text-[#FFE58A] font-extrabold mr-1">
-                            [{lanternData?.wish_category || '가족건강'}]
-                          </span>
-                          <span className="text-[#E8DFD1] font-serif-kr">
-                            “{lanternData?.wish_text || '간절한 소원이 원만 성취되기를 발원합니다.'}”
-                          </span>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="rounded-2xl p-3 sm:p-3.5 bg-white/5 border border-white/10 flex items-center justify-between gap-3">
-                        <div className="min-w-0 flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-lg bg-white/10 text-[#C59B27] flex items-center justify-center shrink-0 border border-white/10">
-                            <Flame className="w-4 h-4 text-[#D4AF37]" />
-                          </div>
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-1.5 flex-wrap">
-                              <span className="text-xs font-bold text-[#E8DFD1]">
-                                🕯️ 현재 소원등 미점등
-                              </span>
-                              <span className="px-1.5 py-0.5 rounded-md bg-[#F5D061]/15 border border-[#F5D061]/40 text-[10px] font-bold text-[#F5D061]">
-                                직전 {lanternStreak || 1}일 정진
-                              </span>
-                            </div>
-                            <p className="text-[11px] text-[#A89880] truncate mt-0.5">
-                              {new Date().getHours() < 9
-                                ? '오전 9시 전 점등 시 오늘 10시 사시예불에 축원됩니다.'
-                                : '지금 점등 시 내일 오전 10시 사시예불에 축원됩니다.'}
-                            </p>
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setActiveTab('lantern')
-                            window.scrollTo({ top: 0, behavior: 'smooth' })
-                          }}
-                          className="px-3 py-1.5 rounded-xl bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] font-extrabold text-xs shrink-0 hover:bg-[#F5E6BF] transition whitespace-nowrap"
-                        >
-                          소원등 켜기 →
-                        </button>
-                      </div>
-                    )}
+                      )
+                    })()}
                   </div>
 
                   {/* 🪪 전자명함 & 전산 관제실 & PC 독립 ERP 핵심 3종 카드 (크기·여백·아이콘 규격 100% 일체화) */}
