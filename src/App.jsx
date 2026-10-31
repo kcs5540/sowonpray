@@ -9858,44 +9858,7 @@ function normalizeMemberHierarchy(m) {
                     })()}
                   </div>
 
-                  <div className="relative z-10 pt-2 space-y-2.5">
-                    
-
-                    {/* 2) 🏛️ 포교 전산 관제실 */}
-                    {(isMaster || currentUser.role === 'temple_admin' || currentUser.role === 'agent' || currentUser.role === 'committee_head' || currentUser.role === 'committee_member') && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (isMaster) setAdminModalTab('master')
-                          else if (isTempleAdmin) setAdminModalTab('temple')
-                          else if (currentUser?.role === 'agent' || currentUser?.role === 'committee_head') setAdminModalTab('head')
-                          else setAdminModalTab('common')
-                          setShowUnifiedAdminModal(true)
-                        }}
-                        className="w-full py-2 px-3.5 rounded-xl bg-gradient-to-r from-[#F5D061] via-[#E8C568] to-[#D4AF37] text-[#1B1815] font-extrabold flex items-center justify-between shadow-sm hover:brightness-105 active:scale-98 transition border border-[#FFF3B8]"
-                      >
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <div className="w-7 h-7 rounded-lg bg-[#1B1815] text-[#F5D061] border border-[#F5D061]/40 flex items-center justify-center text-sm shrink-0 shadow-xs">
-                            🏛️
-                          </div>
-                          <div className="text-left min-w-0">
-                            <span className="block font-black text-xs whitespace-nowrap leading-tight text-[#1B1815]">
-                              포교 전산 관제실
-                            </span>
-                            <span className="text-[10px] font-bold text-[#4A3D18] whitespace-nowrap block mt-0.5">
-                              인연 {currentUserBelieversCount}명 · 위패 {currentUserWipaeCount}기
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-0.5 text-[10.5px] font-black bg-[#1B1815] text-[#F5D061] px-2.5 py-1 rounded-lg shrink-0 whitespace-nowrap shadow-xs">
-                          <span>입장</span>
-                          <ChevronRight className="w-3 h-3 -mr-0.5" />
-                        </div>
-                      </button>
-                    )}
-
-
-                    </div>
+                  
                 </section>
 
                 {/* 2. 🎁 도반에게 복(福) 선물하기 (카카오톡 최적화 원클릭 나눔) */}
