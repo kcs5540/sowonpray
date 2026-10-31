@@ -11588,8 +11588,8 @@ function normalizeMemberHierarchy(m) {
                           window.Kakao.Share.sendDefault({
                             objectType: 'feed',
                             content: {
-                              title: `🪷 [제주 소원사] ${wishCategory || '불사·기도'} 정식 접수`,
-                              description: `"${wishName.trim()} 불자님의 거룩한 공덕이 부처님 전에 정식 봉안되었습니다.\n매일 오전 10시 사시예불마다 스님께서 정성껏 축원 올립니다."`,
+                              title: `🪷 [제주 소원사] ${wishCategory || '대웅전 소원등'} 축원 접수`,
+                              description: `발원문: "${previewWishText}"`,
                               imageUrl: altarImageUrl,
                               imageWidth: 1024,
                               imageHeight: 693,
@@ -11597,6 +11597,18 @@ function normalizeMemberHierarchy(m) {
                                 mobileWebUrl: shareUrl,
                                 webUrl: shareUrl,
                               },
+                            },
+                            itemContent: {
+                              profileText: '제주 소원사 대웅전 축원접수증',
+                              titleImageText: `${wishCategory || '대웅전 소원등'}`,
+                              titleImageCategory: `${nowSasiInfo.shortLabel} 축원`,
+                              items: [
+                                { item: '신청불자', itemOp: `${wishName.trim()}${shareTarget}` },
+                                { item: '연락처', itemOp: wishPhone.trim() },
+                                { item: '기원종목', itemOp: wishCategory || '가족건강' },
+                                { item: '축원일정', itemOp: nowSasiInfo.shortLabel },
+                                { item: '종무소', itemOp: '010-4912-1083' },
+                              ],
                             },
                             buttons: [
                               {
@@ -11753,11 +11765,18 @@ function normalizeMemberHierarchy(m) {
                           window.Kakao.init(kakaoKey)
                         }
                         if (window.Kakao.isInitialized() && window.Kakao.Share) {
+                          const shortPurpose = vTime.includes('점심')
+                            ? `점심공양 (${vCount}인분)`
+                            : vTime.includes('스님')
+                            ? '스님 차담·상담'
+                            : vTime.includes('오후 04')
+                            ? '오후 기도·참배'
+                            : '참배·차담'
                           window.Kakao.Share.sendDefault({
                             objectType: 'feed',
                             content: {
-                              title: `🍵 [제주 소원사] 도량 방문 · 사찰 공양 예약 (${vCount}명)`,
-                              description: `"${vName} 불자님 외 총 ${vCount}명 (${vDate} ${vTime}) 도량 방문 및 사찰 공양 예약이 접수되었습니다."`,
+                              title: `🍵 [제주 소원사] 방문·공양 예약 (${vDate})`,
+                              description: `요청사항: "${vMemo}"`,
                               imageUrl: altarImageUrl,
                               imageWidth: 1024,
                               imageHeight: 693,
@@ -11765,6 +11784,18 @@ function normalizeMemberHierarchy(m) {
                                 mobileWebUrl: shareUrl,
                                 webUrl: shareUrl,
                               },
+                            },
+                            itemContent: {
+                              profileText: '제주 소원사 도량방문 예약확인증',
+                              titleImageText: `총 ${vCount}명 방문 예약`,
+                              titleImageCategory: `${vDate} · ${vTime.split(' ')[0]}`,
+                              items: [
+                                { item: '예약불자', itemOp: vName },
+                                { item: '연락처', itemOp: vPhone },
+                                { item: '방문일시', itemOp: `${vDate} ${vTime.split(' ')[0]}` },
+                                { item: '방문목적', itemOp: `총 ${vCount}명 · ${shortPurpose}` },
+                                { item: '종무소', itemOp: '010-4912-1083' },
+                              ],
                             },
                             buttons: [
                               {
