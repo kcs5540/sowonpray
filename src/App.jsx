@@ -9859,33 +9859,7 @@ function normalizeMemberHierarchy(m) {
                   </div>
 
                   <div className="relative z-10 pt-2 space-y-2.5">
-                    {/* 1) 🪪 나의 소원사 모바일 전자명함 */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setBusinessCardTarget(currentUser || members.find((m) => m.code === '33065540'))
-                        setShowBusinessCardModal(true)
-                      }}
-                      className="w-full min-h-[64px] py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#2A231C] via-[#352B21] to-[#221C16] hover:brightness-110 text-white font-bold text-xs flex items-center justify-between border-2 border-[#D4AF37] shadow-lg transition cursor-pointer active:scale-98"
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] flex items-center justify-center font-bold text-base shrink-0 shadow">
-                          🪪
-                        </div>
-                        <div className="text-left min-w-0">
-                          <span className="block font-black text-xs sm:text-sm whitespace-nowrap leading-tight text-[#F5D061]">
-                            나의 소원사 모바일 전자명함
-                          </span>
-                          <span className="text-[10px] sm:text-[10.5px] text-[#D6CEC2] block mt-0.5 truncate">
-                            원터치 통화·문자 · 추천인 QR · 카톡 1초 공유
-                          </span>
-                        </div>
-                      </div>
-                      <span className="flex items-center gap-0.5 text-[11px] font-black px-3 py-1.5 rounded-xl bg-[#F5D061] text-[#1B1815] shrink-0 shadow-xs whitespace-nowrap">
-                        <span>명함 보기</span>
-                        <ChevronRight className="w-3.5 h-3.5 -mr-0.5" />
-                      </span>
-                    </button>
+                    
 
                     {/* 2) 🏛️ 포교 전산 관제실 */}
                     {(isMaster || currentUser.role === 'temple_admin' || currentUser.role === 'agent' || currentUser.role === 'committee_head' || currentUser.role === 'committee_member') && (
