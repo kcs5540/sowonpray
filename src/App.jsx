@@ -10487,7 +10487,7 @@ function normalizeMemberHierarchy(m) {
                     코드: {activeAgent.code}
                   </span>
                 </div>
-                {/* 전용 포교 링크 주소 및 원터치 복사 */}
+                {/* 전용 포교 링크 주소 및 원터치 복사 배지 */}
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
@@ -10498,10 +10498,10 @@ function normalizeMemberHierarchy(m) {
                   <button
                     type="button"
                     onClick={() => handleCopyRefLink(activeAgent.code)}
-                    className="px-3.5 py-2.5 rounded-xl bg-[#F5D061] text-[#1B1815] font-bold text-xs flex items-center gap-1 whitespace-nowrap shrink-0 hover:brightness-105 transition"
+                    className="w-10 h-10 rounded-xl bg-[#F5D061] text-[#1B1815] font-bold flex items-center justify-center shrink-0 hover:brightness-105 active:scale-95 transition shadow-sm"
+                    title="전용 포교 링크 복사"
                   >
-                    <Copy className="w-3.5 h-3.5 shrink-0" />
-                    <span>링크 복사</span>
+                    <Copy className="w-4 h-4 shrink-0" />
                   </button>
                 </div>
 
