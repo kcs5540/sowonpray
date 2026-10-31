@@ -9768,17 +9768,7 @@ function normalizeMemberHierarchy(m) {
                               <span>총 {totalMerit}회 점등</span>
                               <ChevronRight className="w-2.5 h-2.5 text-[#F5D061]" />
                             </button>
-                            {activeIndeung && (
-                              <span className="px-2 py-0.5 rounded-full bg-emerald-500/25 border border-emerald-400/50 text-emerald-300 text-[10px] font-black whitespace-nowrap">
-                                ✨ 1년 인등 D-{activeIndeung.daysLeft}일
-                              </span>
-                            )}
-                            {active100d && !activeIndeung && (
-                              <span className="px-2 py-0.5 rounded-full bg-emerald-500/25 border border-emerald-400/50 text-emerald-300 text-[10px] font-black whitespace-nowrap">
-                                ✨ 100일 기도 D-{active100d.daysLeft}일
-                              </span>
-                            )}
-                          </div>
+                            </div>
 
                           {/* 3) 소원등 발원문 본문 */}
                           {isLanternLit && (
@@ -9811,8 +9801,8 @@ function normalizeMemberHierarchy(m) {
                                   </div>
                                 </div>
                               </div>
-                              <span className="text-[10.5px] font-bold text-[#E5DCD0] bg-white/5 px-2 py-0.5 rounded-lg border border-white/10 shrink-0">
-                                {activeIndeung ? '1년 상시' : '100일'}
+                              <span className="px-2 py-0.5 rounded-full bg-emerald-500/25 border border-emerald-400/50 text-emerald-300 text-[10.5px] font-black whitespace-nowrap shrink-0">
+                                ✨ D-{activeIndeung ? activeIndeung.daysLeft : active100d.daysLeft}일 점등
                               </span>
                             </div>
                           )}
