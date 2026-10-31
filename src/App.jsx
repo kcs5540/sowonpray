@@ -1335,6 +1335,71 @@ class HealingAudioEngine {
 
 const healingAudioEngine = new HealingAudioEngine()
 
+// 📿 [실시간 음력 및 사찰 주요 재일 D-Day 자동 계산 엔진]
+function getTodayLunarAndJaeil() {
+  const now = new Date();
+  
+  // 기준점: 2026-10-31 = 음력 2026-09-22
+  const baseSolar = new Date(2026, 9, 31).getTime();
+  const baseLunarMonth = 9;
+  const baseLunarDay = 22;
+  const diffDays = Math.round((now.getTime() - baseSolar) / 86400000);
+
+  let currentLunarDay = baseLunarDay + diffDays;
+  let currentLunarMonth = baseLunarMonth;
+
+  while (currentLunarDay > 30) {
+    currentLunarDay -= 30;
+    currentLunarMonth = (currentLunarMonth % 12) + 1;
+  }
+  while (currentLunarDay < 1) {
+    currentLunarDay += 30;
+    currentLunarMonth = currentLunarMonth === 1 ? 12 : currentLunarMonth - 1;
+  }
+
+  // 60갑자 일진 산출
+  const GAN = ['갑', '을', '병', '정', '무', '기', '경', '신', '임', '계'];
+  const JI = ['자', '축', '인', '묘', '진', '사', '오', '미', '신', '유', '술', '해'];
+  // 2026-10-31 = 정축(丁丑)일 (ganIdx: 3, jiIdx: 1)
+  const baseGan = 3;
+  const baseJi = 1;
+  const ganIdx = ((baseGan + diffDays) % 10 + 10) % 10;
+  const jiIdx = ((baseJi + diffDays) % 12 + 12) % 12;
+  const iljinStr = `${GAN[ganIdx]}${JI[jiIdx]}일`;
+
+  // 주요 5대 재일 (음력 기준)
+  // 초하루(1일), 약사재일(8일), 보름/미타재일(15일), 지장재일(18일), 관음재일(24일)
+  const JAEIL_LIST = [
+    { day: 1, name: '초하루 인등·축원법회' },
+    { day: 8, name: '약사여래재일' },
+    { day: 15, name: '보름 미타재일' },
+    { day: 18, name: '지장재일' },
+    { day: 24, name: '관음재일' },
+  ];
+
+  let nextJaeil = null;
+  let minDaysLeft = 999;
+
+  for (const j of JAEIL_LIST) {
+    let diff = j.day - currentLunarDay;
+    if (diff < 0) diff += 30; // 다음 달 해당 재일
+    if (diff < minDaysLeft) {
+      minDaysLeft = diff;
+      nextJaeil = j;
+    }
+  }
+
+  const jaeilBadge =
+    minDaysLeft === 0
+      ? `📿 오늘: ${nextJaeil.name} 봉행`
+      : `📿 ${nextJaeil.name}(${nextJaeil.day}일) D-${minDaysLeft}`;
+
+  return {
+    lunarText: `음력 ${currentLunarMonth}월 ${currentLunarDay}일 (${iljinStr})`,
+    jaeilBadge,
+  };
+}
+
 export default function App() {
   // 탭 상태: 'home' | 'lantern' | 'sutra' | 'bulsa' | 'agent' | 'admin' | 'profile' (URL ?tab= 파라미터 직접 진입 지원)
   const [activeTab, setActiveTab] = useState(() => {
@@ -6017,15 +6082,20 @@ function normalizeMemberHierarchy(m) {
 
             {/* 오늘의 부처님 말씀 + 사찰 음력 일진·재일 법력 안내 */}
             <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] relative overflow-hidden">
-              <div className="flex items-center justify-between gap-2 pb-2.5 mb-3 border-b border-[#F0EAE0] text-[11px]">
-                <div className="flex items-center gap-1.5 text-[#6E5D45] font-semibold truncate">
-                  <Calendar className="w-3.5 h-3.5 text-[#C59B27] shrink-0" />
-                  <span>음력 9월 20일 (병오년 무술월 정축일)</span>
-                </div>
-                <span className="px-2 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] font-extrabold border border-[#E5D399] whitespace-nowrap shrink-0">
-                  📿 관음재일(24일) D-4
-                </span>
-              </div>
+              {(() => {
+                const { lunarText, jaeilBadge } = getTodayLunarAndJaeil()
+                return (
+                  <div className="flex items-center justify-between gap-2 pb-2.5 mb-3 border-b border-[#F0EAE0] text-[11px]">
+                    <div className="flex items-center gap-1.5 text-[#6E5D45] font-semibold truncate">
+                      <Calendar className="w-3.5 h-3.5 text-[#C59B27] shrink-0" />
+                      <span>{lunarText}</span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] font-extrabold border border-[#E5D399] whitespace-nowrap shrink-0">
+                      {jaeilBadge}
+                    </span>
+                  </div>
+                )
+              })()}
               <div className="flex items-center justify-between gap-1.5 mb-3">
                 <div className="flex items-center gap-1.5 min-w-0">
                   <span className="text-xs font-bold text-[#9A7418] bg-[#FAF3DF] px-2.5 py-1 rounded-full border border-[#E5D399] whitespace-nowrap">
@@ -6732,6 +6802,70 @@ function normalizeMemberHierarchy(m) {
                     </div>
                   ))
                 })()}
+              </div>
+            </section>
+
+            {/* 제주 소원사 도량 위치 안내 & 원터치 주소 복사 · 네이버 지도 길찾기 */}
+            <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-3">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#2D241C] to-[#17130F] border border-[#C59B27]/60 flex items-center justify-center shrink-0 shadow-xs">
+                    <MapPin className="w-4 h-4 text-[#F5D061]" />
+                  </div>
+                  <div>
+                    <h2 className="font-serif-kr font-bold text-sm sm:text-base text-[#231F1C]">
+                      제주 소원사 오시는 길
+                    </h2>
+                    <p className="text-[11px] text-[#8C7A5B]">
+                      매일 오전 10:00 대웅전 사시예불 봉행
+                    </p>
+                  </div>
+                </div>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] whitespace-nowrap shrink-0">
+                  제주 애월 납읍리
+                </span>
+              </div>
+
+              {/* 사찰 도로명 주소 박스 */}
+              <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EDE6D8] flex items-center justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <div className="text-[10px] font-bold text-[#A89880] mb-0.5">도로명 주소</div>
+                  <div className="text-xs font-bold text-[#231F1C] truncate">
+                    제주특별자치도 제주시 애월읍 납읍로2길 24-9
+                  </div>
+                </div>
+              </div>
+
+              {/* 대표님 요청: 딱 2개 버튼 [ 📋 주소 복사 ] [ 🧭 네이버 지도 길찾기 ] 칼정렬 */}
+              <div className="grid grid-cols-2 gap-2 pt-0.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const addr = '제주특별자치도 제주시 애월읍 납읍로2길 24-9'
+                    if (navigator.clipboard) {
+                      navigator.clipboard.writeText(addr)
+                      showToast('📋 소원사 주소가 복사되었습니다! 차량 내비나 카카오톡에 붙여넣으세요.')
+                    } else {
+                      showToast(addr)
+                    }
+                  }}
+                  className="py-2.5 px-3 rounded-xl bg-[#FAF8F5] hover:bg-[#F3EFE6] text-[#2B231A] border border-[#DCD3C3] font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow-xs cursor-pointer"
+                  title="소원사 도로명 주소 클립보드 복사"
+                >
+                  <Copy className="w-3.5 h-3.5 text-[#8A6510] shrink-0" />
+                  <span>📋 주소 복사</span>
+                </button>
+
+                <a
+                  href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%86%8C%EC%9B%90%EC%82%AC"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="py-2.5 px-3 rounded-xl bg-[#03C75A] hover:bg-[#02B351] text-white font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow-xs"
+                  title="네이버 지도로 소원사 길찾기 바로 연결"
+                >
+                  <span className="text-xs">🧭</span>
+                  <span>네이버 지도 길찾기</span>
+                </a>
               </div>
             </section>
 
