@@ -10487,32 +10487,37 @@ function normalizeMemberHierarchy(m) {
                     코드: {activeAgent.code}
                   </span>
                 </div>
+                {/* 전용 포교 링크 주소 및 원터치 복사 */}
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
                     readOnly
                     value={`https://sowonpray.vercel.app/?ref=${activeAgent.code}`}
-                    className="flex-1 bg-[#26211C] text-[#E8DFD1] text-xs px-3 py-2 rounded-lg border border-white/10 focus:outline-none min-w-0"
+                    className="flex-1 bg-[#26211C] text-[#E8DFD1] text-xs px-3 py-2.5 rounded-xl border border-white/10 focus:outline-none min-w-0 font-mono"
                   />
                   <button
                     type="button"
                     onClick={() => handleCopyRefLink(activeAgent.code)}
-                    className="px-3.5 py-2 rounded-lg bg-[#F5D061] text-[#1B1815] font-bold text-xs flex items-center gap-1 whitespace-nowrap shrink-0 hover:brightness-105 transition"
+                    className="px-3.5 py-2.5 rounded-xl bg-[#F5D061] text-[#1B1815] font-bold text-xs flex items-center gap-1 whitespace-nowrap shrink-0 hover:brightness-105 transition"
                   >
                     <Copy className="w-3.5 h-3.5 shrink-0" />
-                    <span>복사</span>
+                    <span>링크 복사</span>
                   </button>
+                </div>
+
+                {/* 하단 보조 액션 버튼 (전용 QR 코드 / 모바일 명함) */}
+                <div className="grid grid-cols-2 gap-2 pt-0.5">
                   <button
                     type="button"
                     onClick={() => handleToggleQr(activeAgent.code)}
-                    className={`px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1 whitespace-nowrap shrink-0 transition border ${
+                    className={`py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 transition border ${
                       showQrCode === activeAgent.code
                         ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
                         : 'bg-white/10 text-[#FAF8F5] border-white/20 hover:bg-white/20'
                     }`}
                   >
                     <QrCode className="w-3.5 h-3.5 shrink-0" />
-                    <span>QR</span>
+                    <span>전용 QR 코드</span>
                   </button>
                   <button
                     type="button"
@@ -10520,10 +10525,10 @@ function normalizeMemberHierarchy(m) {
                       setBusinessCardTarget(activeAgent)
                       setShowBusinessCardModal(true)
                     }}
-                    className="px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1 whitespace-nowrap shrink-0 transition bg-gradient-to-r from-[#C59B27] to-[#F5D061] text-[#1B1815] shadow-xs cursor-pointer hover:brightness-110"
+                    className="py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 transition bg-gradient-to-r from-[#C59B27] to-[#F5D061] text-[#1B1815] shadow-xs cursor-pointer hover:brightness-110"
                     title="해당 포교위원의 모바일 전자명함 보기"
                   >
-                    <span>🪪 명함</span>
+                    <span>🪪 모바일 전자명함</span>
                   </button>
                 </div>
 
