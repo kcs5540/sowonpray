@@ -7073,39 +7073,39 @@ function normalizeMemberHierarchy(m) {
               <div className="space-y-3">
                 <button
                   type="submit"
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-extrabold text-xs sm:text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
+                  className="w-full py-3.5 px-3 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-extrabold text-xs sm:text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-1.5 cursor-pointer overflow-hidden"
                 >
                   <Award className="w-4 h-4 shrink-0" />
-                  <span>① [{wishCategory}] 먼저 상담·무통장 접수하기</span>
+                  <span className="truncate">① 상담 · 무통장 불사 신청 접수하기</span>
                 </button>
 
                 {/* 💳 간편 온라인 시주 · 보시 결제 (카카오페이 · 신용카드 · 계좌이체) */}
                 <div className="p-3.5 sm:p-4 rounded-2xl bg-[#FAF6EC] border border-[#DFCFA8] space-y-2.5">
-                  <div className="flex items-center justify-between gap-2 flex-wrap">
-                    <div className="flex items-center gap-1.5">
-                      <CreditCard className="w-4 h-4 text-[#8A6510]" />
-                      <span className="text-xs font-extrabold text-[#231F1C]">
-                        ② 간편 온라인 시주 · 보시 결제 (카카오페이 · 카드 · 계좌이체)
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <CreditCard className="w-4 h-4 text-[#8A6510] shrink-0" />
+                      <span className="text-xs font-extrabold text-[#231F1C] truncate">
+                        ② 간편 온라인 보시 결제
                       </span>
                     </div>
-                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#231F1C] text-[#F5D061] border border-[#C59B27]/50">
-                      종무소 실시간 자동 등재
+                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#231F1C] text-[#F5D061] border border-[#C59B27]/50 shrink-0 whitespace-nowrap">
+                      종무소 자동 등재
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-1.5 text-xs">
+                  <div className="grid grid-cols-3 gap-1.5 text-[11px] sm:text-xs">
                     {['카드', '계좌이체', '가상계좌'].map((m) => (
                       <button
                         key={m}
                         type="button"
                         onClick={() => setTossPayMethod(m)}
-                        className={`py-2 rounded-lg font-bold border transition cursor-pointer ${
+                        className={`py-2 px-1 rounded-lg font-bold border transition cursor-pointer whitespace-nowrap truncate ${
                           tossPayMethod === m
                             ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-sm'
                             : 'bg-white text-[#5C5349] border-[#DDD4C4] hover:bg-[#FAF8F5]'
                         }`}
                       >
-                        {m === '카드' ? '카드 · 간편결제' : m === '계좌이체' ? '실시간 계좌이체' : '가상계좌(무통장)'}
+                        {m === '카드' ? '카드·간편결제' : m === '계좌이체' ? '계좌이체' : '가상계좌'}
                       </button>
                     ))}
                   </div>
