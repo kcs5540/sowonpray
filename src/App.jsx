@@ -11143,18 +11143,17 @@ function normalizeMemberHierarchy(m) {
             : `🪔 ${lanternStreak || 1}일 연속 정진 중! (공덕 +100)`
 
           const desc = isWipaeCat
-            ? `${wishName.trim()} 불자님의 영구 위패 봉안 발원이 제주 소원사에 정식 접수되었습니다. 주지 스님께서 소원사 법당에 정결하게 위패를 봉안하고, 매일 오전 10시 사시예불마다 온 가족의 무병장수와 영가 극락왕생을 정성껏 축원 올립니다.`
+            ? '소원사 법당에 정결하게 위패를 봉안하고, 매일 오전 10시 사시예불마다 영가 극락왕생과 가내 평안을 정성껏 축원합니다.'
             : isSamseongCat
-            ? `${wishName.trim()} 불자님의 성전 건립 대작불사 공덕이 소원사 삼성각 영전에 영구 봉안됩니다. 칠성·산신·독성 성인의 거룩한 가피가 불자님 가정에 대대손손 만복으로 깃들기를 간절히 축원합니다.`
-            : isIndeungCat
-            ? `${wishName.trim()} 불자님 가정의 대웅전 1년 인등(가족등)이 부처님 전에 정식 접수되었습니다. 365일 꺼지지 않는 지혜와 자비의 등불로 온 가족의 평생 무량광명을 밝히며 매일 사시예불마다 축원합니다.`
-            : is100dCat
-            ? `${wishName.trim()} 불자님의 100일 소원성취 특별기도가 정식 접수되었습니다. 앞으로 100일 동안 매일 오전 10시 사시예불마다 스님께서 불자님의 간절한 서원을 부처님 전에 축원 올립니다.`
-            : is49jaeCat
-            ? `${wishName.trim()} 불자님의 49재/천도재 천도발원이 정식 접수되었습니다. 영가님의 왕생극락과 유가족의 업장소멸·평안을 위해 여법하게 기도 의식을 봉행합니다.`
-            : isRiceCat
-            ? `${wishName.trim()} 불자님의 대웅전 공양미 시주 공덕이 부처님 전에 여법하게 공양되었습니다. 부처님의 자비광명이 온 가족과 늘 함께하시길 축원합니다.`
-            : `${wishName.trim()} 불자님의 간절한 발원이 제주 소원사 대웅전에 봉안되었습니다. 오늘 하루 부처님의 자비광명이 온 가족과 늘 함께하시길 정성껏 축원 올립니다.`
+            ? '성전 건립 대작불사 공덕이 삼성각 영전에 영구 봉안되며, 칠성·산신·독성 성인의 가피가 가정에 늘 함께하시길 축원합니다.'
+            : isIndeungCat || is100dCat || is49jaeCat || isRiceCat
+            ? '매일 오전 10시 대웅전 사시예불에서 주지스님께서 불자님 가정의 간절한 서원을 부처님 전에 정성껏 축원 올립니다.'
+            : '오늘 하루 부처님의 자비광명이 불자님과 온 가족에게 늘 함께하시길 정성껏 축원 올립니다.'
+
+          const previewWishText =
+            (wishText || '').trim() ||
+            PRAYER_CATEGORY_TEMPLATES[wishCategory] ||
+            '우리 가족 올 한 해 무병장수하고 하는 일마다 순조롭게 풀리기를 발원합니다.'
 
           const shareTarget = wishTarget && wishTarget !== '본인' ? ` (${wishTarget})` : ''
           const shareTitle = isWipaeCat
@@ -11180,7 +11179,7 @@ function normalizeMemberHierarchy(m) {
                 if (e.target === e.currentTarget) handleCancelSubmittedPrayer()
               }}
             >
-              <div className="w-full max-w-[385px] max-h-[84dvh] sm:max-h-[90vh] overflow-y-auto bg-[#1F1B17] text-white rounded-3xl p-4 sm:p-6 border border-[#F5D061] text-center space-y-2.5 sm:space-y-3.5 shadow-2xl animate-in zoom-in-95 duration-150 relative my-auto">
+              <div className="w-full max-w-[385px] max-h-[84dvh] sm:max-h-[90vh] overflow-y-auto bg-[#1F1B17] text-white rounded-3xl p-4 sm:p-6 border border-[#F5D061] text-center space-y-2.5 sm:space-y-3 shadow-2xl animate-in zoom-in-95 duration-150 relative my-auto">
                 {/* 상단 우측 X 닫기/취소 버튼 */}
                 <button
                   type="button"
@@ -11190,7 +11189,7 @@ function normalizeMemberHierarchy(m) {
                 >
                   <X className="w-4 h-4" />
                 </button>
-                <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-[#F5D061]/20 border border-[#F5D061] mx-auto flex items-center justify-center text-xl sm:text-2xl">
+                <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#F5D061]/20 border border-[#F5D061] mx-auto flex items-center justify-center text-xl sm:text-2xl">
                   {isWipaeCat ? '🏛️' : isSamseongCat ? '🏔️' : isIndeungCat ? '🪔' : (is100dCat || is49jaeCat || isRiceCat) ? '🪷' : <Flame className="w-6 h-6 sm:w-7 sm:h-7 text-[#F5D061] fill-[#F5D061]" />}
                 </div>
 
@@ -11203,75 +11202,36 @@ function normalizeMemberHierarchy(m) {
                   <span>{badge}</span>
                 </div>
 
-                <p className="text-[11.5px] sm:text-xs text-[#E2DAD0] leading-snug sm:leading-relaxed break-keep">
+                <p className="text-[11.5px] sm:text-xs text-[#E2DAD0] leading-snug break-keep px-1">
                   {desc}
                 </p>
 
-                {/* 중간 안내 카드: 불사/위패인 경우 접수 안내, 일반인 경우 1년 인등 추천 */}
-                {isWipaeCat ? (
-                  <div className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left shadow-md">
-                    <div className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815] inline-block mb-1">
-                      영구 봉안 접수 안내
-                    </div>
-                    <div className="font-serif-kr text-xs font-bold text-[#FAF8F5]">
-                      📜 {wishCategory}
-                    </div>
-                    <div className="text-[10.5px] text-[#A89D8E] mt-0.5 leading-snug">
-                      소원사 종무소에서 접수 확인 후 위패 각명 및 사시예불 축원 명부에 정식 등재됩니다.
+                {/* 중간 확인 카드: 중복 인사말 대신 [내가 입력한 접수 확인 내역]을 깔끔하게 표시 */}
+                <div className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left shadow-md space-y-1.5 text-xs">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-1.5">
+                    <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815]">
+                      접수 확인 내역
+                    </span>
+                    <span className="text-[11px] font-bold text-[#F5D061] truncate max-w-[200px]">
+                      {wishCategory || '대웅전 소원등'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-[11.5px] pt-0.5">
+                    <span className="text-[#A89D8E] shrink-0">신청 불자</span>
+                    <span className="font-bold text-[#FAF8F5] truncate ml-2">
+                      {wishName.trim()}{wishTarget && wishTarget !== '본인' ? ` (${wishTarget.trim()})` : ''} · {wishPhone.trim()}
+                    </span>
+                  </div>
+                  <div className="pt-1 border-t border-white/5">
+                    <div className="text-[10.5px] text-[#A89D8E] mb-0.5">발원 내용</div>
+                    <div className="text-[11px] text-[#E8DFD1] leading-snug line-clamp-2 break-keep">
+                      “{previewWishText}”
                     </div>
                   </div>
-                ) : isSamseongCat ? (
-                  <div className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left shadow-md">
-                    <div className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815] inline-block mb-1">
-                      대작불사 공덕 안내
-                    </div>
-                    <div className="font-serif-kr text-xs font-bold text-[#FAF8F5]">
-                      🏔️ {wishCategory}
-                    </div>
-                    <div className="text-[10.5px] text-[#A89D8E] mt-0.5 leading-snug">
-                      불자님의 정성 어린 불사금은 삼성각 성전 건립에 쓰이며, 공덕 명패에 영구 보존됩니다.
-                    </div>
-                  </div>
-                ) : isIndeungCat || is100dCat || is49jaeCat || isRiceCat ? (
-                  <div className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left shadow-md">
-                    <div className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815] inline-block mb-1">
-                      사시예불 축원 안내
-                    </div>
-                    <div className="font-serif-kr text-xs font-bold text-[#FAF8F5]">
-                      🪷 {wishCategory}
-                    </div>
-                    <div className="text-[10.5px] text-[#A89D8E] mt-0.5 leading-snug">
-                      매일 오전 10시 대웅전 사시예불 시 주지스님께서 불자님의 발원문을 정성껏 축원 올립니다.
-                    </div>
-                  </div>
-                ) : (
-                  <div
-                    onClick={() => {
-                      setShowSuccessModal(false)
-                      setActiveTab('bulsa')
-                    }}
-                    className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left cursor-pointer hover:border-[#F5D061] transition group shadow-md"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#C59B27] text-[#1B1815]">
-                        상시 정진
-                      </span>
-                      <span className="text-[10.5px] text-[#F5D061] font-bold group-hover:translate-x-0.5 transition">
-                        상세보기 &gt;
-                      </span>
-                    </div>
-                    <div className="font-serif-kr text-xs font-bold text-[#FAF8F5] mt-1.5">
-                      🪔 365일 꺼지지 않는 대웅전 1년 인등 불사
-                    </div>
-                    <div className="text-[10.5px] text-[#A89D8E] mt-0.5 leading-snug">
-                      매일 켜는 정성을 넘어, 부처님 전에 온 가족의 평생 광명을 밝히세요.
-                    </div>
-                  </div>
-                )}
+                </div>
 
-                <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-[11px] text-[#D4AF37] space-y-1">
-                  <div>📲 종무소(010-4912-1083) 및 불자님 연락처로 접수 알림이 자동 전송됩니다.</div>
-                  <div className="text-[10.5px] text-[#B8AEA0]">🙏 도량 방문 전날 연락 주시면 따뜻한 차와 공양을 준비해 드립니다.</div>
+                <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-[11px] text-[#D4AF37]">
+                  🙏 도량에 오시기 전날 미리 연락 주시면 따뜻한 차와 공양을 대접해 드립니다. (010-4912-1083)
                 </div>
 
                 {/* 가족·지인에게 알리기 (카카오톡 공식 피드 카드 및 전문 전송) */}
