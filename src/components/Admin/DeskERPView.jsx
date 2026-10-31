@@ -30,6 +30,13 @@ import {
   PRAYER_CATEGORIES,
 } from '../../lib/sowonsaLegacyData'
 import { computeZodiacAndGanji } from '../../lib/supabase'
+import {
+  getSmsConfig,
+  saveSmsConfig,
+  getSmsLogs,
+  clearSmsLogs,
+  dispatchSmsBatch,
+} from '../../lib/smsNotifier'
 
 // 🏛️ [소원사 종무소 구형 전산(두손모아) 친화형 4분할 데스크 ERP 전산망]
 // 🗓️ 삼재(三災) 계산: 띠(지지) 그룹별로 12년 중 3년 연속 삼재가 듭니다.
@@ -106,8 +113,12 @@ export default function DeskERPView({
   const [donationJumin, setDonationJumin] = useState('')
   const [showMailLabelModal, setShowMailLabelModal] = useState(false)
   const [showSmsModal, setShowSmsModal] = useState(false)
+  const [smsModalTab, setSmsModalTab] = useState('send') // 'send' | 'auto_config' | 'logs'
   const [smsTargetMode, setSmsTargetMode] = useState('filtered') // 'selected' | 'filtered'
-  const [smsText, setSmsText] = useState('[대한불교 본원종 제주 소원사] 부처님의 자비광명이 가정에 늘 함께하시기를 축원드립니다.')
+  const [smsText, setSmsText] = useState('[대한불교 조계종 제주 소원사] 부처님의 자비광명이 가정에 늘 함께하시기를 축원드립니다.')
+  const [smsConfig, setSmsConfig] = useState(() => getSmsConfig())
+  const [smsLogs, setSmsLogs] = useState(() => getSmsLogs())
+  const [isSendingSms, setIsSendingSms] = useState(false)
 
   // 인쇄 모달이 열려 있을 때 body.print-desk-modal-open 클래스를 자동 부착하여 백지 현상 방지
   useEffect(() => {
@@ -2027,89 +2038,403 @@ export default function DeskERPView({
         )
       })()}
 
-      {/* ==================== 11. 모달: 단체/개별 안내 문자 발송 (두손모아 문자관리 대체) ==================== */}
+      {/* ==================== 11. 모달: 단체/개별 안내 문자 발송 & 접수 자동알림 API 설정 ==================== */}
       {showSmsModal && (() => {
         const smsTargets = smsTargetMode === 'selected' && selectedMember
           ? [selectedMember]
           : householdsShown.filter((m) => m.sms_receive && m.phone)
         const templates = [
-          { label: '사시예불 축원', text: '[제주 소원사] 금일 오전 10시 대웅전 사시예불에 가정의 생축 발원 축원을 여법히 올렸습니다. 성불하십시오.' },
-          { label: '초파일 연등 안내', text: '[제주 소원사] 부처님오신날 봉축 연등 및 가족 인등 접수 안내드립니다. 종무소로 문의 바랍니다.' },
-          { label: '삼재 풀이 안내', text: `[제주 소원사] ${samjaeYear}년 삼재(돼지·토끼·양띠) 소멸 특별기도 안내드립니다. 가내 평안을 축원합니다.` },
-          { label: '합동 천도재 안내', text: '[제주 소원사] 선망 조상 영가 극락왕생 합동 천도재 법회 일정을 안내드립니다.' },
+          { label: '사시예불 축원', text: '[대한불교 조계종 제주 소원사] 금일 오전 10시 대웅전 사시예불에 가정의 생축 발원 축원을 여법히 올렸습니다. 성불하십시오.' },
+          { label: '초파일 연등 안내', text: '[대한불교 조계종 제주 소원사] 부처님오신날 봉축 연등 및 가족 인등 접수 안내드립니다. 종무소(064-805-2007 · 010-4912-1083)로 문의 바랍니다.' },
+          { label: '삼재 풀이 안내', text: `[대한불교 조계종 제주 소원사] ${samjaeYear}년 삼재(돼지·토끼·양띠) 소멸 특별기도 안내드립니다. 가내 평안을 축원합니다.` },
+          { label: '합동 천도재 안내', text: '[대한불교 조계종 제주 소원사] 선망 조상 영가 극락왕생 합동 천도재 법회 일정을 안내드립니다.' },
         ]
         return (
-          <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4">
-            <div className="w-full max-w-lg bg-[#1F1A15] text-[#FAF8F5] rounded-3xl border-2 border-[#C59B27] p-6 space-y-4 shadow-2xl">
+          <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4 overflow-y-auto">
+            <div className="w-full max-w-xl bg-[#1F1A15] text-[#FAF8F5] rounded-3xl border-2 border-[#C59B27] p-5 sm:p-6 space-y-4 shadow-2xl my-auto max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between pb-3 border-b border-white/10">
                 <div>
-                  <h3 className="font-serif-kr font-bold text-base text-[#F5D061]">💬 종무소 안내 문자 발송</h3>
-                  <p className="text-[11px] text-[#A69B8D]">수신 동의 신도 단체 발송 또는 현재 선택 신도 개별 발송</p>
+                  <h3 className="font-serif-kr font-bold text-base text-[#F5D061]">
+                    💬 종무소 문자·알림톡 발송 &amp; 자동알림 센터
+                  </h3>
+                  <p className="text-[11px] text-[#A69B8D]">
+                    신도 접수 시 종무소({smsConfig.adminPhone || '010-4912-1083'}) 및 신청자 자동 문자 발송 연동
+                  </p>
                 </div>
-                <button type="button" onClick={() => setShowSmsModal(false)} className="text-[#8C8071] hover:text-white">
+                <button
+                  type="button"
+                  onClick={() => setShowSmsModal(false)}
+                  className="text-[#8C8071] hover:text-white cursor-pointer"
+                >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="flex gap-2 text-xs">
+              {/* 상단 3개 서브탭 */}
+              <div className="grid grid-cols-3 gap-1.5 bg-black/40 p-1 rounded-xl border border-white/10 text-xs">
                 <button
                   type="button"
-                  onClick={() => setSmsTargetMode('filtered')}
-                  className={`flex-1 py-2 rounded-xl font-bold border cursor-pointer ${smsTargetMode === 'filtered' ? 'bg-[#C59B27] text-black border-[#F5D061]' : 'bg-black/40 text-[#A69B8D] border-white/10'}`}
+                  onClick={() => setSmsModalTab('send')}
+                  className={`py-2 rounded-lg font-bold transition cursor-pointer ${
+                    smsModalTab === 'send'
+                      ? 'bg-[#C59B27] text-black'
+                      : 'text-[#A69B8D] hover:text-white'
+                  }`}
                 >
-                  필터된 수신동의 전체 ({householdsShown.filter((m) => m.sms_receive && m.phone).length}명)
+                  📨 단체·개별 발송
                 </button>
                 <button
                   type="button"
-                  onClick={() => setSmsTargetMode('selected')}
-                  className={`flex-1 py-2 rounded-xl font-bold border cursor-pointer ${smsTargetMode === 'selected' ? 'bg-[#C59B27] text-black border-[#F5D061]' : 'bg-black/40 text-[#A69B8D] border-white/10'}`}
+                  onClick={() => setSmsModalTab('auto_config')}
+                  className={`py-2 rounded-lg font-bold transition cursor-pointer ${
+                    smsModalTab === 'auto_config'
+                      ? 'bg-[#C59B27] text-black'
+                      : 'text-[#A69B8D] hover:text-white'
+                  }`}
                 >
-                  선택 신도만 ({selectedMember?.name || '-'})
+                  ⚡ 자동알림·API 설정
                 </button>
-              </div>
-
-              <div className="space-y-1.5">
-                <div className="text-[11px] text-[#A69B8D]">빠른 문구 선택:</div>
-                <div className="flex flex-wrap gap-1.5">
-                  {templates.map((t) => (
-                    <button
-                      key={t.label}
-                      type="button"
-                      onClick={() => setSmsText(t.text)}
-                      className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-bold text-[#F5D061] cursor-pointer"
-                    >
-                      {t.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <textarea
-                rows={4}
-                value={smsText}
-                onChange={(e) => setSmsText(e.target.value)}
-                className="w-full p-3 rounded-xl bg-black/50 border border-[#C59B27]/50 text-xs text-white focus:outline-none"
-              />
-
-              <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => {
-                    showToast(`총 ${smsTargets.length}명에게 안내 문자 발송 요청이 접수되었습니다.`)
-                    setShowSmsModal(false)
+                    setSmsLogs(getSmsLogs())
+                    setSmsModalTab('logs')
                   }}
-                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs shadow cursor-pointer"
+                  className={`py-2 rounded-lg font-bold transition cursor-pointer ${
+                    smsModalTab === 'logs'
+                      ? 'bg-[#C59B27] text-black'
+                      : 'text-[#A69B8D] hover:text-white'
+                  }`}
                 >
-                  📨 {smsTargets.length}명 문자 발송 실행
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowSmsModal(false)}
-                  className="py-2.5 px-4 rounded-xl bg-white/10 text-white font-bold text-xs cursor-pointer"
-                >
-                  닫기
+                  📋 발송로그 ({smsLogs.length})
                 </button>
               </div>
+
+              {/* 탭 1: 단체·개별 문자 발송 */}
+              {smsModalTab === 'send' && (
+                <div className="space-y-3.5">
+                  <div className="flex gap-2 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => setSmsTargetMode('filtered')}
+                      className={`flex-1 py-2 rounded-xl font-bold border cursor-pointer ${
+                        smsTargetMode === 'filtered'
+                          ? 'bg-[#C59B27] text-black border-[#F5D061]'
+                          : 'bg-black/40 text-[#A69B8D] border-white/10'
+                      }`}
+                    >
+                      필터된 수신동의 전체 ({householdsShown.filter((m) => m.sms_receive && m.phone).length}명)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSmsTargetMode('selected')}
+                      className={`flex-1 py-2 rounded-xl font-bold border cursor-pointer ${
+                        smsTargetMode === 'selected'
+                          ? 'bg-[#C59B27] text-black border-[#F5D061]'
+                          : 'bg-black/40 text-[#A69B8D] border-white/10'
+                      }`}
+                    >
+                      선택 신도만 ({selectedMember?.name || '-'})
+                    </button>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <div className="text-[11px] text-[#A69B8D]">빠른 문구 선택:</div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {templates.map((t) => (
+                        <button
+                          key={t.label}
+                          type="button"
+                          onClick={() => setSmsText(t.text)}
+                          className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-bold text-[#F5D061] cursor-pointer"
+                        >
+                          {t.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <textarea
+                    rows={4}
+                    value={smsText}
+                    onChange={(e) => setSmsText(e.target.value)}
+                    className="w-full p-3 rounded-xl bg-black/50 border border-[#C59B27]/50 text-xs text-white focus:outline-none"
+                  />
+
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      disabled={isSendingSms}
+                      onClick={async () => {
+                        if (smsTargets.length === 0) {
+                          showToast('발송 대상 신도의 휴대폰 번호가 없습니다.')
+                          return
+                        }
+                        setIsSendingSms(true)
+                        const batch = smsTargets.map((m) => ({
+                          to: m.phone,
+                          subject: '[제주 소원사 안내]',
+                          text: smsText,
+                          recipientLabel: `${m.name}(${m.code})`,
+                        }))
+                        const res = await dispatchSmsBatch(batch, '종무소 안내문자')
+                        setSmsLogs(getSmsLogs())
+                        setIsSendingSms(false)
+                        if (res.mode === 'live') {
+                          showToast(`✅ 총 ${smsTargets.length}명에게 실제 안내 문자가 즉시 발송되었습니다!`)
+                        } else {
+                          showToast(`📋 총 ${smsTargets.length}명 발송 내역이 기록되었습니다. (API 키 입력 시 실제 문자 발송)`)
+                        }
+                        setShowSmsModal(false)
+                      }}
+                      className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs shadow cursor-pointer"
+                    >
+                      {isSendingSms ? '발송 처리 중...' : `📨 ${smsTargets.length}명 문자 발송 실행`}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowSmsModal(false)}
+                      className="py-2.5 px-4 rounded-xl bg-white/10 text-white font-bold text-xs cursor-pointer"
+                    >
+                      닫기
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* 탭 2: 접수 자동알림 & 솔라피/알리고 API 설정 */}
+              {smsModalTab === 'auto_config' && (
+                <div className="space-y-3.5 text-xs">
+                  <div className="p-3 rounded-2xl bg-[#2A2218] border border-[#C59B27]/40 space-y-2.5">
+                    <div className="font-bold text-[#F5D061] flex items-center justify-between">
+                      <span>🔔 모바일 법당 접수 시 실시간 자동 문자 알림</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                        작동중
+                      </span>
+                    </div>
+                    <label className="flex items-center justify-between gap-2 cursor-pointer">
+                      <span className="text-[#E5DCD0]">
+                        ① 기도·불사·방문 접수/취소 시 <b>종무소 휴대폰</b>으로 즉시 알림
+                      </span>
+                      <input
+                        type="checkbox"
+                        checked={!!smsConfig.autoNotifyAdmin}
+                        onChange={(e) =>
+                          setSmsConfig((prev) => ({ ...prev, autoNotifyAdmin: e.target.checked }))
+                        }
+                        className="w-4 h-4 accent-[#F5D061]"
+                      />
+                    </label>
+                    <label className="flex items-center justify-between gap-2 cursor-pointer">
+                      <span className="text-[#E5DCD0]">
+                        ② 접수 완료 시 <b>신청 신도님 휴대폰</b>으로 축원·농협계좌 안내 발송
+                      </span>
+                      <input
+                        type="checkbox"
+                        checked={!!smsConfig.autoNotifyBeliever}
+                        onChange={(e) =>
+                          setSmsConfig((prev) => ({ ...prev, autoNotifyBeliever: e.target.checked }))
+                        }
+                        className="w-4 h-4 accent-[#F5D061]"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div>
+                      <label className="block text-[11px] text-[#A69B8D] mb-1">
+                        종무소 알림 수신 휴대폰 (콤마로 복수 가능)
+                      </label>
+                      <input
+                        type="text"
+                        value={smsConfig.adminPhone || ''}
+                        onChange={(e) =>
+                          setSmsConfig((prev) => ({ ...prev, adminPhone: e.target.value }))
+                        }
+                        placeholder="010-4912-1083"
+                        className="w-full px-3 py-2 rounded-xl bg-black/50 border border-white/15 text-xs text-white font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] text-[#A69B8D] mb-1">
+                        발신 번호 (문자 발송용 등록번호)
+                      </label>
+                      <input
+                        type="text"
+                        value={smsConfig.senderPhone || ''}
+                        onChange={(e) =>
+                          setSmsConfig((prev) => ({ ...prev, senderPhone: e.target.value }))
+                        }
+                        placeholder="010-4912-1083 또는 064-805-2007"
+                        className="w-full px-3 py-2 rounded-xl bg-black/50 border border-white/15 text-xs text-white font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-2xl bg-black/40 border border-white/10 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-[#F5D061]">문자·알림톡 발송 대행사 선택</span>
+                      <div className="flex gap-1.5">
+                        {[
+                          { id: 'solapi', label: '솔라피 (Solapi)' },
+                          { id: 'aligo', label: '알리고 (Aligo)' },
+                        ].map((p) => (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => setSmsConfig((prev) => ({ ...prev, provider: p.id }))}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold cursor-pointer ${
+                              smsConfig.provider === p.id
+                                ? 'bg-[#F5D061] text-black'
+                                : 'bg-white/10 text-[#A69B8D]'
+                            }`}
+                          >
+                            {p.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-[10.5px] text-[#A69B8D] mb-1">
+                          API Key (또는 Vercel 환경변수 사용)
+                        </label>
+                        <input
+                          type="password"
+                          value={smsConfig.apiKey || ''}
+                          onChange={(e) =>
+                            setSmsConfig((prev) => ({ ...prev, apiKey: e.target.value }))
+                          }
+                          placeholder="API Key 입력"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-black/60 border border-white/15 text-xs text-white font-mono"
+                        />
+                      </div>
+                      {smsConfig.provider === 'solapi' ? (
+                        <div>
+                          <label className="block text-[10.5px] text-[#A69B8D] mb-1">
+                            API Secret (솔라피 Secret)
+                          </label>
+                          <input
+                            type="password"
+                            value={smsConfig.apiSecret || ''}
+                            onChange={(e) =>
+                              setSmsConfig((prev) => ({ ...prev, apiSecret: e.target.value }))
+                            }
+                            placeholder="API Secret 입력"
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-black/60 border border-white/15 text-xs text-white font-mono"
+                          />
+                        </div>
+                      ) : (
+                        <div>
+                          <label className="block text-[10.5px] text-[#A69B8D] mb-1">
+                            알리고 사용자 ID (user_id)
+                          </label>
+                          <input
+                            type="text"
+                            value={smsConfig.aligoUserId || ''}
+                            onChange={(e) =>
+                              setSmsConfig((prev) => ({ ...prev, aligoUserId: e.target.value }))
+                            }
+                            placeholder="알리고 로그인 ID"
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-black/60 border border-white/15 text-xs text-white font-mono"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        saveSmsConfig(smsConfig)
+                        showToast('✅ 종무소 자동 알림톡·문자 설정이 저장되었습니다.')
+                      }}
+                      className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs shadow cursor-pointer"
+                    >
+                      💾 자동알림 설정 저장하기
+                    </button>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        saveSmsConfig(smsConfig)
+                        await dispatchSmsBatch(
+                          [
+                            {
+                              to: smsConfig.adminPhone || '010-4912-1083',
+                              subject: '[제주소원사 테스트]',
+                              text: '[제주소원사 종무소] 모바일 법당 접수 자동알림 연동 테스트 메시지입니다.',
+                              recipientLabel: `종무소(${smsConfig.adminPhone || '010-4912-1083'})`,
+                            },
+                          ],
+                          '연동 테스트'
+                        )
+                        setSmsLogs(getSmsLogs())
+                        setSmsModalTab('logs')
+                        showToast('📲 종무소 번호로 테스트 알림을 실행했습니다. 발송로그를 확인하세요.')
+                      }}
+                      className="py-2.5 px-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#F5D061] font-bold text-xs cursor-pointer"
+                    >
+                      🧪 테스트 발송
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* 탭 3: 실시간 자동/수동 문자 발송 내역 로그 */}
+              {smsModalTab === 'logs' && (
+                <div className="space-y-3 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] text-[#A69B8D]">
+                      최근 자동·수동 발송 내역 (최대 200건 보관)
+                    </span>
+                    {smsLogs.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          clearSmsLogs()
+                          setSmsLogs([])
+                          showToast('발송 로그가 초기화되었습니다.')
+                        }}
+                        className="text-[11px] text-red-400 hover:underline cursor-pointer"
+                      >
+                        내역 비우기
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="max-h-64 overflow-y-auto space-y-2 pr-1">
+                    {smsLogs.length === 0 ? (
+                      <div className="py-8 text-center text-[#8C8071] bg-black/30 rounded-2xl border border-white/5">
+                        아직 기록된 문자/알림 발송 내역이 없습니다.
+                      </div>
+                    ) : (
+                      smsLogs.map((log) => (
+                        <div
+                          key={log.id}
+                          className="p-3 rounded-xl bg-black/40 border border-white/10 space-y-1"
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-bold text-[#F5D061]">
+                              [{log.triggerType}] {log.recipientLabel} ({log.to})
+                            </span>
+                            <span className="text-[10px] text-[#A69B8D] font-mono">
+                              {log.createdAt}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-[#E5DCD0] whitespace-pre-line leading-snug">
+                            {log.text}
+                          </p>
+                          <div className="text-[10px] text-emerald-400 font-semibold pt-0.5">
+                            상태: {log.statusLabel}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )

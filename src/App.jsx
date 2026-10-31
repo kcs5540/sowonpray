@@ -61,6 +61,11 @@ import {
 import QRCode from 'qrcode'
 import html2canvas from 'html2canvas'
 import BusinessCardModal from './components/BusinessCardModal'
+import {
+  notifyPrayerSubmission,
+  notifyPrayerCancellation,
+  notifyVisitReservation,
+} from './lib/smsNotifier'
 import AdminERPView from './components/Admin/AdminERPView'
 import MemberDetailModal from './components/Admin/MemberDetailModal'
 import {
@@ -4143,6 +4148,15 @@ function normalizeMemberHierarchy(m) {
       )
     )
 
+    // 🔔 종무소(010-4912-1083) 및 신청 신도님 휴대폰으로 접수 안내 문자·알림톡 자동 발송
+    notifyPrayerSubmission({
+      believerName: formattedBelieverName,
+      believerPhone: wishPhone.trim(),
+      category: wishCategory,
+      wishText: finalWishText,
+      isPaidPrayer,
+    }).catch(() => {})
+
     setWishText(PRAYER_CATEGORY_TEMPLATES[wishCategory] || '')
     setWishTarget('')
     setShowSuccessModal(true)
@@ -4164,6 +4178,13 @@ function normalizeMemberHierarchy(m) {
     if (latestSubmittedPrayerId) {
       const targetPrayer = prayers.find((p) => p.id === latestSubmittedPrayerId)
       setPrayers((prev) => prev.filter((p) => p.id !== latestSubmittedPrayerId))
+      if (targetPrayer) {
+        notifyPrayerCancellation({
+          believerName: targetPrayer.believer_name,
+          believerPhone: targetPrayer.believer_phone,
+          category: targetPrayer.wish_category,
+        }).catch(() => {})
+      }
       if (supabase && targetPrayer) {
         if (targetPrayer.db_id) {
           supabase.from('prayers').delete().eq('id', targetPrayer.db_id).then()
@@ -4269,6 +4290,17 @@ function normalizeMemberHierarchy(m) {
         supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
       }
     }
+
+    // 🔔 종무소(010-4912-1083) 및 방문 예약 신도님 휴대폰으로 예약 확인 문자 자동 발송
+    notifyVisitReservation({
+      visitorName: wishName.trim(),
+      visitorPhone: wishPhone.trim(),
+      visitDate,
+      visitTime,
+      headcount: exactHeadcount,
+      purpose: visitPurpose,
+      memo: newVisit.memo,
+    }).catch(() => {})
 
     setVisitHeadcount(exactHeadcount)
     setVisitMemo('')
@@ -11211,8 +11243,9 @@ function normalizeMemberHierarchy(m) {
                   </div>
                 )}
 
-                <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-[11px] text-[#D4AF37]">
-                  🙏 도량에 오시기 전날 미리 연락 주시면 따뜻한 차와 공양을 대접해 드립니다. (010-4912-1083)
+                <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-[11px] text-[#D4AF37] space-y-1">
+                  <div>📲 종무소(010-4912-1083) 및 불자님 연락처로 접수 알림이 자동 전송됩니다.</div>
+                  <div className="text-[10.5px] text-[#B8AEA0]">🙏 도량 방문 전날 연락 주시면 따뜻한 차와 공양을 준비해 드립니다.</div>
                 </div>
 
                 {/* 가족·지인에게 알리기 (카카오톡 공식 피드 카드 및 전문 전송) */}
