@@ -2300,6 +2300,7 @@ function normalizeMemberHierarchy(m) {
   const [adminMemberViewMode, setAdminMemberViewMode] = useState('tree')
   const [isProfileEditOpen, setIsProfileEditOpen] = useState(false)
   const [isOrgTreeOpen, setIsOrgTreeOpen] = useState(false)
+  const [isAgentPrayerListExpanded, setIsAgentPrayerListExpanded] = useState(false)
 
   // [전산 고도화] 10만 신도 대비 초고속 검색 & 등급 필터 & 정렬 & 상세 모달
   const [adminMemberSearchQuery, setAdminMemberSearchQuery] = useState('')
@@ -10662,51 +10663,87 @@ function normalizeMemberHierarchy(m) {
             )}
 
             {/* [모드 2] 나의 인연 신도 리스트 */}
-            {agentViewMode === 'list' && (
-              <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8]">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-serif-kr font-bold text-base">
-                    나의 인연 신도 축원 및 상담 현황
-                  </h3>
-                  <span className="text-xs text-[#9A7418] font-semibold">
-                    총 {prayers.filter((p) => isAdmin || p.agent_code === activeAgent.code).length}건
-                  </span>
-                </div>
+            {agentViewMode === 'list' && (() => {
+              const agentPrayers = prayers.filter((p) => isAdmin || p.agent_code === activeAgent.code)
+              const displayPrayers = isAgentPrayerListExpanded ? agentPrayers : agentPrayers.slice(0, 5)
 
-                <div className="space-y-3">
-                  {prayers
-                    .filter((p) => isAdmin || p.agent_code === activeAgent.code)
-                    .map((p) => (
-                      <div
-                        key={p.id}
-                        className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] flex flex-col gap-1.5"
+              return (
+                <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <h3 className="font-serif-kr font-bold text-base text-[#231F1C]">
+                        나의 인연 신도 축원 및 상담 현황
+                      </h3>
+                      <p className="text-[11px] text-[#8C7A5B] mt-0.5">
+                        기본 5건 표시 (총 {agentPrayers.length}건)
+                      </p>
+                    </div>
+                    {agentPrayers.length > 5 && (
+                      <button
+                        type="button"
+                        onClick={() => setIsAgentPrayerListExpanded(!isAgentPrayerListExpanded)}
+                        className="px-2.5 py-1 rounded-lg bg-[#FAF8F5] hover:bg-[#F3EFE6] text-[#6E5617] border border-[#DDD4C4] text-xs font-bold flex items-center gap-1 transition shrink-0"
                       >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1.5">
-                            <UserCheck className="w-4 h-4 text-[#9A7418]" />
-                            <span className="text-xs font-bold text-[#231F1C]">
-                              {p.believer_name}
-                            </span>
-                            <span className="text-[11px] text-[#786E63]">({p.believer_phone})</span>
-                          </div>
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EFE7D6] text-[#7D6320]">
-                            {p.status === 'consulting' ? '위패상담중' : '축원진행중'}
-                          </span>
-                        </div>
+                        <span>{isAgentPrayerListExpanded ? '접기 ▲' : '펼치기 ▼'}</span>
+                      </button>
+                    )}
+                  </div>
 
-                        <div className="text-xs text-[#4A433C]">
-                          최근 발원: <strong className="text-[#8A6510]">[{p.wish_category}]</strong> “{p.wish_text}”
-                        </div>
-
-                        <div className="flex items-center justify-between text-[11px] text-[#8C7A5B] pt-1 border-t border-[#EFE9DD]">
-                          <span>접수일시: {formatPrayerDate(p.created_at)}</span>
-                          <span>담당코드: {p.agent_code}</span>
-                        </div>
+                  <div className="space-y-3">
+                    {displayPrayers.length === 0 ? (
+                      <div className="p-8 text-center text-sm text-[#8C7A5B] bg-[#FAF8F5] rounded-xl border border-dashed border-[#EAE2D3]">
+                        접수된 인연 신도 축원 내역이 없습니다.
                       </div>
-                    ))}
-                </div>
-              </section>
-            )}
+                    ) : (
+                      displayPrayers.map((p) => (
+                        <div
+                          key={p.id}
+                          className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] flex flex-col gap-1.5"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5">
+                              <UserCheck className="w-4 h-4 text-[#9A7418]" />
+                              <span className="text-xs font-bold text-[#231F1C]">
+                                {p.believer_name}
+                              </span>
+                              <span className="text-[11px] text-[#786E63]">({p.believer_phone})</span>
+                            </div>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EFE7D6] text-[#7D6320]">
+                              {p.status === 'consulting' ? '위패상담중' : '축원진행중'}
+                            </span>
+                          </div>
+
+                          <div className="text-xs text-[#4A433C]">
+                            최근 발원: <strong className="text-[#8A6510]">[{p.wish_category}]</strong> “{p.wish_text}”
+                          </div>
+
+                          <div className="flex items-center justify-between text-[11px] text-[#8C7A5B] pt-1 border-t border-[#EFE9DD]">
+                            <span>접수일시: {formatPrayerDate(p.created_at)}</span>
+                            <span>담당코드: {p.agent_code}</span>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  {agentPrayers.length > 5 && (
+                    <div className="pt-2 border-t border-[#EAE2D3]">
+                      <button
+                        type="button"
+                        onClick={() => setIsAgentPrayerListExpanded(!isAgentPrayerListExpanded)}
+                        className="w-full py-2.5 rounded-xl bg-[#FAF8F5] hover:bg-[#F3EFE6] text-[#6E5617] border border-[#DDD4C4] text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-2xs"
+                      >
+                        <span>
+                          {isAgentPrayerListExpanded
+                            ? '축원 목록 5개만 보기 (접기) ▲'
+                            : `축원 명단 더보기 (+${agentPrayers.length - 5}건 모두 펼치기) ▼`}
+                        </span>
+                      </button>
+                    </div>
+                  )}
+                </section>
+              )
+            })()}
           </main>
         )}
 
