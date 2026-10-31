@@ -6826,28 +6826,22 @@ function normalizeMemberHierarchy(m) {
                 </span>
               </div>
 
-              {/* 사찰 도로명 및 지번 주소 박스 */}
-              <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EDE6D8] space-y-1">
-                <div className="flex items-start justify-between gap-2">
-                  <span className="text-[10.5px] font-bold text-[#A89880] shrink-0">도로명</span>
-                  <span className="text-xs font-bold text-[#231F1C] text-right break-keep">
-                    제주특별자치도 제주시 죽성서길 75 (우: 63242)
-                  </span>
-                </div>
-                <div className="flex items-start justify-between gap-2 border-t border-black/5 pt-1">
-                  <span className="text-[10.5px] font-bold text-[#A89880] shrink-0">지번</span>
-                  <span className="text-xs text-[#5C5349] text-right break-keep">
-                    제주특별자치도 제주시 오등동 935
-                  </span>
+              {/* 사찰 주소 박스 (단일 깔끔형: 제주시 죽성서길 75 (오등동 935)) */}
+              <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EDE6D8] flex items-center justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <div className="text-[10.5px] font-bold text-[#A89880] mb-0.5">사찰 주소</div>
+                  <div className="text-xs font-bold text-[#231F1C] break-keep">
+                    제주시 죽성서길 75 (오등동 935)
+                  </div>
                 </div>
               </div>
 
-              {/* 대표님 요청: 딱 2개 버튼 [ 📋 주소 복사 ] [ 🧭 네이버 지도 길찾기 ] 칼정렬 */}
+              {/* 대표님 요청: 딱 2개 버튼 [ 주소 복사 ] [ 🧭 네이버 지도 길찾기 ] 칼정렬 (중복 아이콘 제거) */}
               <div className="grid grid-cols-2 gap-2 pt-0.5">
                 <button
                   type="button"
                   onClick={() => {
-                    const addr = '제주특별자치도 제주시 죽성서길 75 (오등동 935)'
+                    const addr = '제주시 죽성서길 75 (오등동 935)'
                     if (navigator.clipboard) {
                       navigator.clipboard.writeText(addr)
                       showToast('📋 소원사 주소가 복사되었습니다! 차량 내비나 카카오톡에 붙여넣으세요.')
@@ -6856,10 +6850,10 @@ function normalizeMemberHierarchy(m) {
                     }
                   }}
                   className="py-2.5 px-3 rounded-xl bg-[#FAF8F5] hover:bg-[#F3EFE6] text-[#2B231A] border border-[#DCD3C3] font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow-xs cursor-pointer"
-                  title="소원사 도로명 주소 클립보드 복사"
+                  title="소원사 주소 클립보드 복사"
                 >
                   <Copy className="w-3.5 h-3.5 text-[#8A6510] shrink-0" />
-                  <span>📋 주소 복사</span>
+                  <span>주소 복사</span>
                 </button>
 
                 <a
