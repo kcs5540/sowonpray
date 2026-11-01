@@ -12819,17 +12819,20 @@ function normalizeMemberHierarchy(m) {
                     )}
                   </div>
 
-                  {/* 하단 일자 및 주지 직인 서명 (줄바꿈 없이 각각 한 줄로 깔끔하게 정렬) */}
-                  <div className="mt-3 pt-2.5 border-t border-[#C59B27]/40 flex items-center justify-between gap-2 text-[#5C4B3A] font-serif-kr w-full min-w-0">
-                    <span className="font-medium whitespace-nowrap text-[11px] sm:text-[11.5px] shrink-0">
+                  {/* 하단 일자 및 주지 직인 서명 (표창장 정통 2단 레이아웃: 1행 날짜 / 2행 주지 서명 & 합장 직인) */}
+                  <div className="mt-3.5 pt-2 border-t border-[#C59B27]/40 text-center font-serif-kr space-y-1 w-full">
+                    {/* 1행: 날짜 단독 한 줄 */}
+                    <div className="text-[11.5px] sm:text-xs text-[#736352] font-medium tracking-wide">
                       {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
-                    </span>
-                    <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
-                      <span className="font-black text-[#4F3906] text-[11.5px] sm:text-[12px] whitespace-nowrap">
+                    </div>
+
+                    {/* 2행: 제주 소원사 주지 합장 & 합장(🙏) 직인 배지 */}
+                    <div className="flex items-center justify-center gap-1.5 whitespace-nowrap">
+                      <span className="font-black text-[#4F3906] text-[13px] sm:text-[14px] tracking-wide">
                         제주 소원사 주지 합장
                       </span>
-                      <span className="inline-flex items-center justify-center w-4.5 h-4.5 rounded-[2px] bg-[#AB2317] text-[#FFFDF9] font-serif-kr text-[8.5px] font-black border border-[#7D150C] shadow-sm select-none shrink-0">
-                        昭願
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-[3px] bg-[#AB2317] text-white text-[11px] font-black border border-[#7D150C] shadow-sm select-none shrink-0" title="합장 직인">
+                        🙏
                       </span>
                     </div>
                   </div>
