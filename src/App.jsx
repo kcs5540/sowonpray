@@ -3879,17 +3879,20 @@ function formatRelativeOrDate(dateStr) {
     }
   })
 
-  // 이전 접속 기록(계정) 목록 상태
-  const [recentLoginAccounts, setRecentLoginAccounts] = useState(() => {
+  // 비밀번호 관리에 저장된 계정 목록 (중복 없이 8자리 고유코드 기준 관리)
+  const [savedLoginAccounts, setSavedLoginAccounts] = useState(() => {
     try {
-      const saved = localStorage.getItem('sowonpray_recent_accounts_v1')
-      if (saved) return JSON.parse(saved)
+      const saved = localStorage.getItem('sowonpray_saved_accounts_v2')
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed
+      }
       return [
-        { phone: '010-3306-5540', raw: '01033065540', code: '33065540', name: '김철수', dharma_name: '보현행' },
+        { code: '33065540', phone: '010-3306-5540', name: '김철수', dharma_name: '보현행', pw: '4157' },
       ]
     } catch {
       return [
-        { phone: '010-3306-5540', raw: '01033065540', code: '33065540', name: '김철수', dharma_name: '보현행' },
+        { code: '33065540', phone: '010-3306-5540', name: '김철수', dharma_name: '보현행', pw: '4157' },
       ]
     }
   })
@@ -4163,22 +4166,21 @@ function formatRelativeOrDate(dateStr) {
       return
     }
     setCurrentUserCode(found.code)
-    // 이전 접속 기록(계정) 목록에 자동 추가 및 보관
-    const phoneFull = found.phone || formatPhone11(loginIdInput) || loginIdInput.trim()
-    const rawDigits = phoneFull.replace(/[^0-9]/g, '')
+    // 비밀번호 관리 계정 목록에 중복 없이 8자리 고유코드 기준으로 저장/갱신
+    const phoneFull = formatPhone11(found.phone || loginIdInput)
     const newEntry = {
-      phone: phoneFull,
-      raw: rawDigits,
       code: found.code,
+      phone: phoneFull,
       name: found.name,
       dharma_name: found.dharma_name || '',
+      pw: inputPw,
       lastLogin: Date.now(),
     }
-    setRecentLoginAccounts((prev) => {
-      const filtered = (prev || []).filter((item) => item.code !== found.code && item.raw !== rawDigits)
+    setSavedLoginAccounts((prev) => {
+      const filtered = (prev || []).filter((item) => item.code !== found.code)
       const updated = [newEntry, ...filtered].slice(0, 5)
       try {
-        localStorage.setItem('sowonpray_recent_accounts_v1', JSON.stringify(updated))
+        localStorage.setItem('sowonpray_saved_accounts_v2', JSON.stringify(updated))
       } catch (e) {}
       return updated
     })
@@ -4315,6 +4317,15 @@ function formatRelativeOrDate(dateStr) {
             localStorage.setItem('sowonpray_saved_login_id', currentUser.phone)
           }
           setLoginPwInput(profileForm.password_pin.trim())
+          setSavedLoginAccounts((prev) => {
+            const updated = (prev || []).map((acc) =>
+              acc.code === currentUser.code ? { ...acc, pw: profileForm.password_pin.trim() } : acc
+            )
+            try {
+              localStorage.setItem('sowonpray_saved_accounts_v2', JSON.stringify(updated))
+            } catch (e) {}
+            return updated
+          })
         }
       } catch (e) {}
     }
@@ -9832,8 +9843,8 @@ function formatRelativeOrDate(dateStr) {
                 {authMode === 'login' ? (
                   <form onSubmit={handleLogin} method="post" action="#" autoComplete="on" className="space-y-3.5">
                     <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label htmlFor="login-phone" className="text-xs font-bold text-[#3D3630]">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label htmlFor="login-username" className="text-xs font-bold text-[#3D3630]">
                           전화번호 (아이디)
                         </label>
                         {loginIdInput && (
@@ -9849,68 +9860,54 @@ function formatRelativeOrDate(dateStr) {
                           </button>
                         )}
                       </div>
-                      <div className="relative">
-                        <input
-                          type="tel"
-                          name="login_phone"
-                          id="login-phone"
-                          list="recent-login-phones"
-                          autoComplete="tel on"
-                          value={loginIdInput}
-                          onChange={(e) => {
-                            const val = e.target.value
-                            setLoginIdInput(val)
-                            const matched = recentLoginAccounts.find(
-                              (a) => a.phone === val || a.raw === val.replace(/[^0-9]/g, '')
-                            )
-                            if (matched && matched.code === '33065540') {
-                              const savedPw = localStorage.getItem('sowonpray_saved_login_pw')
-                              if (savedPw) setLoginPwInput(savedPw)
-                            }
-                          }}
-                          onFocus={(e) => {
-                            e.target.select()
-                          }}
-                          placeholder="010-0000-0000 또는 뒤 8자리"
-                          className="w-full px-3.5 py-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-sm focus:bg-white focus:border-[#C59B27] transition"
-                        />
-                        <datalist id="recent-login-phones">
-                          {recentLoginAccounts.map((acc) => (
-                            <option key={acc.raw || acc.phone} value={acc.phone}>
-                              {acc.name} {acc.dharma_name ? `(${acc.dharma_name})` : ''}
-                            </option>
-                          ))}
-                          <option value="01033065540">김철수 (보현행) - 숫자입력</option>
-                        </datalist>
-                      </div>
+                      <input
+                        type="text"
+                        name="username"
+                        id="login-username"
+                        autoComplete="username"
+                        value={loginIdInput}
+                        onChange={(e) => setLoginIdInput(e.target.value)}
+                        placeholder="010-0000-0000 또는 뒤 8자리"
+                        className="w-full px-3.5 py-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-sm focus:bg-white focus:border-[#C59B27] transition"
+                      />
 
-                      {/* 이전 접속 기록 빠른 원클릭 선택 버튼 */}
-                      {recentLoginAccounts.length > 0 && (
-                        <div className="mt-2 flex items-center gap-1.5 flex-wrap">
-                          <span className="text-[10.5px] font-bold text-[#8C8071]">
-                            🕒 이전 접속:
+                      {/* 비밀번호 관리에 저장된 계정 목록 (중복 없이 바로 선택) */}
+                      {savedLoginAccounts.length > 0 && (
+                        <div className="mt-2.5 p-2.5 rounded-xl bg-[#FAF6EE] border border-[#E8DEC8] space-y-1.5">
+                          <span className="text-[11px] font-bold text-[#8A6510] block">
+                            🔑 비밀번호 관리 계정 빠른 선택
                           </span>
-                          {recentLoginAccounts.map((acc) => (
-                            <button
-                              key={acc.raw || acc.phone}
-                              type="button"
-                              onClick={() => {
-                                setLoginIdInput(acc.phone)
-                                const savedPw = localStorage.getItem('sowonpray_saved_login_pw')
-                                if (savedPw && (acc.code === '33065540' || acc.phone.includes('5540'))) {
-                                  setLoginPwInput(savedPw)
-                                }
-                              }}
-                              className={`text-[11px] px-2.5 py-1 rounded-lg border font-semibold transition active:scale-95 flex items-center gap-1 cursor-pointer ${
-                                loginIdInput && (loginIdInput === acc.phone || loginIdInput === acc.raw)
-                                  ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
-                                  : 'bg-[#F5EFE6] text-[#5C5245] border-[#E2D8C3] hover:bg-[#EAE0D0]'
-                              }`}
-                            >
-                              <span>{acc.name}</span>
-                              <span className="text-[9.5px] opacity-75">({acc.phone.slice(-4)})</span>
-                            </button>
-                          ))}
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            {savedLoginAccounts.map((acc) => {
+                              const isSelected =
+                                extractPhone8Code(loginIdInput) === acc.code
+                              return (
+                                <button
+                                  key={acc.code}
+                                  type="button"
+                                  onClick={() => {
+                                    setLoginIdInput(acc.phone)
+                                    if (acc.pw) {
+                                      setLoginPwInput(acc.pw)
+                                    }
+                                  }}
+                                  className={`text-xs px-2.5 py-1.5 rounded-lg border font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs ${
+                                    isSelected
+                                      ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
+                                      : 'bg-white text-[#4A4036] border-[#DDD3BF] hover:bg-[#F0E8D7]'
+                                  }`}
+                                >
+                                  <span>👤 {acc.name}</span>
+                                  {acc.dharma_name && (
+                                    <span className="text-[10px] text-amber-700">({acc.dharma_name})</span>
+                                  )}
+                                  <span className="text-[10px] opacity-70 font-mono">
+                                    {acc.phone.slice(-4)}
+                                  </span>
+                                </button>
+                              )
+                            })}
+                          </div>
                         </div>
                       )}
                     </div>
