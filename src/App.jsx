@@ -10468,7 +10468,7 @@ function formatRelativeOrDate(dateStr) {
                       </div>
 
                       <span className="text-[10.5px] text-[#D6CEC2] bg-white/5 border border-white/10 px-2 py-1 rounded-lg self-center">
-                        현금 정산 · 기도/불사 공덕금 차감 가능
+                        종무소에서 현금정산 및 기도/불사 공덕금으로 사용 가능
                       </span>
                     </div>
 
