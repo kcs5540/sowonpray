@@ -57,6 +57,8 @@ import {
   Upload,
   CreditCard,
   MapPin,
+  Eye,
+  EyeOff,
 } from 'lucide-react'
 import QRCode from 'qrcode'
 import html2canvas from 'html2canvas'
@@ -3846,8 +3848,28 @@ function formatRelativeOrDate(dateStr) {
   // 로그인/회원가입 전환 상태 ('login' | 'signup')
   const [authMode, setAuthMode] = useState('login')
   const [showTestAccountSwitch, setShowTestAccountSwitch] = useState(false)
-  const [loginIdInput, setLoginIdInput] = useState('')
-  const [loginPwInput, setLoginPwInput] = useState('')
+  const [showLoginPw, setShowLoginPw] = useState(false)
+  const [rememberLogin, setRememberLogin] = useState(() => {
+    try {
+      return localStorage.getItem('sowonpray_remember_login') !== 'false'
+    } catch {
+      return true
+    }
+  })
+  const [loginIdInput, setLoginIdInput] = useState(() => {
+    try {
+      return localStorage.getItem('sowonpray_saved_login_id') || ''
+    } catch {
+      return ''
+    }
+  })
+  const [loginPwInput, setLoginPwInput] = useState(() => {
+    try {
+      return localStorage.getItem('sowonpray_saved_login_pw') || ''
+    } catch {
+      return ''
+    }
+  })
 
   // 신규 회원가입 입력 상태
   const [signupName, setSignupName] = useState('')
@@ -4118,8 +4140,21 @@ function formatRelativeOrDate(dateStr) {
       return
     }
     setCurrentUserCode(found.code)
-    setLoginIdInput('')
-    setLoginPwInput('')
+    if (rememberLogin) {
+      try {
+        localStorage.setItem('sowonpray_remember_login', 'true')
+        localStorage.setItem('sowonpray_saved_login_id', loginIdInput.trim())
+        localStorage.setItem('sowonpray_saved_login_pw', inputPw)
+      } catch (e) {}
+    } else {
+      try {
+        localStorage.setItem('sowonpray_remember_login', 'false')
+        localStorage.removeItem('sowonpray_saved_login_id')
+        localStorage.removeItem('sowonpray_saved_login_pw')
+        setLoginIdInput('')
+        setLoginPwInput('')
+      } catch (e) {}
+    }
     playSingingBowlSound()
     showToast(
       `🙏 반갑습니다, ${found.name}${found.dharma_name ? `(${found.dharma_name})` : ''}님! 본인 계정으로 접속되었습니다.`
@@ -4137,6 +4172,16 @@ function formatRelativeOrDate(dateStr) {
     try {
       localStorage.removeItem('sowonsa_7day_lantern')
       localStorage.setItem('sowonpray_current_user_v3', '')
+      const isRemember = localStorage.getItem('sowonpray_remember_login') !== 'false'
+      if (isRemember) {
+        const savedId = localStorage.getItem('sowonpray_saved_login_id') || ''
+        const savedPw = localStorage.getItem('sowonpray_saved_login_pw') || ''
+        setLoginIdInput(savedId)
+        setLoginPwInput(savedPw)
+      } else {
+        setLoginIdInput('')
+        setLoginPwInput('')
+      }
     } catch (e) {}
     showToast('로그아웃되었습니다. 로그인/가입 화면으로 전환됩니다.')
   }
@@ -4179,6 +4224,15 @@ function formatRelativeOrDate(dateStr) {
 
     setMembers((prev) => [newMember, ...prev])
     setCurrentUserCode(newMember.code)
+    try {
+      if (rememberLogin) {
+        localStorage.setItem('sowonpray_remember_login', 'true')
+        localStorage.setItem('sowonpray_saved_login_id', signupPhone.trim())
+        localStorage.setItem('sowonpray_saved_login_pw', signupPw.trim())
+        setLoginIdInput(signupPhone.trim())
+        setLoginPwInput(signupPw.trim())
+      }
+    } catch (e) {}
     if (supabase) {
       supabase.from('members').upsert([newMember], { onConflict: 'code' }).then()
     }
@@ -4209,6 +4263,18 @@ function formatRelativeOrDate(dateStr) {
     )
     if (supabase) {
       supabase.from('members').upsert([updatedMember], { onConflict: 'code' }).then()
+    }
+    // 비밀번호가 변경되었을 때 로컬 저장 비밀번호도 함께 즉시 동기화
+    if (profileForm.password_pin.trim()) {
+      try {
+        if (localStorage.getItem('sowonpray_remember_login') !== 'false') {
+          localStorage.setItem('sowonpray_saved_login_pw', profileForm.password_pin.trim())
+          if (currentUser.phone) {
+            localStorage.setItem('sowonpray_saved_login_id', currentUser.phone)
+          }
+          setLoginPwInput(profileForm.password_pin.trim())
+        }
+      } catch (e) {}
     }
     playSingingBowlSound()
     setIsProfileEditOpen(false)
@@ -9721,13 +9787,16 @@ function formatRelativeOrDate(dateStr) {
                 </div>
 
                 {authMode === 'login' ? (
-                  <form onSubmit={handleLogin} className="space-y-3.5">
+                  <form onSubmit={handleLogin} method="post" action="#" autoComplete="on" className="space-y-3.5">
                     <div>
                       <label className="block text-xs font-bold text-[#3D3630] mb-1">
                         전화번호 (아이디)
                       </label>
                       <input
                         type="tel"
+                        name="username"
+                        id="login-phone"
+                        autoComplete="username tel"
                         value={loginIdInput}
                         onChange={(e) => setLoginIdInput(e.target.value)}
                         placeholder="010-0000-0000 또는 뒤 8자리"
@@ -9735,20 +9804,68 @@ function formatRelativeOrDate(dateStr) {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                        비밀번호 (초기 기본값: 0000 또는 휴대전화 뒷 4자리)
-                      </label>
-                      <input
-                        type="password"
-                        value={loginPwInput}
-                        onChange={(e) => setLoginPwInput(e.target.value)}
-                        placeholder="비밀번호 4자리"
-                        className="w-full px-3.5 py-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-sm"
-                      />
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-xs font-bold text-[#3D3630]">
+                          비밀번호
+                        </label>
+                        <span className="text-[11px] text-[#8C8071]">
+                          (초기 기본값: 휴대전화 뒷 4자리 또는 0000)
+                        </span>
+                      </div>
+                      <div className="relative">
+                        <input
+                          type={showLoginPw ? 'text' : 'password'}
+                          name="password"
+                          id="login-password"
+                          autoComplete="current-password"
+                          value={loginPwInput}
+                          onChange={(e) => setLoginPwInput(e.target.value)}
+                          placeholder="비밀번호 4자리"
+                          className="w-full px-3.5 py-3 pr-10 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-sm"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowLoginPw(!showLoginPw)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 p-1"
+                          title={showLoginPw ? '비밀번호 숨기기' : '비밀번호 보기'}
+                        >
+                          {showLoginPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
                     </div>
+
+                    {/* 로그인 정보 기억하기 / 비밀번호 저장 체크박스 */}
+                    <div className="flex items-center justify-between pt-0.5 px-0.5">
+                      <label className="flex items-center gap-2 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={rememberLogin}
+                          onChange={(e) => setRememberLogin(e.target.checked)}
+                          className="w-4 h-4 rounded text-[#C59B27] focus:ring-[#C59B27] border-stone-300 accent-[#C59B27]"
+                        />
+                        <span className="text-xs text-[#5C5245] font-semibold">
+                          전화번호 및 비밀번호 기억하기
+                        </span>
+                      </label>
+                      {loginPwInput && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setLoginPwInput('')
+                            try {
+                              localStorage.removeItem('sowonpray_saved_login_pw')
+                            } catch (e) {}
+                          }}
+                          className="text-[11px] text-[#8C8071] hover:text-[#231F1C] underline"
+                        >
+                          지우기
+                        </button>
+                      )}
+                    </div>
+
                     <button
                       type="submit"
-                      className="w-full py-3.5 rounded-xl bg-[#231F1C] text-[#F5D061] font-bold text-sm border border-[#C59B27]"
+                      className="w-full py-3.5 rounded-xl bg-[#231F1C] text-[#F5D061] font-bold text-sm border border-[#C59B27] shadow-sm hover:bg-[#302A25] transition active:scale-95 cursor-pointer"
                     >
                       내 법당 계정으로 로그인
                     </button>
