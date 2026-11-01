@@ -12738,7 +12738,7 @@ function normalizeMemberHierarchy(m) {
               {/* 공덕장 내부 본문 카드 (전통 한지 & 황금 테두리) */}
               <div
                 ref={meritCertRef}
-                className="p-3.5 sm:p-5 rounded-2xl bg-[#FAF6EE] text-[#241F1A] border-2 border-[#C59B27] relative shadow-inner"
+                className="p-3.5 sm:p-5 pb-4.5 sm:pb-5.5 rounded-2xl bg-[#FAF6EE] text-[#241F1A] border-2 border-[#C59B27] relative shadow-inner"
               >
                 {/* 모서리 전통 문양 디자인 */}
                 <div className="text-[10px] text-[#A67C1E] font-serif-kr text-center tracking-widest font-bold">
@@ -12842,12 +12842,36 @@ function normalizeMemberHierarchy(m) {
 
                     try {
                       // 1) 화면 공덕장 캡처
-                      const canvas = await html2canvas(meritCertRef.current, {
+                      const rawCanvas = await html2canvas(meritCertRef.current, {
                         scale: 2,
                         backgroundColor: '#FAF6EE',
                         useCORS: true,
                         logging: false,
                       })
+
+                      // 카카오톡 피드 카드 1:1 정사각 뷰포트 완벽 호환 합성:
+                      // 세로형 이미지를 그대로 전송하면 카카오톡이 1:1로 자르며 하단 주지 스님 축원/서명이 잘립니다.
+                      // 따라서 1:1 정사각 캔버스에 전통 한지 배경과 품격 있는 황금 테두리를 둘러 공덕장 전체를 100% 온전히 합성합니다.
+                      const targetSize = Math.max(rawCanvas.width, rawCanvas.height)
+                      const canvas = document.createElement('canvas')
+                      canvas.width = targetSize
+                      canvas.height = targetSize
+                      const ctx = canvas.getContext('2d')
+                      if (ctx) {
+                        ctx.fillStyle = '#FAF6EE'
+                        ctx.fillRect(0, 0, targetSize, targetSize)
+                        ctx.strokeStyle = '#D5C59B'
+                        ctx.lineWidth = Math.max(2, Math.round(targetSize * 0.005))
+                        ctx.strokeRect(
+                          Math.round(targetSize * 0.012),
+                          Math.round(targetSize * 0.012),
+                          Math.round(targetSize * 0.976),
+                          Math.round(targetSize * 0.976)
+                        )
+                        const offsetX = Math.round((targetSize - rawCanvas.width) / 2)
+                        const offsetY = Math.round((targetSize - rawCanvas.height) / 2)
+                        ctx.drawImage(rawCanvas, offsetX, offsetY)
+                      }
 
                       const fileName = `sowonsa_merit_cert_${Date.now()}.png`
 
@@ -12962,12 +12986,34 @@ function normalizeMemberHierarchy(m) {
                     if (!meritCertRef.current) return
                     setIsCapturingCert(true)
                     try {
-                      const canvas = await html2canvas(meritCertRef.current, {
+                      const rawCanvas = await html2canvas(meritCertRef.current, {
                         scale: 2,
                         backgroundColor: '#FAF6EE',
                         useCORS: true,
                         logging: false,
                       })
+
+                      const targetSize = Math.max(rawCanvas.width, rawCanvas.height)
+                      const canvas = document.createElement('canvas')
+                      canvas.width = targetSize
+                      canvas.height = targetSize
+                      const ctx = canvas.getContext('2d')
+                      if (ctx) {
+                        ctx.fillStyle = '#FAF6EE'
+                        ctx.fillRect(0, 0, targetSize, targetSize)
+                        ctx.strokeStyle = '#D5C59B'
+                        ctx.lineWidth = Math.max(2, Math.round(targetSize * 0.005))
+                        ctx.strokeRect(
+                          Math.round(targetSize * 0.012),
+                          Math.round(targetSize * 0.012),
+                          Math.round(targetSize * 0.976),
+                          Math.round(targetSize * 0.976)
+                        )
+                        const offsetX = Math.round((targetSize - rawCanvas.width) / 2)
+                        const offsetY = Math.round((targetSize - rawCanvas.height) / 2)
+                        ctx.drawImage(rawCanvas, offsetX, offsetY)
+                      }
+
                       const believer = currentUser?.name || lanternData?.believer_name || '소원사_정진불자'
                       const certTitle = meritCertType === 'lantern' ? '소원등정진공덕장' : '사경회향공덕장'
                       const fileName = `제주소원사_${certTitle}_${believer}.png`
