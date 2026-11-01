@@ -6815,23 +6815,28 @@ function formatRelativeOrDate(dateStr) {
         {/* ==================== 1. 신행홈 탭 ==================== */}
         {activeTab === 'home' && (
           <main className="flex-1 flex flex-col gap-3.5 px-2 py-3.5">
-            {/* 히어로 3종 경량 캐러셀 카드: 제주 소원사 도량·대웅전·위패/삼성각 불사 */}
+            {/* 히어로 3종 동적 가로 슬라이딩 캐러셀 (지인 피드백: 좌우로 스르륵 넘어가는 동적 효과) */}
             {(() => {
               const slide = HERO_SLIDES[heroSlideIdx] || HERO_SLIDES[0]
               return (
                 <div className="relative rounded-2xl overflow-hidden shadow-lg border border-[#D8CBB8] min-h-[224px] flex flex-col justify-between p-4 bg-[#161310]">
-                  {HERO_SLIDES.map((s, idx) => (
-                    <img
-                      key={s.id}
-                      src={s.image}
-                      alt={s.titleHighlight}
-                      loading={idx === 0 ? 'eager' : 'lazy'}
-                      className={`absolute inset-0 w-full h-full object-cover brightness-105 transition-opacity duration-700 ${
-                        idx === heroSlideIdx ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                      }`}
-                    />
-                  ))}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#161310]/95 via-[#161310]/50 to-black/25" />
+                  {/* 좌우 동적 슬라이딩 이미지 트랙 */}
+                  <div
+                    className="absolute inset-0 flex transition-transform duration-700 ease-out"
+                    style={{ transform: `translateX(-${heroSlideIdx * 100}%)` }}
+                  >
+                    {HERO_SLIDES.map((s, idx) => (
+                      <div key={s.id} className="relative w-full h-full shrink-0">
+                        <img
+                          src={s.image}
+                          alt={s.titleHighlight}
+                          loading={idx === 0 ? 'eager' : 'lazy'}
+                          className="w-full h-full object-cover brightness-105"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#161310]/95 via-[#161310]/50 to-black/25 pointer-events-none" />
 
                   {/* 상단 배지 + 우측 슬라이드 인디케이터 점 (1/3) */}
                   <div className="relative z-10 flex justify-between items-center gap-2 mb-5">
@@ -6983,6 +6988,139 @@ function formatRelativeOrDate(dateStr) {
               )
             })()}
 
+            {/* 👑 [시니어 맞춤 6대 핵심 비주얼 퀵 메뉴판] - 텍스트 피로도를 없애고 한눈에 짚을 수 있는 큼직한 시각화 버튼 */}
+            <section className="bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#E6DEC8]">
+              <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
+                {/* 1) 소원등 켜기 */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSingingBowlSound()
+                    setActiveTab('lantern')
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }}
+                  className="p-3 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-center text-center transition cursor-pointer active:scale-95 shadow-xs group"
+                >
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#E25C2B] to-[#F4B41A] text-white flex items-center justify-center text-xl shadow-sm mb-1.5 group-hover:scale-105 transition-transform">
+                    🪔
+                  </div>
+                  <span className="font-serif-kr text-xs sm:text-sm font-extrabold text-[#2B1F11] tracking-tight">
+                    소원등 켜기
+                  </span>
+                  <span className="text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap">
+                    1일등 · 100일등
+                  </span>
+                </button>
+
+                {/* 2) 한줄 사경 */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSingingBowlSound()
+                    setActiveTab('sutra')
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }}
+                  className="p-3 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-center text-center transition cursor-pointer active:scale-95 shadow-xs group"
+                >
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#8C6D15] to-[#C59B27] text-white flex items-center justify-center text-xl shadow-sm mb-1.5 group-hover:scale-105 transition-transform">
+                    ✍️
+                  </div>
+                  <span className="font-serif-kr text-xs sm:text-sm font-extrabold text-[#2B1F11] tracking-tight">
+                    한줄 사경
+                  </span>
+                  <span className="text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap">
+                    지혜 정진 사경
+                  </span>
+                </button>
+
+                {/* 3) 법음 · 찬불가 */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSingingBowlSound()
+                    setIsPlayerExpanded(true)
+                    const el = document.getElementById('healing-audio-section')
+                    if (el) el.scrollIntoView({ behavior: 'smooth' })
+                  }}
+                  className="p-3 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-center text-center transition cursor-pointer active:scale-95 shadow-xs group"
+                >
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#382B1B] to-[#1E1914] text-[#F5D061] flex items-center justify-center text-xl shadow-sm mb-1.5 border border-[#C59B27]/40 group-hover:scale-105 transition-transform">
+                    🎵
+                  </div>
+                  <span className="font-serif-kr text-xs sm:text-sm font-extrabold text-[#2B1F11] tracking-tight">
+                    법음 · 찬불가
+                  </span>
+                  <span className="text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap">
+                    독경 & 소원사노래
+                  </span>
+                </button>
+
+                {/* 4) 사시예불 축원 */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSingingBowlSound()
+                    const el = document.getElementById('sasi-prayer-section')
+                    if (el) el.scrollIntoView({ behavior: 'smooth' })
+                  }}
+                  className="p-3 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-center text-center transition cursor-pointer active:scale-95 shadow-xs group"
+                >
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#D9531E] to-[#E88C15] text-white flex items-center justify-center text-xl shadow-sm mb-1.5 group-hover:scale-105 transition-transform">
+                    🔔
+                  </div>
+                  <span className="font-serif-kr text-xs sm:text-sm font-extrabold text-[#2B1F11] tracking-tight">
+                    사시예불 축원
+                  </span>
+                  <span className="text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap">
+                    매일 오전 10시
+                  </span>
+                </button>
+
+                {/* 5) 차 · 공양 예약 */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSingingBowlSound()
+                    setShowVisitForm(true)
+                    const el = document.getElementById('visit-reserve-section')
+                    if (el) el.scrollIntoView({ behavior: 'smooth' })
+                  }}
+                  className="p-3 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-center text-center transition cursor-pointer active:scale-95 shadow-xs group"
+                >
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#5A452B] to-[#7A5B0B] text-white flex items-center justify-center text-xl shadow-sm mb-1.5 group-hover:scale-105 transition-transform">
+                    ☕
+                  </div>
+                  <span className="font-serif-kr text-xs sm:text-sm font-extrabold text-[#2B1F11] tracking-tight">
+                    차 · 공양 예약
+                  </span>
+                  <span className="text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap">
+                    사찰 무료 대접
+                  </span>
+                </button>
+
+                {/* 6) 상시 불사 · 위패 */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSingingBowlSound()
+                    setActiveTab('bulsa')
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }}
+                  className="p-3 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-center text-center transition cursor-pointer active:scale-95 shadow-xs group"
+                >
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#2E2419] to-[#453625] text-[#F5D061] flex items-center justify-center text-xl shadow-sm mb-1.5 border border-[#C59B27]/40 group-hover:scale-105 transition-transform">
+                    🏛️
+                  </div>
+                  <span className="font-serif-kr text-xs sm:text-sm font-extrabold text-[#2B1F11] tracking-tight">
+                    불사 · 위패
+                  </span>
+                  <span className="text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap">
+                    인등 · 영구봉안
+                  </span>
+                </button>
+              </div>
+            </section>
+
             {/* 오늘의 부처님 말씀 + 사찰 음력 일진·재일 법력 안내 */}
             <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] relative overflow-hidden">
               {(() => {
@@ -7067,70 +7205,8 @@ function formatRelativeOrDate(dateStr) {
               </p>
             </section>
 
-            {/* 퀵 액션 배너 2종: 7일 소원등 켜기 · 온라인 한줄 사경 (모바일 글자 잘림 없는 정갈한 규격) */}
-            <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
-              <button
-                type="button"
-                onClick={() => {
-                  playSingingBowlSound()
-                  setActiveTab('lantern')
-                }}
-                className={`p-2.5 sm:p-3 rounded-2xl text-left border transition-all duration-300 flex items-center gap-2 overflow-hidden shadow-md hover:brightness-105 active:scale-95 relative ${
-                  isLanternLit
-                    ? 'bg-gradient-to-br from-[#FFF8E7] via-[#FDF0D0] to-[#FCE6B3] border-[#E8C568] shadow-[0_4px_16px_rgba(212,175,55,0.22)]'
-                    : 'bg-gradient-to-br from-[#FFF9EE] via-[#FDF1D6] to-[#F8E3B6] border-[#E5CA85] shadow-sm'
-                }`}
-              >
-                {/* 은은한 등불 광명 후광 */}
-                <div className="absolute -top-6 -right-6 w-16 h-16 bg-[#F5D061]/35 rounded-full blur-xl pointer-events-none" />
-
-                <div
-                  className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border transition-all duration-300 relative z-10 ${
-                    isLanternLit
-                      ? 'bg-gradient-to-br from-[#E25C2B] via-[#E98227] to-[#F4B41A] text-white border-[#FFEAA7] shadow-[0_0_14px_rgba(233,130,39,0.55)] scale-105'
-                      : 'bg-gradient-to-br from-[#C98B22] to-[#996510] text-[#FFF4D0] border-[#FFD978]/60 shadow-sm'
-                  }`}
-                >
-                  <Flame className={`w-4 h-4 ${isLanternLit ? 'fill-current flame-flicker text-[#FFF7CE]' : 'text-white'}`} />
-                </div>
-                <div className="min-w-0 flex-1 relative z-10">
-                  <span className="block text-[10px] font-extrabold tracking-tight whitespace-nowrap leading-none text-[#A86E0B]">
-                    {isLanternLit
-                      ? `🪔 총 ${userLanternStats.totalCount}회 · 🔥 ${userLanternStats.streak}일 정진`
-                      : '대웅전 1일 무료'}
-                  </span>
-                  <h3 className="font-serif-kr font-extrabold text-[13.5px] sm:text-[14.5px] mt-1 tracking-tight whitespace-nowrap leading-tight text-[#2B1F11]">
-                    {isLanternLit ? '나의 소원등' : '소원등 켜기'}
-                  </h3>
-                </div>
-                <ChevronRight className="w-4 h-4 text-[#9A6B10] shrink-0 relative z-10" />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  playSingingBowlSound()
-                  setActiveTab('sutra')
-                }}
-                className="bg-gradient-to-br from-[#FFFBF2] via-[#F7EFE0] to-[#EFE2C6] text-[#231F1C] p-2.5 sm:p-3 rounded-2xl text-left border border-[#DEC896] shadow-md hover:brightness-105 active:scale-95 transition flex items-center gap-2 overflow-hidden relative"
-              >
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#9A7418] to-[#6E500B] text-[#FFF8E7] border border-[#E8C568]/60 flex items-center justify-center shrink-0 shadow-sm">
-                  <BookOpen className="w-4 h-4 text-[#FFF8E7]" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <span className="block text-[10px] text-[#8A6510] font-extrabold tracking-tight whitespace-nowrap leading-none">
-                    📖 나의 공덕 {currentMeritCount}회
-                  </span>
-                  <h3 className="font-serif-kr font-extrabold text-[13.5px] sm:text-[14.5px] mt-1 tracking-tight whitespace-nowrap leading-tight text-[#231F1C]">
-                    한 줄 사경
-                  </h3>
-                </div>
-                <ChevronRight className="w-4 h-4 text-[#8A6510] shrink-0" />
-              </button>
-            </div>
-
-            {/* ==================== 24시간 마음 쉼터: 일할 때 & 잘 때 듣는 법음(法音) 플레이어 (대안 1: 슬림 콤팩트 바 + 터치 시 펼침) ==================== */}
-            <section className="rounded-2xl bg-gradient-to-br from-[#1E1914] via-[#2A221A] to-[#16120E] text-white border-2 border-[#C59B27]/60 shadow-xl overflow-hidden transition-all duration-300">
+            {/* ==================== 24시간 마음 쉼터: 일할 때 & 잘 때 듣는 법음(法音) 플레이어 ==================== */}
+            <section id="healing-audio-section" className="rounded-2xl bg-gradient-to-br from-[#1E1914] via-[#2A221A] to-[#16120E] text-white border-2 border-[#C59B27]/60 shadow-xl overflow-hidden transition-all duration-300">
               {/* 은은한 배경 후광 */}
               <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#F5D061]/10 rounded-full blur-2xl pointer-events-none" />
 
@@ -7378,7 +7454,7 @@ function formatRelativeOrDate(dateStr) {
             </section>
 
             {/* 따뜻한 차와 사찰 공양(식사) 대접 온라인 사전예약 카드 (온화한 전통 한지 다실 톤으로 상단 먹색 플레이어와 명암 대비 조화) */}
-            <section className="rounded-2xl bg-gradient-to-br from-[#FFFDF9] via-[#FAF3E3] to-[#F3E7CC] text-[#231F1C] p-4 sm:p-5 border-2 border-[#DEC896] shadow-md space-y-3.5 relative overflow-hidden">
+            <section id="visit-reserve-section" className="rounded-2xl bg-gradient-to-br from-[#FFFDF9] via-[#FAF3E3] to-[#F3E7CC] text-[#231F1C] p-4 sm:p-5 border-2 border-[#DEC896] shadow-md space-y-3.5 relative overflow-hidden">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#2A221A] to-[#1B1612] border border-[#C59B27] flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
                   <Coffee className="w-5 h-5 text-[#F5D061]" />
@@ -7621,7 +7697,7 @@ function formatRelativeOrDate(dateStr) {
             {(() => {
               const { upcomingJaeils } = getTodayLunarAndJaeil()
               return (
-                <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-3.5">
+                <section id="sasi-prayer-section" className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-3.5">
                   {/* 상단 헤더: 사시예불 안내 (우측 중복 뱃지 제거 및 1줄 칼정돈) */}
                   <div className="flex items-center gap-2.5 min-w-0">
                     <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#E25C2B] to-[#F4B41A] text-white flex items-center justify-center shrink-0 shadow-xs">
