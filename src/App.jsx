@@ -7693,28 +7693,19 @@ function formatRelativeOrDate(dateStr) {
             {/* 제주 소원사 도량 위치 안내 & 원터치 주소 복사 · 네이버 지도 길찾기 */}
             <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-2.5">
               <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5 min-w-0">
                   <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#2D241C] to-[#17130F] border border-[#C59B27]/60 flex items-center justify-center shrink-0 shadow-xs">
                     <MapPin className="w-4 h-4 text-[#F5D061]" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <h2 className="font-serif-kr font-bold text-sm sm:text-base text-[#231F1C]">
                       제주 소원사 오시는 길
                     </h2>
-                    <p className="text-[11px] text-[#8C7A5B]">
-                      매일 오전 10:00 대웅전 사시예불 봉행
+                    <p className="text-xs font-semibold text-[#8C7A5B] truncate mt-0.5">
+                      제주시 죽성서길 75 (오등동 935)
                     </p>
                   </div>
                 </div>
-              </div>
-
-              {/* 사찰 주소 박스 (한 줄로 슬림하게 처리) */}
-              <div className="py-2 px-3 rounded-xl bg-[#FAF8F5] border border-[#EDE6D8] flex items-center gap-2 text-xs">
-                <span className="text-[10.5px] font-bold text-[#A89880] shrink-0">사찰 주소</span>
-                <span className="text-[#C5B8A5]">·</span>
-                <span className="font-bold text-[#231F1C] truncate">
-                  제주시 죽성서길 75 (오등동 935)
-                </span>
               </div>
 
               {/* 세로 높이 좁힌 [주소 복사] [네이버 지도] 2개 버튼 */}
