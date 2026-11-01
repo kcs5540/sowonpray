@@ -3668,6 +3668,7 @@ function formatRelativeOrDate(dateStr) {
   const [selectedSutraIdx, setSelectedSutraIdx] = useState(0)
   const [sutraInput, setSutraInput] = useState('')
   const [sutraCompleted, setSutraCompleted] = useState(false)
+  const [sutraDailyVersion, setSutraDailyVersion] = useState(0)
   const [showMeritCertModal, setShowMeritCertModal] = useState(false)
   const [meritCertType, setMeritCertType] = useState('lantern') // 'lantern' | 'sutra'
   const [isCapturingCert, setIsCapturingCert] = useState(false)
@@ -4037,7 +4038,7 @@ function formatRelativeOrDate(dateStr) {
     return Math.max(dynamicWipae, Number(currentUser?.wipae_count) || 0)
   }, [currentUserAffiliatedMembers, currentUser])
 
-  // 💰 실시간 신행 복덕 보시금 연산 (법연 연결 1,000원 + 소원등 켜기 100원 + 한줄사경 100원)
+  // 💰 실시간 신행 복덕 보시금 연산 (법연 연결 1,000원 + 소원등 켜기 100원 + 한줄사경 1일 최대 3회 각 100원)
   const userMeritReward = useMemo(() => {
     if (!currentUser) {
       return {
@@ -4047,6 +4048,7 @@ function formatRelativeOrDate(dateStr) {
         lanternReward: 0,
         sutraCount: 0,
         sutraReward: 0,
+        todaySutraRewardCount: 0,
         totalReward: 0,
       }
     }
@@ -4059,15 +4061,26 @@ function formatRelativeOrDate(dateStr) {
     const lanternCount = Math.max(0, userLanternStats?.totalCount || (isLanternLit ? 1 : 0))
     const lanternReward = lanternCount * 100
 
-    // 3) 한줄사경: 1회당 100원 (로컬 저장, DB 저장, 총 수행 공덕 보장)
+    // 3) 한줄사경: 1회당 100원 (1일 최대 3회 적립)
     let storedSutra = 0
     try {
-      storedSutra = Number(localStorage.getItem(`sowonpray_sutra_count_${currentUser.code}`)) || 0
+      storedSutra =
+        Number(localStorage.getItem(`sowonpray_sutra_reward_count_${currentUser.code}`)) ||
+        Number(localStorage.getItem(`sowonpray_sutra_count_${currentUser.code}`)) ||
+        0
     } catch (e) {}
-    const dbSutra = Number(currentUser.sutra_count) || 0
+    const dbSutra = Number(currentUser.sutra_reward_count || currentUser.sutra_count) || 0
     const fallbackSutra = Math.max(0, (currentUser.merit_count || 0) - (userLanternStats?.totalCount || 0))
     const sutraCount = Math.max(dbSutra, storedSutra, fallbackSutra)
     const sutraReward = sutraCount * 100
+
+    // 오늘 적립한 사경 횟수 (1일 최대 3회)
+    const todayKey = new Date().toISOString().slice(0, 10)
+    let todaySutraCount = 0
+    try {
+      todaySutraCount = Number(localStorage.getItem(`sowonpray_sutra_daily_${currentUser.code}_${todayKey}`)) || 0
+    } catch (e) {}
+    const todaySutraRewardCount = Math.min(3, todaySutraCount)
 
     // 4) 총 합계 실시간 반영
     const totalReward = believersReward + lanternReward + sutraReward
@@ -4079,9 +4092,10 @@ function formatRelativeOrDate(dateStr) {
       lanternReward,
       sutraCount,
       sutraReward,
+      todaySutraRewardCount,
       totalReward,
     }
-  }, [currentUser, currentUserBelieversCount, userLanternStats, isLanternLit])
+  }, [currentUser, currentUserBelieversCount, userLanternStats, isLanternLit, sutraDailyVersion])
 
   // 🌿 현재 로그인 회원의 산하 인연 신도 최근 가입순(최신순) 정렬 목록 & 필터 상태
   const [infoAffiliatedMode, setInfoAffiliatedMode] = useState('list') // 'list' | 'tree'
@@ -5335,39 +5349,70 @@ function formatRelativeOrDate(dateStr) {
   }
 
   const addSutraMerit = () => {
+    // 1) 부처님 전 정진 공덕은 횟수 제한 없이 항상 +1 누적
     addMerit(1)
     if (currentUser) {
-      let stored = 0
+      const todayKey = new Date().toISOString().slice(0, 10)
+      const dailyKey = `sowonpray_sutra_daily_${currentUser.code}_${todayKey}`
+      let todayCount = 0
       try {
-        stored = Number(localStorage.getItem(`sowonpray_sutra_count_${currentUser.code}`)) || 0
+        todayCount = Number(localStorage.getItem(dailyKey)) || 0
       } catch (e) {}
-      const dbVal = Number(currentUser.sutra_count) || 0
-      const fallback = Math.max(0, (currentUser.merit_count || 0) - (userLanternStats?.totalCount || 0))
-      const prev = Math.max(dbVal, stored, fallback)
-      const nextCount = prev + 1
 
-      setMembers((prevMembers) =>
-        prevMembers.map((m) =>
-          m.code === currentUser.code
-            ? { ...m, sutra_count: nextCount, merit_count: (m.merit_count || 0) + 1 }
-            : m
+      const isEligible = todayCount < 3
+      const nextDaily = todayCount + 1
+      try {
+        localStorage.setItem(dailyKey, String(nextDaily))
+      } catch (e) {}
+      setSutraDailyVersion((v) => v + 1)
+
+      // 2) 신행 복덕 보시금은 1일 최대 3회(각 100원, 총 300원)까지 적립
+      if (isEligible) {
+        let storedReward = 0
+        try {
+          storedReward =
+            Number(localStorage.getItem(`sowonpray_sutra_reward_count_${currentUser.code}`)) ||
+            Number(localStorage.getItem(`sowonpray_sutra_count_${currentUser.code}`)) ||
+            0
+        } catch (e) {}
+        const dbVal = Number(currentUser.sutra_reward_count || currentUser.sutra_count) || 0
+        const fallback = Math.max(0, (currentUser.merit_count || 0) - (userLanternStats?.totalCount || 0))
+        const prev = Math.max(dbVal, storedReward, fallback)
+        const nextReward = prev + 1
+
+        setMembers((prevMembers) =>
+          prevMembers.map((m) =>
+            m.code === currentUser.code
+              ? {
+                  ...m,
+                  sutra_reward_count: nextReward,
+                  sutra_count: nextReward,
+                  merit_count: (m.merit_count || 0) + 1,
+                }
+              : m
+          )
         )
-      )
-      try {
-        localStorage.setItem(`sowonpray_sutra_count_${currentUser.code}`, String(nextCount))
-      } catch (e) {}
+        try {
+          localStorage.setItem(`sowonpray_sutra_reward_count_${currentUser.code}`, String(nextReward))
+          localStorage.setItem(`sowonpray_sutra_count_${currentUser.code}`, String(nextReward))
+        } catch (e) {}
 
-      if (supabase) {
-        supabase
-          .from('members')
-          .update({
-            sutra_count: nextCount,
-            merit_count: (currentUser.merit_count || 0) + 1,
-          })
-          .eq('code', currentUser.code)
-          .then(({ error }) => {
-            if (error) console.log('Supabase sutra sync note:', error)
-          })
+        if (supabase) {
+          supabase
+            .from('members')
+            .update({
+              sutra_count: nextReward,
+              merit_count: (currentUser.merit_count || 0) + 1,
+            })
+            .eq('code', currentUser.code)
+            .then(({ error }) => {
+              if (error) console.log('Supabase sutra sync note:', error)
+            })
+        }
+
+        showToast(`✨ 한 줄 사경 회향! (신행 보시금 +100원 적립 · 오늘 ${nextDaily}/3회)`)
+      } else {
+        showToast(`🙏 한 줄 사경 회향! (오늘의 보시금 한도 3회·300원 달성, 정진 공덕 +1)`)
       }
     }
   }
@@ -5380,7 +5425,6 @@ function formatRelativeOrDate(dateStr) {
       addSutraMerit()
       setMeritCertType('sutra')
       setShowMeritCertModal(true)
-      showToast('✨ 한 줄 사경 회향! (신행 복덕 보시금 +100원 적립)')
     }
   }
 
@@ -9023,6 +9067,15 @@ function formatRelativeOrDate(dateStr) {
                 <p className="text-[11px] text-[#BFB6AA] mt-0.5 break-keep">
                   사경·명언·경전공부·지혜퀴즈로 매일 맑은 복덕을 쌓아보세요.
                 </p>
+                {/* 💰 오늘 사경 보시금 적립 현황 (1일 최대 3회 / 300원) */}
+                <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-white/10 text-[11px] flex-wrap">
+                  <span className="text-[#BFB6AA]">오늘 사경 보시금:</span>
+                  <span className="px-2 py-0.5 rounded-full bg-[#F5D061]/20 border border-[#F5D061]/40 text-[#F5D061] font-bold inline-flex items-center gap-1">
+                    <span>💰 {userMeritReward.todaySutraRewardCount} / 3회 적립</span>
+                    <span>({userMeritReward.todaySutraRewardCount * 100}원)</span>
+                  </span>
+                  <span className="text-[10px] text-[#A69B8D]">(1일 최대 3회 · 300원)</span>
+                </div>
               </div>
               <button
                 type="button"
@@ -10387,13 +10440,15 @@ function formatRelativeOrDate(dateStr) {
                         <div className="text-[10.5px] font-mono font-bold text-emerald-300 mt-0.5">
                           +{userMeritReward.sutraReward.toLocaleString()}원
                         </div>
-                        <div className="text-[9px] text-[#9E9080] mt-0.5">1회 100원</div>
+                        <div className="text-[9px] text-[#E5D7B5] mt-0.5 font-semibold">
+                          오늘 {userMeritReward.todaySutraRewardCount}/3회
+                        </div>
                       </button>
                     </div>
 
                     {/* 하단 미니 가이드 문구 */}
-                    <p className="text-[11px] text-[#B8AEA0] leading-snug break-keep pt-0.5 text-center">
-                      위 3가지 신행 항목을 터치하시면 즉시 해당 정진창으로 이동하여 복덕을 쌓으실 수 있습니다.
+                    <p className="text-[10.5px] text-[#B8AEA0] leading-snug break-keep pt-0.5 text-center">
+                      ※ 한줄사경 보시금은 1일 최대 3회(300원)까지 적립되며, 사경 공덕은 제한 없이 계속 쌓입니다.
                     </p>
                   </div>
 
