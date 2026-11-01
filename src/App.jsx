@@ -3939,7 +3939,7 @@ function formatRelativeOrDate(dateStr) {
   }, [currentUserAffiliatedMembers, currentUser])
 
   // 🌿 현재 로그인 회원의 산하 인연 신도 최근 가입순(최신순) 정렬 목록 & 필터 상태
-  const [infoAffiliatedMode, setInfoAffiliatedMode] = useState('tree') // 'tree' | 'list'
+  const [infoAffiliatedMode, setInfoAffiliatedMode] = useState('list') // 'list' | 'tree'
   const [recentMembersFilter, setRecentMembersFilter] = useState('all') // 'all' | 'direct'
   const [showAllRecentMembers, setShowAllRecentMembers] = useState(false)
 
@@ -10388,19 +10388,8 @@ function formatRelativeOrDate(dateStr) {
                         </div>
                       </div>
 
-                      {/* 3번 형식: 다크-골드 탭 전환 스위치 (계보도 Tree vs 신도 축원 현황) */}
+                      {/* 3번 형식: 다크-골드 탭 전환 스위치 (최근 가입 현황 vs 계보도) */}
                       <div className="flex items-center justify-between gap-2 p-1 bg-[#231F1C] rounded-2xl border border-[#C59B27]/40 shadow-xs">
-                        <button
-                          type="button"
-                          onClick={() => setInfoAffiliatedMode('tree')}
-                          className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
-                            infoAffiliatedMode === 'tree'
-                              ? 'bg-[#F5D061] text-[#1B1815] shadow font-extrabold'
-                              : 'text-[#D6CEC2] hover:text-white'
-                          }`}
-                        >
-                          <span>🌿 포교 인연 계보도 (Tree)</span>
-                        </button>
                         <button
                           type="button"
                           onClick={() => setInfoAffiliatedMode('list')}
@@ -10411,6 +10400,17 @@ function formatRelativeOrDate(dateStr) {
                           }`}
                         >
                           <span>📋 최근 가입 현황</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setInfoAffiliatedMode('tree')}
+                          className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                            infoAffiliatedMode === 'tree'
+                              ? 'bg-[#F5D061] text-[#1B1815] shadow font-extrabold'
+                              : 'text-[#D6CEC2] hover:text-white'
+                          }`}
+                        >
+                          <span>🌿 포교 인연 계보도</span>
                         </button>
                       </div>
 
