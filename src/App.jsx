@@ -7581,7 +7581,7 @@ function formatRelativeOrDate(dateStr) {
             </section>
 
             {/* 제주 소원사 도량 위치 안내 & 원터치 주소 복사 · 네이버 지도 길찾기 */}
-            <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-3">
+            <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-2.5">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#2D241C] to-[#17130F] border border-[#C59B27]/60 flex items-center justify-center shrink-0 shadow-xs">
@@ -7596,22 +7596,18 @@ function formatRelativeOrDate(dateStr) {
                     </p>
                   </div>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] whitespace-nowrap shrink-0">
-                  제주 오등동
+              </div>
+
+              {/* 사찰 주소 박스 (한 줄로 슬림하게 처리) */}
+              <div className="py-2 px-3 rounded-xl bg-[#FAF8F5] border border-[#EDE6D8] flex items-center gap-2 text-xs">
+                <span className="text-[10.5px] font-bold text-[#A89880] shrink-0">사찰 주소</span>
+                <span className="text-[#C5B8A5]">·</span>
+                <span className="font-bold text-[#231F1C] truncate">
+                  제주시 죽성서길 75 (오등동 935)
                 </span>
               </div>
 
-              {/* 사찰 주소 박스 (단일 깔끔형: 제주시 죽성서길 75 (오등동 935)) */}
-              <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EDE6D8] flex items-center justify-between gap-2">
-                <div className="min-w-0 flex-1">
-                  <div className="text-[10.5px] font-bold text-[#A89880] mb-0.5">사찰 주소</div>
-                  <div className="text-xs font-bold text-[#231F1C] break-keep">
-                    제주시 죽성서길 75 (오등동 935)
-                  </div>
-                </div>
-              </div>
-
-              {/* 대표님 요청: 딱 2개 버튼 [ 주소 복사 ] [ 🧭 네이버 지도 길찾기 ] 칼정렬 (중복 아이콘 제거) */}
+              {/* 세로 높이 좁힌 [주소 복사] [네이버 지도] 2개 버튼 */}
               <div className="grid grid-cols-2 gap-2 pt-0.5">
                 <button
                   type="button"
@@ -7624,7 +7620,7 @@ function formatRelativeOrDate(dateStr) {
                       showToast(addr)
                     }
                   }}
-                  className="py-2.5 px-3 rounded-xl bg-[#FAF8F5] hover:bg-[#F3EFE6] text-[#2B231A] border border-[#DCD3C3] font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow-xs cursor-pointer"
+                  className="py-2 px-3 rounded-xl bg-[#FAF8F5] hover:bg-[#F3EFE6] text-[#2B231A] border border-[#DCD3C3] font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow-xs cursor-pointer whitespace-nowrap"
                   title="소원사 주소 클립보드 복사"
                 >
                   <Copy className="w-3.5 h-3.5 text-[#8A6510] shrink-0" />
@@ -7635,11 +7631,11 @@ function formatRelativeOrDate(dateStr) {
                   href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%86%8C%EC%9B%90%EC%82%AC"
                   target="_blank"
                   rel="noreferrer"
-                  className="py-2.5 px-3 rounded-xl bg-[#03C75A] hover:bg-[#02B351] text-white font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow-xs"
+                  className="py-2 px-3 rounded-xl bg-[#03C75A] hover:bg-[#02B351] text-white font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow-xs whitespace-nowrap"
                   title="네이버 지도로 소원사 길찾기 바로 연결"
                 >
                   <span className="text-xs">🧭</span>
-                  <span>네이버 지도 길찾기</span>
+                  <span>네이버 지도</span>
                 </a>
               </div>
             </section>
