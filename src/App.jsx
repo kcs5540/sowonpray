@@ -1690,6 +1690,32 @@ function normalizeMemberHierarchy(m) {
   return { ...m, role: 'believer', parent_code: parentCode }
 }
 
+// 상대 시간 또는 일자 포맷터 (예: '오늘 17:19', '어제 14:30', '2026.10.30')
+function formatRelativeOrDate(dateStr) {
+  if (!dateStr) return '최근'
+  try {
+    const d = new Date(dateStr)
+    if (isNaN(d.getTime())) return dateStr
+    const now = new Date()
+    const isToday = d.toDateString() === now.toDateString()
+    const yesterday = new Date(now)
+    yesterday.setDate(now.getDate() - 1)
+    const isYesterday = d.toDateString() === yesterday.toDateString()
+
+    const hours = String(d.getHours()).padStart(2, '0')
+    const mins = String(d.getMinutes()).padStart(2, '0')
+
+    if (isToday) return `오늘 ${hours}:${mins}`
+    if (isYesterday) return `어제 ${hours}:${mins}`
+
+    const m = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${d.getFullYear()}.${m}.${day}`
+  } catch {
+    return dateStr
+  }
+}
+
   // 전체 통합 회원 DB 상태 (신도 + 포교사 + 본부 + 관리자)
   const [members, setMembers] = useState(() => {
     try {
@@ -3911,6 +3937,19 @@ function normalizeMemberHierarchy(m) {
     const dynamicWipae = currentUserAffiliatedMembers.reduce((sum, m) => sum + (Number(m.wipae_count) || 0), 0)
     return Math.max(dynamicWipae, Number(currentUser?.wipae_count) || 0)
   }, [currentUserAffiliatedMembers, currentUser])
+
+  // 🌿 현재 로그인 회원의 산하 인연 신도 최근 가입순(최신순) 정렬 목록 & 필터 상태
+  const [recentMembersFilter, setRecentMembersFilter] = useState('all') // 'all' | 'direct'
+  const [showAllRecentMembers, setShowAllRecentMembers] = useState(false)
+
+  const recentAffiliatedMembers = useMemo(() => {
+    return [...currentUserAffiliatedMembers].sort((a, b) => {
+      const timeA = new Date(a.created_at || 0).getTime()
+      const timeB = new Date(b.created_at || 0).getTime()
+      if (timeB !== timeA) return timeB - timeA
+      return String(b.code || '').localeCompare(String(a.code || ''))
+    })
+  }, [currentUserAffiliatedMembers])
 
   // 산하 인연 회원 실시간 검색 & 필터링
   const filteredAffiliatedMembers = useMemo(() => {
@@ -10324,6 +10363,191 @@ function normalizeMemberHierarchy(m) {
                     </div>
                   </section>
                 )}
+
+                {/* 3. 🌿 최근 가입한 나의 인연 신도 (최근 가입순) */}
+                {(() => {
+                  const filteredRecent = recentMembersFilter === 'direct'
+                    ? recentAffiliatedMembers.filter((m) => m.parent_code === currentUser.code)
+                    : recentAffiliatedMembers
+                  const displayRecent = showAllRecentMembers
+                    ? filteredRecent
+                    : filteredRecent.slice(0, 5)
+
+                  return (
+                    <section className="bg-white rounded-3xl p-5 shadow-sm border border-[#E6DEC8] space-y-3.5">
+                      <div className="flex items-center justify-between gap-2 border-b border-[#EFE9DD] pb-3 flex-wrap">
+                        <div className="min-w-0">
+                          <span className="text-[11px] font-bold text-[#9A7418] block">
+                            卍 실시간 법연 현황
+                          </span>
+                          <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] mt-0.5">
+                            최근 가입한 인연 신도
+                          </h3>
+                        </div>
+                        <div className="flex items-center gap-1 bg-[#FAF8F5] p-1 rounded-xl border border-[#E5DEC9] shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => setRecentMembersFilter('all')}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
+                              recentMembersFilter === 'all'
+                                ? 'bg-[#1B1815] text-[#F5D061] shadow-xs'
+                                : 'text-[#7A6B58] hover:text-[#231F1C]'
+                            }`}
+                          >
+                            전체 ({recentAffiliatedMembers.length}명)
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setRecentMembersFilter('direct')}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
+                              recentMembersFilter === 'direct'
+                                ? 'bg-[#1B1815] text-[#F5D061] shadow-xs'
+                                : 'text-[#7A6B58] hover:text-[#231F1C]'
+                            }`}
+                          >
+                            직접 ({recentAffiliatedMembers.filter((m) => m.parent_code === currentUser.code).length}명)
+                          </button>
+                        </div>
+                      </div>
+
+                      {displayRecent.length === 0 ? (
+                        <div className="text-center py-7 bg-[#FAF8F5] rounded-2xl border border-[#EFE9DD] space-y-2">
+                          <div className="text-3xl">🪷</div>
+                          <p className="text-xs text-[#7A6B58] font-medium break-keep">
+                            {recentMembersFilter === 'direct'
+                              ? '내가 직접 추천하여 가입한 신규 회원이 아직 없습니다.'
+                              : '아직 내 산하로 맺어진 인연 신도가 없습니다.'}
+                          </p>
+                          <p className="text-[11px] text-[#A89880]">
+                            카카오톡으로 소원등을 공유해 소중한 인연을 맺어보세요.
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => handleCopyRefLink(currentUser.code)}
+                            className="mt-2 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#F5D061] text-[#1B1815] text-xs font-bold shadow-xs hover:bg-[#E5BF4F] transition active:scale-95 cursor-pointer"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>나의 인연 추천 링크 복사</span>
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="space-y-2.5">
+                          {displayRecent.map((m) => {
+                            const isDirect = m.parent_code === currentUser.code
+                            const parentAgent = !isDirect ? members.find((p) => p.code === m.parent_code) : null
+                            const mPrayer = (prayers || []).find((p) =>
+                              p.member_code === m.code ||
+                              (m.phone && p.believer_phone && p.believer_phone.replace(/[^0-9]/g, '') === m.phone.replace(/[^0-9]/g, ''))
+                            )
+                            const isToday = m.created_at && new Date(m.created_at).toDateString() === new Date().toDateString()
+
+                            return (
+                              <div
+                                key={m.code}
+                                className={`p-3.5 rounded-2xl border transition flex flex-col gap-2 ${
+                                  isToday
+                                    ? 'bg-[#FFFDF7] border-[#ECC872] shadow-xs'
+                                    : 'bg-[#FAF8F5] border-[#E8DEC8] hover:border-[#C59B27]/50'
+                                }`}
+                              >
+                                {/* 상단: 이름, 법명, 추천관계, 가입일시 */}
+                                <div className="flex items-center justify-between gap-2">
+                                  <div className="flex items-center gap-2 min-w-0">
+                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] font-serif-kr font-black flex items-center justify-center text-xs shrink-0 shadow-xs">
+                                      {m.name.slice(0, 1)}
+                                    </div>
+                                    <div className="min-w-0">
+                                      <div className="flex items-center gap-1.5 flex-wrap">
+                                        <span className="font-serif-kr font-extrabold text-[13.5px] sm:text-[14.5px] text-[#1B1815]">
+                                          {m.name}
+                                        </span>
+                                        {m.dharma_name && (
+                                          <span className="text-xs font-bold text-[#8A6510]">
+                                            ({m.dharma_name})
+                                          </span>
+                                        )}
+                                        <span
+                                          className={`text-[9.5px] px-1.5 py-0.2 rounded-md font-bold whitespace-nowrap ${
+                                            isDirect
+                                              ? 'bg-[#8A6510]/12 text-[#8A6510] border border-[#8A6510]/30'
+                                              : 'bg-stone-200/80 text-stone-600'
+                                          }`}
+                                        >
+                                          {isDirect ? '직접 추천' : `${parentAgent ? parentAgent.name : '산하'} 추천`}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="text-right shrink-0">
+                                    <span
+                                      className={`text-[11px] font-bold whitespace-nowrap ${
+                                        isToday ? 'text-amber-800 font-black' : 'text-[#8C8071]'
+                                      }`}
+                                    >
+                                      {formatRelativeOrDate(m.created_at)}
+                                    </span>
+                                    {isToday && (
+                                      <span className="block text-[9.5px] text-emerald-600 font-black">
+                                        신규 가입 ✨
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* 하단: 연락처 + 축원/소원등 접수 현황 */}
+                                <div className="flex items-center justify-between gap-2 text-xs pt-1.5 border-t border-[#EFE9DD]/80 flex-wrap">
+                                  <div className="flex items-center gap-1.5 text-[#5C5245] text-[11.5px]">
+                                    <Phone className="w-3 h-3 text-[#A89880]" />
+                                    <a
+                                      href={`tel:${m.phone}`}
+                                      className="font-mono hover:text-[#9A7418] font-semibold transition"
+                                      title="전화 걸기"
+                                    >
+                                      {formatPhone11(m.phone)}
+                                    </a>
+                                  </div>
+
+                                  <div className="flex items-center gap-1.5 text-[11px]">
+                                    {mPrayer ? (
+                                      <span className="inline-flex items-center gap-1 text-[#8A6510] font-medium bg-[#FAF3DF] px-2 py-0.5 rounded-md border border-[#E5D399]">
+                                        <span>🪔 {mPrayer.wish_category || '소원등'}</span>
+                                        <span className="text-[10px] text-amber-700 font-bold">(축원)</span>
+                                      </span>
+                                    ) : (
+                                      <span className="text-[#8C8071] text-[10.5px]">
+                                        {m.extra_data?.registered_via === 'wish_lantern'
+                                          ? '🪔 소원등 동참 가입'
+                                          : m.extra_data?.registered_via === 'sutra'
+                                          ? '✍️ 마음사경 동참 가입'
+                                          : '🙏 모바일 법당 가입'}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          })}
+
+                          {/* 더보기 / 접기 버튼 */}
+                          {filteredRecent.length > 5 && (
+                            <button
+                              type="button"
+                              onClick={() => setShowAllRecentMembers(!showAllRecentMembers)}
+                              className="w-full py-2.5 rounded-xl bg-[#FAF8F5] hover:bg-[#F3EFE6] text-[#7A6B58] border border-[#DDD4C4] text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer"
+                            >
+                              <span>
+                                {showAllRecentMembers
+                                  ? '접기 ▲'
+                                  : `이전 가입 회원 더보기 (+${filteredRecent.length - 5}명) ▼`}
+                              </span>
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </section>
+                  )
+                })()}
 
                 {/* 4. 🌿 나의 인연 공덕 나무 (계보 트리 - 스마트 접이식 아코디언) */}
                 <section className="bg-white rounded-3xl p-5 shadow-sm border border-[#E6DEC8] space-y-3">
