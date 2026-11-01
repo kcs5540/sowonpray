@@ -12720,7 +12720,7 @@ function normalizeMemberHierarchy(m) {
         {/* 사경 회향 공덕장 (황금 인증서) 모달 */}
         {showMeritCertModal && (
           <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto animate-fadeIn">
-            <div className="w-full max-w-[380px] max-h-[96dvh] overflow-y-auto bg-gradient-to-b from-[#251F19] via-[#1B1713] to-[#120F0D] text-white rounded-3xl p-3 sm:p-5 border-2 border-[#D4AF37] shadow-[0_0_35px_rgba(212,175,55,0.35)] relative my-auto">
+            <div className="w-full max-w-[390px] sm:max-w-[420px] max-h-[96dvh] overflow-y-auto bg-gradient-to-b from-[#251F19] via-[#1B1713] to-[#120F0D] text-white rounded-3xl p-3 sm:p-5 border-2 border-[#D4AF37] shadow-[0_0_35px_rgba(212,175,55,0.35)] relative my-auto">
               {/* 상단 장식 빛무리 */}
               <div className="absolute -top-12 -left-12 w-36 h-36 bg-[#F5D061]/15 rounded-full blur-2xl pointer-events-none" />
               <div className="absolute -bottom-12 -right-12 w-36 h-36 bg-[#D4AF37]/15 rounded-full blur-2xl pointer-events-none" />
@@ -12819,12 +12819,16 @@ function normalizeMemberHierarchy(m) {
                     )}
                   </div>
 
-                  {/* 하단 일자 및 주지 직인 서명 */}
-                  <div className="mt-3 pt-2 border-t border-[#C59B27]/40 flex items-center justify-between text-[11px] text-[#5C4B3A] font-serif-kr">
-                    <span className="font-medium">{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-black text-[#4F3906] text-[12px] sm:text-[12.5px]">제주 소원사 주지 합장</span>
-                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-[2px] bg-[#AB2317] text-[#FFFDF9] font-serif-kr text-[9.5px] font-black border border-[#7D150C] shadow-sm select-none">
+                  {/* 하단 일자 및 주지 직인 서명 (줄바꿈 없이 각각 한 줄로 깔끔하게 정렬) */}
+                  <div className="mt-3 pt-2.5 border-t border-[#C59B27]/40 flex items-center justify-between gap-2 text-[#5C4B3A] font-serif-kr w-full min-w-0">
+                    <span className="font-medium whitespace-nowrap text-[11px] sm:text-[11.5px] shrink-0">
+                      {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    </span>
+                    <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
+                      <span className="font-black text-[#4F3906] text-[11.5px] sm:text-[12px] whitespace-nowrap">
+                        제주 소원사 주지 합장
+                      </span>
+                      <span className="inline-flex items-center justify-center w-4.5 h-4.5 rounded-[2px] bg-[#AB2317] text-[#FFFDF9] font-serif-kr text-[8.5px] font-black border border-[#7D150C] shadow-sm select-none shrink-0">
                         昭願
                       </span>
                     </div>
