@@ -8884,7 +8884,7 @@ function formatRelativeOrDate(dateStr) {
                 <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8]">
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <h3 className="font-serif-kr font-bold text-base text-[#231F1C]">
-                      최근 접수된 대웅전 소원등 ({deduped.length}위)
+                      실시간 소원사 대웅전 소원등 ({deduped.length}위)
                     </h3>
                     <span className="text-[11px] font-bold text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-full border border-[#E5D399]">
                       실시간 점등중
