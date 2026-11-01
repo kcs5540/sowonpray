@@ -7742,30 +7742,30 @@ function formatRelativeOrDate(dateStr) {
             </section>
 
             {/* 제주 소원사 공식 사이트 & SNS 채널 통합 바로가기 (A안: 가로 원형 아이콘 바) */}
-            <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-3">
+            <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-2.5">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-[11px] font-bold text-[#9A7418]">
+                  <span className="text-[10.5px] font-bold text-[#9A7418]">
                     OFFICIAL CHANNELS
                   </span>
-                  <h2 className="font-serif-kr font-bold text-base text-[#231F1C] mt-0.5 whitespace-nowrap">
+                  <h2 className="font-serif-kr font-bold text-sm sm:text-base text-[#231F1C] mt-0.5 whitespace-nowrap">
                     제주 소원사 공식 사이트 · 채널
                   </h2>
                 </div>
-                <span className="text-[11px] text-[#A69B8D] font-medium hidden sm:inline-block">
+                <span className="text-[10.5px] text-[#A69B8D] font-medium hidden sm:inline-block">
                   터치하여 바로가기
                 </span>
               </div>
 
-              {/* 가로 아이콘 그리드 / 바 */}
-              <div className="grid grid-cols-6 gap-2 pt-1">
+              {/* 가로 아이콘 그리드 / 바 (슬림화된 앙증맞은 아이콘 규격) */}
+              <div className="grid grid-cols-6 gap-1.5 sm:gap-2 pt-0.5">
                 {[
                   {
                     name: '홈페이지',
                     url: 'https://sowonsa.vercel.app/',
                     icon: (
-                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-[#231F1C] to-[#151210] border border-[#C59B27] flex items-center justify-center shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all">
-                        <Globe className="w-5 h-5 text-[#F5D061]" />
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-[#231F1C] to-[#151210] border border-[#C59B27] flex items-center justify-center shadow-xs group-hover:scale-105 group-hover:shadow-sm transition-all">
+                        <Globe className="w-4 h-4 text-[#F5D061]" />
                       </div>
                     ),
                   },
@@ -7773,8 +7773,8 @@ function formatRelativeOrDate(dateStr) {
                     name: '네이버',
                     url: 'https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%86%8C%EC%9B%90%EC%82%AC',
                     icon: (
-                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#03C75A] flex items-center justify-center shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all">
-                        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white" aria-hidden="true">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#03C75A] flex items-center justify-center shadow-xs group-hover:scale-105 group-hover:shadow-sm transition-all">
+                        <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white" aria-hidden="true">
                           <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z" />
                         </svg>
                       </div>
@@ -7784,8 +7784,8 @@ function formatRelativeOrDate(dateStr) {
                     name: '유튜브',
                     url: 'https://www.youtube.com/@jejusowonsa',
                     icon: (
-                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#FF0000] flex items-center justify-center shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all">
-                        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" aria-hidden="true">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#FF0000] flex items-center justify-center shadow-xs group-hover:scale-105 group-hover:shadow-sm transition-all">
+                        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white" aria-hidden="true">
                           <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                         </svg>
                       </div>
@@ -7796,13 +7796,13 @@ function formatRelativeOrDate(dateStr) {
                     url: 'https://www.instagram.com/jejusowonsa/',
                     icon: (
                       <div
-                        className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shadow-xs group-hover:scale-105 group-hover:shadow-sm transition-all"
                         style={{
                           background:
                             'radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%)',
                         }}
                       >
-                        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white" aria-hidden="true">
                           <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                         </svg>
                       </div>
@@ -7812,8 +7812,8 @@ function formatRelativeOrDate(dateStr) {
                     name: '스레드',
                     url: 'https://www.threads.net/@jejusowonsa',
                     icon: (
-                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black flex items-center justify-center shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all">
-                        <svg viewBox="0 0 192 192" className="w-5 h-5 fill-white" aria-hidden="true">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black flex items-center justify-center shadow-xs group-hover:scale-105 group-hover:shadow-sm transition-all">
+                        <svg viewBox="0 0 192 192" className="w-4 h-4 fill-white" aria-hidden="true">
                           <path d="M141.537 88.988a66.667 66.667 0 0 0-2.518-1.143c-1.482-27.307-16.403-42.94-41.457-43.1h-.34c-14.986 0-27.449 6.396-35.12 18.036l13.779 9.452c5.73-8.695 14.724-10.548 21.348-10.548h.229c8.249.053 14.474 2.452 18.503 7.13 2.932 3.405 4.893 8.111 5.864 14.05-7.314-1.243-15.224-1.626-23.68-1.14-23.82 1.371-39.134 15.264-38.105 34.568.522 9.792 5.4 18.216 13.735 23.719 7.047 4.652 16.124 6.927 25.557 6.412 12.458-.683 22.231-5.436 29.049-14.127 5.178-6.6 8.453-15.153 9.899-25.93 5.937 3.583 10.337 8.298 12.767 13.966 4.132 9.635 4.373 25.468-8.546 38.376-11.319 11.308-24.925 16.2-45.488 16.35-22.809-.169-40.06-7.484-51.275-21.742C35.236 139.966 29.808 120.682 29.605 96c.203-24.682 5.63-43.966 16.133-57.317C56.954 24.425 74.204 17.11 97.013 16.94c22.975.17 40.526 7.52 52.171 21.847 5.71 7.026 10.015 15.86 12.853 26.162l16.147-4.308c-3.44-12.68-8.853-23.606-16.219-32.668C147.036 9.607 125.202.195 97.07 0h-.113C68.882.195 47.292 9.642 32.788 28.08 19.882 44.485 13.224 67.315 13.001 95.932L13 96v.067c.224 28.617 6.882 51.447 19.788 67.854C47.292 182.358 68.882 191.805 96.957 192h.113c24.96-.173 42.554-6.708 57.048-21.19 18.963-18.945 18.392-42.692 12.142-57.27-4.484-10.454-13.033-18.945-24.723-24.552zm-43.096 40.519c-10.44.588-21.286-4.098-21.82-14.135-.397-7.442 5.296-15.746 22.461-16.735 1.966-.113 3.895-.169 5.79-.169 6.235 0 12.068.606 17.371 1.765-1.978 24.702-13.58 28.713-23.802 29.274z" />
                         </svg>
                       </div>
@@ -7823,8 +7823,8 @@ function formatRelativeOrDate(dateStr) {
                     name: '안내카드',
                     url: 'https://sowonsa.vercel.app/introcard',
                     icon: (
-                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#FEE500] flex items-center justify-center shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all">
-                        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-[#3C1E1E]" aria-hidden="true">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#FEE500] flex items-center justify-center shadow-xs group-hover:scale-105 group-hover:shadow-sm transition-all">
+                        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-[#3C1E1E]" aria-hidden="true">
                           <path d="M12 3C6.477 3 2 6.477 2 10.765c0 2.772 1.868 5.204 4.685 6.57-.204.763-.74 2.768-.847 3.197-.133.527.194.52.408.378.168-.111 2.668-1.81 3.746-2.546.652.094 1.323.144 2.008.144 5.523 0 10-3.477 10-7.743C22 6.477 17.523 3 12 3z" />
                         </svg>
                       </div>
@@ -7836,11 +7836,11 @@ function formatRelativeOrDate(dateStr) {
                     href={ch.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="group flex flex-col items-center gap-1.5 py-1 text-center"
+                    className="group flex flex-col items-center gap-1 py-1 text-center"
                     title={ch.name}
                   >
                     {ch.icon}
-                    <span className="text-[11px] font-medium text-[#544B41] group-hover:text-[#9A7418] transition-colors whitespace-nowrap">
+                    <span className="text-[10px] sm:text-[10.5px] font-medium text-[#544B41] group-hover:text-[#9A7418] transition-colors whitespace-nowrap">
                       {ch.name}
                     </span>
                   </a>
