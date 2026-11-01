@@ -1285,6 +1285,18 @@ const HEALING_AUDIO_TRACKS = [
     attribution: '음원 출처: BBS 불교방송 / 영인스님 독경 정진 (사찰 포교 및 법공양)',
   },
   {
+    id: 'sowonsa_prajna_meditation',
+    category: '힐링명상',
+    icon: '🧘',
+    title: '제주 소원사 반야심경 (대웅전 힐링 명상)',
+    subtitle: '스님의 깊은 저음 범패 & 묵직한 목탁·법고 리듬 선율',
+    description: '대웅전의 신비로운 울림 속에서 스님의 묵직한 범패 음성과 웅장한 타격 리듬이 잡념을 씻어내고 깊은 이완과 평안을 선사합니다.',
+    type: 'meditation',
+    audioUrl: '/audio/sowonsa_prajna_meditation.mp3',
+    voiceText: null,
+    attribution: '음원 출처: 제주 소원사 모바일 법당 힐링 명상 (마음 치유)',
+  },
+  {
     id: 'lotus_destiny',
     category: '은혜찬불',
     icon: '🌸',
@@ -7334,6 +7346,18 @@ function formatRelativeOrDate(dateStr) {
                                 {t.id === 'prajna_chanting' || t.id === 'sleep_meditation' || t.id === 'dhammapada_wisdom' ? (
                                   <span className="bg-[#F5D061]/25 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/40">
                                     🎙️ 영인스님 실물 독경 원음
+                                  </span>
+                                ) : t.id === 'sowonsa_prajna_meditation' ? (
+                                  <span className="bg-[#F5D061]/25 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/40">
+                                    🧘 소원사 힐링 명상
+                                  </span>
+                                ) : t.id === 'lotus_destiny' ? (
+                                  <span className="bg-[#F5D061]/25 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/40">
+                                    🌸 소원사 찬불가
+                                  </span>
+                                ) : t.id === 'jeju_sowonsa' ? (
+                                  <span className="bg-[#F5D061]/25 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/40">
+                                    🍊 소원사 테마송
                                   </span>
                                 ) : t.id === 'rhythmic_moktak' ? (
                                   <span className="bg-[#F5D061]/20 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/30">
@@ -15630,6 +15654,21 @@ function formatRelativeOrDate(dateStr) {
                     <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F5D061]/20 text-[#FFE58A] border border-[#F5D061]/40 flex items-center gap-1.5 shadow-sm">
                       <span>📿</span>
                       <span>영인스님 실제 독경 육성 &amp; 대웅전 목탁 원음</span>
+                    </span>
+                  ) : healingAudioTrack === 'sowonsa_prajna_meditation' ? (
+                    <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F5D061]/20 text-[#FFE58A] border border-[#F5D061]/40 flex items-center gap-1.5 shadow-sm">
+                      <span>🧘</span>
+                      <span>제주 소원사 반야심경 대웅전 힐링 명상</span>
+                    </span>
+                  ) : healingAudioTrack === 'lotus_destiny' ? (
+                    <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F5D061]/20 text-[#FFE58A] border border-[#F5D061]/40 flex items-center gap-1.5 shadow-sm">
+                      <span>🌸</span>
+                      <span>제주 소원사 힐링 찬불가 (연꽃 인연)</span>
+                    </span>
+                  ) : healingAudioTrack === 'jeju_sowonsa' ? (
+                    <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F5D061]/20 text-[#FFE58A] border border-[#F5D061]/40 flex items-center gap-1.5 shadow-sm">
+                      <span>🍊</span>
+                      <span>제주 소원사 공식 도량 테마송</span>
                     </span>
                   ) : healingAudioTrack === 'rhythmic_moktak' ? (
                     <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F5D061]/20 text-[#FFE58A] border border-[#F5D061]/40 flex items-center gap-1.5 shadow-sm">
