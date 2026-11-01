@@ -1285,9 +1285,21 @@ const HEALING_AUDIO_TRACKS = [
     attribution: '음원 출처: BBS 불교방송 / 영인스님 독경 정진 (사찰 포교 및 법공양)',
   },
   {
+    id: 'lotus_destiny',
+    category: '은혜찬불',
+    icon: '🌸',
+    title: '연꽃 인연 (제주 소원사 힐링 찬불가)',
+    subtitle: '청아한 여성 보컬 & 대금·해금·피아노 선율 (3분 48초 완곡 회향)',
+    description: '옷깃만 스쳐도 수많은 생의 인연이듯, 부처님의 자비 광명 아래 맺어진 소중한 법연(法緣)을 노래한 제주 소원사 명품 찬불가입니다.',
+    type: 'song',
+    audioUrl: '/audio/lotus_destiny.mp3',
+    voiceText: null,
+    attribution: '음원 출처: 제주 소원사 모바일 법당 정식 찬불가 (자비 법공양)',
+  },
+  {
     id: 'rhythmic_moktak',
     category: '마음정진',
-    icon: '🪷',
+    icon: '🪵',
     title: '천년고찰 박달나무 실물 목탁 원음',
     subtitle: '사찰 대웅전 실물 목탁 타격 원음 & 법당 자연 잔향 (108배·사경용 2분 루프)',
     description: '천년고찰 대웅전 법당의 맑고 묵직한 박달나무 목탁 실물 소리와 공간 울림이 잡념을 씻어내고 호흡을 고요하게 합니다.',
@@ -7169,7 +7181,7 @@ function formatRelativeOrDate(dateStr) {
                         ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
                         : 'bg-white/10 hover:bg-white/15 text-[#F5D061] border-[#F5D061]/30'
                     }`}
-                    title={isPlayerExpanded ? '트랙 목록 닫기' : '5대 불경 트랙 목록 열기'}
+                    title={isPlayerExpanded ? '트랙 목록 닫기' : '힐링 법음·찬불가 트랙 목록 열기'}
                     aria-label="트랙 목록 열기/닫기"
                   >
                     {isPlayerExpanded ? <ChevronUp className="w-4 h-4" /> : <ListMusic className="w-4 h-4" />}
