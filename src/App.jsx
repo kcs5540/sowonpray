@@ -6988,7 +6988,7 @@ function formatRelativeOrDate(dateStr) {
               )
             })()}
 
-            {/* 👑 [시니어 맞춤 6대 핵심 비주얼 퀵 메뉴판] - 텍스트 피로도를 없애고 한눈에 짚을 수 있는 큼직한 시각화 버튼 */}
+            {/* 👑 [시니어 맞춤 6대 핵심 비주얼 퀵 메뉴판] - 아이콘 세로 위치 및 텍스트 베이스라인 완전 일치 정돈 */}
             <section className="bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#E6DEC8]">
               <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
                 {/* 1) 소원등 켜기 */}
@@ -6999,15 +6999,17 @@ function formatRelativeOrDate(dateStr) {
                     setActiveTab('lantern')
                     window.scrollTo({ top: 0, behavior: 'smooth' })
                   }}
-                  className="p-3 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-center text-center transition cursor-pointer active:scale-95 shadow-xs group"
+                  className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-xs group"
                 >
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#E25C2B] to-[#F4B41A] text-white flex items-center justify-center text-xl shadow-sm mb-1.5 group-hover:scale-105 transition-transform">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#E25C2B] to-[#F4B41A] text-white flex items-center justify-center text-xl shadow-sm mb-1.5 shrink-0 group-hover:scale-105 transition-transform">
                     🪔
                   </div>
-                  <span className="font-serif-kr text-xs sm:text-sm font-extrabold text-[#2B1F11] tracking-tight">
-                    소원등 켜기
-                  </span>
-                  <span className="text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap">
+                  <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
+                    <span className="font-serif-kr text-[11.5px] sm:text-xs font-extrabold text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
+                      소원등 켜기
+                    </span>
+                  </div>
+                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
                     1일등 · 100일등
                   </span>
                 </button>
@@ -7020,15 +7022,17 @@ function formatRelativeOrDate(dateStr) {
                     setActiveTab('sutra')
                     window.scrollTo({ top: 0, behavior: 'smooth' })
                   }}
-                  className="p-3 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-center text-center transition cursor-pointer active:scale-95 shadow-xs group"
+                  className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-xs group"
                 >
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#8C6D15] to-[#C59B27] text-white flex items-center justify-center text-xl shadow-sm mb-1.5 group-hover:scale-105 transition-transform">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#8C6D15] to-[#C59B27] text-white flex items-center justify-center text-xl shadow-sm mb-1.5 shrink-0 group-hover:scale-105 transition-transform">
                     ✍️
                   </div>
-                  <span className="font-serif-kr text-xs sm:text-sm font-extrabold text-[#2B1F11] tracking-tight">
-                    한줄 사경
-                  </span>
-                  <span className="text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap">
+                  <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
+                    <span className="font-serif-kr text-[11.5px] sm:text-xs font-extrabold text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
+                      한줄 사경
+                    </span>
+                  </div>
+                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
                     지혜 정진 사경
                   </span>
                 </button>
@@ -7042,15 +7046,17 @@ function formatRelativeOrDate(dateStr) {
                     const el = document.getElementById('healing-audio-section')
                     if (el) el.scrollIntoView({ behavior: 'smooth' })
                   }}
-                  className="p-3 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-center text-center transition cursor-pointer active:scale-95 shadow-xs group"
+                  className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-xs group"
                 >
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#382B1B] to-[#1E1914] text-[#F5D061] flex items-center justify-center text-xl shadow-sm mb-1.5 border border-[#C59B27]/40 group-hover:scale-105 transition-transform">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#382B1B] to-[#1E1914] text-[#F5D061] flex items-center justify-center text-xl shadow-sm mb-1.5 shrink-0 border border-[#C59B27]/40 group-hover:scale-105 transition-transform">
                     🎵
                   </div>
-                  <span className="font-serif-kr text-xs sm:text-sm font-extrabold text-[#2B1F11] tracking-tight">
-                    법음 · 찬불가
-                  </span>
-                  <span className="text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap">
+                  <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
+                    <span className="font-serif-kr text-[11.5px] sm:text-xs font-extrabold text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
+                      법음 · 찬불가
+                    </span>
+                  </div>
+                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
                     독경 & 소원사노래
                   </span>
                 </button>
@@ -7063,15 +7069,17 @@ function formatRelativeOrDate(dateStr) {
                     const el = document.getElementById('sasi-prayer-section')
                     if (el) el.scrollIntoView({ behavior: 'smooth' })
                   }}
-                  className="p-3 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-center text-center transition cursor-pointer active:scale-95 shadow-xs group"
+                  className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-xs group"
                 >
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#D9531E] to-[#E88C15] text-white flex items-center justify-center text-xl shadow-sm mb-1.5 group-hover:scale-105 transition-transform">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#D9531E] to-[#E88C15] text-white flex items-center justify-center text-xl shadow-sm mb-1.5 shrink-0 group-hover:scale-105 transition-transform">
                     🔔
                   </div>
-                  <span className="font-serif-kr text-xs sm:text-sm font-extrabold text-[#2B1F11] tracking-tight">
-                    사시예불 축원
-                  </span>
-                  <span className="text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap">
+                  <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
+                    <span className="font-serif-kr text-[11.5px] sm:text-xs font-extrabold text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
+                      사시예불 축원
+                    </span>
+                  </div>
+                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
                     매일 오전 10시
                   </span>
                 </button>
@@ -7085,15 +7093,17 @@ function formatRelativeOrDate(dateStr) {
                     const el = document.getElementById('visit-reserve-section')
                     if (el) el.scrollIntoView({ behavior: 'smooth' })
                   }}
-                  className="p-3 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-center text-center transition cursor-pointer active:scale-95 shadow-xs group"
+                  className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-xs group"
                 >
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#5A452B] to-[#7A5B0B] text-white flex items-center justify-center text-xl shadow-sm mb-1.5 group-hover:scale-105 transition-transform">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#5A452B] to-[#7A5B0B] text-white flex items-center justify-center text-xl shadow-sm mb-1.5 shrink-0 group-hover:scale-105 transition-transform">
                     ☕
                   </div>
-                  <span className="font-serif-kr text-xs sm:text-sm font-extrabold text-[#2B1F11] tracking-tight">
-                    차 · 공양 예약
-                  </span>
-                  <span className="text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap">
+                  <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
+                    <span className="font-serif-kr text-[11.5px] sm:text-xs font-extrabold text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
+                      차 · 공양 예약
+                    </span>
+                  </div>
+                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
                     사찰 무료 대접
                   </span>
                 </button>
@@ -7106,15 +7116,17 @@ function formatRelativeOrDate(dateStr) {
                     setActiveTab('bulsa')
                     window.scrollTo({ top: 0, behavior: 'smooth' })
                   }}
-                  className="p-3 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-center text-center transition cursor-pointer active:scale-95 shadow-xs group"
+                  className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-xs group"
                 >
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#2E2419] to-[#453625] text-[#F5D061] flex items-center justify-center text-xl shadow-sm mb-1.5 border border-[#C59B27]/40 group-hover:scale-105 transition-transform">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#2E2419] to-[#453625] text-[#F5D061] flex items-center justify-center text-xl shadow-sm mb-1.5 shrink-0 border border-[#C59B27]/40 group-hover:scale-105 transition-transform">
                     🏛️
                   </div>
-                  <span className="font-serif-kr text-xs sm:text-sm font-extrabold text-[#2B1F11] tracking-tight">
-                    불사 · 위패
-                  </span>
-                  <span className="text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap">
+                  <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
+                    <span className="font-serif-kr text-[11.5px] sm:text-xs font-extrabold text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
+                      불사 · 위패
+                    </span>
+                  </div>
+                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
                     인등 · 영구봉안
                   </span>
                 </button>
