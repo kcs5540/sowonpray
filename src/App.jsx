@@ -1780,10 +1780,28 @@ function normalizeMemberHierarchy(m) {
     return savedRef || '33065540'
   })
 
-  // 현재 로그인된 본인 계정 코드 (자동 로그인 유지, 초기 기본값: 일반신도 이정숙 '82341088')
+  // 현재 로그인된 본인 계정 코드 (자동 로그인 유지 / 신규 방문자는 null 게스트 상태로 시작)
   const [currentUserCode, setCurrentUserCode] = useState(() => {
-    const savedUser = localStorage.getItem('sowonpray_current_user_v3')
-    return savedUser !== null ? savedUser : '82341088'
+    try {
+      const params = new URLSearchParams(window.location.search)
+      const savedUser = localStorage.getItem('sowonpray_current_user_v3')
+
+      // 1) 이전 버전에서 자동 주입되었던 테스트 더미 계정('82341088', 이정숙)은 깨끗이 초기화
+      if (savedUser === '82341088') {
+        localStorage.removeItem('sowonpray_current_user_v3')
+        return null
+      }
+
+      // 2) 카카오톡 초대 링크(?ref=...)로 유입된 신규 방문자는 무조건 게스트(null) 상태로 시작하여 성명/전화번호 빈칸 유지
+      if (params.get('ref') && (!savedUser || savedUser === 'null' || savedUser.trim() === '')) {
+        return null
+      }
+
+      // 3) 저장된 회원 코드가 유효하게 존재하면 유지, 없으면 null 게스트 상태
+      return (savedUser && savedUser !== 'null' && savedUser.trim() !== '') ? savedUser : null
+    } catch (e) {
+      return null
+    }
   })
 
   // 현재 로그인된 회원 객체
@@ -4626,6 +4644,14 @@ function normalizeMemberHierarchy(m) {
         }
       }
 
+      // 신규 신청자가 비로그인 상태이거나 본인 계정이 아닌 경우 본인 계정으로 즉시 자동 로그인 처리
+      if (!currentUserCode || currentUserCode !== prayerCode8) {
+        setCurrentUserCode(prayerCode8)
+        try {
+          localStorage.setItem('sowonpray_current_user_v3', prayerCode8)
+        } catch (e) {}
+      }
+
       // 담당 포교사 인연 신도수 업데이트
       setMembers((prev) =>
         prev.map((m) =>
@@ -4797,6 +4823,14 @@ function normalizeMemberHierarchy(m) {
         if (supabase) {
           supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
         }
+      }
+
+      // 신규 방문 예약자가 비로그인 상태이거나 본인 계정이 아닌 경우 본인 계정으로 즉시 자동 로그인 처리
+      if (!currentUserCode || currentUserCode !== visitCode8) {
+        setCurrentUserCode(visitCode8)
+        try {
+          localStorage.setItem('sowonpray_current_user_v3', visitCode8)
+        } catch (e) {}
       }
 
       // 🔔 종무소(010-4912-1083) 및 방문 예약 신도님 휴대폰으로 예약 확인 문자 자동 발송
