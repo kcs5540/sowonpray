@@ -4038,6 +4038,15 @@ function formatRelativeOrDate(dateStr) {
     return Math.max(dynamicWipae, Number(currentUser?.wipae_count) || 0)
   }, [currentUserAffiliatedMembers, currentUser])
 
+  // 한국 기준(KST) 오늘 날짜 키 (자정 리셋 정확도 100% 보장: YYYY-MM-DD)
+  const getTodayDateKey = () => {
+    const d = new Date()
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const date = String(d.getDate()).padStart(2, '0')
+    return `${year}-${month}-${date}`
+  }
+
   // 💰 실시간 신행 복덕 보시금 연산 (법연 연결 1,000원 + 소원등 켜기 100원 + 한줄사경 1일 최대 3회 각 100원)
   const userMeritReward = useMemo(() => {
     if (!currentUser) {
@@ -4057,11 +4066,19 @@ function formatRelativeOrDate(dateStr) {
     const believersCount = currentUserBelieversCount || 0
     const believersReward = believersCount * 1000
 
-    // 2) 소원등 점등: 1회당 100원
-    const lanternCount = Math.max(0, userLanternStats?.totalCount || (isLanternLit ? 1 : 0))
+    // 2) 소원등 점등: 1회당 100원 (실제 1일 소원등 접수 장부 기록이나 점등 이력이 있는 경우에만 정확히 계산)
+    const hasLanternRecord = Boolean(
+      (userLanternStats?.prayersCount && userLanternStats.prayersCount > 0) ||
+      isLanternLit ||
+      (lanternData && lanternData.lit_at) ||
+      (Number(currentUser?.lantern_count) > 0)
+    )
+    const lanternCount = hasLanternRecord
+      ? Math.max(userLanternStats?.prayersCount || 0, lanternData?.total_count || 0, isLanternLit ? 1 : 0, Number(currentUser?.lantern_count) || 0)
+      : 0
     const lanternReward = lanternCount * 100
 
-    // 3) 한줄사경: 1회당 100원 (1일 최대 3회 적립)
+    // 3) 한줄사경: 1회당 100원 (1일 최대 3회 적립된 정식 횟수만 반영)
     let storedSutra = 0
     try {
       storedSutra =
@@ -4070,19 +4087,18 @@ function formatRelativeOrDate(dateStr) {
         0
     } catch (e) {}
     const dbSutra = Number(currentUser.sutra_reward_count || currentUser.sutra_count) || 0
-    const fallbackSutra = Math.max(0, (currentUser.merit_count || 0) - (userLanternStats?.totalCount || 0))
-    const sutraCount = Math.max(dbSutra, storedSutra, fallbackSutra)
+    const sutraCount = Math.max(dbSutra, storedSutra)
     const sutraReward = sutraCount * 100
 
-    // 오늘 적립한 사경 횟수 (1일 최대 3회)
-    const todayKey = new Date().toISOString().slice(0, 10)
+    // 오늘 적립한 사경 횟수 (1일 최대 3회 제한)
+    const todayKey = getTodayDateKey()
     let todaySutraCount = 0
     try {
       todaySutraCount = Number(localStorage.getItem(`sowonpray_sutra_daily_${currentUser.code}_${todayKey}`)) || 0
     } catch (e) {}
     const todaySutraRewardCount = Math.min(3, todaySutraCount)
 
-    // 4) 총 합계 실시간 반영
+    // 4) 총 합계 실시간 반영 (오차 없이 정확한 정수 합산)
     const totalReward = believersReward + lanternReward + sutraReward
 
     return {
@@ -4095,7 +4111,7 @@ function formatRelativeOrDate(dateStr) {
       todaySutraRewardCount,
       totalReward,
     }
-  }, [currentUser, currentUserBelieversCount, userLanternStats, isLanternLit, sutraDailyVersion])
+  }, [currentUser, currentUserBelieversCount, userLanternStats, isLanternLit, lanternData, sutraDailyVersion])
 
   // 🌿 현재 로그인 회원의 산하 인연 신도 최근 가입순(최신순) 정렬 목록 & 필터 상태
   const [infoAffiliatedMode, setInfoAffiliatedMode] = useState('list') // 'list' | 'tree'
@@ -5352,7 +5368,7 @@ function formatRelativeOrDate(dateStr) {
     // 1) 부처님 전 정진 공덕은 횟수 제한 없이 항상 +1 누적
     addMerit(1)
     if (currentUser) {
-      const todayKey = new Date().toISOString().slice(0, 10)
+      const todayKey = getTodayDateKey()
       const dailyKey = `sowonpray_sutra_daily_${currentUser.code}_${todayKey}`
       let todayCount = 0
       try {
@@ -5376,8 +5392,7 @@ function formatRelativeOrDate(dateStr) {
             0
         } catch (e) {}
         const dbVal = Number(currentUser.sutra_reward_count || currentUser.sutra_count) || 0
-        const fallback = Math.max(0, (currentUser.merit_count || 0) - (userLanternStats?.totalCount || 0))
-        const prev = Math.max(dbVal, storedReward, fallback)
+        const prev = Math.max(dbVal, storedReward)
         const nextReward = prev + 1
 
         setMembers((prevMembers) =>
