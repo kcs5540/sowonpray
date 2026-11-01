@@ -12738,70 +12738,97 @@ function normalizeMemberHierarchy(m) {
               {/* 공덕장 내부 본문 카드 (전통 한지 & 황금 테두리) */}
               <div
                 ref={meritCertRef}
-                className="p-4 sm:p-5 rounded-2xl bg-[#FAF6EE] text-[#241F1A] border-2 border-[#C59B27] relative shadow-inner"
+                className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-b from-[#FFFDF9] via-[#FAF6EE] to-[#F5EEDB] text-[#241F1A] border-2 border-[#C59B27] relative shadow-md"
+                style={{
+                  boxShadow: '0 4px 20px rgba(197, 155, 39, 0.15)',
+                }}
               >
-                {/* 상단: 전통 사찰 표시 */}
-                <div className="text-[11px] text-[#A67C1E] font-serif-kr text-center tracking-widest font-bold">
-                  卍 제주 소원사 卍
-                </div>
-
-                {/* 공덕장 명칭 */}
-                <h3 className="font-serif-kr text-xl sm:text-2xl font-black text-[#6B4E08] text-center mt-1 tracking-tight">
-                  {meritCertType === 'lantern' ? '소원등 정진 공덕장' : '사경 회향 공덕장'}
-                </h3>
-
-                <div className="my-2 border-t border-[#D5C59B] border-dashed" />
-
-                {/* 수여 대상 및 경전 정보 */}
-                <div className="space-y-1 text-xs sm:text-[13px] text-[#3A3228] font-serif-kr">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[#8C6D1F] font-bold">정진 불자</span>
-                    <span className="font-black text-[#1C1814] text-[13.5px]">
-                      {currentUser?.name || lanternData?.believer_name || '소원사 정진 불자'}
-                      {currentUser?.dharma_name ? ` (${currentUser.dharma_name})` : ''} 합장
+                {/* 내부 전통 괘선 (이중 금선 프레임) */}
+                <div className="border border-[#D4AF37]/60 rounded-xl p-3 sm:p-4 bg-white/40">
+                  {/* 상단 사찰 표기 */}
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="h-[1px] w-8 bg-gradient-to-r from-transparent to-[#C59B27]" />
+                    <span className="text-[10.5px] text-[#8C6D1F] font-serif-kr tracking-[0.2em] font-extrabold">
+                      卍 제주 소원사 卍
                     </span>
+                    <span className="h-[1px] w-8 bg-gradient-to-l from-transparent to-[#C59B27]" />
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[#8C6D1F] font-bold">
-                      {meritCertType === 'lantern' ? '정진 공덕' : '회향 경전'}
-                    </span>
-                    <span className="font-bold text-[#6B4E08] text-[13px]">
-                      {meritCertType === 'lantern'
-                        ? `소원등 총 ${currentUser?.merit_count || currentMeritCount || 108}회 점등 (${lanternData?.streak || lanternStreak || 1}일 연속)`
-                        : (currentSutra?.title || '반야심경')}
-                    </span>
-                  </div>
-                </div>
 
-                {/* 중앙 본문 박스 (사경 구절 또는 소원등 발원문) */}
-                <div className="mt-2.5 p-3 rounded-2xl bg-[#F5EDDC] border border-[#D5C59B] text-center shadow-[inset_0_1px_3px_rgba(0,0,0,0.03)]">
-                  {meritCertType === 'lantern' ? (
-                    <div>
-                      <span className="inline-block text-[11px] font-black text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-md border border-[#E5D399] mb-1">
-                        발원 분야: {lanternData?.wish_category || '가족건강'}
+                  {/* 공덕장 대명칭 */}
+                  <h3 className="font-serif-kr text-[21px] sm:text-[23px] font-black text-[#523505] text-center tracking-[0.14em] mt-1.5 drop-shadow-sm">
+                    {meritCertType === 'lantern' ? '소원등 정진 공덕장' : '사경 회향 공덕장'}
+                  </h3>
+
+                  <div className="my-2.5 border-t border-[#C59B27]/40 border-dashed" />
+
+                  {/* 수여 대상 정보 */}
+                  <div className="space-y-1 text-xs sm:text-[13px] text-[#3A3228] font-serif-kr">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#8C6D1F] font-extrabold text-[12px]">정진 불자</span>
+                      <span className="font-black text-[#1C1814] text-[13.5px]">
+                        {currentUser?.name || lanternData?.believer_name || '소원사 정진 불자'}
+                        {currentUser?.dharma_name ? ` (${currentUser.dharma_name})` : ''} 합장
                       </span>
-                      <p className="font-serif-kr text-[14px] sm:text-[15px] font-black text-[#2A231B] leading-relaxed break-keep mt-0.5">
-                        “{lanternData?.wish_text || '지극정성으로 온 가족의 무병장수와 만복·소원성취를 발원합니다.'}”
-                      </p>
                     </div>
-                  ) : (
-                    <div>
-                      <p className="font-serif-kr text-[14.5px] sm:text-[15.5px] font-black text-[#1F1912] leading-relaxed break-keep tracking-tight">
-                        “{currentSutra?.text}”
-                      </p>
-                      {currentSutra?.meaning && (
-                        <p className="text-[11.5px] sm:text-[12px] text-[#544636] font-medium mt-1 leading-relaxed break-keep font-serif-kr bg-white/70 px-2.5 py-1 rounded-lg border border-[#E8DDCA]">
-                          ({currentSutra.meaning})
-                        </p>
-                      )}
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#8C6D1F] font-extrabold text-[12px]">
+                        {meritCertType === 'lantern' ? '정진 공덕' : '회향 경전'}
+                      </span>
+                      <span className="font-extrabold text-[#6B4E08] text-[13px]">
+                        {meritCertType === 'lantern'
+                          ? `소원등 총 ${currentUser?.merit_count || currentMeritCount || 108}회 점등 (${lanternData?.streak || lanternStreak || 1}일 연속)`
+                          : (currentSutra?.title || '반야심경')}
+                      </span>
                     </div>
-                  )}
-                </div>
+                  </div>
 
-                {/* 하단 일자 및 주지 스님 축원 서명 */}
-                <div className="mt-3 pt-2 border-t border-[#D5C59B]/70 flex items-center justify-between text-[11px] text-[#6E5F4E] font-serif-kr">
-                  <span>{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                  <span className="font-black text-[#4F3906] text-[12px] sm:text-[12.5px]">제주 소원사 주지 합장 🪷</span>
+                  {/* 중앙 본문 박스 (사경 구절 또는 소원등 발원문) */}
+                  <div className="mt-3 p-3 rounded-xl bg-[#F8F3E8] border border-[#D5C59B] text-center shadow-[inset_0_1px_3px_rgba(197,155,39,0.06)]">
+                    {meritCertType === 'lantern' ? (
+                      <div>
+                        <span className="inline-block text-[11px] font-extrabold text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-md border border-[#E5D399] mb-1">
+                          발원 분야: {lanternData?.wish_category || '가족건강'}
+                        </span>
+                        <p className="font-serif-kr text-[14.5px] sm:text-[15.5px] font-black text-[#1F1912] leading-relaxed break-keep mt-0.5">
+                          “{lanternData?.wish_text || '지극정성으로 온 가족의 무병장수와 만복·소원성취를 발원합니다.'}”
+                        </p>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="font-serif-kr text-[16px] sm:text-[17px] font-black text-[#1A1208] leading-relaxed tracking-normal whitespace-pre-line">
+                          {(() => {
+                            const raw = currentSutra?.text?.trim() || ''
+                            if (raw === '색즉시공 공즉시색 수상행식 역부여시') return '“색즉시공 공즉시색\n수상행식 역부여시”'
+                            if (raw === '옴 마니 반메 훔 옴 마니 반메 훔') return '“옴 마니 반메 훔\n옴 마니 반메 훔”'
+                            if (raw === '수리수리 마하수리 수수리 사바하') return '“수리수리 마하수리\n수수리 사바하”'
+                            if (raw === '범소유상 개시허망 약견제상비상 즉견여래') return '“범소유상 개시허망\n약견제상비상 즉견여래”'
+                            if (raw.length > 15 && raw.includes(' ')) {
+                              const words = raw.split(' ')
+                              const mid = Math.ceil(words.length / 2)
+                              return `“${words.slice(0, mid).join(' ')}\n${words.slice(mid).join(' ')}”`
+                            }
+                            return `“${raw}”`
+                          })()}
+                        </p>
+                        {currentSutra?.meaning && (
+                          <div className="text-[12px] sm:text-[12.5px] text-[#5C452D] font-serif-kr mt-2 pt-2 border-t border-[#D5C59B]/60 leading-relaxed break-keep font-medium">
+                            {currentSutra.meaning}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 하단 일자 및 주지 직인 서명 */}
+                  <div className="mt-3 pt-2 border-t border-[#C59B27]/40 flex items-center justify-between text-[11px] text-[#5C4B3A] font-serif-kr">
+                    <span className="font-medium">{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-black text-[#4F3906] text-[12px] sm:text-[12.5px]">제주 소원사 주지 합장</span>
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-[2px] bg-[#AB2317] text-[#FFFDF9] font-serif-kr text-[9.5px] font-black border border-[#7D150C] shadow-sm select-none">
+                        昭願
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -12823,9 +12850,9 @@ function normalizeMemberHierarchy(m) {
                     const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
 
                     try {
-                      // 1) 화면 공덕장 캡처 (군더더기 없는 황금비율 카드로 상하 잘림 완벽 방지)
+                      // 1) 화면 공덕장 캡처 (군더더기 없는 황금비율 카드로 상하 잘림 완벽 방지, 3배 고해상도 렌더링)
                       const canvas = await html2canvas(meritCertRef.current, {
-                        scale: 2,
+                        scale: 3,
                         backgroundColor: '#FAF6EE',
                         useCORS: true,
                         logging: false,
@@ -12945,7 +12972,7 @@ function normalizeMemberHierarchy(m) {
                     setIsCapturingCert(true)
                     try {
                       const canvas = await html2canvas(meritCertRef.current, {
-                        scale: 2,
+                        scale: 3,
                         backgroundColor: '#FAF6EE',
                         useCORS: true,
                         logging: false,
