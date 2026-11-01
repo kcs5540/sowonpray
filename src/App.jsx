@@ -12738,35 +12738,25 @@ function normalizeMemberHierarchy(m) {
               {/* 공덕장 내부 본문 카드 (전통 한지 & 황금 테두리) */}
               <div
                 ref={meritCertRef}
-                className="p-3.5 sm:p-5 pb-4.5 sm:pb-5.5 rounded-2xl bg-[#FAF6EE] text-[#241F1A] border-2 border-[#C59B27] relative shadow-inner"
+                className="p-4 sm:p-5 rounded-2xl bg-[#FAF6EE] text-[#241F1A] border-2 border-[#C59B27] relative shadow-inner"
               >
-                {/* 모서리 전통 문양 디자인 */}
-                <div className="text-[10px] text-[#A67C1E] font-serif-kr text-center tracking-widest font-bold">
-                  卍 제주 소원사 모바일 법당 卍
+                {/* 상단: 전통 사찰 표시 */}
+                <div className="text-[11px] text-[#A67C1E] font-serif-kr text-center tracking-widest font-bold">
+                  卍 제주 소원사 卍
                 </div>
 
-                <div className="w-9 h-9 rounded-full bg-[#FAF0D5] border-2 border-[#C59B27] mx-auto flex items-center justify-center mt-1.5 shadow-sm">
-                  {meritCertType === 'lantern' ? (
-                    <Flame className="w-5 h-5 text-[#E25C2B] fill-current" />
-                  ) : (
-                    <Award className="w-5 h-5 text-[#A67C1E]" />
-                  )}
-                </div>
-
-                <h3 className="font-serif-kr text-lg sm:text-xl font-black text-[#6B4E08] text-center mt-1 tracking-tight">
+                {/* 공덕장 명칭 */}
+                <h3 className="font-serif-kr text-xl sm:text-2xl font-black text-[#6B4E08] text-center mt-1 tracking-tight">
                   {meritCertType === 'lantern' ? '소원등 정진 공덕장' : '사경 회향 공덕장'}
                 </h3>
-                <div className="text-[10.5px] text-[#8C6D1F] font-serif-kr text-center font-bold tracking-widest -mt-0.5">
-                  {meritCertType === 'lantern' ? '願 燈 精 進 功 德 狀' : '寫 經 回 向 功 德 狀'}
-                </div>
 
-                <div className="my-2.5 border-t border-[#D5C59B] border-dashed" />
+                <div className="my-2 border-t border-[#D5C59B] border-dashed" />
 
-                {/* 수여 대상 정보 */}
-                <div className="space-y-1.5 text-xs text-[#3A3228] font-serif-kr">
+                {/* 수여 대상 및 경전 정보 */}
+                <div className="space-y-1 text-xs sm:text-[13px] text-[#3A3228] font-serif-kr">
                   <div className="flex items-center justify-between">
                     <span className="text-[#8C6D1F] font-bold">정진 불자</span>
-                    <span className="font-black text-[#1C1814] text-[13px]">
+                    <span className="font-black text-[#1C1814] text-[13.5px]">
                       {currentUser?.name || lanternData?.believer_name || '소원사 정진 불자'}
                       {currentUser?.dharma_name ? ` (${currentUser.dharma_name})` : ''} 합장
                     </span>
@@ -12775,7 +12765,7 @@ function normalizeMemberHierarchy(m) {
                     <span className="text-[#8C6D1F] font-bold">
                       {meritCertType === 'lantern' ? '정진 공덕' : '회향 경전'}
                     </span>
-                    <span className="font-bold text-[#6B4E08] text-[12.5px]">
+                    <span className="font-bold text-[#6B4E08] text-[13px]">
                       {meritCertType === 'lantern'
                         ? `소원등 총 ${currentUser?.merit_count || currentMeritCount || 108}회 점등 (${lanternData?.streak || lanternStreak || 1}일 연속)`
                         : (currentSutra?.title || '반야심경')}
@@ -12783,24 +12773,24 @@ function normalizeMemberHierarchy(m) {
                   </div>
                 </div>
 
-                {/* 중앙 본문 박스 (소원등 발원문 또는 사경 구절) */}
-                <div className="mt-3 p-3 rounded-2xl bg-[#F5EDDC] border border-[#D5C59B] text-center shadow-[inset_0_1px_3px_rgba(0,0,0,0.03)]">
+                {/* 중앙 본문 박스 (사경 구절 또는 소원등 발원문) */}
+                <div className="mt-2.5 p-3 rounded-2xl bg-[#F5EDDC] border border-[#D5C59B] text-center shadow-[inset_0_1px_3px_rgba(0,0,0,0.03)]">
                   {meritCertType === 'lantern' ? (
                     <div>
-                      <span className="inline-block text-[10.5px] font-black text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-md border border-[#E5D399] mb-1">
+                      <span className="inline-block text-[11px] font-black text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-md border border-[#E5D399] mb-1">
                         발원 분야: {lanternData?.wish_category || '가족건강'}
                       </span>
-                      <p className="font-serif-kr text-[13px] sm:text-[13.5px] font-black text-[#2A231B] leading-relaxed break-keep mt-1">
+                      <p className="font-serif-kr text-[14px] sm:text-[15px] font-black text-[#2A231B] leading-relaxed break-keep mt-0.5">
                         “{lanternData?.wish_text || '지극정성으로 온 가족의 무병장수와 만복·소원성취를 발원합니다.'}”
                       </p>
                     </div>
                   ) : (
                     <div>
-                      <p className="font-serif-kr text-[13.5px] sm:text-sm font-black text-[#1F1912] leading-relaxed break-keep tracking-tight">
+                      <p className="font-serif-kr text-[14.5px] sm:text-[15.5px] font-black text-[#1F1912] leading-relaxed break-keep tracking-tight">
                         “{currentSutra?.text}”
                       </p>
                       {currentSutra?.meaning && (
-                        <p className="text-[11px] sm:text-[11.5px] text-[#544636] font-medium mt-1.5 leading-relaxed break-keep font-serif-kr bg-white/60 px-2 py-1 rounded-lg border border-[#E8DDCA]/80">
+                        <p className="text-[11.5px] sm:text-[12px] text-[#544636] font-medium mt-1 leading-relaxed break-keep font-serif-kr bg-white/70 px-2.5 py-1 rounded-lg border border-[#E8DDCA]">
                           ({currentSutra.meaning})
                         </p>
                       )}
@@ -12808,18 +12798,10 @@ function normalizeMemberHierarchy(m) {
                   )}
                 </div>
 
-                {/* 축원문 */}
-                <p className="text-[11.5px] sm:text-xs text-[#2E261D] leading-relaxed break-keep font-serif-kr text-center mt-3 px-1 font-medium">
-                  {meritCertType === 'lantern' ? (
-                    `위 불자님께서는 지극한 정성으로 부처님 전에 소원등을 총 ${currentUser?.merit_count || currentMeritCount || 108}회 밝히시며 무량공덕을 짓고 기도를 원만히 회향하셨기에 이 공덕장을 드리며, 온 가족의 건강과 만복·소원성취를 두 손 모아 축원합니다.`
-                  ) : (
-                    '위 불자님께서는 부처님의 거룩한 진리의 말씀을 정성껏 마음에 새기며 사경 1독을 원만히 회향하셨기에 이 공덕장을 드리며, 온 가족의 건강과 만복·소원성취를 두 손 모아 축원합니다.'
-                  )}
-                </p>
-
-                <div className="mt-3 pt-2 border-t border-[#D5C59B]/70 flex items-center justify-between text-[10.5px] text-[#6E5F4E] font-serif-kr">
+                {/* 하단 일자 및 주지 스님 축원 서명 */}
+                <div className="mt-3 pt-2 border-t border-[#D5C59B]/70 flex items-center justify-between text-[11px] text-[#6E5F4E] font-serif-kr">
                   <span>{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                  <span className="font-black text-[#4F3906] text-[11px] sm:text-[11.5px]">제주 소원사 주지 합장 🪷</span>
+                  <span className="font-black text-[#4F3906] text-[12px] sm:text-[12.5px]">제주 소원사 주지 합장 🪷</span>
                 </div>
               </div>
 
@@ -12841,37 +12823,13 @@ function normalizeMemberHierarchy(m) {
                     const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
 
                     try {
-                      // 1) 화면 공덕장 캡처
-                      const rawCanvas = await html2canvas(meritCertRef.current, {
+                      // 1) 화면 공덕장 캡처 (군더더기 없는 황금비율 카드로 상하 잘림 완벽 방지)
+                      const canvas = await html2canvas(meritCertRef.current, {
                         scale: 2,
                         backgroundColor: '#FAF6EE',
                         useCORS: true,
                         logging: false,
                       })
-
-                      // 카카오톡 피드 카드 1:1 정사각 뷰포트 완벽 호환 합성:
-                      // 세로형 이미지를 그대로 전송하면 카카오톡이 1:1로 자르며 하단 주지 스님 축원/서명이 잘립니다.
-                      // 따라서 1:1 정사각 캔버스에 전통 한지 배경과 품격 있는 황금 테두리를 둘러 공덕장 전체를 100% 온전히 합성합니다.
-                      const targetSize = Math.max(rawCanvas.width, rawCanvas.height)
-                      const canvas = document.createElement('canvas')
-                      canvas.width = targetSize
-                      canvas.height = targetSize
-                      const ctx = canvas.getContext('2d')
-                      if (ctx) {
-                        ctx.fillStyle = '#FAF6EE'
-                        ctx.fillRect(0, 0, targetSize, targetSize)
-                        ctx.strokeStyle = '#D5C59B'
-                        ctx.lineWidth = Math.max(2, Math.round(targetSize * 0.005))
-                        ctx.strokeRect(
-                          Math.round(targetSize * 0.012),
-                          Math.round(targetSize * 0.012),
-                          Math.round(targetSize * 0.976),
-                          Math.round(targetSize * 0.976)
-                        )
-                        const offsetX = Math.round((targetSize - rawCanvas.width) / 2)
-                        const offsetY = Math.round((targetSize - rawCanvas.height) / 2)
-                        ctx.drawImage(rawCanvas, offsetX, offsetY)
-                      }
 
                       const fileName = `sowonsa_merit_cert_${Date.now()}.png`
 
@@ -12986,33 +12944,12 @@ function normalizeMemberHierarchy(m) {
                     if (!meritCertRef.current) return
                     setIsCapturingCert(true)
                     try {
-                      const rawCanvas = await html2canvas(meritCertRef.current, {
+                      const canvas = await html2canvas(meritCertRef.current, {
                         scale: 2,
                         backgroundColor: '#FAF6EE',
                         useCORS: true,
                         logging: false,
                       })
-
-                      const targetSize = Math.max(rawCanvas.width, rawCanvas.height)
-                      const canvas = document.createElement('canvas')
-                      canvas.width = targetSize
-                      canvas.height = targetSize
-                      const ctx = canvas.getContext('2d')
-                      if (ctx) {
-                        ctx.fillStyle = '#FAF6EE'
-                        ctx.fillRect(0, 0, targetSize, targetSize)
-                        ctx.strokeStyle = '#D5C59B'
-                        ctx.lineWidth = Math.max(2, Math.round(targetSize * 0.005))
-                        ctx.strokeRect(
-                          Math.round(targetSize * 0.012),
-                          Math.round(targetSize * 0.012),
-                          Math.round(targetSize * 0.976),
-                          Math.round(targetSize * 0.976)
-                        )
-                        const offsetX = Math.round((targetSize - rawCanvas.width) / 2)
-                        const offsetY = Math.round((targetSize - rawCanvas.height) / 2)
-                        ctx.drawImage(rawCanvas, offsetX, offsetY)
-                      }
 
                       const believer = currentUser?.name || lanternData?.believer_name || '소원사_정진불자'
                       const certTitle = meritCertType === 'lantern' ? '소원등정진공덕장' : '사경회향공덕장'
