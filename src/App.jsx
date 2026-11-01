@@ -4199,6 +4199,17 @@ function formatRelativeOrDate(dateStr) {
         setLoginPwInput('')
       } catch (e) {}
     }
+    // 브라우저의 Google 비밀번호 관리자에 저장 요청 (Credential Management API)
+    if (window.PasswordCredential && navigator.credentials && navigator.credentials.store) {
+      try {
+        const cred = new window.PasswordCredential({
+          id: found.phone ? found.phone.replace(/[^0-9]/g, '') : loginIdInput.trim(),
+          password: inputPw,
+          name: `${found.name}${found.dharma_name ? ` (${found.dharma_name})` : ''}`,
+        })
+        navigator.credentials.store(cred).catch(() => {})
+      } catch (e) {}
+    }
     playSingingBowlSound()
     showToast(
       `🙏 반갑습니다, ${found.name}${found.dharma_name ? `(${found.dharma_name})` : ''}님! 본인 계정으로 접속되었습니다.`
