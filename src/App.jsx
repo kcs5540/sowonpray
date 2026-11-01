@@ -10882,9 +10882,9 @@ function formatRelativeOrDate(dateStr) {
                             </button>
                           </div>
 
-                          {/* 3) 소원등 발원문 본문 */}
+                          {/* 3) 소원등 발원문 본문 (최대 3줄 표시, 초과분 말줄임 '...') */}
                           {isLanternLit && (
-                            <div className="p-2.5 rounded-xl bg-black/35 border border-white/10 text-xs text-[#FAF8F5] leading-relaxed">
+                            <div className="p-2.5 rounded-xl bg-black/35 border border-white/10 text-xs text-[#FAF8F5] leading-relaxed line-clamp-3">
                               <span className="text-[#FFE58A] font-extrabold mr-1">
                                 [{lanternData?.wish_category || '가족건강'}]
                               </span>
