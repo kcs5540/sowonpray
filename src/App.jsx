@@ -6951,12 +6951,12 @@ function formatRelativeOrDate(dateStr) {
               {(() => {
                 const { lunarText, jaeilBadge } = getTodayLunarAndJaeil()
                 return (
-                  <div className="flex items-center justify-between gap-2 pb-2.5 mb-3 border-b border-[#F0EAE0] text-[11px]">
-                    <div className="flex items-center gap-1.5 text-[#6E5D45] font-semibold truncate">
-                      <Calendar className="w-3.5 h-3.5 text-[#C59B27] shrink-0" />
-                      <span>{lunarText}</span>
+                  <div className="flex items-center justify-between gap-2 pb-2.5 mb-3 border-b border-[#F0EAE0] text-xs">
+                    <div className="flex items-center gap-1.5 text-[#6E5D45] font-bold truncate">
+                      <Calendar className="w-4 h-4 text-[#C59B27] shrink-0" />
+                      <span className="text-[12.5px] tracking-tight">{lunarText}</span>
                     </div>
-                    <span className="px-2 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] font-extrabold border border-[#E5D399] whitespace-nowrap shrink-0">
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] text-[11.5px] font-extrabold border border-[#E5D399] whitespace-nowrap shrink-0">
                       {jaeilBadge}
                     </span>
                   </div>
