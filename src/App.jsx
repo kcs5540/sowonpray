@@ -1724,13 +1724,21 @@ function formatRelativeOrDate(dateStr) {
       localStorage.removeItem('sowonpray_members_v5')
       localStorage.removeItem('sowonpray_members_v6')
       localStorage.removeItem('sowonpray_members_v7')
-      const saved = localStorage.getItem('sowonpray_members_v8')
+      localStorage.removeItem('sowonpray_members_v8')
+      const saved = localStorage.getItem('sowonpray_members_v9')
+
+      // 레거시 108 더미 캐시 안전 제거
+      try {
+        const c33 = localStorage.getItem('sowonpray_merit_33065540')
+        if (c33 === '108' || c33 === '109') localStorage.removeItem('sowonpray_merit_33065540')
+        localStorage.removeItem('sowonpray_merit_82341088')
+      } catch (e) {}
 
       const applyLocalMerit = (list) =>
         list.map((m) => {
           try {
             const localCached = localStorage.getItem(`sowonpray_merit_${m.code}`)
-            if (localCached) {
+            if (localCached && localCached !== '108' && localCached !== '109') {
               const parsed = parseInt(localCached, 10)
               if (!isNaN(parsed) && parsed > (m.merit_count || 0)) {
                 return { ...m, merit_count: parsed }
@@ -1903,7 +1911,7 @@ function formatRelativeOrDate(dateStr) {
 
   // 상태 변경 시 로컬스토리지 자동 동기화
   useEffect(() => {
-    localStorage.setItem('sowonpray_members_v8', JSON.stringify(members))
+    localStorage.setItem('sowonpray_members_v9', JSON.stringify(members))
   }, [members])
 
   useEffect(() => {
@@ -1965,7 +1973,7 @@ function formatRelativeOrDate(dateStr) {
               let meritCount = m.merit_count || 0
               try {
                 const localCached = localStorage.getItem(`sowonpray_merit_${m.code}`)
-                if (localCached) {
+                if (localCached && localCached !== '108' && localCached !== '109') {
                   const parsed = parseInt(localCached, 10)
                   if (!isNaN(parsed) && parsed > meritCount) {
                     meritCount = parsed
@@ -1984,7 +1992,7 @@ function formatRelativeOrDate(dateStr) {
               let meritCount = m.merit_count || 0
               try {
                 const localCached = localStorage.getItem(`sowonpray_merit_${m.code}`)
-                if (localCached) {
+                if (localCached && localCached !== '108' && localCached !== '109') {
                   const parsed = parseInt(localCached, 10)
                   if (!isNaN(parsed) && parsed > meritCount) {
                     meritCount = parsed
@@ -5137,12 +5145,13 @@ function formatRelativeOrDate(dateStr) {
   // 사경 입력 체크 및 공덕 적립 헬퍼 (본인 계정 공덕 횟수에 누적 및 Supabase 실시간 동기화)
   const currentSutra = SUTRA_LIST[selectedSutraIdx]
   const currentMeritCount = currentUser
-    ? (currentUser.merit_count ?? 0)
+    ? Math.max(currentUser.merit_count ?? 0, userLanternStats?.totalCount || 0)
     : guestMeritCount
 
   const addMerit = (amount = 1) => {
     if (currentUser) {
-      const newCount = (currentUser.merit_count || 0) + amount
+      const baseCount = Math.max(currentUser.merit_count || 0, userLanternStats?.totalCount || 0)
+      const newCount = baseCount + amount
       setMembers((prev) =>
         prev.map((m) =>
           m.code === currentUser.code
