@@ -4911,6 +4911,7 @@ function normalizeMemberHierarchy(m) {
       playSingingBowlSound()
       setSutraCompleted(true)
       addMerit(1)
+      setMeritCertType('sutra')
       setShowMeritCertModal(true)
       showToast('✨ 한 줄 사경 공덕이 내 계정에 원만히 회향되었습니다. (공덕 +1)')
     }
@@ -8536,7 +8537,10 @@ function normalizeMemberHierarchy(m) {
                   </span>
                   <button
                     type="button"
-                    onClick={() => setShowMeritCertModal(true)}
+                    onClick={() => {
+                      setMeritCertType('sutra')
+                      setShowMeritCertModal(true)
+                    }}
                     className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#F5D061]/15 hover:bg-[#F5D061]/25 text-[#F5D061] border border-[#F5D061]/40 text-[10px] font-extrabold transition active:scale-95 shrink-0"
                   >
                     <Award className="w-3 h-3" />
@@ -8761,7 +8765,10 @@ function normalizeMemberHierarchy(m) {
                       <div className="flex items-center gap-2 pt-1">
                         <button
                           type="button"
-                          onClick={() => setShowMeritCertModal(true)}
+                          onClick={() => {
+                            setMeritCertType('sutra')
+                            setShowMeritCertModal(true)
+                          }}
                           className="flex-1 py-2 px-2.5 rounded-lg bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] text-xs font-black flex items-center justify-center gap-1.5 shadow active:scale-95 transition"
                         >
                           <Award className="w-4 h-4 text-[#1B1815] shrink-0" />
@@ -12712,8 +12719,8 @@ function normalizeMemberHierarchy(m) {
 
         {/* 사경 회향 공덕장 (황금 인증서) 모달 */}
         {showMeritCertModal && (
-          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn">
-            <div className="w-full max-w-[390px] max-h-[85dvh] sm:max-h-[90vh] overflow-y-auto bg-gradient-to-b from-[#251F19] via-[#1B1713] to-[#120F0D] text-white rounded-3xl p-4 sm:p-6 border-2 border-[#D4AF37] shadow-[0_0_35px_rgba(212,175,55,0.35)] relative my-auto">
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto animate-fadeIn">
+            <div className="w-full max-w-[380px] max-h-[96dvh] overflow-y-auto bg-gradient-to-b from-[#251F19] via-[#1B1713] to-[#120F0D] text-white rounded-3xl p-3 sm:p-5 border-2 border-[#D4AF37] shadow-[0_0_35px_rgba(212,175,55,0.35)] relative my-auto">
               {/* 상단 장식 빛무리 */}
               <div className="absolute -top-12 -left-12 w-36 h-36 bg-[#F5D061]/15 rounded-full blur-2xl pointer-events-none" />
               <div className="absolute -bottom-12 -right-12 w-36 h-36 bg-[#D4AF37]/15 rounded-full blur-2xl pointer-events-none" />
@@ -12722,7 +12729,7 @@ function normalizeMemberHierarchy(m) {
               <button
                 type="button"
                 onClick={() => setShowMeritCertModal(false)}
-                className="absolute top-3.5 right-3.5 w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-[#E5DCD0] flex items-center justify-center transition active:scale-90 z-10"
+                className="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-[#E5DCD0] flex items-center justify-center transition active:scale-90 z-10"
                 aria-label="닫기"
               >
                 <X className="w-4 h-4" />
@@ -12731,35 +12738,35 @@ function normalizeMemberHierarchy(m) {
               {/* 공덕장 내부 본문 카드 (전통 한지 & 황금 테두리) */}
               <div
                 ref={meritCertRef}
-                className="p-4 sm:p-4.5 rounded-2xl bg-[#FAF6EE] text-[#241F1A] border-2 border-[#C59B27] relative shadow-inner"
+                className="p-3 sm:p-4 rounded-2xl bg-[#FAF6EE] text-[#241F1A] border-2 border-[#C59B27] relative shadow-inner"
               >
                 {/* 모서리 전통 문양 디자인 */}
-                <div className="text-[10px] text-[#A67C1E] font-serif-kr text-center tracking-widest font-bold">
+                <div className="text-[9.5px] text-[#A67C1E] font-serif-kr text-center tracking-widest font-bold">
                   卍 제주 소원사 모바일 법당 卍
                 </div>
 
-                <div className="w-11 h-11 rounded-full bg-[#FAF0D5] border-2 border-[#C59B27] mx-auto flex items-center justify-center mt-2.5 shadow-sm">
+                <div className="w-9 h-9 rounded-full bg-[#FAF0D5] border-2 border-[#C59B27] mx-auto flex items-center justify-center mt-1.5 shadow-sm">
                   {meritCertType === 'lantern' ? (
-                    <Flame className="w-6 h-6 text-[#E25C2B] fill-current" />
+                    <Flame className="w-5 h-5 text-[#E25C2B] fill-current" />
                   ) : (
-                    <Award className="w-6 h-6 text-[#A67C1E]" />
+                    <Award className="w-5 h-5 text-[#A67C1E]" />
                   )}
                 </div>
 
-                <h3 className="font-serif-kr text-xl sm:text-2xl font-black text-[#6B4E08] text-center mt-2 tracking-tight">
+                <h3 className="font-serif-kr text-lg sm:text-xl font-black text-[#6B4E08] text-center mt-1 tracking-tight">
                   {meritCertType === 'lantern' ? '소원등 정진 공덕장' : '사경 회향 공덕장'}
                 </h3>
-                <div className="text-[11px] text-[#8C6D1F] font-serif-kr text-center font-bold tracking-widest -mt-0.5">
+                <div className="text-[10px] text-[#8C6D1F] font-serif-kr text-center font-bold tracking-widest -mt-0.5">
                   {meritCertType === 'lantern' ? '願 燈 精 進 功 德 狀' : '寫 經 回 向 功 德 狀'}
                 </div>
 
-                <div className="my-3 border-t border-[#D5C59B] border-dashed" />
+                <div className="my-2 border-t border-[#D5C59B] border-dashed" />
 
                 {/* 수여 대상 정보 */}
-                <div className="space-y-1.5 text-xs text-[#3A3228] font-serif-kr">
+                <div className="space-y-1 text-xs text-[#3A3228] font-serif-kr">
                   <div className="flex items-center justify-between">
                     <span className="text-[#8C6D1F] font-bold">정진 불자</span>
-                    <span className="font-black text-[#1C1814] text-[13px]">
+                    <span className="font-black text-[#1C1814] text-[12.5px]">
                       {currentUser?.name || lanternData?.believer_name || '소원사 정진 불자'}
                       {currentUser?.dharma_name ? ` (${currentUser.dharma_name})` : ''} 합장
                     </span>
@@ -12777,23 +12784,23 @@ function normalizeMemberHierarchy(m) {
                 </div>
 
                 {/* 중앙 본문 박스 (소원등 발원문 또는 사경 구절) */}
-                <div className="mt-3 p-2.5 rounded-xl bg-[#F0E8D5] border border-[#D5C59B] text-center">
+                <div className="mt-2 p-2 rounded-xl bg-[#F0E8D5] border border-[#D5C59B] text-center">
                   {meritCertType === 'lantern' ? (
                     <div>
-                      <span className="inline-block text-[10.5px] font-black text-[#8A6510] bg-[#FAF3DF] px-2 py-0.5 rounded-md border border-[#E5D399] mb-1">
+                      <span className="inline-block text-[10px] font-black text-[#8A6510] bg-[#FAF3DF] px-2 py-0.5 rounded-md border border-[#E5D399] mb-0.5">
                         발원 분야: {lanternData?.wish_category || '가족건강'}
                       </span>
-                      <p className="font-serif-kr text-xs sm:text-[12.5px] font-black text-[#2A231B] leading-relaxed break-keep mt-1">
+                      <p className="font-serif-kr text-xs sm:text-[12px] font-black text-[#2A231B] leading-relaxed break-keep mt-0.5">
                         “{lanternData?.wish_text || '지극정성으로 온 가족의 무병장수와 만복·소원성취를 발원합니다.'}”
                       </p>
                     </div>
                   ) : (
                     <div>
-                      <p className="font-serif-kr text-xs sm:text-[12.5px] font-black text-[#2A231B] leading-relaxed break-keep">
+                      <p className="font-serif-kr text-xs sm:text-[12px] font-black text-[#2A231B] leading-relaxed break-keep">
                         “{currentSutra?.text}”
                       </p>
                       {currentSutra?.meaning && (
-                        <p className="text-[10.5px] text-[#6B5E4F] mt-1 leading-snug break-keep">
+                        <p className="text-[10px] text-[#6B5E4F] mt-0.5 leading-snug break-keep">
                           ({currentSutra.meaning})
                         </p>
                       )}
@@ -12802,7 +12809,7 @@ function normalizeMemberHierarchy(m) {
                 </div>
 
                 {/* 축원문 */}
-                <p className="text-[11px] text-[#4A4035] leading-relaxed break-keep font-serif-kr text-center mt-3">
+                <p className="text-[10.5px] text-[#4A4035] leading-relaxed break-keep font-serif-kr text-center mt-2">
                   {meritCertType === 'lantern' ? (
                     `위 불자님께서는 지극한 정성으로 부처님 전에 소원등을 총 ${currentUser?.merit_count || currentMeritCount || 108}회 밝히시며 무량공덕을 짓고 기도를 원만히 회향하셨기에 이 공덕장을 드리며, 온 가족의 건강과 만복·소원성취를 두 손 모아 축원합니다.`
                   ) : (
@@ -12810,13 +12817,13 @@ function normalizeMemberHierarchy(m) {
                   )}
                 </p>
 
-                <div className="mt-3 pt-2 border-t border-[#D5C59B]/70 flex items-center justify-between text-[10px] text-[#786A59] font-serif-kr">
+                <div className="mt-2 pt-1.5 border-t border-[#D5C59B]/70 flex items-center justify-between text-[9.5px] text-[#786A59] font-serif-kr">
                   <span>{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                   <span className="font-black text-[#5C4307]">제주 소원사 주지 합장 🪷</span>
                 </div>
               </div>
 
-              <div className="mt-3.5 space-y-2">
+              <div className="mt-2.5 space-y-1.5">
                 {/* 1. 이 형태 그대로 카카오톡 카드 전송 (공덕장 실물 사진 + 링크 버튼 동시 전송) */}
                 <button
                   type="button"
@@ -12953,9 +12960,9 @@ function normalizeMemberHierarchy(m) {
                       setIsCapturingCert(false)
                     }
                   }}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow-md flex items-center justify-center gap-1.5 active:scale-95 transition disabled:opacity-60"
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow-md flex items-center justify-center gap-1.5 active:scale-95 transition disabled:opacity-60"
                 >
-                  <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
+                  <Share2 className="w-3.5 h-3.5 text-[#3C1E1E] shrink-0" />
                   <span>{isCapturingCert ? '공덕장 전송 준비 중...' : '공덕장 카톡 전송'}</span>
                 </button>
 
@@ -12975,7 +12982,8 @@ function normalizeMemberHierarchy(m) {
                         logging: false,
                       })
                       const believer = currentUser?.name || lanternData?.believer_name || '소원사_정진불자'
-                      const fileName = `제주소원사_사경회향공덕장_${believer}.png`
+                      const certTitle = meritCertType === 'lantern' ? '소원등정진공덕장' : '사경회향공덕장'
+                      const fileName = `제주소원사_${certTitle}_${believer}.png`
                       const link = document.createElement('a')
                       link.href = canvas.toDataURL('image/png')
                       link.download = fileName
@@ -12987,7 +12995,7 @@ function normalizeMemberHierarchy(m) {
                       setIsCapturingCert(false)
                     }
                   }}
-                  className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-[#EAD8B5] border border-[#C59B27]/40 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition disabled:opacity-60"
+                  className="w-full py-2 rounded-xl bg-white/10 hover:bg-white/15 text-[#EAD8B5] border border-[#C59B27]/40 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition disabled:opacity-60"
                 >
                   <Download className="w-3.5 h-3.5 text-[#F5D061] shrink-0" />
                   <span>공덕장 사진 갤러리 저장</span>
@@ -12996,7 +13004,7 @@ function normalizeMemberHierarchy(m) {
                 <button
                   type="button"
                   onClick={() => setShowMeritCertModal(false)}
-                  className="w-full py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white/80 font-bold text-xs transition active:scale-95"
+                  className="w-full py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-white/70 hover:text-white font-medium text-[11px] transition active:scale-95"
                 >
                   합장하며 닫기 (나무아미타불)
                 </button>
