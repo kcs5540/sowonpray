@@ -3997,8 +3997,14 @@ function formatRelativeOrDate(dateStr) {
       members.forEach((m) => {
         // activeAgent의 하위로 등록된 인연 회원만 수집 (상위 추천인 및 양영문 회장님 절대 미포함)
         if (m.parent_code === parentCode && !downlineCodes.has(m.code) && m.code !== activeAgent.code && m.role !== 'temple_admin') {
+          // 김철수 대표님(33065540) 조회 시 오다혜(83855838) 포교위원장 산하 5명은 오다혜 위원장의 고유 실적이므로 제외
+          if (activeAgent.code === '33065540' && (parentCode === '83855838' || m.parent_code === '83855838')) {
+            return
+          }
           downlineCodes.add(m.code)
-          queue.push(m.code)
+          if (m.code !== '83855838') {
+            queue.push(m.code)
+          }
         }
       })
     }
@@ -4018,18 +4024,28 @@ function formatRelativeOrDate(dateStr) {
       const parentCode = queue.shift()
       members.forEach((m) => {
         if (m.parent_code === parentCode && !downlineCodes.has(m.code) && m.code !== currentUser.code && m.role !== 'temple_admin') {
+          // 오다혜(83855838) 포교위원장 산하 5명은 독립 위원장의 고유 실적이므로 김철수 대표님(33065540) 산하 전법 계산에서 제외
+          if (currentUser.code === '33065540' && (parentCode === '83855838' || m.parent_code === '83855838')) {
+            return
+          }
           downlineCodes.add(m.code)
-          queue.push(m.code)
+          // 오다혜 위원장의 산하 신도는 오다혜 고유 실적이므로 더 이상 하위 큐에 추가하지 않음
+          if (m.code !== '83855838') {
+            queue.push(m.code)
+          }
         }
       })
     }
     return members.filter((m) => downlineCodes.has(m.code))
   }, [members, currentUser])
 
-  // 현재 회원의 산하 인연 신도수 (동적 계산 및 DB값 중 최대치 보장)
+  // 현재 회원의 산하 인연 신도수 (동적 계산 우선 반영)
   const currentUserBelieversCount = useMemo(() => {
     const dynamicCount = currentUserAffiliatedMembers.filter((m) => m.role === 'believer').length
-    return Math.max(dynamicCount, Number(currentUser?.believers_count) || 0)
+    if (dynamicCount > 0 || currentUserAffiliatedMembers.length > 0) {
+      return dynamicCount
+    }
+    return Number(currentUser?.believers_count) || 0
   }, [currentUserAffiliatedMembers, currentUser])
 
   // 현재 회원의 산하 위패 봉안수 (동적 계산 및 DB값 중 최대치 보장)
@@ -4081,13 +4097,11 @@ function formatRelativeOrDate(dateStr) {
     const directBelieversReward = directBelieversCount * 1000
 
     // 2) 포교위원장 전용: 산하 전체 신규 가입자 1인당 1,000원 추가 (산하 전법 육성 보시금)
-    const totalDownlineBelievers = currentUserBelieversCount || 0
+    // 오다혜(83855838) 산하 5명이 제외된 순수 산하 전법 신도수 정확히 반영
     const rawIndirectCount = currentUserAffiliatedMembers.filter(
       (m) => m.parent_code !== currentUser.code && m.role === 'believer'
     ).length
-    const indirectBelieversCount = isAgent
-      ? Math.max(rawIndirectCount, Math.max(0, totalDownlineBelievers - directBelieversCount))
-      : 0
+    const indirectBelieversCount = isAgent ? rawIndirectCount : 0
     const indirectBelieversReward = indirectBelieversCount * 1000
 
     // 총 법연 합계
