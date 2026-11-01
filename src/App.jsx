@@ -3857,7 +3857,6 @@ function formatRelativeOrDate(dateStr) {
   const [authMode, setAuthMode] = useState('login')
   const [showTestAccountSwitch, setShowTestAccountSwitch] = useState(false)
   const [showLoginPw, setShowLoginPw] = useState(false)
-  const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false)
   const [rememberLogin, setRememberLogin] = useState(() => {
     try {
       return localStorage.getItem('sowonpray_remember_login') !== 'false'
@@ -9867,161 +9866,35 @@ function formatRelativeOrDate(dateStr) {
                 </div>
 
                 {authMode === 'login' ? (
-                  <form onSubmit={handleLogin} className="space-y-3.5">
+                  <form onSubmit={handleLogin} method="post" action="#" autoComplete="on" className="space-y-3.5">
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <label htmlFor="login-phone-no" className="text-xs font-bold text-[#3D3630]">
+                        <label htmlFor="login-username" className="text-xs font-bold text-[#3D3630]">
                           전화번호 (아이디)
                         </label>
-                        <div className="flex items-center gap-2">
+                        {loginIdInput && (
                           <button
                             type="button"
-                            onClick={() => setIsAccountDropdownOpen(!isAccountDropdownOpen)}
-                            className="text-[11px] text-[#8A6510] font-bold hover:underline cursor-pointer flex items-center gap-0.5"
+                            onClick={() => {
+                              setLoginIdInput('')
+                              setLoginPwInput('')
+                            }}
+                            className="text-[11px] text-[#8C8071] hover:text-[#231F1C] underline cursor-pointer"
                           >
-                            <span>계정 목록 {isAccountDropdownOpen ? '닫기 ▲' : '열기 ▼'}</span>
+                            지우기
                           </button>
-                          {loginIdInput && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setLoginIdInput('')
-                                setLoginPwInput('')
-                              }}
-                              className="text-[11px] text-[#8C8071] hover:text-[#231F1C] underline cursor-pointer"
-                            >
-                              지우기
-                            </button>
-                          )}
-                        </div>
+                        )}
                       </div>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          name="login_phone_no"
-                          id="login-phone-no"
-                          autoComplete="one-time-code"
-                          value={loginIdInput}
-                          onClick={() => setIsAccountDropdownOpen(true)}
-                          onChange={(e) => {
-                            const val = e.target.value
-                            setLoginIdInput(val)
-                            const code8 = extractPhone8Code(val)
-                            const matched =
-                              savedLoginAccounts.find((a) => a.code === code8) ||
-                              members.find((m) => m.code === code8)
-                            if (matched) {
-                              if (matched.pw) {
-                                setLoginPwInput(matched.pw)
-                              } else {
-                                const phoneLast4 = matched.phone
-                                  ? matched.phone.replace(/[^0-9]/g, '').slice(-4)
-                                  : ''
-                                const defaultPw =
-                                  (matched.password_pin && matched.password_pin.trim()) ||
-                                  phoneLast4 ||
-                                  '0000'
-                                setLoginPwInput(defaultPw)
-                              }
-                            }
-                          }}
-                          placeholder="010-0000-0000 또는 뒤 8자리"
-                          className="w-full px-3.5 py-3 pr-10 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-sm focus:bg-white focus:border-[#C59B27] transition"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setIsAccountDropdownOpen(!isAccountDropdownOpen)}
-                          className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 text-[#8C8071] hover:text-[#231F1C] cursor-pointer"
-                          title="계정 목록 열기"
-                        >
-                          <ChevronDown
-                            className={`w-4 h-4 transition-transform duration-200 ${
-                              isAccountDropdownOpen ? 'rotate-180 text-[#8A6510]' : ''
-                            }`}
-                          />
-                        </button>
-
-                        {/* 이름과 전화번호가 함께 뜨는 커스텀 계정 선택 목록 드롭다운 */}
-                        {isAccountDropdownOpen && savedLoginAccounts.length > 0 && (
-                          <>
-                            {/* 외부 클릭 시 닫히는 투명 배경 레이어 */}
-                            <div
-                              className="fixed inset-0 z-40"
-                              onClick={() => setIsAccountDropdownOpen(false)}
-                            />
-                            <div className="absolute top-full left-0 right-0 mt-1.5 bg-white rounded-2xl shadow-2xl border border-[#C59B27]/50 z-50 overflow-hidden divide-y divide-[#EFE9DD] animate-fadeIn">
-                            <div className="px-3.5 py-2 bg-[#FAF6EE] flex items-center justify-between text-[11px] font-bold text-[#8A6510]">
-                              <span>👤 로그인할 계정을 선택하세요</span>
-                              <button
-                                type="button"
-                                onClick={() => setIsAccountDropdownOpen(false)}
-                                className="text-[#8C8071] hover:text-[#231F1C] font-semibold"
-                              >
-                                ✕ 닫기
-                              </button>
-                            </div>
-                            <div className="max-h-60 overflow-y-auto divide-y divide-[#F2ECE1]">
-                              {savedLoginAccounts.map((acc) => {
-                                const isSelected = extractPhone8Code(loginIdInput) === acc.code
-                                return (
-                                  <button
-                                    key={acc.code}
-                                    type="button"
-                                    onClick={() => {
-                                      setLoginIdInput(acc.phone)
-                                      if (acc.pw) {
-                                        setLoginPwInput(acc.pw)
-                                      } else {
-                                        const phoneLast4 = acc.phone
-                                          ? acc.phone.replace(/[^0-9]/g, '').slice(-4)
-                                          : ''
-                                        setLoginPwInput(phoneLast4 || '0000')
-                                      }
-                                      setIsAccountDropdownOpen(false)
-                                    }}
-                                    className={`w-full px-3.5 py-3 text-left transition flex items-center justify-between gap-2 cursor-pointer ${
-                                      isSelected
-                                        ? 'bg-[#FAF3DF] border-l-4 border-[#C59B27]'
-                                        : 'hover:bg-[#FAF8F5]'
-                                    }`}
-                                  >
-                                    <div className="min-w-0">
-                                      <div className="flex items-center gap-1.5">
-                                        <span className="font-bold text-sm text-[#1B1815]">
-                                          {acc.name}
-                                        </span>
-                                        {acc.dharma_name && (
-                                          <span className="text-xs font-semibold text-[#8A6510]">
-                                            ({acc.dharma_name})
-                                          </span>
-                                        )}
-                                      </div>
-                                      <div className="text-xs font-mono text-[#7A6B58] mt-0.5 font-medium">
-                                        {acc.phone}
-                                      </div>
-                                    </div>
-                                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#F5D061]/25 text-[#8A6510] border border-[#F5D061]/40 shrink-0">
-                                      선택 ›
-                                    </span>
-                                  </button>
-                                )
-                              })}
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setLoginIdInput('')
-                                setLoginPwInput('')
-                                setIsAccountDropdownOpen(false)
-                              }}
-                              className="w-full px-3.5 py-2.5 text-center text-xs font-semibold text-[#7A6B58] hover:bg-[#FAF8F5] transition cursor-pointer"
-                            >
-                              ✏️ 다른 번호 직접 입력하기
-                            </button>
-                          </div>
-                        </>
-                      )}
-                      </div>
+                      <input
+                        type="tel"
+                        name="username"
+                        id="login-username"
+                        autoComplete="username"
+                        value={loginIdInput}
+                        onChange={(e) => setLoginIdInput(e.target.value)}
+                        placeholder="010-0000-0000 또는 뒤 8자리"
+                        className="w-full px-3.5 py-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-sm focus:bg-white focus:border-[#C59B27] transition"
+                      />
                     </div>
                     <div>
                       <div className="flex items-center justify-between mb-1">
