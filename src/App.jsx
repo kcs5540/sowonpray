@@ -3983,26 +3983,33 @@ function formatRelativeOrDate(dateStr) {
     )
   }, [members, selectedAgentCode, currentUser])
 
-  // 현재 포교위원(activeAgent)의 산하 인연 신도 및 위원 목록 (직속 + 하위 전체 계보만 정확히 탐색)
+  // 현재 포교위원(activeAgent)의 산하 인연 신도 및 위원 목록 (직속 + 하위 일반신도 전법 계보만 정확히 탐색)
+  // [규칙] 오다혜뿐만 아니라 유광수, 임평종 등 모든 타 포교위원장(agent/master)의 산하 신도는
+  // 해당 위원장의 고유 실적이므로 다른 위원장의 산하(downline) 탐색에서 완벽히 제외!
   const myAffiliatedMembers = useMemo(() => {
     if (!members || members.length === 0) return []
     if (!activeAgent || !activeAgent.code) return []
 
-    // activeAgent 본인의 하위(산하) 계보만 재귀 탐색
+    const rootCode = activeAgent.code
     const downlineCodes = new Set()
-    let queue = [activeAgent.code]
+    let queue = [rootCode]
 
     while (queue.length > 0) {
       const parentCode = queue.shift()
       members.forEach((m) => {
         // activeAgent의 하위로 등록된 인연 회원만 수집 (상위 추천인 및 양영문 회장님 절대 미포함)
-        if (m.parent_code === parentCode && !downlineCodes.has(m.code) && m.code !== activeAgent.code && m.role !== 'temple_admin') {
-          // 김철수 대표님(33065540) 조회 시 오다혜(83855838) 포교위원장 산하 5명은 오다혜 위원장의 고유 실적이므로 제외
-          if (activeAgent.code === '33065540' && (parentCode === '83855838' || m.parent_code === '83855838')) {
-            return
+        if (m.parent_code === parentCode && !downlineCodes.has(m.code) && m.code !== rootCode && m.role !== 'temple_admin') {
+          // 타 포교위원장(agent/master/CHAIRMEN_CODES)의 산하 신도는 해당 위원장의 고유 실적이므로 제외
+          if (parentCode !== rootCode) {
+            const parentMember = members.find((p) => p.code === parentCode)
+            if (parentMember && (parentMember.role === 'agent' || parentMember.role === 'master' || CHAIRMEN_CODES.includes(parentMember.code))) {
+              return
+            }
           }
           downlineCodes.add(m.code)
-          if (m.code !== '83855838') {
+          // 직속 위원(agent/master/CHAIRMEN_CODES)의 하위 회원은 해당 위원장의 고유 실적이므로 더 깊이 탐색(queue.push)하지 않음!
+          const isAgentOrChairman = m.role === 'agent' || m.role === 'master' || CHAIRMEN_CODES.includes(m.code)
+          if (!isAgentOrChairman) {
             queue.push(m.code)
           }
         }
@@ -4011,26 +4018,33 @@ function formatRelativeOrDate(dateStr) {
 
     // 만약 activeAgent가 포교위원장/마스터인 경우 본인도 명부에 표기할지 여부:
     // 산하 명부는 activeAgent의 '산하 회원들' 목록이므로 downlineCodes만 필터링!
-    // (김철수 총괄대표 산하에는 유광수, 오다혜, 임평종 및 산하 일반신도들만 정확히 포함)
     return members.filter((m) => downlineCodes.has(m.code))
   }, [members, activeAgent])
 
   // 현재 로그인 회원(currentUser)의 산하 인연 신도/위원 목록 및 통계 (실시간 동적 자동 집계)
+  // [규칙] 오다혜뿐만 아니라 유광수, 임평종 등 모든 타 포교위원장(agent/master)의 산하 신도는
+  // 해당 위원장의 고유 실적이므로 currentUser 산하 전법 계산에서 완벽히 제외!
   const currentUserAffiliatedMembers = useMemo(() => {
     if (!members || members.length === 0 || !currentUser?.code) return []
+    const rootCode = currentUser.code
     const downlineCodes = new Set()
-    let queue = [currentUser.code]
+    let queue = [rootCode]
+
     while (queue.length > 0) {
       const parentCode = queue.shift()
       members.forEach((m) => {
-        if (m.parent_code === parentCode && !downlineCodes.has(m.code) && m.code !== currentUser.code && m.role !== 'temple_admin') {
-          // 오다혜(83855838) 포교위원장 산하 5명은 독립 위원장의 고유 실적이므로 김철수 대표님(33065540) 산하 전법 계산에서 제외
-          if (currentUser.code === '33065540' && (parentCode === '83855838' || m.parent_code === '83855838')) {
-            return
+        if (m.parent_code === parentCode && !downlineCodes.has(m.code) && m.code !== rootCode && m.role !== 'temple_admin') {
+          // 타 포교위원장(agent/master/CHAIRMEN_CODES)의 산하 신도는 해당 위원장의 고유 실적이므로 탐색 제외
+          if (parentCode !== rootCode) {
+            const parentMember = members.find((p) => p.code === parentCode)
+            if (parentMember && (parentMember.role === 'agent' || parentMember.role === 'master' || CHAIRMEN_CODES.includes(parentMember.code))) {
+              return
+            }
           }
           downlineCodes.add(m.code)
-          // 오다혜 위원장의 산하 신도는 오다혜 고유 실적이므로 더 이상 하위 큐에 추가하지 않음
-          if (m.code !== '83855838') {
+          // 직속 위원(agent/master/CHAIRMEN_CODES)의 하위 신도는 해당 위원장의 고유 실적이므로 더 이상 하위 큐에 추가하지 않음
+          const isAgentOrChairman = m.role === 'agent' || m.role === 'master' || CHAIRMEN_CODES.includes(m.code)
+          if (!isAgentOrChairman) {
             queue.push(m.code)
           }
         }
@@ -4097,7 +4111,7 @@ function formatRelativeOrDate(dateStr) {
     const directBelieversReward = directBelieversCount * 1000
 
     // 2) 포교위원장 전용: 산하 전체 신규 가입자 1인당 1,000원 추가 (산하 전법 육성 보시금)
-    // 오다혜(83855838) 산하 5명이 제외된 순수 산하 전법 신도수 정확히 반영
+    // 타 포교위원장(유광수, 오다혜, 임평종 등) 산하 회원이 전원 제외된 순수 산하 일반신도 전법(2세대) 인원만 정확히 반영
     const rawIndirectCount = currentUserAffiliatedMembers.filter(
       (m) => m.parent_code !== currentUser.code && m.role === 'believer'
     ).length
