@@ -3879,6 +3879,21 @@ function formatRelativeOrDate(dateStr) {
     }
   })
 
+  // 이전 접속 기록(계정) 목록 상태
+  const [recentLoginAccounts, setRecentLoginAccounts] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sowonpray_recent_accounts_v1')
+      if (saved) return JSON.parse(saved)
+      return [
+        { phone: '010-3306-5540', raw: '01033065540', code: '33065540', name: '김철수', dharma_name: '보현행' },
+      ]
+    } catch {
+      return [
+        { phone: '010-3306-5540', raw: '01033065540', code: '33065540', name: '김철수', dharma_name: '보현행' },
+      ]
+    }
+  })
+
   // 신규 회원가입 입력 상태
   const [signupName, setSignupName] = useState('')
   const [signupPhone, setSignupPhone] = useState('')
@@ -4148,6 +4163,25 @@ function formatRelativeOrDate(dateStr) {
       return
     }
     setCurrentUserCode(found.code)
+    // 이전 접속 기록(계정) 목록에 자동 추가 및 보관
+    const phoneFull = found.phone || formatPhone11(loginIdInput) || loginIdInput.trim()
+    const rawDigits = phoneFull.replace(/[^0-9]/g, '')
+    const newEntry = {
+      phone: phoneFull,
+      raw: rawDigits,
+      code: found.code,
+      name: found.name,
+      dharma_name: found.dharma_name || '',
+      lastLogin: Date.now(),
+    }
+    setRecentLoginAccounts((prev) => {
+      const filtered = (prev || []).filter((item) => item.code !== found.code && item.raw !== rawDigits)
+      const updated = [newEntry, ...filtered].slice(0, 5)
+      try {
+        localStorage.setItem('sowonpray_recent_accounts_v1', JSON.stringify(updated))
+      } catch (e) {}
+      return updated
+    })
     if (rememberLogin) {
       try {
         localStorage.setItem('sowonpray_remember_login', 'true')
@@ -9798,19 +9832,87 @@ function formatRelativeOrDate(dateStr) {
                 {authMode === 'login' ? (
                   <form onSubmit={handleLogin} method="post" action="#" autoComplete="on" className="space-y-3.5">
                     <div>
-                      <label className="block text-xs font-bold text-[#3D3630] mb-1">
-                        전화번호 (아이디)
-                      </label>
-                      <input
-                        type="tel"
-                        name="username"
-                        id="login-phone"
-                        autoComplete="username tel"
-                        value={loginIdInput}
-                        onChange={(e) => setLoginIdInput(e.target.value)}
-                        placeholder="010-0000-0000 또는 뒤 8자리"
-                        className="w-full px-3.5 py-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-sm"
-                      />
+                      <div className="flex items-center justify-between mb-1">
+                        <label htmlFor="login-phone" className="text-xs font-bold text-[#3D3630]">
+                          전화번호 (아이디)
+                        </label>
+                        {loginIdInput && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setLoginIdInput('')
+                              setLoginPwInput('')
+                            }}
+                            className="text-[11px] text-[#8C8071] hover:text-[#231F1C] underline cursor-pointer"
+                          >
+                            지우기
+                          </button>
+                        )}
+                      </div>
+                      <div className="relative">
+                        <input
+                          type="tel"
+                          name="login_phone"
+                          id="login-phone"
+                          list="recent-login-phones"
+                          autoComplete="tel on"
+                          value={loginIdInput}
+                          onChange={(e) => {
+                            const val = e.target.value
+                            setLoginIdInput(val)
+                            const matched = recentLoginAccounts.find(
+                              (a) => a.phone === val || a.raw === val.replace(/[^0-9]/g, '')
+                            )
+                            if (matched && matched.code === '33065540') {
+                              const savedPw = localStorage.getItem('sowonpray_saved_login_pw')
+                              if (savedPw) setLoginPwInput(savedPw)
+                            }
+                          }}
+                          onFocus={(e) => {
+                            e.target.select()
+                          }}
+                          placeholder="010-0000-0000 또는 뒤 8자리"
+                          className="w-full px-3.5 py-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-sm focus:bg-white focus:border-[#C59B27] transition"
+                        />
+                        <datalist id="recent-login-phones">
+                          {recentLoginAccounts.map((acc) => (
+                            <option key={acc.raw || acc.phone} value={acc.phone}>
+                              {acc.name} {acc.dharma_name ? `(${acc.dharma_name})` : ''}
+                            </option>
+                          ))}
+                          <option value="01033065540">김철수 (보현행) - 숫자입력</option>
+                        </datalist>
+                      </div>
+
+                      {/* 이전 접속 기록 빠른 원클릭 선택 버튼 */}
+                      {recentLoginAccounts.length > 0 && (
+                        <div className="mt-2 flex items-center gap-1.5 flex-wrap">
+                          <span className="text-[10.5px] font-bold text-[#8C8071]">
+                            🕒 이전 접속:
+                          </span>
+                          {recentLoginAccounts.map((acc) => (
+                            <button
+                              key={acc.raw || acc.phone}
+                              type="button"
+                              onClick={() => {
+                                setLoginIdInput(acc.phone)
+                                const savedPw = localStorage.getItem('sowonpray_saved_login_pw')
+                                if (savedPw && (acc.code === '33065540' || acc.phone.includes('5540'))) {
+                                  setLoginPwInput(savedPw)
+                                }
+                              }}
+                              className={`text-[11px] px-2.5 py-1 rounded-lg border font-semibold transition active:scale-95 flex items-center gap-1 cursor-pointer ${
+                                loginIdInput && (loginIdInput === acc.phone || loginIdInput === acc.raw)
+                                  ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
+                                  : 'bg-[#F5EFE6] text-[#5C5245] border-[#E2D8C3] hover:bg-[#EAE0D0]'
+                              }`}
+                            >
+                              <span>{acc.name}</span>
+                              <span className="text-[9.5px] opacity-75">({acc.phone.slice(-4)})</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                     <div>
                       <div className="flex items-center justify-between mb-1">
