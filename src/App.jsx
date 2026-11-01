@@ -1249,6 +1249,18 @@ function playMoktakAcousticSynth() {
 // 24시간 힐링 법음 & 수면 명상 5대 테마 트랙 (국보급 방송용 스튜디오 마스터 음원 전면 개편)
 const HEALING_AUDIO_TRACKS = [
   {
+    id: 'sowonsa_prajna_meditation',
+    category: '도량명상',
+    icon: '🧘',
+    title: '제주 소원사 반야심경 (대웅전 힐링 명상)',
+    subtitle: '스님의 깊은 저음 범패 & 묵직한 목탁·법고 리듬 선율',
+    description: '대웅전의 신비로운 울림 속에서 스님의 묵직한 범패 음성과 웅장한 타격 리듬이 잡념을 씻어내고 깊은 이완과 평안을 선사합니다.',
+    type: 'meditation',
+    audioUrl: '/audio/sowonsa_prajna_meditation.mp3',
+    voiceText: null,
+    attribution: '음원 출처: 제주 소원사 모바일 법당 힐링 명상 (마음 치유)',
+  },
+  {
     id: 'prajna_chanting',
     category: '경전독경',
     icon: '📿',
@@ -1283,18 +1295,6 @@ const HEALING_AUDIO_TRACKS = [
     audioUrl: '/audio/sleep_meditation.mp3',
     voiceText: null,
     attribution: '음원 출처: BBS 불교방송 / 영인스님 독경 정진 (사찰 포교 및 법공양)',
-  },
-  {
-    id: 'sowonsa_prajna_meditation',
-    category: '힐링명상',
-    icon: '🧘',
-    title: '제주 소원사 반야심경 (대웅전 힐링 명상)',
-    subtitle: '스님의 깊은 저음 범패 & 묵직한 목탁·법고 리듬 선율',
-    description: '대웅전의 신비로운 울림 속에서 스님의 묵직한 범패 음성과 웅장한 타격 리듬이 잡념을 씻어내고 깊은 이완과 평안을 선사합니다.',
-    type: 'meditation',
-    audioUrl: '/audio/sowonsa_prajna_meditation.mp3',
-    voiceText: null,
-    attribution: '음원 출처: 제주 소원사 모바일 법당 힐링 명상 (마음 치유)',
   },
   {
     id: 'lotus_destiny',
@@ -1604,8 +1604,8 @@ export default function App() {
   const [showUnifiedAdminModal, setShowUnifiedAdminModal] = useState(false)
   const [adminModalTab, setAdminModalTab] = useState('common')
 
-  // 24시간 힐링 법음 & 수면 명상 오디오 플레이어 상태 (기본: 반야심경 스님 음성 독경)
-  const [healingAudioTrack, setHealingAudioTrack] = useState('prajna_chanting')
+  // 24시간 힐링 법음 & 수면 명상 오디오 플레이어 상태 (기본: 제주 소원사 반야심경 대웅전 힐링 명상)
+  const [healingAudioTrack, setHealingAudioTrack] = useState('sowonsa_prajna_meditation')
   const [isHealingPlaying, setIsHealingPlaying] = useState(false)
   const [isHealingVoiceOn, setIsHealingVoiceOn] = useState(true) // 스님 음성 낭독 기본 켜짐
   const [isPlayerExpanded, setIsPlayerExpanded] = useState(false) // 홈 화면 대안1: 기본 슬림 바, 터치 시 펼침
