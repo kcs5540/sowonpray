@@ -10468,7 +10468,7 @@ function formatRelativeOrDate(dateStr) {
                       </div>
 
                       <span className="text-[10.5px] text-[#D6CEC2] bg-white/5 border border-white/10 px-2 py-1 rounded-lg self-center">
-                        제주 소원사 방문, 종무소에서 현금정산 및 기도/불사 공덕금으로 사용 가능
+                        제주 소원사 종무소에서 현금정산 및 기도/불사 공덕금으로 사용 가능
                       </span>
                     </div>
 
