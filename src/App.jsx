@@ -2108,22 +2108,6 @@ function normalizeMemberHierarchy(m) {
     }
   }
 
-  const previewNextStreakCount = (targetSasiDateKey, prevSasiDateKey) => {
-    try {
-      const raw = localStorage.getItem('sowonsa_lantern_streak_v2')
-      if (raw) {
-        const parsed = JSON.parse(raw)
-        if (parsed && parsed.lastSasiDateKey === targetSasiDateKey) {
-          return Math.max(1, Number(parsed.count) || 1)
-        }
-        if (parsed && parsed.lastSasiDateKey === prevSasiDateKey) {
-          return Math.max(1, (Number(parsed.count) || 1) + 1)
-        }
-      }
-    } catch (e) {}
-    return 1
-  }
-
   // 1일 1소원등 축원 상태 (사시예불 회차 기준 연속 정진 일수 카운트)
   const [lanternStreak, setLanternStreak] = useState(() => {
     try {
@@ -2186,6 +2170,95 @@ function normalizeMemberHierarchy(m) {
   )
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [latestSubmittedPrayerId, setLatestSubmittedPrayerId] = useState(null)
+
+  // 🪔 불자님의 실제 소원등 접수 장부(prayers) 및 누적 기록 기반 연속 정진 일수(Streak) 및 누적 총 횟수 정밀 연산
+  const userLanternStats = useMemo(() => {
+    const cleanUserPhone = (currentUser?.phone || wishPhone || lanternData?.believer_phone || '').replace(/[^0-9]/g, '')
+    const userCode = currentUser?.code || lanternData?.member_code || ''
+    const userName = currentUser?.name || wishName || lanternData?.believer_name || ''
+
+    // 1) 장부(prayers)에서 해당 불자님의 1일 소원등 목록 추출
+    const my1dPrayers = (prayers || []).filter((p) => {
+      if (!p || !p.created_at) return false
+      const pCat = p.wish_category || ''
+      if (
+        pCat.includes('위패') ||
+        pCat.includes('생전예수재') ||
+        pCat.includes('삼성각') ||
+        pCat.includes('기와') ||
+        pCat.includes('단청') ||
+        pCat.includes('명패') ||
+        pCat.includes('인등') ||
+        pCat.includes('100일') ||
+        pCat.includes('49재') ||
+        pCat.includes('천도재') ||
+        pCat.includes('공양미')
+      ) {
+        return false
+      }
+      const pPhone = (p.believer_phone || '').replace(/[^0-9]/g, '')
+      const pCode = p.member_code || ''
+      const pName = p.believer_name || ''
+      const matchPhone = cleanUserPhone && pPhone && cleanUserPhone === pPhone
+      const matchCode = userCode && pCode && userCode === pCode
+      const matchName = userName && pName && (pName.includes(userName) || userName.includes(pName))
+      return matchPhone || matchCode || matchName
+    })
+
+    // 2) 고유 사시예불 회차(sasiDateKey) 목록 추출 및 최신순 정렬
+    const uniqueSasiDates = [...new Set(my1dPrayers.map((p) => {
+      const time = new Date(p.created_at).getTime()
+      return isNaN(time) ? '' : computeSasiSchedule(time).sasiDateKey
+    }).filter(Boolean))].sort().reverse()
+
+    // 3) 연속 정진 일수 (Streak) 계산: 최신 회차부터 하루씩 연속되는지 검사
+    let calculatedStreak = uniqueSasiDates.length > 0 ? 1 : 0
+    for (let i = 0; i < uniqueSasiDates.length - 1; i++) {
+      const cur = new Date(uniqueSasiDates[i])
+      const prev = new Date(uniqueSasiDates[i + 1])
+      const diffDays = Math.round((cur - prev) / (1000 * 60 * 60 * 24))
+      if (diffDays === 1) {
+        calculatedStreak++
+      } else {
+        break
+      }
+    }
+
+    // 로컬스토리지 백업 및 이전 저장된 streak 값과 비교하여 최대값 보장
+    let storedStreak = 1
+    try {
+      const raw = localStorage.getItem('sowonsa_lantern_streak_v2')
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        if (parsed && Number(parsed.count) > 0) storedStreak = Number(parsed.count)
+      }
+    } catch (e) {}
+
+    const streak = Math.max(calculatedStreak, storedStreak, lanternData?.streak || 1, 1)
+
+    // 4) 총 소원등 점등 횟수 계산 (장부 기록 건수, 로컬 카운트, 최소 streak 중 최대값)
+    const totalCount = Math.max(my1dPrayers.length, lanternData?.total_count || 1, streak)
+
+    return { streak, totalCount, prayersCount: my1dPrayers.length }
+  }, [prayers, currentUser, wishPhone, wishName, lanternData])
+
+  const previewNextStreakCount = (targetSasiDateKey, prevSasiDateKey) => {
+    try {
+      const baseStreak = userLanternStats?.streak || 1
+      const raw = localStorage.getItem('sowonsa_lantern_streak_v2')
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        if (parsed && parsed.lastSasiDateKey === targetSasiDateKey) {
+          return Math.max(baseStreak, Number(parsed.count) || 1)
+        }
+        if (parsed && parsed.lastSasiDateKey === prevSasiDateKey) {
+          return Math.max(baseStreak + 1, (Number(parsed.count) || 1) + 1)
+        }
+      }
+      return baseStreak
+    } catch (e) {}
+    return 1
+  }
 
   // [사시예불 축원 명부] 7일 이내 유효 신도 전용 인쇄 모달 상태
   const [showSasiPrintModal, setShowSasiPrintModal] = useState(false)
@@ -3474,7 +3547,8 @@ function normalizeMemberHierarchy(m) {
             believer_phone: myPrayer.believer_phone || currentUser?.phone || '',
             wish_category: myPrayer.wish_category || '대웅전 소원등',
             wish_text: myPrayer.wish_text || '',
-            streak: lanternData?.streak || lanternStreak || 1,
+            streak: userLanternStats.streak,
+            total_count: userLanternStats.totalCount,
             sasi_date_key: todayKey,
           }
         }
@@ -3542,7 +3616,8 @@ function normalizeMemberHierarchy(m) {
           lit_at: prayerTime,
           expire_at: schedule.expireAt,
           sasi_date_key: schedule.sasiDateKey,
-          streak: lanternData?.streak || lanternStreak || 1,
+          streak: userLanternStats.streak,
+          total_count: userLanternStats.totalCount,
         }
         setLanternData(syncedLantern)
         try {
@@ -4112,7 +4187,8 @@ function normalizeMemberHierarchy(m) {
           lanternData?.wish_text ||
           '우리 가족 모두 건강하고 화목과 평안이 늘 함께하기를 발원합니다.',
         sasi_date_key: lanternData?.sasi_date_key || computeSasiSchedule(lanternData?.lit_at || Date.now()).sasiDateKey,
-        streak: lanternData?.streak || lanternStreak || 1,
+        streak: userLanternStats.streak,
+        total_count: userLanternStats.totalCount,
       })
     } else {
       showToast('🙏 아래 발원문을 접수하시면 오늘 대웅전 소원등이 환하게 밝혀집니다.')
@@ -4523,7 +4599,8 @@ function normalizeMemberHierarchy(m) {
             PRAYER_CATEGORY_TEMPLATES[wishCategory] ||
             '온 가족 무병장수와 소원성취를 발원합니다.',
           sasi_date_key: activeRecord?.sasi_date_key || activeSchedule.sasiDateKey,
-          streak: lanternData?.streak || lanternStreak || 1,
+          streak: userLanternStats.streak,
+          total_count: userLanternStats.totalCount,
         })
         return
       }
@@ -4583,11 +4660,12 @@ function normalizeMemberHierarchy(m) {
         schedule.sasiDateKey,
         schedule.prevSasiDateKey
       )
+      const nextTotal = (userLanternStats.totalCount || 0) + 1
       setLanternStreak(nextStreak)
       try {
         localStorage.setItem(
           'sowonsa_lantern_streak_v2',
-          JSON.stringify({ count: nextStreak, lastSasiDateKey: schedule.sasiDateKey })
+          JSON.stringify({ count: nextStreak, lastSasiDateKey: schedule.sasiDateKey, total_count: nextTotal })
         )
         localStorage.setItem('sowonsa_lantern_streak', String(nextStreak))
       } catch (e) {}
@@ -4603,6 +4681,7 @@ function normalizeMemberHierarchy(m) {
         expire_at: schedule.expireAt,
         sasi_date_key: schedule.sasiDateKey,
         streak: nextStreak,
+        total_count: nextTotal,
       }
       try {
         localStorage.setItem('sowonsa_7day_lantern', JSON.stringify(newLanternInfo))
@@ -6552,7 +6631,7 @@ function normalizeMemberHierarchy(m) {
                 <div className="min-w-0 flex-1 relative z-10">
                   <span className="block text-[10px] font-extrabold tracking-tight whitespace-nowrap leading-none text-[#A86E0B]">
                     {isLanternLit
-                      ? `🔥 ${lanternData?.streak || lanternStreak || 1}일 연속 정진 중`
+                      ? `🪔 총 ${userLanternStats.totalCount}회 · 🔥 ${userLanternStats.streak}일 정진`
                       : '대웅전 1일 무료'}
                   </span>
                   <h3 className="font-serif-kr font-extrabold text-[13.5px] sm:text-[14.5px] mt-1 tracking-tight whitespace-nowrap leading-tight text-[#2B1F11]">
@@ -8190,13 +8269,16 @@ function normalizeMemberHierarchy(m) {
               <div className="mt-3">
                 {isLanternLit ? (
                   <div className="bg-[#FAF3DF]/10 border border-[#F5D061]/35 rounded-xl p-3 text-xs text-[#FAF8F5] leading-relaxed break-keep">
-                    <div className="flex items-center justify-center gap-1.5 font-bold text-[#F5D061] mb-1 flex-wrap">
-                      <Sparkles className="w-3.5 h-3.5 shrink-0" />
-                      <span>
-                        {lanternData?.believer_name} 불자님의 소원등 점등 중 (🔥 {lanternData?.streak || lanternStreak || 1}일 연속 정진)
+                    <div className="flex items-center justify-center gap-1.5 font-bold text-[#F5D061] mb-1.5 flex-wrap text-center">
+                      <Sparkles className="w-3.5 h-3.5 shrink-0 text-[#F5D061]" />
+                      <span className="text-[#FAF8F5]">
+                        {lanternData?.believer_name} 불자님의 소원등 점등 중
+                      </span>
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 text-[#F5D061] border border-[#F5D061]/40 text-[11px] font-extrabold whitespace-nowrap shadow-xs">
+                        🪔 누적 {userLanternStats.totalCount}회 점등 · 🔥 {userLanternStats.streak}일 연속 정진
                       </span>
                     </div>
-                    <p className="text-[11px] text-[#D6CEC2]">
+                    <p className="text-[11px] text-[#D6CEC2] text-center">
                       📅 <strong>{getSasiDisplayInfo(lanternData?.sasi_date_key).detailLabel}</strong>되며, 예불 회향 후 오전 11시에 다음 등불을 밝히실 수 있습니다.
                     </p>
                   </div>
@@ -9847,8 +9929,8 @@ function normalizeMemberHierarchy(m) {
                           !p.wish_category?.includes('영전자수증') &&
                           !p.wish_category?.includes('조성비')
                       ).length
-                      const totalMerit = Math.max(total1dCount, currentUser?.merit_count || 1)
-                      const currentStreak = lanternData?.streak || lanternStreak || 1
+                      const totalMerit = Math.max(total1dCount, userLanternStats.totalCount, currentUser?.merit_count || 1)
+                      const currentStreak = userLanternStats.streak
 
                       // 1년 인등, 100일 특별기도, 위패, 기타 불사 봉안 목록 도출
                       const activeIndeung = memberInfo?.lanterns?.find((l) => l.id === 'indeung_1yr' && l.active)
@@ -12292,7 +12374,7 @@ function normalizeMemberHierarchy(m) {
                 </div>
 
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-xs font-extrabold text-emerald-300">
-                  <span>✨ 🔥 {alreadyLitModalData.streak || lanternStreak || 1}일 연속 정진 · 점등 중</span>
+                  <span>✨ 🪔 누적 {alreadyLitModalData.total_count || userLanternStats.totalCount}회 · 🔥 {alreadyLitModalData.streak || userLanternStats.streak}일 연속 정진 중</span>
                 </div>
 
                 <h3 className="font-serif-kr text-lg sm:text-xl font-bold text-[#F5D061] leading-snug">
@@ -12858,7 +12940,7 @@ function normalizeMemberHierarchy(m) {
                       </span>
                       <span className="font-extrabold text-[#6B4E08] text-[13px]">
                         {meritCertType === 'lantern'
-                          ? `소원등 총 ${currentUser?.merit_count || currentMeritCount || 1}회 점등 (${lanternData?.streak || lanternStreak || 1}일 연속)`
+                          ? `소원등 총 ${userLanternStats.totalCount}회 점등 (${userLanternStats.streak}일 연속)`
                           : (currentSutra?.title || '반야심경')}
                       </span>
                     </div>
@@ -12977,7 +13059,7 @@ function normalizeMemberHierarchy(m) {
                                   content: {
                                     title: meritCertType === 'lantern' ? '🪔 제주 소원사 소원등 정진 공덕장' : '🪷 제주 소원사 사경 회향 공덕장',
                                     description: meritCertType === 'lantern'
-                                      ? `"${believer} 불자님께서 부처님 전 소원등을 총 ${currentUser?.merit_count || currentMeritCount || 1}회 밝히시며 무량공덕을 회향하셨습니다."\n\n"${lanternData?.wish_text || '온 가족 소원성취 발원'}"`
+                                      ? `"${believer} 불자님께서 부처님 전 소원등을 총 ${userLanternStats.totalCount}회 밝히시며 (${userLanternStats.streak}일 연속 정진) 무량공덕을 회향하셨습니다."\n\n"${lanternData?.wish_text || '온 가족 소원성취 발원'}"`
                                       : `"${believer} 불자님께서 '${sutraTitle}' 사경을 정성으로 원만히 회향하셨습니다."\n\n"${sutraText}"`,
                                     imageUrl: kakaoImgUrl,
                                     imageWidth: canvas.width,
