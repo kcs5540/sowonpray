@@ -1517,9 +1517,22 @@ function getTodayLunarAndJaeil() {
       ? `📿 오늘: ${nextJaeil.name} 봉행`
       : `📿 ${nextJaeil.name}(${nextJaeil.day}일) D-${minDaysLeft}`;
 
+  // 다가오는 주요 사찰 재일 D-Day 순 정렬
+  const upcomingJaeils = JAEIL_LIST.map((j) => {
+    let diff = j.day - currentLunarDay;
+    if (diff < 0) diff += 30;
+    return {
+      ...j,
+      daysLeft: diff,
+      isToday: diff === 0,
+      ddayText: diff === 0 ? '오늘 봉행' : `D-${diff}`,
+    };
+  }).sort((a, b) => a.daysLeft - b.daysLeft);
+
   return {
     lunarText: `음력 ${currentLunarMonth}월 ${currentLunarDay}일 (${iljinStr})`,
     jaeilBadge,
+    upcomingJaeils,
   };
 }
 
@@ -7579,6 +7592,105 @@ function formatRelativeOrDate(dateStr) {
                 </a>
               </div>
             </section>
+
+            {/* 🔔 제주 소원사 대웅전 매일 사시예불(巳時禮佛) & 다가오는 사찰 주요 재일 D-Day 캘린더 */}
+            {(() => {
+              const { upcomingJaeils } = getTodayLunarAndJaeil()
+              return (
+                <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-3.5">
+                  {/* 상단 헤더: 사시예불 안내 */}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#E25C2B] to-[#F4B41A] text-white flex items-center justify-center shrink-0 shadow-xs">
+                        <Flame className="w-4 h-4 fill-current text-[#FFF7CE]" />
+                      </div>
+                      <div>
+                        <h2 className="font-serif-kr font-bold text-sm sm:text-base text-[#231F1C]">
+                          대웅전 사시예불 & 기도 재일
+                        </h2>
+                        <p className="text-[11px] text-[#8C7A5B]">
+                          매일 오전 10:00 삼존불 전 육성 축원 봉행
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-[10.5px] font-extrabold px-2.5 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] whitespace-nowrap shrink-0">
+                      매일 10시 봉행
+                    </span>
+                  </div>
+
+                  {/* 사시예불 안내 박스 */}
+                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EDE6D8] text-xs text-[#575049] leading-relaxed space-y-1">
+                    <p className="font-semibold text-[#2B231A]">
+                      전국 불자님들이 모바일 법당에 올리신 소원등과 발원문은 제주 소원사 대웅전 부처님 전에 정성껏 올려져 스님의 육성으로 매일 사시예불에 축원됩니다.
+                    </p>
+                    <p className="text-[11px] text-[#9A7418] font-medium">
+                      ※ 지금 등불을 밝히시면 내일 오전 10시 사시예불 축원에 자동 배정됩니다.
+                    </p>
+                  </div>
+
+                  {/* 다가오는 사찰 주요 3대 재일 (D-Day 캘린더 칩) */}
+                  <div className="space-y-1.5 pt-0.5">
+                    <div className="text-[11.5px] font-bold text-[#6E5D45] flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-[#C59B27]" />
+                      <span>다가오는 사찰 주요 재일</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      {(upcomingJaeils || []).slice(0, 3).map((j) => (
+                        <button
+                          key={j.name}
+                          type="button"
+                          onClick={() => {
+                            playSingingBowlSound()
+                            setActiveTab('lantern')
+                            window.scrollTo({ top: 0, behavior: 'smooth' })
+                          }}
+                          className={`p-2.5 rounded-xl border text-left transition cursor-pointer active:scale-95 flex items-center justify-between sm:flex-col sm:items-start gap-1 ${
+                            j.isToday
+                              ? 'bg-amber-500/10 border-amber-500/40 text-amber-900 shadow-xs'
+                              : 'bg-[#FAF8F5] hover:bg-[#F5EFE4] border-[#E8DFC9] text-[#2C251E]'
+                          }`}
+                          title={`${j.name} 소원등 올리기`}
+                        >
+                          <div className="min-w-0">
+                            <div className="text-xs font-bold truncate flex items-center gap-1">
+                              <span>{j.isToday ? '🔥' : '🪔'}</span>
+                              <span className="truncate">{j.name}</span>
+                            </div>
+                            <div className="text-[10px] text-[#8C7A5B] mt-0.5">
+                              음력 {j.day}일
+                            </div>
+                          </div>
+                          <span
+                            className={`text-xs font-black px-2 py-0.5 rounded-md shrink-0 font-mono ${
+                              j.isToday
+                                ? 'bg-amber-500 text-white animate-pulse'
+                                : 'bg-[#EFE7D6] text-[#7D6320]'
+                            }`}
+                          >
+                            {j.ddayText}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 원터치 소원등 켜기 바로가기 */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playSingingBowlSound()
+                      setActiveTab('lantern')
+                      window.scrollTo({ top: 0, behavior: 'smooth' })
+                    }}
+                    className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#F5D061] via-[#E5BF47] to-[#D4AF37] hover:brightness-105 active:scale-[0.99] text-[#1B1815] font-black text-xs flex items-center justify-center gap-1.5 transition shadow-sm cursor-pointer"
+                  >
+                    <Flame className="w-3.5 h-3.5 fill-current text-[#7A5B0B]" />
+                    <span>내 소원등 켜고 사시예불 축원 올리기 ➜</span>
+                  </button>
+                </section>
+              )
+            })()}
 
             {/* 제주 소원사 도량 위치 안내 & 원터치 주소 복사 · 네이버 지도 길찾기 */}
             <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-2.5">
