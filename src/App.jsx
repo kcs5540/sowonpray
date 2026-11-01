@@ -2103,8 +2103,8 @@ function normalizeMemberHierarchy(m) {
       isTodaySasi,
       shortLabel: isTodaySasi ? '오늘 오전 10시 사시예불' : '내일 오전 10시 사시예불',
       detailLabel: isTodaySasi
-        ? '오늘 오전 10시 대웅전 사시예불 축원 (오전 11시 회향)'
-        : '내일 오전 10시 대웅전 사시예불 축원 (내일 오전 11시 회향)',
+        ? '오늘 오전 10시 대웅전 사시예불 축원'
+        : '내일 오전 10시 대웅전 사시예불 축원',
     }
   }
 
