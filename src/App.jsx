@@ -7598,24 +7598,19 @@ function formatRelativeOrDate(dateStr) {
               const { upcomingJaeils } = getTodayLunarAndJaeil()
               return (
                 <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-3.5">
-                  {/* 상단 헤더: 사시예불 안내 */}
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#E25C2B] to-[#F4B41A] text-white flex items-center justify-center shrink-0 shadow-xs">
-                        <Flame className="w-4 h-4 fill-current text-[#FFF7CE]" />
-                      </div>
-                      <div>
-                        <h2 className="font-serif-kr font-bold text-sm sm:text-base text-[#231F1C]">
-                          대웅전 사시예불 & 기도 재일
-                        </h2>
-                        <p className="text-[11px] text-[#8C7A5B]">
-                          매일 오전 10:00 삼존불 전 육성 축원 봉행
-                        </p>
-                      </div>
+                  {/* 상단 헤더: 사시예불 안내 (우측 중복 뱃지 제거 및 1줄 칼정돈) */}
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#E25C2B] to-[#F4B41A] text-white flex items-center justify-center shrink-0 shadow-xs">
+                      <Flame className="w-4 h-4 fill-current text-[#FFF7CE]" />
                     </div>
-                    <span className="text-[10.5px] font-extrabold px-2.5 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] whitespace-nowrap shrink-0">
-                      매일 10시 봉행
-                    </span>
+                    <div className="min-w-0">
+                      <h2 className="font-serif-kr font-bold text-sm sm:text-base text-[#231F1C] whitespace-nowrap">
+                        대웅전 사시예불 & 기도 재일
+                      </h2>
+                      <p className="text-xs text-[#8C7A5B] truncate mt-0.5">
+                        매일 오전 10:00 삼존불 전 육성 축원 봉행
+                      </p>
+                    </div>
                   </div>
 
                   {/* 사시예불 안내 박스 (핵심 1~2줄 요약) */}
