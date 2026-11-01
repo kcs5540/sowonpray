@@ -3983,9 +3983,9 @@ function formatRelativeOrDate(dateStr) {
     )
   }, [members, selectedAgentCode, currentUser])
 
-  // 현재 포교위원(activeAgent)의 산하 인연 신도 및 위원 목록 (직속 + 하위 일반신도 전법 계보만 정확히 탐색)
-  // [규칙] 오다혜뿐만 아니라 유광수, 임평종 등 모든 타 포교위원장(agent/master)의 산하 신도는
-  // 해당 위원장의 고유 실적이므로 다른 위원장의 산하(downline) 탐색에서 완벽히 제외!
+  // 현재 포교위원(activeAgent)의 산하 인연 신도 및 위원 목록 (직속 + 하위 모든 세대 전법 계보 무제한 심층 탐색)
+  // [규칙] 오다혜, 유광수, 임평종 등 타 포교위원장(agent/master) 산하 회원을 제외한
+  // 본인 산하의 모든 세대(2세대, 3세대, 4세대... n세대 무제한 심층 계보 전체)를 전부 누적 합산!
   const myAffiliatedMembers = useMemo(() => {
     if (!members || members.length === 0) return []
     if (!activeAgent || !activeAgent.code) return []
@@ -4022,8 +4022,7 @@ function formatRelativeOrDate(dateStr) {
   }, [members, activeAgent])
 
   // 현재 로그인 회원(currentUser)의 산하 인연 신도/위원 목록 및 통계 (실시간 동적 자동 집계)
-  // [규칙] 오다혜뿐만 아니라 유광수, 임평종 등 모든 타 포교위원장(agent/master)의 산하 신도는
-  // 해당 위원장의 고유 실적이므로 currentUser 산하 전법 계산에서 완벽히 제외!
+  // [규칙] 타 포교위원장 산하 회원을 제외한, 본인 산하의 모든 세대(2세대, 3세대, 4세대... n세대 무제한 심층 계보 전체)를 전부 누적 합산!
   const currentUserAffiliatedMembers = useMemo(() => {
     if (!members || members.length === 0 || !currentUser?.code) return []
     const rootCode = currentUser.code
@@ -4111,7 +4110,7 @@ function formatRelativeOrDate(dateStr) {
     const directBelieversReward = directBelieversCount * 1000
 
     // 2) 포교위원장 전용: 산하 전체 신규 가입자 1인당 1,000원 추가 (산하 전법 육성 보시금)
-    // 타 포교위원장(유광수, 오다혜, 임평종 등) 산하 회원이 전원 제외된 순수 산하 일반신도 전법(2세대) 인원만 정확히 반영
+    // 타 포교위원장(유광수, 오다혜, 임평종 등) 산하를 제외한 본인 산하 모든 세대(2세대, 3세대, 4세대... n세대 무제한 심층 계보 전체) 인원 전부 실시간 반영
     const rawIndirectCount = currentUserAffiliatedMembers.filter(
       (m) => m.parent_code !== currentUser.code && m.role === 'believer'
     ).length
