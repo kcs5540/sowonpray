@@ -1697,6 +1697,21 @@ function normalizeMemberHierarchy(m) {
       localStorage.removeItem('sowonpray_members_v6')
       localStorage.removeItem('sowonpray_members_v7')
       const saved = localStorage.getItem('sowonpray_members_v8')
+
+      const applyLocalMerit = (list) =>
+        list.map((m) => {
+          try {
+            const localCached = localStorage.getItem(`sowonpray_merit_${m.code}`)
+            if (localCached) {
+              const parsed = parseInt(localCached, 10)
+              if (!isNaN(parsed) && parsed > (m.merit_count || 0)) {
+                return { ...m, merit_count: parsed }
+              }
+            }
+          } catch (e) {}
+          return m
+        })
+
       if (saved) {
         const parsed = JSON.parse(saved)
         const cleaned = parsed
@@ -1704,13 +1719,14 @@ function normalizeMemberHierarchy(m) {
           .map((m) => (m.parent_code === '49121083' || m.parent_code === '74200267' ? { ...m, parent_code: '55570267' } : m))
           .map(normalizeMemberHierarchy)
         const seen = new Set()
-        return cleaned.filter((m) => {
+        const unique = cleaned.filter((m) => {
           if (seen.has(m.code)) return false
           seen.add(m.code)
           return true
         })
+        return applyLocalMerit(unique)
       }
-      return INITIAL_MEMBERS.map(normalizeMemberHierarchy)
+      return applyLocalMerit(INITIAL_MEMBERS.map(normalizeMemberHierarchy))
     } catch {
       return INITIAL_MEMBERS.map(normalizeMemberHierarchy)
     }
@@ -1859,11 +1875,11 @@ function normalizeMemberHierarchy(m) {
 
   // 상태 변경 시 로컬스토리지 자동 동기화
   useEffect(() => {
-    localStorage.setItem('sowonpray_members_v7', JSON.stringify(members))
+    localStorage.setItem('sowonpray_members_v8', JSON.stringify(members))
   }, [members])
 
   useEffect(() => {
-    localStorage.setItem('sowonpray_prayers_v4', JSON.stringify(prayers))
+    localStorage.setItem('sowonpray_prayers_v5', JSON.stringify(prayers))
   }, [prayers])
 
   useEffect(() => {
@@ -1916,12 +1932,39 @@ function normalizeMemberHierarchy(m) {
 
           const sanitizedCloud = cloudMembers
             .filter((m) => m.code !== '49121083' && m.code !== '74200267')
-            .map((m) => (m.parent_code === '49121083' || m.parent_code === '74200267' ? { ...m, parent_code: '55570267' } : m))
+            .map((m) => {
+              const fixedParent = (m.parent_code === '49121083' || m.parent_code === '74200267' ? '55570267' : m.parent_code)
+              let meritCount = m.merit_count || 0
+              try {
+                const localCached = localStorage.getItem(`sowonpray_merit_${m.code}`)
+                if (localCached) {
+                  const parsed = parseInt(localCached, 10)
+                  if (!isNaN(parsed) && parsed > meritCount) {
+                    meritCount = parsed
+                    // Supabase에 로컬 캐시된 최신 공덕수 역동기화
+                    supabase.from('members').update({ merit_count: parsed }).eq('code', m.code).then()
+                  }
+                }
+              } catch (e) {}
+              return { ...m, parent_code: fixedParent, merit_count: meritCount }
+            })
 
           const cloudCodes = new Set(sanitizedCloud.map((m) => m.code))
           const merged = [
             ...sanitizedCloud,
-            ...INITIAL_MEMBERS.filter((m) => !cloudCodes.has(m.code) && m.code !== '49121083' && m.code !== '74200267'),
+            ...INITIAL_MEMBERS.filter((m) => !cloudCodes.has(m.code) && m.code !== '49121083' && m.code !== '74200267').map((m) => {
+              let meritCount = m.merit_count || 0
+              try {
+                const localCached = localStorage.getItem(`sowonpray_merit_${m.code}`)
+                if (localCached) {
+                  const parsed = parseInt(localCached, 10)
+                  if (!isNaN(parsed) && parsed > meritCount) {
+                    meritCount = parsed
+                  }
+                }
+              } catch (e) {}
+              return { ...m, merit_count: meritCount }
+            }),
           ]
           const seen = new Set()
           const finalMembers = merged
@@ -3519,7 +3562,14 @@ function normalizeMemberHierarchy(m) {
   const [isCapturingCert, setIsCapturingCert] = useState(false)
   const meritCertRef = useRef(null)
   const [moktakCount, setMoktakCount] = useState(0)
-  const [guestMeritBonus, setGuestMeritBonus] = useState(0)
+  const [guestMeritCount, setGuestMeritCount] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sowonpray_guest_merit')
+      return saved ? parseInt(saved, 10) || 0 : 0
+    } catch {
+      return 0
+    }
+  })
 
   // 불교명언 & 연꽃 말씀 뽑기 상태
   const [selectedLotusIdx, setSelectedLotusIdx] = useState(null)
@@ -4642,17 +4692,31 @@ function normalizeMemberHierarchy(m) {
           extra_data: { registered_via: 'wish_lantern' },
         }
         setMembers((prev) => [newBeliever, ...prev])
+        try {
+          localStorage.setItem(`sowonpray_merit_${newBeliever.code}`, '1')
+        } catch (e) {}
         if (supabase) {
           supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
         }
-      } else if (!existingPrayerMember.dharma_name && parsedDharma) {
-        // 기존 회원이 법명 없이 가입되었다가 소원등 신청 시 법명을 함께 적은 경우 법명 자동 등재
-        const updatedMember = { ...existingPrayerMember, dharma_name: parsedDharma }
+      } else {
+        // 기존 회원이 소원등을 올릴 때도 공덕 +1 누적!
+        const nextMerit = (existingPrayerMember.merit_count || 0) + 1
+        const updatedMember = {
+          ...existingPrayerMember,
+          merit_count: nextMerit,
+          dharma_name: (!existingPrayerMember.dharma_name && parsedDharma) ? parsedDharma : existingPrayerMember.dharma_name,
+        }
         setMembers((prev) =>
           prev.map((m) => (m.code === existingPrayerMember.code ? updatedMember : m))
         )
+        try {
+          localStorage.setItem(`sowonpray_merit_${existingPrayerMember.code}`, String(nextMerit))
+        } catch (e) {}
         if (supabase) {
-          supabase.from('members').upsert([updatedMember], { onConflict: 'code' }).then()
+          supabase.from('members').update({
+            merit_count: nextMerit,
+            dharma_name: updatedMember.dharma_name,
+          }).eq('code', existingPrayerMember.code).then()
         }
       }
 
@@ -4885,23 +4949,41 @@ function normalizeMemberHierarchy(m) {
     showToast('방문 예약 접수가 취소되었습니다.')
   }
 
-  // 사경 입력 체크 및 공덕 적립 헬퍼 (본인 계정 공덕 횟수에 누적)
+  // 사경 입력 체크 및 공덕 적립 헬퍼 (본인 계정 공덕 횟수에 누적 및 Supabase 실시간 동기화)
   const currentSutra = SUTRA_LIST[selectedSutraIdx]
   const currentMeritCount = currentUser
-    ? currentUser.merit_count || 0
-    : 108 + guestMeritBonus
+    ? (currentUser.merit_count ?? 0)
+    : guestMeritCount
 
   const addMerit = (amount = 1) => {
     if (currentUser) {
+      const newCount = (currentUser.merit_count || 0) + amount
       setMembers((prev) =>
         prev.map((m) =>
           m.code === currentUser.code
-            ? { ...m, merit_count: (m.merit_count || 0) + amount }
+            ? { ...m, merit_count: newCount }
             : m
         )
       )
+      try {
+        localStorage.setItem(`sowonpray_merit_${currentUser.code}`, String(newCount))
+      } catch (e) {}
+
+      if (supabase) {
+        supabase
+          .from('members')
+          .update({ merit_count: newCount })
+          .eq('code', currentUser.code)
+          .then(({ error }) => {
+            if (error) console.log('Supabase merit sync note:', error)
+          })
+      }
     } else {
-      setGuestMeritBonus((prev) => prev + amount)
+      const newGuestCount = guestMeritCount + amount
+      setGuestMeritCount(newGuestCount)
+      try {
+        localStorage.setItem('sowonpray_guest_merit', String(newGuestCount))
+      } catch (e) {}
     }
   }
 
@@ -12776,7 +12858,7 @@ function normalizeMemberHierarchy(m) {
                       </span>
                       <span className="font-extrabold text-[#6B4E08] text-[13px]">
                         {meritCertType === 'lantern'
-                          ? `소원등 총 ${currentUser?.merit_count || currentMeritCount || 108}회 점등 (${lanternData?.streak || lanternStreak || 1}일 연속)`
+                          ? `소원등 총 ${currentUser?.merit_count || currentMeritCount || 1}회 점등 (${lanternData?.streak || lanternStreak || 1}일 연속)`
                           : (currentSutra?.title || '반야심경')}
                       </span>
                     </div>
@@ -12895,7 +12977,7 @@ function normalizeMemberHierarchy(m) {
                                   content: {
                                     title: meritCertType === 'lantern' ? '🪔 제주 소원사 소원등 정진 공덕장' : '🪷 제주 소원사 사경 회향 공덕장',
                                     description: meritCertType === 'lantern'
-                                      ? `"${believer} 불자님께서 부처님 전 소원등을 총 ${currentUser?.merit_count || currentMeritCount || 108}회 밝히시며 무량공덕을 회향하셨습니다."\n\n"${lanternData?.wish_text || '온 가족 소원성취 발원'}"`
+                                      ? `"${believer} 불자님께서 부처님 전 소원등을 총 ${currentUser?.merit_count || currentMeritCount || 1}회 밝히시며 무량공덕을 회향하셨습니다."\n\n"${lanternData?.wish_text || '온 가족 소원성취 발원'}"`
                                       : `"${believer} 불자님께서 '${sutraTitle}' 사경을 정성으로 원만히 회향하셨습니다."\n\n"${sutraText}"`,
                                     imageUrl: kakaoImgUrl,
                                     imageWidth: canvas.width,
