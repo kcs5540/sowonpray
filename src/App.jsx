@@ -12889,21 +12889,34 @@ function normalizeMemberHierarchy(m) {
                                       webUrl: meritCertType === 'lantern' ? `${origin}/?ref=${code}&tab=lantern` : shareUrl,
                                     },
                                   },
-                                  buttons: [
+                                  buttons: meritCertType === 'lantern' ? [
                                     {
-                                      title:
-                                        meritCertType === 'lantern'
-                                          ? '🪔 1일 무료 소원등 밝히기'
-                                          : '✍️ 나도 마음 사경 동참하기',
+                                      title: '🪔 소원등 켜기',
                                       link: {
-                                        mobileWebUrl:
-                                          meritCertType === 'lantern'
-                                            ? `${origin}/?ref=${code}&tab=lantern`
-                                            : shareUrl,
-                                        webUrl:
-                                          meritCertType === 'lantern'
-                                            ? `${origin}/?ref=${code}&tab=lantern`
-                                            : shareUrl,
+                                        mobileWebUrl: `${origin}/?ref=${code}&tab=lantern`,
+                                        webUrl: `${origin}/?ref=${code}&tab=lantern`,
+                                      },
+                                    },
+                                    {
+                                      title: '✍️ 사경하기',
+                                      link: {
+                                        mobileWebUrl: `${origin}/?ref=${code}&tab=sutra`,
+                                        webUrl: `${origin}/?ref=${code}&tab=sutra`,
+                                      },
+                                    },
+                                  ] : [
+                                    {
+                                      title: '✍️ 사경하기',
+                                      link: {
+                                        mobileWebUrl: shareUrl,
+                                        webUrl: shareUrl,
+                                      },
+                                    },
+                                    {
+                                      title: '🪔 소원등 켜기',
+                                      link: {
+                                        mobileWebUrl: `${origin}/?ref=${code}&tab=lantern`,
+                                        webUrl: `${origin}/?ref=${code}&tab=lantern`,
                                       },
                                     },
                                   ],
