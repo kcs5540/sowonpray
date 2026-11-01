@@ -10410,7 +10410,7 @@ function formatRelativeOrDate(dateStr) {
                               : 'text-[#D6CEC2] hover:text-white'
                           }`}
                         >
-                          <span>📋 인연 신도 축원 현황</span>
+                          <span>📋 최근 가입 현황</span>
                         </button>
                       </div>
 
