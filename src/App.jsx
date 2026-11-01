@@ -1297,6 +1297,18 @@ const HEALING_AUDIO_TRACKS = [
     attribution: '음원 출처: 제주 소원사 모바일 법당 정식 찬불가 (자비 법공양)',
   },
   {
+    id: 'jeju_sowonsa',
+    category: '도량찬가',
+    icon: '🍊',
+    title: '제주 소원사 (도량 공식 테마송)',
+    subtitle: '따뜻한 어쿠스틱 발라드 & 첼로 선율의 소원사 도량 찬가',
+    description: '한라산의 맑은 정기와 부처님의 자비가 깃든 제주 소원사 도량의 평화로움과 안식을 노래한 공식 테마 찬가입니다.',
+    type: 'song',
+    audioUrl: '/audio/jeju_sowonsa.mp3',
+    voiceText: null,
+    attribution: '음원 출처: 제주 소원사 모바일 법당 공식 테마송 (도량 법공양)',
+  },
+  {
     id: 'rhythmic_moktak',
     category: '마음정진',
     icon: '🪵',
