@@ -10431,7 +10431,7 @@ function formatRelativeOrDate(dateStr) {
                           </button>
                         </div>
                       ) : (
-                        <div className="space-y-2.5">
+                        <div className="space-y-1.5">
                           {displayRecent.map((m) => {
                             const isDirect = m.parent_code === currentUser.code
                             const parentAgent = !isDirect ? members.find((p) => p.code === m.parent_code) : null
@@ -10444,7 +10444,7 @@ function formatRelativeOrDate(dateStr) {
                             return (
                               <div
                                 key={m.code}
-                                className={`p-3.5 rounded-2xl border transition flex flex-col gap-2 ${
+                                className={`py-2 px-3 rounded-xl border transition flex flex-col gap-1.5 ${
                                   isToday
                                     ? 'bg-[#FFFDF7] border-[#ECC872] shadow-xs'
                                     : 'bg-[#FAF8F5] border-[#E8DEC8] hover:border-[#C59B27]/50'
@@ -10452,13 +10452,13 @@ function formatRelativeOrDate(dateStr) {
                               >
                                 {/* 상단: 이름, 법명, 추천관계, 가입일시 */}
                                 <div className="flex items-center justify-between gap-2">
-                                  <div className="flex items-center gap-2 min-w-0">
-                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] font-serif-kr font-black flex items-center justify-center text-xs shrink-0 shadow-xs">
+                                  <div className="flex items-center gap-1.5 min-w-0">
+                                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] font-serif-kr font-black flex items-center justify-center text-[10.5px] shrink-0 shadow-xs">
                                       {m.name.slice(0, 1)}
                                     </div>
                                     <div className="min-w-0">
                                       <div className="flex items-center gap-1.5 flex-wrap">
-                                        <span className="font-serif-kr font-extrabold text-[13.5px] sm:text-[14.5px] text-[#1B1815]">
+                                        <span className="font-serif-kr font-bold text-[13px] sm:text-[14px] text-[#1B1815]">
                                           {m.name}
                                         </span>
                                         {m.dharma_name && (
@@ -10467,7 +10467,7 @@ function formatRelativeOrDate(dateStr) {
                                           </span>
                                         )}
                                         <span
-                                          className={`text-[9.5px] px-1.5 py-0.2 rounded-md font-bold whitespace-nowrap ${
+                                          className={`text-[9px] px-1.5 py-0.2 rounded font-bold whitespace-nowrap ${
                                             isDirect
                                               ? 'bg-[#8A6510]/12 text-[#8A6510] border border-[#8A6510]/30'
                                               : 'bg-stone-200/80 text-stone-600'
@@ -10487,17 +10487,12 @@ function formatRelativeOrDate(dateStr) {
                                     >
                                       {formatRelativeOrDate(m.created_at)}
                                     </span>
-                                    {isToday && (
-                                      <span className="block text-[9.5px] text-emerald-600 font-black">
-                                        신규 가입 ✨
-                                      </span>
-                                    )}
                                   </div>
                                 </div>
 
                                 {/* 하단: 연락처 + 축원/소원등 접수 현황 */}
-                                <div className="flex items-center justify-between gap-2 text-xs pt-1.5 border-t border-[#EFE9DD]/80 flex-wrap">
-                                  <div className="flex items-center gap-1.5 text-[#5C5245] text-[11.5px]">
+                                <div className="flex items-center justify-between gap-2 text-[11px] pt-1 border-t border-[#EFE9DD]/70 flex-wrap">
+                                  <div className="flex items-center gap-1.5 text-[#5C5245]">
                                     <Phone className="w-3 h-3 text-[#A89880]" />
                                     <a
                                       href={`tel:${m.phone}`}
@@ -10508,14 +10503,14 @@ function formatRelativeOrDate(dateStr) {
                                     </a>
                                   </div>
 
-                                  <div className="flex items-center gap-1.5 text-[11px]">
+                                  <div className="flex items-center gap-1.5 text-[10.5px]">
                                     {mPrayer ? (
-                                      <span className="inline-flex items-center gap-1 text-[#8A6510] font-medium bg-[#FAF3DF] px-2 py-0.5 rounded-md border border-[#E5D399]">
+                                      <span className="inline-flex items-center gap-1 text-[#8A6510] font-medium bg-[#FAF3DF] px-1.5 py-0.2 rounded border border-[#E5D399]">
                                         <span>🪔 {mPrayer.wish_category || '소원등'}</span>
-                                        <span className="text-[10px] text-amber-700 font-bold">(축원)</span>
+                                        <span className="text-[9.5px] text-amber-700 font-bold">(축원)</span>
                                       </span>
                                     ) : (
-                                      <span className="text-[#8C8071] text-[10.5px]">
+                                      <span className="text-[#8C8071]">
                                         {m.extra_data?.registered_via === 'wish_lantern'
                                           ? '🪔 소원등 동참 가입'
                                           : m.extra_data?.registered_via === 'sutra'
