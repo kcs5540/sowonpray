@@ -10882,15 +10882,17 @@ function formatRelativeOrDate(dateStr) {
                             </button>
                           </div>
 
-                          {/* 3) 소원등 발원문 본문 (최대 3줄 표시, 초과분 말줄임 '...') */}
+                          {/* 3) 소원등 발원문 본문 (패딩과 line-clamp 분리 + overflow-hidden으로 4번째 줄 완벽 차단) */}
                           {isLanternLit && (
-                            <div className="p-2.5 rounded-xl bg-black/35 border border-white/10 text-xs text-[#FAF8F5] leading-relaxed line-clamp-3">
-                              <span className="text-[#FFE58A] font-extrabold mr-1">
-                                [{lanternData?.wish_category || '가족건강'}]
-                              </span>
-                              <span className="text-[#E8DFD1] font-serif-kr">
-                                “{lanternData?.wish_text || '지극정성으로 가족 평안과 소원성취를 발원합니다.'}”
-                              </span>
+                            <div className="p-2.5 rounded-xl bg-black/35 border border-white/10 overflow-hidden">
+                              <p className="text-xs text-[#FAF8F5] leading-relaxed line-clamp-3 overflow-hidden break-keep">
+                                <span className="text-[#FFE58A] font-extrabold mr-1">
+                                  [{lanternData?.wish_category || '가족건강'}]
+                                </span>
+                                <span className="text-[#E8DFD1] font-serif-kr">
+                                  “{lanternData?.wish_text || '지극정성으로 가족 평안과 소원성취를 발원합니다.'}”
+                                </span>
+                              </p>
                             </div>
                           )}
 
@@ -15465,41 +15467,6 @@ function formatRelativeOrDate(dateStr) {
               </p>
             </div>
           </footer>
-        )}
-
-        {/* 하단 백그라운드 미니 플레이어 바 (화면 이동 시에도 끊김 없이 힐링 법음 재생 유지) */}
-        {isHealingPlaying && (
-          <div className="fixed bottom-[58px] left-1/2 -translate-x-1/2 w-full max-w-[480px] z-30 px-3 pb-1 animate-in slide-in-from-bottom-2 duration-300">
-            <div className="p-2.5 rounded-2xl bg-[#1F1914]/95 backdrop-blur-md border border-[#F5D061]/50 shadow-2xl flex items-center justify-between gap-2.5">
-              <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                <div className="w-8 h-8 rounded-xl bg-[#F5D061] text-[#1B1815] flex items-center justify-center shrink-0 shadow">
-                  <Headphones className="w-4 h-4" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="text-[11.5px] font-black text-white truncate flex items-center gap-1.5">
-                    <span>{HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.icon}</span>
-                    <span className="truncate">{HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.title}</span>
-                  </div>
-                  <div className="text-[9.5px] text-[#F5D061] font-semibold truncate">
-                    {sleepTimerSecondsLeft > 0
-                      ? `🌙 ${Math.floor(sleepTimerSecondsLeft / 60)}분 ${sleepTimerSecondsLeft % 60}초 뒤 꺼짐`
-                      : '화면 꺼짐 모드 지원 · 24시간 스트리밍'}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center shrink-0 ml-1">
-                <button
-                  type="button"
-                  onClick={() => handleToggleHealingPlay()}
-                  className="w-8 h-8 rounded-full bg-[#F5D061] text-[#1B1815] flex items-center justify-center shadow hover:scale-105 active:scale-95 transition"
-                  title="일시 정지 / 재생"
-                >
-                  <Pause className="w-4 h-4 fill-current" />
-                </button>
-              </div>
-            </div>
-          </div>
         )}
 
         {/* 24시간 힐링 법음관 전체 화면 모달창 */}
