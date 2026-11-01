@@ -12889,34 +12889,21 @@ function normalizeMemberHierarchy(m) {
                                       webUrl: meritCertType === 'lantern' ? `${origin}/?ref=${code}&tab=lantern` : shareUrl,
                                     },
                                   },
-                                  buttons: meritCertType === 'lantern' ? [
+                                  buttons: [
                                     {
-                                      title: '🪔 소원등 켜기',
+                                      title:
+                                        meritCertType === 'lantern'
+                                          ? '🪔 나도 무료 소원등 켜기'
+                                          : '✍️ 나도 마음사경 동참하기',
                                       link: {
-                                        mobileWebUrl: `${origin}/?ref=${code}&tab=lantern`,
-                                        webUrl: `${origin}/?ref=${code}&tab=lantern`,
-                                      },
-                                    },
-                                    {
-                                      title: '✍️ 사경하기',
-                                      link: {
-                                        mobileWebUrl: `${origin}/?ref=${code}&tab=sutra`,
-                                        webUrl: `${origin}/?ref=${code}&tab=sutra`,
-                                      },
-                                    },
-                                  ] : [
-                                    {
-                                      title: '✍️ 사경하기',
-                                      link: {
-                                        mobileWebUrl: shareUrl,
-                                        webUrl: shareUrl,
-                                      },
-                                    },
-                                    {
-                                      title: '🪔 소원등 켜기',
-                                      link: {
-                                        mobileWebUrl: `${origin}/?ref=${code}&tab=lantern`,
-                                        webUrl: `${origin}/?ref=${code}&tab=lantern`,
+                                        mobileWebUrl:
+                                          meritCertType === 'lantern'
+                                            ? `${origin}/?ref=${code}&tab=lantern`
+                                            : shareUrl,
+                                        webUrl:
+                                          meritCertType === 'lantern'
+                                            ? `${origin}/?ref=${code}&tab=lantern`
+                                            : shareUrl,
                                       },
                                     },
                                   ],
