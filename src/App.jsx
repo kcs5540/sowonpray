@@ -3881,19 +3881,33 @@ function formatRelativeOrDate(dateStr) {
 
   // 비밀번호 관리에 저장된 계정 목록 (중복 없이 8자리 고유코드 기준 관리)
   const [savedLoginAccounts, setSavedLoginAccounts] = useState(() => {
+    const defaultAccounts = [
+      { code: '33065540', phone: '010-3306-5540', name: '김철수', dharma_name: '보현행', pw: '4157' },
+      { code: '99085540', phone: '010-9908-5540', name: '김나현', dharma_name: '', pw: '5540' },
+      { code: '55570267', phone: '010-5557-0267', name: '양영문', dharma_name: '창건주', pw: '0267' },
+    ]
     try {
       const saved = localStorage.getItem('sowonpray_saved_accounts_v2')
       if (saved) {
         const parsed = JSON.parse(saved)
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const map = new Map()
+          ;[...defaultAccounts, ...parsed].forEach((item) => {
+            if (item && (item.code || item.phone)) {
+              const code8 = extractPhone8Code(item.code || item.phone)
+              map.set(code8, {
+                ...item,
+                code: code8,
+                phone: formatPhone11(item.phone || code8),
+              })
+            }
+          })
+          return Array.from(map.values())
+        }
       }
-      return [
-        { code: '33065540', phone: '010-3306-5540', name: '김철수', dharma_name: '보현행', pw: '4157' },
-      ]
+      return defaultAccounts
     } catch {
-      return [
-        { code: '33065540', phone: '010-3306-5540', name: '김철수', dharma_name: '보현행', pw: '4157' },
-      ]
+      return defaultAccounts
     }
   })
 
@@ -9875,52 +9889,48 @@ function formatRelativeOrDate(dateStr) {
                         type="text"
                         name="username"
                         id="login-username"
-                        autoComplete="username"
+                        list="login-accounts-datalist"
+                        autoComplete="off"
                         value={loginIdInput}
-                        onChange={(e) => setLoginIdInput(e.target.value)}
+                        onChange={(e) => {
+                          const val = e.target.value
+                          setLoginIdInput(val)
+                          const code8 = extractPhone8Code(val)
+                          const matched =
+                            savedLoginAccounts.find((a) => a.code === code8) ||
+                            members.find((m) => m.code === code8)
+                          if (matched) {
+                            if (matched.pw) {
+                              setLoginPwInput(matched.pw)
+                            } else {
+                              const phoneLast4 = matched.phone
+                                ? matched.phone.replace(/[^0-9]/g, '').slice(-4)
+                                : ''
+                              const defaultPw =
+                                (matched.password_pin && matched.password_pin.trim()) ||
+                                phoneLast4 ||
+                                '0000'
+                              setLoginPwInput(defaultPw)
+                            }
+                          }
+                        }}
+                        onFocus={(e) => {
+                          e.target.select()
+                        }}
                         placeholder="010-0000-0000 또는 뒤 8자리"
                         className="w-full px-3.5 py-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-sm focus:bg-white focus:border-[#C59B27] transition"
                       />
-
-                      {/* 비밀번호 관리에 저장된 계정 목록 (중복 없이 바로 선택) */}
-                      {savedLoginAccounts.length > 0 && (
-                        <div className="mt-2.5 p-2.5 rounded-xl bg-[#FAF6EE] border border-[#E8DEC8] space-y-1.5">
-                          <span className="text-[11px] font-bold text-[#8A6510] block">
-                            🔑 비밀번호 관리 계정 빠른 선택
-                          </span>
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            {savedLoginAccounts.map((acc) => {
-                              const isSelected =
-                                extractPhone8Code(loginIdInput) === acc.code
-                              return (
-                                <button
-                                  key={acc.code}
-                                  type="button"
-                                  onClick={() => {
-                                    setLoginIdInput(acc.phone)
-                                    if (acc.pw) {
-                                      setLoginPwInput(acc.pw)
-                                    }
-                                  }}
-                                  className={`text-xs px-2.5 py-1.5 rounded-lg border font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs ${
-                                    isSelected
-                                      ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
-                                      : 'bg-white text-[#4A4036] border-[#DDD3BF] hover:bg-[#F0E8D7]'
-                                  }`}
-                                >
-                                  <span>👤 {acc.name}</span>
-                                  {acc.dharma_name && (
-                                    <span className="text-[10px] text-amber-700">({acc.dharma_name})</span>
-                                  )}
-                                  <span className="text-[10px] opacity-70 font-mono">
-                                    {acc.phone.slice(-4)}
-                                  </span>
-                                </button>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      )}
+                      <datalist id="login-accounts-datalist">
+                        {savedLoginAccounts.map((acc) => (
+                          <option
+                            key={acc.code}
+                            value={acc.phone}
+                            label={`${acc.name}${acc.dharma_name ? ` (${acc.dharma_name})` : ''}`}
+                          >
+                            {acc.name}{acc.dharma_name ? ` (${acc.dharma_name})` : ''}
+                          </option>
+                        ))}
+                      </datalist>
                     </div>
                     <div>
                       <div className="flex items-center justify-between mb-1">
