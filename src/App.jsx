@@ -12738,10 +12738,10 @@ function normalizeMemberHierarchy(m) {
               {/* 공덕장 내부 본문 카드 (전통 한지 & 황금 테두리) */}
               <div
                 ref={meritCertRef}
-                className="p-3 sm:p-4 rounded-2xl bg-[#FAF6EE] text-[#241F1A] border-2 border-[#C59B27] relative shadow-inner"
+                className="p-3.5 sm:p-5 rounded-2xl bg-[#FAF6EE] text-[#241F1A] border-2 border-[#C59B27] relative shadow-inner"
               >
                 {/* 모서리 전통 문양 디자인 */}
-                <div className="text-[9.5px] text-[#A67C1E] font-serif-kr text-center tracking-widest font-bold">
+                <div className="text-[10px] text-[#A67C1E] font-serif-kr text-center tracking-widest font-bold">
                   卍 제주 소원사 모바일 법당 卍
                 </div>
 
@@ -12756,17 +12756,17 @@ function normalizeMemberHierarchy(m) {
                 <h3 className="font-serif-kr text-lg sm:text-xl font-black text-[#6B4E08] text-center mt-1 tracking-tight">
                   {meritCertType === 'lantern' ? '소원등 정진 공덕장' : '사경 회향 공덕장'}
                 </h3>
-                <div className="text-[10px] text-[#8C6D1F] font-serif-kr text-center font-bold tracking-widest -mt-0.5">
+                <div className="text-[10.5px] text-[#8C6D1F] font-serif-kr text-center font-bold tracking-widest -mt-0.5">
                   {meritCertType === 'lantern' ? '願 燈 精 進 功 德 狀' : '寫 經 回 向 功 德 狀'}
                 </div>
 
-                <div className="my-2 border-t border-[#D5C59B] border-dashed" />
+                <div className="my-2.5 border-t border-[#D5C59B] border-dashed" />
 
                 {/* 수여 대상 정보 */}
-                <div className="space-y-1 text-xs text-[#3A3228] font-serif-kr">
+                <div className="space-y-1.5 text-xs text-[#3A3228] font-serif-kr">
                   <div className="flex items-center justify-between">
                     <span className="text-[#8C6D1F] font-bold">정진 불자</span>
-                    <span className="font-black text-[#1C1814] text-[12.5px]">
+                    <span className="font-black text-[#1C1814] text-[13px]">
                       {currentUser?.name || lanternData?.believer_name || '소원사 정진 불자'}
                       {currentUser?.dharma_name ? ` (${currentUser.dharma_name})` : ''} 합장
                     </span>
@@ -12775,7 +12775,7 @@ function normalizeMemberHierarchy(m) {
                     <span className="text-[#8C6D1F] font-bold">
                       {meritCertType === 'lantern' ? '정진 공덕' : '회향 경전'}
                     </span>
-                    <span className="font-bold text-[#6B4E08]">
+                    <span className="font-bold text-[#6B4E08] text-[12.5px]">
                       {meritCertType === 'lantern'
                         ? `소원등 총 ${currentUser?.merit_count || currentMeritCount || 108}회 점등 (${lanternData?.streak || lanternStreak || 1}일 연속)`
                         : (currentSutra?.title || '반야심경')}
@@ -12784,23 +12784,23 @@ function normalizeMemberHierarchy(m) {
                 </div>
 
                 {/* 중앙 본문 박스 (소원등 발원문 또는 사경 구절) */}
-                <div className="mt-2 p-2 rounded-xl bg-[#F0E8D5] border border-[#D5C59B] text-center">
+                <div className="mt-3 p-3 rounded-2xl bg-[#F5EDDC] border border-[#D5C59B] text-center shadow-[inset_0_1px_3px_rgba(0,0,0,0.03)]">
                   {meritCertType === 'lantern' ? (
                     <div>
-                      <span className="inline-block text-[10px] font-black text-[#8A6510] bg-[#FAF3DF] px-2 py-0.5 rounded-md border border-[#E5D399] mb-0.5">
+                      <span className="inline-block text-[10.5px] font-black text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-md border border-[#E5D399] mb-1">
                         발원 분야: {lanternData?.wish_category || '가족건강'}
                       </span>
-                      <p className="font-serif-kr text-xs sm:text-[12px] font-black text-[#2A231B] leading-relaxed break-keep mt-0.5">
+                      <p className="font-serif-kr text-[13px] sm:text-[13.5px] font-black text-[#2A231B] leading-relaxed break-keep mt-1">
                         “{lanternData?.wish_text || '지극정성으로 온 가족의 무병장수와 만복·소원성취를 발원합니다.'}”
                       </p>
                     </div>
                   ) : (
                     <div>
-                      <p className="font-serif-kr text-xs sm:text-[12px] font-black text-[#2A231B] leading-relaxed break-keep">
+                      <p className="font-serif-kr text-[13.5px] sm:text-sm font-black text-[#1F1912] leading-relaxed break-keep tracking-tight">
                         “{currentSutra?.text}”
                       </p>
                       {currentSutra?.meaning && (
-                        <p className="text-[10px] text-[#6B5E4F] mt-0.5 leading-snug break-keep">
+                        <p className="text-[11px] sm:text-[11.5px] text-[#544636] font-medium mt-1.5 leading-relaxed break-keep font-serif-kr bg-white/60 px-2 py-1 rounded-lg border border-[#E8DDCA]/80">
                           ({currentSutra.meaning})
                         </p>
                       )}
@@ -12809,7 +12809,7 @@ function normalizeMemberHierarchy(m) {
                 </div>
 
                 {/* 축원문 */}
-                <p className="text-[10.5px] text-[#4A4035] leading-relaxed break-keep font-serif-kr text-center mt-2">
+                <p className="text-[11.5px] sm:text-xs text-[#2E261D] leading-relaxed break-keep font-serif-kr text-center mt-3 px-1 font-medium">
                   {meritCertType === 'lantern' ? (
                     `위 불자님께서는 지극한 정성으로 부처님 전에 소원등을 총 ${currentUser?.merit_count || currentMeritCount || 108}회 밝히시며 무량공덕을 짓고 기도를 원만히 회향하셨기에 이 공덕장을 드리며, 온 가족의 건강과 만복·소원성취를 두 손 모아 축원합니다.`
                   ) : (
@@ -12817,9 +12817,9 @@ function normalizeMemberHierarchy(m) {
                   )}
                 </p>
 
-                <div className="mt-2 pt-1.5 border-t border-[#D5C59B]/70 flex items-center justify-between text-[9.5px] text-[#786A59] font-serif-kr">
+                <div className="mt-3 pt-2 border-t border-[#D5C59B]/70 flex items-center justify-between text-[10.5px] text-[#6E5F4E] font-serif-kr">
                   <span>{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                  <span className="font-black text-[#5C4307]">제주 소원사 주지 합장 🪷</span>
+                  <span className="font-black text-[#4F3906] text-[11px] sm:text-[11.5px]">제주 소원사 주지 합장 🪷</span>
                 </div>
               </div>
 
