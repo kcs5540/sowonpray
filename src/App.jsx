@@ -7618,14 +7618,12 @@ function formatRelativeOrDate(dateStr) {
                     </span>
                   </div>
 
-                  {/* 사시예불 안내 박스 */}
-                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EDE6D8] text-xs text-[#575049] leading-relaxed space-y-1">
-                    <p className="font-semibold text-[#2B231A]">
-                      전국 불자님들이 모바일 법당에 올리신 소원등과 발원문은 제주 소원사 대웅전 부처님 전에 정성껏 올려져 스님의 육성으로 매일 사시예불에 축원됩니다.
-                    </p>
-                    <p className="text-[11px] text-[#9A7418] font-medium">
-                      ※ 지금 등불을 밝히시면 내일 오전 10시 사시예불 축원에 자동 배정됩니다.
-                    </p>
+                  {/* 사시예불 안내 박스 (핵심 1~2줄 요약) */}
+                  <div className="py-2 px-3 rounded-xl bg-[#FAF8F5] border border-[#EDE6D8] text-xs text-[#2B231A] leading-normal break-keep">
+                    <span>올려주신 소원등은 매일 오전 10시 대웅전에서 스님의 육성으로 정성껏 축원됩니다.</span>
+                    <span className="text-[11px] text-[#9A7418] font-medium block mt-0.5">
+                      (지금 점등 시 내일 사시예불 자동 배정)
+                    </span>
                   </div>
 
                   {/* 다가오는 사찰 주요 3대 재일 (D-Day 캘린더 칩) */}
