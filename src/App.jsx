@@ -88,6 +88,7 @@ import {
   INITIAL_VISITS,
   extractPhone8Code,
   formatPhone11,
+  parseNameAndDharmaName,
   computeZodiacAndGanji,
   supabase,
 } from './lib/supabase'
@@ -4617,13 +4618,15 @@ function normalizeMemberHierarchy(m) {
       const cleanPrayerPhone = wishPhoneClean.replace(/[^0-9]/g, '')
       const prayerCode8 = extractPhone8Code(cleanPrayerPhone)
       const existingPrayerMember = members.find((m) => m.code === prayerCode8)
+      const { name: parsedName, dharmaName: parsedDharma } = parseNameAndDharmaName(wishNameClean)
+
       if (!existingPrayerMember) {
         const newBeliever = {
           code: prayerCode8,
           phone: formatPhone11(wishPhoneClean),
           password_pin: prayerCode8.slice(-4) || '1234',
-          name: wishNameClean,
-          dharma_name: '',
+          name: parsedName,
+          dharma_name: parsedDharma,
           birth_date: '',
           lunar_solar: '음력',
           address: '',
@@ -4641,6 +4644,15 @@ function normalizeMemberHierarchy(m) {
         setMembers((prev) => [newBeliever, ...prev])
         if (supabase) {
           supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
+        }
+      } else if (!existingPrayerMember.dharma_name && parsedDharma) {
+        // 기존 회원이 법명 없이 가입되었다가 소원등 신청 시 법명을 함께 적은 경우 법명 자동 등재
+        const updatedMember = { ...existingPrayerMember, dharma_name: parsedDharma }
+        setMembers((prev) =>
+          prev.map((m) => (m.code === existingPrayerMember.code ? updatedMember : m))
+        )
+        if (supabase) {
+          supabase.from('members').upsert([updatedMember], { onConflict: 'code' }).then()
         }
       }
 
@@ -4798,13 +4810,15 @@ function normalizeMemberHierarchy(m) {
       const cleanVisitPhone = visitorPhone.replace(/[^0-9]/g, '')
       const visitCode8 = extractPhone8Code(cleanVisitPhone)
       const existingVisitMember = members.find((m) => m.code === visitCode8)
+      const { name: parsedVisitorName, dharmaName: parsedVisitorDharma } = parseNameAndDharmaName(visitorName)
+
       if (!existingVisitMember) {
         const newBeliever = {
           code: visitCode8,
           phone: formatPhone11(visitorPhone),
           password_pin: visitCode8.slice(-4) || '1234',
-          name: visitorName,
-          dharma_name: '',
+          name: parsedVisitorName,
+          dharma_name: parsedVisitorDharma,
           birth_date: '',
           lunar_solar: '음력',
           address: '',
@@ -4822,6 +4836,14 @@ function normalizeMemberHierarchy(m) {
         setMembers((prev) => [newBeliever, ...prev])
         if (supabase) {
           supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
+        }
+      } else if (!existingVisitMember.dharma_name && parsedVisitorDharma) {
+        const updatedMember = { ...existingVisitMember, dharma_name: parsedVisitorDharma }
+        setMembers((prev) =>
+          prev.map((m) => (m.code === existingVisitMember.code ? updatedMember : m))
+        )
+        if (supabase) {
+          supabase.from('members').upsert([updatedMember], { onConflict: 'code' }).then()
         }
       }
 

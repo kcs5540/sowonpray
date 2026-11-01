@@ -29,6 +29,25 @@ export function formatPhone11(input = '') {
   return input
 }
 
+// 신청자 성함 입력란에서 이름과 법명(괄호 표기)을 지능적으로 분리 파싱하는 엔진
+// 예: '홍길동 (무량심)' -> { name: '홍길동', dharmaName: '무량심' }
+// 예: '홍길동' -> { name: '홍길동', dharmaName: '' }
+export function parseNameAndDharmaName(input = '') {
+  if (!input) return { name: '', dharmaName: '' }
+  const raw = String(input).trim()
+  const match = raw.match(/^([^(（\[]+)\s*[(\[（]([^)）\]]+)[)\]）]/)
+  if (match) {
+    return {
+      name: match[1].trim(),
+      dharmaName: match[2].trim(),
+    }
+  }
+  return {
+    name: raw,
+    dharmaName: '',
+  }
+}
+
 // 기본 사찰 식별자 (제주 소원사 단독 모드, 향후 전국 사찰 확장 호환)
 export const DEFAULT_TEMPLE_ID = 'sowonsa'
 
