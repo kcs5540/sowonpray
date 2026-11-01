@@ -9867,10 +9867,10 @@ function formatRelativeOrDate(dateStr) {
                 </div>
 
                 {authMode === 'login' ? (
-                  <form onSubmit={handleLogin} method="post" action="#" autoComplete="on" className="space-y-3.5">
+                  <form onSubmit={handleLogin} className="space-y-3.5">
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <label htmlFor="login-username" className="text-xs font-bold text-[#3D3630]">
+                        <label htmlFor="login-phone-no" className="text-xs font-bold text-[#3D3630]">
                           전화번호 (아이디)
                         </label>
                         <div className="flex items-center gap-2">
@@ -9898,9 +9898,9 @@ function formatRelativeOrDate(dateStr) {
                       <div className="relative">
                         <input
                           type="text"
-                          name="login_account_id"
-                          id="login-username"
-                          autoComplete="off"
+                          name="login_phone_no"
+                          id="login-phone-no"
+                          autoComplete="one-time-code"
                           value={loginIdInput}
                           onClick={() => setIsAccountDropdownOpen(true)}
                           onChange={(e) => {
@@ -9943,7 +9943,13 @@ function formatRelativeOrDate(dateStr) {
 
                         {/* 이름과 전화번호가 함께 뜨는 커스텀 계정 선택 목록 드롭다운 */}
                         {isAccountDropdownOpen && savedLoginAccounts.length > 0 && (
-                          <div className="absolute top-full left-0 right-0 mt-1.5 bg-white rounded-2xl shadow-2xl border border-[#C59B27]/50 z-50 overflow-hidden divide-y divide-[#EFE9DD] animate-fadeIn">
+                          <>
+                            {/* 외부 클릭 시 닫히는 투명 배경 레이어 */}
+                            <div
+                              className="fixed inset-0 z-40"
+                              onClick={() => setIsAccountDropdownOpen(false)}
+                            />
+                            <div className="absolute top-full left-0 right-0 mt-1.5 bg-white rounded-2xl shadow-2xl border border-[#C59B27]/50 z-50 overflow-hidden divide-y divide-[#EFE9DD] animate-fadeIn">
                             <div className="px-3.5 py-2 bg-[#FAF6EE] flex items-center justify-between text-[11px] font-bold text-[#8A6510]">
                               <span>👤 로그인할 계정을 선택하세요</span>
                               <button
@@ -10013,7 +10019,8 @@ function formatRelativeOrDate(dateStr) {
                               ✏️ 다른 번호 직접 입력하기
                             </button>
                           </div>
-                        )}
+                        </>
+                      )}
                       </div>
                     </div>
                     <div>
