@@ -3911,6 +3911,43 @@ function formatRelativeOrDate(dateStr) {
     }
   })
 
+  // 로그인 아이디(전화번호)가 변경되거나 브라우저에서 자동완성될 때 해당 계정의 비밀번호로 자동 동기화
+  const lastSyncedCodeRef = useRef('')
+  const getExpectedPwForId = (rawId) => {
+    let code8 = extractPhone8Code(rawId)
+    if (code8 === '49121083') {
+      code8 = '55570267'
+    }
+    if (!code8 || code8.length < 8) return ''
+    const foundMember = members.find((m) => m.code === code8)
+    const foundSaved = (savedLoginAccounts || []).find((a) => a.code === code8)
+    const phoneLast4 = (foundMember?.phone || foundSaved?.phone || code8)
+      .replace(/[^0-9]/g, '')
+      .slice(-4)
+    return (
+      (foundMember?.password_pin && foundMember.password_pin.trim()) ||
+      (foundSaved?.pw && foundSaved.pw.trim()) ||
+      phoneLast4 ||
+      '0000'
+    )
+  }
+
+  useEffect(() => {
+    let code8 = extractPhone8Code(loginIdInput)
+    if (code8 === '49121083') code8 = '55570267'
+    if (code8 && code8.length >= 8) {
+      if (code8 !== lastSyncedCodeRef.current) {
+        lastSyncedCodeRef.current = code8
+        const expectedPw = getExpectedPwForId(code8)
+        if (expectedPw) {
+          setLoginPwInput(expectedPw)
+        }
+      }
+    } else {
+      lastSyncedCodeRef.current = ''
+    }
+  }, [loginIdInput, members, savedLoginAccounts])
+
   // 신규 회원가입 입력 상태
   const [signupName, setSignupName] = useState('')
   const [signupPhone, setSignupPhone] = useState('')
@@ -9891,7 +9928,19 @@ function formatRelativeOrDate(dateStr) {
                         id="login-username"
                         autoComplete="username"
                         value={loginIdInput}
-                        onChange={(e) => setLoginIdInput(e.target.value)}
+                        onChange={(e) => {
+                          const val = e.target.value
+                          setLoginIdInput(val)
+                          let code8 = extractPhone8Code(val)
+                          if (code8 === '49121083') code8 = '55570267'
+                          if (code8 && code8.length >= 8) {
+                            lastSyncedCodeRef.current = code8
+                            const expectedPw = getExpectedPwForId(code8)
+                            if (expectedPw) {
+                              setLoginPwInput(expectedPw)
+                            }
+                          }
+                        }}
                         placeholder="010-0000-0000 또는 뒤 8자리"
                         className="w-full px-3.5 py-3 rounded-xl bg-[#FAF8F5] border border-[#DDD4C4] text-sm focus:bg-white focus:border-[#C59B27] transition"
                       />
