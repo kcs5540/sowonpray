@@ -1564,6 +1564,9 @@ export default function App() {
   const [sleepTimerSecondsLeft, setSleepTimerSecondsLeft] = useState(0)
   const [showFullAudioModal, setShowFullAudioModal] = useState(false)
 
+  // ✨ 나의 신행 복덕 보시금 세부 적립 내역 접기/펼치기 상태 (기본 접힘, 터치 시 한 줄씩 펼침)
+  const [isRewardDetailOpen, setIsRewardDetailOpen] = useState(false)
+
   // 수면 타이머 카운트다운 및 자동 종료
   useEffect(() => {
     if (!isHealingPlaying || !sleepTimerMinutes) {
@@ -10453,174 +10456,298 @@ function formatRelativeOrDate(dateStr) {
                       </span>
                     </div>
 
-                    {/* 신행 보시금 적립 내역 (포교위원장은 산하 전법 포함 4분할, 일반 신도는 3분할) */}
-                    {userMeritReward.isAgent ? (
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-0.5">
-                        {/* 1) 직접 법연: 1인 1,000원 */}
-                        <button
-                          type="button"
-                          onClick={() => handleCopyRefLink(currentUser.code)}
-                          className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-center transition cursor-pointer group active:scale-95"
-                          title="직접 추천 링크 복사하고 1,000원 적립"
-                        >
-                          <div className="text-[10px] text-[#BFB6AA] flex items-center justify-center gap-1">
-                            <span>👥 직접 법연</span>
-                          </div>
-                          <div className="text-xs sm:text-sm font-extrabold text-[#F5D061] mt-0.5">
-                            {userMeritReward.directBelieversCount}명
-                          </div>
-                          <div className="text-[10.5px] font-mono font-bold text-emerald-300 mt-0.5">
-                            +{userMeritReward.directBelieversReward.toLocaleString()}원
-                          </div>
-                          <div className="text-[9px] text-[#9E9080] mt-0.5">1인 1,000원</div>
-                        </button>
-
-                        {/* 2) 산하 전법: 산하 1인 1,000원 (포교위원장 전용 추가 혜택) */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const el = document.getElementById('affiliated-members-section')
-                            if (el) el.scrollIntoView({ behavior: 'smooth' })
-                          }}
-                          className="p-2.5 rounded-xl bg-[#F5D061]/10 hover:bg-[#F5D061]/15 border border-[#F5D061]/40 text-center transition cursor-pointer group active:scale-95"
-                          title="산하 전법 현황 확인하기 (산하 신규가입당 1,000원 추가)"
-                        >
-                          <div className="text-[10px] text-[#FFE58A] flex items-center justify-center gap-1">
-                            <span>🌿 산하 전법</span>
-                          </div>
-                          <div className="text-xs sm:text-sm font-extrabold text-[#FFE58A] mt-0.5">
-                            {userMeritReward.indirectBelieversCount}명
-                          </div>
-                          <div className="text-[10.5px] font-mono font-bold text-emerald-300 mt-0.5">
-                            +{userMeritReward.indirectBelieversReward.toLocaleString()}원
-                          </div>
-                          <div className="text-[9px] text-[#E5D7B5] mt-0.5 font-bold">산하 1,000원</div>
-                        </button>
-
-                        {/* 3) 소원등 점등: 1회 100원 */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setActiveTab('lantern')
-                            window.scrollTo({ top: 0, behavior: 'smooth' })
-                          }}
-                          className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-center transition cursor-pointer group active:scale-95"
-                          title="소원등 켜고 100원 적립"
-                        >
-                          <div className="text-[10px] text-[#BFB6AA] flex items-center justify-center gap-1">
-                            <span>🪔 소원등 켜기</span>
-                          </div>
-                          <div className="text-xs sm:text-sm font-extrabold text-[#F5D061] mt-0.5">
-                            {userMeritReward.lanternCount}회
-                          </div>
-                          <div className="text-[10.5px] font-mono font-bold text-emerald-300 mt-0.5">
-                            +{userMeritReward.lanternReward.toLocaleString()}원
-                          </div>
-                          <div className="text-[9px] text-[#9E9080] mt-0.5">1회 100원</div>
-                        </button>
-
-                        {/* 4) 한줄사경: 1회 100원 (1일 최대 3회) */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setActiveTab('sutra')
-                            window.scrollTo({ top: 0, behavior: 'smooth' })
-                          }}
-                          className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-center transition cursor-pointer group active:scale-95"
-                          title="한줄사경 정진하고 100원 적립 (1일 최대 3회)"
-                        >
-                          <div className="text-[10px] text-[#BFB6AA] flex items-center justify-center gap-1">
-                            <span>✍️ 한줄사경</span>
-                          </div>
-                          <div className="text-xs sm:text-sm font-extrabold text-[#F5D061] mt-0.5">
-                            {userMeritReward.sutraCount}회
-                          </div>
-                          <div className="text-[10.5px] font-mono font-bold text-emerald-300 mt-0.5">
-                            +{userMeritReward.sutraReward.toLocaleString()}원
-                          </div>
-                          <div className="text-[9px] text-[#E5D7B5] mt-0.5 font-semibold">
-                            오늘 {userMeritReward.todaySutraRewardCount}/3회
-                          </div>
-                        </button>
+                    {/* 세부 내역 펼치기/접기 토글 바 */}
+                    <button
+                      type="button"
+                      onClick={() => setIsRewardDetailOpen((prev) => !prev)}
+                      className="w-full py-2.5 px-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-between transition cursor-pointer active:scale-[0.99] group"
+                    >
+                      <div className="flex items-center gap-2 text-xs font-bold text-[#F5D061]">
+                        <span>📋 세부 적립 내역</span>
+                        <span className="text-[10px] font-semibold text-[#BFB6AA] bg-white/10 px-2 py-0.5 rounded-full">
+                          {userMeritReward.isAgent ? '4개 항목' : '3개 항목'}
+                        </span>
                       </div>
-                    ) : (
-                      <div className="grid grid-cols-3 gap-2 pt-0.5">
-                        {/* 1) 법연 연결: 1인 1,000원 */}
-                        <button
-                          type="button"
-                          onClick={() => handleCopyRefLink(currentUser.code)}
-                          className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-center transition cursor-pointer group active:scale-95"
-                          title="인연 추천 링크 복사하고 1,000원 적립"
-                        >
-                          <div className="text-[10px] text-[#BFB6AA] flex items-center justify-center gap-1">
-                            <span>👥 법연 연결</span>
-                          </div>
-                          <div className="text-xs sm:text-sm font-extrabold text-[#F5D061] mt-0.5">
-                            {userMeritReward.believersCount}명
-                          </div>
-                          <div className="text-[10.5px] font-mono font-bold text-emerald-300 mt-0.5">
-                            +{userMeritReward.believersReward.toLocaleString()}원
-                          </div>
-                          <div className="text-[9px] text-[#9E9080] mt-0.5">1인 1,000원</div>
-                        </button>
-
-                        {/* 2) 소원등 점등: 1회 100원 */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setActiveTab('lantern')
-                            window.scrollTo({ top: 0, behavior: 'smooth' })
-                          }}
-                          className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-center transition cursor-pointer group active:scale-95"
-                          title="소원등 켜고 100원 적립"
-                        >
-                          <div className="text-[10px] text-[#BFB6AA] flex items-center justify-center gap-1">
-                            <span>🪔 소원등 켜기</span>
-                          </div>
-                          <div className="text-xs sm:text-sm font-extrabold text-[#F5D061] mt-0.5">
-                            {userMeritReward.lanternCount}회
-                          </div>
-                          <div className="text-[10.5px] font-mono font-bold text-emerald-300 mt-0.5">
-                            +{userMeritReward.lanternReward.toLocaleString()}원
-                          </div>
-                          <div className="text-[9px] text-[#9E9080] mt-0.5">1회 100원</div>
-                        </button>
-
-                        {/* 3) 한줄사경: 1회 100원 (1일 최대 3회) */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setActiveTab('sutra')
-                            window.scrollTo({ top: 0, behavior: 'smooth' })
-                          }}
-                          className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-center transition cursor-pointer group active:scale-95"
-                          title="한줄사경 정진하고 100원 적립 (1일 최대 3회)"
-                        >
-                          <div className="text-[10px] text-[#BFB6AA] flex items-center justify-center gap-1">
-                            <span>✍️ 한줄사경</span>
-                          </div>
-                          <div className="text-xs sm:text-sm font-extrabold text-[#F5D061] mt-0.5">
-                            {userMeritReward.sutraCount}회
-                          </div>
-                          <div className="text-[10.5px] font-mono font-bold text-emerald-300 mt-0.5">
-                            +{userMeritReward.sutraReward.toLocaleString()}원
-                          </div>
-                          <div className="text-[9px] text-[#E5D7B5] mt-0.5 font-semibold">
-                            오늘 {userMeritReward.todaySutraRewardCount}/3회
-                          </div>
-                        </button>
+                      <div className="flex items-center gap-1.5 text-xs font-semibold text-[#FFE58A]">
+                        <span>{isRewardDetailOpen ? '접기' : '펼쳐보기'}</span>
+                        <span className={`text-[10px] transition-transform duration-200 ${isRewardDetailOpen ? 'rotate-180' : ''}`}>
+                          ▼
+                        </span>
                       </div>
-                    )}
+                    </button>
 
-                    {/* 하단 미니 가이드 문구 */}
-                    {userMeritReward.isAgent ? (
-                      <p className="text-[10.5px] text-[#FFE58A] leading-snug break-keep pt-0.5 text-center">
-                        👑 <strong>[포교위원장 산하 전법 혜택]</strong> 직접 연결한 법연(1,000원) 외에도 산하 모든 신규 가입자마다 1,000원씩 실시간 자동 추가 적립됩니다.
-                      </p>
-                    ) : (
-                      <p className="text-[10.5px] text-[#B8AEA0] leading-snug break-keep pt-0.5 text-center">
-                        ※ 30명 법연 연결 시 포교위원장으로 위촉되며, 산하 조직의 모든 신규 가입자마다 1,000원씩 추가 적립됩니다.
-                      </p>
+                    {/* 세부 내역 (한 줄씩 세로 리스트 & 펼침 방식) */}
+                    {isRewardDetailOpen && (
+                      <div className="space-y-2 pt-1 transition-all duration-300">
+                        {userMeritReward.isAgent ? (
+                          <>
+                            {/* 1) 직접 법연: 1인 1,000원 */}
+                            <button
+                              type="button"
+                              onClick={() => handleCopyRefLink(currentUser.code)}
+                              className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
+                              title="직접 추천 링크 복사하고 1,000원 적립"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 border border-white/5">
+                                  👥
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
+                                    <span>직접 법연</span>
+                                    <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
+                                      1인 1,000원
+                                    </span>
+                                  </div>
+                                  <div className="text-[10.5px] text-[#A89C8E] truncate mt-0.5 group-hover:text-[#FFE58A] transition">
+                                    추천 링크 복사하기 ➜
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right shrink-0 pl-2">
+                                <div className="text-xs sm:text-sm font-extrabold text-[#F5D061]">
+                                  {userMeritReward.directBelieversCount}명
+                                </div>
+                                <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
+                                  +{userMeritReward.directBelieversReward.toLocaleString()}원
+                                </div>
+                              </div>
+                            </button>
+
+                            {/* 2) 산하 전법: 산하 1인 1,000원 (포교위원장 전용 추가 혜택) */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const el = document.getElementById('affiliated-members-section')
+                                if (el) el.scrollIntoView({ behavior: 'smooth' })
+                              }}
+                              className="w-full flex items-center justify-between p-3 rounded-xl bg-[#F5D061]/10 hover:bg-[#F5D061]/15 border border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] group text-left"
+                              title="산하 전법 현황 확인하기 (산하 신규가입당 1,000원 추가)"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-9 h-9 rounded-xl bg-[#F5D061]/20 flex items-center justify-center text-lg shrink-0 border border-[#F5D061]/30">
+                                  🌿
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="text-xs sm:text-sm font-bold text-[#FFE58A] flex items-center gap-1.5 flex-wrap">
+                                    <span>산하 전법</span>
+                                    <span className="text-[10px] font-bold text-[#FFE58A] bg-[#F5D061]/25 px-1.5 py-0.5 rounded border border-[#F5D061]/30">
+                                      산하 1,000원
+                                    </span>
+                                  </div>
+                                  <div className="text-[10.5px] text-[#E5D7B5] truncate mt-0.5 group-hover:text-white transition">
+                                    산하 신도 명단 확인하기 ➜
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right shrink-0 pl-2">
+                                <div className="text-xs sm:text-sm font-extrabold text-[#FFE58A]">
+                                  {userMeritReward.indirectBelieversCount}명
+                                </div>
+                                <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
+                                  +{userMeritReward.indirectBelieversReward.toLocaleString()}원
+                                </div>
+                              </div>
+                            </button>
+
+                            {/* 3) 소원등 점등: 1회 100원 */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setActiveTab('lantern')
+                                window.scrollTo({ top: 0, behavior: 'smooth' })
+                              }}
+                              className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
+                              title="소원등 켜고 100원 적립"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 border border-white/5">
+                                  🪔
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
+                                    <span>소원등 켜기</span>
+                                    <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
+                                      1회 100원
+                                    </span>
+                                  </div>
+                                  <div className="text-[10.5px] text-[#A89C8E] truncate mt-0.5 group-hover:text-[#FFE58A] transition">
+                                    소원등 켜러 가기 ➜
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right shrink-0 pl-2">
+                                <div className="text-xs sm:text-sm font-extrabold text-[#F5D061]">
+                                  {userMeritReward.lanternCount}회
+                                </div>
+                                <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
+                                  +{userMeritReward.lanternReward.toLocaleString()}원
+                                </div>
+                              </div>
+                            </button>
+
+                            {/* 4) 한줄사경: 1회 100원 (1일 최대 3회) */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setActiveTab('sutra')
+                                window.scrollTo({ top: 0, behavior: 'smooth' })
+                              }}
+                              className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
+                              title="한줄사경 정진하고 100원 적립 (1일 최대 3회)"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 border border-white/5">
+                                  ✍️
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
+                                    <span>한줄사경</span>
+                                    <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
+                                      1회 100원
+                                    </span>
+                                    <span className="text-[10px] font-semibold text-[#FFE58A] bg-[#F5D061]/20 border border-[#F5D061]/30 px-1.5 py-0.5 rounded">
+                                      오늘 {userMeritReward.todaySutraRewardCount}/3회
+                                    </span>
+                                  </div>
+                                  <div className="text-[10.5px] text-[#A89C8E] truncate mt-0.5 group-hover:text-[#FFE58A] transition">
+                                    사경 정진하러 가기 ➜
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right shrink-0 pl-2">
+                                <div className="text-xs sm:text-sm font-extrabold text-[#F5D061]">
+                                  {userMeritReward.sutraCount}회
+                                </div>
+                                <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
+                                  +{userMeritReward.sutraReward.toLocaleString()}원
+                                </div>
+                              </div>
+                            </button>
+
+                            {/* 포교위원장 혜택 안내 */}
+                            <p className="text-[10.5px] text-[#FFE58A] leading-snug break-keep pt-1 text-center bg-black/20 p-2.5 rounded-xl border border-white/5">
+                              👑 <strong>[포교위원장 산하 전법 혜택]</strong> 직접 연결한 법연(1,000원) 외에도 산하 모든 신규 가입자마다 1,000원씩 실시간 자동 추가 적립됩니다.
+                            </p>
+                          </>
+                        ) : (
+                          <>
+                            {/* 일반 신도: 3항목 한 줄씩 리스트 */}
+                            {/* 1) 법연 연결: 1인 1,000원 */}
+                            <button
+                              type="button"
+                              onClick={() => handleCopyRefLink(currentUser.code)}
+                              className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
+                              title="인연 추천 링크 복사하고 1,000원 적립"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 border border-white/5">
+                                  👥
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
+                                    <span>법연 연결</span>
+                                    <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
+                                      1인 1,000원
+                                    </span>
+                                  </div>
+                                  <div className="text-[10.5px] text-[#A89C8E] truncate mt-0.5 group-hover:text-[#FFE58A] transition">
+                                    추천 링크 복사하기 ➜
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right shrink-0 pl-2">
+                                <div className="text-xs sm:text-sm font-extrabold text-[#F5D061]">
+                                  {userMeritReward.believersCount}명
+                                </div>
+                                <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
+                                  +{userMeritReward.believersReward.toLocaleString()}원
+                                </div>
+                              </div>
+                            </button>
+
+                            {/* 2) 소원등 점등: 1회 100원 */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setActiveTab('lantern')
+                                window.scrollTo({ top: 0, behavior: 'smooth' })
+                              }}
+                              className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
+                              title="소원등 켜고 100원 적립"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 border border-white/5">
+                                  🪔
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
+                                    <span>소원등 켜기</span>
+                                    <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
+                                      1회 100원
+                                    </span>
+                                  </div>
+                                  <div className="text-[10.5px] text-[#A89C8E] truncate mt-0.5 group-hover:text-[#FFE58A] transition">
+                                    소원등 켜러 가기 ➜
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right shrink-0 pl-2">
+                                <div className="text-xs sm:text-sm font-extrabold text-[#F5D061]">
+                                  {userMeritReward.lanternCount}회
+                                </div>
+                                <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
+                                  +{userMeritReward.lanternReward.toLocaleString()}원
+                                </div>
+                              </div>
+                            </button>
+
+                            {/* 3) 한줄사경: 1회 100원 (1일 최대 3회) */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setActiveTab('sutra')
+                                window.scrollTo({ top: 0, behavior: 'smooth' })
+                              }}
+                              className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
+                              title="한줄사경 정진하고 100원 적립 (1일 최대 3회)"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 border border-white/5">
+                                  ✍️
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
+                                    <span>한줄사경</span>
+                                    <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
+                                      1회 100원
+                                    </span>
+                                    <span className="text-[10px] font-semibold text-[#FFE58A] bg-[#F5D061]/20 border border-[#F5D061]/30 px-1.5 py-0.5 rounded">
+                                      오늘 {userMeritReward.todaySutraRewardCount}/3회
+                                    </span>
+                                  </div>
+                                  <div className="text-[10.5px] text-[#A89C8E] truncate mt-0.5 group-hover:text-[#FFE58A] transition">
+                                    사경 정진하러 가기 ➜
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right shrink-0 pl-2">
+                                <div className="text-xs sm:text-sm font-extrabold text-[#F5D061]">
+                                  {userMeritReward.sutraCount}회
+                                </div>
+                                <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
+                                  +{userMeritReward.sutraReward.toLocaleString()}원
+                                </div>
+                              </div>
+                            </button>
+
+                            {/* 일반 신도 안내 문구 */}
+                            <p className="text-[10.5px] text-[#B8AEA0] leading-snug break-keep pt-1 text-center bg-black/20 p-2.5 rounded-xl border border-white/5">
+                              ※ 30명 법연 연결 시 포교위원장으로 위촉되며, 산하 조직의 모든 신규 가입자마다 1,000원씩 추가 적립됩니다.
+                            </p>
+                          </>
+                        )}
+                      </div>
                     )}
                   </div>
 
