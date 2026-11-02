@@ -15946,41 +15946,11 @@ function formatRelativeOrDate(dateStr) {
                     </div>
 
                     {/* 프로그레스 바 */}
-                    <div className="w-full h-2 rounded-full bg-black/40 overflow-hidden relative border border-white/5">
+                    <div className="w-full h-2.5 rounded-full bg-black/40 overflow-hidden relative border border-white/5">
                       <div
                         className="h-full bg-gradient-to-r from-[#C59B27] via-[#F5D061] to-[#FFE58A] transition-all duration-150 rounded-full shadow-[0_0_8px_rgba(245,208,97,0.5)]"
                         style={{ width: `${Math.min(100, (moktak108Count / 108) * 100)}%` }}
                       />
-                    </div>
-
-                    {/* 12 단주 염주 인디케이터 (9타마다 1염주 원만 = 총 108타) */}
-                    <div className="space-y-1 pt-0.5">
-                      <div className="flex justify-between items-center px-1 relative">
-                        {/* 염주를 꿰는 은은한 실선 */}
-                        <div className="absolute left-2 right-2 top-1/2 -translate-y-1/2 h-[1px] bg-amber-900/40 -z-0" />
-                        {Array.from({ length: 12 }).map((_, idx) => {
-                          const cycle = Math.floor(moktak108Count / 9)
-                          const active = idx < cycle
-                          const isCurrent = idx === cycle && moktak108Count < 108
-                          return (
-                            <div
-                              key={idx}
-                              className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all duration-300 relative z-10 ${
-                                active
-                                  ? 'bg-gradient-to-br from-[#FFE58A] via-[#F5D061] to-[#C59227] shadow-[0_0_8px_rgba(245,208,97,0.7)] scale-110 border border-[#FFF2B2]'
-                                  : isCurrent
-                                  ? 'bg-[#3A2A1D] border border-[#F5D061]/70 shadow-[0_0_5px_rgba(245,208,97,0.4)] scale-105'
-                                  : 'bg-[#22170F] border border-white/10'
-                              }`}
-                              title={`${(idx + 1) * 9}타`}
-                            />
-                          )
-                        })}
-                      </div>
-                      <div className="flex items-center justify-between text-[10px] text-[#8E8070] px-1 font-medium">
-                        <span>단주 12염주 (9타마다 1염주 원만)</span>
-                        <span className="text-[#C59B27]">{Math.floor(moktak108Count / 9)} / 12 완성</span>
-                      </div>
                     </div>
                   </div>
 
