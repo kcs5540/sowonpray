@@ -16009,21 +16009,22 @@ function formatRelativeOrDate(dateStr) {
                     <button
                       type="button"
                       onClick={() => setIsAutoMoktakOn((prev) => !prev)}
-                      className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border shadow-sm ${
+                      className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border shadow-sm whitespace-nowrap ${
                         isAutoMoktakOn
                           ? 'bg-amber-500 text-[#1B1815] border-amber-400 font-extrabold animate-pulse'
                           : 'bg-[#2A1D13] text-[#F5D061] border-[#C59B27]/40 hover:bg-[#382618]'
                       }`}
+                      title="2.4초 간격으로 목탁을 자동 타종합니다"
                     >
                       {isAutoMoktakOn ? (
                         <>
                           <Pause className="w-3.5 h-3.5 shrink-0" />
-                          <span>자동 멍 일시정지</span>
+                          <span>자동 멍 정지</span>
                         </>
                       ) : (
                         <>
-                          <Play className="w-3.5 h-3.5 shrink-0" />
-                          <span>자동 멍때리기 (2.4초 간격)</span>
+                          <Play className="w-3.5 h-3.5 shrink-0 fill-current" />
+                          <span>자동 멍때리기</span>
                         </>
                       )}
                     </button>
@@ -16037,7 +16038,7 @@ function formatRelativeOrDate(dateStr) {
                           showToast(`🔔 108타 완주 시 대웅전 정진 회향장이 열립니다 (현재 ${moktak108Count}/108타)`)
                         }
                       }}
-                      className={`px-3 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 shrink-0 transition active:scale-95 ${
+                      className={`px-3 py-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 shrink-0 transition active:scale-95 whitespace-nowrap ${
                         moktak108Count >= 108
                           ? 'bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-black border-amber-300 font-bold shadow-md animate-bounce'
                           : 'bg-white/5 hover:bg-white/10 border-white/10 text-[#C59B27]'
