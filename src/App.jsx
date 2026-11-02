@@ -7130,29 +7130,7 @@ function formatRelativeOrDate(dateStr) {
                   </span>
                 </button>
 
-                {/* 2) 108 목탁 멍 (신규 킬러 기능) */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    handle108MoktakTap()
-                    setShow108MoktakModal(true)
-                  }}
-                  className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-xs group"
-                >
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#8C5E1E] to-[#C59227] text-white flex items-center justify-center text-xl shadow-sm mb-1.5 shrink-0 group-hover:scale-105 transition-transform">
-                    🪵
-                  </div>
-                  <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
-                    <span className="font-serif-kr text-[11.5px] sm:text-xs font-extrabold text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
-                      108 목탁 멍
-                    </span>
-                  </div>
-                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
-                    손안의 염주 정진
-                  </span>
-                </button>
-
-                {/* 3) 한줄 사경 */}
+                {/* 2) 한줄 사경 */}
                 <button
                   type="button"
                   onClick={() => {
@@ -7172,6 +7150,28 @@ function formatRelativeOrDate(dateStr) {
                   </div>
                   <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
                     지혜 정진 사경
+                  </span>
+                </button>
+
+                {/* 3) 108 목탁 멍 (신규 킬러 기능) */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    handle108MoktakTap()
+                    setShow108MoktakModal(true)
+                  }}
+                  className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-xs group"
+                >
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#8C5E1E] to-[#C59227] text-white flex items-center justify-center text-xl shadow-sm mb-1.5 shrink-0 group-hover:scale-105 transition-transform">
+                    🪵
+                  </div>
+                  <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
+                    <span className="font-serif-kr text-[11.5px] sm:text-xs font-extrabold text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
+                      108 목탁 멍
+                    </span>
+                  </div>
+                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
+                    손안의 염주 정진
                   </span>
                 </button>
 
