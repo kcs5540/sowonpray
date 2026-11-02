@@ -15934,23 +15934,27 @@ function formatRelativeOrDate(dateStr) {
               {!is108Completed ? (
                 <>
                   {/* 진행 상황 및 108 염주 게이지 */}
-                  <div className="bg-[#1C150F]/80 rounded-2xl p-3.5 border border-[#C59B27]/25 space-y-2.5 shadow-inner">
-                    <div className="flex items-center justify-between text-xs font-bold">
-                      <span className="text-[#FFE58A] flex items-center gap-1.5">
-                        <span>📿</span>
-                        <span>백팔번뇌(百八煩惱) 소멸 정진</span>
-                      </span>
-                      <span className="text-[#F5D061] font-mono text-sm">
-                        {moktak108Count} <span className="text-white/40 text-xs">/ 108타</span>
-                      </span>
+                  <div className="bg-[#1C150F]/80 rounded-2xl p-3.5 border border-[#C59B27]/25 space-y-2 shadow-inner">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-[#FFE58A]">
+                      <span>📿</span>
+                      <span>백팔번뇌(百八煩惱) 소멸 정진</span>
                     </div>
 
-                    {/* 프로그레스 바 */}
-                    <div className="w-full h-2.5 rounded-full bg-black/40 overflow-hidden relative border border-white/5">
-                      <div
-                        className="h-full bg-gradient-to-r from-[#C59B27] via-[#F5D061] to-[#FFE58A] transition-all duration-150 rounded-full shadow-[0_0_8px_rgba(245,208,97,0.5)]"
-                        style={{ width: `${Math.min(100, (moktak108Count / 108) * 100)}%` }}
-                      />
+                    {/* 진행바 + 우측 1줄 타수 카운트 */}
+                    <div className="flex items-center gap-2.5">
+                      {/* 프로그레스 바 */}
+                      <div className="flex-1 h-2.5 rounded-full bg-black/40 overflow-hidden relative border border-white/5">
+                        <div
+                          className="h-full bg-gradient-to-r from-[#C59B27] via-[#F5D061] to-[#FFE58A] transition-all duration-150 rounded-full shadow-[0_0_8px_rgba(245,208,97,0.5)]"
+                          style={{ width: `${Math.min(100, (moktak108Count / 108) * 100)}%` }}
+                        />
+                      </div>
+
+                      {/* 우측 1줄 타수 표시 (줄바꿈 방지) */}
+                      <div className="shrink-0 font-mono text-xs sm:text-sm font-bold text-[#F5D061] whitespace-nowrap">
+                        <span>{moktak108Count}</span>
+                        <span className="text-white/40 text-[11px] ml-1">/ 108타</span>
+                      </div>
                     </div>
                   </div>
 
