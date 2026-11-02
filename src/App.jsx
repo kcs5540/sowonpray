@@ -1613,6 +1613,15 @@ export default function App() {
   const [sleepTimerSecondsLeft, setSleepTimerSecondsLeft] = useState(0)
   const [showFullAudioModal, setShowFullAudioModal] = useState(false)
 
+  // 108 목탁 멍 & 손안의 염주 정진 모달 상태
+  const [show108MoktakModal, setShow108MoktakModal] = useState(false)
+  const [moktak108Count, setMoktak108Count] = useState(0)
+  const [isMoktakAnimating, setIsMoktakAnimating] = useState(false)
+  const [moktakRipples, setMoktakRipples] = useState([])
+  const [moktakFloatingTexts, setMoktakFloatingTexts] = useState([])
+  const [is108Completed, setIs108Completed] = useState(false)
+  const [isAutoMoktakOn, setIsAutoMoktakOn] = useState(false)
+
   // ✨ 나의 신행 복덕 보시금 세부 적립 내역 접기/펼치기 상태 (기본 접힘, 터치 시 한 줄씩 펼침)
   const [isRewardDetailOpen, setIsRewardDetailOpen] = useState(false)
 
@@ -5582,6 +5591,101 @@ function formatRelativeOrDate(dateStr) {
     }
   }
 
+  // 108 목탁 멍 자동 타격 인터벌 (2.4초 간격 ASMR 힐링)
+  useEffect(() => {
+    if (!isAutoMoktakOn || !show108MoktakModal || is108Completed) return
+    const timer = setInterval(() => {
+      handle108MoktakTap()
+    }, 2400)
+    return () => clearInterval(timer)
+  }, [isAutoMoktakOn, show108MoktakModal, is108Completed, moktak108Count])
+
+  // 전용 108 목탁 멍 타격 핸들러 (실물 오디오 + 햅틱 진동 + 랜덤 피치 + 공덕 적립)
+  const handle108MoktakTap = () => {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        navigator.vibrate(22)
+      }
+      const audio = new Audio('/audio/moktak.mp3')
+      audio.volume = 1.0
+      audio.playbackRate = 0.96 + Math.random() * 0.08
+      audio.play().catch(() => {
+        playMoktakAcousticSynth()
+      })
+    } catch (e) {
+      playMoktakAcousticSynth()
+    }
+
+    const next = moktak108Count + 1
+    setMoktak108Count(next)
+    addMerit(1)
+
+    // 애니메이션 바운스
+    setIsMoktakAnimating(true)
+    setTimeout(() => setIsMoktakAnimating(false), 120)
+
+    // 파동 리플 생성
+    const rippleId = Date.now() + Math.random()
+    setMoktakRipples((prev) => [...prev.slice(-3), { id: rippleId }])
+
+    // 축원 단어 부유 텍스트
+    const benedictions = [
+      '🙏 나무아미타불',
+      '✨ 백팔번뇌 소멸',
+      '🪷 마음 청정',
+      '💛 청정 공덕 +1',
+      '🕊️ 마음 평안',
+      '🪔 소원 성취',
+      '🌿 지혜 정진',
+      '🌸 자비 광명',
+      '🔔 대웅전 가피',
+    ]
+    const word = benedictions[next % benedictions.length]
+    setMoktakFloatingTexts((prev) => [...prev.slice(-2), { id: rippleId, text: word }])
+
+    // 108번째 도달 시
+    if (next === 108) {
+      playSingingBowlSound()
+      setIs108Completed(true)
+      setIsAutoMoktakOn(false)
+      showToast('🎉 제주 소원사 108 목탁 정진을 원만 회향하셨습니다!')
+    } else if (next % 9 === 0) {
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        navigator.vibrate([25, 40, 25])
+      }
+    }
+  }
+
+  const handleReset108Moktak = () => {
+    playSingingBowlSound()
+    setMoktak108Count(0)
+    setIs108Completed(false)
+    setIsAutoMoktakOn(false)
+    setMoktakRipples([])
+    setMoktakFloatingTexts([])
+    showToast('📿 목탁 카운트가 초기화되었습니다. 새로운 마음으로 정진하세요.')
+  }
+
+  const handleShare108Merit = () => {
+    playSingingBowlSound()
+    const code = currentUser?.code || referralCode || '33065540'
+    const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
+    const shareUrl = `${origin}/?ref=${code}&tab=home`
+    const shareText = `[제주 소원사] 오늘 108 목탁 정진을 올리고 백팔번뇌를 맑게 비웠습니다. 부처님의 자비와 평안이 함께하시길 발원합니다.\n\n나도 마음 비우기: ${shareUrl}`
+
+    if (navigator.share) {
+      navigator.share({
+        title: '제주 소원사 108 목탁 정진 회향',
+        text: shareText,
+        url: shareUrl,
+      }).catch(() => {})
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(`${shareText}`).then(() => {
+        showToast('회향 축원문과 소원사 링크가 복사되었습니다. 카카오톡에 붙여넣어 보세요!')
+      })
+    }
+  }
+
   // 총괄 관리자: 신규 회원/포교사 직접 등록
   const handleAdminAddMember = (e) => {
     e.preventDefault()
@@ -7026,7 +7130,29 @@ function formatRelativeOrDate(dateStr) {
                   </span>
                 </button>
 
-                {/* 2) 한줄 사경 */}
+                {/* 2) 108 목탁 멍 (신규 킬러 기능) */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    handle108MoktakTap()
+                    setShow108MoktakModal(true)
+                  }}
+                  className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-xs group"
+                >
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#8C5E1E] to-[#C59227] text-white flex items-center justify-center text-xl shadow-sm mb-1.5 shrink-0 group-hover:scale-105 transition-transform">
+                    🪵
+                  </div>
+                  <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
+                    <span className="font-serif-kr text-[11.5px] sm:text-xs font-extrabold text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
+                      108 목탁 멍
+                    </span>
+                  </div>
+                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
+                    손안의 염주 정진
+                  </span>
+                </button>
+
+                {/* 3) 한줄 사경 */}
                 <button
                   type="button"
                   onClick={() => {
@@ -7049,7 +7175,7 @@ function formatRelativeOrDate(dateStr) {
                   </span>
                 </button>
 
-                {/* 3) 법음 · 찬불가 */}
+                {/* 4) 법음 · 찬불가 */}
                 <button
                   type="button"
                   onClick={() => {
@@ -7073,7 +7199,7 @@ function formatRelativeOrDate(dateStr) {
                   </span>
                 </button>
 
-                {/* 4) 사시예불 축원 */}
+                {/* 5) 사시예불 축원 */}
                 <button
                   type="button"
                   onClick={() => {
@@ -7096,7 +7222,7 @@ function formatRelativeOrDate(dateStr) {
                   </span>
                 </button>
 
-                {/* 5) 차 · 공양 예약 */}
+                {/* 6) 차 · 공양 예약 */}
                 <button
                   type="button"
                   onClick={() => {
@@ -7117,29 +7243,6 @@ function formatRelativeOrDate(dateStr) {
                   </div>
                   <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
                     사찰 무료 대접
-                  </span>
-                </button>
-
-                {/* 6) 상시 불사 · 위패 */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    playSingingBowlSound()
-                    setActiveTab('bulsa')
-                    window.scrollTo({ top: 0, behavior: 'smooth' })
-                  }}
-                  className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-xs group"
-                >
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#2E2419] to-[#453625] text-[#F5D061] flex items-center justify-center text-xl shadow-sm mb-1.5 shrink-0 border border-[#C59B27]/40 group-hover:scale-105 transition-transform">
-                    🏛️
-                  </div>
-                  <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
-                    <span className="font-serif-kr text-[11.5px] sm:text-xs font-extrabold text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
-                      불사 · 위패
-                    </span>
-                  </div>
-                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
-                    인등 · 영구봉안
                   </span>
                 </button>
               </div>
@@ -15604,6 +15707,234 @@ function formatRelativeOrDate(dateStr) {
               </p>
             </div>
           </footer>
+        )}
+
+        {/* 🪵 [제주 소원사 108 목탁 멍 & 손안의 염주 정진 모달] (산사 sansa.kr 벤치마킹 킬러 기능) */}
+        {show108MoktakModal && (
+          <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
+            <div className="w-full max-w-md bg-gradient-to-b from-[#211A13] via-[#17120C] to-[#0E0B08] text-white rounded-3xl p-5 border border-[#C59B27]/50 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto relative">
+              {/* 상단 헤더 */}
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#8C5E1E] to-[#C59227] flex items-center justify-center text-sm shadow-xs">
+                    🪵
+                  </div>
+                  <div>
+                    <h3 className="font-serif-kr font-bold text-sm sm:text-base text-[#F5D061] leading-tight">
+                      제주 소원사 108 목탁 멍
+                    </h3>
+                    <p className="text-[10.5px] text-[#A89D8E]">
+                      말없이 고요하게 손끝으로 비우는 번뇌
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={handleReset108Moktak}
+                    className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#D6CEC2] transition"
+                    title="초기화"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAutoMoktakOn(false)
+                      setShow108MoktakModal(false)
+                    }}
+                    className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#D6CEC2] transition"
+                    title="닫기"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {!is108Completed ? (
+                <>
+                  {/* 진행 상황 및 108 염주 게이지 */}
+                  <div className="bg-white/5 rounded-2xl p-3 border border-white/10 space-y-2">
+                    <div className="flex items-center justify-between text-xs font-bold">
+                      <span className="text-[#FFE58A] flex items-center gap-1.5">
+                        <span>📿</span>
+                        <span>백팔번뇌(百八煩惱) 소멸 정진</span>
+                      </span>
+                      <span className="text-[#F5D061] font-mono text-sm">
+                        {moktak108Count} <span className="text-white/40 text-xs">/ 108타</span>
+                      </span>
+                    </div>
+
+                    {/* 프로그레스 바 */}
+                    <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden relative">
+                      <div
+                        className="h-full bg-gradient-to-r from-[#C59B27] via-[#F5D061] to-[#FFE58A] transition-all duration-150 rounded-full"
+                        style={{ width: `${Math.min(100, (moktak108Count / 108) * 100)}%` }}
+                      />
+                    </div>
+
+                    {/* 12구슬 미니 염주 인디케이터 (9회 반복 = 108타) */}
+                    <div className="flex justify-between items-center px-1 pt-1">
+                      {Array.from({ length: 12 }).map((_, idx) => {
+                        const cycle = Math.floor(moktak108Count / 9)
+                        const active = idx < cycle
+                        return (
+                          <div
+                            key={idx}
+                            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                              active
+                                ? 'bg-[#F5D061] shadow-[0_0_6px_#F5D061] scale-110'
+                                : 'bg-white/15'
+                            }`}
+                          />
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 중앙 인터랙티브 목탁 무대 */}
+                  <div className="py-6 sm:py-8 flex flex-col items-center justify-center relative select-none">
+                    {/* 은은한 배경 후광 */}
+                    <div className="absolute w-56 h-56 rounded-full bg-amber-500/10 blur-2xl pointer-events-none" />
+
+                    {/* 타격 시 퍼지는 파동 리플 */}
+                    {moktakRipples.map((r) => (
+                      <div
+                        key={r.id}
+                        className="absolute w-44 h-44 sm:w-52 sm:h-52 rounded-full border-2 border-[#F5D061]/60 animate-ping pointer-events-none"
+                      />
+                    ))}
+
+                    {/* 떠오르는 축원 단어 */}
+                    {moktakFloatingTexts.map((f) => (
+                      <div
+                        key={f.id}
+                        className="absolute -top-1 sm:-top-2 text-xs sm:text-sm font-extrabold text-[#FFE58A] drop-shadow-md animate-bounce pointer-events-none whitespace-nowrap bg-black/70 px-3 py-1 rounded-full border border-[#F5D061]/40"
+                      >
+                        {f.text}
+                      </div>
+                    ))}
+
+                    {/* 대형 인터랙티브 목탁 버튼 */}
+                    <button
+                      type="button"
+                      onClick={handle108MoktakTap}
+                      className={`relative w-44 h-44 sm:w-52 sm:h-52 rounded-full bg-gradient-to-br from-[#422D16] via-[#2A1C0E] to-[#150D06] border-4 border-[#C59B27] shadow-[0_0_35px_rgba(197,155,39,0.35)] flex flex-col items-center justify-center cursor-pointer transition-all duration-75 select-none active:scale-90 group ${
+                        isMoktakAnimating ? 'scale-90 rotate-[-5deg]' : 'hover:scale-102'
+                      }`}
+                    >
+                      <img
+                        src="/images/moktak_icon.png"
+                        alt="목탁"
+                        className="w-24 h-24 sm:w-28 sm:h-28 object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform pointer-events-none"
+                      />
+                      <span className="text-xs sm:text-sm font-black text-[#F5D061] mt-1.5 tracking-wider font-serif-kr">
+                        터치하여 탁!
+                      </span>
+                    </button>
+                    <p className="text-[11px] text-[#A89D8E] mt-3 font-medium">
+                      화면을 칠 때마다 실물 대웅전 목탁 소리와 손맛 진동이 울립니다
+                    </p>
+                  </div>
+
+                  {/* 하단 자동 모드 & 안내 바 */}
+                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-white/10">
+                    <button
+                      type="button"
+                      onClick={() => setIsAutoMoktakOn((prev) => !prev)}
+                      className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border ${
+                        isAutoMoktakOn
+                          ? 'bg-amber-500 text-[#1B1815] border-amber-400 font-extrabold shadow-sm'
+                          : 'bg-white/5 text-[#E0D5C3] border-white/15 hover:bg-white/10'
+                      }`}
+                    >
+                      {isAutoMoktakOn ? (
+                        <>
+                          <Pause className="w-3.5 h-3.5 shrink-0" />
+                          <span>자동 멍 일시정지</span>
+                        </>
+                      ) : (
+                        <>
+                          <Play className="w-3.5 h-3.5 shrink-0" />
+                          <span>자동 멍때리기 (2.4초 간격)</span>
+                        </>
+                      )}
+                    </button>
+
+                    <div className="px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-[10.5px] text-[#C59B27] font-semibold flex items-center gap-1 shrink-0">
+                      <span>🔔</span>
+                      <span>108타 회향 축원</span>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                /* 108 완주 회향 축원 카드 */
+                <div className="py-4 space-y-4 text-center animate-in zoom-in-95 duration-300">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#E25C2B] to-[#F5D061] text-[#1B1815] flex items-center justify-center text-3xl mx-auto shadow-[0_0_25px_rgba(245,208,97,0.5)]">
+                    🪷
+                  </div>
+
+                  <div className="space-y-1">
+                    <span className="text-[11px] font-bold text-[#F5D061] tracking-widest uppercase">
+                      Merit Completion
+                    </span>
+                    <h3 className="font-serif-kr text-xl font-bold text-white">
+                      제주 소원사 108 목탁 정진 회향
+                    </h3>
+                    <p className="text-xs text-[#D6CEC2] max-w-xs mx-auto break-keep pt-1">
+                      신도님께서 정성으로 올리신 108번의 청정 목탁 타종으로 백팔번뇌가 맑게 씻겨나갔습니다.
+                    </p>
+                  </div>
+
+                  {/* 회향 공덕 증표 박스 */}
+                  <div className="bg-gradient-to-b from-white/10 to-white/5 rounded-2xl p-4 border border-[#C59B27]/40 text-left space-y-2 text-xs">
+                    <div className="flex justify-between items-center text-[#FFE58A] font-bold pb-2 border-b border-white/10">
+                      <span>📜 대웅전 회향 공덕원부</span>
+                      <span>2026.11.02</span>
+                    </div>
+                    <div className="space-y-1 text-[#E0D5C3] text-[11.5px]">
+                      <div>• 발원자: <strong className="text-white">{currentUser?.name || '소원사 인연 불자님'}</strong></div>
+                      <div>• 정진 내용: 108 목탁 타종 및 백팔번뇌 소멸</div>
+                      <div>• 공덕 배정: <span className="text-[#4ADE80] font-bold">내일 오전 10시 사시예불 축원 명부 합장</span></div>
+                    </div>
+                  </div>
+
+                  {/* 버튼 모음 */}
+                  <div className="space-y-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={handleShare108Merit}
+                      className="w-full py-3 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] font-extrabold text-xs shadow-md hover:brightness-105 active:scale-[0.99] transition flex items-center justify-center gap-1.5"
+                    >
+                      <Share2 className="w-4 h-4 shrink-0" />
+                      <span>카카오톡 / 지인에게 회향 공덕 나누기</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShow108MoktakModal(false)
+                        setActiveTab('lantern')
+                        window.scrollTo({ top: 0, behavior: 'smooth' })
+                      }}
+                      className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs border border-white/20 transition flex items-center justify-center gap-1.5"
+                    >
+                      <Flame className="w-4 h-4 text-[#F5D061] shrink-0" />
+                      <span>소원등 켜고 사시예불 축원 올리기</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleReset108Moktak}
+                      className="w-full py-2 text-xs text-[#A89D8E] hover:text-[#F5D061] transition"
+                    >
+                      처음부터 다시 정진하기
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         )}
 
         {/* 24시간 힐링 법음관 전체 화면 모달창 */}
