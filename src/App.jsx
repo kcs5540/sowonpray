@@ -15792,16 +15792,16 @@ function formatRelativeOrDate(dateStr) {
                     </div>
                   </div>
 
-                  {/* 중앙 인터랙티브 목탁 무대 */}
+                  {/* 중앙 인터랙티브 목탁 무대 (심야 대웅전 촛불 감성) */}
                   <div className="py-6 sm:py-8 flex flex-col items-center justify-center relative select-none">
-                    {/* 은은한 배경 후광 */}
-                    <div className="absolute w-56 h-56 rounded-full bg-amber-500/10 blur-2xl pointer-events-none" />
+                    {/* 은은한 촛불 앰비언스 후광 (눈이 편안한 호박색 온기) */}
+                    <div className="absolute w-52 h-52 rounded-full bg-amber-600/15 blur-3xl pointer-events-none" />
 
-                    {/* 타격 시 퍼지는 파동 리플 */}
+                    {/* 타격 시 퍼지는 연꽃 파동 리플 */}
                     {moktakRipples.map((r) => (
                       <div
                         key={r.id}
-                        className="absolute w-44 h-44 sm:w-52 sm:h-52 rounded-full border-2 border-[#F5D061]/60 animate-ping pointer-events-none"
+                        className="absolute w-48 h-48 sm:w-56 sm:h-56 rounded-full border border-[#E5C365]/40 animate-ping pointer-events-none"
                       />
                     ))}
 
@@ -15809,33 +15809,33 @@ function formatRelativeOrDate(dateStr) {
                     {moktakFloatingTexts.map((f) => (
                       <div
                         key={f.id}
-                        className="absolute -top-1 sm:-top-2 text-xs sm:text-sm font-extrabold text-[#FFE58A] drop-shadow-md animate-bounce pointer-events-none whitespace-nowrap bg-black/70 px-3 py-1 rounded-full border border-[#F5D061]/40"
+                        className="absolute -top-1 sm:-top-2 text-xs sm:text-sm font-extrabold text-[#FCE6A6] drop-shadow animate-bounce pointer-events-none whitespace-nowrap bg-[#17120D]/90 px-3 py-1 rounded-full border border-[#C59B27]/40"
                       >
                         {f.text}
                       </div>
                     ))}
 
-                    {/* 대형 인터랙티브 목탁 버튼 */}
+                    {/* 대형 인터랙티브 목탁 버튼 (대웅전 촛불 조명 밸런스) */}
                     <button
                       type="button"
                       onClick={handle108MoktakTap}
-                      className={`relative w-48 h-48 sm:w-56 sm:h-56 rounded-full bg-gradient-to-br from-[#352010] via-[#1F1209] to-[#0E0704] border-4 border-[#F5D061] shadow-[0_0_45px_rgba(245,208,97,0.45)] flex flex-col items-center justify-center cursor-pointer transition-all duration-75 select-none active:scale-90 group overflow-hidden ${
-                        isMoktakAnimating ? 'scale-90 rotate-[-5deg]' : 'hover:scale-102'
+                      className={`relative w-48 h-48 sm:w-56 sm:h-56 rounded-full bg-gradient-to-b from-[#2B1B10] via-[#1A1009] to-[#0E0805] border-2 border-[#C59B27]/60 shadow-[0_0_30px_rgba(197,155,39,0.22)] flex flex-col items-center justify-center cursor-pointer transition-all duration-75 select-none active:scale-95 group overflow-hidden ${
+                        isMoktakAnimating ? 'scale-90 rotate-[-4deg]' : 'hover:scale-[1.01]'
                       }`}
                     >
-                      {/* 내부 황금빛 따뜻한 백라이트 조명 */}
-                      <div className="absolute inset-2 rounded-full bg-gradient-to-br from-[#F5D061]/20 via-amber-600/10 to-transparent blur-md pointer-events-none" />
+                      {/* 은은한 촛불 온기 림라이트 */}
+                      <div className="absolute inset-4 rounded-full bg-gradient-to-t from-transparent via-amber-700/10 to-amber-500/15 blur-md pointer-events-none" />
 
                       <img
                         src="/images/moktak_realistic.png"
                         alt="목탁"
-                        className="w-32 h-32 sm:w-36 sm:h-36 object-contain drop-shadow-[0_8px_20px_rgba(0,0,0,0.85)] filter brightness-110 contrast-105 group-hover:scale-105 transition-transform pointer-events-none relative z-10"
+                        className="w-32 h-32 sm:w-36 sm:h-36 object-contain drop-shadow-[0_10px_22px_rgba(0,0,0,0.85)] filter brightness-95 contrast-[1.08] saturate-[0.95] group-hover:scale-105 transition-transform pointer-events-none relative z-10"
                       />
-                      <span className="text-xs sm:text-sm font-black text-[#FFE58A] tracking-wider font-serif-kr relative z-10 -mt-1 drop-shadow-md">
+                      <span className="text-xs sm:text-sm font-bold text-[#EAD8B8] tracking-wider font-serif-kr relative z-10 -mt-1 drop-shadow-sm">
                         터치하여 탁!
                       </span>
                     </button>
-                    <p className="text-[11px] text-[#A89D8E] mt-3 font-medium">
+                    <p className="text-[11px] text-[#9E9080] mt-3 font-medium">
                       화면을 칠 때마다 실물 대웅전 목탁 소리와 손맛 진동이 울립니다
                     </p>
                   </div>
