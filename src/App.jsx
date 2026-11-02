@@ -7162,8 +7162,8 @@ function formatRelativeOrDate(dateStr) {
                   }}
                   className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFF9EE] to-[#FDF1D6] hover:from-[#FFF4DC] hover:to-[#FCE9BD] border border-[#E5CA85] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-xs group"
                 >
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#8C5E1E] to-[#C59227] text-white flex items-center justify-center text-xl shadow-sm mb-1.5 shrink-0 group-hover:scale-105 transition-transform">
-                    🪵
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#8C5E1E] to-[#C59227] text-white flex items-center justify-center shadow-sm mb-1.5 shrink-0 group-hover:scale-105 transition-transform overflow-hidden p-1.5">
+                    <img src="/images/moktak_realistic.png" alt="목탁" className="w-full h-full object-contain drop-shadow-sm" />
                   </div>
                   <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
                     <span className="font-serif-kr text-[11.5px] sm:text-xs font-extrabold text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
@@ -15716,8 +15716,8 @@ function formatRelativeOrDate(dateStr) {
               {/* 상단 헤더 */}
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#8C5E1E] to-[#C59227] flex items-center justify-center text-sm shadow-xs">
-                    🪵
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#8C5E1E] to-[#C59227] flex items-center justify-center shadow-xs overflow-hidden p-1">
+                    <img src="/images/moktak_realistic.png" alt="목탁" className="w-full h-full object-contain" />
                   </div>
                   <div>
                     <h3 className="font-serif-kr font-bold text-sm sm:text-base text-[#F5D061] leading-tight">
@@ -15819,16 +15819,19 @@ function formatRelativeOrDate(dateStr) {
                     <button
                       type="button"
                       onClick={handle108MoktakTap}
-                      className={`relative w-44 h-44 sm:w-52 sm:h-52 rounded-full bg-gradient-to-br from-[#422D16] via-[#2A1C0E] to-[#150D06] border-4 border-[#C59B27] shadow-[0_0_35px_rgba(197,155,39,0.35)] flex flex-col items-center justify-center cursor-pointer transition-all duration-75 select-none active:scale-90 group ${
+                      className={`relative w-48 h-48 sm:w-56 sm:h-56 rounded-full bg-gradient-to-br from-[#352010] via-[#1F1209] to-[#0E0704] border-4 border-[#F5D061] shadow-[0_0_45px_rgba(245,208,97,0.45)] flex flex-col items-center justify-center cursor-pointer transition-all duration-75 select-none active:scale-90 group overflow-hidden ${
                         isMoktakAnimating ? 'scale-90 rotate-[-5deg]' : 'hover:scale-102'
                       }`}
                     >
+                      {/* 내부 황금빛 따뜻한 백라이트 조명 */}
+                      <div className="absolute inset-2 rounded-full bg-gradient-to-br from-[#F5D061]/20 via-amber-600/10 to-transparent blur-md pointer-events-none" />
+
                       <img
-                        src="/images/moktak_icon.png"
+                        src="/images/moktak_realistic.png"
                         alt="목탁"
-                        className="w-24 h-24 sm:w-28 sm:h-28 object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform pointer-events-none"
+                        className="w-32 h-32 sm:w-36 sm:h-36 object-contain drop-shadow-[0_8px_20px_rgba(0,0,0,0.85)] filter brightness-110 contrast-105 group-hover:scale-105 transition-transform pointer-events-none relative z-10"
                       />
-                      <span className="text-xs sm:text-sm font-black text-[#F5D061] mt-1.5 tracking-wider font-serif-kr">
+                      <span className="text-xs sm:text-sm font-black text-[#FFE58A] tracking-wider font-serif-kr relative z-10 -mt-1 drop-shadow-md">
                         터치하여 탁!
                       </span>
                     </button>
