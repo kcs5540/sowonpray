@@ -9381,8 +9381,8 @@ function formatRelativeOrDate(dateStr) {
                     <ChevronDown className="w-4 h-4 text-[#8C7A5B] transition-transform duration-200 group-open:rotate-180 shrink-0 ml-2" />
                   </summary>
                   <div className="px-3.5 pb-3.5 pt-1 text-xs text-[#575049] leading-relaxed border-t border-[#EFE9DD] break-keep">
-                    발원문을 접수하시면 화면에서 즉시 황금빛 소원등이 밝혀지며, <strong>오늘 밤 자정까지 환하게 유지</strong>됩니다. 
-                    소원사는 불자님들의 매일의 정진을 응원하며, <strong>매일 아침 새로운 원력과 발원으로 1일 1소원등</strong>을 무료로 다시 밝히실 수 있습니다.
+                    발원문을 접수하시면 화면에서 즉시 황금빛 소원등이 밝혀지며, <strong>다음 날 오전 대웅전 사시예불(10:00~11:00) 축원 회향 시점인 오전 11시경까지 환하게 유지</strong>됩니다. 
+                    주지 스님께서 부처님 전에 직접 정성껏 축원을 올리고 회향을 마친 <strong>매일 오전 11시 이후, 새로운 원력과 발원으로 1일 1소원등</strong>을 무료로 다시 밝히실 수 있습니다.
                   </div>
                 </details>
 
