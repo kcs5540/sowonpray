@@ -5569,9 +5569,9 @@ function formatRelativeOrDate(dateStr) {
             })
         }
 
-        showToast(`✨ 한 줄 사경 회향! (신행 보시금 +100원 적립 · 오늘 ${nextDaily}/3회)`)
+        showToast(`✨ 한 줄 사경 회향! (신행 복덕 +100 공덕 적립 · 오늘 ${nextDaily}/3회)`)
       } else {
-        showToast(`🙏 한 줄 사경 회향! (오늘의 보시금 한도 3회·300원 달성, 정진 공덕 +1)`)
+        showToast(`🙏 한 줄 사경 회향! (오늘의 사경 공덕 한도 300 공덕 달성, 정진 공덕 +1)`)
       }
     }
   }
@@ -5636,9 +5636,9 @@ function formatRelativeOrDate(dateStr) {
             })
         }
 
-        showToast(`🎉 108 목탁 정진 회향! (신행 복덕 보시금 +500원 적립)`)
+        showToast(`🎉 108 목탁 정진 회향! (신행 복덕 +500 공덕 적립)`)
       } else {
-        showToast(`🙏 108 목탁 정진 회향! (오늘의 목탁 보시금 1회·500원 달성, 정진 공덕 +1)`)
+        showToast(`🙏 108 목탁 정진 회향! (오늘의 목탁 공덕 500 공덕 달성, 정진 공덕 +1)`)
       }
     } else {
       showToast('🎉 제주 소원사 108 목탁 정진을 원만 회향하셨습니다!')
@@ -9483,14 +9483,14 @@ function formatRelativeOrDate(dateStr) {
                 <p className="text-[11px] text-[#BFB6AA] mt-0.5 break-keep">
                   사경·명언·경전공부·지혜퀴즈로 매일 맑은 복덕을 쌓아보세요.
                 </p>
-                {/* 💰 오늘 사경 보시금 적립 현황 (1일 최대 3회 / 300원) */}
+                {/* 💰 오늘 사경 공덕 적립 현황 (1일 최대 3회 / 300 공덕) */}
                 <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-white/10 text-[11px] flex-wrap">
-                  <span className="text-[#BFB6AA]">오늘 사경 보시금:</span>
+                  <span className="text-[#BFB6AA]">오늘 사경 공덕:</span>
                   <span className="px-2 py-0.5 rounded-full bg-[#F5D061]/20 border border-[#F5D061]/40 text-[#F5D061] font-bold inline-flex items-center gap-1">
-                    <span>💰 {userMeritReward.todaySutraRewardCount} / 3회 적립</span>
-                    <span>({userMeritReward.todaySutraRewardCount * 100}원)</span>
+                    <span>✨ {userMeritReward.todaySutraRewardCount} / 3회 적립</span>
+                    <span>({(userMeritReward.todaySutraRewardCount * 100).toLocaleString()} 공덕)</span>
                   </span>
-                  <span className="text-[10px] text-[#A69B8D]">(1일 최대 3회 · 300원)</span>
+                  <span className="text-[10px] text-[#A69B8D]">(1일 최대 3회 · 300 공덕)</span>
                 </div>
               </div>
               <button
@@ -10767,27 +10767,27 @@ function formatRelativeOrDate(dateStr) {
                   {/* ✨ 나의 실시간 신행 복덕 보시금 프리미엄 위젯 카드 (위치 A) */}
                   <div className="relative z-10 rounded-2xl p-4 bg-gradient-to-br from-[#2D2316] via-[#382B1B] to-[#20180F] border-2 border-[#F5D061]/80 shadow-[0_6px_24px_rgba(245,208,97,0.25)] space-y-3">
                     {/* 상단 라벨 & 실시간 적립 뱃지 */}
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-1.5 min-w-0">
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                      <div className="flex items-center gap-1.5">
                         <span className="text-base shrink-0">✨</span>
-                        <h3 className="font-serif-kr text-sm sm:text-base font-bold text-[#F5D061] tracking-wide whitespace-nowrap">
-                          나의 신행 복덕 보시금
+                        <h3 className="font-serif-kr text-sm sm:text-base font-bold text-[#F5D061] tracking-wide">
+                          나의 신행 복덕 공덕금
                         </h3>
                       </div>
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[10.5px] font-extrabold text-emerald-300 shrink-0">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[10px] font-extrabold text-emerald-300 shrink-0">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                         실시간 적립
                       </span>
                     </div>
 
-                    {/* 메인 누적 보시금액 */}
+                    {/* 메인 누적 공덕액 */}
                     <div className="bg-black/30 rounded-xl p-3 border border-white/10 flex items-center justify-between gap-2 flex-wrap">
                       <div>
-                        <div className="text-[10px] text-[#CFC5B6]">누적 적립 보시금 (실시간 합계)</div>
+                        <div className="text-[10px] text-[#CFC5B6]">누적 신행 공덕 (실시간 합계)</div>
                         <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                          <div className="font-serif-kr text-2xl sm:text-3xl font-black text-[#FFE58A] tracking-tight flex items-baseline gap-1">
+                          <div className="font-serif-kr text-2xl sm:text-3xl font-black text-[#FFE58A] tracking-tight flex items-baseline gap-1.5">
                             <span>{userMeritReward.totalReward.toLocaleString()}</span>
-                            <span className="text-base sm:text-lg font-bold text-[#F5D061]">원</span>
+                            <span className="text-base sm:text-lg font-bold text-[#F5D061]">공덕</span>
                           </div>
 
                           {/* 🎯 금액 오른쪽에 배치된 [내용보기 ▼ / 접기 ▲] 버튼 */}
@@ -10807,11 +10807,11 @@ function formatRelativeOrDate(dateStr) {
 
                       <div className="flex flex-col gap-1 self-center">
                         <span className="text-[10.5px] text-[#D6CEC2] bg-white/5 border border-white/10 px-2.5 py-1 rounded-lg">
-                          제주 소원사 종무소에서 현금정산 및 기도/불사 공덕금으로 사용 가능
+                          ※ 1 공덕 = 1원의 보시금 가치로 제주 소원사 종무소에서 기도·불사 공덕금 차감 및 현금정산 가능
                         </span>
                         <span className="text-[10.5px] text-[#FFE58A] font-semibold bg-[#F5D061]/10 border border-[#F5D061]/30 px-2.5 py-0.5 rounded-lg flex items-center gap-1">
                           <span>✨</span>
-                          <span>매일 3대 신행(소원등 200원 + 사경 300원 + 목탁 500원) 정진 시 하루 최대 1,000원!</span>
+                          <span>매일 3대 신행(소원등 200 + 사경 300 + 목탁 500) 정진 시 하루 최대 1,000 공덕!</span>
                         </span>
                       </div>
                     </div>
@@ -10821,12 +10821,12 @@ function formatRelativeOrDate(dateStr) {
                       <div className="space-y-2 pt-1 transition-all duration-300">
                         {userMeritReward.isAgent ? (
                           <>
-                            {/* 1) 직접 법연: 1인 1,000원 */}
+                            {/* 1) 직접 법연: 1인 1,000 공덕 */}
                             <button
                               type="button"
                               onClick={() => handleCopyRefLink(currentUser.code)}
                               className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="직접 추천 링크 복사하고 1,000원 적립"
+                              title="직접 추천 링크 복사하고 1,000 공덕 적립"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 border border-white/5">
@@ -10836,7 +10836,7 @@ function formatRelativeOrDate(dateStr) {
                                   <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
                                     <span>직접 법연</span>
                                     <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
-                                      1인 1,000원
+                                      1인 1,000 공덕
                                     </span>
                                   </div>
                                   <div className="text-[10.5px] text-[#A89C8E] truncate mt-0.5 group-hover:text-[#FFE58A] transition">
@@ -10849,12 +10849,12 @@ function formatRelativeOrDate(dateStr) {
                                   {userMeritReward.directBelieversCount}명
                                 </div>
                                 <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
-                                  +{userMeritReward.directBelieversReward.toLocaleString()}원
+                                  +{userMeritReward.directBelieversReward.toLocaleString()} 공덕
                                 </div>
                               </div>
                             </button>
 
-                            {/* 2) 산하 전법: 산하 1인 1,000원 (포교위원장 전용 추가 혜택) */}
+                            {/* 2) 산하 전법: 산하 1인 1,000 공덕 (포교위원장 전용 추가 혜택) */}
                             <button
                               type="button"
                               onClick={() => {
@@ -10862,7 +10862,7 @@ function formatRelativeOrDate(dateStr) {
                                 if (el) el.scrollIntoView({ behavior: 'smooth' })
                               }}
                               className="w-full flex items-center justify-between p-3 rounded-xl bg-[#F5D061]/10 hover:bg-[#F5D061]/15 border border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="산하 전법 현황 확인하기 (산하 신규가입당 1,000원 추가)"
+                              title="산하 전법 현황 확인하기 (산하 신규가입당 1,000 공덕 추가)"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 <div className="w-9 h-9 rounded-xl bg-[#F5D061]/20 flex items-center justify-center text-lg shrink-0 border border-[#F5D061]/30">
@@ -10872,7 +10872,7 @@ function formatRelativeOrDate(dateStr) {
                                   <div className="text-xs sm:text-sm font-bold text-[#FFE58A] flex items-center gap-1.5 flex-wrap">
                                     <span>산하 전법</span>
                                     <span className="text-[10px] font-bold text-[#FFE58A] bg-[#F5D061]/25 px-1.5 py-0.5 rounded border border-[#F5D061]/30">
-                                      산하 1,000원
+                                      산하 1,000 공덕
                                     </span>
                                   </div>
                                   <div className="text-[10.5px] text-[#E5D7B5] truncate mt-0.5 group-hover:text-white transition">
@@ -10885,12 +10885,12 @@ function formatRelativeOrDate(dateStr) {
                                   {userMeritReward.indirectBelieversCount}명
                                 </div>
                                 <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
-                                  +{userMeritReward.indirectBelieversReward.toLocaleString()}원
+                                  +{userMeritReward.indirectBelieversReward.toLocaleString()} 공덕
                                 </div>
                               </div>
                             </button>
 
-                            {/* 3) 소원등 점등: 1회 200원 */}
+                            {/* 3) 소원등 점등: 1회 200 공덕 */}
                             <button
                               type="button"
                               onClick={() => {
@@ -10898,7 +10898,7 @@ function formatRelativeOrDate(dateStr) {
                                 window.scrollTo({ top: 0, behavior: 'smooth' })
                               }}
                               className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="소원등 켜고 200원 적립"
+                              title="소원등 켜고 200 공덕 적립"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 border border-white/5">
@@ -10908,7 +10908,7 @@ function formatRelativeOrDate(dateStr) {
                                   <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
                                     <span>소원등 켜기</span>
                                     <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
-                                      1회 200원
+                                      1회 200 공덕
                                     </span>
                                   </div>
                                   <div className="text-[10.5px] text-[#A89C8E] truncate mt-0.5 group-hover:text-[#FFE58A] transition">
@@ -10921,12 +10921,12 @@ function formatRelativeOrDate(dateStr) {
                                   {userMeritReward.lanternCount}회
                                 </div>
                                 <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
-                                  +{userMeritReward.lanternReward.toLocaleString()}원
+                                  +{userMeritReward.lanternReward.toLocaleString()} 공덕
                                 </div>
                               </div>
                             </button>
 
-                            {/* 4) 한줄사경: 1회 100원 (1일 최대 3회) */}
+                            {/* 4) 한줄사경: 1회 100 공덕 (1일 최대 3회 = 300 공덕) */}
                             <button
                               type="button"
                               onClick={() => {
@@ -10934,7 +10934,7 @@ function formatRelativeOrDate(dateStr) {
                                 window.scrollTo({ top: 0, behavior: 'smooth' })
                               }}
                               className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="한줄사경 정진하고 100원 적립 (1일 최대 3회)"
+                              title="한줄사경 정진하고 100 공덕 적립 (1일 최대 3회)"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 border border-white/5">
@@ -10944,7 +10944,7 @@ function formatRelativeOrDate(dateStr) {
                                   <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
                                     <span>한줄사경</span>
                                     <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
-                                      1회 100원
+                                      1회 100 공덕
                                     </span>
                                     <span className="text-[10px] font-semibold text-[#FFE58A] bg-[#F5D061]/20 border border-[#F5D061]/30 px-1.5 py-0.5 rounded">
                                       오늘 {userMeritReward.todaySutraRewardCount}/3회
@@ -10960,19 +10960,19 @@ function formatRelativeOrDate(dateStr) {
                                   {userMeritReward.sutraCount}회
                                 </div>
                                 <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
-                                  +{userMeritReward.sutraReward.toLocaleString()}원
+                                  +{userMeritReward.sutraReward.toLocaleString()} 공덕
                                 </div>
                               </div>
                             </button>
 
-                            {/* 5) 108 목탁멍: 1회 500원 (1일 최대 1회) */}
+                            {/* 5) 108 목탁멍: 1회 500 공덕 (1일 최대 1회) */}
                             <button
                               type="button"
                               onClick={() => {
                                 setShow108MoktakModal(true)
                               }}
                               className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="108 목탁멍 정진하고 500원 적립 (1일 1회)"
+                              title="108 목탁멍 정진하고 500 공덕 적립 (1일 1회)"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0 border border-white/5 p-1">
@@ -10982,7 +10982,7 @@ function formatRelativeOrDate(dateStr) {
                                   <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
                                     <span>108 목탁멍</span>
                                     <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
-                                      1회 500원
+                                      1회 500 공덕
                                     </span>
                                     <span className="text-[10px] font-semibold text-[#FFE58A] bg-[#F5D061]/20 border border-[#F5D061]/30 px-1.5 py-0.5 rounded">
                                       오늘 {userMeritReward.todayMoktakRewardCount}/1회
@@ -10998,25 +10998,25 @@ function formatRelativeOrDate(dateStr) {
                                   {userMeritReward.moktakCount}회
                                 </div>
                                 <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
-                                  +{userMeritReward.moktakReward.toLocaleString()}원
+                                  +{userMeritReward.moktakReward.toLocaleString()} 공덕
                                 </div>
                               </div>
                             </button>
 
                             {/* 포교위원장 혜택 안내 */}
                             <p className="text-[10.5px] text-[#FFE58A] leading-snug break-keep pt-1 text-center bg-black/20 p-2.5 rounded-xl border border-white/5">
-                              👑 <strong>[포교위원장 산하 전법 혜택]</strong> 직접 연결한 법연(1,000원) 외에도 산하 모든 신규 가입자마다 1,000원씩 실시간 자동 추가 적립됩니다.
+                              👑 <strong>[포교위원장 산하 전법 혜택]</strong> 직접 연결한 법연(1,000 공덕) 외에도 산하 모든 신규 가입자마다 1,000 공덕씩 실시간 자동 추가 적립됩니다.
                             </p>
                           </>
                         ) : (
                           <>
-                            {/* 일반 신도: 3항목 한 줄씩 리스트 */}
-                            {/* 1) 법연 연결: 1인 1,000원 */}
+                            {/* 일반 신도: 4항목 한 줄씩 리스트 */}
+                            {/* 1) 법연 연결: 1인 1,000 공덕 */}
                             <button
                               type="button"
                               onClick={() => handleCopyRefLink(currentUser.code)}
                               className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="인연 추천 링크 복사하고 1,000원 적립"
+                              title="인연 추천 링크 복사하고 1,000 공덕 적립"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 border border-white/5">
@@ -11026,7 +11026,7 @@ function formatRelativeOrDate(dateStr) {
                                   <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
                                     <span>법연 연결</span>
                                     <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
-                                      1인 1,000원
+                                      1인 1,000 공덕
                                     </span>
                                   </div>
                                   <div className="text-[10.5px] text-[#A89C8E] truncate mt-0.5 group-hover:text-[#FFE58A] transition">
@@ -11039,12 +11039,12 @@ function formatRelativeOrDate(dateStr) {
                                   {userMeritReward.believersCount}명
                                 </div>
                                 <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
-                                  +{userMeritReward.believersReward.toLocaleString()}원
+                                  +{userMeritReward.believersReward.toLocaleString()} 공덕
                                 </div>
                               </div>
                             </button>
 
-                            {/* 2) 소원등 점등: 1회 200원 */}
+                            {/* 2) 소원등 점등: 1회 200 공덕 */}
                             <button
                               type="button"
                               onClick={() => {
@@ -11052,7 +11052,7 @@ function formatRelativeOrDate(dateStr) {
                                 window.scrollTo({ top: 0, behavior: 'smooth' })
                               }}
                               className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="소원등 켜고 200원 적립"
+                              title="소원등 켜고 200 공덕 적립"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 border border-white/5">
@@ -11062,7 +11062,7 @@ function formatRelativeOrDate(dateStr) {
                                   <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
                                     <span>소원등 켜기</span>
                                     <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
-                                      1회 200원
+                                      1회 200 공덕
                                     </span>
                                   </div>
                                   <div className="text-[10.5px] text-[#A89C8E] truncate mt-0.5 group-hover:text-[#FFE58A] transition">
@@ -11075,12 +11075,12 @@ function formatRelativeOrDate(dateStr) {
                                   {userMeritReward.lanternCount}회
                                 </div>
                                 <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
-                                  +{userMeritReward.lanternReward.toLocaleString()}원
+                                  +{userMeritReward.lanternReward.toLocaleString()} 공덕
                                 </div>
                               </div>
                             </button>
 
-                            {/* 3) 한줄사경: 1회 100원 (1일 최대 3회) */}
+                            {/* 3) 한줄사경: 1회 100 공덕 (1일 최대 3회 = 300 공덕) */}
                             <button
                               type="button"
                               onClick={() => {
@@ -11088,7 +11088,7 @@ function formatRelativeOrDate(dateStr) {
                                 window.scrollTo({ top: 0, behavior: 'smooth' })
                               }}
                               className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="한줄사경 정진하고 100원 적립 (1일 최대 3회)"
+                              title="한줄사경 정진하고 100 공덕 적립 (1일 최대 3회)"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 border border-white/5">
@@ -11098,7 +11098,7 @@ function formatRelativeOrDate(dateStr) {
                                   <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
                                     <span>한줄사경</span>
                                     <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
-                                      1회 100원
+                                      1회 100 공덕
                                     </span>
                                     <span className="text-[10px] font-semibold text-[#FFE58A] bg-[#F5D061]/20 border border-[#F5D061]/30 px-1.5 py-0.5 rounded">
                                       오늘 {userMeritReward.todaySutraRewardCount}/3회
@@ -11114,19 +11114,19 @@ function formatRelativeOrDate(dateStr) {
                                   {userMeritReward.sutraCount}회
                                 </div>
                                 <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
-                                  +{userMeritReward.sutraReward.toLocaleString()}원
+                                  +{userMeritReward.sutraReward.toLocaleString()} 공덕
                                 </div>
                               </div>
                             </button>
 
-                            {/* 5) 108 목탁멍: 1회 500원 (1일 최대 1회) */}
+                            {/* 5) 108 목탁멍: 1회 500 공덕 (1일 최대 1회) */}
                             <button
                               type="button"
                               onClick={() => {
                                 setShow108MoktakModal(true)
                               }}
                               className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="108 목탁멍 정진하고 500원 적립 (1일 1회)"
+                              title="108 목탁멍 정진하고 500 공덕 적립 (1일 1회)"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0 border border-white/5 p-1">
@@ -11136,7 +11136,7 @@ function formatRelativeOrDate(dateStr) {
                                   <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
                                     <span>108 목탁멍</span>
                                     <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
-                                      1회 500원
+                                      1회 500 공덕
                                     </span>
                                     <span className="text-[10px] font-semibold text-[#FFE58A] bg-[#F5D061]/20 border border-[#F5D061]/30 px-1.5 py-0.5 rounded">
                                       오늘 {userMeritReward.todayMoktakRewardCount}/1회
@@ -11152,14 +11152,14 @@ function formatRelativeOrDate(dateStr) {
                                   {userMeritReward.moktakCount}회
                                 </div>
                                 <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
-                                  +{userMeritReward.moktakReward.toLocaleString()}원
+                                  +{userMeritReward.moktakReward.toLocaleString()} 공덕
                                 </div>
                               </div>
                             </button>
 
                             {/* 일반 신도 안내 문구 */}
                             <p className="text-[10.5px] text-[#B8AEA0] leading-snug break-keep pt-1 text-center bg-black/20 p-2.5 rounded-xl border border-white/5">
-                              ※ 30명 법연 연결 시 포교위원장으로 위촉되며, 산하 조직의 모든 신규 가입자마다 1,000원씩 추가 적립됩니다.
+                              ※ 30명 법연 연결 시 포교위원장으로 위촉되며, 산하 조직의 모든 신규 가입자마다 1,000 공덕씩 추가 적립됩니다.
                             </p>
                           </>
                         )}
@@ -11528,9 +11528,9 @@ function formatRelativeOrDate(dateStr) {
                         </div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-2xl p-2.5 text-center">
-                        <div className="text-[10px] sm:text-[10.5px] text-[#BFB6AA]">신행 복덕 보시금</div>
+                        <div className="text-[10px] sm:text-[10.5px] text-[#BFB6AA]">신행 복덕 공덕금</div>
                         <div className="text-base sm:text-lg font-extrabold text-[#FFE58A] mt-0.5">
-                          {userMeritReward.totalReward.toLocaleString()}원
+                          {userMeritReward.totalReward.toLocaleString()} 공덕
                         </div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-2xl p-2.5 text-center">
@@ -11541,20 +11541,20 @@ function formatRelativeOrDate(dateStr) {
                       </div>
                     </div>
 
-                    {/* 2. 🎁 1인 추천 보시 혜택 안내 (현금 또는 사찰 공덕 마일리지 선택) */}
+                    {/* 2. 🎁 1인 추천 보시 혜택 안내 (기도·불사 공덕 차감 또는 현금 정산) */}
                     <div className="p-3 rounded-2xl bg-gradient-to-r from-[#C59B27]/15 via-[#F5D061]/10 to-transparent border border-[#F5D061]/30 flex items-start gap-2.5">
                       <span className="text-lg shrink-0 mt-0.5">🎁</span>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-1 flex-wrap">
                           <span className="text-xs font-bold text-[#F5D061]">
-                            법연 1,000원 · 매일 3대 신행 최대 1,000원(등 200원·사경 300원·목탁 500원)
+                            법연 1,000 공덕 · 매일 3대 신행 최대 1,000 공덕(등 200 · 사경 300 · 목탁 500)
                           </span>
                           <span className="text-[10px] text-[#E5D7B5] bg-white/10 px-1.5 py-0.5 rounded font-medium">
-                            현금 정산 or 기도·불사 공덕 차감
+                            기도·불사 공덕 차감 or 현금 정산
                           </span>
                         </div>
                         <p className="text-[11px] text-[#BFB6AA] mt-1 leading-relaxed break-keep">
-                          소원등을 선물하여 법연을 맺을 때마다 <strong className="text-white">1인 1,000원</strong>, 매일 3대 신행(소원등 점등 200원 + 한줄사경 3회 300원 + 108 목탁 500원) 정진 시 <strong className="text-[#F5D061]">하루 최대 1,000원</strong>의 복덕 보시금이 실시간 적립됩니다. (적립금은 현금 계좌 정산 또는 사찰 기도·등공양 보시금으로 자유롭게 차감 사용 가능합니다.)
+                          소원등을 선물하여 법연을 맺을 때마다 <strong className="text-white">1인 1,000 공덕</strong>, 매일 3대 신행(소원등 점등 200 + 한줄사경 3회 300 + 108 목탁 500) 정진 시 <strong className="text-[#F5D061]">하루 최대 1,000 공덕</strong>의 신행 복덕이 실시간 적립됩니다. (적립된 공덕은 제주 소원사 종무소에서 기도·불사 공덕금 차감 또는 현금 계좌 정산으로 자유롭게 사용 가능합니다.)
                         </p>
                       </div>
                     </div>
@@ -16115,12 +16115,12 @@ function formatRelativeOrDate(dateStr) {
                   <div className="bg-gradient-to-r from-amber-500/20 via-amber-400/25 to-amber-500/20 border border-[#F5D061]/50 rounded-2xl p-3.5 text-center space-y-1 shadow-sm">
                     <div className="text-[11px] text-[#E0D5C3] font-medium">108 목탁 정진 회향 특별 복덕</div>
                     <div className="text-sm sm:text-base font-extrabold text-[#FFE58A] flex items-center justify-center gap-1.5">
-                      <span>💰 신행 복덕 보시금</span>
-                      <span className="font-mono text-emerald-300 font-black text-base sm:text-lg">+500원</span>
+                      <span>💰 신행 복덕</span>
+                      <span className="font-mono text-emerald-300 font-black text-base sm:text-lg">+500 공덕</span>
                       <span>실시간 적립 완료</span>
                     </div>
                     <p className="text-[10.5px] text-[#A89D8E]">
-                      [내정보 ➔ 나의 신행 복덕 보시금]에서 언제든 확인 및 사용하실 수 있습니다.
+                      [내정보 ➔ 나의 신행 복덕 공덕금]에서 언제든 확인 및 사용하실 수 있습니다.
                     </p>
                   </div>
 
