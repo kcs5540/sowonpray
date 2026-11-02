@@ -5624,11 +5624,14 @@ function formatRelativeOrDate(dateStr) {
     setIsMoktakAnimating(true)
     setTimeout(() => setIsMoktakAnimating(false), 120)
 
-    // 파동 리플 생성
+    // 파동 리플 생성 & 800ms 후 자동 소멸
     const rippleId = Date.now() + Math.random()
-    setMoktakRipples((prev) => [...prev.slice(-3), { id: rippleId }])
+    setMoktakRipples((prev) => [...prev.slice(-1), { id: rippleId }])
+    setTimeout(() => {
+      setMoktakRipples((prev) => prev.filter((r) => r.id !== rippleId))
+    }, 800)
 
-    // 축원 단어 부유 텍스트
+    // 축원 단어 부유 텍스트 & 1.5초 후 자연스러운 소멸
     const benedictions = [
       '🙏 나무아미타불',
       '✨ 백팔번뇌 소멸',
@@ -5641,7 +5644,10 @@ function formatRelativeOrDate(dateStr) {
       '🔔 대웅전 가피',
     ]
     const word = benedictions[next % benedictions.length]
-    setMoktakFloatingTexts((prev) => [...prev.slice(-2), { id: rippleId, text: word }])
+    setMoktakFloatingTexts((prev) => [...prev.slice(-1), { id: rippleId, text: word }])
+    setTimeout(() => {
+      setMoktakFloatingTexts((prev) => prev.filter((f) => f.id !== rippleId))
+    }, 1500)
 
     // 108번째 도달 시
     if (next === 108) {
@@ -15712,30 +15718,30 @@ function formatRelativeOrDate(dateStr) {
         {/* 🪵 [제주 소원사 108 목탁 멍 & 손안의 염주 정진 모달] (산사 sansa.kr 벤치마킹 킬러 기능) */}
         {show108MoktakModal && (
           <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
-            <div className="w-full max-w-md bg-gradient-to-b from-[#211A13] via-[#17120C] to-[#0E0B08] text-white rounded-3xl p-5 border border-[#C59B27]/50 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto relative">
+            <div className="w-full max-w-md bg-gradient-to-b from-[#211A13] via-[#17120C] to-[#0E0B08] text-white rounded-3xl p-5 border border-[#C59B27]/50 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto scrollbar-none [&::-webkit-scrollbar]:hidden relative">
               {/* 상단 헤더 */}
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#8C5E1E] to-[#C59227] flex items-center justify-center shadow-xs overflow-hidden p-1">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-9 h-9 rounded-2xl bg-[#2A1D13] border border-[#C59B27]/40 flex items-center justify-center shadow-md p-1.5 shrink-0">
                     <img src="/images/moktak_realistic.png" alt="목탁" className="w-full h-full object-contain" />
                   </div>
-                  <div>
-                    <h3 className="font-serif-kr font-bold text-sm sm:text-base text-[#F5D061] leading-tight">
-                      제주 소원사 108 목탁 멍
+                  <div className="min-w-0">
+                    <h3 className="font-serif-kr font-bold text-base sm:text-lg text-[#F5D061] leading-tight truncate">
+                      제주 소원사 108 목탁멍
                     </h3>
-                    <p className="text-[10.5px] text-[#A89D8E]">
+                    <p className="text-[11px] text-[#A89D8E] font-medium tracking-tight mt-0.5 truncate">
                       말없이 고요하게 손끝으로 비우는 번뇌
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5 shrink-0">
                   <button
                     type="button"
                     onClick={handleReset108Moktak}
-                    className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#D6CEC2] transition"
-                    title="초기화"
+                    className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-[#D6CEC2] hover:text-[#F5D061] transition"
+                    title="처음부터 다시 정진 (초기화)"
                   >
-                    <RefreshCw className="w-4 h-4" />
+                    <RefreshCw className="w-3.5 h-3.5" />
                   </button>
                   <button
                     type="button"
@@ -15743,10 +15749,10 @@ function formatRelativeOrDate(dateStr) {
                       setIsAutoMoktakOn(false)
                       setShow108MoktakModal(false)
                     }}
-                    className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#D6CEC2] transition"
+                    className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-[#D6CEC2] hover:text-white transition"
                     title="닫기"
                   >
-                    <X className="w-5 h-5" />
+                    <X className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -15754,7 +15760,7 @@ function formatRelativeOrDate(dateStr) {
               {!is108Completed ? (
                 <>
                   {/* 진행 상황 및 108 염주 게이지 */}
-                  <div className="bg-white/5 rounded-2xl p-3 border border-white/10 space-y-2">
+                  <div className="bg-[#1C150F]/80 rounded-2xl p-3.5 border border-[#C59B27]/25 space-y-2.5 shadow-inner">
                     <div className="flex items-center justify-between text-xs font-bold">
                       <span className="text-[#FFE58A] flex items-center gap-1.5">
                         <span>📿</span>
@@ -15766,50 +15772,62 @@ function formatRelativeOrDate(dateStr) {
                     </div>
 
                     {/* 프로그레스 바 */}
-                    <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden relative">
+                    <div className="w-full h-2 rounded-full bg-black/40 overflow-hidden relative border border-white/5">
                       <div
-                        className="h-full bg-gradient-to-r from-[#C59B27] via-[#F5D061] to-[#FFE58A] transition-all duration-150 rounded-full"
+                        className="h-full bg-gradient-to-r from-[#C59B27] via-[#F5D061] to-[#FFE58A] transition-all duration-150 rounded-full shadow-[0_0_8px_rgba(245,208,97,0.5)]"
                         style={{ width: `${Math.min(100, (moktak108Count / 108) * 100)}%` }}
                       />
                     </div>
 
-                    {/* 12구슬 미니 염주 인디케이터 (9회 반복 = 108타) */}
-                    <div className="flex justify-between items-center px-1 pt-1">
-                      {Array.from({ length: 12 }).map((_, idx) => {
-                        const cycle = Math.floor(moktak108Count / 9)
-                        const active = idx < cycle
-                        return (
-                          <div
-                            key={idx}
-                            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                              active
-                                ? 'bg-[#F5D061] shadow-[0_0_6px_#F5D061] scale-110'
-                                : 'bg-white/15'
-                            }`}
-                          />
-                        )
-                      })}
+                    {/* 12 단주 염주 인디케이터 (9타마다 1염주 원만 = 총 108타) */}
+                    <div className="space-y-1 pt-0.5">
+                      <div className="flex justify-between items-center px-1 relative">
+                        {/* 염주를 꿰는 은은한 실선 */}
+                        <div className="absolute left-2 right-2 top-1/2 -translate-y-1/2 h-[1px] bg-amber-900/40 -z-0" />
+                        {Array.from({ length: 12 }).map((_, idx) => {
+                          const cycle = Math.floor(moktak108Count / 9)
+                          const active = idx < cycle
+                          const isCurrent = idx === cycle && moktak108Count < 108
+                          return (
+                            <div
+                              key={idx}
+                              className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all duration-300 relative z-10 ${
+                                active
+                                  ? 'bg-gradient-to-br from-[#FFE58A] via-[#F5D061] to-[#C59227] shadow-[0_0_8px_rgba(245,208,97,0.7)] scale-110 border border-[#FFF2B2]'
+                                  : isCurrent
+                                  ? 'bg-[#3A2A1D] border border-[#F5D061]/70 shadow-[0_0_5px_rgba(245,208,97,0.4)] scale-105'
+                                  : 'bg-[#22170F] border border-white/10'
+                              }`}
+                              title={`${(idx + 1) * 9}타`}
+                            />
+                          )
+                        })}
+                      </div>
+                      <div className="flex items-center justify-between text-[10px] text-[#8E8070] px-1 font-medium">
+                        <span>단주 12염주 (9타마다 1염주 원만)</span>
+                        <span className="text-[#C59B27]">{Math.floor(moktak108Count / 9)} / 12 완성</span>
+                      </div>
                     </div>
                   </div>
 
                   {/* 중앙 인터랙티브 목탁 무대 (심야 대웅전 촛불 감성) */}
-                  <div className="py-6 sm:py-8 flex flex-col items-center justify-center relative select-none">
-                    {/* 은은한 촛불 앰비언스 후광 (눈이 편안한 호박색 온기) */}
-                    <div className="absolute w-52 h-52 rounded-full bg-amber-600/15 blur-3xl pointer-events-none" />
+                  <div className="py-5 sm:py-6 flex flex-col items-center justify-center relative select-none">
+                    {/* 은은한 촛불 앰비언스 후광 */}
+                    <div className="absolute w-60 h-60 rounded-full bg-amber-600/10 blur-3xl pointer-events-none" />
 
                     {/* 타격 시 퍼지는 연꽃 파동 리플 */}
                     {moktakRipples.map((r) => (
                       <div
                         key={r.id}
-                        className="absolute w-48 h-48 sm:w-56 sm:h-56 rounded-full border border-[#E5C365]/40 animate-ping pointer-events-none"
+                        className="absolute w-52 h-52 sm:w-60 sm:h-60 rounded-full border border-[#F5D061]/40 animate-ping pointer-events-none"
                       />
                     ))}
 
-                    {/* 떠오르는 축원 단어 */}
+                    {/* 떠오르는 축원 단어 (목탁 위에서 피어나는 향기처럼 부드럽게 상승) */}
                     {moktakFloatingTexts.map((f) => (
                       <div
                         key={f.id}
-                        className="absolute -top-1 sm:-top-2 text-xs sm:text-sm font-extrabold text-[#FCE6A6] drop-shadow animate-bounce pointer-events-none whitespace-nowrap bg-[#17120D]/90 px-3 py-1 rounded-full border border-[#C59B27]/40"
+                        className="absolute -top-1 sm:top-0 z-20 text-xs sm:text-sm font-extrabold text-[#FFE58A] drop-shadow-md pointer-events-none whitespace-nowrap bg-[#23170E]/95 px-3.5 py-1 rounded-full border border-[#C59B27]/60 shadow-[0_4px_16px_rgba(0,0,0,0.6)] animate-in fade-in slide-in-from-bottom-2 duration-200"
                       >
                         {f.text}
                       </div>
@@ -15819,7 +15837,7 @@ function formatRelativeOrDate(dateStr) {
                     <button
                       type="button"
                       onClick={handle108MoktakTap}
-                      className={`relative w-48 h-48 sm:w-56 sm:h-56 rounded-full bg-gradient-to-b from-[#2B1B10] via-[#1A1009] to-[#0E0805] border-2 border-[#C59B27]/60 shadow-[0_0_30px_rgba(197,155,39,0.22)] flex flex-col items-center justify-center cursor-pointer transition-all duration-75 select-none active:scale-95 group overflow-hidden ${
+                      className={`relative w-52 h-52 sm:w-60 sm:h-60 rounded-full bg-gradient-to-b from-[#2E1E12] via-[#1A110A] to-[#0D0805] border-2 border-[#C59B27]/70 shadow-[0_8px_32px_rgba(0,0,0,0.8),inset_0_2px_12px_rgba(245,208,97,0.15)] flex flex-col items-center justify-center cursor-pointer transition-all duration-75 select-none active:scale-95 group overflow-hidden ${
                         isMoktakAnimating ? 'scale-90 rotate-[-4deg]' : 'hover:scale-[1.01]'
                       }`}
                     >
@@ -15829,14 +15847,16 @@ function formatRelativeOrDate(dateStr) {
                       <img
                         src="/images/moktak_realistic.png"
                         alt="목탁"
-                        className="w-32 h-32 sm:w-36 sm:h-36 object-contain drop-shadow-[0_10px_22px_rgba(0,0,0,0.85)] filter brightness-95 contrast-[1.08] saturate-[0.95] group-hover:scale-105 transition-transform pointer-events-none relative z-10"
+                        className="w-32 h-32 sm:w-36 sm:h-36 object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.9)] filter brightness-100 contrast-[1.05] group-hover:scale-105 transition-transform pointer-events-none relative z-10"
                       />
-                      <span className="text-xs sm:text-sm font-bold text-[#EAD8B8] tracking-wider font-serif-kr relative z-10 -mt-1 drop-shadow-sm">
-                        터치하여 탁!
-                      </span>
+                      <div className="mt-1 px-3 py-0.5 rounded-full bg-[#3D2614]/85 border border-[#C59B27]/50 shadow-sm relative z-10">
+                        <span className="text-[11px] sm:text-xs font-bold text-[#FCE6A6] tracking-wider font-serif-kr drop-shadow-sm">
+                          터치하여 탁!
+                        </span>
+                      </div>
                     </button>
-                    <p className="text-[11px] text-[#9E9080] mt-3 font-medium">
-                      화면을 칠 때마다 실물 대웅전 목탁 소리와 손맛 진동이 울립니다
+                    <p className="text-[11.5px] text-[#A89D8E] mt-3 font-medium text-center break-keep">
+                      화면을 터치할 때마다 실물 대웅전 목탁 소리와 손맛 진동이 울립니다
                     </p>
                   </div>
 
@@ -15845,10 +15865,10 @@ function formatRelativeOrDate(dateStr) {
                     <button
                       type="button"
                       onClick={() => setIsAutoMoktakOn((prev) => !prev)}
-                      className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border ${
+                      className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border shadow-sm ${
                         isAutoMoktakOn
-                          ? 'bg-amber-500 text-[#1B1815] border-amber-400 font-extrabold shadow-sm'
-                          : 'bg-white/5 text-[#E0D5C3] border-white/15 hover:bg-white/10'
+                          ? 'bg-amber-500 text-[#1B1815] border-amber-400 font-extrabold animate-pulse'
+                          : 'bg-[#2A1D13] text-[#F5D061] border-[#C59B27]/40 hover:bg-[#382618]'
                       }`}
                     >
                       {isAutoMoktakOn ? (
@@ -15864,10 +15884,25 @@ function formatRelativeOrDate(dateStr) {
                       )}
                     </button>
 
-                    <div className="px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-[10.5px] text-[#C59B27] font-semibold flex items-center gap-1 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (moktak108Count >= 108) {
+                          setIs108Completed(true)
+                        } else {
+                          showToast(`🔔 108타 완주 시 대웅전 정진 회향장이 열립니다 (현재 ${moktak108Count}/108타)`)
+                        }
+                      }}
+                      className={`px-3 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 shrink-0 transition active:scale-95 ${
+                        moktak108Count >= 108
+                          ? 'bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-black border-amber-300 font-bold shadow-md animate-bounce'
+                          : 'bg-white/5 hover:bg-white/10 border-white/10 text-[#C59B27]'
+                      }`}
+                      title="108타 완주 시 회향 축원장 확인"
+                    >
                       <span>🔔</span>
                       <span>108타 회향 축원</span>
-                    </div>
+                    </button>
                   </div>
                 </>
               ) : (
@@ -15893,7 +15928,7 @@ function formatRelativeOrDate(dateStr) {
                   <div className="bg-gradient-to-b from-white/10 to-white/5 rounded-2xl p-4 border border-[#C59B27]/40 text-left space-y-2 text-xs">
                     <div className="flex justify-between items-center text-[#FFE58A] font-bold pb-2 border-b border-white/10">
                       <span>📜 대웅전 회향 공덕원부</span>
-                      <span>2026.11.02</span>
+                      <span>{new Date().toISOString().slice(0, 10).replace(/-/g, '.')}</span>
                     </div>
                     <div className="space-y-1 text-[#E0D5C3] text-[11.5px]">
                       <div>• 발원자: <strong className="text-white">{currentUser?.name || '소원사 인연 불자님'}</strong></div>
