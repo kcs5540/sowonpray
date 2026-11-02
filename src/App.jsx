@@ -3730,6 +3730,7 @@ function formatRelativeOrDate(dateStr) {
   const [sutraInput, setSutraInput] = useState('')
   const [sutraCompleted, setSutraCompleted] = useState(false)
   const [sutraDailyVersion, setSutraDailyVersion] = useState(0)
+  const [moktakDailyVersion, setMoktakDailyVersion] = useState(0)
   const [showMeritCertModal, setShowMeritCertModal] = useState(false)
   const [meritCertType, setMeritCertType] = useState('lantern') // 'lantern' | 'sutra'
   const [isCapturingCert, setIsCapturingCert] = useState(false)
@@ -4214,8 +4215,27 @@ function formatRelativeOrDate(dateStr) {
     } catch (e) {}
     const todaySutraRewardCount = Math.min(3, todaySutraCount)
 
-    // 5) 총 합계 실시간 반영 (오차 없이 정확한 정수 합산)
-    const totalReward = believersReward + lanternReward + sutraReward
+    // 5) 108 목탁멍: 1회당 200원 (1일 최대 1회 제한, 정성이 담긴 108타 완주 회향 시 적립)
+    let storedMoktak = 0
+    try {
+      storedMoktak =
+        Number(localStorage.getItem(`sowonpray_moktak_reward_count_${currentUser.code}`)) ||
+        Number(localStorage.getItem(`sowonpray_moktak_count_${currentUser.code}`)) ||
+        0
+    } catch (e) {}
+    const dbMoktak = Number(currentUser.moktak_reward_count || currentUser.moktak_count) || 0
+    const moktakCount = Math.max(dbMoktak, storedMoktak)
+    const moktakReward = moktakCount * 200
+
+    // 오늘 적립한 목탁 횟수 (1일 최대 1회 제한)
+    let todayMoktakCount = 0
+    try {
+      todayMoktakCount = Number(localStorage.getItem(`sowonpray_moktak_daily_${currentUser.code}_${todayKey}`)) || 0
+    } catch (e) {}
+    const todayMoktakRewardCount = Math.min(1, todayMoktakCount)
+
+    // 6) 총 합계 실시간 반영 (오차 없이 정확한 정수 합산)
+    const totalReward = believersReward + lanternReward + sutraReward + moktakReward
 
     return {
       isAgent,
@@ -4230,9 +4250,12 @@ function formatRelativeOrDate(dateStr) {
       sutraCount,
       sutraReward,
       todaySutraRewardCount,
+      moktakCount,
+      moktakReward,
+      todayMoktakRewardCount,
       totalReward,
     }
-  }, [currentUser, currentUserAffiliatedMembers, currentUserBelieversCount, userLanternStats, isLanternLit, lanternData, sutraDailyVersion])
+  }, [currentUser, currentUserAffiliatedMembers, currentUserBelieversCount, userLanternStats, isLanternLit, lanternData, sutraDailyVersion, moktakDailyVersion])
 
   // 🌿 현재 로그인 회원의 산하 인연 신도 최근 가입순(최신순) 정렬 목록 & 필터 상태
   const [infoAffiliatedMode, setInfoAffiliatedMode] = useState('list') // 'list' | 'tree'
@@ -5553,6 +5576,75 @@ function formatRelativeOrDate(dateStr) {
     }
   }
 
+  // 🪵 108 목탁멍 완주 회향 시 신행 복덕 보시금 적립 (정성 반영 1회 200원 · 1일 최대 1회)
+  const addMoktakMerit = () => {
+    addMerit(1)
+    if (currentUser) {
+      const todayKey = getTodayDateKey()
+      const dailyKey = `sowonpray_moktak_daily_${currentUser.code}_${todayKey}`
+      let todayCount = 0
+      try {
+        todayCount = Number(localStorage.getItem(dailyKey)) || 0
+      } catch (e) {}
+
+      const isEligible = todayCount < 1
+      const nextDaily = todayCount + 1
+      try {
+        localStorage.setItem(dailyKey, String(nextDaily))
+      } catch (e) {}
+      setMoktakDailyVersion((v) => v + 1)
+
+      if (isEligible) {
+        let storedReward = 0
+        try {
+          storedReward =
+            Number(localStorage.getItem(`sowonpray_moktak_reward_count_${currentUser.code}`)) ||
+            Number(localStorage.getItem(`sowonpray_moktak_count_${currentUser.code}`)) ||
+            0
+        } catch (e) {}
+        const dbVal = Number(currentUser.moktak_reward_count || currentUser.moktak_count) || 0
+        const prev = Math.max(dbVal, storedReward)
+        const nextReward = prev + 1
+
+        setMembers((prevMembers) =>
+          prevMembers.map((m) =>
+            m.code === currentUser.code
+              ? {
+                  ...m,
+                  moktak_reward_count: nextReward,
+                  moktak_count: nextReward,
+                  merit_count: (m.merit_count || 0) + 1,
+                }
+              : m
+          )
+        )
+        try {
+          localStorage.setItem(`sowonpray_moktak_reward_count_${currentUser.code}`, String(nextReward))
+          localStorage.setItem(`sowonpray_moktak_count_${currentUser.code}`, String(nextReward))
+        } catch (e) {}
+
+        if (supabase) {
+          supabase
+            .from('members')
+            .update({
+              moktak_count: nextReward,
+              merit_count: (currentUser.merit_count || 0) + 1,
+            })
+            .eq('code', currentUser.code)
+            .then(({ error }) => {
+              if (error) console.log('Supabase moktak sync note:', error)
+            })
+        }
+
+        showToast(`🎉 108 목탁 정진 회향! (신행 복덕 보시금 +200원 적립)`)
+      } else {
+        showToast(`🙏 108 목탁 정진 회향! (오늘의 목탁 보시금 1회·200원 달성, 정진 공덕 +1)`)
+      }
+    } else {
+      showToast('🎉 제주 소원사 108 목탁 정진을 원만 회향하셨습니다!')
+    }
+  }
+
   const handleSutraChange = (val) => {
     setSutraInput(val)
     if (val.trim() === currentSutra.text.trim() && !sutraCompleted) {
@@ -5654,7 +5746,7 @@ function formatRelativeOrDate(dateStr) {
       playSingingBowlSound()
       setIs108Completed(true)
       setIsAutoMoktakOn(false)
-      showToast('🎉 제주 소원사 108 목탁 정진을 원만 회향하셨습니다!')
+      addMoktakMerit()
     } else if (next % 9 === 0) {
       if (typeof navigator !== 'undefined' && navigator.vibrate) {
         navigator.vibrate([25, 40, 25])
@@ -10867,6 +10959,44 @@ function formatRelativeOrDate(dateStr) {
                               </div>
                             </button>
 
+                            {/* 5) 108 목탁멍: 1회 200원 (1일 최대 1회) */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setShow108MoktakModal(true)
+                              }}
+                              className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
+                              title="108 목탁멍 정진하고 200원 적립 (1일 1회)"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0 border border-white/5 p-1">
+                                  <img src="/images/moktak_realistic.png" alt="목탁" className="w-full h-full object-contain" />
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
+                                    <span>108 목탁멍</span>
+                                    <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
+                                      1회 200원
+                                    </span>
+                                    <span className="text-[10px] font-semibold text-[#FFE58A] bg-[#F5D061]/20 border border-[#F5D061]/30 px-1.5 py-0.5 rounded">
+                                      오늘 {userMeritReward.todayMoktakRewardCount}/1회
+                                    </span>
+                                  </div>
+                                  <div className="text-[10.5px] text-[#A89C8E] truncate mt-0.5 group-hover:text-[#FFE58A] transition">
+                                    목탁 정진하러 가기 ➜
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right shrink-0 pl-2">
+                                <div className="text-xs sm:text-sm font-extrabold text-[#F5D061]">
+                                  {userMeritReward.moktakCount}회
+                                </div>
+                                <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
+                                  +{userMeritReward.moktakReward.toLocaleString()}원
+                                </div>
+                              </div>
+                            </button>
+
                             {/* 포교위원장 혜택 안내 */}
                             <p className="text-[10.5px] text-[#FFE58A] leading-snug break-keep pt-1 text-center bg-black/20 p-2.5 rounded-xl border border-white/5">
                               👑 <strong>[포교위원장 산하 전법 혜택]</strong> 직접 연결한 법연(1,000원) 외에도 산하 모든 신규 가입자마다 1,000원씩 실시간 자동 추가 적립됩니다.
@@ -10979,6 +11109,44 @@ function formatRelativeOrDate(dateStr) {
                                 </div>
                                 <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
                                   +{userMeritReward.sutraReward.toLocaleString()}원
+                                </div>
+                              </div>
+                            </button>
+
+                            {/* 5) 108 목탁멍: 1회 200원 (1일 최대 1회) */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setShow108MoktakModal(true)
+                              }}
+                              className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
+                              title="108 목탁멍 정진하고 200원 적립 (1일 1회)"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0 border border-white/5 p-1">
+                                  <img src="/images/moktak_realistic.png" alt="목탁" className="w-full h-full object-contain" />
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
+                                    <span>108 목탁멍</span>
+                                    <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
+                                      1회 200원
+                                    </span>
+                                    <span className="text-[10px] font-semibold text-[#FFE58A] bg-[#F5D061]/20 border border-[#F5D061]/30 px-1.5 py-0.5 rounded">
+                                      오늘 {userMeritReward.todayMoktakRewardCount}/1회
+                                    </span>
+                                  </div>
+                                  <div className="text-[10.5px] text-[#A89C8E] truncate mt-0.5 group-hover:text-[#FFE58A] transition">
+                                    목탁 정진하러 가기 ➜
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right shrink-0 pl-2">
+                                <div className="text-xs sm:text-sm font-extrabold text-[#F5D061]">
+                                  {userMeritReward.moktakCount}회
+                                </div>
+                                <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
+                                  +{userMeritReward.moktakReward.toLocaleString()}원
                                 </div>
                               </div>
                             </button>
@@ -15935,6 +16103,19 @@ function formatRelativeOrDate(dateStr) {
                       <div>• 정진 내용: 108 목탁 타종 및 백팔번뇌 소멸</div>
                       <div>• 공덕 배정: <span className="text-[#4ADE80] font-bold">내일 오전 10시 사시예불 축원 명부 합장</span></div>
                     </div>
+                  </div>
+
+                  {/* 신행 복덕 보시금 적립 축하 배너 */}
+                  <div className="bg-gradient-to-r from-amber-500/20 via-amber-400/25 to-amber-500/20 border border-[#F5D061]/50 rounded-2xl p-3.5 text-center space-y-1 shadow-sm">
+                    <div className="text-[11px] text-[#E0D5C3] font-medium">108 목탁 정진 회향 특별 복덕</div>
+                    <div className="text-sm sm:text-base font-extrabold text-[#FFE58A] flex items-center justify-center gap-1.5">
+                      <span>💰 신행 복덕 보시금</span>
+                      <span className="font-mono text-emerald-300 font-black text-base sm:text-lg">+200원</span>
+                      <span>실시간 적립 완료</span>
+                    </div>
+                    <p className="text-[10.5px] text-[#A89D8E]">
+                      [내정보 ➔ 나의 신행 복덕 보시금]에서 언제든 확인 및 사용하실 수 있습니다.
+                    </p>
                   </div>
 
                   {/* 버튼 모음 */}
