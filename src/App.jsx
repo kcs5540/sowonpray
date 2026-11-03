@@ -7026,15 +7026,15 @@ function formatRelativeOrDate(dateStr) {
           )}
         </div>
 
-        {/* 토스트 알림 (화면 정중앙 위치 & 가독성 높은 디자인 & 6초 유지 & 터치 시 즉시 닫기) */}
-        {toast && (
-          <div className="fixed inset-x-0 top-1/2 -translate-y-1/2 z-[100] flex justify-center px-5 pointer-events-none">
+        {/* 토스트 알림 (모달 팝업과 겹치지 않도록 모달 오픈 시 숨김 & 하단 플로팅 위치 & 6초 유지 & 터치 시 즉시 닫기) */}
+        {toast && !showMeritCertModal && !alreadyLitModalData && !hoehangModalData && !showVisitForm && !show108MoktakModal && (
+          <div className="fixed inset-x-0 bottom-20 z-40 flex justify-center px-4 pointer-events-none">
             <div
               onClick={() => {
                 if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
                 setToast(null)
               }}
-              className="w-full max-w-[400px] bg-[#1E1A16]/98 text-[#FAF8F5] border-2 border-[#F5D061] p-4 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.85)] leading-relaxed flex items-center gap-3 pointer-events-auto cursor-pointer break-keep"
+              className="w-full max-w-[400px] bg-[#1E1A16]/98 text-[#FAF8F5] border-2 border-[#F5D061] p-3.5 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.85)] leading-relaxed flex items-center gap-3 pointer-events-auto cursor-pointer break-keep"
               title="터치하면 닫힙니다"
             >
               <div className="w-8 h-8 rounded-full bg-[#F5D061]/20 flex items-center justify-center shrink-0 border border-[#F5D061]/40">
