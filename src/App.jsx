@@ -7027,33 +7027,27 @@ function formatRelativeOrDate(dateStr) {
           )}
         </div>
 
-        {/* 알림 배너 (화면 정중앙에 편안하고 품격 있게 떠서 한눈에 쏙 들어오며 터치 시 즉시 닫힘) */}
+        {/* 알림 배너 (상단에 떴던 선명한 검정 바탕 그대로, 화면 중간에 위치) */}
         {toast && (
-          <div
-            onClick={() => {
-              if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
-              setToast(null)
-            }}
-            className="fixed inset-0 z-[100] flex items-center justify-center px-4 bg-black/30 backdrop-blur-[1px] animate-in fade-in duration-200 cursor-pointer"
-          >
+          <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 pointer-events-none animate-in fade-in duration-200">
             <div
-              onClick={(e) => {
-                e.stopPropagation()
+              onClick={() => {
                 if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
                 setToast(null)
               }}
-              className="w-full max-w-[420px] bg-[#1E1914]/98 text-[#FAF8F5] border-2 border-[#F5D061] p-4 sm:p-4.5 rounded-2xl shadow-[0_15px_50px_rgba(0,0,0,0.85)] leading-relaxed flex items-center justify-between gap-3.5 transition hover:border-[#FFE27A] animate-in zoom-in-95 duration-200 cursor-pointer"
+              style={{ backgroundColor: '#1E1914' }}
+              className="w-full max-w-[440px] text-[#FAF8F5] border-2 border-[#F5D061] p-3.5 sm:p-4 rounded-2xl shadow-[0_15px_60px_rgba(0,0,0,0.9)] leading-relaxed flex items-center justify-between gap-3 pointer-events-auto cursor-pointer transition hover:border-[#FFE27A]"
               title="터치하면 닫힙니다"
             >
-              <div className="flex items-center gap-3.5 min-w-0">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(245,208,97,0.45)] text-[#1B1815]">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(245,208,97,0.4)] text-[#1B1815]">
                   <Sparkles className="w-5 h-5 fill-current" />
                 </div>
                 <div className="min-w-0">
-                  <span className="block text-[10.5px] text-[#F5D061] font-extrabold tracking-wider uppercase font-serif-kr">
+                  <span className="block text-[10px] text-[#F5D061] font-extrabold tracking-wider uppercase font-serif-kr">
                     제주 소원사 정식 접수 알림
                   </span>
-                  <div className="font-bold text-xs sm:text-[13.5px] text-[#FFFDF7] leading-snug break-keep mt-0.5">
+                  <div className="font-bold text-xs sm:text-sm text-[#FFFDF7] leading-snug break-keep mt-0.5">
                     {toast}
                   </div>
                 </div>
@@ -7065,7 +7059,7 @@ function formatRelativeOrDate(dateStr) {
                   if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
                   setToast(null)
                 }}
-                className="text-xs font-bold text-[#E8DFD1] hover:text-[#F5D061] py-1.5 px-2.5 rounded-xl bg-white/10 hover:bg-white/20 transition shrink-0 border border-white/10"
+                className="text-xs font-bold text-[#E8DFD1] hover:text-[#F5D061] py-1 px-2.5 rounded-lg bg-white/10 hover:bg-white/20 transition shrink-0"
               >
                 닫기
               </button>
