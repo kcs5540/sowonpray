@@ -107,8 +107,12 @@ export default async function handler(req, res) {
     return res.status(200).json({ reply: replyText })
   } catch (err) {
     console.error('Dongja API Server Error:', err)
-    return res.status(200).json({
-      reply: `보살님, 사주를 정확히 짚어드리려면 태어나신 [년도/월/일]과 [태어난 시간], 그리고 음력인지 양력인지를 함께 말씀해 주셔야 해요! 🙏\n\n예: '1975년 음력 3월 15일 아침 8시' 처럼 편하게 적어주시면, 동자승이 오행과 부처님 지혜로 정성껏 풀어드릴게요~ ✨`,
-    })
+    let fallback = '보살님, 기도를 올리는 중이니 잠시 후 다시 말씀해 주세요. 🙏'
+    if (message.includes('사주') || message.includes('운세')) {
+      fallback = '보살님, 사주를 정확히 짚어드리려면 태어나신 [년도/월/일]과 [태어난 시간]을 편하게 적어주세요. 동자승이 부처님 지혜로 정성껏 풀어드릴게요! 🙏✨'
+    } else {
+      fallback = '보살님, 지친 마음에 부처님의 따뜻한 평온과 가피가 깃들기를 두 손 모아 기도드립니다. 마음의 짐을 잠시 내려놓으시고 편안하게 숨을 고르세요. 🙏✨'
+    }
+    return res.status(200).json({ reply: fallback })
   }
 }
