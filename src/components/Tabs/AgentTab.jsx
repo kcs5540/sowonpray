@@ -36,10 +36,12 @@ export default function AgentTab({
   formatPrayerDate,
   isAgentVisitListExpanded,
   setIsAgentVisitListExpanded,
-  agentVisits,
+  visits,
   showToast,
   setVisits,
 }) {
+  const isAdmin = isMasterOrTempleAdmin
+
   return (
 <main className="flex-1 flex flex-col gap-4 px-2 py-3.5">
             {/* 상단: 내정보 창으로 돌아가기 바 */}

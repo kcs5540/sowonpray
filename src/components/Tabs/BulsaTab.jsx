@@ -27,7 +27,6 @@ export default function BulsaTab({
   customPayAmount,
   setCustomPayAmount,
   currentUser,
-  isSubmittingWish,
   playMoktakSound,
   showToast,
   handleTossTestPayment,

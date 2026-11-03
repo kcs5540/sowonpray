@@ -24,8 +24,7 @@ export default function LanternTab({
   setWishText,
   currentUser,
   prayers,
-  isSubmittingWish,
-  handleWishSubmit,
+  handlePrayerSubmit,
   handleSelectWishCategory,
   playMoktakSound,
   setActiveTab,
@@ -33,7 +32,6 @@ export default function LanternTab({
   setShowAllRecentLanterns,
   getSasiDisplayInfo,
   formatPrayerDate,
-  DEFAULT_REPEAT_TEXT,
 }) {
   return (
 ﻿          <main className="flex-1 flex flex-col gap-4 px-2 py-3.5">

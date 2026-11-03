@@ -56,7 +56,7 @@ export default function ProfileTab({
   setIsRewardDetailOpen,
   setMeritCertType,
   setShowMeritCertModal,
-  myPrayersList,
+  prayers,
   getSasiDisplayInfo,
   isProfileEditOpen,
   setIsProfileEditOpen,

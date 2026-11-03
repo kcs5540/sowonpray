@@ -7128,7 +7128,6 @@ function formatRelativeOrDate(dateStr) {
             customPayAmount={customPayAmount}
             setCustomPayAmount={setCustomPayAmount}
             currentUser={currentUser}
-            isSubmittingWish={isSubmittingWish}
             playMoktakSound={playMoktakSound}
             showToast={showToast}
             handleTossTestPayment={handleTossTestPayment}
@@ -7154,8 +7153,7 @@ function formatRelativeOrDate(dateStr) {
             setWishText={setWishText}
             currentUser={currentUser}
             prayers={prayers}
-            isSubmittingWish={isSubmittingWish}
-            handleWishSubmit={handleWishSubmit}
+            handlePrayerSubmit={handlePrayerSubmit}
             handleSelectWishCategory={handleSelectWishCategory}
             playMoktakSound={playMoktakSound}
             setActiveTab={setActiveTab}
@@ -7163,7 +7161,6 @@ function formatRelativeOrDate(dateStr) {
             setShowAllRecentLanterns={setShowAllRecentLanterns}
             getSasiDisplayInfo={getSasiDisplayInfo}
             formatPrayerDate={formatPrayerDate}
-            DEFAULT_REPEAT_TEXT={DEFAULT_REPEAT_TEXT}
           />
         )}
 
@@ -7203,7 +7200,6 @@ function formatRelativeOrDate(dateStr) {
             handleMoktakTap={handleMoktakTap}
             selectedMoodId={selectedMoodId}
             setSelectedMoodId={setSelectedMoodId}
-            MIND_PRESCRIPTION={MIND_PRESCRIPTION}
             WISDOM_BY_MOOD={WISDOM_BY_MOOD}
             lessonBatchIdx={lessonBatchIdx}
             setLessonBatchIdx={setLessonBatchIdx}
@@ -7214,7 +7210,6 @@ function formatRelativeOrDate(dateStr) {
             SUTRA_STUDY_LESSONS={SUTRA_STUDY_LESSONS}
             completedLessons={completedLessons}
             setCompletedLessons={setCompletedLessons}
-            nextBatch={nextBatch}
             quizIndex={quizIndex}
             setQuizIndex={setQuizIndex}
             quizSelectedOption={quizSelectedOption}
@@ -7281,7 +7276,7 @@ function formatRelativeOrDate(dateStr) {
             setIsRewardDetailOpen={setIsRewardDetailOpen}
             setMeritCertType={setMeritCertType}
             setShowMeritCertModal={setShowMeritCertModal}
-            myPrayersList={myPrayersList}
+            prayers={prayers}
             getSasiDisplayInfo={getSasiDisplayInfo}
             isProfileEditOpen={isProfileEditOpen}
             setIsProfileEditOpen={setIsProfileEditOpen}
@@ -7336,7 +7331,7 @@ function formatRelativeOrDate(dateStr) {
             formatPrayerDate={formatPrayerDate}
             isAgentVisitListExpanded={isAgentVisitListExpanded}
             setIsAgentVisitListExpanded={setIsAgentVisitListExpanded}
-            agentVisits={agentVisits}
+            visits={visits}
             showToast={showToast}
             setVisits={setVisits}
           />
