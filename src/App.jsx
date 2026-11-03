@@ -5578,10 +5578,6 @@ function formatRelativeOrDate(dateStr) {
               if (error) console.log('Supabase sutra sync note:', error)
             })
         }
-
-        showToast(`✨ 한 줄 사경 회향! (신행 복덕 +100 공덕 적립 · 오늘 ${nextDaily}/3회)`)
-      } else {
-        showToast(`🙏 한 줄 사경 회향! (오늘의 사경 공덕 한도 300 공덕 달성, 정진 공덕 +1)`)
       }
     }
   }
