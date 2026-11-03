@@ -5661,8 +5661,6 @@ function formatRelativeOrDate(dateStr) {
       playSingingBowlSound()
       setSutraCompleted(true)
       addSutraMerit()
-      setMeritCertType('sutra')
-      setShowMeritCertModal(true)
     }
   }
 
@@ -9712,18 +9710,7 @@ function formatRelativeOrDate(dateStr) {
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2 pt-1">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setMeritCertType('sutra')
-                            setShowMeritCertModal(true)
-                          }}
-                          className="flex-1 py-2 px-2.5 rounded-lg bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] text-xs font-black flex items-center justify-center gap-1.5 shadow active:scale-95 transition whitespace-nowrap"
-                        >
-                          <Award className="w-4 h-4 text-[#1B1815] shrink-0" />
-                          <span>공덕장 보기</span>
-                        </button>
+                      <div className="pt-1">
                         <button
                           type="button"
                           onClick={() => {
@@ -9739,9 +9726,9 @@ function formatRelativeOrDate(dateStr) {
                               )
                             }
                           }}
-                          className="px-3.5 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-[#F5D061] text-xs font-bold whitespace-nowrap border border-[#F5D061]/30 transition active:scale-95 shrink-0"
+                          className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] text-xs sm:text-sm font-black flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition"
                         >
-                          다음 구절 ▶
+                          <span>다음 구절 사경 이어가기 ▶</span>
                         </button>
                       </div>
                     </div>
