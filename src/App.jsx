@@ -7178,7 +7178,6 @@ function formatRelativeOrDate(dateStr) {
             setShowMeritCertModal={setShowMeritCertModal}
             currentMeritCount={currentMeritCount}
             userMeritReward={userMeritReward}
-            todaySutraRewardCount={todaySutraRewardCount}
             playSingingBowlSound={playSingingBowlSound}
             showToast={showToast}
             sutraSubTab={sutraSubTab}

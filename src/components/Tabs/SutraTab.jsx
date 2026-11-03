@@ -12,7 +12,6 @@ export default function SutraTab({
   setShowMeritCertModal,
   currentMeritCount,
   userMeritReward,
-  todaySutraRewardCount,
   playSingingBowlSound,
   showToast,
   sutraSubTab,
