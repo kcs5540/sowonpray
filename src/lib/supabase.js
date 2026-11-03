@@ -94,7 +94,7 @@ export const INITIAL_MEMBERS = [
     bank_name: '농협',
     bank_account: '301-0000-0000-01',
     account_holder: '김철수',
-    merit_count: 26,
+    merit_count: 50,
     believers_count: 16,
     wipae_count: 0,
     extra_data: {},

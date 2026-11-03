@@ -1798,7 +1798,7 @@ function formatRelativeOrDate(dateStr) {
       // 레거시 108 더미 캐시 안전 제거
       try {
         const c33 = localStorage.getItem('sowonpray_merit_33065540')
-        if (c33 === '108' || c33 === '109') localStorage.removeItem('sowonpray_merit_33065540')
+        if (c33 === '108' || c33 === '109' || c33 === '856') localStorage.removeItem('sowonpray_merit_33065540')
         localStorage.removeItem('sowonpray_merit_82341088')
       } catch (e) {}
 
@@ -3756,7 +3756,7 @@ function formatRelativeOrDate(dateStr) {
   const [guestMeritCount, setGuestMeritCount] = useState(() => {
     try {
       const saved = localStorage.getItem('sowonpray_guest_merit')
-      return saved ? parseInt(saved, 10) || 0 : 0
+      return saved ? (parseInt(saved, 10) === 856 ? 50 : (parseInt(saved, 10) || 50)) : 50
     } catch {
       return 0
     }
