@@ -2234,6 +2234,9 @@ function formatRelativeOrDate(dateStr) {
     return null
   })
 
+  // 오늘 사시예불 회향 안내 팝업 확인 완료 플래그 (메모리 Ref로 동시성 및 리렌더링 시 중복 노출 원천 차단)
+  const hoehangDismissedRef = useRef(false)
+
   // 소원등 유효 점등 여부 (보안 및 개인정보 보호: 로그아웃 상태이거나 다른 회원 접속 시 이전 회원의 등 비노출)
   const isLanternLit = Boolean(
     lanternData &&
@@ -3593,14 +3596,19 @@ function formatRelativeOrDate(dateStr) {
   // 🪷 [오전 11시 사시예불 축원 원만회향 알림 팝업 감지 엔진]
   // 소원등을 켰던 신도님이 11:00 예불 회향 이후 접속 시 감동의 회향 팝업 1회 노출
   useEffect(() => {
+    if (hoehangDismissedRef.current) return
+
     const now = new Date()
     const todayKey = formatLocalDateKey(now)
     const isPast11AM = now.getHours() >= 11
 
-    // 이미 오늘 회향 팝업을 확인했으면 재노출 안 함
+    // 이미 오늘 회향 팝업을 확인했으면 재노출 안 함 (localStorage + sessionStorage 2중 체크)
     const seenKey = `sowonsa_hoehang_seen_${todayKey}`
     try {
-      if (localStorage.getItem(seenKey)) return
+      if (localStorage.getItem(seenKey) === 'true' || sessionStorage.getItem(seenKey) === 'true') {
+        hoehangDismissedRef.current = true
+        return
+      }
     } catch (e) {}
 
     // 1) localStorage 7일 소원등 데이터 확인
@@ -3609,8 +3617,8 @@ function formatRelativeOrDate(dateStr) {
       const raw = localStorage.getItem('sowonsa_7day_lantern')
       if (raw) {
         const parsed = JSON.parse(raw)
-        // 오늘이 회향일(sasi_date_key === todayKey)이고 11시가 지났거나 회향 만료된 경우
-        if (parsed.sasi_date_key === todayKey && isPast11AM) {
+        // 오늘이 회향일(sasi_date_key === todayKey)이고 11시가 지났거나 회향 만료된 경우 (이미 회향 확인한 경우 제외)
+        if (parsed.sasi_date_key === todayKey && isPast11AM && !parsed.hoehang_seen) {
           candidate = parsed
         }
       }
@@ -8882,16 +8890,6 @@ function formatRelativeOrDate(dateStr) {
                     스님께서 매일 오전 10시 사시예불마다{' '}
                     <strong className="text-[#F5D061]">{lanternData?.believer_name}</strong> 불자님의 소원을 정성껏 축원 올리고 있습니다.
                   </p>
-                  <div className="flex justify-center mb-1">
-                    <button
-                      type="button"
-                      onClick={() => handleShareMyLantern(lanternData?.believer_name)}
-                      className="px-3.5 py-1.5 rounded-full bg-[#F5D061]/15 border border-[#F5D061]/50 text-[#F5D061] text-xs font-bold flex items-center gap-1.5 hover:bg-[#F5D061]/25 transition active:scale-95"
-                    >
-                      <Share2 className="w-3.5 h-3.5 text-[#F5D061]" />
-                      <span>가족·지인에게 내 소원등 알리기</span>
-                    </button>
-                  </div>
                 </>
               ) : (
                 <>
@@ -13637,75 +13635,24 @@ function formatRelativeOrDate(dateStr) {
         {/* 🪷 사시예불 축원 원만회향 안내 팝업 (오전 11시 이후 소원등 신청 신도님 본인에게만 감동 노출) */}
         {hoehangModalData && (() => {
           const dismissHoehang = () => {
+            hoehangDismissedRef.current = true
             const todayKey = formatLocalDateKey(new Date())
+            const seenKey = `sowonsa_hoehang_seen_${todayKey}`
             try {
-              localStorage.setItem(`sowonsa_hoehang_seen_${todayKey}`, 'true')
+              localStorage.setItem(seenKey, 'true')
+              sessionStorage.setItem(seenKey, 'true')
+            } catch (e) {}
+            try {
+              const raw = localStorage.getItem('sowonsa_7day_lantern')
+              if (raw) {
+                const parsed = JSON.parse(raw)
+                if (parsed.sasi_date_key === todayKey) {
+                  parsed.hoehang_seen = true
+                  localStorage.setItem('sowonsa_7day_lantern', JSON.stringify(parsed))
+                }
+              }
             } catch (e) {}
             setHoehangModalData(null)
-          }
-
-          const shareHoehangCard = () => {
-            const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
-            const code = currentUser?.code || referralCode || '33065540'
-            const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
-            const shareUrl = `${origin}/?ref=${code}&tab=home`
-            const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=3'
-
-            if (typeof window !== 'undefined' && window.Kakao) {
-              try {
-                if (!window.Kakao.isInitialized()) {
-                  window.Kakao.init(kakaoKey)
-                }
-                if (window.Kakao.isInitialized() && window.Kakao.Share) {
-                  window.Kakao.Share.sendDefault({
-                    objectType: 'feed',
-                    content: {
-                      title: '🪷 [제주 소원사] 대웅전 사시예불 축원 원만회향',
-                      description: `"${hoehangModalData.believer_name} 불자님의 소원등이 오늘 오전 10시 사시예불에서 주지스님의 지극한 축원 속에 원만히 회향되었습니다."`,
-                      imageUrl: altarImageUrl,
-                      imageWidth: 1024,
-                      imageHeight: 693,
-                      link: {
-                        mobileWebUrl: shareUrl,
-                        webUrl: shareUrl,
-                      },
-                    },
-                    itemContent: {
-                      profileText: '제주 소원사 대웅전 축원회향증',
-                      titleImageText: hoehangModalData.wish_category || '대웅전 소원등',
-                      titleImageCategory: '오늘 오전 10시 사시예불 회향',
-                      items: [
-                        { item: '축원불자', itemOp: hoehangModalData.believer_name },
-                        { item: '소원종목', itemOp: hoehangModalData.wish_category || '가족건강' },
-                        { item: '회향상태', itemOp: '원만회향 (축원완료)' },
-                        { item: '기도도량', itemOp: '제주 소원사 대웅전' },
-                        { item: '종무소', itemOp: '010-4912-1083' },
-                      ],
-                    },
-                    buttons: [
-                      {
-                        title: '🪷 소원사 모바일 법당 함께하기',
-                        link: {
-                          mobileWebUrl: shareUrl,
-                          webUrl: shareUrl,
-                        },
-                      },
-                    ],
-                  })
-                  return
-                }
-              } catch (err) {
-                console.warn('Kakao hoehang share error:', err)
-              }
-            }
-
-            const fullText = `🪷 [제주 소원사 사시예불 원만회향]\n${hoehangModalData.believer_name} 불자님의 간절한 소원등(${hoehangModalData.wish_category})이 오늘 오전 10시 대웅전 사시예불에서 주지스님의 지극한 축원 속에 원만히 회향되었습니다.\n\n부처님의 자비광명이 온 가족과 늘 함께하시기를 축원합니다.\n👉 ${shareUrl}`
-            if (navigator.share) {
-              navigator.share({ title: '제주 소원사 사시예불 회향', text: fullText }).catch(() => {})
-            } else if (navigator.clipboard) {
-              navigator.clipboard.writeText(fullText)
-              showToast('📋 회향 축복 메시지가 복사되었습니다! 가족 카톡방에 붙여넣어 보세요.')
-            }
           }
 
           return (
@@ -13778,21 +13725,11 @@ function formatRelativeOrDate(dateStr) {
                   🙏 부처님의 대자대비하신 가피가 온 가족과 늘 함께하시기를 축원합니다.
                 </div>
 
-                {/* 1) 가족에게 회향 복덕 전하기 (카톡 피드 카드 공유) */}
-                <button
-                  type="button"
-                  onClick={shareHoehangCard}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow flex items-center justify-center gap-1.5 active:scale-95 transition cursor-pointer"
-                >
-                  <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
-                  <span>가족에게 회향 복덕 전하기 (카톡 공유)</span>
-                </button>
-
-                {/* 2) 합장하며 확인 (닫기) */}
+                {/* 합장하며 확인 (닫기) */}
                 <button
                   type="button"
                   onClick={dismissHoehang}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] border border-[#C59B27] font-bold text-xs transition cursor-pointer shadow-md"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F5D061] to-[#AA7C11] hover:brightness-110 text-[#1B1815] font-black text-sm active:scale-95 transition cursor-pointer shadow-md"
                 >
                   합장하며 확인 (닫기)
                 </button>
@@ -13872,20 +13809,11 @@ function formatRelativeOrDate(dateStr) {
                   </div>
                 </div>
 
-                {/* 가족·지인에게 내 소원등 알리기 (카카오톡 피드 카드 공유) */}
-                <button
-                  type="button"
-                  onClick={() => handleShareMyLantern(alreadyLitModalData.believer_name)}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FEE500] to-[#FADA0A] text-[#3C1E1E] font-black text-xs shadow flex items-center justify-center gap-1.5 active:scale-95 transition cursor-pointer"
-                >
-                  <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
-                  <span>가족·지인에게 내 발원 알리기 (카톡 공유)</span>
-                </button>
-
+                {/* 합장하며 확인 (닫기) */}
                 <button
                   type="button"
                   onClick={() => setAlreadyLitModalData(null)}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1B1815] via-[#2A231C] to-[#1B1815] hover:brightness-110 text-[#F5D061] border border-[#C59B27] font-bold text-xs transition cursor-pointer shadow-md"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F5D061] to-[#AA7C11] hover:brightness-110 text-[#1B1815] font-black text-sm active:scale-95 transition cursor-pointer shadow-md"
                 >
                   합장하며 확인 (닫기)
                 </button>
