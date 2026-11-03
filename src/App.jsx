@@ -10803,13 +10803,9 @@ function formatRelativeOrDate(dateStr) {
                         </div>
                       </div>
 
-                      <div className="flex flex-col gap-1 self-center">
+                      <div className="self-center">
                         <span className="text-[10.5px] text-[#D6CEC2] bg-white/5 border border-white/10 px-2.5 py-1 rounded-lg">
                           ※ 제주 소원사 종무소에서 현금 또는 불사참여 사용 가능
-                        </span>
-                        <span className="text-[10.5px] text-[#FFE58A] font-semibold bg-[#F5D061]/10 border border-[#F5D061]/30 px-2.5 py-0.5 rounded-lg flex items-center gap-1">
-                          <span>✨</span>
-                          <span>매일 3대 신행(소원등 200 + 사경 300 + 목탁 500) 정진 시 하루 최대 1,000 공덕!</span>
                         </span>
                       </div>
                     </div>
@@ -10817,56 +10813,48 @@ function formatRelativeOrDate(dateStr) {
                     {/* 세부 내역 (한 줄씩 세로 리스트 & 펼침 방식) */}
                     {isRewardDetailOpen && (
                       <div className="space-y-3 pt-1 transition-all duration-300">
-                        {/* 1. 도량 전법(傳法) 법연 공덕 섹션 */}
+                        {/* 1. 도량 전법 법연 공덕 */}
                         <div className="space-y-1.5">
-                          <div className="text-[11px] font-bold text-[#E8DFD1] px-1 flex items-center justify-between">
-                            <span className="flex items-center gap-1.5">
-                              <span>🤝</span>
-                              <span>도량 전법(傳法) 법연 공덕</span>
-                            </span>
-                            <span className="text-[10px] text-[#A89C8E]">인연 맺기 및 권선</span>
+                          <div className="text-[11px] font-bold text-[#E8DFD1] px-1 flex items-center gap-1.5">
+                            <span>🤝</span>
+                            <span>도량 전법(傳法) 법연 공덕</span>
                           </div>
 
                           {/* 1) 전법 법연 맺기: 1인 1,000 공덕 */}
                           <button
                             type="button"
                             onClick={() => handleCopyRefLink(currentUser.code)}
-                            className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
-                            title="전법 추천 링크 복사하고 1,000 공덕 적립"
+                            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] text-left"
+                            title="전법 추천 링크 복사하기"
                           >
-                            <div className="flex items-center gap-3 min-w-0">
-                              <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 border border-white/5">
-                                🤝
-                              </div>
-                              <div className="min-w-0">
-                                <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
-                                  <span>전법 법연(法緣) 맺기</span>
-                                  <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
-                                    1인 1,000 공덕
-                                  </span>
-                                </div>
-                                <div className="text-[10.5px] text-[#A89C8E] truncate mt-0.5 group-hover:text-[#FFE58A] transition">
-                                  추천 링크 복사하기 ➜
-                                </div>
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span className="text-base shrink-0">🤝</span>
+                              <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
+                                <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                  전법 법연(法緣) 맺기
+                                </span>
+                                <span className="text-[10px] text-[#A89C8E] bg-white/5 px-1.5 py-0.5 rounded border border-white/5">
+                                  1인 1,000
+                                </span>
                               </div>
                             </div>
-                            <div className="text-right shrink-0 pl-2">
-                              <div className="text-xs sm:text-sm font-extrabold text-[#F5D061]">
+                            <div className="text-right shrink-0 pl-2 flex items-baseline gap-2">
+                              <span className="text-xs font-semibold text-[#D6CEC2]">
                                 {userMeritReward.isAgent
                                   ? `${userMeritReward.directBelieversCount}명`
                                   : `${userMeritReward.believersCount}명`}
-                              </div>
-                              <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
+                              </span>
+                              <span className="text-xs sm:text-sm font-mono font-bold text-emerald-300">
                                 +{(userMeritReward.isAgent
                                   ? userMeritReward.directBelieversReward
                                   : userMeritReward.believersReward
                                 ).toLocaleString()}{' '}
                                 공덕
-                              </div>
+                              </span>
                             </div>
                           </button>
 
-                          {/* 2) 도량 법연 권선: 산하 1인 1,000 공덕 (포교위원장 전법권선) */}
+                          {/* 2) 도량 법연 권선: 산하 1인 1,000 공덕 (포교위원장 전용) */}
                           {userMeritReward.isAgent && (
                             <button
                               type="button"
@@ -10874,55 +10862,45 @@ function formatRelativeOrDate(dateStr) {
                                 const el = document.getElementById('affiliated-members-section')
                                 if (el) el.scrollIntoView({ behavior: 'smooth' })
                               }}
-                              className="w-full flex items-center justify-between p-3 rounded-xl bg-[#F5D061]/10 hover:bg-[#F5D061]/15 border border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="산하 전법 현황 확인하기 (산하 신규가입당 1,000 공덕 추가)"
+                              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#F5D061]/10 hover:bg-[#F5D061]/15 border border-[#F5D061]/35 transition cursor-pointer active:scale-[0.99] text-left"
+                              title="산하 신도 명단 확인하기"
                             >
-                              <div className="flex items-center gap-3 min-w-0">
-                                <div className="w-9 h-9 rounded-xl bg-[#F5D061]/20 flex items-center justify-center text-lg shrink-0 border border-[#F5D061]/30">
-                                  🌿
-                                </div>
-                                <div className="min-w-0">
-                                  <div className="text-xs sm:text-sm font-bold text-[#FFE58A] flex items-center gap-1.5 flex-wrap">
-                                    <span>도량 법연 권선(勸善)</span>
-                                    <span className="text-[10px] font-bold text-[#FFE58A] bg-[#F5D061]/25 px-1.5 py-0.5 rounded border border-[#F5D061]/30">
-                                      산하 1,000 공덕
-                                    </span>
-                                  </div>
-                                  <div className="text-[10.5px] text-[#E5D7B5] truncate mt-0.5 group-hover:text-white transition">
-                                    산하 신도 명단 확인하기 ➜
-                                  </div>
+                              <div className="flex items-center gap-2 min-w-0">
+                                <span className="text-base shrink-0">🌿</span>
+                                <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
+                                  <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
+                                    도량 법연 권선(勸善)
+                                  </span>
+                                  <span className="text-[10px] font-bold text-[#FFE58A] bg-[#F5D061]/20 px-1.5 py-0.5 rounded border border-[#F5D061]/30">
+                                    산하 1,000
+                                  </span>
                                 </div>
                               </div>
-                              <div className="text-right shrink-0 pl-2">
-                                <div className="text-xs sm:text-sm font-extrabold text-[#FFE58A]">
+                              <div className="text-right shrink-0 pl-2 flex items-baseline gap-2">
+                                <span className="text-xs font-semibold text-[#D6CEC2]">
                                   {userMeritReward.indirectBelieversCount}명
-                                </div>
-                                <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
+                                </span>
+                                <span className="text-xs sm:text-sm font-mono font-bold text-emerald-300">
                                   +{userMeritReward.indirectBelieversReward.toLocaleString()} 공덕
-                                </div>
+                                </span>
                               </div>
                             </button>
                           )}
                         </div>
 
-                        {/* 2. ✨ 소원사 매일 3대 일일 신행(信行) 정진 전용 특별 강조 컨테이너 */}
-                        <div className="p-3 sm:p-3.5 rounded-2xl bg-gradient-to-b from-[#F5D061]/15 via-black/40 to-[#F5D061]/10 border-2 border-[#F5D061]/60 shadow-[0_0_20px_rgba(245,208,97,0.15)] space-y-2.5">
-                          <div className="flex items-center justify-between pb-2 border-b border-[#F5D061]/30">
-                            <div className="flex items-center gap-2">
-                              <span className="text-base animate-pulse">✨</span>
-                              <div>
-                                <div className="text-xs sm:text-sm font-extrabold text-[#FFE58A] flex items-center gap-1.5">
-                                  <span>소원사 매일 3대 일일 신행(信行) 정진</span>
-                                </div>
-                                <div className="text-[10px] text-[#D6CEC2]">매일 실천하며 정진하는 공덕의 길</div>
-                              </div>
+                        {/* 2. ✨ 매일 3대 일일 신행(信行) 정진 */}
+                        <div className="space-y-1.5 p-2.5 sm:p-3 rounded-2xl bg-gradient-to-b from-[#F5D061]/10 to-black/30 border border-[#F5D061]/40 shadow-sm">
+                          <div className="flex items-center justify-between pb-1.5 border-b border-[#F5D061]/20 px-0.5">
+                            <div className="text-xs font-extrabold text-[#FFE58A] flex items-center gap-1">
+                              <span>✨</span>
+                              <span>매일 3대 일일 신행(信行)</span>
                             </div>
-                            <span className="text-[10px] sm:text-[11px] font-black text-emerald-300 bg-emerald-500/20 border border-emerald-400/40 px-2 py-0.5 rounded-full shrink-0 shadow-sm">
+                            <span className="text-[10px] font-black text-emerald-300 bg-emerald-500/20 border border-emerald-400/40 px-2 py-0.5 rounded-full shrink-0">
                               하루 최대 1,000 공덕
                             </span>
                           </div>
 
-                          <div className="space-y-1.5">
+                          <div className="space-y-1.5 pt-0.5">
                             {/* 신행 1) 소원등 점등: 1회 200 공덕 */}
                             <button
                               type="button"
@@ -10930,77 +10908,61 @@ function formatRelativeOrDate(dateStr) {
                                 setActiveTab('lantern')
                                 window.scrollTo({ top: 0, behavior: 'smooth' })
                               }}
-                              className="w-full flex items-center justify-between p-2.5 sm:p-3 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-[#F5D061]/30 hover:border-[#F5D061]/60 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="소원등 켜고 200 공덕 적립"
+                              className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
+                              title="소원등 켜러 가기"
                             >
-                              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                                <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-700/20 flex items-center justify-center text-lg shrink-0 border border-[#F5D061]/40">
-                                  🪔
-                                  <span className="absolute -top-1.5 -left-1.5 w-4 h-4 rounded-full bg-[#F5D061] text-black text-[9px] font-black flex items-center justify-center ring-1 ring-black">
-                                    1
+                              <div className="flex items-center gap-2 min-w-0">
+                                <span className="text-base shrink-0">🪔</span>
+                                <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
+                                  <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                    소원등(願燈) 점등
+                                  </span>
+                                  <span className="text-[10px] text-[#A89C8E] bg-white/5 px-1.5 py-0.5 rounded">
+                                    1회 200
                                   </span>
                                 </div>
-                                <div className="min-w-0">
-                                  <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
-                                    <span>소원등(願燈) 점등</span>
-                                    <span className="text-[10px] font-semibold text-[#FFE58A] bg-[#F5D061]/20 border border-[#F5D061]/30 px-1.5 py-0.5 rounded">
-                                      1회 200 공덕
-                                    </span>
-                                  </div>
-                                  <div className="text-[10.5px] text-[#A89C8E] truncate mt-0.5 group-hover:text-[#FFE58A] transition">
-                                    소원등 켜러 가기 ➜
-                                  </div>
-                                </div>
                               </div>
-                              <div className="text-right shrink-0 pl-2">
-                                <div className="text-xs sm:text-sm font-extrabold text-[#F5D061]">
+                              <div className="text-right shrink-0 pl-2 flex items-baseline gap-2">
+                                <span className="text-xs font-semibold text-[#D6CEC2]">
                                   {userMeritReward.lanternCount}회
-                                </div>
-                                <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
+                                </span>
+                                <span className="text-xs sm:text-sm font-mono font-bold text-emerald-300">
                                   +{userMeritReward.lanternReward.toLocaleString()} 공덕
-                                </div>
+                                </span>
                               </div>
                             </button>
 
-                            {/* 신행 2) 경전 사경 정진: 1회 100 공덕 (1일 최대 3회 = 300 공덕) */}
+                            {/* 신행 2) 경전 사경 정진: 회당 100 공덕 (1일 최대 3회) */}
                             <button
                               type="button"
                               onClick={() => {
                                 setActiveTab('sutra')
                                 window.scrollTo({ top: 0, behavior: 'smooth' })
                               }}
-                              className="w-full flex items-center justify-between p-2.5 sm:p-3 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-[#F5D061]/30 hover:border-[#F5D061]/60 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="경전 사경 정진하고 100 공덕 적립 (1일 최대 3회)"
+                              className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
+                              title="사경 정진하러 가기"
                             >
-                              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                                <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-700/20 flex items-center justify-center text-lg shrink-0 border border-[#F5D061]/40">
-                                  ✍️
-                                  <span className="absolute -top-1.5 -left-1.5 w-4 h-4 rounded-full bg-[#F5D061] text-black text-[9px] font-black flex items-center justify-center ring-1 ring-black">
-                                    2
+                              <div className="flex items-center gap-2 min-w-0">
+                                <span className="text-base shrink-0">✍️</span>
+                                <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
+                                  <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                    경전 사경(寫經) 정진
+                                  </span>
+                                  <span className="text-[10px] text-[#A89C8E] bg-white/5 px-1.5 py-0.5 rounded">
+                                    1회 100
+                                  </span>
+                                  <span className="text-[9.5px] font-semibold text-emerald-300 bg-emerald-500/15 border border-emerald-400/30 px-1.5 py-0.5 rounded">
+                                    오늘 {userMeritReward.todaySutraRewardCount}/3
                                   </span>
                                 </div>
-                                <div className="min-w-0">
-                                  <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
-                                    <span>경전 사경(寫經) 정진</span>
-                                    <span className="text-[10px] font-semibold text-[#FFE58A] bg-[#F5D061]/20 border border-[#F5D061]/30 px-1.5 py-0.5 rounded">
-                                      회당 100 공덕
-                                    </span>
-                                    <span className="text-[10px] font-semibold text-emerald-300 bg-emerald-500/15 border border-emerald-400/30 px-1.5 py-0.5 rounded">
-                                      오늘 {userMeritReward.todaySutraRewardCount}/3회
-                                    </span>
-                                  </div>
-                                  <div className="text-[10.5px] text-[#A89C8E] truncate mt-0.5 group-hover:text-[#FFE58A] transition">
-                                    사경 정진하러 가기 ➜
-                                  </div>
-                                </div>
                               </div>
-                              <div className="text-right shrink-0 pl-2">
-                                <div className="text-xs sm:text-sm font-extrabold text-[#F5D061]">
+                              <div className="text-right shrink-0 pl-2 flex items-baseline gap-2">
+                                <span className="text-xs font-semibold text-[#D6CEC2]">
                                   {userMeritReward.sutraCount}회
-                                </div>
-                                <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
+                                </span>
+                                <span className="text-xs sm:text-sm font-mono font-bold text-emerald-300">
                                   +{userMeritReward.sutraReward.toLocaleString()} 공덕
-                                </div>
+                                </span>
                               </div>
                             </button>
 
@@ -11010,83 +10972,34 @@ function formatRelativeOrDate(dateStr) {
                               onClick={() => {
                                 setShow108MoktakModal(true)
                               }}
-                              className="w-full flex items-center justify-between p-2.5 sm:p-3 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-[#F5D061]/30 hover:border-[#F5D061]/60 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="108 목탁 염송 정진하고 500 공덕 적립 (1일 1회)"
+                              className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
+                              title="목탁 정진하러 가기"
                             >
-                              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                                <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-700/20 flex items-center justify-center shrink-0 border border-[#F5D061]/40 p-1">
+                              <div className="flex items-center gap-2 min-w-0">
+                                <div className="w-5 h-5 flex items-center justify-center shrink-0">
                                   <img src="/images/moktak_realistic.png" alt="목탁" className="w-full h-full object-contain" />
-                                  <span className="absolute -top-1.5 -left-1.5 w-4 h-4 rounded-full bg-[#F5D061] text-black text-[9px] font-black flex items-center justify-center ring-1 ring-black">
-                                    3
+                                </div>
+                                <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
+                                  <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                    108 목탁 염송(念誦)
+                                  </span>
+                                  <span className="text-[10px] text-[#A89C8E] bg-white/5 px-1.5 py-0.5 rounded">
+                                    1회 500
+                                  </span>
+                                  <span className="text-[9.5px] font-semibold text-emerald-300 bg-emerald-500/15 border border-emerald-400/30 px-1.5 py-0.5 rounded">
+                                    오늘 {userMeritReward.todayMoktakRewardCount}/1
                                   </span>
                                 </div>
-                                <div className="min-w-0">
-                                  <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
-                                    <span>108 목탁 염송(念誦) 정진</span>
-                                    <span className="text-[10px] font-semibold text-[#FFE58A] bg-[#F5D061]/20 border border-[#F5D061]/30 px-1.5 py-0.5 rounded">
-                                      1회 500 공덕
-                                    </span>
-                                    <span className="text-[10px] font-semibold text-emerald-300 bg-emerald-500/15 border border-emerald-400/30 px-1.5 py-0.5 rounded">
-                                      오늘 {userMeritReward.todayMoktakRewardCount}/1회
-                                    </span>
-                                  </div>
-                                  <div className="text-[10.5px] text-[#A89C8E] truncate mt-0.5 group-hover:text-[#FFE58A] transition">
-                                    목탁 정진하러 가기 ➜
-                                  </div>
-                                </div>
                               </div>
-                              <div className="text-right shrink-0 pl-2">
-                                <div className="text-xs sm:text-sm font-extrabold text-[#F5D061]">
+                              <div className="text-right shrink-0 pl-2 flex items-baseline gap-2">
+                                <span className="text-xs font-semibold text-[#D6CEC2]">
                                   {userMeritReward.moktakCount}회
-                                </div>
-                                <div className="text-xs sm:text-sm font-mono font-black text-emerald-300 mt-0.5">
+                                </span>
+                                <span className="text-xs sm:text-sm font-mono font-bold text-emerald-300">
                                   +{userMeritReward.moktakReward.toLocaleString()} 공덕
-                                </div>
+                                </span>
                               </div>
                             </button>
-                          </div>
-
-                          {/* 3대 신행 하단 안내문 */}
-                          <div className="text-[10px] text-[#FFE58A] bg-[#F5D061]/10 border border-[#F5D061]/25 px-2.5 py-1.5 rounded-lg flex items-center gap-1.5">
-                            <span>💡</span>
-                            <span>소원등(200) + 사경(300) + 목탁(500)으로 <strong>매일 1,000 공덕</strong>을 원만히 성취하세요!</span>
-                          </div>
-                        </div>
-
-                        {/* 전체 신행·전법 공덕 혜택 요약 안내 (정통 불교 용어 표기) */}
-                        <div className="pt-2">
-                          <div className="bg-gradient-to-r from-amber-950/40 via-black/40 to-amber-950/40 p-3.5 rounded-2xl border border-[#F5D061]/30 text-left space-y-2 shadow-sm">
-                            <div className="text-xs font-bold text-[#F5D061] flex items-center justify-between pb-1.5 border-b border-white/10">
-                              <span className="flex items-center gap-1.5">
-                                <span>🪷</span>
-                                <span>소원사 신행·전법 공덕(功德) 혜택 안내</span>
-                              </span>
-                              <span className="text-[10px] font-bold text-emerald-300 bg-emerald-500/10 border border-emerald-400/30 px-2 py-0.5 rounded-full">
-                                일일 최대 1,000 공덕 + 법연
-                              </span>
-                            </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] pt-0.5">
-                              <div className="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5">
-                                <span className="text-[#E8DFD1]">🤝 전법 법연(法緣) 맺기</span>
-                                <span className="font-bold text-[#F5D061] font-mono">1인 1,000 공덕</span>
-                              </div>
-                              <div className="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5">
-                                <span className="text-[#E8DFD1]">🪔 소원등(願燈) 점등</span>
-                                <span className="font-bold text-[#F5D061] font-mono">매일 200 공덕</span>
-                              </div>
-                              <div className="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5">
-                                <span className="text-[#E8DFD1]">✍️ 경전 사경(寫經) 정진</span>
-                                <span className="font-bold text-[#F5D061] font-mono">회당 100 (1일 300)</span>
-                              </div>
-                              <div className="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5">
-                                <span className="text-[#E8DFD1]">🔔 108 목탁 염송(念誦)</span>
-                                <span className="font-bold text-[#F5D061] font-mono">1일 500 공덕</span>
-                              </div>
-                            </div>
-                            <div className="text-[10px] text-[#D6CEC2] pt-1 space-y-0.5 leading-relaxed border-t border-white/5">
-                              <p>✨ <strong>매일 3대 일일 신행 정진</strong>(소원등 200 + 사경 300 + 목탁 500)으로 하루 최대 1,000 공덕이 자동 적립됩니다.</p>
-                              <p className="text-[#A89C8E]">※ 적립된 공덕은 제주 소원사 종무소에서 현금 또는 기도·불사 동참금으로 사용하실 수 있습니다.</p>
-                            </div>
                           </div>
                         </div>
                       </div>
