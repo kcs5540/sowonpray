@@ -21,7 +21,6 @@ import {
   MapPin,
   Copy,
   Globe,
-  Sparkles,
 } from 'lucide-react'
 
 export default function HomeTab({
@@ -256,44 +255,6 @@ export default function HomeTab({
                 </div>
               )
             })()}
-
-            {/* 🧒 [AI 지혜 동자승의 신행 사주 & 고민 상담] 골든 퀵 배너 */}
-            <div
-              onClick={() => {
-                playSingingBowlSound()
-                setActiveTab('dongja')
-                window.scrollTo({ top: 0, behavior: 'smooth' })
-              }}
-              className="relative rounded-2xl overflow-hidden p-3.5 sm:p-4 bg-gradient-to-r from-[#241A10] via-[#332415] to-[#241A10] border-2 border-[#D4AF37]/70 shadow-lg cursor-pointer hover:border-[#F5D061] transition group active:scale-[0.99]"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] p-0.5 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(245,208,97,0.4)] group-hover:scale-105 transition-transform">
-                    <div className="w-full h-full rounded-2xl bg-[#1B140E] flex items-center justify-center text-2xl">
-                      🧒
-                    </div>
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="px-2 py-0.5 rounded-full bg-[#F5D061]/20 text-[#F5D061] text-[10px] font-extrabold border border-[#F5D061]/40 flex items-center gap-1">
-                        <Sparkles className="w-2.5 h-2.5" />
-                        <span>AI 지혜 동자승</span>
-                      </span>
-                      <span className="text-[10px] text-amber-300/80 font-bold">24시간 1:1 상담</span>
-                    </div>
-                    <h3 className="font-serif-kr text-xs sm:text-sm font-bold text-white mt-1 group-hover:text-[#F5D061] transition truncate">
-                      생년월일로 보는 신행 사주 & 마음 처방전
-                    </h3>
-                    <p className="text-[11px] text-[#D6CEC2] mt-0.5 truncate">
-                      답답한 고민과 사주를 동자승과 도란도란 나눠보세요 ➜
-                    </p>
-                  </div>
-                </div>
-                <div className="shrink-0 w-8 h-8 rounded-full bg-[#FAF8F5]/10 group-hover:bg-[#F5D061] group-hover:text-[#1B1815] text-[#FAF8F5] flex items-center justify-center transition">
-                  <ChevronRight className="w-4 h-4" />
-                </div>
-              </div>
-            </div>
 
             {/* 👑 [시니어 맞춤 6대 핵심 비주얼 퀵 메뉴판] - 아이콘 세로 위치 및 텍스트 베이스라인 완전 일치 정돈 */}
             <section className="bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#E6DEC8]">
