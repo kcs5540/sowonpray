@@ -21,6 +21,7 @@ import {
   MapPin,
   Copy,
   Globe,
+  Sparkles,
 } from 'lucide-react'
 
 export default function HomeTab({
