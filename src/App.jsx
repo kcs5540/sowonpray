@@ -9706,10 +9706,10 @@ function formatRelativeOrDate(dateStr) {
                             setMeritCertType('sutra')
                             setShowMeritCertModal(true)
                           }}
-                          className="flex-1 py-2 px-2.5 rounded-lg bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] text-xs font-black flex items-center justify-center gap-1.5 shadow active:scale-95 transition"
+                          className="flex-1 py-2 px-2.5 rounded-lg bg-gradient-to-r from-[#F5D061] to-[#D4AF37] text-[#1B1815] text-xs font-black flex items-center justify-center gap-1.5 shadow active:scale-95 transition whitespace-nowrap"
                         >
                           <Award className="w-4 h-4 text-[#1B1815] shrink-0" />
-                          <span>📜 사경 회향 공덕장 보기</span>
+                          <span>공덕장 보기</span>
                         </button>
                         <button
                           type="button"
