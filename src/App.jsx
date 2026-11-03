@@ -2026,6 +2026,12 @@ function formatRelativeOrDate(dateStr) {
       try {
         const { data: cloudMembers } = await supabase.from('members').select('*')
         if (cloudMembers && cloudMembers.length > 0) {
+          // 김철수 계정 공덕 레거시(800대) 교정
+          const c33Cloud = cloudMembers.find(m => m.code === '33065540');
+          if (c33Cloud && (c33Cloud.merit_count || 0) > 100) {
+            c33Cloud.merit_count = 50;
+            supabase.from('members').update({ merit_count: 50 }).eq('code', '33065540').then();
+          }
           // 구 양영문(49121083) 및 종무소 가상계정(74200267) 정리
           const toDelete = cloudMembers.filter((m) => m.code === '49121083' || m.code === '74200267')
           if (toDelete.length > 0) {
@@ -2041,7 +2047,7 @@ function formatRelativeOrDate(dateStr) {
             .filter((m) => m.code !== '49121083' && m.code !== '74200267')
             .map((m) => {
               const fixedParent = (m.parent_code === '49121083' || m.parent_code === '74200267' ? '55570267' : m.parent_code)
-              let meritCount = m.merit_count || 0
+              let meritCount = (m.code === '33065540' && (m.merit_count || 0) > 100) ? 50 : (m.merit_count || 0)
               try {
                 const localCached = localStorage.getItem(`sowonpray_merit_${m.code}`)
                 if (localCached && localCached !== '108' && localCached !== '109' && Number(localCached) < 100) {
@@ -5490,8 +5496,8 @@ function formatRelativeOrDate(dateStr) {
   // 사경 입력 체크 및 공덕 적립 헬퍼 (본인 계정 공덕 횟수에 누적 및 Supabase 실시간 동기화)
   const currentSutra = SUTRA_LIST[selectedSutraIdx]
   const currentMeritCount = currentUser
-    ? Math.max(currentUser.merit_count ?? 0, userLanternStats?.totalCount || 0)
-    : guestMeritCount
+    ? ((currentUser.merit_count || 0) > 100 ? 50 : Math.max(currentUser.merit_count ?? 0, userLanternStats?.totalCount || 0))
+    : (guestMeritCount > 100 ? 50 : guestMeritCount)
 
   const addMerit = (amount = 1) => {
     if (currentUser) {
