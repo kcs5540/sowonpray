@@ -79,6 +79,8 @@ export default function HomeTab({
   setVisitMemo,
   handleVisitSubmit,
 }) {
+  const currentQuote = DAILY_QUOTES[quoteIdx] || DAILY_QUOTES[0]
+
   return (
 <main className="flex-1 flex flex-col gap-3.5 px-2 py-3.5">
             {/* 히어로 3종 동적 가로 슬라이딩 캐러셀 (지인 피드백: 좌우로 스르륵 넘어가는 동적 효과) */}
