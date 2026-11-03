@@ -5501,7 +5501,8 @@ function formatRelativeOrDate(dateStr) {
 
   const addMerit = (amount = 1) => {
     if (currentUser) {
-      const baseCount = Math.max(currentUser.merit_count || 0, userLanternStats?.totalCount || 0)
+      const safeMerit = (currentUser.merit_count || 0) > 100 ? 50 : (currentUser.merit_count || 0);
+      const baseCount = Math.max(safeMerit, userLanternStats?.totalCount || 0)
       const newCount = baseCount + amount
       setMembers((prev) =>
         prev.map((m) =>
