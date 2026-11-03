@@ -2502,12 +2502,12 @@ function formatRelativeOrDate(dateStr) {
     }
   }, [activeTab])
 
-  // 신행홈 상단 히어로 배너 5.5초 자동 슬라이드 (홈 탭일 때만 가볍게 동작)
+  // 신행홈 상단 히어로 배너 7초 자동 슬라이드 (홈 탭일 때만 여유롭게 동작)
   useEffect(() => {
     if (activeTab !== 'home') return
     const timer = setInterval(() => {
       setHeroSlideIdx((prev) => (prev + 1) % HERO_SLIDES.length)
-    }, 5500)
+    }, 7000)
     return () => clearInterval(timer)
   }, [activeTab])
 
