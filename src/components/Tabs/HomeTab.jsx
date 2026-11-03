@@ -267,8 +267,8 @@ export default function HomeTab({
                   }}
                   className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFFDF5] via-[#FFF6DC] to-[#FCE8B3] hover:from-[#FFF9EB] hover:to-[#FBDD96] border-2 border-[#D4A024] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-[0_3px_12px_rgba(212,160,36,0.22)] group"
                 >
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#E25C2B] to-[#F4B41A] text-white flex items-center justify-center shadow-sm mb-1.5 shrink-0 group-hover:scale-105 transition-transform overflow-hidden p-1">
-                    <img src="/images/sowon_lantern_realistic.png" alt="소원등" className="w-full h-full object-contain drop-shadow-sm" />
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#E25C2B] to-[#F4B41A] text-white flex items-center justify-center shadow-sm mb-1.5 shrink-0 group-hover:scale-105 transition-transform p-2 ring-2 ring-[#F4B41A]/30">
+                    <Flame className="w-6 h-6 fill-current text-white drop-shadow-sm" />
                   </div>
                   <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
                     <span className="font-serif-kr text-[11.5px] sm:text-xs font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
