@@ -5286,7 +5286,21 @@ function formatRelativeOrDate(dateStr) {
       setWishText(PRAYER_CATEGORY_TEMPLATES[cat] || '')
       setWishTarget('')
 
-// [합장하며 확인] 모달을 닫은 뒤 화면 하단에 불필요하게 6초간 잔류하며 화면을 가리던 중복 플로팅 토스트 제거
+      const isWipaeToast = (cat || '').includes('위패') || (cat || '').includes('생전예수재')
+      const isSamseongToast =
+        (cat || '').includes('삼성각') ||
+        (cat || '').includes('기와') ||
+        (cat || '').includes('단청') ||
+        (cat || '').includes('명패')
+      const isIndeungToast = (cat || '').includes('인등')
+      const toastMsg = isWipaeToast
+        ? '🏛️ [영구 위패 봉안 불사]가 정식 접수되어 종무소로 알림이 전송되었습니다.'
+        : isSamseongToast
+        ? '🏔️ [삼성각 성전 건립 불사] 동참이 정식 접수되어 종무소로 알림이 전송되었습니다.'
+        : isIndeungToast
+        ? '🪔 [대웅전 1년 인등 불사]가 정식 접수되어 종무소로 알림이 전송되었습니다.'
+        : '🙏 간절한 발원이 정식 접수되어 사시예불 축원 명부에 등재되었습니다.'
+      showToast(toastMsg, 5000)
     }
 
     if (closeModal) {
@@ -7014,22 +7028,40 @@ function formatRelativeOrDate(dateStr) {
         </div>
 
         {/* 토스트 알림 (모달 팝업과 겹치지 않도록 모달 오픈 시 숨김 & 하단 플로팅 위치 & 6초 유지 & 터치 시 즉시 닫기) */}
-        {toast && !showMeritCertModal && !alreadyLitModalData && !hoehangModalData && !showVisitForm && !show108MoktakModal && (
-          <div className="fixed inset-x-0 bottom-20 z-40 flex justify-center px-4 pointer-events-none">
+        {toast && (
+          <div className="fixed inset-x-0 top-4 z-[100] flex justify-center px-4 pointer-events-none animate-in fade-in slide-in-from-top-3 duration-300">
             <div
               onClick={() => {
                 if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
                 setToast(null)
               }}
-              className="w-full max-w-[400px] bg-[#1E1A16]/98 text-[#FAF8F5] border-2 border-[#F5D061] p-3.5 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.85)] leading-relaxed flex items-center gap-3 pointer-events-auto cursor-pointer break-keep"
+              className="w-full max-w-[440px] bg-[#1E1914] text-[#FAF8F5] border-2 border-[#F5D061] p-3.5 sm:p-4 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.85)] leading-relaxed flex items-center justify-between gap-3 pointer-events-auto cursor-pointer transition hover:border-[#FFE27A]"
               title="터치하면 닫힙니다"
             >
-              <div className="w-8 h-8 rounded-full bg-[#F5D061]/20 flex items-center justify-center shrink-0 border border-[#F5D061]/40">
-                <Sparkles className="w-4 h-4 text-[#F5D061]" />
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(245,208,97,0.4)] text-[#1B1815]">
+                  <Sparkles className="w-5 h-5 fill-current" />
+                </div>
+                <div className="min-w-0">
+                  <span className="block text-[10px] text-[#F5D061] font-extrabold tracking-wider uppercase font-serif-kr">
+                    제주 소원사 정식 접수 알림
+                  </span>
+                  <div className="font-bold text-xs sm:text-sm text-[#FFFDF7] leading-snug break-keep mt-0.5">
+                    {toast}
+                  </div>
+                </div>
               </div>
-              <div className="flex-1 font-semibold text-xs sm:text-sm text-[#FFF7E6]">
-                {toast}
-              </div>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+                  setToast(null)
+                }}
+                className="text-xs font-bold text-[#E8DFD1] hover:text-[#F5D061] py-1 px-2 rounded-lg bg-white/10 hover:bg-white/20 transition shrink-0"
+              >
+                닫기
+              </button>
             </div>
           </div>
         )}
