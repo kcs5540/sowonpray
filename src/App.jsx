@@ -10819,20 +10819,20 @@ function formatRelativeOrDate(dateStr) {
                       <div className="space-y-2 pt-1 transition-all duration-300">
                         {userMeritReward.isAgent ? (
                           <>
-                            {/* 1) 직접 법연: 1인 1,000 공덕 */}
+                            {/* 1) 전법 법연 맺기: 1인 1,000 공덕 */}
                             <button
                               type="button"
                               onClick={() => handleCopyRefLink(currentUser.code)}
                               className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="직접 추천 링크 복사하고 1,000 공덕 적립"
+                              title="전법 추천 링크 복사하고 1,000 공덕 적립"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 border border-white/5">
-                                  👥
+                                  🤝
                                 </div>
                                 <div className="min-w-0">
                                   <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
-                                    <span>직접 법연</span>
+                                    <span>전법 법연(法緣) 맺기</span>
                                     <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
                                       1인 1,000 공덕
                                     </span>
@@ -10852,7 +10852,7 @@ function formatRelativeOrDate(dateStr) {
                               </div>
                             </button>
 
-                            {/* 2) 산하 전법: 산하 1인 1,000 공덕 (포교위원장 전용 추가 혜택) */}
+                            {/* 2) 도량 법연 권선: 산하 1인 1,000 공덕 */}
                             <button
                               type="button"
                               onClick={() => {
@@ -10868,7 +10868,7 @@ function formatRelativeOrDate(dateStr) {
                                 </div>
                                 <div className="min-w-0">
                                   <div className="text-xs sm:text-sm font-bold text-[#FFE58A] flex items-center gap-1.5 flex-wrap">
-                                    <span>산하 전법</span>
+                                    <span>도량 법연 권선(勸善)</span>
                                     <span className="text-[10px] font-bold text-[#FFE58A] bg-[#F5D061]/25 px-1.5 py-0.5 rounded border border-[#F5D061]/30">
                                       산하 1,000 공덕
                                     </span>
@@ -10904,7 +10904,7 @@ function formatRelativeOrDate(dateStr) {
                                 </div>
                                 <div className="min-w-0">
                                   <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
-                                    <span>소원등 켜기</span>
+                                    <span>소원등(願燈) 점등</span>
                                     <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
                                       1회 200 공덕
                                     </span>
@@ -10924,7 +10924,7 @@ function formatRelativeOrDate(dateStr) {
                               </div>
                             </button>
 
-                            {/* 4) 한줄사경: 1회 100 공덕 (1일 최대 3회 = 300 공덕) */}
+                            {/* 4) 경전 사경 정진: 1회 100 공덕 (1일 최대 3회 = 300 공덕) */}
                             <button
                               type="button"
                               onClick={() => {
@@ -10932,7 +10932,7 @@ function formatRelativeOrDate(dateStr) {
                                 window.scrollTo({ top: 0, behavior: 'smooth' })
                               }}
                               className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="한줄사경 정진하고 100 공덕 적립 (1일 최대 3회)"
+                              title="경전 사경 정진하고 100 공덕 적립 (1일 최대 3회)"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 border border-white/5">
@@ -10940,7 +10940,7 @@ function formatRelativeOrDate(dateStr) {
                                 </div>
                                 <div className="min-w-0">
                                   <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
-                                    <span>한줄사경</span>
+                                    <span>경전 사경(寫經) 정진</span>
                                     <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
                                       1회 100 공덕
                                     </span>
@@ -10963,14 +10963,14 @@ function formatRelativeOrDate(dateStr) {
                               </div>
                             </button>
 
-                            {/* 5) 108 목탁멍: 1회 500 공덕 (1일 최대 1회) */}
+                            {/* 5) 108 목탁 염송 정진: 1회 500 공덕 (1일 최대 1회) */}
                             <button
                               type="button"
                               onClick={() => {
                                 setShow108MoktakModal(true)
                               }}
                               className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="108 목탁멍 정진하고 500 공덕 적립 (1일 1회)"
+                              title="108 목탁 염송 정진하고 500 공덕 적립 (1일 1회)"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0 border border-white/5 p-1">
@@ -10978,7 +10978,7 @@ function formatRelativeOrDate(dateStr) {
                                 </div>
                                 <div className="min-w-0">
                                   <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
-                                    <span>108 목탁멍</span>
+                                    <span>108 목탁 염송(念誦) 정진</span>
                                     <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
                                       1회 500 공덕
                                     </span>
@@ -11000,29 +11000,24 @@ function formatRelativeOrDate(dateStr) {
                                 </div>
                               </div>
                             </button>
-
-                            {/* 포교위원장 혜택 안내 */}
-                            <p className="text-[10.5px] text-[#FFE58A] leading-snug break-keep pt-1 text-center bg-black/20 p-2.5 rounded-xl border border-white/5">
-                              👑 <strong>[포교위원장 산하 전법 혜택]</strong> 직접 연결한 법연(1,000 공덕) 외에도 산하 모든 신규 가입자마다 1,000 공덕씩 실시간 자동 추가 적립됩니다.
-                            </p>
                           </>
                         ) : (
                           <>
                             {/* 일반 신도: 4항목 한 줄씩 리스트 */}
-                            {/* 1) 법연 연결: 1인 1,000 공덕 */}
+                            {/* 1) 전법 법연 맺기: 1인 1,000 공덕 */}
                             <button
                               type="button"
                               onClick={() => handleCopyRefLink(currentUser.code)}
                               className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="인연 추천 링크 복사하고 1,000 공덕 적립"
+                              title="전법 추천 링크 복사하고 1,000 공덕 적립"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 border border-white/5">
-                                  👥
+                                  🤝
                                 </div>
                                 <div className="min-w-0">
                                   <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
-                                    <span>법연 연결</span>
+                                    <span>전법 법연(法緣) 맺기</span>
                                     <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
                                       1인 1,000 공덕
                                     </span>
@@ -11058,7 +11053,7 @@ function formatRelativeOrDate(dateStr) {
                                 </div>
                                 <div className="min-w-0">
                                   <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
-                                    <span>소원등 켜기</span>
+                                    <span>소원등(願燈) 점등</span>
                                     <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
                                       1회 200 공덕
                                     </span>
@@ -11078,7 +11073,7 @@ function formatRelativeOrDate(dateStr) {
                               </div>
                             </button>
 
-                            {/* 3) 한줄사경: 1회 100 공덕 (1일 최대 3회 = 300 공덕) */}
+                            {/* 3) 경전 사경 정진: 1회 100 공덕 (1일 최대 3회 = 300 공덕) */}
                             <button
                               type="button"
                               onClick={() => {
@@ -11086,7 +11081,7 @@ function formatRelativeOrDate(dateStr) {
                                 window.scrollTo({ top: 0, behavior: 'smooth' })
                               }}
                               className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="한줄사경 정진하고 100 공덕 적립 (1일 최대 3회)"
+                              title="경전 사경 정진하고 100 공덕 적립 (1일 최대 3회)"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0 border border-white/5">
@@ -11094,7 +11089,7 @@ function formatRelativeOrDate(dateStr) {
                                 </div>
                                 <div className="min-w-0">
                                   <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
-                                    <span>한줄사경</span>
+                                    <span>경전 사경(寫經) 정진</span>
                                     <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
                                       1회 100 공덕
                                     </span>
@@ -11117,14 +11112,14 @@ function formatRelativeOrDate(dateStr) {
                               </div>
                             </button>
 
-                            {/* 5) 108 목탁멍: 1회 500 공덕 (1일 최대 1회) */}
+                            {/* 4) 108 목탁 염송 정진: 1회 500 공덕 (1일 최대 1회) */}
                             <button
                               type="button"
                               onClick={() => {
                                 setShow108MoktakModal(true)
                               }}
                               className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] group text-left"
-                              title="108 목탁멍 정진하고 500 공덕 적립 (1일 1회)"
+                              title="108 목탁 염송 정진하고 500 공덕 적립 (1일 1회)"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0 border border-white/5 p-1">
@@ -11132,7 +11127,7 @@ function formatRelativeOrDate(dateStr) {
                                 </div>
                                 <div className="min-w-0">
                                   <div className="text-xs sm:text-sm font-bold text-[#F5D061] flex items-center gap-1.5 flex-wrap">
-                                    <span>108 목탁멍</span>
+                                    <span>108 목탁 염송(念誦) 정진</span>
                                     <span className="text-[10px] font-normal text-[#BFB6AA] bg-white/10 px-1.5 py-0.5 rounded">
                                       1회 500 공덕
                                     </span>
@@ -11154,13 +11149,45 @@ function formatRelativeOrDate(dateStr) {
                                 </div>
                               </div>
                             </button>
-
-                            {/* 일반 신도 안내 문구 */}
-                            <p className="text-[10.5px] text-[#B8AEA0] leading-snug break-keep pt-1 text-center bg-black/20 p-2.5 rounded-xl border border-white/5">
-                              ※ 30명 법연 연결 시 포교위원장으로 위촉되며, 산하 조직의 모든 신규 가입자마다 1,000 공덕씩 추가 적립됩니다.
-                            </p>
                           </>
                         )}
+
+                        {/* 전체 신행·전법 공덕 혜택 요약 안내 (정통 불교 용어 표기) */}
+                        <div className="pt-2">
+                          <div className="bg-gradient-to-r from-amber-950/40 via-black/40 to-amber-950/40 p-3.5 rounded-2xl border border-[#F5D061]/30 text-left space-y-2 shadow-sm">
+                            <div className="text-xs font-bold text-[#F5D061] flex items-center justify-between pb-1.5 border-b border-white/10">
+                              <span className="flex items-center gap-1.5">
+                                <span>🪷</span>
+                                <span>소원사 신행·전법 공덕(功德) 혜택 안내</span>
+                              </span>
+                              <span className="text-[10px] font-bold text-emerald-300 bg-emerald-500/10 border border-emerald-400/30 px-2 py-0.5 rounded-full">
+                                일일 최대 1,000 공덕 + 법연
+                              </span>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] pt-0.5">
+                              <div className="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5">
+                                <span className="text-[#E8DFD1]">🤝 전법 법연(法緣) 맺기</span>
+                                <span className="font-bold text-[#F5D061] font-mono">1인 1,000 공덕</span>
+                              </div>
+                              <div className="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5">
+                                <span className="text-[#E8DFD1]">🪔 소원등(願燈) 점등</span>
+                                <span className="font-bold text-[#F5D061] font-mono">매일 200 공덕</span>
+                              </div>
+                              <div className="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5">
+                                <span className="text-[#E8DFD1]">✍️ 경전 사경(寫經) 정진</span>
+                                <span className="font-bold text-[#F5D061] font-mono">회당 100 (1일 300)</span>
+                              </div>
+                              <div className="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5">
+                                <span className="text-[#E8DFD1]">🔔 108 목탁 염송(念誦)</span>
+                                <span className="font-bold text-[#F5D061] font-mono">1일 500 공덕</span>
+                              </div>
+                            </div>
+                            <div className="text-[10px] text-[#D6CEC2] pt-1 space-y-0.5 leading-relaxed border-t border-white/5">
+                              <p>✨ <strong>매일 3대 일일 신행 정진</strong>(소원등 200 + 사경 300 + 목탁 500)으로 하루 최대 1,000 공덕이 자동 적립됩니다.</p>
+                              <p className="text-[#A89C8E]">※ 적립된 공덕은 제주 소원사 종무소에서 현금 또는 기도·불사 동참금으로 사용하실 수 있습니다.</p>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
