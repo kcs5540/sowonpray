@@ -7,6 +7,7 @@ import {
   MessageSquare,
   Search,
   UserCheck,
+  X,
 } from 'lucide-react'
 
 export default function AgentTab({

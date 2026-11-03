@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import {
   LogOut,
   EyeOff,
@@ -11,6 +11,7 @@ import {
   Phone,
   Save,
 } from 'lucide-react'
+import { extractPhone8Code, formatPhone11 } from '../../lib/supabase'
 
 export default function ProfileTab({
   isMaster,
@@ -79,7 +80,18 @@ export default function ProfileTab({
   showQrCode,
   qrDataUrl,
   handleDownloadQr,
+  setShow108MoktakModal,
+  userLanternStats,
+  settlements,
+  isLanternLit,
+  lanternData,
+  setShowQrCode,
+  currentUserBelieversCount,
+  currentUserWipaeCount,
+  recentAffiliatedMembers,
 }) {
+  const lastSyncedCodeRef = useRef('')
+
   return (
 <main className="flex-1 flex flex-col gap-4 px-2 py-3.5">
             {/* 대표님(마스터) 계정일 때만 노출되는 역할별 원클릭 계정 전환 스위치 바 */}

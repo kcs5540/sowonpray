@@ -32,6 +32,10 @@ export default function LanternTab({
   setShowAllRecentLanterns,
   getSasiDisplayInfo,
   formatPrayerDate,
+  handleLanternClick,
+  isLanternExpired,
+  userLanternStats,
+  PRAYER_CATEGORY_TEMPLATES,
 }) {
   return (
 ﻿          <main className="flex-1 flex flex-col gap-4 px-2 py-3.5">

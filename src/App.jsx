@@ -7105,6 +7105,8 @@ function formatRelativeOrDate(dateStr) {
             visitMemo={visitMemo}
             setVisitMemo={setVisitMemo}
             handleVisitSubmit={handleVisitSubmit}
+            handle108MoktakTap={handle108MoktakTap}
+            isHealingVoiceOn={isHealingVoiceOn}
           />
         )}
 
@@ -7161,6 +7163,10 @@ function formatRelativeOrDate(dateStr) {
             setShowAllRecentLanterns={setShowAllRecentLanterns}
             getSasiDisplayInfo={getSasiDisplayInfo}
             formatPrayerDate={formatPrayerDate}
+            handleLanternClick={handleLanternClick}
+            isLanternExpired={isLanternExpired}
+            userLanternStats={userLanternStats}
+            PRAYER_CATEGORY_TEMPLATES={PRAYER_CATEGORY_TEMPLATES}
           />
         )}
 
@@ -7299,6 +7305,15 @@ function formatRelativeOrDate(dateStr) {
             showQrCode={showQrCode}
             qrDataUrl={qrDataUrl}
             handleDownloadQr={handleDownloadQr}
+            setShow108MoktakModal={setShow108MoktakModal}
+            userLanternStats={userLanternStats}
+            settlements={settlements}
+            isLanternLit={isLanternLit}
+            lanternData={lanternData}
+            setShowQrCode={setShowQrCode}
+            currentUserBelieversCount={currentUserBelieversCount}
+            currentUserWipaeCount={currentUserWipaeCount}
+            recentAffiliatedMembers={recentAffiliatedMembers}
           />
         )}
 

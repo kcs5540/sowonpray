@@ -78,6 +78,8 @@ export default function HomeTab({
   visitMemo,
   setVisitMemo,
   handleVisitSubmit,
+  handle108MoktakTap,
+  isHealingVoiceOn,
 }) {
   const currentQuote = DAILY_QUOTES[quoteIdx] || DAILY_QUOTES[0]
 

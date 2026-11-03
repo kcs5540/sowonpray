@@ -58,6 +58,8 @@ export default function SutraTab({
   setSolvedQuizIds,
   BUDDHIST_QUIZZES,
 }) {
+  const totalLessonBatches = Math.ceil((SUTRA_STUDY_LESSONS || []).length / 5)
+
   return (
 <main className="flex-1 flex flex-col gap-4 px-2 py-3.5">
             {/* 상단 나의 공덕장 & 싱잉볼/목탁 버튼 */}
