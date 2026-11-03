@@ -166,18 +166,41 @@ export default function DongjaBotTab({
           <span className="text-[10px] text-[#A69B8D] block">제주 소원사 24시간 실시간 마음 상담</span>
         </div>
 
-        <button
-          type="button"
-          onClick={() => speakMessage(messages[messages.length - 1]?.text || '')}
-          className={`p-2 rounded-xl border transition ${
-            isSpeaking
-              ? 'bg-[#C59B27] text-[#1B1815] border-[#F5D061] animate-pulse'
-              : 'bg-white/5 text-[#E8DFD1] border-white/10 hover:bg-white/10'
-          }`}
-          title="동자승 목소리 켜기/끄기"
-        >
-          {isSpeaking ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => {
+              if ('speechSynthesis' in window) window.speechSynthesis.cancel()
+              setMessages([
+                {
+                  id: `welcome-${Date.now()}`,
+                  sender: 'dongja',
+                  text: `보살님, 반갑습니다! 🙏\n저는 제주 소원사 대웅전에서 주지 스님을 모시며 지혜를 닦는 '소원 동자승'이에요.\n\n보살님의 [생년월일(음력/양력)과 태어난 시간], 그리고 [요즘의 걱정거리나 바라는 소원]을 편하게 말씀해 주세요. 부처님의 밝은 지혜와 따뜻한 사주 풀이로 마음을 활짝 열어드릴게요! ✨`,
+                  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                },
+              ])
+              setDongjaMood('smile')
+              showToast('동자승과의 대화가 초기화되었습니다.')
+            }}
+            className="p-2 rounded-xl border border-white/10 bg-white/5 text-[#E8DFD1] hover:bg-white/10 hover:text-[#F5D061] transition"
+            title="대화 새로 시작하기"
+          >
+            <RefreshCw className="w-4 h-4" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => speakMessage(messages[messages.length - 1]?.text || '')}
+            className={`p-2 rounded-xl border transition ${
+              isSpeaking
+                ? 'bg-[#C59B27] text-[#1B1815] border-[#F5D061] animate-pulse'
+                : 'bg-white/5 text-[#E8DFD1] border-white/10 hover:bg-white/10'
+            }`}
+            title="동자승 목소리 켜기/끄기"
+          >
+            {isSpeaking ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+          </button>
+        </div>
       </div>
 
       {/* 2. 동자승 살아있는 캐릭터 비주얼 쇼케이스 */}
