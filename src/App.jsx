@@ -1793,12 +1793,13 @@ function formatRelativeOrDate(dateStr) {
       localStorage.removeItem('sowonpray_members_v6')
       localStorage.removeItem('sowonpray_members_v7')
       localStorage.removeItem('sowonpray_members_v8')
-      const saved = localStorage.getItem('sowonpray_members_v9')
+      localStorage.removeItem('sowonpray_members_v9')
+      const saved = localStorage.getItem('sowonpray_members_v10')
 
       // 레거시 108 더미 캐시 안전 제거
       try {
         const c33 = localStorage.getItem('sowonpray_merit_33065540')
-        if (c33 === '108' || c33 === '109' || c33 === '856') localStorage.removeItem('sowonpray_merit_33065540')
+        if (c33 && Number(c33) > 100) localStorage.removeItem('sowonpray_merit_33065540')
         localStorage.removeItem('sowonpray_merit_82341088')
       } catch (e) {}
 
@@ -1806,7 +1807,7 @@ function formatRelativeOrDate(dateStr) {
         list.map((m) => {
           try {
             const localCached = localStorage.getItem(`sowonpray_merit_${m.code}`)
-            if (localCached && localCached !== '108' && localCached !== '109') {
+            if (localCached && localCached !== '108' && localCached !== '109' && Number(localCached) < 100) {
               const parsed = parseInt(localCached, 10)
               if (!isNaN(parsed) && parsed > (m.merit_count || 0)) {
                 return { ...m, merit_count: parsed }
@@ -1981,7 +1982,7 @@ function formatRelativeOrDate(dateStr) {
 
   // 상태 변경 시 로컬스토리지 자동 동기화
   useEffect(() => {
-    localStorage.setItem('sowonpray_members_v9', JSON.stringify(members))
+    localStorage.setItem('sowonpray_members_v10', JSON.stringify(members))
   }, [members])
 
   useEffect(() => {
@@ -2043,7 +2044,7 @@ function formatRelativeOrDate(dateStr) {
               let meritCount = m.merit_count || 0
               try {
                 const localCached = localStorage.getItem(`sowonpray_merit_${m.code}`)
-                if (localCached && localCached !== '108' && localCached !== '109') {
+                if (localCached && localCached !== '108' && localCached !== '109' && Number(localCached) < 100) {
                   const parsed = parseInt(localCached, 10)
                   if (!isNaN(parsed) && parsed > meritCount) {
                     meritCount = parsed
@@ -3756,7 +3757,7 @@ function formatRelativeOrDate(dateStr) {
   const [guestMeritCount, setGuestMeritCount] = useState(() => {
     try {
       const saved = localStorage.getItem('sowonpray_guest_merit')
-      return saved ? (parseInt(saved, 10) === 856 ? 50 : (parseInt(saved, 10) || 50)) : 50
+      return saved ? (parseInt(saved, 10) > 100 ? 50 : (parseInt(saved, 10) || 50)) : 50
     } catch {
       return 0
     }
