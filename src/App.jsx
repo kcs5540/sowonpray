@@ -70,6 +70,7 @@ import SutraTab from './components/Tabs/SutraTab'
 import AgentTab from './components/Tabs/AgentTab'
 import HomeTab from './components/Tabs/HomeTab'
 import ProfileTab from './components/Tabs/ProfileTab'
+import DongjaBotTab from './components/Tabs/DongjaBotTab'
 import {
   notifyPrayerSubmission,
   notifyPrayerCancellation,
@@ -7222,6 +7223,16 @@ function formatRelativeOrDate(dateStr) {
             solvedQuizIds={solvedQuizIds}
             setSolvedQuizIds={setSolvedQuizIds}
             BUDDHIST_QUIZZES={BUDDHIST_QUIZZES}
+          />
+        )}
+
+        {/* ==================== 🧒 지혜 동자승 1:1 신행 사주 상담 탭 ==================== */}
+        {activeTab === 'dongja' && (
+          <DongjaBotTab
+            setActiveTab={setActiveTab}
+            currentUser={currentUser}
+            playMoktakSound={playMoktakSound}
+            showToast={showToast}
           />
         )}
 
