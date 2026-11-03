@@ -10824,27 +10824,25 @@ function formatRelativeOrDate(dateStr) {
                           <button
                             type="button"
                             onClick={() => handleCopyRefLink(currentUser.code)}
-                            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] text-left"
+                            className="w-full px-3 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer active:scale-[0.99] text-left"
                             title="전법 추천 링크 복사하기"
                           >
-                            <div className="flex items-center gap-2 min-w-0">
-                              <span className="text-base shrink-0">🤝</span>
-                              <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <span className="text-base shrink-0">🤝</span>
                                 <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
-                                  전법 법연(法緣) 맺기
-                                </span>
-                                <span className="text-[10px] text-[#A89C8E] bg-white/5 px-1.5 py-0.5 rounded border border-white/5">
-                                  1인 1,000
+                                  전법 법연 맺기
                                 </span>
                               </div>
-                            </div>
-                            <div className="text-right shrink-0 pl-2 flex items-baseline gap-2">
-                              <span className="text-xs font-semibold text-[#D6CEC2]">
+                              <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
                                 {userMeritReward.isAgent
                                   ? `${userMeritReward.directBelieversCount}명`
                                   : `${userMeritReward.believersCount}명`}
                               </span>
-                              <span className="text-xs sm:text-sm font-mono font-bold text-emerald-300">
+                            </div>
+                            <div className="flex items-center justify-between mt-1 text-[11px]">
+                              <span className="text-[#A89C8E]">1인 1,000 공덕</span>
+                              <span className="font-mono font-bold text-emerald-300">
                                 +{(userMeritReward.isAgent
                                   ? userMeritReward.directBelieversReward
                                   : userMeritReward.believersReward
@@ -10862,25 +10860,23 @@ function formatRelativeOrDate(dateStr) {
                                 const el = document.getElementById('affiliated-members-section')
                                 if (el) el.scrollIntoView({ behavior: 'smooth' })
                               }}
-                              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#F5D061]/10 hover:bg-[#F5D061]/15 border border-[#F5D061]/35 transition cursor-pointer active:scale-[0.99] text-left"
+                              className="w-full px-3 py-2.5 rounded-xl bg-[#F5D061]/10 hover:bg-[#F5D061]/15 border border-[#F5D061]/35 transition cursor-pointer active:scale-[0.99] text-left"
                               title="산하 신도 명단 확인하기"
                             >
-                              <div className="flex items-center gap-2 min-w-0">
-                                <span className="text-base shrink-0">🌿</span>
-                                <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-base shrink-0">🌿</span>
                                   <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
-                                    도량 법연 권선(勸善)
-                                  </span>
-                                  <span className="text-[10px] font-bold text-[#FFE58A] bg-[#F5D061]/20 px-1.5 py-0.5 rounded border border-[#F5D061]/30">
-                                    산하 1,000
+                                    도량 권선
                                   </span>
                                 </div>
-                              </div>
-                              <div className="text-right shrink-0 pl-2 flex items-baseline gap-2">
-                                <span className="text-xs font-semibold text-[#D6CEC2]">
+                                <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
                                   {userMeritReward.indirectBelieversCount}명
                                 </span>
-                                <span className="text-xs sm:text-sm font-mono font-bold text-emerald-300">
+                              </div>
+                              <div className="flex items-center justify-between mt-1 text-[11px]">
+                                <span className="text-[#A89C8E]">산하 1인 1,000 공덕</span>
+                                <span className="font-mono font-bold text-emerald-300">
                                   +{userMeritReward.indirectBelieversReward.toLocaleString()} 공덕
                                 </span>
                               </div>
@@ -10893,7 +10889,7 @@ function formatRelativeOrDate(dateStr) {
                           <div className="flex items-center justify-between pb-1.5 border-b border-[#F5D061]/20 px-0.5">
                             <div className="text-xs font-extrabold text-[#FFE58A] flex items-center gap-1">
                               <span>✨</span>
-                              <span>매일 3대 일일 신행(信行)</span>
+                              <span>매일 3대 일일 신행</span>
                             </div>
                             <span className="text-[10px] font-black text-emerald-300 bg-emerald-500/20 border border-emerald-400/40 px-2 py-0.5 rounded-full shrink-0">
                               하루 최대 1,000 공덕
@@ -10908,25 +10904,23 @@ function formatRelativeOrDate(dateStr) {
                                 setActiveTab('lantern')
                                 window.scrollTo({ top: 0, behavior: 'smooth' })
                               }}
-                              className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
+                              className="w-full px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
                               title="소원등 켜러 가기"
                             >
-                              <div className="flex items-center gap-2 min-w-0">
-                                <span className="text-base shrink-0">🪔</span>
-                                <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-base shrink-0">🪔</span>
                                   <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
-                                    소원등(願燈) 점등
-                                  </span>
-                                  <span className="text-[10px] text-[#A89C8E] bg-white/5 px-1.5 py-0.5 rounded">
-                                    1회 200
+                                    소원등 점등
                                   </span>
                                 </div>
-                              </div>
-                              <div className="text-right shrink-0 pl-2 flex items-baseline gap-2">
-                                <span className="text-xs font-semibold text-[#D6CEC2]">
+                                <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
                                   {userMeritReward.lanternCount}회
                                 </span>
-                                <span className="text-xs sm:text-sm font-mono font-bold text-emerald-300">
+                              </div>
+                              <div className="flex items-center justify-between mt-1 text-[11px]">
+                                <span className="text-[#A89C8E]">1회 200 공덕</span>
+                                <span className="font-mono font-bold text-emerald-300">
                                   +{userMeritReward.lanternReward.toLocaleString()} 공덕
                                 </span>
                               </div>
@@ -10939,28 +10933,28 @@ function formatRelativeOrDate(dateStr) {
                                 setActiveTab('sutra')
                                 window.scrollTo({ top: 0, behavior: 'smooth' })
                               }}
-                              className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
+                              className="w-full px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
                               title="사경 정진하러 가기"
                             >
-                              <div className="flex items-center gap-2 min-w-0">
-                                <span className="text-base shrink-0">✍️</span>
-                                <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-base shrink-0">✍️</span>
                                   <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
-                                    경전 사경(寫經) 정진
-                                  </span>
-                                  <span className="text-[10px] text-[#A89C8E] bg-white/5 px-1.5 py-0.5 rounded">
-                                    1회 100
-                                  </span>
-                                  <span className="text-[9.5px] font-semibold text-emerald-300 bg-emerald-500/15 border border-emerald-400/30 px-1.5 py-0.5 rounded">
-                                    오늘 {userMeritReward.todaySutraRewardCount}/3
+                                    경전 사경 정진
                                   </span>
                                 </div>
-                              </div>
-                              <div className="text-right shrink-0 pl-2 flex items-baseline gap-2">
-                                <span className="text-xs font-semibold text-[#D6CEC2]">
+                                <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
                                   {userMeritReward.sutraCount}회
                                 </span>
-                                <span className="text-xs sm:text-sm font-mono font-bold text-emerald-300">
+                              </div>
+                              <div className="flex items-center justify-between mt-1 text-[11px]">
+                                <span className="text-[#A89C8E]">
+                                  1회 100 공덕{' '}
+                                  <span className="text-emerald-400 font-semibold">
+                                    (오늘 {userMeritReward.todaySutraRewardCount}/3회)
+                                  </span>
+                                </span>
+                                <span className="font-mono font-bold text-emerald-300">
                                   +{userMeritReward.sutraReward.toLocaleString()} 공덕
                                 </span>
                               </div>
@@ -10972,30 +10966,30 @@ function formatRelativeOrDate(dateStr) {
                               onClick={() => {
                                 setShow108MoktakModal(true)
                               }}
-                              className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
+                              className="w-full px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
                               title="목탁 정진하러 가기"
                             >
-                              <div className="flex items-center gap-2 min-w-0">
-                                <div className="w-5 h-5 flex items-center justify-center shrink-0">
-                                  <img src="/images/moktak_realistic.png" alt="목탁" className="w-full h-full object-contain" />
-                                </div>
-                                <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-4 h-4 flex items-center justify-center shrink-0">
+                                    <img src="/images/moktak_realistic.png" alt="목탁" className="w-full h-full object-contain" />
+                                  </div>
                                   <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
-                                    108 목탁 염송(念誦)
-                                  </span>
-                                  <span className="text-[10px] text-[#A89C8E] bg-white/5 px-1.5 py-0.5 rounded">
-                                    1회 500
-                                  </span>
-                                  <span className="text-[9.5px] font-semibold text-emerald-300 bg-emerald-500/15 border border-emerald-400/30 px-1.5 py-0.5 rounded">
-                                    오늘 {userMeritReward.todayMoktakRewardCount}/1
+                                    108 목탁 염송
                                   </span>
                                 </div>
-                              </div>
-                              <div className="text-right shrink-0 pl-2 flex items-baseline gap-2">
-                                <span className="text-xs font-semibold text-[#D6CEC2]">
+                                <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
                                   {userMeritReward.moktakCount}회
                                 </span>
-                                <span className="text-xs sm:text-sm font-mono font-bold text-emerald-300">
+                              </div>
+                              <div className="flex items-center justify-between mt-1 text-[11px]">
+                                <span className="text-[#A89C8E]">
+                                  1회 500 공덕{' '}
+                                  <span className="text-emerald-400 font-semibold">
+                                    (오늘 {userMeritReward.todayMoktakRewardCount}/1회)
+                                  </span>
+                                </span>
+                                <span className="font-mono font-bold text-emerald-300">
                                   +{userMeritReward.moktakReward.toLocaleString()} 공덕
                                 </span>
                               </div>
