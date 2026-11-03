@@ -10779,32 +10779,32 @@ function formatRelativeOrDate(dateStr) {
                     </div>
 
                     {/* 메인 누적 공덕액 */}
-                    <div className="bg-black/30 rounded-xl p-3 border border-white/10 flex items-center justify-between gap-2 flex-wrap">
-                      <div>
-                        <div className="text-[10px] text-[#CFC5B6]">누적 신행 공덕 (실시간 합계)</div>
-                        <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                          <div className="font-serif-kr text-2xl sm:text-3xl font-black text-[#FFE58A] tracking-tight flex items-baseline gap-1.5">
+                    <div className="bg-black/30 rounded-xl p-3 border border-white/10 space-y-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <div>
+                          <div className="text-[10px] text-[#CFC5B6]">누적 신행 공덕 (실시간 합계)</div>
+                          <div className="font-serif-kr text-2xl sm:text-3xl font-black text-[#FFE58A] tracking-tight flex items-baseline gap-1.5 mt-0.5">
                             <span>{userMeritReward.totalReward.toLocaleString()}</span>
                             <span className="text-base sm:text-lg font-bold text-[#F5D061]">공덕</span>
                           </div>
-
-                          {/* 🎯 금액 오른쪽에 배치된 [내용보기 ▼ / 접기 ▲] 버튼 */}
-                          <button
-                            type="button"
-                            onClick={() => setIsRewardDetailOpen((prev) => !prev)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#F5D061]/15 hover:bg-[#F5D061]/25 border border-[#F5D061]/40 text-xs font-bold text-[#FFE58A] transition cursor-pointer active:scale-95 shadow-sm"
-                            title="세부 적립 내역 확인하기"
-                          >
-                            <span>{isRewardDetailOpen ? '접기' : '내용보기'}</span>
-                            <span className={`text-[9px] transition-transform duration-200 ${isRewardDetailOpen ? 'rotate-180' : ''}`}>
-                              ▼
-                            </span>
-                          </button>
                         </div>
+
+                        {/* 🎯 우측 끝에 위치한 [내역 ▼ / 접기 ▲] 버튼 */}
+                        <button
+                          type="button"
+                          onClick={() => setIsRewardDetailOpen((prev) => !prev)}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F5D061]/15 hover:bg-[#F5D061]/25 border border-[#F5D061]/40 text-xs font-bold text-[#FFE58A] transition cursor-pointer active:scale-95 shadow-sm shrink-0"
+                          title="세부 적립 내역 확인하기"
+                        >
+                          <span>{isRewardDetailOpen ? '접기' : '내역'}</span>
+                          <span className={`text-[9px] transition-transform duration-200 ${isRewardDetailOpen ? 'rotate-180' : ''}`}>
+                            ▼
+                          </span>
+                        </button>
                       </div>
 
-                      <div className="self-center">
-                        <span className="text-[10.5px] text-[#D6CEC2] bg-white/5 border border-white/10 px-2.5 py-1 rounded-lg">
+                      <div className="pt-1.5 border-t border-white/5">
+                        <span className="text-[10.5px] text-[#D6CEC2] block">
                           ※ 제주 소원사 종무소에서 현금 또는 불사참여 사용 가능
                         </span>
                       </div>
