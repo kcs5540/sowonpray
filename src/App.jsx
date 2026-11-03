@@ -10805,7 +10805,7 @@ function formatRelativeOrDate(dateStr) {
 
                       <div className="flex flex-col gap-1 self-center">
                         <span className="text-[10.5px] text-[#D6CEC2] bg-white/5 border border-white/10 px-2.5 py-1 rounded-lg">
-                          ※ 1 공덕 = 1원의 보시금 가치로 제주 소원사 종무소에서 기도·불사 공덕금 차감 및 현금정산 가능
+                          ※ 제주 소원사 종무소에서 현금 또는 불사참여 사용 가능
                         </span>
                         <span className="text-[10.5px] text-[#FFE58A] font-semibold bg-[#F5D061]/10 border border-[#F5D061]/30 px-2.5 py-0.5 rounded-lg flex items-center gap-1">
                           <span>✨</span>
