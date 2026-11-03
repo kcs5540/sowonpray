@@ -16,7 +16,18 @@ export default class ErrorBoundary extends React.Component {
 
   handleReload = () => {
     if (typeof window !== 'undefined') {
-      window.location.href = '/'
+      try {
+        // 캐시 및 서비스워커 찌꺼기를 안전하게 정리하여 최신 코드를 즉시 받아오도록 조치
+        if ('caches' in window) {
+          caches.keys().then((names) => {
+            names.forEach((name) => caches.delete(name))
+          })
+        }
+      } catch (e) {
+        console.warn('Cache clear note:', e)
+      }
+      // 캐시 방지 타임스탬프 쿼리를 붙여 무조건 서버의 최신 화면으로 강제 이동
+      window.location.replace(`/?t=${Date.now()}`)
     }
   }
 
@@ -55,7 +66,7 @@ export default class ErrorBoundary extends React.Component {
               <button
                 type="button"
                 onClick={this.handleReload}
-                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#C59B27] hover:brightness-110 text-[#1B1815] font-serif-kr font-bold text-sm shadow-md transition cursor-pointer"
+                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#C59B27] hover:brightness-110 active:scale-95 text-[#1B1815] font-serif-kr font-bold text-sm shadow-md transition cursor-pointer"
               >
                 🪷 소원사 법당 홈으로 안전하게 복귀
               </button>
