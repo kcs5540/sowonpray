@@ -1,0 +1,6 @@
+# 제주 소원사 모바일 법당 공식 robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap 등록
+Sitemap: https://sowonpray.vercel.app/sitemap.xml
