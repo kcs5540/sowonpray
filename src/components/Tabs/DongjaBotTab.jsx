@@ -12,7 +12,7 @@ import {
   MessageCircle,
 } from 'lucide-react'
 
-// 🧒 제주 소원사 지혜 동자승 1:1 대화 및 신행 사주 상담 탭
+// 🧒 제주 소원사 지혜 동자승 1:1 대화 및 신행 사주 상담 탭 (Gemini AI 탑재)
 export default function DongjaBotTab({
   setActiveTab,
   currentUser,
@@ -39,7 +39,7 @@ export default function DongjaBotTab({
     chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isThinking])
 
-  // 동자승 음성 읽기 (TTS 브라우저 음성 지원)
+  // 동자승 음성 읽기 (TTS 고품질 지원)
   const speakMessage = (text) => {
     if (!('speechSynthesis' in window)) {
       showToast('이 기기에서는 음성 안내를 지원하지 않습니다.')
@@ -53,12 +53,11 @@ export default function DongjaBotTab({
     }
 
     window.speechSynthesis.cancel()
-    // 이모지 및 특수문자 제거 후 낭독
-    const cleanText = text.replace(/[🙏✨🪔🧒💡💡]/g, '').slice(0, 200)
+    const cleanText = text.replace(/[🙏✨🪔🧒💡]/g, '').slice(0, 250)
     const utterance = new SpeechSynthesisUtterance(cleanText)
     utterance.lang = 'ko-KR'
-    utterance.rate = 1.05 // 조금 경쾌하고 또랑또랑한 톤
-    utterance.pitch = 1.35 // 맑은 어린 동자승 목소리 톤
+    utterance.rate = 1.02
+    utterance.pitch = 1.35 // 맑은 동자승 목소리
 
     utterance.onstart = () => setIsSpeaking(true)
     utterance.onend = () => setIsSpeaking(false)
@@ -67,8 +66,8 @@ export default function DongjaBotTab({
     window.speechSynthesis.speak(utterance)
   }
 
-  // 메시지 전송 및 동자승 지혜 답변 생성 (사주 분석 + 불교식 처방)
-  const handleSendMessage = () => {
+  // Gemini AI 백엔드와 실시간 티키타카 대화
+  const handleSendMessage = async () => {
     const userMsg = inputText.trim()
     if (!userMsg || isThinking) return
 
@@ -80,21 +79,28 @@ export default function DongjaBotTab({
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     }
 
-    setMessages((prev) => [...prev, userMessageObj])
+    const nextMessages = [...messages, userMessageObj]
+    setMessages(nextMessages)
     setInputText('')
     setIsThinking(true)
     setDongjaMood('pray')
 
-    // 동자승 사주 및 인생 상담 로직 (1.8초 뒤 응답 연출)
-    setTimeout(() => {
-      let replyText = ''
+    try {
+      const response = await fetch('/api/dongja', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: userMsg,
+          history: nextMessages.slice(-6),
+        }),
+      })
 
-      // 간단한 생년 키워드 탐색 (예: 70년대, 80년대, 90년대, 띠 등)
-      if (userMsg.includes('년') || userMsg.includes('생') || userMsg.includes('월')) {
-        replyText = `보살님의 사주와 기운을 정성껏 살펴보았어요. 🙏\n\n보살님은 본래 은은한 등불처럼 주변을 따뜻하게 비추는 어진 복덕을 품고 태어나셨네요.\n\n비록 최근 들어 사주에 차가운 바람이 스쳐 지나가며 마음고생이 많으셨겠지만, 부처님 법화경 말씀에 '모든 어둠은 한 줄기 빛이 드는 순간 사라진다'고 하셨어요. 가을을 지나면서 막혔던 매듭이 스르륵 풀리는 귀인의 기운이 가득합니다.\n\n불안한 마음은 오늘 밤 소원사 도량에 모두 내려놓으시고, 부처님 전에 '1일 광명 소원등'을 켜서 복덕의 심지를 환하게 밝혀보세요. 스님께서 내일 아침 사시예불에 정성껏 축원해 주실 거예요! 🪔`
-      } else {
-        replyText = `보살님, 말씀해 주신 사연을 들으니 그동안 얼마나 가슴을 졸이며 애쓰셨을지 동자승의 마음도 뭉클해져요. 😢\n\n부처님께서는 '과거의 일에 얽매이지 말고, 오지 않은 미래를 미리 두려워하지 말라. 다만 지금 이 순간 마음의 평온을 찾으라'고 하셨답니다.\n\n보살님이 지으신 정성과 선한 마음은 결코 헛되지 않고 큰 복으로 돌아올 거예요. 오늘 밤 편안한 마음으로 주무실 수 있도록 동자승도 부처님 전에 두 손 모아 간절히 기도드릴게요. 🙏✨`
+      if (!response.ok) {
+        throw new Error('API response failed')
       }
+
+      const data = await response.json()
+      const replyText = data.reply || '보살님, 기도를 올리는 중이니 잠시 후 다시 말씀해 주세요. 🙏'
 
       const dongjaMessageObj = {
         id: `dongja-${Date.now()}`,
@@ -108,9 +114,31 @@ export default function DongjaBotTab({
       setIsThinking(false)
       setDongjaMood('blessing')
 
-      // 자동으로 부드럽게 낭독
+      // 음성 재생
       speakMessage(replyText)
-    }, 1800)
+    } catch (err) {
+      console.warn('Dongja API Fallback triggered:', err)
+      // 오프라인/통신 지연 시 스마트 백업 답변
+      let fallbackText = ''
+      if (userMsg.includes('사주') && !userMsg.match(/\d/)) {
+        fallbackText = `보살님, 사주를 정확히 짚어드리려면 태어나신 [년도/월/일]과 [태어난 시간]을 알려주셔야 해요! 🙏\n\n예를 들어 '1975년 음력 3월 15일 아침 8시' 처럼 편하게 말씀해 주시면, 동자승이 부처님 지혜로 오행과 운세를 정성껏 풀어드릴게요~ ✨`
+      } else {
+        fallbackText = `보살님의 간절한 사연을 부처님 전에 두 손 모아 올렸습니다. 🙏\n\n모든 번뇌는 지나가는 구름과 같으니 마음을 편안히 가지세요. 대웅전에 소원등 하나 밝혀두시면 스님께서 사시예불 축원으로 든든하게 보살펴 주실 거예요! 🪔`
+      }
+
+      const fallbackMsgObj = {
+        id: `dongja-${Date.now()}`,
+        sender: 'dongja',
+        text: fallbackText,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        showLanternCta: true,
+      }
+
+      setMessages((prev) => [...prev, fallbackMsgObj])
+      setIsThinking(false)
+      setDongjaMood('smile')
+      speakMessage(fallbackText)
+    }
   }
 
   return (
@@ -166,7 +194,7 @@ export default function DongjaBotTab({
                 {dongjaMood === 'pray' ? '🙏' : dongjaMood === 'blessing' ? '✨' : '🧒'}
               </div>
               <span className="text-[10px] font-bold text-[#F5D061] mt-1 font-serif-kr tracking-tight">
-                {dongjaMood === 'pray' ? '두 손 모아 기도중...' : isThinking ? '사주 풀이중...' : '지혜 동자승'}
+                {dongjaMood === 'pray' ? '두 손 모아 기도중...' : isThinking ? '지혜를 모으는 중...' : '지혜 동자승'}
               </span>
             </div>
           </div>
@@ -181,10 +209,10 @@ export default function DongjaBotTab({
         {/* 질문 추천 퀵 칩 */}
         <div className="flex items-center gap-1.5 mt-4 overflow-x-auto max-w-full pb-1 scrollbar-none [&::-webkit-scrollbar]:hidden">
           {[
-            '올해 내 사주와 운세는 어때?',
+            '내 사주 봐줘',
             '자녀 시험·취업운이 궁금해요',
-            '마음이 불안하고 답답해요',
-            '재물운과 사업운 풀이해줘',
+            '마음이 답답하고 불안해요',
+            '올해 재물운과 사업운은 어때?',
           ].map((chip) => (
             <button
               key={chip}
@@ -261,7 +289,7 @@ export default function DongjaBotTab({
             </div>
             <div className="p-3 rounded-2xl bg-[#251E17] border border-[#C59B27]/30 text-xs text-[#F5D061] flex items-center gap-2">
               <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#F5D061]" />
-              <span>동자승이 만세력 사주를 살피며 기도 중이에요...</span>
+              <span>동자승이 만세력과 부처님 지혜를 모으는 중이에요...</span>
             </div>
           </div>
         )}
@@ -282,7 +310,7 @@ export default function DongjaBotTab({
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder="생년월일이나 고민을 편하게 적어보세요..."
+            placeholder="생년월일이나 마음의 고민을 편하게 적어보세요..."
             disabled={isThinking}
             className="flex-1 py-2.5 px-3.5 rounded-2xl bg-[#282018] border border-[#C59B27]/40 text-[#FAF8F5] text-xs sm:text-sm focus:outline-none focus:border-[#F5D061] placeholder:text-[#8C8071]"
           />
