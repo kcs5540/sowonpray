@@ -1946,9 +1946,11 @@ function formatRelativeOrDate(dateStr) {
 
   // 알림 토스트 메시지
   const [toast, setToast] = useState(null)
-  const showToast = (msg) => {
+  const toastTimerRef = useRef(null)
+  const showToast = (msg, duration = 6000) => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
     setToast(msg)
-    setTimeout(() => setToast(null), 3500)
+    toastTimerRef.current = setTimeout(() => setToast(null), duration)
   }
 
   // 발원문 접수일시 친화적 포맷팅 함수
@@ -7024,12 +7026,23 @@ function formatRelativeOrDate(dateStr) {
           )}
         </div>
 
-        {/* 토스트 알림 */}
+        {/* 토스트 알림 (화면 정중앙 위치 & 가독성 높은 디자인 & 6초 유지 & 터치 시 즉시 닫기) */}
         {toast && (
-          <div className="fixed top-16 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
-            <div className="w-full max-w-[440px] bg-[#1E1A16]/95 text-[#FAF8F5] border border-[#F5D061] px-4 py-3 rounded-xl shadow-2xl text-xs leading-relaxed flex items-center gap-2.5 animate-bounce pointer-events-auto break-keep">
-              <Sparkles className="w-4 h-4 text-[#F5D061] shrink-0" />
-              <span>{toast}</span>
+          <div className="fixed inset-x-0 top-1/2 -translate-y-1/2 z-[100] flex justify-center px-5 pointer-events-none">
+            <div
+              onClick={() => {
+                if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+                setToast(null)
+              }}
+              className="w-full max-w-[400px] bg-[#1E1A16]/98 text-[#FAF8F5] border-2 border-[#F5D061] p-4 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.85)] leading-relaxed flex items-center gap-3 pointer-events-auto cursor-pointer break-keep"
+              title="터치하면 닫힙니다"
+            >
+              <div className="w-8 h-8 rounded-full bg-[#F5D061]/20 flex items-center justify-center shrink-0 border border-[#F5D061]/40">
+                <Sparkles className="w-4 h-4 text-[#F5D061]" />
+              </div>
+              <div className="flex-1 font-semibold text-xs sm:text-sm text-[#FFF7E6]">
+                {toast}
+              </div>
             </div>
           </div>
         )}
