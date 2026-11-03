@@ -5286,21 +5286,7 @@ function formatRelativeOrDate(dateStr) {
       setWishText(PRAYER_CATEGORY_TEMPLATES[cat] || '')
       setWishTarget('')
 
-      const isWipaeToast = (cat || '').includes('위패') || (cat || '').includes('생전예수재')
-      const isSamseongToast =
-        (cat || '').includes('삼성각') ||
-        (cat || '').includes('기와') ||
-        (cat || '').includes('단청') ||
-        (cat || '').includes('명패')
-      const isIndeungToast = (cat || '').includes('인등')
-      const toastMsg = isWipaeToast
-        ? '🏛️ [영구 위패 봉안 불사]가 정식 접수되어 종무소로 알림이 전송되었습니다.'
-        : isSamseongToast
-        ? '🏔️ [삼성각 성전 건립 불사] 동참이 정식 접수되어 종무소로 알림이 전송되었습니다.'
-        : isIndeungToast
-        ? '🪔 [대웅전 1년 인등 불사]가 정식 접수되어 종무소로 알림이 전송되었습니다.'
-        : '🙏 간절한 발원이 정식 접수되어 사시예불 축원 명부에 등재되었습니다.'
-      showToast(toastMsg)
+// [합장하며 확인] 모달을 닫은 뒤 화면 하단에 불필요하게 6초간 잔류하며 화면을 가리던 중복 플로팅 토스트 제거
     }
 
     if (closeModal) {
