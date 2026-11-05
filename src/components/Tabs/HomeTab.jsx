@@ -350,7 +350,7 @@ export default function HomeTab({
                   <div className="flex items-center gap-2 mb-1.5">
                     <span className="px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 border border-[#F5D061]/40 text-[#F5D061] text-[10.5px] font-bold inline-flex items-center gap-1.5 whitespace-nowrap shrink-0">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
-                      <span>고요 법당</span>
+                      <span>모바일법당</span>
                     </span>
                     <span className="text-[11px] text-[#C2B6A6] whitespace-nowrap truncate">잠깐 쉬어가도 괜찮아요 🍃</span>
                   </div>
