@@ -303,14 +303,14 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
           <button
             type="button"
             onClick={toggleChant}
-            className={`px-2.5 py-1.5 rounded-full backdrop-blur-md border text-[11px] font-serif-kr flex items-center gap-1 transition active:scale-95 ${
+            className={`px-2.5 py-1.5 rounded-full backdrop-blur-md border text-[11px] font-serif-kr flex items-center gap-1.5 transition active:scale-95 ${
               isPlayingChant
                 ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061] font-bold shadow-[0_0_12px_rgba(245,208,97,0.5)]'
                 : 'bg-black/60 text-[#D6CEC2] border-white/20 hover:text-white'
             }`}
             title="스님 반야심경 염불 듣기"
           >
-            <span>📿</span>
+            <img src="/images/avatar_yeomju_3d.png" alt="3D 염주" className="w-3.5 h-3.5 object-contain inline" />
             <span>{isPlayingChant ? '염불 중' : '염불 듣기'}</span>
             {isPlayingChant && <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse shrink-0" />}
           </button>
@@ -444,6 +444,25 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
               {/* 도량 비단 방석 */}
               <div className="w-34 sm:w-42 h-7 sm:h-8 rounded-[100%] bg-gradient-to-r from-[#6E4F28] via-[#A87B3F] to-[#6E4F28] border-2 border-[#E5B556]/60 mx-auto -mt-3 shadow-[0_12px_25px_rgba(0,0,0,0.95)] relative z-0" />
 
+              {/* 방석 좌측 실제 3D 108 염주 (터치하여 염송하며 직접 굴리는 인터랙션) */}
+              <div 
+                onClick={handleYeomju}
+                className={`absolute -left-3 sm:-left-5 bottom-0 z-20 cursor-pointer transition-transform duration-200 ${
+                  actionState === 'yeomju' ? 'scale-125 rotate-12' : 'hover:scale-110 active:scale-95'
+                }`}
+                title="108 염주알 굴리기"
+              >
+                <img 
+                  src="/images/avatar_yeomju_3d.png" 
+                  alt="3D 108 침향목 염주" 
+                  className="w-11 sm:w-13 object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
+                />
+                {/* 염주 굴릴 때 황금빛 염송 파동 */}
+                {actionState === 'yeomju' && (
+                  <span className="absolute inset-0 rounded-full border-2 border-[#F5D061] animate-ping pointer-events-none" />
+                )}
+              </div>
+
               {/* 방석 옆 실제 3D 목탁과 목탁채 (터치하여 직접 칠 수 있는 인터랙션) */}
               <div 
                 onClick={handleMoktak}
@@ -533,7 +552,11 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
             onClick={handleYeomju}
             className="flex flex-col items-center justify-center py-2 px-0.5 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 transition group"
           >
-            <span className="text-lg sm:text-xl mb-0.5 group-hover:scale-110 transition">📿</span>
+            <img 
+              src="/images/avatar_yeomju_3d.png" 
+              alt="3D 108 염주" 
+              className="h-6 sm:h-7 object-contain mb-0.5 group-hover:scale-110 group-active:rotate-45 transition filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.5)]" 
+            />
             <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061]">
               {yeomjuCount > 0 ? `${yeomjuCount}알` : '108염주'}
             </span>
