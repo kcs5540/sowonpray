@@ -251,8 +251,20 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
       <audio ref={chantAudioRef} src="/audio/prajna_chanting.mp3" loop preload="auto" />
       <audio ref={moktakAudioRef} src="/audio/moktak.mp3" preload="auto" />
 
-      {/* 2. 대웅전 실제 전경 제단 뷰 */}
-      <div className="absolute inset-x-0 top-14 sm:top-16 flex flex-col items-center pointer-events-none z-0">
+      {/* 2. 대웅전 옻칠 대청마루 바닥 레이어 (z-0: 제단 밑바닥과 바닥 전체에 자연스럽게 깔림) */}
+      <div 
+        className="absolute inset-x-0 bottom-0 top-[260px] sm:top-[300px] bg-cover bg-bottom pointer-events-none z-0 opacity-75"
+        style={{ backgroundImage: "url('/images/temple_wood_floor.jpg')" }}
+      >
+        {/* 하단 액션바 영역 은은한 페이드 */}
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none" />
+
+        {/* 제단 촛불이 마루에 비치는 황금빛 온기 반사광 효과 */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_15%,_var(--tw-gradient-stops))] from-[#FFB703]/25 via-transparent to-transparent pointer-events-none" />
+      </div>
+
+      {/* 2-1. 대웅전 실제 전경 제단 뷰 (z-[1]: 수미단 목조 하단까지 원본 그대로 높고 웅장하게 전체 노출) */}
+      <div className="absolute inset-x-0 top-12 sm:top-14 flex flex-col items-center pointer-events-none z-[1]">
         <div className="relative w-full max-w-xl aspect-[4/3] overflow-hidden">
           <img 
             src="/images/sowonsa_daewoongjeon_altar_front.jpg" 
@@ -260,31 +272,18 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
             className="w-full h-full object-contain"
           />
           {/* 상단 단청 연결부 자연스러운 음영 */}
-          <div className="absolute inset-x-0 top-0 h-4 bg-gradient-to-b from-black/40 to-transparent pointer-events-none" />
-          {/* 하단 제단 목조 수미단 및 공양물 영역이 또렷하게 보이도록 최소한의 밑단 음영만 적용 */}
-          <div className="absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+          <div className="absolute inset-x-0 top-0 h-3 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
+          
+          {/* 하단 목조 수미단 바닥 접지면만 미세한 자연스러운 그림자 (수미단 본체 전체 온전히 노출) */}
+          <div className="absolute inset-x-0 bottom-0 h-3 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+
           {/* 좌우 은은한 비네팅 */}
-          <div className="absolute inset-y-0 left-0 w-3 bg-gradient-to-r from-black/40 to-transparent pointer-events-none" />
-          <div className="absolute inset-y-0 right-0 w-3 bg-gradient-to-l from-black/40 to-transparent pointer-events-none" />
+          <div className="absolute inset-y-0 left-0 w-2.5 bg-gradient-to-r from-black/30 to-transparent pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-2.5 bg-gradient-to-l from-black/30 to-transparent pointer-events-none" />
           
           {/* 삼존불 황금빛 광배 은은한 후광 조명 효과 */}
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,_var(--tw-gradient-stops))] from-[#FFD700]/15 via-transparent to-transparent pointer-events-none" />
         </div>
-      </div>
-
-      {/* 2-1. 대웅전 옻칠 대청마루 바닥 레이어 (제단 아래부터 바닥 전체로 이어지는 따뜻한 사찰 원목 마루 질감) */}
-      <div 
-        className="absolute inset-x-0 bottom-0 top-[250px] sm:top-[290px] bg-cover bg-bottom pointer-events-none z-0 opacity-80"
-        style={{ backgroundImage: "url('/images/temple_wood_floor.jpg')" }}
-      >
-        {/* 제단과 마루 자연스러운 페이드 연결 */}
-        <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black via-black/60 to-transparent pointer-events-none" />
-        
-        {/* 하단 액션바 영역 은은한 페이드 */}
-        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none" />
-
-        {/* 제단 촛불이 마루에 비치는 황금빛 온기 반사광 효과 */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_20%,_var(--tw-gradient-stops))] from-[#FFB703]/30 via-transparent to-transparent pointer-events-none" />
       </div>
 
       {/* 2-2. 법당 내부 은은한 향 연기/금빛 기운 효과 */}
