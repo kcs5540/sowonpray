@@ -41,6 +41,16 @@ export default function LanternTab({
 ﻿          <main className="flex-1 flex flex-col gap-4 px-2 py-3.5">
             {/* 인터랙티브 3D 광명 연등 */}
             <div className="rounded-2xl bg-gradient-to-b from-[#16120E] via-[#221C15] to-[#16120E] text-white p-6 text-center relative overflow-hidden border border-[#C59B27]/40 shadow-xl">
+              {/* 제주 소원사 대웅전 삼존불 은은한 배경 워터마크 (글자 가독성 100% 보존, 신성한 기운 극대화) */}
+              <div 
+                className="absolute inset-0 bg-cover bg-top pointer-events-none mix-blend-screen opacity-15 filter blur-[0.5px] scale-105 transition-opacity duration-700"
+                style={{ 
+                  backgroundImage: "url('/images/sowonsa_daewoongjeon_buddha_bg.jpg')",
+                  maskImage: 'radial-gradient(ellipse at 50% 35%, black 40%, transparent 85%)',
+                  WebkitMaskImage: 'radial-gradient(ellipse at 50% 35%, black 40%, transparent 85%)'
+                }} 
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-[#16120E]/70 via-transparent to-[#16120E]/90 pointer-events-none" />
               <div className="flex items-center justify-center gap-1.5 text-xs text-[#F5D061] font-semibold mb-1">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
                 <span>제주 소원사 대웅전 실시간 연동</span>
