@@ -403,21 +403,19 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
               <span>나의 방석</span>
               <span className="text-white/90 font-normal border-l border-white/25 pl-2 text-[11px] sm:text-xs">
-                {actionState === 'bow'
-                  ? `🙇 ${bowCount}배 정진`
-                  : actionState === 'hapjang'
-                  ? '🙏 간절한 합장'
-                  : actionState === 'moktak'
-                  ? '🪵 목탁 청음'
-                  : actionState === 'yeomju'
-                  ? `📿 염주 ${yeomjuCount}알`
-                  : bowCount > 0 && yeomjuCount > 0
-                  ? `${bowCount}배 · 염주 ${yeomjuCount}알`
-                  : bowCount > 0
-                  ? `${bowCount}배 정진 완료`
-                  : yeomjuCount > 0
-                  ? `염주 ${yeomjuCount}알 염송`
-                  : '고요히 참선 중'}
+                {(() => {
+                  if (actionState === 'bow') return `🙇 ${bowCount}배 정진`
+                  if (actionState === 'hapjang') return '🙏 간절한 합장'
+                  if (actionState === 'moktak') return `🪵 목탁 ${moktakTapCount}타`
+                  if (actionState === 'yeomju') return `📿 염주 ${yeomjuCount}알`
+
+                  const records = []
+                  if (bowCount > 0) records.push(`${bowCount}배`)
+                  if (moktakTapCount > 0) records.push(`목탁 ${moktakTapCount}타`)
+                  if (yeomjuCount > 0) records.push(`염주 ${yeomjuCount}알`)
+
+                  return records.length > 0 ? records.join(' · ') : '고요히 참선 중'
+                })()}
               </span>
             </div>
 
@@ -555,7 +553,9 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
               alt="3D 목탁" 
               className="h-6 sm:h-7 object-contain mb-0.5 group-hover:scale-110 group-active:rotate-12 transition filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.5)]" 
             />
-            <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061]">목탁</span>
+            <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061]">
+              {moktakTapCount > 0 ? `${moktakTapCount}타` : '목탁'}
+            </span>
           </button>
 
           {/* 버튼 4: 108 염주 굴리기 */}
