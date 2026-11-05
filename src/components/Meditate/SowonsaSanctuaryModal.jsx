@@ -549,13 +549,17 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
             <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061]">합장</span>
           </button>
 
-          {/* 버튼 2: 108배 */}
+          {/* 버튼 2: 108배 (3D 절하는 동자승 아이콘) */}
           <button
             type="button"
             onClick={handleBow}
             className="flex flex-col items-center justify-center py-2 px-0.5 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 transition group"
           >
-            <span className="text-lg sm:text-xl mb-0.5 group-hover:scale-110 transition">🙇</span>
+            <img 
+              src="/images/icon_bow_3d.png" 
+              alt="3D 절하기" 
+              className="h-6 sm:h-7 object-contain mb-0.5 group-hover:scale-110 group-active:translate-y-0.5 transition filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.5)]" 
+            />
             <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061]">
               {bowCount > 0 ? `${bowCount}배` : '108배'}
             </span>
