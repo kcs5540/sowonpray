@@ -98,11 +98,11 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
           />
           {/* 상단 단청 연결부 자연스러운 음영 */}
           <div className="absolute inset-x-0 top-0 h-4 bg-gradient-to-b from-black/40 to-transparent pointer-events-none" />
-          {/* 하단 제단 마루 자연스러운 페이드 아웃 */}
-          <div className="absolute inset-x-0 bottom-0 h-24 sm:h-32 bg-gradient-to-t from-black via-black/85 to-transparent pointer-events-none" />
+          {/* 하단 제단 목조 수미단 및 공양물 영역이 또렷하게 보이도록 최소한의 밑단 음영만 적용 */}
+          <div className="absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
           {/* 좌우 은은한 비네팅 */}
-          <div className="absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-black/70 to-transparent pointer-events-none" />
-          <div className="absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-black/70 to-transparent pointer-events-none" />
+          <div className="absolute inset-y-0 left-0 w-3 bg-gradient-to-r from-black/40 to-transparent pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-3 bg-gradient-to-l from-black/40 to-transparent pointer-events-none" />
           
           {/* 삼존불 황금빛 광배 은은한 후광 조명 효과 */}
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,_var(--tw-gradient-stops))] from-[#FFD700]/15 via-transparent to-transparent pointer-events-none" />
