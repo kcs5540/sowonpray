@@ -347,15 +347,15 @@ export default function HomeTab({
               />
               <div className="relative z-10 flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 border border-[#F5D061]/40 text-[#F5D061] text-[10.5px] font-bold inline-flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                      <span>고요 법당 멍스테이</span>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 border border-[#F5D061]/40 text-[#F5D061] text-[10.5px] font-bold inline-flex items-center gap-1.5 whitespace-nowrap shrink-0">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
+                      <span>고요 법당</span>
                     </span>
-                    <span className="text-[11px] text-[#C2B6A6]">잠깐 쉬어가도 괜찮아요 🍃</span>
+                    <span className="text-[11px] text-[#C2B6A6] whitespace-nowrap truncate">잠깐 쉬어가도 괜찮아요 🍃</span>
                   </div>
-                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white group-hover:text-[#F5D061] transition break-keep">
-                    제주 소원사 대웅전 참선 쉼터 입장하기
+                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white group-hover:text-[#F5D061] transition whitespace-nowrap tracking-tight">
+                    대웅전 참선 입장하기
                   </h3>
                   <p className="text-[11px] text-[#A89D8E] mt-0.5 truncate">
                     도량 바람 소리 듣기 · 부처님 전 1배 올리기 · 목탁 치기
