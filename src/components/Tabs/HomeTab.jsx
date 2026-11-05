@@ -414,7 +414,7 @@ export default function HomeTab({
             >
               <div 
                 className="absolute inset-0 bg-cover bg-center opacity-20 group-hover:scale-105 transition-transform duration-700 pointer-events-none"
-                style={{ backgroundImage: "url('/images/sowonsa_daewoongjeon_buddha_bg.jpg')" }}
+                style={{ backgroundImage: "url('/images/sowonsa_daewoongjeon_altar_front.jpg')" }}
               />
               <div className="relative z-10 flex items-center justify-between gap-3">
                 <div className="min-w-0">

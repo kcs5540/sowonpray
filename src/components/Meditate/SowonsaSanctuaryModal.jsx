@@ -91,7 +91,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
       {/* 2. 대웅전 실제 전경 3D 깊이감 배경 */}
       <div 
         className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-out scale-105"
-        style={{ backgroundImage: "url('/images/sowonsa_daewoongjeon_buddha_bg.jpg')" }}
+        style={{ backgroundImage: "url('/images/sowonsa_daewoongjeon_altar_front.jpg')" }}
       >
         {/* 고요한 법당 조명 분위기 틴트 그라데이션 */}
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/70 pointer-events-none" />
