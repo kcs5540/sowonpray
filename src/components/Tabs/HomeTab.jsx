@@ -188,77 +188,6 @@ export default function HomeTab({
               )
             })()}
 
-            {/* 📢 제주 소원사 도량 소식 & 공지사항 롤링 바 (터치 시 모달 오픈) */}
-            {notices && notices.length > 0 && (() => {
-              const curNotice = notices[activeNoticeIdx % notices.length] || notices[0]
-              return (
-                <div className="relative rounded-2xl bg-gradient-to-r from-[#241F1A] via-[#2F271E] to-[#241F1A] p-2.5 sm:p-3 border border-[#C59B27]/40 shadow-sm overflow-hidden text-white flex items-center justify-between gap-2.5">
-                  <div
-                    onClick={() => {
-                      playSingingBowlSound()
-                      setSelectedNotice(curNotice)
-                      setShowNoticeModal(true)
-                    }}
-                    className="flex-1 min-w-0 flex items-center gap-2 cursor-pointer group"
-                  >
-                    <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] flex items-center justify-center text-[#1B1815] shrink-0 shadow-sm animate-pulse">
-                      <Megaphone className="w-3.5 h-3.5" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 mb-0.5">
-                        <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#C59B27]/30 text-[#F5D061] border border-[#F5D061]/30 whitespace-nowrap">
-                          {curNotice.badge || curNotice.category || '도량소식'}
-                        </span>
-                        <span className="text-[10px] text-[#A89D8E] font-mono whitespace-nowrap">
-                          {curNotice.date}
-                        </span>
-                      </div>
-                      <p className="text-xs font-semibold text-[#FBF8F3] group-hover:text-[#F5D061] transition truncate">
-                        {curNotice.title}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-1 shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        playMoktakSound()
-                        setShowNoticeListModal(true)
-                      }}
-                      className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#F5D061] border border-[#F5D061]/30 text-[10.5px] font-bold transition whitespace-nowrap"
-                    >
-                      전체보기
-                    </button>
-                    <div className="flex items-center">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setActiveNoticeIdx(
-                            (prev) => (prev - 1 + notices.length) % notices.length
-                          )
-                        }
-                        className="w-5 h-5 rounded-full text-[#A89D8E] hover:text-[#F5D061] flex items-center justify-center text-xs"
-                        aria-label="이전 공지"
-                      >
-                        ‹
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setActiveNoticeIdx((prev) => (prev + 1) % notices.length)
-                        }
-                        className="w-5 h-5 rounded-full text-[#A89D8E] hover:text-[#F5D061] flex items-center justify-center text-xs"
-                        aria-label="다음 공지"
-                      >
-                        ›
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )
-            })()}
-
             {/* 👑 [시니어 맞춤 6대 핵심 비주얼 퀵 메뉴판] - 아이콘 세로 위치 및 텍스트 베이스라인 완전 일치 정돈 */}
             <section className="bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#E6DEC8]">
               <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
@@ -1021,6 +950,77 @@ export default function HomeTab({
                 </a>
               </div>
             </section>
+
+            {/* 📢 제주 소원사 도량 소식 & 공지사항 롤링 바 (터치 시 모달 오픈) */}
+            {notices && notices.length > 0 && (() => {
+              const curNotice = notices[activeNoticeIdx % notices.length] || notices[0]
+              return (
+                <div className="relative rounded-2xl bg-gradient-to-r from-[#241F1A] via-[#2F271E] to-[#241F1A] p-2.5 sm:p-3 border border-[#C59B27]/40 shadow-sm overflow-hidden text-white flex items-center justify-between gap-2.5">
+                  <div
+                    onClick={() => {
+                      playSingingBowlSound()
+                      setSelectedNotice(curNotice)
+                      setShowNoticeModal(true)
+                    }}
+                    className="flex-1 min-w-0 flex items-center gap-2 cursor-pointer group"
+                  >
+                    <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] flex items-center justify-center text-[#1B1815] shrink-0 shadow-sm animate-pulse">
+                      <Megaphone className="w-3.5 h-3.5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#C59B27]/30 text-[#F5D061] border border-[#F5D061]/30 whitespace-nowrap">
+                          {curNotice.badge || curNotice.category || '도량소식'}
+                        </span>
+                        <span className="text-[10px] text-[#A89D8E] font-mono whitespace-nowrap">
+                          {curNotice.date}
+                        </span>
+                      </div>
+                      <p className="text-xs font-semibold text-[#FBF8F3] group-hover:text-[#F5D061] transition truncate">
+                        {curNotice.title}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playMoktakSound()
+                        setShowNoticeListModal(true)
+                      }}
+                      className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#F5D061] border border-[#F5D061]/30 text-[10.5px] font-bold transition whitespace-nowrap"
+                    >
+                      전체보기
+                    </button>
+                    <div className="flex items-center">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setActiveNoticeIdx(
+                            (prev) => (prev - 1 + notices.length) % notices.length
+                          )
+                        }
+                        className="w-5 h-5 rounded-full text-[#A89D8E] hover:text-[#F5D061] flex items-center justify-center text-xs"
+                        aria-label="이전 공지"
+                      >
+                        ‹
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setActiveNoticeIdx((prev) => (prev + 1) % notices.length)
+                        }
+                        className="w-5 h-5 rounded-full text-[#A89D8E] hover:text-[#F5D061] flex items-center justify-center text-xs"
+                        aria-label="다음 공지"
+                      >
+                        ›
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )
+            })()}
 
             {/* 🔔 제주 소원사 대웅전 매일 사시예불(巳時禮佛) & 다가오는 사찰 주요 재일 D-Day 캘린더 */}
             {(() => {
