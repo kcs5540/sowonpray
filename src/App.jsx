@@ -71,6 +71,7 @@ import AgentTab from './components/Tabs/AgentTab'
 import HomeTab from './components/Tabs/HomeTab'
 import SowonsaSanctuaryModal from './components/Meditate/SowonsaSanctuaryModal'
 import ProfileTab from './components/Tabs/ProfileTab'
+import { awardMerit, MERIT_RULES, getDailyMeritInfo } from './lib/meritSystem'
 import {
   notifyPrayerSubmission,
   notifyPrayerCancellation,
@@ -1808,7 +1809,7 @@ function formatRelativeOrDate(dateStr) {
         list.map((m) => {
           try {
             const localCached = localStorage.getItem(`sowonpray_merit_${m.code}`)
-            if (localCached && localCached !== '108' && localCached !== '109' && Number(localCached) < 100) {
+            if (localCached && localCached !== '108' && localCached !== '109') {
               const parsed = parseInt(localCached, 10)
               if (!isNaN(parsed) && parsed > (m.merit_count || 0)) {
                 return { ...m, merit_count: parsed }
@@ -2027,12 +2028,7 @@ function formatRelativeOrDate(dateStr) {
       try {
         const { data: cloudMembers } = await supabase.from('members').select('*')
         if (cloudMembers && cloudMembers.length > 0) {
-          // 김철수 계정 공덕 레거시(800대) 교정
-          const c33Cloud = cloudMembers.find(m => m.code === '33065540');
-          if (c33Cloud && (c33Cloud.merit_count || 0) > 100) {
-            c33Cloud.merit_count = 50;
-            supabase.from('members').update({ merit_count: 50 }).eq('code', '33065540').then();
-          }
+          // 회원 정보 동기화
           // 구 양영문(49121083) 및 종무소 가상계정(74200267) 정리
           const toDelete = cloudMembers.filter((m) => m.code === '49121083' || m.code === '74200267')
           if (toDelete.length > 0) {
@@ -2048,10 +2044,10 @@ function formatRelativeOrDate(dateStr) {
             .filter((m) => m.code !== '49121083' && m.code !== '74200267')
             .map((m) => {
               const fixedParent = (m.parent_code === '49121083' || m.parent_code === '74200267' ? '55570267' : m.parent_code)
-              let meritCount = (m.code === '33065540' && (m.merit_count || 0) > 100) ? 50 : (m.merit_count || 0)
+              let meritCount = m.merit_count || 0
               try {
                 const localCached = localStorage.getItem(`sowonpray_merit_${m.code}`)
-                if (localCached && localCached !== '108' && localCached !== '109' && Number(localCached) < 100) {
+                if (localCached && localCached !== '108' && localCached !== '109') {
                   const parsed = parseInt(localCached, 10)
                   if (!isNaN(parsed) && parsed > meritCount) {
                     meritCount = parsed
@@ -3394,7 +3390,7 @@ function formatRelativeOrDate(dateStr) {
                   <span className={`px-2 py-0.5 rounded text-[10.5px] font-bold border ${pInfo.prayerBadgeColor}`}>
                     {pInfo.prayerTypeBadge}
                   </span>
-                  <span className="text-[10.5px] text-[#8C8071]">공덕 {m.merit_count || 0}회</span>
+                  <span className="text-[10.5px] text-[#8C8071]">공덕 {Number(m.merit_count || 0).toLocaleString()}</span>
                 </div>
                 <strong className="text-xs text-[#1B1815] block truncate font-serif-kr" title={pInfo.prayerTitle}>
                   {pInfo.prayerTitle}
@@ -3765,7 +3761,7 @@ function formatRelativeOrDate(dateStr) {
   const [guestMeritCount, setGuestMeritCount] = useState(() => {
     try {
       const saved = localStorage.getItem('sowonpray_guest_merit')
-      return saved ? (parseInt(saved, 10) > 100 ? 50 : (parseInt(saved, 10) || 50)) : 50
+      return saved ? parseInt(saved, 10) || 0 : 0
     } catch {
       return 0
     }
@@ -5232,21 +5228,23 @@ function formatRelativeOrDate(dateStr) {
           bank_name: '',
           bank_account: '',
           account_holder: '',
-          merit_count: 1,
+          merit_count: 300,
           believers_count: 0,
           wipae_count: 0,
           extra_data: { registered_via: 'wish_lantern' },
         }
+        awardMerit('lantern', newBeliever.code, 1)
         setMembers((prev) => [newBeliever, ...prev])
         try {
-          localStorage.setItem(`sowonpray_merit_${newBeliever.code}`, '1')
+          localStorage.setItem(`sowonpray_merit_${newBeliever.code}`, '300')
         } catch (e) {}
         if (supabase) {
           supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
         }
       } else {
-        // 기존 회원이 소원등을 올릴 때도 공덕 +1 누적!
-        const nextMerit = (existingPrayerMember.merit_count || 0) + 1
+        // 기존 회원이 소원등을 올릴 때도 공덕 +300 누적!
+        awardMerit('lantern', existingPrayerMember.code, 1)
+        const nextMerit = (existingPrayerMember.merit_count || 0) + 300
         const updatedMember = {
           ...existingPrayerMember,
           merit_count: nextMerit,
@@ -5498,13 +5496,12 @@ function formatRelativeOrDate(dateStr) {
   // 사경 입력 체크 및 공덕 적립 헬퍼 (본인 계정 공덕 횟수에 누적 및 Supabase 실시간 동기화)
   const currentSutra = SUTRA_LIST[selectedSutraIdx]
   const currentMeritCount = currentUser
-    ? ((currentUser.merit_count || 0) > 100 ? 50 : Math.max(currentUser.merit_count ?? 0, userLanternStats?.totalCount || 0))
-    : (guestMeritCount > 100 ? 50 : guestMeritCount)
+    ? (Number(currentUser.merit_count) || 0)
+    : (Number(guestMeritCount) || 0)
 
   const addMerit = (amount = 1) => {
     if (currentUser) {
-      const safeMerit = (currentUser.merit_count || 0) > 100 ? 50 : (currentUser.merit_count || 0);
-      const baseCount = Math.max(safeMerit, userLanternStats?.totalCount || 0)
+      const baseCount = Number(currentUser.merit_count) || 0
       const newCount = baseCount + amount
       setMembers((prev) =>
         prev.map((m) =>
@@ -5527,7 +5524,7 @@ function formatRelativeOrDate(dateStr) {
           })
       }
     } else {
-      const newGuestCount = guestMeritCount + amount
+      const newGuestCount = (Number(guestMeritCount) || 0) + amount
       setGuestMeritCount(newGuestCount)
       try {
         localStorage.setItem('sowonpray_guest_merit', String(newGuestCount))
@@ -5536,8 +5533,14 @@ function formatRelativeOrDate(dateStr) {
   }
 
   const addSutraMerit = () => {
-    // 1) 부처님 전 정진 공덕은 횟수 제한 없이 항상 +1 누적
-    addMerit(1)
+    // 한줄사경: 1회 100 공덕 (1일 최대 300 공덕)
+    const userCode = currentUser?.code || 'guest'
+    const meritRes = awardMerit('sutra', userCode, 1)
+
+    if (meritRes.earnedPoints > 0) {
+      addMerit(meritRes.earnedPoints)
+    }
+
     if (currentUser) {
       const todayKey = getTodayDateKey()
       const dailyKey = `sowonpray_sutra_daily_${currentUser.code}_${todayKey}`
@@ -5553,7 +5556,6 @@ function formatRelativeOrDate(dateStr) {
       } catch (e) {}
       setSutraDailyVersion((v) => v + 1)
 
-      // 2) 신행 복덕 보시금은 1일 최대 3회(각 100원, 총 300원)까지 적립
       if (isEligible) {
         let storedReward = 0
         try {
@@ -5573,7 +5575,6 @@ function formatRelativeOrDate(dateStr) {
                   ...m,
                   sutra_reward_count: nextReward,
                   sutra_count: nextReward,
-                  merit_count: (m.merit_count || 0) + 1,
                 }
               : m
           )
@@ -5588,7 +5589,6 @@ function formatRelativeOrDate(dateStr) {
             .from('members')
             .update({
               sutra_count: nextReward,
-              merit_count: (currentUser.merit_count || 0) + 1,
             })
             .eq('code', currentUser.code)
             .then(({ error }) => {
@@ -5596,6 +5596,12 @@ function formatRelativeOrDate(dateStr) {
             })
         }
       }
+    }
+
+    if (meritRes.earnedPoints > 0) {
+      showToast(`✍️ 한줄사경 원만 회향! (+100 공덕 적립 | 오늘 ${meritRes.currentDailyPoints}/300 공덕) 🙏`)
+    } else {
+      showToast('✍️ 한줄사경 회향! (오늘 사경 공덕 최대 300 공덕 달성 완료) 🙏')
     }
   }
 
@@ -5731,7 +5737,11 @@ function formatRelativeOrDate(dateStr) {
 
     const next = moktak108Count + 1
     setMoktak108Count(next)
-    addMerit(1)
+    const userCode = currentUser?.code || 'guest'
+    const meritRes = awardMerit('moktak', userCode, 1)
+    if (meritRes.earnedPoints > 0) {
+      addMerit(meritRes.earnedPoints)
+    }
 
     // 애니메이션 바운스
     setIsMoktakAnimating(true)
@@ -7305,6 +7315,7 @@ function formatRelativeOrDate(dateStr) {
             setSignupFamilyMemo={setSignupFamilyMemo}
             handleSignup={handleSignup}
             setActiveTab={setActiveTab}
+            onOpenSanctuary={() => setShowSanctuaryModal(true)}
             isAgentOrAbove={isAgentOrAbove}
             userMeritReward={userMeritReward}
             isRewardDetailOpen={isRewardDetailOpen}
@@ -8058,7 +8069,7 @@ function formatRelativeOrDate(dateStr) {
                                 {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''}
                               </span>
                               <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-900 border border-amber-300 font-semibold">
-                                공덕 {m.merit_count || 0}
+                                공덕 {Number(m.merit_count || 0).toLocaleString()}
                               </span>
                               {m._matchedFamily && (
                                 <span className="text-[10px] px-1.5 py-0.2 rounded bg-purple-100 text-purple-900 border border-purple-300 font-bold flex items-center gap-0.5">
@@ -11096,6 +11107,8 @@ function formatRelativeOrDate(dateStr) {
         <SowonsaSanctuaryModal
           isOpen={showSanctuaryModal}
           onClose={() => setShowSanctuaryModal(false)}
+          currentUser={currentUser}
+          onAddMerit={addMerit}
           onOpenLantern={() => {
             setActiveTab('lantern')
             window.scrollTo({ top: 0, behavior: 'smooth' })

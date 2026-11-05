@@ -119,7 +119,7 @@ export default function MemberDetailModal({
                   {isEditingMember ? '신도 교적부 정보 및 가족 사주 수정' : '신도 신적부(교적부) 상세 대장'}
                 </h3>
                 <p className="text-[11px] text-[#8C8071] truncate">
-                  제주 소원사 본부 교적부 · 교적코드 #{selectedMemberDetail.code} · 누적 기도 공덕 {selectedMemberDetail.merit_count || 0}회
+                  제주 소원사 본부 교적부 · 교적코드 #{selectedMemberDetail.code} · 누적 기도 공덕 {Number(selectedMemberDetail.merit_count || 0).toLocaleString()} 공덕
                 </p>
               </div>
             </div>
@@ -597,7 +597,7 @@ export default function MemberDetailModal({
                         : '일반신도'}
                     </span>
                     <span className="text-xs px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 font-bold">
-                      공덕 {selectedMemberDetail.merit_count || 0}회
+                      공덕 {Number(selectedMemberDetail.merit_count || 0).toLocaleString()}
                     </span>
                   </div>
                 </div>

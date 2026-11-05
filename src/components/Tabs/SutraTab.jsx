@@ -82,7 +82,7 @@ export default function SutraTab({
                 </button>
               </div>
               <h2 className="font-serif-kr text-2xl sm:text-3xl font-bold mt-1.5 break-keep">
-                누적 수행 공덕 <span className="text-[#F5D061]">{currentMeritCount}</span>회
+                누적 수행 공덕 <span className="text-[#F5D061]">{Number(currentMeritCount || 0).toLocaleString()}</span> 공덕
               </h2>
               <p className="text-[11.5px] text-[#BFB6AA] mt-1 break-keep">
                 사경·명언·경전공부·지혜퀴즈로 매일 맑은 복덕을 쌓아보세요.
@@ -92,7 +92,7 @@ export default function SutraTab({
                 <span className="text-[#BFB6AA]">오늘 사경 공덕:</span>
                 <span className="px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 border border-[#F5D061]/40 text-[#F5D061] font-bold inline-flex items-center gap-1.5">
                   <span>✨ {userMeritReward.todaySutraRewardCount} / 3회 적립</span>
-                  <span>({(userMeritReward.todaySutraRewardCount * 100).toLocaleString()} 공덕)</span>
+                  <span>({(userMeritReward.todaySutraRewardCount * 100).toLocaleString()} / 300 공덕)</span>
                 </span>
               </div>
             </div>

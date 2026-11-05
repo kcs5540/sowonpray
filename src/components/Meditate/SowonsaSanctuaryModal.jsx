@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { X, Volume2, VolumeX, Sparkles, DoorOpen } from 'lucide-react'
+import { awardMerit, getDailyMeritInfo } from '../../lib/meritSystem'
 
 /**
  * 🪔 제주 소원사 고요 법당 (멍스테이 & 사찰 쉼터 뷰)
@@ -9,16 +10,25 @@ import { X, Volume2, VolumeX, Sparkles, DoorOpen } from 'lucide-react'
  * - 실시간 도량 온기(동행 불자님 3인 구도 + 라이브 정진 피드 + 호흡하는 접속자수)
  * - 전체화면 고요 멍스테이 모드 (화면 터치 시 복귀)
  */
-export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }) {
+export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, currentUser, onAddMerit }) {
   // 사운드 상태
   const [isPlayingSound, setIsPlayingSound] = useState(false)
   const [isPlayingChant, setIsPlayingChant] = useState(false)
 
   // 인터랙션 상태
   const [actionState, setActionState] = useState('idle') // 'idle' | 'hapjang' | 'bow' | 'moktak' | 'yeomju'
-  const [bowCount, setBowCount] = useState(0)
-  const [moktakTapCount, setMoktakTapCount] = useState(0)
-  const [yeomjuCount, setYeomjuCount] = useState(0)
+  const [bowCount, setBowCount] = useState(() => {
+    const info = getDailyMeritInfo('bow', currentUser?.code || 'guest')
+    return info.currentCount || 0
+  })
+  const [moktakTapCount, setMoktakTapCount] = useState(() => {
+    const info = getDailyMeritInfo('moktak', currentUser?.code || 'guest')
+    return info.currentCount || 0
+  })
+  const [yeomjuCount, setYeomjuCount] = useState(() => {
+    const info = getDailyMeritInfo('yeomju', currentUser?.code || 'guest')
+    return info.currentCount || 0
+  })
   const [actionToast, setActionToast] = useState('')
 
   // 멍스테이 전체화면 모드 (UI 숨김)
@@ -118,15 +128,28 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
     const nextCount = bowCount + 1
     setBowCount(nextCount)
 
+    const userCode = currentUser?.code || 'guest'
+    const meritRes = awardMerit('bow', userCode, 1)
+    if (meritRes.earnedPoints > 0 && onAddMerit) {
+      onAddMerit(meritRes.earnedPoints)
+    }
+
     let milestoneMsg = ''
     if (nextCount === 3) milestoneMsg = ' 🎉 3배 달성: 삼보에 귀의합니다'
     else if (nextCount === 7) milestoneMsg = ' 칠성님의 가피가 함께합니다'
     else if (nextCount === 21) milestoneMsg = ' ✨ 21배 달성: 맑은 기운이 찹니다'
     else if (nextCount === 108) milestoneMsg = ' 🏆 108배 대정진 원만회향! 무량공덕!'
 
-    showActionToast(`🙇 부처님 전 정성스레 ${nextCount}배를 올립니다${milestoneMsg}`)
+    let pointMsg = ''
+    if (meritRes.earnedPoints > 0) {
+      pointMsg = ` (+10 공덕 | 오늘 ${meritRes.currentDailyPoints}/1,080)`
+    } else {
+      pointMsg = ' (오늘 최대 1,080 공덕 달성)'
+    }
+
+    showActionToast(`🙇 부처님 전 정성스레 ${nextCount}배를 올립니다${milestoneMsg}${pointMsg}`)
     setLiveStreamMsg({
-      name: '나의 정진',
+      name: currentUser?.name || '나의 정진',
       action: `삼존불 전에 ${nextCount}배를 정성스레 올렸습니다`,
       icon: '🙇'
     })
@@ -137,17 +160,32 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
   const handleMoktak = (e) => {
     e?.stopPropagation()
     setActionState('moktak')
-    setMoktakTapCount((prev) => prev + 1)
+    const nextTap = moktakTapCount + 1
+    setMoktakTapCount(nextTap)
     try {
       if (moktakAudioRef.current) {
         moktakAudioRef.current.currentTime = 0
         moktakAudioRef.current.play().catch(() => {})
       }
     } catch {}
-    showActionToast('🪵 맑은 목탁 소리로 번뇌와 잡념을 비워냅니다')
+
+    const userCode = currentUser?.code || 'guest'
+    const meritRes = awardMerit('moktak', userCode, 1)
+    if (meritRes.earnedPoints > 0 && onAddMerit) {
+      onAddMerit(meritRes.earnedPoints)
+    }
+
+    let pointMsg = ''
+    if (meritRes.earnedPoints > 0) {
+      pointMsg = ` (+10 공덕 | 오늘 ${meritRes.currentDailyPoints}/1,080)`
+    } else {
+      pointMsg = ' (오늘 최대 1,080 공덕 달성)'
+    }
+
+    showActionToast(`🪵 맑은 목탁 ${nextTap}타 정진${pointMsg}`)
     setLiveStreamMsg({
-      name: '나의 정진',
-      action: '맑은 목탁 소리로 번뇌와 잡념을 비워냅니다',
+      name: currentUser?.name || '나의 정진',
+      action: `맑은 목탁 소리(${nextTap}타)로 번뇌와 잡념을 비워냅니다`,
       icon: '🪵'
     })
     setTimeout(() => setActionState('idle'), 800)
@@ -168,17 +206,30 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
       }
     } catch {}
 
+    const userCode = currentUser?.code || 'guest'
+    const meritRes = awardMerit('yeomju', userCode, 1)
+    if (meritRes.earnedPoints > 0 && onAddMerit) {
+      onAddMerit(meritRes.earnedPoints)
+    }
+
+    let pointMsg = ''
+    if (meritRes.earnedPoints > 0) {
+      pointMsg = ` (+10 공덕 | 오늘 ${meritRes.currentDailyPoints}/1,080)`
+    } else {
+      pointMsg = ' (오늘 최대 1,080 공덕 달성)'
+    }
+
     if (nextYeomju === 108) {
-      showActionToast('📿 108염주 완주! 마음에 큰 평화와 자비가 깃듭니다')
+      showActionToast(`📿 108염주 완주! 마음에 큰 평화와 자비가 깃듭니다${pointMsg}`)
       setLiveStreamMsg({
-        name: '나의 정진',
+        name: currentUser?.name || '나의 정진',
         action: '108 염주 한 바퀴를 지극정성으로 완주하셨습니다',
         icon: '📿'
       })
     } else {
-      showActionToast(`📿 염주 ${nextYeomju}/108알: 나무아미타불 관세음보살`)
+      showActionToast(`📿 염주 ${nextYeomju}/108알: 나무아미타불 관세음보살${pointMsg}`)
       setLiveStreamMsg({
-        name: '나의 정진',
+        name: currentUser?.name || '나의 정진',
         action: `108 염주(${nextYeomju}번째 알)를 굴리며 염송합니다`,
         icon: '📿'
       })
