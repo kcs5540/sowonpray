@@ -361,8 +361,14 @@ export default function HomeTab({
                     도량 바람 소리 듣기 · 부처님 전 1배 올리기 · 목탁 치기
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] flex flex-col items-center justify-center text-xl shadow-md shrink-0 group-hover:rotate-6 transition-transform">
-                  <span>🧘</span>
+                <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-gradient-to-br from-[#FFF0B3] via-[#F5D061] to-[#C59B27] border-2 border-[#FFF8DC] flex flex-col items-center justify-center shadow-[0_4px_20px_rgba(245,208,97,0.45)] shrink-0 group-hover:scale-105 transition-all duration-300 p-1 relative overflow-hidden">
+                  <img 
+                    src="/images/icon_monk_meditate_front.png" 
+                    alt="3D 참선 동자승" 
+                    className="w-full h-full object-contain filter drop-shadow-[0_3px_8px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-300" 
+                  />
+                  {/* 황금빛 펄스 광채 */}
+                  <span className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/20 via-transparent to-white/30 pointer-events-none" />
                 </div>
               </div>
             </div>
