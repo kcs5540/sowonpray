@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { X, Volume2, VolumeX, Sparkles } from 'lucide-react'
+import { X, Volume2, VolumeX, Sparkles, DoorOpen } from 'lucide-react'
 
 /**
  * 🪔 제주 소원사 고요 법당 (멍스테이 & 사찰 쉼터 뷰)
@@ -597,18 +597,22 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
             </span>
           </button>
 
-          {/* 버튼 5: 소원등 켜기 (소원사 핵심 연동) */}
+          {/* 버튼 5: 법당 나가기 (부드러운 사찰 여닫이문 문양 퇴장 버튼) */}
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation()
               onClose()
-              if (onOpenLantern) onOpenLantern()
             }}
-            className="flex flex-col items-center justify-center py-2 px-0.5 rounded-2xl bg-gradient-to-b from-[#F5D061] to-[#C59B27] text-[#1B1815] active:scale-95 border border-[#FFF275] shadow-[0_0_15px_rgba(245,208,97,0.4)] transition group font-bold"
+            className="flex flex-col items-center justify-center py-2 px-0.5 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 hover:border-[#F5D061]/50 transition group"
+            title="고요 법당 나가기"
           >
-            <span className="text-lg sm:text-xl mb-0.5 group-hover:scale-110 transition">🪔</span>
-            <span className="text-[10px] sm:text-xs">소원등</span>
+            <div className="relative mb-0.5 flex items-center justify-center">
+              <DoorOpen className="w-5 h-5 sm:w-6 sm:h-6 text-[#F5D061] group-hover:scale-110 transition-transform filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.4)]" />
+            </div>
+            <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061] transition">
+              나가기
+            </span>
           </button>
         </div>
       </footer>
