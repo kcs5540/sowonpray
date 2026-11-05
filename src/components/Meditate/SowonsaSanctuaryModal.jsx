@@ -517,10 +517,10 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               {/* 도량 비단 방석 */}
               <div className="w-34 sm:w-42 h-7 sm:h-8 rounded-[100%] bg-gradient-to-r from-[#6E4F28] via-[#A87B3F] to-[#6E4F28] border-2 border-[#E5B556]/60 mx-auto -mt-3 shadow-[0_12px_25px_rgba(0,0,0,0.95)] relative z-0" />
 
-              {/* 방석 좌측 실제 3D 108 염주 (터치하여 염송하며 직접 굴리는 인터랙션) */}
+              {/* 방석 좌측 실제 3D 108 염주 (목탁과 완벽한 시각적 균형을 이루도록 정밀 축소) */}
               <div 
                 onClick={handleYeomju}
-                className={`absolute -left-3 sm:-left-5 bottom-0 z-20 cursor-pointer transition-transform duration-200 ${
+                className={`absolute -left-2 sm:-left-3.5 bottom-0.5 z-20 cursor-pointer transition-transform duration-200 ${
                   actionState === 'yeomju' ? 'scale-125 rotate-12' : 'hover:scale-110 active:scale-95'
                 }`}
                 title="108 염주알 굴리기"
@@ -528,7 +528,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                 <img 
                   src="/images/avatar_yeomju_3d.png" 
                   alt="3D 108 침향목 염주" 
-                  className="w-12 sm:w-14 object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
+                  className="w-9 sm:w-10.5 object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
                 />
                 {/* 염주 굴릴 때 황금빛 염송 파동 */}
                 {actionState === 'yeomju' && (
