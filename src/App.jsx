@@ -5242,9 +5242,9 @@ function formatRelativeOrDate(dateStr) {
           supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
         }
       } else {
-        // 기존 회원이 소원등을 올릴 때도 공덕 +300 누적!
-        awardMerit('lantern', existingPrayerMember.code, 1)
-        const nextMerit = (existingPrayerMember.merit_count || 0) + 300
+        // 기존 회원이 소원등을 올릴 때도 공덕 (1일 1회 최대 300) 적립
+        const meritRes = awardMerit('lantern', existingPrayerMember.code, 1)
+        const nextMerit = (existingPrayerMember.merit_count || 0) + (meritRes.earnedPoints || 0)
         const updatedMember = {
           ...existingPrayerMember,
           merit_count: nextMerit,

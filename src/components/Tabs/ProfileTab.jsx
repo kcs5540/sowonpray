@@ -578,7 +578,7 @@ export default function ProfileTab({
                               </div>
 
                               <div className="space-y-1.5 pt-0.5">
-                                {/* 신행 1) 소원등 점등: 1등 300 공덕 (무제한) */}
+                                {/* 신행 1) 소원등 점등: 1일 1회 300 공덕 (최대 300 공덕) */}
                                 <button
                                   type="button"
                                   onClick={() => {
@@ -596,13 +596,18 @@ export default function ProfileTab({
                                       </span>
                                     </div>
                                     <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
-                                      {lanternInfo.currentCount > 0 ? `오늘 ${lanternInfo.currentCount}등` : '1등 300 공덕'}
+                                      오늘 {lanternInfo.currentCount}/1회
                                     </span>
                                   </div>
                                   <div className="flex items-center justify-between mt-1 text-[11px]">
-                                    <span className="text-[#A89C8E]">1등당 300 공덕 (정진 무제한)</span>
+                                    <span className="text-[#A89C8E]">
+                                      1일 1회 300 공덕{' '}
+                                      <span className="text-emerald-400 font-semibold">
+                                        (최대 300 공덕)
+                                      </span>
+                                    </span>
                                     <span className="font-mono font-bold text-emerald-300">
-                                      +{lanternInfo.currentPoints.toLocaleString()} 공덕
+                                      +{lanternInfo.currentPoints.toLocaleString()} / 300 공덕
                                     </span>
                                   </div>
                                 </button>
