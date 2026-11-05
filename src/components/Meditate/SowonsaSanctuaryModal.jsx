@@ -437,12 +437,31 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
                 )}
                 {/* 현재 신행 상태 플로팅 뱃지 */}
                 <div className="absolute -top-1 right-0 px-2 py-0.5 rounded-full bg-black/80 backdrop-blur-md border border-[#F5D061]/60 text-[9px] font-serif-kr text-[#F5D061] font-bold shadow-lg">
-                  {actionState === 'bow' ? '🙇 1배' : actionState === 'hapjang' ? '🙏 합장' : actionState === 'moktak' ? '🪵 목탁' : actionState === 'yeomju' ? '📿 염송' : '🧘 참선'}
+                  {actionState === 'bow' ? '🙇 1배' : actionState === 'hapjang' ? '🙏 합장' : actionState === 'moktak' ? '청아한 목탁' : actionState === 'yeomju' ? '📿 염송' : '🧘 참선'}
                 </div>
               </div>
 
               {/* 도량 비단 방석 */}
               <div className="w-34 sm:w-42 h-7 sm:h-8 rounded-[100%] bg-gradient-to-r from-[#6E4F28] via-[#A87B3F] to-[#6E4F28] border-2 border-[#E5B556]/60 mx-auto -mt-3 shadow-[0_12px_25px_rgba(0,0,0,0.95)] relative z-0" />
+
+              {/* 방석 옆 실제 3D 목탁과 목탁채 (터치하여 직접 칠 수 있는 인터랙션) */}
+              <div 
+                onClick={handleMoktak}
+                className={`absolute -right-3 sm:-right-5 bottom-0 z-20 cursor-pointer transition-transform duration-200 ${
+                  actionState === 'moktak' ? 'scale-125 -rotate-12' : 'hover:scale-110 active:scale-95'
+                }`}
+                title="목탁 치기"
+              >
+                <img 
+                  src="/images/avatar_moktak_3d.png" 
+                  alt="3D 황금 목탁과 목탁채" 
+                  className="w-12 sm:w-14 object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
+                />
+                {/* 목탁 타종 시 황금빛 음파 파동 이펙트 */}
+                {actionState === 'moktak' && (
+                  <span className="absolute inset-0 rounded-full border-2 border-[#F5D061] animate-ping pointer-events-none" />
+                )}
+              </div>
             </div>
           </div>
 
@@ -500,7 +519,11 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
             onClick={handleMoktak}
             className="flex flex-col items-center justify-center py-2 px-0.5 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 transition group"
           >
-            <span className="text-lg sm:text-xl mb-0.5 group-hover:scale-110 transition">🪵</span>
+            <img 
+              src="/images/avatar_moktak_3d.png" 
+              alt="3D 목탁" 
+              className="h-6 sm:h-7 object-contain mb-0.5 group-hover:scale-110 group-active:rotate-12 transition filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.5)]" 
+            />
             <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061]">목탁</span>
           </button>
 
