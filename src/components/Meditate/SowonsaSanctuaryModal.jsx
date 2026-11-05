@@ -371,6 +371,26 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
         </div>
       </header>
 
+      {/* 우측 세로 정진 기록 위젯 (절 N배 / 목탁 N타 / 염주 N알 세로 정렬 HUD) */}
+      <div className={`absolute right-3 sm:right-4 top-[38%] z-20 transition-opacity duration-500 ${
+        isZenMode ? 'opacity-0 pointer-events-none' : 'opacity-100'
+      }`}>
+        <div className="px-2.5 py-2 rounded-2xl bg-black/75 backdrop-blur-md border border-[#F5D061]/35 shadow-2xl flex flex-col gap-1.5 text-xs font-serif-kr min-w-[74px]">
+          <div className="flex items-center justify-between gap-2.5 border-b border-white/10 pb-1 text-white/90">
+            <span className="text-[#D6CEC2] text-[11px]">절</span>
+            <span className="font-bold text-[#F5D061] text-xs">{bowCount}배</span>
+          </div>
+          <div className="flex items-center justify-between gap-2.5 border-b border-white/10 pb-1 text-white/90">
+            <span className="text-[#D6CEC2] text-[11px]">목탁</span>
+            <span className="font-bold text-[#F5D061] text-xs">{moktakTapCount}타</span>
+          </div>
+          <div className="flex items-center justify-between gap-2.5 text-white/90">
+            <span className="text-[#D6CEC2] text-[11px]">염주</span>
+            <span className="font-bold text-[#F5D061] text-xs">{yeomjuCount}알</span>
+          </div>
+        </div>
+      </div>
+
       {/* 4. 중앙 공간 (부처님 시선 + 방석 위의 나) */}
       <div className={`relative z-10 flex-1 flex flex-col items-center justify-end pb-4 sm:pb-6 text-center px-3 transition-opacity duration-500 ${
         isZenMode ? 'opacity-0 pointer-events-none' : 'opacity-100'
@@ -416,29 +436,8 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
             </div>
           </div>
 
-          {/* 중앙: 나의 참선 방석 (3D 동자승 대형 주인공) */}
+          {/* 중앙: 나의 참선 방석 (3D 동자승 대형 주인공 - '나의 방석' 명패 제거로 시야 확보) */}
           <div className="relative flex flex-col items-center z-10 -mb-1">
-            {/* 아바타 위 단일 명패 뱃지 (줄바꿈 없이 한 줄로 크고 명확하게 표시) */}
-            <div className="px-3.5 py-1 rounded-full bg-black/85 backdrop-blur-md text-xs font-serif-kr text-[#F5D061] border border-[#F5D061]/60 mb-2 font-bold flex items-center gap-2 shadow-[0_0_18px_rgba(245,208,97,0.4)] whitespace-nowrap shrink-0">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
-              <span>나의 방석</span>
-              <span className="text-white/90 font-normal border-l border-white/25 pl-2 text-[11px] sm:text-xs">
-                {(() => {
-                  if (actionState === 'bow') return `🙇 ${bowCount}배 정진`
-                  if (actionState === 'hapjang') return '🙏 간절한 합장'
-                  if (actionState === 'moktak') return `🪵 목탁 ${moktakTapCount}타`
-                  if (actionState === 'yeomju') return `📿 염주 ${yeomjuCount}알`
-
-                  const records = []
-                  if (bowCount > 0) records.push(`${bowCount}배`)
-                  if (moktakTapCount > 0) records.push(`목탁 ${moktakTapCount}타`)
-                  if (yeomjuCount > 0) records.push(`염주 ${yeomjuCount}알`)
-
-                  return records.length > 0 ? records.join(' · ') : '고요히 참선 중'
-                })()}
-              </span>
-            </div>
-
             {/* 나의 3D 동자승 아바타 모션 (크고 당당하게 전면 배치) */}
             <div className={`relative flex flex-col items-center transition-all duration-300 ${
               actionState === 'bow'
