@@ -443,12 +443,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       <div className={`relative z-10 flex-1 flex flex-col items-center justify-end pb-4 sm:pb-6 text-center px-3 transition-opacity duration-500 ${
         isZenMode ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}>
-        {/* 상단 알림 토스트 (인터랙션 피드백) */}
-        {actionToast && (
-          <div className="mb-auto mt-2 px-3 py-1.5 rounded-full bg-[#1F1914]/90 backdrop-blur-md border border-[#F5D061]/60 text-[#F5D061] text-xs font-medium shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-            {actionToast}
-          </div>
-        )}
+
 
         {/* 원경(중간 거리) 고요한 도량 빈 방석 2개 (산사 템플 스타일 3D 원근감) */}
         <div className="w-full max-w-xs flex justify-around px-10 mb-2 opacity-35 pointer-events-none">
@@ -570,12 +565,19 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
           </div>
         </div>
 
-        {/* 실시간 다른 불자님들의 정진 발원 티커 (동자승 아래로 배치하여 동자승이 위로 올라가도록 정돈) */}
-        <div className="mt-3 mb-1 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-[#F5D061]/25 text-[10.5px] text-[#E8DFD1] flex items-center gap-1.5 shadow-lg transition-all duration-500 max-w-xs">
-          <span className="text-xs shrink-0">{liveStreamMsg.icon}</span>
-          <span className="font-bold text-[#F5D061] shrink-0">{liveStreamMsg.name}</span>
-          <span className="truncate text-white/85">{liveStreamMsg.action}</span>
-        </div>
+        {/* 동자승 아래 정진 피드백 팝업 (대표님 지시: 상단 시야 가림 방지 및 동자승 바로 아래 배치) */}
+        {actionToast ? (
+          <div className="mt-2.5 mb-1 px-3.5 py-1.5 rounded-full bg-[#1F1914]/90 backdrop-blur-md border border-[#F5D061]/70 text-[#F5D061] text-xs font-medium shadow-[0_4px_20px_rgba(0,0,0,0.8)] animate-in fade-in zoom-in-95 duration-200 max-w-sm break-keep">
+            {actionToast}
+          </div>
+        ) : (
+          /* 실시간 다른 불자님들의 정진 발원 티커 */
+          <div className="mt-2.5 mb-1 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-[#F5D061]/25 text-[10.5px] text-[#E8DFD1] flex items-center gap-1.5 shadow-lg transition-all duration-500 max-w-xs">
+            <span className="text-xs shrink-0">{liveStreamMsg.icon}</span>
+            <span className="font-bold text-[#F5D061] shrink-0">{liveStreamMsg.name}</span>
+            <span className="truncate text-white/85">{liveStreamMsg.action}</span>
+          </div>
+        )}
 
         <p className="text-[10px] sm:text-[10.5px] text-[#D6CEC2]/75 mt-1 font-serif-kr">
           "바람 소리와 염불에 귀 기울이며, 잠시 생각을 내려놓으세요."
