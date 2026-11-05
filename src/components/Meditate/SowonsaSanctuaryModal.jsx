@@ -398,11 +398,27 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
 
           {/* 중앙: 나의 참선 방석 (3D 동자승 대형 주인공) */}
           <div className="relative flex flex-col items-center z-10 -mb-1">
-            {/* 아바타 위 '나' 이름 뱃지 */}
-            <div className="px-3 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-[10.5px] sm:text-[11px] text-[#F5D061] border border-[#F5D061]/50 mb-1 font-bold flex items-center gap-1.5 shadow-[0_0_15px_rgba(245,208,97,0.4)]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#F5D061] animate-ping" />
-              <span>나의 방석 ({bowCount > 0 ? `${bowCount}배 정진` : '참선 중'})</span>
-              {yeomjuCount > 0 && <span className="text-white/80 font-normal border-l border-white/20 pl-1">📿 {yeomjuCount}알</span>}
+            {/* 아바타 위 단일 명패 뱃지 (줄바꿈 없이 한 줄로 크고 명확하게 표시) */}
+            <div className="px-3.5 py-1 rounded-full bg-black/85 backdrop-blur-md text-xs font-serif-kr text-[#F5D061] border border-[#F5D061]/60 mb-2 font-bold flex items-center gap-2 shadow-[0_0_18px_rgba(245,208,97,0.4)] whitespace-nowrap shrink-0">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
+              <span>나의 방석</span>
+              <span className="text-white/90 font-normal border-l border-white/25 pl-2 text-[11px] sm:text-xs">
+                {actionState === 'bow'
+                  ? `🙇 ${bowCount}배 정진`
+                  : actionState === 'hapjang'
+                  ? '🙏 간절한 합장'
+                  : actionState === 'moktak'
+                  ? '🪵 목탁 청음'
+                  : actionState === 'yeomju'
+                  ? `📿 염주 ${yeomjuCount}알`
+                  : bowCount > 0 && yeomjuCount > 0
+                  ? `${bowCount}배 · 염주 ${yeomjuCount}알`
+                  : bowCount > 0
+                  ? `${bowCount}배 정진 완료`
+                  : yeomjuCount > 0
+                  ? `염주 ${yeomjuCount}알 염송`
+                  : '고요히 참선 중'}
+              </span>
             </div>
 
             {/* 나의 3D 동자승 아바타 모션 (크고 당당하게 전면 배치) */}
@@ -435,10 +451,6 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
                     className="h-28 sm:h-34 object-contain transition-transform duration-300"
                   />
                 )}
-                {/* 현재 신행 상태 플로팅 뱃지 */}
-                <div className="absolute -top-1 right-0 px-2 py-0.5 rounded-full bg-black/80 backdrop-blur-md border border-[#F5D061]/60 text-[9px] font-serif-kr text-[#F5D061] font-bold shadow-lg">
-                  {actionState === 'bow' ? '🙇 1배' : actionState === 'hapjang' ? '🙏 합장' : actionState === 'moktak' ? '청아한 목탁' : actionState === 'yeomju' ? '📿 염송' : '🧘 참선'}
-                </div>
               </div>
 
               {/* 도량 비단 방석 */}
