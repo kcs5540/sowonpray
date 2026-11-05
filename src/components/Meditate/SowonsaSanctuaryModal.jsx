@@ -375,42 +375,40 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
           <span className="truncate text-white/85">{liveStreamMsg.action}</span>
         </div>
 
-        {/* 법당 마루: 동료 불자님 방석 + 나의 참선 방석 (3인 도량 참선 구도) */}
+        {/* 법당 마루: 동료 불자님 방석 + 나의 참선 방석 (3D 동자승 아바타 실사 구도) */}
         <div className="relative w-full max-w-sm flex items-end justify-center gap-2 sm:gap-4 px-1">
           {/* 좌측 동행 불자님 (제주 불자님) */}
-          <div className="flex flex-col items-center opacity-75 hover:opacity-100 transition-opacity">
-            <div className="px-1.5 py-0.5 rounded-full bg-white/10 backdrop-blur-sm text-[8.5px] text-[#D6CEC2] border border-white/20 mb-1">
+          <div className="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
+            <div className="px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-[8.5px] text-[#D6CEC2] border border-white/20 mb-1">
               제주 불자님
             </div>
-            <div className={`transition-all duration-500 ${
-              companionLeftState === 'bow' ? 'scale-90 translate-y-2' : ''
+            <div className={`transition-all duration-500 flex flex-col items-center ${
+              companionLeftState === 'bow' ? 'scale-95 translate-y-1' : ''
             }`}>
-              <div className="w-13 h-13 rounded-full bg-[#201A15]/80 border border-white/15 flex flex-col items-center justify-center shadow p-1">
-                <span className="text-base">
-                  {companionLeftState === 'bow' ? '🙇' : '🧘'}
-                </span>
-                <span className="text-[7px] text-[#D6CEC2]/70">
-                  {companionLeftState === 'bow' ? '정성 1배' : '참선 중'}
-                </span>
+              <div className="h-16 sm:h-20 flex items-end justify-center filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]">
+                {companionLeftState === 'bow' ? (
+                  <img src="/images/avatar_monk_bow.png" alt="절하는 불자님" className="h-14 sm:h-16 object-contain" />
+                ) : (
+                  <img src="/images/avatar_monk_meditate.png" alt="참선 중인 불자님" className="h-16 sm:h-20 object-contain" />
+                )}
               </div>
-              <div className="w-18 h-3.5 rounded-[100%] bg-gradient-to-r from-[#4A3722] via-[#6B4E2B] to-[#4A3722] mx-auto -mt-1 shadow" />
+              <div className="w-20 sm:w-24 h-4 rounded-[100%] bg-gradient-to-r from-[#4A3722] via-[#6B4E2B] to-[#4A3722] border border-white/20 -mt-2 shadow" />
             </div>
           </div>
 
-          {/* 중앙: 나의 참선 방석 (주인공 강조) */}
+          {/* 중앙: 나의 참선 방석 (3D 동자승 대형 주인공) */}
           <div className="relative flex flex-col items-center z-10 -mb-1">
             {/* 아바타 위 '나' 이름 뱃지 */}
-            <div className="px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 backdrop-blur-md text-[10px] sm:text-[10.5px] text-[#F5D061] border border-[#F5D061]/40 mb-1 font-bold flex items-center gap-1 shadow-[0_0_12px_rgba(245,208,97,0.3)]">
+            <div className="px-3 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-[10.5px] sm:text-[11px] text-[#F5D061] border border-[#F5D061]/50 mb-1 font-bold flex items-center gap-1.5 shadow-[0_0_15px_rgba(245,208,97,0.4)]">
               <span className="w-1.5 h-1.5 rounded-full bg-[#F5D061] animate-ping" />
-              <span>나의 참선 방석</span>
-              {bowCount > 0 && <span className="text-white font-normal">({bowCount}배)</span>}
-              {yeomjuCount > 0 && <span className="text-[#F5D061] font-normal border-l border-white/20 pl-1">📿{yeomjuCount}알</span>}
+              <span>나의 방석 ({bowCount > 0 ? `${bowCount}배 정진` : '참선 중'})</span>
+              {yeomjuCount > 0 && <span className="text-white/80 font-normal border-l border-white/20 pl-1">📿 {yeomjuCount}알</span>}
             </div>
 
-            {/* 나의 아바타 애니메이션 모션 (합장, 절하기, 목탁, 염주) */}
-            <div className={`relative transition-all duration-300 ${
+            {/* 나의 3D 동자승 아바타 모션 (크고 당당하게 전면 배치) */}
+            <div className={`relative flex flex-col items-center transition-all duration-300 ${
               actionState === 'bow'
-                ? 'scale-90 translate-y-3 opacity-90'
+                ? 'scale-95 translate-y-2'
                 : actionState === 'hapjang'
                 ? 'scale-105 -translate-y-1'
                 : actionState === 'moktak'
@@ -419,40 +417,47 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
                 ? 'scale-105'
                 : ''
             }`}>
-              {/* 황금빛 후광 & 메인 아바타 */}
-              <div className="w-22 h-22 rounded-full bg-gradient-to-t from-[#C59B27]/40 via-[#F5D061]/20 to-transparent p-1 flex items-center justify-center">
-                <div className="w-19 h-19 rounded-full bg-[#2A231C]/95 border-2 border-[#F5D061]/70 shadow-[0_0_25px_rgba(245,208,97,0.5)] flex flex-col items-center justify-center relative overflow-hidden">
-                  <span className="text-2xl sm:text-3xl filter drop-shadow">
-                    {actionState === 'bow' ? '🙇' : actionState === 'hapjang' ? '🙏' : actionState === 'moktak' ? '🪵' : actionState === 'yeomju' ? '📿' : '🧘'}
-                  </span>
-                  <span className="text-[8.5px] font-serif-kr text-[#F5D061] mt-0.5 font-bold">
-                    {actionState === 'bow' ? '정성 1배' : actionState === 'hapjang' ? '간절 합장' : actionState === 'moktak' ? '목탁 청음' : actionState === 'yeomju' ? '염주 염송' : '고요 참선'}
-                  </span>
+              {/* 은은한 부처님 가피 후광 오라 */}
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#FFD700]/25 via-transparent to-transparent pointer-events-none scale-125" />
+
+              {/* 3D 동자승 실사 캐릭터 (절하기 vs 참선) */}
+              <div className="relative z-10 h-28 sm:h-34 flex items-end justify-center filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.9)]">
+                {actionState === 'bow' ? (
+                  <img 
+                    src="/images/avatar_monk_bow.png" 
+                    alt="1배 올리는 동자승" 
+                    className="h-24 sm:h-30 object-contain transition-transform duration-300"
+                  />
+                ) : (
+                  <img 
+                    src="/images/avatar_monk_meditate.png" 
+                    alt="고요히 참선 중인 동자승" 
+                    className="h-28 sm:h-34 object-contain transition-transform duration-300"
+                  />
+                )}
+                {/* 현재 신행 상태 플로팅 뱃지 */}
+                <div className="absolute -top-1 right-0 px-2 py-0.5 rounded-full bg-black/80 backdrop-blur-md border border-[#F5D061]/60 text-[9px] font-serif-kr text-[#F5D061] font-bold shadow-lg">
+                  {actionState === 'bow' ? '🙇 1배' : actionState === 'hapjang' ? '🙏 합장' : actionState === 'moktak' ? '🪵 목탁' : actionState === 'yeomju' ? '📿 염송' : '🧘 참선'}
                 </div>
               </div>
 
-              {/* 중앙 명당 마루 방석 */}
-              <div className="w-28 sm:w-32 h-6 sm:h-7 rounded-[100%] bg-gradient-to-r from-[#594228] via-[#8A6538] to-[#594228] border border-[#A8884C]/50 mx-auto -mt-2 shadow-[0_10px_25px_rgba(0,0,0,0.9)]" />
+              {/* 도량 비단 방석 */}
+              <div className="w-34 sm:w-42 h-7 sm:h-8 rounded-[100%] bg-gradient-to-r from-[#6E4F28] via-[#A87B3F] to-[#6E4F28] border-2 border-[#E5B556]/60 mx-auto -mt-3 shadow-[0_12px_25px_rgba(0,0,0,0.95)] relative z-0" />
             </div>
           </div>
 
           {/* 우측 동행 불자님 (해운대 보살님) */}
-          <div className="flex flex-col items-center opacity-75 hover:opacity-100 transition-opacity">
-            <div className="px-1.5 py-0.5 rounded-full bg-white/10 backdrop-blur-sm text-[8.5px] text-[#D6CEC2] border border-white/20 mb-1">
+          <div className="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
+            <div className="px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-[8.5px] text-[#D6CEC2] border border-white/20 mb-1">
               해운대 보살님
             </div>
-            <div className={`transition-all duration-500 ${
+            <div className={`transition-all duration-500 flex flex-col items-center ${
               companionRightState === 'hapjang' ? 'scale-105 -translate-y-1' : ''
             }`}>
-              <div className="w-13 h-13 rounded-full bg-[#201A15]/80 border border-white/15 flex flex-col items-center justify-center shadow p-1">
-                <span className="text-base">
-                  {companionRightState === 'hapjang' ? '🙏' : '🧘'}
-                </span>
-                <span className="text-[7px] text-[#D6CEC2]/70">
-                  {companionRightState === 'hapjang' ? '간절 합장' : '참선 중'}
-                </span>
+              <div className="h-16 sm:h-20 flex items-end justify-center filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]">
+                <img src="/images/avatar_monk_meditate.png" alt="참선 중인 보살님" className="h-16 sm:h-20 object-contain" />
               </div>
-              <div className="w-18 h-3.5 rounded-[100%] bg-gradient-to-r from-[#4A3722] via-[#6B4E2B] to-[#4A3722] mx-auto -mt-1 shadow" />
+              <div className="w-20 sm:w-24 h-4 rounded-[100%] bg-gradient-to-r from-[#4A3722] via-[#6B4E2B] to-[#4A3722] border border-white/20 -mt-2 shadow" />
             </div>
           </div>
         </div>
