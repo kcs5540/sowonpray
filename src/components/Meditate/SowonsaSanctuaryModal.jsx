@@ -88,20 +88,32 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
       <audio ref={ambientAudioRef} src="/audio/sowonsa_wind.mp3" loop preload="auto" />
       <audio ref={moktakAudioRef} src="/audio/moktak.mp3" preload="auto" />
 
-      {/* 2. 대웅전 실제 전경 3D 깊이감 배경 */}
-      <div 
-        className="absolute inset-0 bg-[length:100%_auto] sm:bg-contain bg-no-repeat bg-top transition-transform duration-700"
-        style={{ backgroundImage: "url('/images/sowonsa_daewoongjeon_altar_front.jpg')" }}
-      >
-        {/* 고요한 법당 조명 분위기 틴트 그라데이션 */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent via-45% to-black/95 pointer-events-none" />
-        
-        {/* 은은하게 피어오르는 향 연기 및 촛불 분위기 빛가루 */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#FFB703]/10 via-transparent to-black/60 pointer-events-none" />
+      {/* 2. 대웅전 실제 전경 제단 뷰 (헤더 아래로 안전하게 배치하여 삼존불 머리와 보관, 단청이 시원하게 보이도록 처리) */}
+      <div className="absolute inset-x-0 top-14 sm:top-16 flex flex-col items-center pointer-events-none z-0">
+        <div className="relative w-full max-w-xl aspect-[4/3] overflow-hidden">
+          <img 
+            src="/images/sowonsa_daewoongjeon_altar_front.jpg" 
+            alt="제주 소원사 대웅전 삼존불" 
+            className="w-full h-full object-contain"
+          />
+          {/* 상단 단청 연결부 자연스러운 음영 */}
+          <div className="absolute inset-x-0 top-0 h-4 bg-gradient-to-b from-black/40 to-transparent pointer-events-none" />
+          {/* 하단 제단 마루 자연스러운 페이드 아웃 */}
+          <div className="absolute inset-x-0 bottom-0 h-24 sm:h-32 bg-gradient-to-t from-black via-black/85 to-transparent pointer-events-none" />
+          {/* 좌우 은은한 비네팅 */}
+          <div className="absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-black/70 to-transparent pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-black/70 to-transparent pointer-events-none" />
+          
+          {/* 삼존불 황금빛 광배 은은한 후광 조명 효과 */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,_var(--tw-gradient-stops))] from-[#FFD700]/15 via-transparent to-transparent pointer-events-none" />
+        </div>
       </div>
 
+      {/* 2-1. 법당 내부 은은한 향 연기/금빛 기운 효과 */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-[#FFB703]/10 via-transparent to-black/40 pointer-events-none z-[1]" />
+
       {/* 3. 상단 헤더 바 (산사 스타일 깔끔한 상태 표시 및 나가기) */}
-      <header className="relative z-20 flex items-center justify-between px-4 pt-4 sm:pt-6 pb-2 text-white">
+      <header className="relative z-20 flex items-center justify-between px-3 sm:px-4 pt-3 sm:pt-4 pb-2 text-white bg-gradient-to-b from-black/90 via-black/50 to-transparent">
         <div className="flex items-center gap-2">
           <div className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-[#F5D061]/30 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
