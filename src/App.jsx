@@ -7065,7 +7065,7 @@ function formatRelativeOrDate(dateStr) {
                 </div>
                 <div className="min-w-0">
                   <span className="block text-[10px] text-[#F5D061] font-extrabold tracking-wider uppercase font-serif-kr">
-                    제주 소원사 정식 접수 알림
+                    제주 소원사 도량 안내
                   </span>
                   <div className="font-bold text-xs sm:text-sm text-[#FFFDF7] leading-snug break-keep mt-0.5">
                     {toast}
