@@ -402,15 +402,8 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
           </div>
         )}
 
-        {/* 실시간 다른 불자님들의 정진 발원 티커 (산사 Sansa 핵심 라이브 온기) */}
-        <div className="mb-2 px-3 py-1 rounded-full bg-black/65 backdrop-blur-md border border-[#F5D061]/25 text-[10.5px] text-[#E8DFD1] flex items-center gap-1.5 shadow-lg transition-all duration-500 max-w-xs">
-          <span className="text-xs shrink-0">{liveStreamMsg.icon}</span>
-          <span className="font-bold text-[#F5D061] shrink-0">{liveStreamMsg.name}</span>
-          <span className="truncate text-white/85">{liveStreamMsg.action}</span>
-        </div>
-
         {/* 원경(중간 거리) 고요한 도량 빈 방석 2개 (산사 템플 스타일 3D 원근감) */}
-        <div className="w-full max-w-xs flex justify-around px-10 mb-3 opacity-35 pointer-events-none">
+        <div className="w-full max-w-xs flex justify-around px-10 mb-2 opacity-35 pointer-events-none">
           <div className="w-14 h-3 rounded-[100%] bg-gradient-to-r from-[#594228] via-[#8A6538] to-[#594228] border border-[#A8884C]/40 shadow-sm" />
           <div className="w-14 h-3 rounded-[100%] bg-gradient-to-r from-[#594228] via-[#8A6538] to-[#594228] border border-[#A8884C]/40 shadow-sm" />
         </div>
@@ -529,7 +522,14 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
           </div>
         </div>
 
-        <p className="text-[10.5px] sm:text-[11px] text-[#D6CEC2]/80 mt-2 font-serif-kr">
+        {/* 실시간 다른 불자님들의 정진 발원 티커 (동자승 아래로 배치하여 동자승이 위로 올라가도록 정돈) */}
+        <div className="mt-3 mb-1 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-[#F5D061]/25 text-[10.5px] text-[#E8DFD1] flex items-center gap-1.5 shadow-lg transition-all duration-500 max-w-xs">
+          <span className="text-xs shrink-0">{liveStreamMsg.icon}</span>
+          <span className="font-bold text-[#F5D061] shrink-0">{liveStreamMsg.name}</span>
+          <span className="truncate text-white/85">{liveStreamMsg.action}</span>
+        </div>
+
+        <p className="text-[10px] sm:text-[10.5px] text-[#D6CEC2]/75 mt-1 font-serif-kr">
           "바람 소리와 염불에 귀 기울이며, 잠시 생각을 내려놓으세요."
         </p>
       </div>
