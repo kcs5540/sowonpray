@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Megaphone,
   Calendar,
@@ -21,6 +21,10 @@ import {
   MapPin,
   Copy,
   Globe,
+  Info,
+  X,
+  Sparkles,
+  Gift,
 } from 'lucide-react'
 
 export default function HomeTab({
@@ -82,6 +86,7 @@ export default function HomeTab({
   handle108MoktakTap,
   isHealingVoiceOn,
 }) {
+  const [showMeritInfoModal, setShowMeritInfoModal] = useState(false)
   const currentQuote = DAILY_QUOTES[quoteIdx] || DAILY_QUOTES[0]
 
   return (
@@ -190,12 +195,26 @@ export default function HomeTab({
 
             {/* 👑 [시니어 맞춤 6대 핵심 비주얼 퀵 메뉴판] - 아이콘 세로 위치 및 텍스트 베이스라인 완전 일치 정돈 */}
             <section className="bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#E6DEC8]">
-              {/* 단정하고 맑은 한 줄 타이틀 (군더더기 없는 절제의 미) */}
-              <div className="flex items-center gap-1.5 mb-2.5 px-0.5">
-                <span className="text-xs">🪷</span>
-                <h3 className="font-serif-kr text-[12.5px] sm:text-[13px] font-bold text-[#2B1F11] tracking-tight">
-                  매일 기도와 공덕 쌓기
-                </h3>
+              {/* 단정하고 맑은 한 줄 타이틀 + 우측 공덕 안내 팝업 버튼 (군더더기 없는 절제의 미) */}
+              <div className="flex items-center justify-between gap-2 mb-2.5 px-0.5">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className="text-xs">🪷</span>
+                  <h3 className="font-serif-kr text-[12.5px] sm:text-[13px] font-bold text-[#2B1F11] tracking-tight truncate">
+                    매일 기도와 공덕 쌓기
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (playSingingBowlSound) playSingingBowlSound()
+                    setShowMeritInfoModal(true)
+                  }}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FCFBF8] hover:bg-[#F5EEDC] border border-[#D4A024]/40 text-[#8C6D15] hover:text-[#5C4505] text-[10.5px] font-bold transition shrink-0 cursor-pointer shadow-2xs active:scale-95"
+                  title="신행 공덕이란? 안내 보기"
+                >
+                  <Info className="w-3.5 h-3.5 text-[#D4A024] shrink-0" />
+                  <span>공덕 안내</span>
+                </button>
               </div>
 
               <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
@@ -1285,6 +1304,157 @@ export default function HomeTab({
                 ))}
               </div>
             </section>
+
+            {/* 🪷 [신행 공덕 안내 팝업 모달] */}
+            {showMeritInfoModal && (
+              <div
+                className="fixed inset-0 z-[120] flex items-center justify-center p-3.5 sm:p-4 bg-black/65 backdrop-blur-sm animate-in fade-in duration-200"
+                onClick={() => setShowMeritInfoModal(false)}
+              >
+                <div
+                  className="w-full max-w-[420px] bg-gradient-to-b from-[#FFFDF9] via-[#FAF6ED] to-[#F5EFE0] rounded-3xl border-2 border-[#D4A024] shadow-[0_20px_60px_rgba(0,0,0,0.5)] overflow-hidden animate-in zoom-in-95 duration-200 text-[#2B1F11]"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* 상단 헤더 */}
+                  <div className="bg-gradient-to-r from-[#2A231C] via-[#382E24] to-[#2A231C] px-4 py-3.5 flex items-center justify-between text-white border-b border-[#D4A024]/30">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#F5D061] to-[#C59B27] flex items-center justify-center text-[#1C1713] shadow-xs">
+                        <Sparkles className="w-4 h-4 fill-current" />
+                      </div>
+                      <div>
+                        <h3 className="font-serif-kr text-[14px] sm:text-[15px] font-bold text-[#F5D061] tracking-tight">
+                          제주 소원사 신행 공덕 안내
+                        </h3>
+                        <p className="text-[10px] text-[#C2B6A6]">
+                          매일 부처님 전에 올리는 정성과 복덕
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowMeritInfoModal(false)}
+                      className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-[#E8DFD1] transition cursor-pointer"
+                      title="닫기"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* 본문 영역 */}
+                  <div className="p-4 sm:p-5 flex flex-col gap-3.5 max-h-[75vh] overflow-y-auto">
+                    {/* 발원 글귀 박스 */}
+                    <div className="rounded-xl bg-gradient-to-r from-[#FFF5DC] to-[#FDF0D0] border border-[#D4A024]/35 p-3 text-center">
+                      <p className="font-serif-kr text-[12px] sm:text-[12.5px] font-bold text-[#6D4C08] leading-relaxed break-keep">
+                        “부처님 전에 정성스레 올리는 매일의 기도는<br />
+                        불자님의 삶을 밝히는 가장 큰 복전(福田)이 됩니다.”
+                      </p>
+                    </div>
+
+                    {/* 공덕 적립 방법 3대 정진 */}
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-serif-kr text-[12px] font-bold text-[#2B1F11] flex items-center gap-1.5">
+                          <span>🪷</span>
+                          <span>어떻게 공덕을 쌓나요?</span>
+                        </span>
+                        <span className="text-[10px] text-[#8C6D15] font-bold bg-[#F4E8CB] px-2 py-0.5 rounded-full">
+                          하루 최대 3,840 공덕
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        {/* 1) 대웅전 참배 */}
+                        <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-[#E6DEC8] shadow-xs">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-lg bg-[#FFF4D4] flex items-center justify-center text-base shrink-0">
+                              🙇
+                            </div>
+                            <div>
+                              <div className="font-bold text-[11.5px] text-[#2B1F11]">대웅전 참배 (절·목탁·염주)</div>
+                              <div className="text-[10px] text-[#7A6B58]">절 1배 · 목탁 1타 · 염주 1알 정진</div>
+                            </div>
+                          </div>
+                          <span className="text-[11px] font-extrabold text-[#9A7418] shrink-0 bg-[#FFF9EC] px-2 py-1 rounded-lg border border-[#D4A024]/20">
+                            각 +10 공덕
+                          </span>
+                        </div>
+
+                        {/* 2) 소원등 켜기 */}
+                        <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-[#E6DEC8] shadow-xs">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-lg bg-[#FFEAD9] flex items-center justify-center text-base shrink-0">
+                              🪔
+                            </div>
+                            <div>
+                              <div className="font-bold text-[11.5px] text-[#2B1F11]">소원등 켜기 (1일등·100일등)</div>
+                              <div className="text-[10px] text-[#7A6B58]">부처님 전 정성스런 등불 공양</div>
+                            </div>
+                          </div>
+                          <span className="text-[11px] font-extrabold text-[#D9531E] shrink-0 bg-[#FFF5EC] px-2 py-1 rounded-lg border border-[#D9531E]/20">
+                            1일 1회 +300
+                          </span>
+                        </div>
+
+                        {/* 3) 한줄 사경 */}
+                        <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-[#E6DEC8] shadow-xs">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-lg bg-[#EFEAD8] flex items-center justify-center text-base shrink-0">
+                              ✍️
+                            </div>
+                            <div>
+                              <div className="font-bold text-[11.5px] text-[#2B1F11]">한줄 사경 (지혜 정진)</div>
+                              <div className="text-[10px] text-[#7A6B58]">부처님 말씀 1문장 필사 정진</div>
+                            </div>
+                          </div>
+                          <span className="text-[11px] font-extrabold text-[#785C10] shrink-0 bg-[#FBF9F0] px-2 py-1 rounded-lg border border-[#785C10]/20">
+                            회당 +100 (최대 3회)
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 공덕 사용처 안내 */}
+                    <div className="rounded-2xl bg-gradient-to-br from-[#2D241C] to-[#1C1610] text-[#FFFDF7] p-3.5 border border-[#D4A024]/40 shadow-sm">
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <Gift className="w-3.5 h-3.5 text-[#F5D061]" />
+                        <span className="font-serif-kr text-[11.5px] font-bold text-[#F5D061]">
+                          모인 공덕은 어디에 사용하나요?
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#E8DFD1] leading-relaxed break-keep">
+                        제주 소원사 종무소 방문 시 <strong className="text-[#F5D061]">기념품 구입</strong> 및 삼성각·기와·인등 등 영험한 <strong className="text-[#F5D061]">불사 참여</strong>에 정성껏 차감하여 사용하실 수 있습니다.
+                      </p>
+                      <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-[#A89D8E]">
+                        <span>※ 도량 내 신행 활동에 영구 보존됩니다.</span>
+                        <span className="text-[#F5D061] font-semibold">1공덕 = 정성의 복덕</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 하단 버튼 바 */}
+                  <div className="p-3.5 bg-[#FAF6ED] border-t border-[#E6DEC8] flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowMeritInfoModal(false);
+                        if (setShowSanctuaryModal) setShowSanctuaryModal(true);
+                      }}
+                      className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#D4A024] via-[#F5D061] to-[#C59B27] hover:brightness-105 text-[#2B1F11] font-serif-kr text-xs font-bold transition shadow-sm active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <span>부처님 전 참배 정진하기</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowMeritInfoModal(false)}
+                      className="px-3.5 py-2.5 rounded-xl bg-white hover:bg-stone-100 border border-[#D5CBB8] text-stone-700 text-xs font-semibold transition cursor-pointer"
+                    >
+                      닫기
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </main>
   )
 }
