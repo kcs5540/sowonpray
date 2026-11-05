@@ -376,7 +376,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
         <div className="flex items-center gap-1.5">
           <div className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-[#F5D061]/30 flex items-center gap-1.5 shadow">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
-            <span className="text-[11px] sm:text-xs font-serif-kr text-[#F5D061] font-bold whitespace-nowrap">모바일법당</span>
+            <span className="text-[11px] sm:text-xs font-serif-kr text-[#F5D061] font-bold whitespace-nowrap">대웅전 참배</span>
             <span className="text-[9.5px] sm:text-[10px] text-[#D6CEC2] border-l border-white/20 pl-1.5">
               실시간 {liveDevoteeCount}명
             </span>
@@ -675,7 +675,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               onClose()
             }}
             className="flex flex-col items-center justify-center py-2 px-0.5 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 hover:border-[#F5D061]/50 transition group"
-            title="모바일법당 나가기"
+            title="대웅전 나가기"
           >
             <div className="relative mb-0.5 flex items-center justify-center">
               <DoorOpen className="w-5 h-5 sm:w-6 sm:h-6 text-[#F5D061] group-hover:scale-110 transition-transform filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.4)]" />

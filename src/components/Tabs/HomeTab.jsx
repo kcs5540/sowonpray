@@ -191,7 +191,7 @@ export default function HomeTab({
             {/* 👑 [시니어 맞춤 6대 핵심 비주얼 퀵 메뉴판] - 아이콘 세로 위치 및 텍스트 베이스라인 완전 일치 정돈 */}
             <section className="bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#E6DEC8]">
               <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
-                {/* 1) 모바일 법당 (✨ 참배 동선 1순위: 대웅전 법당 참선 쉼터) */}
+                {/* 1) 대웅전 참배 (✨ 참배 동선 1순위: 부처님 전 참선 정진) */}
                 <button
                   type="button"
                   onClick={() => {
@@ -201,15 +201,15 @@ export default function HomeTab({
                   className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFFDF5] via-[#FFF6DC] to-[#FCE8B3] hover:from-[#FFF9EB] hover:to-[#FBDD96] border-2 border-[#D4A024] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-[0_3px_12px_rgba(212,160,36,0.22)] group"
                 >
                   <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#FFF0B3] via-[#F5D061] to-[#C59B27] text-white flex items-center justify-center shadow-sm mb-1.5 shrink-0 group-hover:scale-105 transition-transform overflow-hidden p-1 border border-[#FFF8DC]">
-                    <img src="/images/icon_monk_meditate_front.png" alt="모바일 법당" className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform" />
+                    <img src="/images/icon_monk_meditate_front.png" alt="대웅전 참배" className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform" />
                   </div>
                   <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
                     <span className="font-serif-kr text-[11.5px] sm:text-xs font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
-                      모바일 법당
+                      대웅전 참배
                     </span>
                   </div>
                   <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-bold mt-0.5 whitespace-nowrap block">
-                    대웅전 참선 쉼터
+                    부처님 전 참선 정진
                   </span>
                 </button>
 
@@ -350,7 +350,7 @@ export default function HomeTab({
                   <div className="flex items-center gap-2 mb-1.5">
                     <span className="px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 border border-[#F5D061]/40 text-[#F5D061] text-[10.5px] font-bold inline-flex items-center gap-1.5 whitespace-nowrap shrink-0">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
-                      <span>모바일법당</span>
+                      <span>대웅전 참배</span>
                     </span>
                     <span className="text-[11px] text-[#C2B6A6] whitespace-nowrap truncate">잠깐 쉬어가도 괜찮아요 🍃</span>
                   </div>
