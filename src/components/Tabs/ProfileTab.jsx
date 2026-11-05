@@ -476,7 +476,7 @@ export default function ProfileTab({
 
                       <div className="pt-1.5 border-t border-white/5">
                         <span className="text-[10.5px] text-[#D6CEC2] block">
-                          ※ 제주 소원사 종무소에서 현금 또는 불사참여 사용 가능
+                          ※ 제주 소원사 종무소에서 기념품 구입 및 불사참여에 사용 가능
                         </span>
                       </div>
                     </div>
@@ -1126,7 +1126,7 @@ export default function ProfileTab({
                       </div>
                     </div>
 
-                    {/* 2. 🎁 1인 추천 보시 혜택 안내 (기도·불사 공덕 차감 또는 현금 정산) */}
+                    {/* 2. 🎁 1인 추천 보시 혜택 안내 (기념품 구입 및 불사참여에 사용 가능) */}
                     <div className="p-3 rounded-2xl bg-gradient-to-r from-[#C59B27]/15 via-[#F5D061]/10 to-transparent border border-[#F5D061]/30 flex items-start gap-2.5">
                       <span className="text-lg shrink-0 mt-0.5">🎁</span>
                       <div className="min-w-0 flex-1">
@@ -1135,11 +1135,11 @@ export default function ProfileTab({
                             법연 1,000 공덕 · 매일 3대 신행 최대 1,000 공덕(등 200 · 사경 300 · 목탁 500)
                           </span>
                           <span className="text-[10px] text-[#E5D7B5] bg-white/10 px-1.5 py-0.5 rounded font-medium">
-                            기도·불사 공덕 차감 or 현금 정산
+                            기념품 구입 or 불사참여 사용
                           </span>
                         </div>
                         <p className="text-[11px] text-[#BFB6AA] mt-1 leading-relaxed break-keep">
-                          소원등을 선물하여 법연을 맺을 때마다 <strong className="text-white">1인 1,000 공덕</strong>, 매일 3대 신행(소원등 점등 200 + 한줄사경 3회 300 + 108 목탁 500) 정진 시 <strong className="text-[#F5D061]">하루 최대 1,000 공덕</strong>의 신행 복덕이 실시간 적립됩니다. (적립된 공덕은 제주 소원사 종무소에서 기도·불사 공덕금 차감 또는 현금 계좌 정산으로 자유롭게 사용 가능합니다.)
+                          소원등을 선물하여 법연을 맺을 때마다 <strong className="text-white">1인 1,000 공덕</strong>, 매일 3대 신행(소원등 점등 200 + 한줄사경 3회 300 + 108 목탁 500) 정진 시 <strong className="text-[#F5D061]">하루 최대 1,000 공덕</strong>의 신행 복덕이 실시간 적립됩니다. (적립된 공덕은 제주 소원사 종무소에서 기념품 구입 및 불사참여에 사용 가능합니다.)
                         </p>
                       </div>
                     </div>
