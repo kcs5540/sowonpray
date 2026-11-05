@@ -477,7 +477,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
                 <img 
                   src="/images/avatar_yeomju_3d.png" 
                   alt="3D 108 침향목 염주" 
-                  className="w-11 sm:w-13 object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
+                  className="w-12 sm:w-14 object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
                 />
                 {/* 염주 굴릴 때 황금빛 염송 파동 */}
                 {actionState === 'yeomju' && (
