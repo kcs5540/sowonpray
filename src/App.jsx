@@ -69,6 +69,7 @@ import BulsaTab from './components/Tabs/BulsaTab'
 import SutraTab from './components/Tabs/SutraTab'
 import AgentTab from './components/Tabs/AgentTab'
 import HomeTab from './components/Tabs/HomeTab'
+import SowonsaSanctuaryModal from './components/Meditate/SowonsaSanctuaryModal'
 import ProfileTab from './components/Tabs/ProfileTab'
 import {
   notifyPrayerSubmission,
@@ -2529,6 +2530,7 @@ function formatRelativeOrDate(dateStr) {
   const [visitPurpose, setVisitPurpose] = useState('따뜻한 차 & 사찰 공양(식사) 대접 예약')
   const [visitMemo, setVisitMemo] = useState('')
   const [showVisitSuccessModal, setShowVisitSuccessModal] = useState(false)
+  const [showSanctuaryModal, setShowSanctuaryModal] = useState(false)
   const pendingVisitDraftRef = useRef(null)
 
   // 로그인 계정이 바뀔 때마다 소원등 신청자 이름·연락처 및 내 정보 수정 폼 자동 세팅
@@ -7134,6 +7136,7 @@ function formatRelativeOrDate(dateStr) {
             handleVisitSubmit={handleVisitSubmit}
             handle108MoktakTap={handle108MoktakTap}
             isHealingVoiceOn={isHealingVoiceOn}
+            setShowSanctuaryModal={setShowSanctuaryModal}
           />
         )}
 
@@ -11087,6 +11090,17 @@ function formatRelativeOrDate(dateStr) {
             </div>
           </div>
         )}
+
+        
+        {/* 🍃 [산사 힐링 감성] 제주 소원사 고요 법당 (멍스테이) 독립 모달 */}
+        <SowonsaSanctuaryModal
+          isOpen={showSanctuaryModal}
+          onClose={() => setShowSanctuaryModal(false)}
+          onOpenLantern={() => {
+            setActiveTab('lantern')
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+          }}
+        />
 
         {/* 하단 네비게이션 바 (신행홈·소원등켜기·한줄사경·불사안내·내정보 5대 신행 메뉴 고정) */}
         <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#1B1815]/95 backdrop-blur-md border-t border-[#C59B27]/35 px-2 py-2 flex items-center justify-around">

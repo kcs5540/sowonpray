@@ -24,6 +24,7 @@ import {
 } from 'lucide-react'
 
 export default function HomeTab({
+  setShowSanctuaryModal,
   heroSlideIdx,
   setHeroSlideIdx,
   HERO_SLIDES,
@@ -401,6 +402,41 @@ export default function HomeTab({
                 </button>
               </div>
             </section>
+
+            
+            {/* 🍃 [산사 Sansa 템플 감성] 제주 소원사 3D 고요 법당 쉼터 배너 */}
+            <div 
+              onClick={() => {
+                playSingingBowlSound()
+                if (setShowSanctuaryModal) setShowSanctuaryModal(true)
+              }}
+              className="rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-[#1F1914] via-[#2D2319] to-[#1F1914] text-white border-2 border-[#D4AF37]/60 shadow-lg cursor-pointer hover:border-[#F5D061] transition active:scale-[0.99] relative overflow-hidden group"
+            >
+              <div 
+                className="absolute inset-0 bg-cover bg-center opacity-20 group-hover:scale-105 transition-transform duration-700 pointer-events-none"
+                style={{ backgroundImage: "url('/images/sowonsa_daewoongjeon_buddha_bg.jpg')" }}
+              />
+              <div className="relative z-10 flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 border border-[#F5D061]/40 text-[#F5D061] text-[10.5px] font-bold inline-flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                      <span>고요 법당 멍스테이</span>
+                    </span>
+                    <span className="text-[11px] text-[#C2B6A6]">잠깐 쉬어가도 괜찮아요 🍃</span>
+                  </div>
+                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white group-hover:text-[#F5D061] transition break-keep">
+                    제주 소원사 대웅전 참선 쉼터 입장하기
+                  </h3>
+                  <p className="text-[11px] text-[#A89D8E] mt-0.5 truncate">
+                    도량 바람 소리 듣기 · 부처님 전 1배 올리기 · 목탁 치기
+                  </p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#F5D061] to-[#C59B27] text-[#1B1815] flex flex-col items-center justify-center text-xl shadow-md shrink-0 group-hover:rotate-6 transition-transform">
+                  <span>🧘</span>
+                </div>
+              </div>
+            </div>
 
             {/* 오늘의 부처님 말씀 + 사찰 음력 일진·재일 법력 안내 */}
             <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] relative overflow-hidden">
