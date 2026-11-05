@@ -612,7 +612,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               className="h-6 sm:h-7 object-contain mb-0.5 group-hover:scale-110 group-active:translate-y-0.5 transition filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.5)]" 
             />
             <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061]">
-              {bowCount > 0 ? `${bowCount}배` : '108배'}
+              절
             </span>
           </button>
 
@@ -628,7 +628,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               className="h-6 sm:h-7 object-contain mb-0.5 group-hover:scale-110 group-active:rotate-12 transition filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.5)]" 
             />
             <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061]">
-              {moktakTapCount > 0 ? `${moktakTapCount}타` : '목탁'}
+              목탁
             </span>
           </button>
 
@@ -644,7 +644,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               className="h-6 sm:h-7 object-contain mb-0.5 group-hover:scale-110 group-active:rotate-45 transition filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.5)]" 
             />
             <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061]">
-              {yeomjuCount > 0 ? `${yeomjuCount}알` : '108염주'}
+              염주
             </span>
           </button>
 
