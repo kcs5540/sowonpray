@@ -27,6 +27,62 @@ import {
   Gift,
 } from 'lucide-react'
 
+// 🪷 한국 사찰 전통의 은은하고 장엄한 황금색 연꽃 아이콘
+function GoldenLotusIcon({ className = 'w-4 h-4' }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={`${className} shrink-0 drop-shadow-[0_1px_2px_rgba(212,160,36,0.3)]`}
+      aria-hidden="true"
+    >
+      <defs>
+        <linearGradient id="goldenLotusGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#FFE07A" />
+          <stop offset="45%" stopColor="#E5B324" />
+          <stop offset="100%" stopColor="#B38210" />
+        </linearGradient>
+      </defs>
+      {/* 바닥 연화대 받침 */}
+      <path
+        d="M5 18C7.5 19.5 16.5 19.5 19 18C17 21 7 21 5 18Z"
+        fill="url(#goldenLotusGrad)"
+        opacity="0.85"
+      />
+      {/* 좌측 바깥 꽃잎 */}
+      <path
+        d="M2.5 14C3.8 11 6.5 10 9 13C6.8 15.2 4.2 15.5 2.5 14Z"
+        fill="url(#goldenLotusGrad)"
+        opacity="0.9"
+      />
+      {/* 우측 바깥 꽃잎 */}
+      <path
+        d="M21.5 14C20.2 11 17.5 10 15 13C17.2 15.2 19.8 15.5 21.5 14Z"
+        fill="url(#goldenLotusGrad)"
+        opacity="0.9"
+      />
+      {/* 좌측 중간 꽃잎 */}
+      <path
+        d="M5.5 15C6.5 9 10 7.5 11.5 12C9.5 15 7.5 16.5 5.5 15Z"
+        fill="url(#goldenLotusGrad)"
+      />
+      {/* 우측 중간 꽃잎 */}
+      <path
+        d="M18.5 15C17.5 9 14 7.5 12.5 12C14.5 15 16.5 16.5 18.5 15Z"
+        fill="url(#goldenLotusGrad)"
+      />
+      {/* 중앙 주 꽃잎 (봉오리 꽃잎) */}
+      <path
+        d="M12 4C10.5 7.5 10 11 12 16C14 11 13.5 7.5 12 4Z"
+        fill="url(#goldenLotusGrad)"
+      />
+      {/* 중앙 연꽃 수술 포인트 */}
+      <circle cx="12" cy="11.5" r="1.2" fill="#FFF4BD" />
+    </svg>
+  )
+}
+
 export default function HomeTab({
   setShowSanctuaryModal,
   heroSlideIdx,
@@ -198,7 +254,7 @@ export default function HomeTab({
               {/* 단정하고 맑은 한 줄 타이틀 + 우측 공덕 안내 팝업 버튼 (군더더기 없는 절제의 미) */}
               <div className="flex items-center justify-between gap-2 mb-2.5 px-0.5">
                 <div className="flex items-center gap-1.5 min-w-0">
-                  <span className="text-xs">🪷</span>
+                  <GoldenLotusIcon className="w-4 h-4 sm:w-[17px] sm:h-[17px]" />
                   <h3 className="font-serif-kr text-[12.5px] sm:text-[13px] font-bold text-[#2B1F11] tracking-tight truncate">
                     매일 기도와 공덕 쌓기
                   </h3>
@@ -1354,7 +1410,7 @@ export default function HomeTab({
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-serif-kr text-[12px] font-bold text-[#2B1F11] flex items-center gap-1.5">
-                          <span>🪷</span>
+                          <GoldenLotusIcon className="w-4 h-4" />
                           <span>어떻게 공덕을 쌓나요?</span>
                         </span>
                         <span className="text-[10px] text-[#8C6D15] font-bold bg-[#F4E8CB] px-2 py-0.5 rounded-full">
