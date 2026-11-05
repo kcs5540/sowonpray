@@ -13,9 +13,68 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
   const [moktakTapCount, setMoktakTapCount] = useState(0)
   const [actionToast, setActionToast] = useState('')
 
+  // 👥 함께 정진하는 실시간 도량 시뮬레이션 상태
+  const [liveDevoteeCount, setLiveDevoteeCount] = useState(348)
+  const [companionLeftState, setCompanionLeftState] = useState('idle') // 'idle' | 'bow' | 'hapjang'
+  const [companionRightState, setCompanionRightState] = useState('idle')
+  const [liveStreamMsg, setLiveStreamMsg] = useState({
+    name: '서귀포 불자님',
+    action: '부처님 전에 3배를 올리셨습니다',
+    icon: '🙇'
+  })
+
   const ambientAudioRef = useRef(null)
   const moktakAudioRef = useRef(null)
   const toastTimerRef = useRef(null)
+
+  // 실시간 기도/정진 발원 피드 목록
+  const LIVE_PRAYERS = [
+    { name: '서귀포 불자님', action: '부처님 전 3배를 올리셨습니다', icon: '🙇' },
+    { name: '강남 거사님', action: '번뇌를 비우며 맑은 목탁을 쳤습니다', icon: '🪵' },
+    { name: '해운대 보살님', action: '가족의 건강과 평안을 위해 합장하셨습니다', icon: '🙏' },
+    { name: '제주 불자님', action: '삼존불 전에 소원등을 밝히셨습니다', icon: '🪔' },
+    { name: '분당 보살님', action: '108배 정진 중 21배를 올리셨습니다', icon: '🙇' },
+    { name: '종로 거사님', action: '고요한 참선으로 잡념을 내려놓습니다', icon: '🧘' },
+    { name: '대구 불자님', action: '자녀 시험 원만성취를 위해 두 손 모았습니다', icon: '🙏' },
+    { name: '수원 보살님', action: '부처님 대자대비에 감사하며 1배를 올렸습니다', icon: '🙇' },
+    { name: '마포 불자님', action: '도량 바람소리를 들으며 마음을 정돈합니다', icon: '🍃' },
+  ]
+
+  // 실시간 도량 활기 효과 (동행 불자님 모션 + 라이브 피드 + 인원 변동)
+  useEffect(() => {
+    if (!isOpen) return
+
+    // 1) 좌측 동반 불자님 잔잔한 모션 주기 (8초 주기)
+    const leftInterval = setInterval(() => {
+      setCompanionLeftState('bow')
+      setTimeout(() => setCompanionLeftState('idle'), 2200)
+    }, 8500)
+
+    // 2) 우측 동반 불자님 잔잔한 합장/참선 모션 주기 (12초 주기)
+    const rightInterval = setInterval(() => {
+      setCompanionRightState('hapjang')
+      setTimeout(() => setCompanionRightState('idle'), 2000)
+    }, 11500)
+
+    // 3) 실시간 정진 라이브 토스트 순환 (5.5초 주기)
+    let pIdx = 0
+    const feedInterval = setInterval(() => {
+      pIdx = (pIdx + 1) % LIVE_PRAYERS.length
+      setLiveStreamMsg(LIVE_PRAYERS[pIdx])
+    }, 5500)
+
+    // 4) 실시간 정진 인원수 자연스러운 숨쉬기 (15초 주기)
+    const countInterval = setInterval(() => {
+      setLiveDevoteeCount(prev => prev + (Math.random() > 0.5 ? 1 : -1))
+    }, 15000)
+
+    return () => {
+      clearInterval(leftInterval)
+      clearInterval(rightInterval)
+      clearInterval(feedInterval)
+      clearInterval(countInterval)
+    }
+  }, [isOpen])
 
   // 토스트 메시지 헬퍼
   const showActionToast = (msg) => {
@@ -47,14 +106,25 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
   const handleHapjang = () => {
     setActionState('hapjang')
     showActionToast('🙏 부처님 전 두 손 모아 간절히 합장합니다')
+    setLiveStreamMsg({
+      name: '나의 정진',
+      action: '삼존불 전에 두 손 모아 간절히 합장하셨습니다',
+      icon: '🙏'
+    })
     setTimeout(() => setActionState('idle'), 2000)
   }
 
   // 2) 1배 올리기
   const handleBow = () => {
     setActionState('bow')
-    setBowCount((prev) => prev + 1)
-    showActionToast(`🙇 부처님 전 정성스레 ${bowCount + 1}배를 올립니다`)
+    const nextCount = bowCount + 1
+    setBowCount(nextCount)
+    showActionToast(`🙇 부처님 전 정성스레 ${nextCount}배를 올립니다`)
+    setLiveStreamMsg({
+      name: '나의 정진',
+      action: `삼존불 전에 ${nextCount}배를 정성스레 올렸습니다`,
+      icon: '🙇'
+    })
     setTimeout(() => setActionState('idle'), 2400)
   }
 
@@ -69,6 +139,11 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
       }
     } catch {}
     showActionToast('🪵 맑은 목탁 소리로 번뇌와 잡념을 비워냅니다')
+    setLiveStreamMsg({
+      name: '나의 정진',
+      action: '맑은 목탁 소리로 번뇌와 잡념을 비워냅니다',
+      icon: '🪵'
+    })
     setTimeout(() => setActionState('idle'), 800)
   }
 
@@ -119,7 +194,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
             <span className="text-xs font-serif-kr text-[#F5D061] font-bold">제주 소원사 고요 법당</span>
             <span className="text-[10px] text-[#D6CEC2] border-l border-white/20 pl-2">
-              실시간 348명 함께 정진 중
+              실시간 {liveDevoteeCount}명 함께 정진 중
             </span>
           </div>
         </div>
@@ -160,44 +235,95 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
           </div>
         )}
 
-        {/* 법당 마루 방석 및 나의 동자승/참선 아바타 영역 */}
-        <div className="relative flex flex-col items-center">
-          {/* 아바타 위 '나' 이름 뱃지 */}
-          <div className="px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-[10.5px] text-[#F5D061] border border-white/30 mb-2 font-bold flex items-center gap-1 shadow">
-            <span>나의 참선 방석</span>
-            {bowCount > 0 && <span className="text-white">({bowCount}배)</span>}
-          </div>
+        {/* 실시간 다른 불자님들의 정진 발원 티커 (산사 Sansa 핵심 라이브 온기) */}
+        <div className="mb-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-[#F5D061]/25 text-[11px] text-[#E8DFD1] flex items-center gap-2 shadow-lg transition-all duration-500 max-w-xs">
+          <span className="text-sm shrink-0">{liveStreamMsg.icon}</span>
+          <span className="font-bold text-[#F5D061] shrink-0">{liveStreamMsg.name}</span>
+          <span className="truncate text-white/80">{liveStreamMsg.action}</span>
+        </div>
 
-          {/* 아바타 애니메이션 모션 (합장, 절하기, 목탁) */}
-          <div className={`relative transition-all duration-300 ${
-            actionState === 'bow'
-              ? 'scale-90 translate-y-3 opacity-90'
-              : actionState === 'hapjang'
-              ? 'scale-105 -translate-y-1'
-              : actionState === 'moktak'
-              ? 'animate-pulse'
-              : ''
-          }`}>
-            {/* 귀엽고 단아한 3D 참선 동자승/보살 캐릭터 일러스트 형상 */}
-            <div className="w-24 h-24 rounded-full bg-gradient-to-t from-[#C59B27]/40 via-[#F5D061]/20 to-transparent p-1 flex items-center justify-center">
-              <div className="w-20 h-20 rounded-full bg-[#2A231C]/90 border border-[#F5D061]/50 shadow-[0_0_25px_rgba(245,208,97,0.4)] flex flex-col items-center justify-center relative overflow-hidden">
-                <span className="text-3xl filter drop-shadow">
-                  {actionState === 'bow' ? '🙇' : actionState === 'hapjang' ? '🙏' : actionState === 'moktak' ? '🪵' : '🧘'}
+        {/* 법당 마루: 동료 불자님 방석 + 나의 참선 방석 (3인 도량 참선 구도) */}
+        <div className="relative w-full max-w-sm flex items-end justify-center gap-3 sm:gap-6 px-2">
+          {/* 좌측 동행 불자님 (제주 불자님) */}
+          <div className="flex flex-col items-center opacity-75 hover:opacity-100 transition-opacity">
+            <div className="px-1.5 py-0.5 rounded-full bg-white/10 backdrop-blur-sm text-[9px] text-[#D6CEC2] border border-white/20 mb-1">
+              제주 불자님
+            </div>
+            <div className={`transition-all duration-500 ${
+              companionLeftState === 'bow' ? 'scale-90 translate-y-2' : ''
+            }`}>
+              <div className="w-14 h-14 rounded-full bg-[#201A15]/80 border border-white/15 flex flex-col items-center justify-center shadow">
+                <span className="text-lg">
+                  {companionLeftState === 'bow' ? '🙇' : '🧘'}
                 </span>
-                <span className="text-[9px] font-serif-kr text-[#D4AF37] mt-0.5 font-bold">
-                  {actionState === 'bow' ? '정성 1배' : actionState === 'hapjang' ? '간절 합장' : actionState === 'moktak' ? '목탁 청음' : '고요 참선'}
+                <span className="text-[7.5px] text-[#D6CEC2]/70">
+                  {companionLeftState === 'bow' ? '정성 1배' : '참선 중'}
                 </span>
               </div>
+              <div className="w-20 h-4 rounded-[100%] bg-gradient-to-r from-[#4A3722] via-[#6B4E2B] to-[#4A3722] mx-auto -mt-1 shadow" />
             </div>
-
-            {/* 마루 방석 그라데이션 */}
-            <div className="w-32 h-7 rounded-[100%] bg-gradient-to-r from-[#594228] via-[#8A6538] to-[#594228] border border-[#A8884C]/40 mx-auto -mt-2 shadow-[0_10px_20px_rgba(0,0,0,0.8)]" />
           </div>
 
-          <p className="text-[11px] text-[#D6CEC2]/80 mt-3 font-serif-kr">
-            "바람 소리에 귀 기울이며, 잠시 생각을 내려놓으세요."
-          </p>
+          {/* 중앙: 나의 참선 방석 (주인공 강조) */}
+          <div className="relative flex flex-col items-center z-10 -mb-1">
+            {/* 아바타 위 '나' 이름 뱃지 */}
+            <div className="px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 backdrop-blur-md text-[10.5px] text-[#F5D061] border border-[#F5D061]/40 mb-1.5 font-bold flex items-center gap-1 shadow-[0_0_12px_rgba(245,208,97,0.3)]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#F5D061] animate-ping" />
+              <span>나의 참선 방석</span>
+              {bowCount > 0 && <span className="text-white font-normal">({bowCount}배)</span>}
+            </div>
+
+            {/* 나의 아바타 애니메이션 모션 (합장, 절하기, 목탁) */}
+            <div className={`relative transition-all duration-300 ${
+              actionState === 'bow'
+                ? 'scale-90 translate-y-3 opacity-90'
+                : actionState === 'hapjang'
+                ? 'scale-105 -translate-y-1'
+                : actionState === 'moktak'
+                ? 'animate-pulse'
+                : ''
+            }`}>
+              {/* 황금빛 후광 & 메인 아바타 */}
+              <div className="w-24 h-24 rounded-full bg-gradient-to-t from-[#C59B27]/40 via-[#F5D061]/20 to-transparent p-1 flex items-center justify-center">
+                <div className="w-20 h-20 rounded-full bg-[#2A231C]/95 border-2 border-[#F5D061]/70 shadow-[0_0_30px_rgba(245,208,97,0.5)] flex flex-col items-center justify-center relative overflow-hidden">
+                  <span className="text-3xl filter drop-shadow">
+                    {actionState === 'bow' ? '🙇' : actionState === 'hapjang' ? '🙏' : actionState === 'moktak' ? '🪵' : '🧘'}
+                  </span>
+                  <span className="text-[9px] font-serif-kr text-[#F5D061] mt-0.5 font-bold">
+                    {actionState === 'bow' ? '정성 1배' : actionState === 'hapjang' ? '간절 합장' : actionState === 'moktak' ? '목탁 청음' : '고요 참선'}
+                  </span>
+                </div>
+              </div>
+
+              {/* 중앙 명당 마루 방석 */}
+              <div className="w-32 h-7 rounded-[100%] bg-gradient-to-r from-[#594228] via-[#8A6538] to-[#594228] border border-[#A8884C]/50 mx-auto -mt-2 shadow-[0_10px_25px_rgba(0,0,0,0.9)]" />
+            </div>
+          </div>
+
+          {/* 우측 동행 불자님 (해운대 보살님) */}
+          <div className="flex flex-col items-center opacity-75 hover:opacity-100 transition-opacity">
+            <div className="px-1.5 py-0.5 rounded-full bg-white/10 backdrop-blur-sm text-[9px] text-[#D6CEC2] border border-white/20 mb-1">
+              해운대 보살님
+            </div>
+            <div className={`transition-all duration-500 ${
+              companionRightState === 'hapjang' ? 'scale-105 -translate-y-1' : ''
+            }`}>
+              <div className="w-14 h-14 rounded-full bg-[#201A15]/80 border border-white/15 flex flex-col items-center justify-center shadow">
+                <span className="text-lg">
+                  {companionRightState === 'hapjang' ? '🙏' : '🧘'}
+                </span>
+                <span className="text-[7.5px] text-[#D6CEC2]/70">
+                  {companionRightState === 'hapjang' ? '간절 합장' : '참선 중'}
+                </span>
+              </div>
+              <div className="w-20 h-4 rounded-[100%] bg-gradient-to-r from-[#4A3722] via-[#6B4E2B] to-[#4A3722] mx-auto -mt-1 shadow" />
+            </div>
+          </div>
         </div>
+
+        <p className="text-[11px] text-[#D6CEC2]/80 mt-3 font-serif-kr">
+          "바람 소리에 귀 기울이며, 잠시 생각을 내려놓으세요."
+        </p>
       </div>
 
       {/* 5. 하단 4대 액션 인터랙션 바 (산사 Sansa 템플 스타일 초직관 버튼) */}
