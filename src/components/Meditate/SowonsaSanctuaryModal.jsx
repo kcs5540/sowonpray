@@ -272,8 +272,23 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
         </div>
       </div>
 
-      {/* 2-1. 법당 내부 은은한 향 연기/금빛 기운 효과 */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-[#FFB703]/10 via-transparent to-black/40 pointer-events-none z-[1]" />
+      {/* 2-1. 대웅전 옻칠 대청마루 바닥 레이어 (제단 아래부터 바닥 전체로 이어지는 따뜻한 사찰 원목 마루 질감) */}
+      <div 
+        className="absolute inset-x-0 bottom-0 top-[250px] sm:top-[290px] bg-cover bg-bottom pointer-events-none z-0 opacity-80"
+        style={{ backgroundImage: "url('/images/temple_wood_floor.jpg')" }}
+      >
+        {/* 제단과 마루 자연스러운 페이드 연결 */}
+        <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black via-black/60 to-transparent pointer-events-none" />
+        
+        {/* 하단 액션바 영역 은은한 페이드 */}
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none" />
+
+        {/* 제단 촛불이 마루에 비치는 황금빛 온기 반사광 효과 */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_20%,_var(--tw-gradient-stops))] from-[#FFB703]/30 via-transparent to-transparent pointer-events-none" />
+      </div>
+
+      {/* 2-2. 법당 내부 은은한 향 연기/금빛 기운 효과 */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-[#FFB703]/10 via-transparent to-black/30 pointer-events-none z-[1]" />
 
       {/* 멍스테이 모드 안내 플로팅 팁 */}
       {isZenMode && (
@@ -373,6 +388,12 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern }
           <span className="text-xs shrink-0">{liveStreamMsg.icon}</span>
           <span className="font-bold text-[#F5D061] shrink-0">{liveStreamMsg.name}</span>
           <span className="truncate text-white/85">{liveStreamMsg.action}</span>
+        </div>
+
+        {/* 원경(중간 거리) 고요한 도량 빈 방석 2개 (산사 템플 스타일 3D 원근감) */}
+        <div className="w-full max-w-xs flex justify-around px-10 mb-3 opacity-35 pointer-events-none">
+          <div className="w-14 h-3 rounded-[100%] bg-gradient-to-r from-[#594228] via-[#8A6538] to-[#594228] border border-[#A8884C]/40 shadow-sm" />
+          <div className="w-14 h-3 rounded-[100%] bg-gradient-to-r from-[#594228] via-[#8A6538] to-[#594228] border border-[#A8884C]/40 shadow-sm" />
         </div>
 
         {/* 법당 마루: 동료 불자님 방석 + 나의 참선 방석 (3D 동자승 아바타 실사 구도) */}
