@@ -190,6 +190,14 @@ export default function HomeTab({
 
             {/* 👑 [시니어 맞춤 6대 핵심 비주얼 퀵 메뉴판] - 아이콘 세로 위치 및 텍스트 베이스라인 완전 일치 정돈 */}
             <section className="bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#E6DEC8]">
+              {/* 단정하고 맑은 한 줄 타이틀 (군더더기 없는 절제의 미) */}
+              <div className="flex items-center gap-1.5 mb-2.5 px-0.5">
+                <span className="text-xs">🪷</span>
+                <h3 className="font-serif-kr text-[12.5px] sm:text-[13px] font-bold text-[#2B1F11] tracking-tight">
+                  매일 기도와 공덕 쌓기
+                </h3>
+              </div>
+
               <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
                 {/* 1) 대웅전 참배 (✨ 참배 동선 1순위: 부처님 전 참선 정진) */}
                 <button
