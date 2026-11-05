@@ -5715,7 +5715,7 @@ function formatRelativeOrDate(dateStr) {
     if (!isAutoMoktakOn || !show108MoktakModal || is108Completed) return
     const timer = setInterval(() => {
       handle108MoktakTap()
-    }, 2400)
+    }, 2500)
     return () => clearInterval(timer)
   }, [isAutoMoktakOn, show108MoktakModal, is108Completed, moktak108Count])
 

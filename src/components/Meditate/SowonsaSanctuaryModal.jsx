@@ -48,6 +48,22 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
   const chantAudioRef = useRef(null)
   const moktakAudioRef = useRef(null)
   const toastTimerRef = useRef(null)
+  const lastActionTimeRef = useRef(0)
+
+  // 1회당 최소 2.5초 간격 엄수 (대표님 지시: 정성스러운 호흡과 무분별한 연타 방지)
+  const MIN_ACTION_INTERVAL_MS = 2500
+
+  const canExecuteAction = () => {
+    const now = Date.now()
+    const elapsed = now - lastActionTimeRef.current
+    if (elapsed < MIN_ACTION_INTERVAL_MS) {
+      const remainingSec = ((MIN_ACTION_INTERVAL_MS - elapsed) / 1000).toFixed(1)
+      showActionToast(`🙏 정성을 다해 호흡을 고르세요 (${remainingSec}초 대기)`)
+      return false
+    }
+    lastActionTimeRef.current = now
+    return true
+  }
 
   // 실시간 기도/정진 발원 피드 목록
   const LIVE_PRAYERS = [
@@ -111,19 +127,21 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
   // 3) 합장하기
   const handleHapjang = (e) => {
     e?.stopPropagation()
+    if (!canExecuteAction()) return
     setActionState('hapjang')
     showActionToast('🙏 부처님 전 두 손 모아 간절히 합장합니다')
     setLiveStreamMsg({
-      name: '나의 정진',
+      name: currentUser?.name || '나의 정진',
       action: '삼존불 전에 두 손 모아 간절히 합장하셨습니다',
       icon: '🙏'
     })
-    setTimeout(() => setActionState('idle'), 2000)
+    setTimeout(() => setActionState('idle'), 2500)
   }
 
   // 4) 1배 올리기 (108배 마일스톤 축하)
   const handleBow = (e) => {
     e?.stopPropagation()
+    if (!canExecuteAction()) return
     setActionState('bow')
     const nextCount = bowCount + 1
     setBowCount(nextCount)
@@ -153,12 +171,13 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       action: `삼존불 전에 ${nextCount}배를 정성스레 올렸습니다`,
       icon: '🙇'
     })
-    setTimeout(() => setActionState('idle'), 2400)
+    setTimeout(() => setActionState('idle'), 2500)
   }
 
   // 5) 목탁 치기
   const handleMoktak = (e) => {
     e?.stopPropagation()
+    if (!canExecuteAction()) return
     setActionState('moktak')
     const nextTap = moktakTapCount + 1
     setMoktakTapCount(nextTap)
@@ -188,12 +207,13 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       action: `맑은 목탁 소리(${nextTap}타)로 번뇌와 잡념을 비워냅니다`,
       icon: '🪵'
     })
-    setTimeout(() => setActionState('idle'), 800)
+    setTimeout(() => setActionState('idle'), 2500)
   }
 
   // 6) 108 염주알 굴리기
   const handleYeomju = (e) => {
     e?.stopPropagation()
+    if (!canExecuteAction()) return
     setActionState('yeomju')
     const nextYeomju = yeomjuCount >= 108 ? 1 : yeomjuCount + 1
     setYeomjuCount(nextYeomju)
@@ -234,7 +254,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
         icon: '📿'
       })
     }
-    setTimeout(() => setActionState('idle'), 1200)
+    setTimeout(() => setActionState('idle'), 2500)
   }
 
   // 실시간 도량 활기 효과 (동행 불자님 모션 + 라이브 피드 + 인원 변동)
@@ -593,7 +613,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
           <button
             type="button"
             onClick={handleHapjang}
-            className="flex flex-col items-center justify-center py-2 px-0.5 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 transition group"
+            className={`flex flex-col items-center justify-center py-2 px-0.5 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 transition group ${actionState === 'hapjang' ? 'bg-[#F5D061]/25 border-[#F5D061]/60 shadow-[0_0_12px_rgba(245,208,97,0.4)]' : ''}`}
           >
             <span className="text-lg sm:text-xl mb-0.5 group-hover:scale-110 transition">🙏</span>
             <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061]">합장</span>
