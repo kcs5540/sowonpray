@@ -191,7 +191,29 @@ export default function HomeTab({
             {/* 👑 [시니어 맞춤 6대 핵심 비주얼 퀵 메뉴판] - 아이콘 세로 위치 및 텍스트 베이스라인 완전 일치 정돈 */}
             <section className="bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#E6DEC8]">
               <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
-                {/* 1) 소원등 켜기 (✨ 매일 3대 일일 신행 골드 강조) */}
+                {/* 1) 모바일 법당 (✨ 참배 동선 1순위: 대웅전 법당 참선 쉼터) */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSingingBowlSound()
+                    if (setShowSanctuaryModal) setShowSanctuaryModal(true)
+                  }}
+                  className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFFDF5] via-[#FFF6DC] to-[#FCE8B3] hover:from-[#FFF9EB] hover:to-[#FBDD96] border-2 border-[#D4A024] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-[0_3px_12px_rgba(212,160,36,0.22)] group"
+                >
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#FFF0B3] via-[#F5D061] to-[#C59B27] text-white flex items-center justify-center shadow-sm mb-1.5 shrink-0 group-hover:scale-105 transition-transform overflow-hidden p-1 border border-[#FFF8DC]">
+                    <img src="/images/icon_monk_meditate_front.png" alt="모바일 법당" className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform" />
+                  </div>
+                  <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
+                    <span className="font-serif-kr text-[11.5px] sm:text-xs font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
+                      모바일 법당
+                    </span>
+                  </div>
+                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-bold mt-0.5 whitespace-nowrap block">
+                    대웅전 참선 쉼터
+                  </span>
+                </button>
+
+                {/* 2) 소원등 켜기 (✨ 참배 동선 2순위: 부처님 전 등불 공양) */}
                 <button
                   type="button"
                   onClick={() => {
@@ -214,7 +236,7 @@ export default function HomeTab({
                   </span>
                 </button>
 
-                {/* 2) 한줄 사경 (✨ 매일 3대 일일 신행 골드 강조) */}
+                {/* 3) 한줄 사경 (✨ 참배 동선 3순위: 지혜 사경 정진) */}
                 <button
                   type="button"
                   onClick={() => {
@@ -234,28 +256,6 @@ export default function HomeTab({
                   </div>
                   <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-bold mt-0.5 whitespace-nowrap block">
                     지혜 정진 사경
-                  </span>
-                </button>
-
-                {/* 3) 법당 들어가기 (✨ 매일 3대 일일 신행 골드 강조 - 목탁 중복 제거 후 법당 입장으로 통합) */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    playSingingBowlSound()
-                    if (setShowSanctuaryModal) setShowSanctuaryModal(true)
-                  }}
-                  className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFFDF5] via-[#FFF6DC] to-[#FCE8B3] hover:from-[#FFF9EB] hover:to-[#FBDD96] border-2 border-[#D4A024] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-[0_3px_12px_rgba(212,160,36,0.22)] group"
-                >
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#FFF0B3] via-[#F5D061] to-[#C59B27] text-white flex items-center justify-center shadow-sm mb-1.5 shrink-0 group-hover:scale-105 transition-transform overflow-hidden p-1 border border-[#FFF8DC]">
-                    <img src="/images/icon_monk_meditate_front.png" alt="법당 들어가기" className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform" />
-                  </div>
-                  <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
-                    <span className="font-serif-kr text-[11.5px] sm:text-xs font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
-                      법당 들어가기
-                    </span>
-                  </div>
-                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-bold mt-0.5 whitespace-nowrap block">
-                    대웅전 참선 쉼터
                   </span>
                 </button>
 
