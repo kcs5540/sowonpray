@@ -6616,11 +6616,11 @@ function formatRelativeOrDate(dateStr) {
   const handleShareKakao = (code, userName) => {
     const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
     const shareUrl = `${origin}/?ref=${code}&tab=lantern`
-    const senderName = userName ? `${userName} 불자님` : '도반님'
+    const senderName = userName ? `${userName} 불자님` : '소원사 도반님'
     const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
     const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=3'
 
-    // 1) Kakao JavaScript SDK 공식 피드 카드 (대표님 지정 1024x693 규격 삼존불 배너 + 1줄 제목 + 2줄 본문)
+    // 1) Kakao JavaScript SDK 공식 피드 카드 (정갈한 itemContent 테이블 포함)
     if (typeof window !== 'undefined' && window.Kakao) {
       try {
         if (!window.Kakao.isInitialized()) {
@@ -6630,8 +6630,8 @@ function formatRelativeOrDate(dateStr) {
           window.Kakao.Share.sendDefault({
             objectType: 'feed',
             content: {
-              title: '🪷 제주 소원사 소원등 복(福) 선물',
-              description: `${senderName}께서 보낸 소원등 선물\n부처님 전에 소원을 밝혀보세요.`,
+              title: '🪷 제주 소원사 1일 무료 소원등 복(福) 선물',
+              description: `${senderName}께서 보내신 무료 소원등 선물입니다.\n부처님 전에 마음속 간절한 소원을 밝혀보세요.`,
               imageUrl: altarImageUrl,
               imageWidth: 1024,
               imageHeight: 693,
@@ -6640,9 +6640,20 @@ function formatRelativeOrDate(dateStr) {
                 webUrl: shareUrl,
               },
             },
+            itemContent: {
+              profileText: '제주 소원사 모바일 법당 · 도반 축원 선물',
+              titleImageText: '무료 소원등 점등권',
+              titleImageCategory: '대웅전 삼존불 점등',
+              items: [
+                { item: '보낸도반', itemOp: senderName },
+                { item: '선물내역', itemOp: '1일 무료 소원등 점등권' },
+                { item: '정진도량', itemOp: '제주 소원사 대웅전' },
+                { item: '사찰위치', itemOp: '제주시 오등동 935' },
+              ],
+            },
             buttons: [
               {
-                title: '🪔 1일 무료 소원등 밝히기',
+                title: '🪔 무료 소원등 켜고 축원받기',
                 link: {
                   mobileWebUrl: shareUrl,
                   webUrl: shareUrl,
@@ -6659,7 +6670,7 @@ function formatRelativeOrDate(dateStr) {
 
     // 2) 브라우저 네이티브 공유 / 복사 fallback
     const shareTitle = '🪷 제주 소원사 소원등 복(福) 선물'
-    const shareText = `[제주 소원사 모바일 법당]\n${senderName}께서 보낸 소원등 선물\n부처님 전에 소원을 밝혀보세요.\n아래 카드를 터치하여 대웅전에 소원등을 밝혀보세요.`
+    const shareText = `[제주 소원사 모바일 법당]\n${senderName}께서 보낸 소원등 선물\n부처님 전에 소원을 밝혀보세요.\n아래 링크를 터치하여 대웅전에 소원등을 밝혀보세요.`
 
     if (navigator.share) {
       navigator.share({
@@ -6667,7 +6678,6 @@ function formatRelativeOrDate(dateStr) {
         text: shareText,
         url: shareUrl,
       }).catch((err) => {
-        // 사용자가 취소했거나 공유 창이 닫힌 경우 클립보드 복사로 부드럽게 fallback
         if (err?.name !== 'AbortError') {
           navigator.clipboard?.writeText(`${shareText}\n${shareUrl}`)
           showToast('🙏 소원등 인연 링크가 복사되었습니다. 카카오톡 대화방에 붙여넣어 전해보세요!')
@@ -6679,16 +6689,64 @@ function formatRelativeOrDate(dateStr) {
     }
   }
 
-  // 가족·지인에게 내 소원등 알리기 (대웅전 삼존불 공식 카카오 피드 카드)
-  const handleShareMyLantern = (believerName) => {
+  // 가족·지인에게 내 소원등 또는 사경 회향 알리기 (대웅전 삼존불 공식 카카오 피드 카드 - 맞춤형 발원문 & 연등 정보)
+  const handleShareMyLantern = (believerName, customOptions = {}) => {
     const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
     const code = currentUser?.code || referralCode || '33065540'
-    const shareUrl = `${origin}/?ref=${code}&tab=lantern`
     const name = believerName ? `${believerName} 불자님` : (currentUser?.name ? `${currentUser.name} 불자님` : '도반님')
     const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
     const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=3'
 
-    // 1) Kakao JavaScript SDK 공식 피드 카드 (동일한 1024x693 규격 삼존불 배너 + 1줄 제목 + 2줄 본문)
+    const isSutra = customOptions?.type === 'sutra'
+    const shareUrl = `${origin}/?ref=${code}&tab=${isSutra ? 'sutra' : 'lantern'}`
+
+    const category = customOptions?.category || lanternData?.wish_category || '가족건강'
+    const wishText = customOptions?.wishText || lanternData?.wish_text || '온 가족의 무병장수와 만복·소원성취를 발원합니다.'
+    const streak = customOptions?.streak || userLanternStats?.streak || 1
+    const totalCount = customOptions?.totalCount || userLanternStats?.totalCount || 1
+
+    const sutraTitle = customOptions?.sutraTitle || currentSutra?.title || '반야심경'
+    const sutraText = customOptions?.sutraText || currentSutra?.text || '색즉시공 공즉시색 수상행식 역부여시'
+
+    let cardTitle = ''
+    let cardDesc = ''
+    let itemContent = null
+    let btnTitle = '🪔 1일 무료 소원등 함께 밝히기'
+
+    if (isSutra) {
+      cardTitle = `🪷 제주 소원사 [${sutraTitle} 사경] 지혜 복(福) 나눔`
+      const cleanSutra = sutraText.length > 50 ? `${sutraText.slice(0, 50)}…` : sutraText
+      cardDesc = `“${cleanSutra}”\n${name}께서 사경 정진을 마치고 지혜와 복덕을 전합니다.`
+      btnTitle = '✍️ 한줄 사경 함께하기'
+      itemContent = {
+        profileText: '제주 소원사 모바일 법당 · 사경 회향 공덕',
+        titleImageText: sutraTitle,
+        titleImageCategory: '부처님 말씀 일일 사경',
+        items: [
+          { item: '정진불자', itemOp: name },
+          { item: '회향경전', itemOp: sutraTitle },
+          { item: '봉안사찰', itemOp: '제주 소원사 대웅전' },
+        ],
+      }
+    } else {
+      cardTitle = `🪷 제주 소원사 [${category}] 소원등 복(福) 나눔`
+      const cleanWish = wishText.length > 50 ? `${wishText.slice(0, 50)}…` : wishText
+      cardDesc = `“${cleanWish}”\n${name}의 정성스런 등불이 부처님 전에 밝혀졌습니다.`
+      btnTitle = '🪔 1일 무료 소원등 함께 밝히기'
+      itemContent = {
+        profileText: '제주 소원사 모바일 법당 · 대웅전 소원등',
+        titleImageText: `[${category}] 발원등`,
+        titleImageCategory: `🔥 ${streak}일 연속 정진`,
+        items: [
+          { item: '발원불자', itemOp: name },
+          { item: '발원분야', itemOp: category },
+          { item: '정진현황', itemOp: `🔥 ${streak}일 연속 (총 ${totalCount}회 점등)` },
+          { item: '봉안사찰', itemOp: '제주 소원사 대웅전' },
+        ],
+      }
+    }
+
+    // 1) Kakao JavaScript SDK 공식 피드 카드 (동일한 1024x693 규격 삼존불 배너 + 상세 테이블)
     if (typeof window !== 'undefined' && window.Kakao) {
       try {
         if (!window.Kakao.isInitialized()) {
@@ -6698,8 +6756,8 @@ function formatRelativeOrDate(dateStr) {
           window.Kakao.Share.sendDefault({
             objectType: 'feed',
             content: {
-              title: '🪷 제주 소원사 소원등 복(福) 나눔',
-              description: `${name}의 소원등이 밝혀졌습니다\n함께 등을 밝히고 축원을 받으세요.`,
+              title: cardTitle,
+              description: cardDesc,
               imageUrl: altarImageUrl,
               imageWidth: 1024,
               imageHeight: 693,
@@ -6708,9 +6766,10 @@ function formatRelativeOrDate(dateStr) {
                 webUrl: shareUrl,
               },
             },
+            itemContent: itemContent,
             buttons: [
               {
-                title: '🪔 1일 무료 소원등 밝히기',
+                title: btnTitle,
                 link: {
                   mobileWebUrl: shareUrl,
                   webUrl: shareUrl,
@@ -6726,8 +6785,8 @@ function formatRelativeOrDate(dateStr) {
     }
 
     // 2) 브라우저 네이티브 공유 / 복사 fallback
-    const shareTitle = '🪷 제주 소원사 소원등 복(福) 나눔'
-    const shareText = `[제주 소원사 대웅전]\n${name}의 소원등이 부처님 전에 밝혀졌습니다.\n아래 카드를 터치하여 함께 소원등을 켜보세요.`
+    const shareTitle = cardTitle
+    const shareText = `[제주 소원사 대웅전]\n${cardDesc}\n아래 카드를 터치하여 함께 정진에 동참해보세요.`
 
     if (navigator.share) {
       navigator.share({
@@ -6737,12 +6796,12 @@ function formatRelativeOrDate(dateStr) {
       }).catch((err) => {
         if (err?.name !== 'AbortError') {
           navigator.clipboard?.writeText(`${shareText}\n${shareUrl}`)
-          showToast('📋 소원등 축원 링크가 복사되었습니다! 카카오톡에 전해보세요.')
+          showToast('📋 축원 링크가 복사되었습니다! 카카오톡에 전해보세요.')
         }
       })
     } else {
       navigator.clipboard?.writeText(`${shareText}\n${shareUrl}`)
-      showToast('📋 소원등 축원 링크가 복사되었습니다! 카카오톡에 전해보세요.')
+      showToast('📋 축원 링크가 복사되었습니다! 카카오톡에 전해보세요.')
     }
   }
 
@@ -7230,6 +7289,7 @@ function formatRelativeOrDate(dateStr) {
             setMeritCertType={setMeritCertType}
             handleShareMyLantern={handleShareMyLantern}
             lanternData={lanternData}
+            userLanternStats={userLanternStats}
           />
         )}
 
@@ -9304,8 +9364,16 @@ function formatRelativeOrDate(dateStr) {
                 <button
                   type="button"
                   onClick={() => {
-                    handleShareMyLantern(currentUser?.name || lanternData?.believer_name)
-                    showToast('💌 가족·도반에게 소원등 복(福) 나눔 카드가 공유되었습니다.')
+                    handleShareMyLantern(currentUser?.name || lanternData?.believer_name, {
+                      type: meritCertType,
+                      category: lanternData?.wish_category,
+                      wishText: lanternData?.wish_text,
+                      streak: userLanternStats?.streak,
+                      totalCount: userLanternStats?.totalCount,
+                      sutraTitle: currentSutra?.title,
+                      sutraText: currentSutra?.text,
+                    })
+                    showToast(meritCertType === 'sutra' ? '💌 가족·도반에게 사경 회향 지혜 카드가 공유되었습니다.' : '💌 가족·도반에게 소원등 복(福) 나눔 카드가 공유되었습니다.')
                   }}
                   className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#FEE500] via-[#FDD835] to-[#FBC02D] hover:brightness-105 active:scale-95 text-[#3C1E1E] font-black text-[13.5px] sm:text-sm shadow-[0_4px_16px_rgba(253,216,53,0.4)] flex items-center justify-center gap-2 transition cursor-pointer"
                 >

@@ -145,6 +145,7 @@ export default function HomeTab({
   setMeritCertType,
   handleShareMyLantern,
   lanternData,
+  userLanternStats,
 }) {
   const [showMeritInfoModal, setShowMeritInfoModal] = useState(false)
   const currentQuote = DAILY_QUOTES[quoteIdx] || DAILY_QUOTES[0]
@@ -1424,7 +1425,13 @@ export default function HomeTab({
                         type="button"
                         onClick={() => {
                           if (handleShareMyLantern) {
-                            handleShareMyLantern(currentUser?.name || lanternData?.believer_name)
+                            handleShareMyLantern(currentUser?.name || lanternData?.believer_name, {
+                              type: 'lantern',
+                              category: lanternData?.wish_category,
+                              wishText: lanternData?.wish_text,
+                              streak: userLanternStats?.streak,
+                              totalCount: userLanternStats?.totalCount,
+                            })
                           }
                           if (showToast) {
                             showToast('💌 가족·도반에게 소원등 복(福) 나눔 카드가 공유되었습니다.')
