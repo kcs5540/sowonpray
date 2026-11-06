@@ -110,7 +110,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
   const lastActionTimeRef = useRef(0)
 
   // 1회당 최소 2.5초 간격 엄수 (대표님 지시: 정성스러운 호흡과 무분별한 연타 방지)
-  const MIN_ACTION_INTERVAL_MS = 2500
+  const MIN_ACTION_INTERVAL_MS = 1500
 
   const canExecuteAction = () => {
     const now = Date.now()
@@ -194,7 +194,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       action: '삼존불 전에 두 손 모아 간절히 합장하셨습니다',
       icon: '🙏'
     })
-    setTimeout(() => setActionState('idle'), 2500)
+    setTimeout(() => setActionState('idle'), 1500)
   }
 
   // 4) 1배 올리기 (108배 마일스톤 축하)
@@ -231,7 +231,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       action: `삼존불 전에 ${nextCount}배를 정성스레 올렸습니다`,
       icon: '🙇'
     })
-    setTimeout(() => setActionState('idle'), 2500)
+    setTimeout(() => setActionState('idle'), 1500)
   }
 
   // 5) 목탁 치기
@@ -268,7 +268,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       action: `맑은 목탁 소리(${nextTap}타)로 번뇌와 잡념을 비워냅니다`,
       icon: '🪵'
     })
-    setTimeout(() => setActionState('idle'), 2500)
+    setTimeout(() => setActionState('idle'), 1500)
   }
 
   // 6) 108 염주알 굴리기
@@ -323,7 +323,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
         icon: '📿'
       })
     }
-    setTimeout(() => setActionState('idle'), 2500)
+    setTimeout(() => setActionState('idle'), 1500)
   }
 
   // 실시간 도량 활기 효과 (동행 불자님 모션 + 라이브 피드 + 인원 변동)
