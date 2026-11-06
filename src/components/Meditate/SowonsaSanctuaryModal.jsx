@@ -2,6 +2,60 @@ import React, { useState, useEffect, useRef } from 'react'
 import { X, Volume2, VolumeX, Sparkles, DoorOpen, Share2, Award, ChevronRight } from 'lucide-react'
 import { awardMerit, getDailyMeritInfo } from '../../lib/meritSystem'
 
+// 📿 실제 대추나무 단주/염주알 굴릴 때 나는 영롱한 원목 구슬 마찰 타격음 물리 합성기
+function playYeomjuAcousticSynth() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext
+    if (!AudioCtx) return
+    const ctx = new AudioCtx()
+    const now = ctx.currentTime
+
+    // 1. 1차 구슬 부딪힘 어택 (2450Hz / 1850Hz 고주파 단단한 나무 클릭)
+    const osc1 = ctx.createOscillator()
+    const osc2 = ctx.createOscillator()
+    const gainNode = ctx.createGain()
+
+    osc1.type = 'sine'
+    osc1.frequency.setValueAtTime(2450, now)
+    osc1.frequency.exponentialRampToValueAtTime(1400, now + 0.04)
+
+    osc2.type = 'sine'
+    osc2.frequency.setValueAtTime(1850, now)
+    osc2.frequency.exponentialRampToValueAtTime(950, now + 0.04)
+
+    gainNode.gain.setValueAtTime(0.65, now)
+    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.07)
+
+    osc1.connect(gainNode)
+    osc2.connect(gainNode)
+    gainNode.connect(ctx.destination)
+
+    osc1.start(now)
+    osc2.start(now)
+    osc1.stop(now + 0.08)
+    osc2.stop(now + 0.08)
+
+    // 2. 25ms 뒤 이웃 구슬이 스르륵 맞물리는 2차 롤링 클릭
+    setTimeout(() => {
+      try {
+        const now2 = ctx.currentTime
+        const oscRoll = ctx.createOscillator()
+        const rollGain = ctx.createGain()
+        oscRoll.type = 'triangle'
+        oscRoll.frequency.setValueAtTime(2700, now2)
+        oscRoll.frequency.exponentialRampToValueAtTime(1600, now2 + 0.03)
+        rollGain.gain.setValueAtTime(0.35, now2)
+        rollGain.gain.exponentialRampToValueAtTime(0.001, now2 + 0.05)
+        oscRoll.connect(rollGain)
+        rollGain.connect(ctx.destination)
+        oscRoll.start(now2)
+        oscRoll.stop(now2 + 0.06)
+      } catch {}
+    }, 25)
+  } catch {}
+}
+
+
 /**
  * 🪔 제주 소원사 고요 법당 (멍스테이 & 사찰 쉼터 뷰)
  * - 기존 앱 로직과 완전히 격리된 독립 힐링 컴포넌트
@@ -51,6 +105,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
   const ambientAudioRef = useRef(null)
   const chantAudioRef = useRef(null)
   const moktakAudioRef = useRef(null)
+  const yeomjuAudioRef = useRef(null)
   const toastTimerRef = useRef(null)
   const lastActionTimeRef = useRef(0)
 
@@ -226,12 +281,19 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
     setSessionYeomjus(prev => prev + 1)
 
     try {
-      if (moktakAudioRef.current) {
-        moktakAudioRef.current.currentTime = 0
-        moktakAudioRef.current.volume = 0.5
-        moktakAudioRef.current.play().catch(() => {})
+      if (yeomjuAudioRef.current) {
+        yeomjuAudioRef.current.currentTime = 0
+        yeomjuAudioRef.current.volume = 0.95
+        const p = yeomjuAudioRef.current.play()
+        if (p !== undefined) {
+          p.catch(() => playYeomjuAcousticSynth())
+        }
+      } else {
+        playYeomjuAcousticSynth()
       }
-    } catch {}
+    } catch {
+      playYeomjuAcousticSynth()
+    }
 
     const userCode = currentUser?.code || 'guest'
     const meritRes = awardMerit('yeomju', userCode, 1)
@@ -333,6 +395,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       <audio ref={ambientAudioRef} src="/audio/sowonsa_wind.mp3" loop preload="auto" />
       <audio ref={chantAudioRef} src="/audio/prajna_chanting.mp3" loop preload="auto" />
       <audio ref={moktakAudioRef} src="/audio/moktak.mp3" preload="auto" />
+      <audio ref={yeomjuAudioRef} src="/audio/yeomju_click.wav" preload="auto" />
 
       {/* 2. 대웅전 옻칠 대청마루 바닥 레이어 (z-0: 제단 밑바닥과 바닥 전체에 자연스럽게 깔림) */}
       <div 
