@@ -182,21 +182,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
     }
   }
 
-  // 3) 합장하기
-  const handleHapjang = (e) => {
-    e?.stopPropagation()
-    if (!canExecuteAction()) return
-    setActionState('hapjang')
-    showActionToast('🙏 부처님 전 두 손 모아 간절히 합장합니다')
-    setLiveStreamMsg({
-      name: currentUser?.name || '나의 정진',
-      action: '삼존불 전에 두 손 모아 간절히 합장하셨습니다',
-      icon: '🙏'
-    })
-    setTimeout(() => setActionState('idle'), 1500)
-  }
-
-  // 4) 1배 올리기 (108배 마일스톤 축하)
+  // 3) 1배 올리기 (108배 마일스톤 축하)
   const handleBow = (e) => {
     e?.stopPropagation()
     if (!canExecuteAction()) return
@@ -678,83 +664,76 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
         </p>
       </div>
 
-      {/* 5. 하단 5대 신행 & 소원등 인터랙션 바 */}
+      {/* 5. 하단 4대 신행 인터랙션 바 (절하기 / 목탁 / 염주 / 나가기) */}
       <footer className={`relative z-20 px-2 sm:px-3 pb-5 pt-2 bg-gradient-to-t from-black via-black/90 to-transparent transition-opacity duration-500 ${
         isZenMode ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}>
-        <div className="max-w-md mx-auto grid grid-cols-5 gap-1 sm:gap-2">
-          {/* 버튼 1: 합장 */}
-          <button
-            type="button"
-            onClick={handleHapjang}
-            className={`flex flex-col items-center justify-center py-2 px-0.5 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 transition group ${actionState === 'hapjang' ? 'bg-[#F5D061]/25 border-[#F5D061]/60 shadow-[0_0_12px_rgba(245,208,97,0.4)]' : ''}`}
-          >
-            <span className="text-lg sm:text-xl mb-0.5 group-hover:scale-110 transition">🙏</span>
-            <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061]">합장</span>
-          </button>
-
-          {/* 버튼 2: 108배 (3D 절하는 동자승 아이콘) */}
+        <div className="max-w-md mx-auto grid grid-cols-4 gap-1.5 sm:gap-2.5">
+          {/* 버튼 1: 108배 (3D 절하는 동자승 아이콘) */}
           <button
             type="button"
             onClick={handleBow}
-            className="flex flex-col items-center justify-center py-2 px-0.5 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 transition group"
+            className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 hover:border-[#F5D061]/40 transition group"
+            title="삼존불 1배 올리기"
           >
             <img 
               src="/images/icon_bow_3d.png" 
               alt="3D 절하기" 
               className="h-6 sm:h-7 object-contain mb-0.5 group-hover:scale-110 group-active:translate-y-0.5 transition filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.5)]" 
             />
-            <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061] whitespace-nowrap">
+            <span className="text-[11px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061] whitespace-nowrap">
               절하기
             </span>
           </button>
 
-          {/* 버튼 3: 목탁 치기 */}
+          {/* 버튼 2: 목탁 치기 */}
           <button
             type="button"
             onClick={handleMoktak}
-            className="flex flex-col items-center justify-center py-2 px-0.5 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 transition group"
+            className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 hover:border-[#F5D061]/40 transition group"
+            title="목탁 치기"
           >
             <img 
               src="/images/avatar_moktak_3d.png" 
               alt="3D 목탁" 
               className="h-6 sm:h-7 object-contain mb-0.5 group-hover:scale-110 group-active:rotate-12 transition filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.5)]" 
             />
-            <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061]">
+            <span className="text-[11px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061]">
               목탁
             </span>
           </button>
 
-          {/* 버튼 4: 108 염주 굴리기 */}
+          {/* 버튼 3: 108 염주 굴리기 */}
           <button
             type="button"
             onClick={handleYeomju}
-            className="flex flex-col items-center justify-center py-2 px-0.5 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 transition group"
+            className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 hover:border-[#F5D061]/40 transition group"
+            title="108 염주알 굴리기"
           >
             <img 
               src="/images/avatar_yeomju_3d.png" 
               alt="3D 108 염주" 
               className="h-6 sm:h-7 object-contain mb-0.5 group-hover:scale-110 group-active:rotate-45 transition filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.5)]" 
             />
-            <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061]">
+            <span className="text-[11px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061]">
               염주
             </span>
           </button>
 
-          {/* 버튼 5: 법당 나가기 (즉시 퇴장) */}
+          {/* 버튼 4: 법당 나가기 (즉시 퇴장) */}
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation()
               onClose()
             }}
-            className="flex flex-col items-center justify-center py-2 px-0.5 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 hover:border-[#F5D061]/50 transition group"
+            className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 hover:border-[#F5D061]/50 transition group"
             title="대웅전 나가기"
           >
             <div className="relative mb-0.5 flex items-center justify-center">
               <DoorOpen className="w-5 h-5 sm:w-6 sm:h-6 text-[#F5D061] group-hover:scale-110 transition-transform filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.4)]" />
             </div>
-            <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061] transition">
+            <span className="text-[11px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061] transition">
               나가기
             </span>
           </button>
