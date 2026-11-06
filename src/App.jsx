@@ -7226,6 +7226,10 @@ function formatRelativeOrDate(dateStr) {
             handle108MoktakTap={handle108MoktakTap}
             isHealingVoiceOn={isHealingVoiceOn}
             setShowSanctuaryModal={setShowSanctuaryModal}
+            setShowMeritCertModal={setShowMeritCertModal}
+            setMeritCertType={setMeritCertType}
+            handleShareMyLantern={handleShareMyLantern}
+            lanternData={lanternData}
           />
         )}
 
