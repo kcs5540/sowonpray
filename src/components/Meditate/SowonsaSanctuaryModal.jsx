@@ -830,7 +830,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                 className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#FEE500] via-[#FDD835] to-[#FBC02D] hover:brightness-105 active:scale-95 text-[#3C1E1E] font-black text-[13px] sm:text-sm shadow-[0_4px_16px_rgba(253,216,53,0.4)] flex items-center justify-center gap-2 transition cursor-pointer"
               >
                 <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
-                <span>가족·도반에게 참배 복(福) 나누기 (카카오톡)</span>
+                <span>가족·도반에게 참배 복(福) 나누기 (카톡)</span>
               </button>
 
               <div className="flex items-center gap-2">
