@@ -360,98 +360,17 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
           {/* 삼존불 황금빛 광배 은은한 후광 조명 효과 */}
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,_var(--tw-gradient-stops))] from-[#FFD700]/15 via-transparent to-transparent pointer-events-none" />
 
-          {/* 🕯️ 제단 촛불 애니메이션 스타일 */}
+          {/* 3안: 제단 전체에 살아 숨 쉬는 은은한 성스러운 온기 (촛불 스티커 배제 & 앰비언트 브리딩 조명) */}
           <style>{`
-            @keyframes candleFlicker1 {
-              0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.96; }
-              20% { transform: scale(1.08, 0.92) rotate(-1.2deg); opacity: 1; }
-              40% { transform: scale(0.92, 1.1) rotate(1deg); opacity: 0.88; }
-              60% { transform: scale(1.05, 0.95) rotate(-0.8deg); opacity: 0.98; }
-              80% { transform: scale(0.96, 1.04) rotate(1.1deg); opacity: 0.92; }
-            }
-            @keyframes candleFlicker2 {
-              0%, 100% { transform: scale(1.02, 0.98) rotate(0deg); opacity: 0.93; }
-              25% { transform: scale(0.94, 1.09) rotate(1.3deg); opacity: 0.99; }
-              50% { transform: scale(1.07, 0.93) rotate(-1.1deg); opacity: 0.89; }
-              75% { transform: scale(0.97, 1.05) rotate(0.8deg); opacity: 1; }
-            }
-            @keyframes candleAuraPulse {
-              0%, 100% { opacity: 0.55; transform: scale(1); }
-              50% { opacity: 0.92; transform: scale(1.18); }
+            @keyframes altarSacredWarmth {
+              0%, 100% { opacity: 0.18; transform: scale(1); }
+              50% { opacity: 0.35; transform: scale(1.03); }
             }
           `}</style>
-
-          {/* 🕯️ 좌측 대웅전 촛대 촛불 (좌표: 34.6%, 48.0%) */}
           <div 
-            className="absolute z-10 pointer-events-none -translate-x-1/2 -translate-y-full"
-            style={{ left: '34.6%', top: '48.1%' }}
-          >
-            {/* 촛불 주변 따뜻한 황금빛 온기 후광 (Aura Glow) */}
-            <div 
-              className="absolute -inset-3.5 rounded-full bg-[radial-gradient(circle,_var(--tw-gradient-stops))] from-[#FFD000]/65 via-[#FF8800]/30 to-transparent blur-sm pointer-events-none"
-              style={{ animation: 'candleAuraPulse 2.1s ease-in-out infinite' }}
-            />
-            {/* 은은하게 흔들리는 성스러운 촛불 불꽃 (Living Candle Flame) */}
-            <svg 
-              viewBox="0 0 16 26" 
-              className="w-3 h-4.5 sm:w-3.5 sm:h-5.5 drop-shadow-[0_0_8px_rgba(255,200,0,0.95)]"
-              style={{ animation: 'candleFlicker1 1.35s ease-in-out infinite', transformOrigin: 'bottom center' }}
-            >
-              <defs>
-                <linearGradient id="flameGradLeft" x1="0%" y1="100%" x2="0%" y2="0%">
-                  <stop offset="0%" stopColor="#EA580C" />
-                  <stop offset="30%" stopColor="#F59E0B" />
-                  <stop offset="68%" stopColor="#FDE047" />
-                  <stop offset="100%" stopColor="#FFFFFF" />
-                </linearGradient>
-              </defs>
-              {/* 외곽 불꽃 형태 */}
-              <path 
-                d="M8 0C8 0 15 8 15 17C15 21.5 11.8 25 8 25C4.2 25 1 21.5 1 17C1 8 8 0 8 0Z" 
-                fill="url(#flameGradLeft)" 
-              />
-              {/* 중심 백색 고온 코어 */}
-              <ellipse cx="8" cy="18" rx="2.5" ry="4.5" fill="#FFFFFF" opacity="0.9" />
-              {/* 촛불 심지 */}
-              <line x1="8" y1="22" x2="8" y2="25.5" stroke="#451A03" strokeWidth="1.2" strokeLinecap="round" />
-            </svg>
-          </div>
-
-          {/* 🕯️ 우측 대웅전 촛대 촛불 (좌표: 58.0%, 48.0%) */}
-          <div 
-            className="absolute z-10 pointer-events-none -translate-x-1/2 -translate-y-full"
-            style={{ left: '58.0%', top: '48.1%' }}
-          >
-            {/* 촛불 주변 따뜻한 황금빛 온기 후광 (Aura Glow) */}
-            <div 
-              className="absolute -inset-3.5 rounded-full bg-[radial-gradient(circle,_var(--tw-gradient-stops))] from-[#FFD000]/65 via-[#FF8800]/30 to-transparent blur-sm pointer-events-none"
-              style={{ animation: 'candleAuraPulse 2.5s ease-in-out infinite 0.35s' }}
-            />
-            {/* 은은하게 흔들리는 성스러운 촛불 불꽃 (Living Candle Flame) */}
-            <svg 
-              viewBox="0 0 16 26" 
-              className="w-3 h-4.5 sm:w-3.5 sm:h-5.5 drop-shadow-[0_0_8px_rgba(255,200,0,0.95)]"
-              style={{ animation: 'candleFlicker2 1.55s ease-in-out infinite', transformOrigin: 'bottom center' }}
-            >
-              <defs>
-                <linearGradient id="flameGradRight" x1="0%" y1="100%" x2="0%" y2="0%">
-                  <stop offset="0%" stopColor="#EA580C" />
-                  <stop offset="30%" stopColor="#F59E0B" />
-                  <stop offset="68%" stopColor="#FDE047" />
-                  <stop offset="100%" stopColor="#FFFFFF" />
-                </linearGradient>
-              </defs>
-              {/* 외곽 불꽃 형태 */}
-              <path 
-                d="M8 0C8 0 15 8 15 17C15 21.5 11.8 25 8 25C4.2 25 1 21.5 1 17C1 8 8 0 8 0Z" 
-                fill="url(#flameGradRight)" 
-              />
-              {/* 중심 백색 고온 코어 */}
-              <ellipse cx="8" cy="18" rx="2.5" ry="4.5" fill="#FFFFFF" opacity="0.9" />
-              {/* 촛불 심지 */}
-              <line x1="8" y1="22" x2="8" y2="25.5" stroke="#451A03" strokeWidth="1.2" strokeLinecap="round" />
-            </svg>
-          </div>
+            className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,_var(--tw-gradient-stops))] from-[#FFD000]/35 via-[#FF8800]/15 to-transparent pointer-events-none mix-blend-screen"
+            style={{ animation: 'altarSacredWarmth 5.5s ease-in-out infinite' }}
+          />
         </div>
       </div>
 
