@@ -9295,7 +9295,20 @@ function formatRelativeOrDate(dateStr) {
                 </div>
               </div>
 
-              <div className="mt-2.5">
+              {/* 💌 가족·도반에게 카카오톡 복 나누기 (80만 바이럴 루프 핵심 버튼) */}
+              <div className="mt-3 space-y-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleShareMyLantern(currentUser?.name || lanternData?.believer_name)
+                    showToast('💌 가족·도반에게 소원등 복(福) 나눔 카드가 공유되었습니다.')
+                  }}
+                  className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#FEE500] via-[#FDD835] to-[#FBC02D] hover:brightness-105 active:scale-95 text-[#3C1E1E] font-black text-[13.5px] sm:text-sm shadow-[0_4px_16px_rgba(253,216,53,0.4)] flex items-center justify-center gap-2 transition cursor-pointer"
+                >
+                  <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
+                  <span>가족·도반에게 복(福) 나누기 (카카오톡 공유)</span>
+                </button>
+
                 <button
                   type="button"
                   onClick={() => setShowMeritCertModal(false)}
