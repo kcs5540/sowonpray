@@ -308,15 +308,20 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
 
   return (
     <div 
-      onClick={() => {
-        // 멍스테이 모드일 때 화면 터치 시 UI 복귀
-        if (isZenMode) {
-          setIsZenMode(false)
-          showActionToast('법당 메뉴가 다시 열렸습니다')
-        }
-      }}
-      className="fixed inset-0 z-[100] bg-black flex flex-col justify-between overflow-hidden animate-fadeIn select-none cursor-pointer"
+      onClick={onClose}
+      className="fixed inset-0 z-[100] bg-black/90 flex justify-center items-center overflow-hidden animate-fadeIn select-none"
     >
+      <div 
+        onClick={(e) => {
+          e.stopPropagation()
+          // 멍스테이 모드일 때 화면 터치 시 UI 복귀
+          if (isZenMode) {
+            setIsZenMode(false)
+            showActionToast('법당 메뉴가 다시 열렸습니다')
+          }
+        }}
+        className="relative w-full max-w-[480px] h-full bg-black flex flex-col justify-between overflow-hidden shadow-[0_0_60px_rgba(0,0,0,0.95)] border-x border-[#C59B27]/30 cursor-pointer"
+      >
       {/* 1. 배경 오디오 소스 */}
       <audio ref={ambientAudioRef} src="/audio/sowonsa_wind.mp3" loop preload="auto" />
       <audio ref={chantAudioRef} src="/audio/prajna_chanting.mp3" loop preload="auto" />
@@ -686,6 +691,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
           </button>
         </div>
       </footer>
+      </div>
     </div>
   )
 }
