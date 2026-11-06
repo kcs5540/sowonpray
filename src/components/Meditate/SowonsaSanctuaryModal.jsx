@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { X, Volume2, VolumeX, Sparkles, DoorOpen, Share2, Award, ChevronRight } from 'lucide-react'
 import { awardMerit, getDailyMeritInfo } from '../../lib/meritSystem'
 
-// 📿 실제 대추나무 단주/염주알 굴릴 때 나는 영롱한 원목 구슬 마찰 타격음 물리 합성기
+// 📿 실제 대추나무 단주/염주알 굴릴 때 나는 따뜻하고 묵직한 원목 구슬 소리 (쇠소리 완전 제거)
 function playYeomjuAcousticSynth() {
   try {
     const AudioCtx = window.AudioContext || window.webkitAudioContext
@@ -10,20 +10,20 @@ function playYeomjuAcousticSynth() {
     const ctx = new AudioCtx()
     const now = ctx.currentTime
 
-    // 1. 1차 구슬 부딪힘 어택 (2450Hz / 1850Hz 고주파 단단한 나무 클릭)
+    // 1. 1차 원목 구슬 부딪힘 (460Hz / 680Hz / 320Hz의 따뜻한 원목 공명)
     const osc1 = ctx.createOscillator()
     const osc2 = ctx.createOscillator()
     const gainNode = ctx.createGain()
 
     osc1.type = 'sine'
-    osc1.frequency.setValueAtTime(2450, now)
-    osc1.frequency.exponentialRampToValueAtTime(1400, now + 0.04)
+    osc1.frequency.setValueAtTime(460, now)
+    osc1.frequency.exponentialRampToValueAtTime(320, now + 0.05)
 
-    osc2.type = 'sine'
-    osc2.frequency.setValueAtTime(1850, now)
-    osc2.frequency.exponentialRampToValueAtTime(950, now + 0.04)
+    osc2.type = 'triangle' // 부드럽고 따뜻한 배음
+    osc2.frequency.setValueAtTime(680, now)
+    osc2.frequency.exponentialRampToValueAtTime(480, now + 0.04)
 
-    gainNode.gain.setValueAtTime(0.65, now)
+    gainNode.gain.setValueAtTime(0.55, now)
     gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.07)
 
     osc1.connect(gainNode)
@@ -35,23 +35,23 @@ function playYeomjuAcousticSynth() {
     osc1.stop(now + 0.08)
     osc2.stop(now + 0.08)
 
-    // 2. 25ms 뒤 이웃 구슬이 스르륵 맞물리는 2차 롤링 클릭
+    // 2. 35ms 뒤 이웃 구슬이 스르륵 감기는 미세한 원목 굴림음 ("또륵")
     setTimeout(() => {
       try {
         const now2 = ctx.currentTime
         const oscRoll = ctx.createOscillator()
         const rollGain = ctx.createGain()
-        oscRoll.type = 'triangle'
-        oscRoll.frequency.setValueAtTime(2700, now2)
-        oscRoll.frequency.exponentialRampToValueAtTime(1600, now2 + 0.03)
-        rollGain.gain.setValueAtTime(0.35, now2)
-        rollGain.gain.exponentialRampToValueAtTime(0.001, now2 + 0.05)
+        oscRoll.type = 'sine'
+        oscRoll.frequency.setValueAtTime(520, now2)
+        oscRoll.frequency.exponentialRampToValueAtTime(380, now2 + 0.04)
+        rollGain.gain.setValueAtTime(0.3, now2)
+        rollGain.gain.exponentialRampToValueAtTime(0.001, now2 + 0.06)
         oscRoll.connect(rollGain)
         rollGain.connect(ctx.destination)
         oscRoll.start(now2)
-        oscRoll.stop(now2 + 0.06)
+        oscRoll.stop(now2 + 0.07)
       } catch {}
-    }, 25)
+    }, 35)
   } catch {}
 }
 
