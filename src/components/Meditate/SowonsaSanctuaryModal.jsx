@@ -832,19 +832,6 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                 <span>가족·도반에게 참배 복(福) 나누기 (카톡)</span>
               </button>
 
-              {/* 🪔 1일 무료 소원등 밝히고 축원받기 (대표님 요청 문구 반영) */}
-              <button
-                type="button"
-                onClick={() => {
-                  setShowExitCertModal(false);
-                  onClose();
-                  if (onOpenLantern) onOpenLantern();
-                }}
-                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#D4A024] via-[#F5D061] to-[#C59B27] hover:brightness-105 active:scale-95 text-[#241A0B] font-serif-kr font-black text-[12.5px] sm:text-xs shadow-[0_2px_12px_rgba(212,160,36,0.35)] flex items-center justify-center gap-1.5 transition cursor-pointer"
-              >
-                <span>🪔 1일 무료 소원등 밝히고 축원받기</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
 
               <div className="flex items-center gap-1.5">
                 <button
