@@ -703,106 +703,105 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       {showExitCertModal && (
         <div 
           onClick={(e) => e.stopPropagation()}
-          className="fixed inset-0 z-[150] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn select-none"
+          className="fixed inset-0 z-[150] bg-black/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 overflow-y-auto animate-fadeIn select-none"
         >
-          <div className="w-full max-w-[390px] sm:max-w-[420px] max-h-[96dvh] overflow-y-auto bg-gradient-to-b from-[#251F19] via-[#1B1713] to-[#120F0D] text-white rounded-3xl p-3.5 sm:p-5 border-2 border-[#D4AF37] shadow-[0_0_40px_rgba(212,175,55,0.4)] relative my-auto">
+          <div className="w-full max-w-[350px] sm:max-w-[390px] max-h-[96dvh] overflow-y-auto bg-gradient-to-b from-[#251F19] via-[#1B1713] to-[#120F0D] text-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 border-2 border-[#D4AF37] shadow-[0_0_40px_rgba(212,175,55,0.4)] relative my-auto">
             {/* 상단 장식 빛무리 */}
-            <div className="absolute -top-12 -left-12 w-36 h-36 bg-[#F5D061]/15 rounded-full blur-2xl pointer-events-none" />
-            <div className="absolute -bottom-12 -right-12 w-36 h-36 bg-[#D4AF37]/15 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute -top-12 -left-12 w-28 h-28 bg-[#F5D061]/15 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute -bottom-12 -right-12 w-28 h-28 bg-[#D4AF37]/15 rounded-full blur-2xl pointer-events-none" />
 
             {/* 닫기 버튼 */}
             <button
               type="button"
               onClick={() => setShowExitCertModal(false)}
-              className="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-[#E5DCD0] flex items-center justify-center transition active:scale-90 z-10 cursor-pointer"
+              className="absolute top-2.5 right-2.5 w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-[#E5DCD0] flex items-center justify-center transition active:scale-90 z-10 cursor-pointer"
               aria-label="닫기"
             >
-              <X className="w-4 h-4" />
+              <X className="w-3.5 h-3.5" />
             </button>
 
-            {/* 공덕장 내부 본문 카드 (전통 한지 & 황금 테두리) */}
+            {/* 공덕장 내부 본문 카드 (전통 한지 & 황금 테두리 - 컴팩트 최적화) */}
             <div
-              className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-b from-[#FFFDF9] via-[#FAF6EE] to-[#F5EEDB] text-[#241F1A] border-2 border-[#C59B27] relative shadow-md"
+              className="p-2 sm:p-3 rounded-xl bg-gradient-to-b from-[#FFFDF9] via-[#FAF6EE] to-[#F5EEDB] text-[#241F1A] border border-[#C59B27] relative shadow-md"
               style={{
-                boxShadow: '0 4px 20px rgba(197, 155, 39, 0.15)',
+                boxShadow: '0 4px 16px rgba(197, 155, 39, 0.15)',
               }}
             >
               {/* 내부 전통 괘선 (이중 금선 프레임) */}
-              <div className="border border-[#D4AF37]/60 rounded-xl p-3 sm:p-4 bg-white/50">
+              <div className="border border-[#D4AF37]/60 rounded-lg p-2 sm:p-2.5 bg-white/60">
                 {/* 상단 사찰 표기 */}
-                <div className="flex items-center justify-center gap-2">
-                  <span className="h-[1px] w-8 bg-gradient-to-r from-transparent to-[#C59B27]" />
-                  <span className="text-[10.5px] text-[#8C6D1F] font-serif-kr tracking-[0.2em] font-extrabold">
+                <div className="flex items-center justify-center gap-1.5">
+                  <span className="h-[1px] w-6 bg-gradient-to-r from-transparent to-[#C59B27]" />
+                  <span className="text-[9.5px] text-[#8C6D1F] font-serif-kr tracking-[0.2em] font-extrabold">
                     卍 제주 소원사 卍
                   </span>
-                  <span className="h-[1px] w-8 bg-gradient-to-l from-transparent to-[#C59B27]" />
+                  <span className="h-[1px] w-6 bg-gradient-to-l from-transparent to-[#C59B27]" />
                 </div>
 
                 {/* 공덕장 대명칭 */}
-                <h3 className="font-serif-kr text-[21px] sm:text-[23px] font-black text-[#523505] text-center tracking-[0.14em] mt-1.5 drop-shadow-sm">
+                <h3 className="font-serif-kr text-[18px] sm:text-[20px] font-black text-[#523505] text-center tracking-[0.12em] mt-0.5 drop-shadow-xs">
                   대웅전 참배 회향 공덕장
                 </h3>
 
-                <div className="my-2.5 border-t border-[#C59B27]/40 border-dashed" />
+                <div className="my-1.5 border-t border-[#C59B27]/40 border-dashed" />
 
                 {/* 수여 대상 정보 */}
-                <div className="space-y-1.5 text-xs sm:text-[13px] text-[#3A3228] font-serif-kr">
+                <div className="space-y-1 text-[11px] sm:text-xs text-[#3A3228] font-serif-kr">
                   <div className="flex items-center justify-between">
-                    <span className="text-[#8C6D1F] font-extrabold text-[12px]">정진 불자</span>
-                    <span className="font-black text-[#1C1814] text-[13.5px]">
+                    <span className="text-[#8C6D1F] font-bold text-[11px]">정진 불자</span>
+                    <span className="font-black text-[#1C1814] text-[12px] sm:text-[13px]">
                       {currentUser?.name || '소원사 정진 불자'}
                       {currentUser?.dharma_name ? ` (${currentUser.dharma_name})` : ''} 합장
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[#8C6D1F] font-extrabold text-[12px]">참배 도량</span>
-                    <span className="font-extrabold text-[#6B4E08] text-[13px]">
+                    <span className="text-[#8C6D1F] font-bold text-[11px]">참배 도량</span>
+                    <span className="font-bold text-[#6B4E08] text-[11.5px] sm:text-[12px]">
                       제주 소원사 대웅전 (삼존불 전)
                     </span>
                   </div>
                 </div>
 
                 {/* 중앙 참배 정진 통계 박스 */}
-                <div className="mt-3 p-3 rounded-xl bg-[#F8F3E8] border border-[#D5C59B] text-center shadow-[inset_0_1px_3px_rgba(197,155,39,0.06)]">
-                  <div className="text-[11px] font-extrabold text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-md border border-[#E5D399] inline-block mb-2">
+                <div className="mt-2 p-2 rounded-lg bg-[#F8F3E8] border border-[#D5C59B] text-center shadow-[inset_0_1px_2px_rgba(197,155,39,0.06)]">
+                  <div className="text-[9.5px] font-extrabold text-[#8A6510] bg-[#FAF3DF] px-2 py-0.5 rounded border border-[#E5D399] inline-block mb-1.5">
                     오늘 올린 삼보 참배 정진
                   </div>
-                  <div className="grid grid-cols-3 gap-1.5 text-center">
-                    <div className="p-1.5 rounded-lg bg-white/70 border border-[#E5D399]">
-                      <div className="text-[10px] text-[#786134]">절하기</div>
-                      <div className="font-black text-[#8A4B08] text-sm sm:text-base font-serif-kr">
+                  <div className="grid grid-cols-3 gap-1 text-center">
+                    <div className="p-1 rounded bg-white/80 border border-[#E5D399]/80">
+                      <div className="text-[9px] text-[#786134]">절하기</div>
+                      <div className="font-black text-[#8A4B08] text-xs sm:text-sm font-serif-kr">
                         {bowCount || sessionBows || 1}배
                       </div>
                     </div>
-                    <div className="p-1.5 rounded-lg bg-white/70 border border-[#E5D399]">
-                      <div className="text-[10px] text-[#786134]">목탁 정진</div>
-                      <div className="font-black text-[#8A4B08] text-sm sm:text-base font-serif-kr">
+                    <div className="p-1 rounded bg-white/80 border border-[#E5D399]/80">
+                      <div className="text-[9px] text-[#786134]">목탁 정진</div>
+                      <div className="font-black text-[#8A4B08] text-xs sm:text-sm font-serif-kr">
                         {moktakTapCount || sessionMoktaks || 0}타
                       </div>
                     </div>
-                    <div className="p-1.5 rounded-lg bg-white/70 border border-[#E5D399]">
-                      <div className="text-[10px] text-[#786134]">염주 정진</div>
-                      <div className="font-black text-[#8A4B08] text-sm sm:text-base font-serif-kr">
+                    <div className="p-1 rounded bg-white/80 border border-[#E5D399]/80">
+                      <div className="text-[9px] text-[#786134]">염주 정진</div>
+                      <div className="font-black text-[#8A4B08] text-xs sm:text-sm font-serif-kr">
                         {yeomjuCount || sessionYeomjus || 0}알
                       </div>
                     </div>
                   </div>
-                  <p className="font-serif-kr text-[12.5px] font-bold text-[#423218] mt-2.5 leading-relaxed break-keep">
-                    “삼보에 지극정성으로 참배 올리고 마음을 맑히신<br />
-                    불자님의 일상에 부처님의 가피가 늘 가득하길 발원합니다.”
+                  <p className="font-serif-kr text-[10.5px] sm:text-[11px] font-bold text-[#423218] mt-1.5 leading-snug break-keep">
+                    “삼보에 정성껏 참배 올리신 불자님의 일상에 부처님의 가피가 늘 가득하길 발원합니다.”
                   </p>
                 </div>
 
                 {/* 하단 일자 및 주지 직인 서명 */}
-                <div className="mt-3.5 pt-2 border-t border-[#C59B27]/40 text-center font-serif-kr space-y-1 w-full">
-                  <div className="text-[11px] text-[#736352] font-medium tracking-wide">
+                <div className="mt-2 pt-1 border-t border-[#C59B27]/40 text-center font-serif-kr space-y-0.5 w-full">
+                  <div className="text-[10px] text-[#736352] font-medium">
                     {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
                   </div>
                   <div className="flex items-center justify-center gap-1.5 whitespace-nowrap">
-                    <span className="font-black text-[#4F3906] text-[13px] sm:text-[14px] tracking-wide">
+                    <span className="font-black text-[#4F3906] text-[12px] sm:text-[13px] tracking-wide">
                       제주 소원사 주지 합장
                     </span>
-                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-[3px] bg-[#AB2317] text-white text-[11px] font-black border border-[#7D150C] shadow-sm select-none shrink-0" title="합장 직인">
+                    <span className="inline-flex items-center justify-center w-4 h-4 rounded-[2px] bg-[#AB2317] text-white text-[9.5px] font-black border border-[#7D150C] shadow-xs select-none shrink-0" title="합장 직인">
                       🙏
                     </span>
                   </div>
@@ -810,8 +809,8 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               </div>
             </div>
 
-            {/* 💌 가족·도반에게 참배 복 나누기 (카카오톡 공유 & 다이렉트 링크) */}
-            <div className="mt-3 space-y-2">
+            {/* 💌 가족·도반에게 참배 복 나누기 (카톡 공유 & 다이렉트 링크) */}
+            <div className="mt-2 space-y-1.5">
               <button
                 type="button"
                 onClick={() => {
@@ -827,17 +826,17 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                     showToast('💌 가족·도반에게 대웅전 참배 회향 카드가 공유되었습니다.')
                   }
                 }}
-                className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#FEE500] via-[#FDD835] to-[#FBC02D] hover:brightness-105 active:scale-95 text-[#3C1E1E] font-black text-[13px] sm:text-sm shadow-[0_4px_16px_rgba(253,216,53,0.4)] flex items-center justify-center gap-2 transition cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#FEE500] via-[#FDD835] to-[#FBC02D] hover:brightness-105 active:scale-95 text-[#3C1E1E] font-black text-[12.5px] sm:text-xs shadow-[0_2px_12px_rgba(253,216,53,0.35)] flex items-center justify-center gap-1.5 transition cursor-pointer"
               >
-                <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
+                <Share2 className="w-3.5 h-3.5 text-[#3C1E1E] shrink-0" />
                 <span>가족·도반에게 참배 복(福) 나누기 (카톡)</span>
               </button>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={() => setShowExitCertModal(false)}
-                  className="flex-1 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white/80 hover:text-white font-medium text-xs transition active:scale-95 border border-white/10 cursor-pointer"
+                  className="flex-1 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white/80 hover:text-white font-medium text-[11px] transition active:scale-95 border border-white/10 cursor-pointer"
                 >
                   조금 더 참배하기
                 </button>
@@ -847,7 +846,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                     setShowExitCertModal(false)
                     onClose()
                   }}
-                  className="flex-1 py-2.5 rounded-xl bg-[#3B2C1B] hover:bg-[#4D3A24] text-[#F5D061] font-bold text-xs transition active:scale-95 border border-[#D4A024]/40 cursor-pointer"
+                  className="flex-1 py-2 rounded-lg bg-[#3B2C1B] hover:bg-[#4D3A24] text-[#F5D061] font-bold text-[11px] transition active:scale-95 border border-[#D4A024]/40 cursor-pointer"
                 >
                   대웅전 나가기
                 </button>
