@@ -630,8 +630,8 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               alt="3D 절하기" 
               className="h-6 sm:h-7 object-contain mb-0.5 group-hover:scale-110 group-active:translate-y-0.5 transition filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.5)]" 
             />
-            <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061]">
-              절
+            <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061] whitespace-nowrap">
+              절하기
             </span>
           </button>
 
