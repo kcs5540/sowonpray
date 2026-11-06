@@ -693,7 +693,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               <DoorOpen className="w-5 h-5 sm:w-6 sm:h-6 text-[#F5D061] group-hover:scale-110 transition-transform filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.4)]" />
             </div>
             <span className="text-[10px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061] transition">
-              회향·나가기
+              나가기
             </span>
           </button>
         </div>
