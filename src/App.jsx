@@ -2605,7 +2605,13 @@ function formatRelativeOrDate(dateStr) {
   const [visitPurpose, setVisitPurpose] = useState('따뜻한 차 & 사찰 공양(식사) 대접 예약')
   const [visitMemo, setVisitMemo] = useState('')
   const [showVisitSuccessModal, setShowVisitSuccessModal] = useState(false)
-  const [showSanctuaryModal, setShowSanctuaryModal] = useState(false)
+  const [showSanctuaryModal, setShowSanctuaryModal] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      return params.get('sanctuary') === 'true' || params.get('tab') === 'sanctuary'
+    }
+    return false
+  })
   const pendingVisitDraftRef = useRef(null)
 
   // 로그인 계정이 바뀔 때마다 소원등 신청자 이름·연락처 및 내 정보 수정 폼 자동 세팅
@@ -6802,6 +6808,90 @@ function formatRelativeOrDate(dateStr) {
     } else {
       navigator.clipboard?.writeText(`${shareText}\n${shareUrl}`)
       showToast('📋 축원 링크가 복사되었습니다! 카카오톡에 전해보세요.')
+    }
+  }
+
+  // 대웅전 참배 회향 카카오톡 공유 (클릭 시 ?sanctuary=true 로 대웅전 직통 연결)
+  const handleShareSanctuary = ({ believerName, bowCount = 0, moktakCount = 0, yeomjuCount = 0 } = {}) => {
+    const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
+    const code = currentUser?.code || referralCode || '33065540'
+    const shareUrl = `${origin}/?ref=${code}&sanctuary=true`
+    const name = believerName ? `${believerName} 불자님` : (currentUser?.name ? `${currentUser.name} 불자님` : '소원사 도반님')
+    const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
+    const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=3'
+
+    const acts = []
+    if (bowCount > 0) acts.push(`절 ${bowCount}배`)
+    if (moktakCount > 0) acts.push(`목탁 ${moktakCount}타`)
+    if (yeomjuCount > 0) acts.push(`염주 ${yeomjuCount}알`)
+    const actSummary = acts.length > 0 ? acts.join(' · ') : '대웅전 삼존불 참배'
+
+    const cardTitle = '🪷 제주 소원사 대웅전 참배 회향 복(福) 나눔'
+    const cardDesc = `“${name}께서 대웅전 삼존불 참배(${actSummary})를 정성스레 회향하셨습니다.”\n함께 부처님 전에 참배하고 마음의 평안을 얻으세요.`
+
+    if (typeof window !== 'undefined' && window.Kakao) {
+      try {
+        if (!window.Kakao.isInitialized()) {
+          window.Kakao.init(kakaoKey)
+        }
+        if (window.Kakao.isInitialized() && window.Kakao.Share) {
+          window.Kakao.Share.sendDefault({
+            objectType: 'feed',
+            content: {
+              title: cardTitle,
+              description: cardDesc,
+              imageUrl: altarImageUrl,
+              imageWidth: 1024,
+              imageHeight: 693,
+              link: {
+                mobileWebUrl: shareUrl,
+                webUrl: shareUrl,
+              },
+            },
+            itemContent: {
+              profileText: '제주 소원사 모바일 법당 · 대웅전 참배 회향',
+              titleImageText: '대웅전 삼존불 참배',
+              titleImageCategory: '제주 소원사 대웅전',
+              items: [
+                { item: '정진불자', itemOp: name },
+                { item: '참배정진', itemOp: actSummary },
+                { item: '봉안사찰', itemOp: '제주 소원사 대웅전' },
+                { item: '사찰위치', itemOp: '제주시 오등동 935' },
+              ],
+            },
+            buttons: [
+              {
+                title: '🙇 대웅전 참배 바로가기',
+                link: {
+                  mobileWebUrl: shareUrl,
+                  webUrl: shareUrl,
+                },
+              },
+            ],
+          })
+          return
+        }
+      } catch (err) {
+        console.warn('Kakao share sanctuary fallback:', err)
+      }
+    }
+
+    // fallback
+    const shareText = `[제주 소원사 대웅전 참배 회향]\n${cardDesc}\n아래 링크를 터치하여 대웅전에 부처님을 마주해보세요.`
+    if (navigator.share) {
+      navigator.share({
+        title: shareTitle,
+        text: shareText,
+        url: shareUrl,
+      }).catch((err) => {
+        if (err?.name !== 'AbortError') {
+          navigator.clipboard?.writeText(`${shareText}\n${shareUrl}`)
+          showToast('📋 대웅전 참배 링크가 복사되었습니다! 카카오톡에 전해보세요.')
+        }
+      })
+    } else {
+      navigator.clipboard?.writeText(`${shareText}\n${shareUrl}`)
+      showToast('📋 대웅전 참배 링크가 복사되었습니다! 카카오톡에 전해보세요.')
     }
   }
 
@@ -11273,6 +11363,8 @@ function formatRelativeOrDate(dateStr) {
           onClose={() => setShowSanctuaryModal(false)}
           currentUser={currentUser}
           onAddMerit={addMerit}
+          handleShareSanctuary={handleShareSanctuary}
+          showToast={showToast}
           onOpenLantern={() => {
             setActiveTab('lantern')
             window.scrollTo({ top: 0, behavior: 'smooth' })
