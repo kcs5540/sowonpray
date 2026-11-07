@@ -6823,10 +6823,13 @@ function formatRelativeOrDate(dateStr) {
     if (bowCount > 0) acts.push(`절 ${bowCount}배`)
     if (moktakCount > 0) acts.push(`목탁 ${moktakCount}타`)
     if (yeomjuCount > 0) acts.push(`염주 ${yeomjuCount}알`)
-    const actSummary = acts.length > 0 ? acts.join(' · ') : '대웅전 삼존불 참배'
+    const hasActs = acts.length > 0
+    const actSummary = hasActs ? acts.join(' · ') : ''
 
-    const cardTitle = '🪷 대웅전 참배 회향 복(福) 나눔'
-    const cardDesc = `“${name}께서 대웅전 삼존불 참배(${actSummary})를 정성스레 올리셨습니다.”\n가족과 도반에게 부처님의 자비와 평안을 전합니다.`
+    const cardTitle = `🪷 ${name}의 대웅전 참배 회향`
+    const line1 = hasActs ? `정진공덕: ${actSummary}` : '삼존불 전에 정성껏 참배를 올렸습니다.'
+    const line2 = '함께 참배하시고 부처님 가피 가득하세요.'
+    const cardDesc = `${line1}\n${line2}`
 
     if (typeof window !== 'undefined' && window.Kakao) {
       try {
