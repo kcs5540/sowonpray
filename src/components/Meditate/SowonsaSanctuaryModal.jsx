@@ -502,23 +502,23 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
         </div>
       </header>
 
-      {/* 우측 세로 정진 기록 위젯 (절 N배 / 목탁 N타 / 염주 N알 세로 정렬 HUD + 복나눔 버튼) */}
-      <div className={`absolute right-3 sm:right-4 top-[38%] z-20 transition-opacity duration-500 flex flex-col items-center gap-1.5 ${
+      {/* 우측 세로 정진 기록 위젯 (절 N배 / 목탁 N타 / 염주 N알 세로 정렬 HUD + 복나눔 버튼 - 슬림 너비 최적화) */}
+      <div className={`absolute right-2.5 sm:right-3.5 top-[38%] z-20 transition-opacity duration-500 flex flex-col items-center gap-1 ${
         isZenMode ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}>
-        <div className="px-2.5 py-2 rounded-2xl bg-black/35 backdrop-blur-md border border-[#F5D061]/30 shadow-lg flex flex-col items-center gap-1.5 text-xs font-serif-kr min-w-[56px] sm:min-w-[62px]">
-          <div className="w-full text-center border-b border-white/10 pb-1">
-            <span className="font-bold text-[#F5D061] text-xs sm:text-[13px] tracking-tight">{bowCount}배</span>
+        <div className="w-[42px] sm:w-[46px] px-1 py-1.5 rounded-xl sm:rounded-2xl bg-black/40 backdrop-blur-md border border-[#F5D061]/30 shadow-lg flex flex-col items-center text-xs font-serif-kr">
+          <div className="w-full text-center border-b border-white/10 pb-0.5 mb-0.5">
+            <span className="font-bold text-[#F5D061] text-[11px] sm:text-xs tracking-tight">{bowCount}배</span>
           </div>
-          <div className="w-full text-center border-b border-white/10 pb-1">
-            <span className="font-bold text-[#F5D061] text-xs sm:text-[13px] tracking-tight">{moktakTapCount}타</span>
+          <div className="w-full text-center border-b border-white/10 pb-0.5 mb-0.5">
+            <span className="font-bold text-[#F5D061] text-[11px] sm:text-xs tracking-tight">{moktakTapCount}타</span>
           </div>
           <div className="w-full text-center">
-            <span className="font-bold text-[#F5D061] text-xs sm:text-[13px] tracking-tight">{yeomjuCount}알</span>
+            <span className="font-bold text-[#F5D061] text-[11px] sm:text-xs tracking-tight">{yeomjuCount}알</span>
           </div>
         </div>
 
-        {/* 💌 가족·도반에게 참배 복(福) 나누기 (유튜브 스타일 나눔 버튼) */}
+        {/* 💌 가족·도반에게 참배 복(福) 나누기 (유튜브 스타일 슬림 나눔 버튼) */}
         <button
           type="button"
           onClick={(e) => {
@@ -535,18 +535,18 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               showToast('💌 가족·도반에게 대웅전 참배 복(福) 카드가 공유되었습니다.')
             }
           }}
-          className="w-full py-2 px-1 rounded-2xl bg-black/45 hover:bg-black/60 active:scale-95 backdrop-blur-md border border-[#F5D061]/40 hover:border-[#F5D061] shadow-lg flex flex-col items-center justify-center gap-1 group transition-all cursor-pointer"
+          className="w-full py-1.5 px-0.5 rounded-xl sm:rounded-2xl bg-black/45 hover:bg-black/60 active:scale-95 backdrop-blur-md border border-[#F5D061]/40 hover:border-[#F5D061] shadow-lg flex flex-col items-center justify-center gap-0.5 group transition-all cursor-pointer"
           title="가족·도반에게 참배 복(福) 나누기 (카카오톡)"
         >
           {/* 유튜브 쇼츠 우측 공유 화살표 아이콘 */}
           <svg 
             viewBox="0 0 24 24" 
-            className="w-5 h-5 text-[#F5D061] group-hover:scale-110 group-active:scale-95 transition-transform filter drop-shadow-[0_2px_6px_rgba(245,208,97,0.5)]" 
+            className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#F5D061] group-hover:scale-110 group-active:scale-95 transition-transform filter drop-shadow-[0_2px_4px_rgba(245,208,97,0.5)]" 
             fill="currentColor"
           >
             <path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z" />
           </svg>
-          <span className="text-[11px] sm:text-xs font-bold text-[#F5D061] group-hover:text-yellow-300 font-serif-kr tracking-tight whitespace-nowrap">
+          <span className="text-[10px] sm:text-[10.5px] font-bold text-[#F5D061] group-hover:text-yellow-300 font-serif-kr tracking-tight whitespace-nowrap">
             나눔
           </span>
         </button>
