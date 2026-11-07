@@ -6829,7 +6829,8 @@ function formatRelativeOrDate(dateStr) {
     const itemsList = [
       { item: '정진불자', itemOp: name },
       { item: '참배정진', itemOp: actSummary },
-      { item: '회향발원', itemOp: '가정 평안 및 소원성취' },
+      { item: '회향축원', itemOp: '가족·도반에게 부처님 가피 충만' },
+      { item: '소원발원', itemOp: '모든 소원 원만성취 및 평안' },
     ]
 
     if (typeof window !== 'undefined' && window.Kakao) {
@@ -6841,8 +6842,8 @@ function formatRelativeOrDate(dateStr) {
           window.Kakao.Share.sendDefault({
             objectType: 'feed',
             content: {
-              title: '🪷 함께 참배하고 부처님 가피를 받으세요',
-              description: '삼보에 올린 참배 공덕을 가족과 도반에게 전합니다.',
+              title: '🪷 대웅전 참배 회향 복(福) 나눔',
+              description: '삼보에 올린 참배 공덕을 함께 나눕니다.',
               imageUrl: altarImageUrl,
               imageWidth: 1024,
               imageHeight: 693,
@@ -6852,9 +6853,9 @@ function formatRelativeOrDate(dateStr) {
               },
             },
             itemContent: {
-              profileText: '제주 소원사 모바일 법당 · 대웅전 참배 회향',
+              profileText: '제주 소원사 모바일 법당',
               titleImageText: '대웅전 삼존불 참배',
-              titleImageCategory: '복(福) 나눔 발원',
+              titleImageCategory: '소원성취 기도도량',
               items: itemsList,
             },
             buttons: [
