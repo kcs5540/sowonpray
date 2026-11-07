@@ -6825,8 +6825,8 @@ function formatRelativeOrDate(dateStr) {
     if (yeomjuCount > 0) acts.push(`염주 ${yeomjuCount}알`)
     const actSummary = acts.length > 0 ? acts.join(' · ') : '대웅전 삼존불 참배'
 
-    const cardTitle = '🪷 제주 소원사 대웅전 참배 회향 복(福) 나눔'
-    const cardDesc = `“${name}께서 대웅전 삼존불 참배(${actSummary})를 정성스레 회향하셨습니다.”\n함께 부처님 전에 참배하고 마음의 평안을 얻으세요.`
+    const cardTitle = '🪷 대웅전 참배 회향 복(福) 나눔'
+    const cardDesc = `“${name}께서 대웅전 참배를 정성스레 회향하셨습니다.”\n함께 부처님 전에 참배하고 마음의 평안을 얻으세요.`
 
     if (typeof window !== 'undefined' && window.Kakao) {
       try {
@@ -6854,7 +6854,6 @@ function formatRelativeOrDate(dateStr) {
               items: [
                 { item: '정진불자', itemOp: name },
                 { item: '참배정진', itemOp: actSummary },
-                { item: '봉안사찰', itemOp: '제주 소원사 대웅전' },
               ],
             },
             buttons: [
