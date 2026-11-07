@@ -6654,7 +6654,6 @@ function formatRelativeOrDate(dateStr) {
                 { item: '보낸도반', itemOp: senderName },
                 { item: '선물내역', itemOp: '1일 무료 소원등 점등권' },
                 { item: '정진도량', itemOp: '제주 소원사 대웅전' },
-                { item: '사찰위치', itemOp: '제주시 오등동 935' },
               ],
             },
             buttons: [
@@ -6856,7 +6855,6 @@ function formatRelativeOrDate(dateStr) {
                 { item: '정진불자', itemOp: name },
                 { item: '참배정진', itemOp: actSummary },
                 { item: '봉안사찰', itemOp: '제주 소원사 대웅전' },
-                { item: '사찰위치', itemOp: '제주시 오등동 935' },
               ],
             },
             buttons: [
@@ -6937,7 +6935,6 @@ function formatRelativeOrDate(dateStr) {
                 { item: '보낸도반', itemOp: senderLabel },
                 { item: '경전출처', itemOp: quote.source },
                 { item: '핵심법문', itemOp: quote.verse.slice(0, 24) + (quote.verse.length > 24 ? '…' : '') },
-                { item: '사찰위치', itemOp: '제주시 오등동 935' },
                 { item: '종무소', itemOp: '010-4912-1083' },
               ],
             },
