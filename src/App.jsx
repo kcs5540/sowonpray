@@ -6842,7 +6842,7 @@ function formatRelativeOrDate(dateStr) {
           window.Kakao.Share.sendDefault({
             objectType: 'feed',
             content: {
-              title: '🪷 대웅전 참배 회향 복(福) 나눔',
+              title: '🪷 복(福) 나눔',
               description: '삼보에 올린 참배 공덕을 함께 나눕니다.',
               imageUrl: altarImageUrl,
               imageWidth: 1024,
