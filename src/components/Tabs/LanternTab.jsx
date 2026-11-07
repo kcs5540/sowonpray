@@ -328,7 +328,7 @@ export default function LanternTab({
                     <svg viewBox="0 0 24 24" className="w-4 h-4 fill-[#191919] shrink-0">
                       <path d="M12 3C6.477 3 2 6.477 2 10.767c0 2.766 1.87 5.187 4.697 6.495-.205.772-.751 2.802-.86 3.235-.136.541.198.534.417.389.172-.114 2.73-1.859 3.82-2.607.625.09 1.268.138 1.926.138 5.523 0 10-3.477 10-7.767S17.523 3 12 3z" />
                     </svg>
-                    <span>가족·지인에게 내 소원등 축원 알리기 (카톡 공유)</span>
+                    <span className="whitespace-nowrap">내 소원등 축원 알리기 (카톡 공유)</span>
                   </button>
                   </>
                 ) : isLanternExpired ? (
