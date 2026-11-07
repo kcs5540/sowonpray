@@ -164,18 +164,18 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
     }
   }
 
-  // 2) 스님 반야심경 염불 토글
+  // 2) 제주 소원사 반야심경 염불 토글
   const toggleChant = (e) => {
     e?.stopPropagation()
     if (!chantAudioRef.current) return
     if (isPlayingChant) {
       chantAudioRef.current.pause()
       setIsPlayingChant(false)
-      showActionToast('염불 소리가 멈췄습니다')
+      showActionToast('반야심경 소리가 멈췄습니다')
     } else {
       chantAudioRef.current.play().then(() => {
         setIsPlayingChant(true)
-        showActionToast('📿 은은한 스님의 반야심경 염불을 봉독합니다')
+        showActionToast('📿 제주 소원사 대웅전 반야심경을 봉독합니다')
       }).catch(() => {
         setIsPlayingChant(false)
       })
@@ -378,7 +378,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       >
       {/* 1. 배경 오디오 소스 */}
       <audio ref={ambientAudioRef} src="/audio/sowonsa_wind.mp3" loop preload="auto" />
-      <audio ref={chantAudioRef} src="/audio/prajna_chanting.mp3" loop preload="auto" />
+      <audio ref={chantAudioRef} src="/audio/sowonsa_prajna_meditation.mp3" loop preload="auto" />
       <audio ref={moktakAudioRef} src="/audio/moktak.mp3" preload="auto" />
       <audio ref={yeomjuAudioRef} src="/audio/yeomju_click.wav" preload="auto" />
 
@@ -444,7 +444,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
         </div>
 
         <div className="flex items-center gap-1.5">
-          {/* 스님 염불 듣기 토글 버튼 (산사 스타일) */}
+          {/* 제주 소원사 반야심경 듣기 토글 버튼 */}
           <button
             type="button"
             onClick={toggleChant}
@@ -453,10 +453,10 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                 ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061] font-bold shadow-[0_0_12px_rgba(245,208,97,0.5)]'
                 : 'bg-black/60 text-[#D6CEC2] border-white/20 hover:text-white'
             }`}
-            title="스님 반야심경 염불 듣기"
+            title="제주 소원사 반야심경 듣기"
           >
             <img src="/images/avatar_yeomju_3d.png" alt="3D 염주" className="w-3.5 h-3.5 object-contain inline" />
-            <span>{isPlayingChant ? '염불 중' : '염불 듣기'}</span>
+            <span>{isPlayingChant ? '반야심경 중' : '반야심경'}</span>
             {isPlayingChant && <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse shrink-0" />}
           </button>
 
