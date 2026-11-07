@@ -36,7 +36,113 @@ export default function LanternTab({
   isLanternExpired,
   userLanternStats,
   PRAYER_CATEGORY_TEMPLATES,
+  showToast,
+  referralCode,
 }) {
+  // 소원등 켜진 상태에서 가족·지인에게 카카오톡 축원 카드 공유
+  const handleShareLitLantern = () => {
+    if (playMoktakSound) playMoktakSound();
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      navigator.vibrate(20);
+    }
+
+    const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922';
+    const code = currentUser?.code || referralCode || '33065540';
+    const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app';
+    const shareUrl = origin + '/?ref=' + code + '&tab=lantern';
+    const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=3';
+
+    const believerName = lanternData?.believer_name || (typeof wishName === 'string' && wishName.trim()) || currentUser?.name || '불자';
+    const categoryName = lanternData?.wish_category || wishCategory || '가족건강';
+    const streakDays = userLanternStats?.streak || 1;
+    const totalCount = userLanternStats?.totalCount || 1;
+
+    const shareTitle = '🪔 [제주 소원사] ' + believerName + ' 불자님의 소원등 점등';
+    const shareDesc = '대웅전 부처님 전에 간절한 소원등이 밝혀졌습니다.\n매일 오전 10시 사시예불마다 스님께서 정성껏 축원 올립니다.';
+
+    // 1) 카카오톡 공식 JavaScript SDK 피드 카드 전송
+    if (typeof window !== 'undefined' && window.Kakao) {
+      try {
+        if (!window.Kakao.isInitialized()) {
+          window.Kakao.init(kakaoKey);
+        }
+        if (window.Kakao.isInitialized() && window.Kakao.Share) {
+          window.Kakao.Share.sendDefault({
+            objectType: 'feed',
+            content: {
+              title: shareTitle,
+              description: shareDesc,
+              imageUrl: altarImageUrl,
+              imageWidth: 1024,
+              imageHeight: 693,
+              link: {
+                mobileWebUrl: shareUrl,
+                webUrl: shareUrl,
+              },
+            },
+            itemContent: {
+              profileText: '제주 소원사 대웅전 실시간 연동',
+              titleImageText: categoryName + ' 축원등',
+              titleImageCategory: '대웅전 실시간 연동',
+              items: [
+                { item: '축원불자', itemOp: believerName + ' 불자님' },
+                { item: '소원분야', itemOp: categoryName },
+                { item: '정진현황', itemOp: '누적 ' + totalCount + '회 · ' + streakDays + '일 연속 점등' },
+                { item: '사시예불', itemOp: '매일 오전 10시 대웅전' },
+              ],
+            },
+            buttons: [
+              {
+                title: '🪔 대웅전 소원등 함께 밝히기',
+                link: {
+                  mobileWebUrl: shareUrl,
+                  webUrl: shareUrl,
+                },
+              },
+            ],
+          });
+          return;
+        }
+      } catch (err) {
+        console.warn('Kakao share fallback:', err);
+      }
+    }
+
+    // 2) Web Share API (모바일 네이티브 공유)
+    const nativeShareText = '[제주 소원사 대웅전 소원등]\n' + believerName + ' 불자님의 소원등이 대웅전 부처님 전에 밝혀졌습니다.\n매일 오전 10시 사시예불마다 스님께서 정성껏 축원 올립니다.\n\n함께 소원등 밝히기:\n' + shareUrl;
+
+    if (navigator.share) {
+      navigator.share({
+        title: shareTitle,
+        text: nativeShareText,
+        url: shareUrl,
+      }).catch((err) => {
+        if (err.name !== 'AbortError') {
+          copyToClipboardFallback(nativeShareText);
+        }
+      });
+      return;
+    }
+
+    // 3) 클립보드 복사 fallback
+    copyToClipboardFallback(nativeShareText);
+  };
+
+  const copyToClipboardFallback = (text) => {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        if (typeof showToast === 'function') {
+          showToast('📋 소원등 축원 안내 문구가 복사되었습니다. 카카오톡에 붙여넣어 공유하세요!');
+        } else {
+          alert('소원등 축원 안내 문구가 복사되었습니다. 카카오톡에 붙여넣어 공유하세요!');
+        }
+      }).catch(() => {
+        if (typeof showToast === 'function') {
+          showToast('주소 복사에 실패했습니다. 브라우저 설정을 확인해주세요.');
+        }
+      });
+    }
+  };
   return (
 ﻿          <main className="flex-1 flex flex-col gap-4 px-2 py-3.5">
             {/* 인터랙티브 3D 광명 연등 */}
@@ -197,6 +303,7 @@ export default function LanternTab({
               {/* 하단 상태별 맞춤 안내 및 빠른 동작 버튼 */}
               <div className="mt-3">
                 {isLanternLit ? (
+                  <>
                   <div className="bg-[#FAF3DF]/10 border border-[#F5D061]/35 rounded-xl p-3 text-xs text-[#FAF8F5] leading-relaxed break-keep">
                     <div className="flex items-center justify-center gap-1.5 font-bold text-[#F5D061] mb-1.5 flex-wrap text-center">
                       <Sparkles className="w-3.5 h-3.5 shrink-0 text-[#F5D061]" />
@@ -211,6 +318,19 @@ export default function LanternTab({
                       📅 <strong>{getSasiDisplayInfo(lanternData?.sasi_date_key).detailLabel}</strong>되며, 예불 회향 후 오전 11시에 다음 등불을 밝히실 수 있습니다.
                     </p>
                   </div>
+
+                  {/* 카카오톡으로 가족·지인에게 내 소원등 축원 알리기 버튼 */}
+                  <button
+                    type="button"
+                    onClick={handleShareLitLantern}
+                    className="w-full mt-2.5 py-3 px-4 rounded-xl bg-[#FEE500] hover:bg-[#FADA0A] active:scale-[0.98] text-[#191919] font-bold text-xs sm:text-sm shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer border border-[#E6CF00]"
+                  >
+                    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-[#191919] shrink-0">
+                      <path d="M12 3C6.477 3 2 6.477 2 10.767c0 2.766 1.87 5.187 4.697 6.495-.205.772-.751 2.802-.86 3.235-.136.541.198.534.417.389.172-.114 2.73-1.859 3.82-2.607.625.09 1.268.138 1.926.138 5.523 0 10-3.477 10-7.767S17.523 3 12 3z" />
+                    </svg>
+                    <span>가족·지인에게 내 소원등 축원 알리기 (카톡 공유)</span>
+                  </button>
+                  </>
                 ) : isLanternExpired ? (
                   <button
                     type="button"

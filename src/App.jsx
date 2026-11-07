@@ -7438,6 +7438,8 @@ function formatRelativeOrDate(dateStr) {
             isLanternExpired={isLanternExpired}
             userLanternStats={userLanternStats}
             PRAYER_CATEGORY_TEMPLATES={PRAYER_CATEGORY_TEMPLATES}
+            showToast={showToast}
+            referralCode={referralCode}
           />
         )}
 
