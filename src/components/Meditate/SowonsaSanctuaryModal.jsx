@@ -502,8 +502,8 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
         </div>
       </header>
 
-      {/* 우측 세로 정진 기록 위젯 (절 N배 / 목탁 N타 / 염주 N알 세로 정렬 HUD) */}
-      <div className={`absolute right-3 sm:right-4 top-[38%] z-20 transition-opacity duration-500 ${
+      {/* 우측 세로 정진 기록 위젯 (절 N배 / 목탁 N타 / 염주 N알 세로 정렬 HUD + 복나눔 버튼) */}
+      <div className={`absolute right-3 sm:right-4 top-[38%] z-20 transition-opacity duration-500 flex flex-col items-center gap-1.5 ${
         isZenMode ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}>
         <div className="px-2.5 py-2 rounded-2xl bg-black/35 backdrop-blur-md border border-[#F5D061]/30 shadow-lg flex flex-col items-center gap-1.5 text-xs font-serif-kr min-w-[56px] sm:min-w-[62px]">
@@ -517,6 +517,36 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
             <span className="font-bold text-[#F5D061] text-xs sm:text-[13px] tracking-tight">{yeomjuCount}알</span>
           </div>
         </div>
+
+        {/* 💌 가족·도반에게 참배 복(福) 나누기 (카톡 공유 버튼) */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            if (handleShareSanctuary) {
+              handleShareSanctuary({
+                believerName: currentUser?.name,
+                bowCount: bowCount || sessionBows || 0,
+                moktakCount: moktakTapCount || sessionMoktaks || 0,
+                yeomjuCount: yeomjuCount || sessionYeomjus || 0,
+              })
+            }
+            if (showToast) {
+              showToast('💌 가족·도반에게 대웅전 참배 복(福) 카드가 공유되었습니다.')
+            }
+          }}
+          className="w-full py-1.5 px-1 rounded-2xl bg-black/45 hover:bg-black/60 active:scale-95 backdrop-blur-md border border-[#F5D061]/40 hover:border-[#F5D061] shadow-lg flex flex-col items-center justify-center gap-0.5 group transition-all cursor-pointer"
+          title="가족·도반에게 참배 복(福) 나누기 (카카오톡)"
+        >
+          <img 
+            src="/images/icon_bok_3d.png" 
+            alt="3D 복주머니" 
+            className="w-6 h-6 object-contain group-hover:scale-110 group-active:scale-95 transition-transform filter drop-shadow-[0_2px_6px_rgba(245,208,97,0.5)]" 
+          />
+          <span className="text-[10px] sm:text-[10.5px] font-bold text-[#F5D061] group-hover:text-yellow-300 font-serif-kr tracking-tight whitespace-nowrap">
+            복나눔
+          </span>
+        </button>
       </div>
 
       {/* 4. 중앙 공간 (부처님 시선 + 방석 위의 나) */}
