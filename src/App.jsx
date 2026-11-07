@@ -6824,12 +6824,13 @@ function formatRelativeOrDate(dateStr) {
     if (moktakCount > 0) acts.push(`목탁 ${moktakCount}타`)
     if (yeomjuCount > 0) acts.push(`염주 ${yeomjuCount}알`)
     const hasActs = acts.length > 0
-    const actSummary = hasActs ? acts.join(' · ') : ''
+    const actSummary = hasActs ? acts.join(' · ') : '대웅전 삼존불 참배'
 
-    const cardTitle = `🪷 ${name}의 대웅전 참배 회향`
-    const line1 = hasActs ? `정진공덕: ${actSummary}` : '삼존불 전에 정성껏 참배를 올렸습니다.'
-    const line2 = '함께 참배하시고 부처님 가피 가득하세요.'
-    const cardDesc = `${line1}\n${line2}`
+    const itemsList = [
+      { item: '정진불자', itemOp: name },
+      { item: '참배정진', itemOp: actSummary },
+      { item: '회향발원', itemOp: '가정 평안 및 소원성취' },
+    ]
 
     if (typeof window !== 'undefined' && window.Kakao) {
       try {
@@ -6840,8 +6841,8 @@ function formatRelativeOrDate(dateStr) {
           window.Kakao.Share.sendDefault({
             objectType: 'feed',
             content: {
-              title: cardTitle,
-              description: cardDesc,
+              title: '🪷 함께 참배하고 부처님 가피를 받으세요',
+              description: '삼보에 올린 참배 공덕을 가족과 도반에게 전합니다.',
               imageUrl: altarImageUrl,
               imageWidth: 1024,
               imageHeight: 693,
@@ -6849,6 +6850,12 @@ function formatRelativeOrDate(dateStr) {
                 mobileWebUrl: shareUrl,
                 webUrl: shareUrl,
               },
+            },
+            itemContent: {
+              profileText: '제주 소원사 모바일 법당 · 대웅전 참배 회향',
+              titleImageText: '대웅전 삼존불 참배',
+              titleImageCategory: '복(福) 나눔 발원',
+              items: itemsList,
             },
             buttons: [
               {
