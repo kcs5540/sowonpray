@@ -6826,7 +6826,7 @@ function formatRelativeOrDate(dateStr) {
     const actSummary = acts.length > 0 ? acts.join(' · ') : '대웅전 삼존불 참배'
 
     const cardTitle = '🪷 대웅전 참배 회향 복(福) 나눔'
-    const cardDesc = `“${name}께서 대웅전 참배를 정성스레 회향하셨습니다.”\n함께 부처님 전에 참배하고 마음의 평안을 얻으세요.`
+    const cardDesc = `“${name}의 대웅전 참배 공덕을 전합니다.\n함께 참배하시고 부처님 가피 가득하세요.”`
 
     if (typeof window !== 'undefined' && window.Kakao) {
       try {
