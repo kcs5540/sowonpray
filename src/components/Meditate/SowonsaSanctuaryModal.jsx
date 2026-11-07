@@ -448,15 +448,15 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
           <button
             type="button"
             onClick={toggleChant}
-            className={`px-2.5 py-1.5 rounded-full backdrop-blur-md border text-[11px] font-serif-kr flex items-center gap-1.5 transition active:scale-95 ${
+            className={`pl-2 pr-3 py-1.5 rounded-full backdrop-blur-md border text-[11px] font-serif-kr flex items-center justify-center gap-1 transition active:scale-95 ${
               isPlayingChant
                 ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061] font-bold shadow-[0_0_12px_rgba(245,208,97,0.5)]'
                 : 'bg-black/60 text-[#D6CEC2] border-white/20 hover:text-white'
             }`}
             title="제주 소원사 반야심경 듣기"
           >
-            <img src="/images/avatar_yeomju_3d.png" alt="3D 염주" className="w-3.5 h-3.5 object-contain inline" />
-            <span>반야심경</span>
+            <img src="/images/avatar_yeomju_3d.png" alt="3D 염주" className="w-3.5 h-3.5 object-contain inline shrink-0" />
+            <span className="whitespace-nowrap tracking-tight">반야심경</span>
           </button>
 
           {/* 도량 바람소리 토글 버튼 */}
