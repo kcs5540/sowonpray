@@ -7,7 +7,52 @@ import {
   CheckCircle2,
   ChevronRight,
   HelpCircle,
+  ShieldCheck,
 } from 'lucide-react'
+
+// 개인정보 안심 마스킹 (외부 노출 시 '이우제' -> '이*제', '오다혜 (대상: 박형목)' -> '오*혜 (대상: 박*목)')
+function maskPrivacyName(rawName) {
+  if (!rawName || typeof rawName !== 'string') return '불자님'
+
+  const trimmed = rawName.trim()
+
+  // 괄호가 포함된 경우 (예: "오다혜 (대상: 박형목)" 또는 "김철수 (보현행)")
+  const bracketMatch = trimmed.match(/^(.*?)\s*(\((.*?)\))$/)
+  if (bracketMatch) {
+    const mainPart = bracketMatch[1].trim()
+    const innerContent = bracketMatch[3].trim()
+
+    // 괄호 안에 "대상: 박형목" 패턴이 있는 경우
+    const targetMatch = innerContent.match(/^(대상\s*:\s*)(.*)$/)
+    if (targetMatch) {
+      const prefix = targetMatch[1]
+      const targetName = targetMatch[2].trim()
+      return `${maskSingleWord(mainPart)} (${prefix}${maskSingleWord(targetName)})`
+    }
+
+    // 일반 법명 등의 괄호 ("김철수 (보현행)") -> 이름 마스킹 + 법명 보존
+    return `${maskSingleWord(mainPart)} (${innerContent})`
+  }
+
+  return maskSingleWord(trimmed)
+}
+
+function maskSingleWord(str) {
+  if (!str) return ''
+  const len = str.length
+  if (len <= 1) return str
+  if (len === 2) {
+    return str[0] + '*'
+  }
+  if (len === 3) {
+    return str[0] + '*' + str[2]
+  }
+  if (len === 4) {
+    return str[0] + '**' + str[3]
+  }
+  const midCount = len - 2
+  return str[0] + '*'.repeat(midCount) + str[len - 1]
+}
 
 export default function LanternTab({
   isLanternLit,
@@ -599,34 +644,50 @@ export default function LanternTab({
               return (
                 <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8]">
                   <div className="flex items-center justify-between gap-2 mb-3">
-                    <h3 className="font-serif-kr font-bold text-base text-[#231F1C]">
-                      실시간 소원사 대웅전 소원등 ({deduped.length}위)
-                    </h3>
-                    <span className="text-[11px] font-bold text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-full border border-[#E5D399]">
+                    <div>
+                      <h3 className="font-serif-kr font-bold text-base text-[#231F1C]">
+                        실시간 소원사 대웅전 소원등 ({deduped.length}위)
+                      </h3>
+                      <span className="text-[10.5px] text-[#7A6B56] flex items-center gap-1 mt-0.5">
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 inline" />
+                        개인정보 안심 마스킹 보호 중
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-bold text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-full border border-[#E5D399] shrink-0">
                       실시간 점등중
                     </span>
                   </div>
                   <div className="space-y-3">
-                    {visibleList.map((p) => (
-                      <div
-                        key={p.id}
-                        className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-1.5"
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="text-xs font-bold text-[#231F1C] truncate">
-                            🕯️ {p.believer_name} ({p.display_category})
-                          </span>
-                          <span className="text-[10.5px] px-2 py-0.5 rounded-full bg-[#EFE7D6] text-[#7D6320] font-medium whitespace-nowrap shrink-0">
-                            {p.member_code === currentUser?.code ? '★ 내 소원등' : '대웅전 점등중'}
-                          </span>
-                        </div>
+                    {visibleList.map((p) => {
+                      const isMyPrayer =
+                        (currentUser?.code && p.member_code === currentUser.code) ||
+                        (currentUser?.name && String(p.believer_name || '').includes(currentUser.name)) ||
+                        (lanternData?.believer_name && String(p.believer_name || '').includes(lanternData.believer_name))
+                      const displayName = isMyPrayer
+                        ? p.believer_name
+                        : maskPrivacyName(p.believer_name)
+
+                      return (
+                        <div
+                          key={p.id}
+                          className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE2D3] space-y-1.5"
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-xs font-bold text-[#231F1C] truncate">
+                              🕯️ {displayName} ({p.display_category})
+                            </span>
+                            <span className="text-[10.5px] px-2 py-0.5 rounded-full bg-[#EFE7D6] text-[#7D6320] font-medium whitespace-nowrap shrink-0">
+                              {isMyPrayer ? '★ 내 소원등' : '대웅전 점등중'}
+                            </span>
+                          </div>
                         <p className="text-xs text-[#4A433C] leading-relaxed break-keep">“{p.display_text}”</p>
                         <div className="flex items-center justify-between gap-2 text-[11px] text-[#8C7A5B] pt-1">
                           <span className="whitespace-nowrap">✓ {p.prayed_at}</span>
                           <span className="whitespace-nowrap shrink-0">{formatPrayerDate(p.created_at)}</span>
                         </div>
                       </div>
-                    ))}
+                      )
+                    })}
                   </div>
                   {deduped.length > 5 && (
                     <button
