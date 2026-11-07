@@ -6826,7 +6826,7 @@ function formatRelativeOrDate(dateStr) {
     const actSummary = acts.length > 0 ? acts.join(' · ') : '대웅전 삼존불 참배'
 
     const cardTitle = '🪷 대웅전 참배 회향 복(福) 나눔'
-    const cardDesc = `“${name}의 대웅전 참배 공덕을 전합니다.\n함께 참배하시고 부처님 가피 가득하세요.”`
+    const cardDesc = `“${name}께서 대웅전 삼존불 참배(${actSummary})를 정성스레 올리셨습니다.”\n가족과 도반에게 부처님의 자비와 평안을 전합니다.`
 
     if (typeof window !== 'undefined' && window.Kakao) {
       try {
@@ -6846,15 +6846,6 @@ function formatRelativeOrDate(dateStr) {
                 mobileWebUrl: shareUrl,
                 webUrl: shareUrl,
               },
-            },
-            itemContent: {
-              profileText: '제주 소원사 모바일 법당 · 대웅전 참배 회향',
-              titleImageText: '대웅전 삼존불 참배',
-              titleImageCategory: '제주 소원사 대웅전',
-              items: [
-                { item: '정진불자', itemOp: name },
-                { item: '참배정진', itemOp: actSummary },
-              ],
             },
             buttons: [
               {
