@@ -8817,7 +8817,13 @@ function formatRelativeOrDate(dateStr) {
               <div className="w-full max-w-[385px] max-h-[84dvh] overflow-y-auto bg-[#1F1B17] text-white rounded-3xl p-5 sm:p-6 border-2 border-[#F5D061] text-center space-y-3 shadow-2xl animate-in zoom-in-95 duration-150 relative my-auto">
                 <button
                   type="button"
-                  onClick={() => setAlreadyLitModalData(null)}
+                  onClick={() => {
+                    setAlreadyLitModalData(null)
+                    setActiveTab('lantern')
+                    setTimeout(() => {
+                      window.scrollTo({ top: 0, behavior: 'smooth' })
+                    }, 60)
+                  }}
                   className="absolute top-3.5 right-3.5 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition cursor-pointer"
                   title="닫기"
                 >
@@ -8875,13 +8881,20 @@ function formatRelativeOrDate(dateStr) {
                   </div>
                 </div>
 
-                {/* 합장하며 확인 (닫기) */}
+                {/* 합장하며 확인 (닫기 및 상단 소원등 화면으로 부드럽게 이동) */}
                 <button
                   type="button"
-                  onClick={() => setAlreadyLitModalData(null)}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F5D061] to-[#AA7C11] hover:brightness-110 text-[#1B1815] font-black text-sm active:scale-95 transition cursor-pointer shadow-md"
+                  onClick={() => {
+                    setAlreadyLitModalData(null)
+                    setActiveTab('lantern')
+                    setTimeout(() => {
+                      window.scrollTo({ top: 0, behavior: 'smooth' })
+                    }, 60)
+                  }}
+                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F5D061] to-[#AA7C11] hover:brightness-110 text-[#1B1815] font-black text-sm active:scale-95 transition cursor-pointer shadow-md flex items-center justify-center gap-1.5"
                 >
-                  합장하며 확인 (닫기)
+                  <Flame className="w-4 h-4 fill-current shrink-0" />
+                  <span>합장하며 내 소원등 보러가기 (상단 이동)</span>
                 </button>
               </div>
             </div>

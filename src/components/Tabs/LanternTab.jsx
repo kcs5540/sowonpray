@@ -531,10 +531,14 @@ export default function LanternTab({
 
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-bold text-xs sm:text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-2 whitespace-nowrap"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-bold text-xs sm:text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer"
               >
                 <Flame className="w-4 h-4 fill-current shrink-0" />
-                <span>대웅전 소원등 켜고 사시예불 축원 올리기</span>
+                <span>
+                  {isLanternLit
+                    ? '오늘 소원등 점등 진행 중 · 내 소원등 확인하기'
+                    : '대웅전 소원등 켜고 사시예불 축원 올리기'}
+                </span>
               </button>
             </form>
 
