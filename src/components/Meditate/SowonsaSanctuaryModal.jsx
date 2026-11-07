@@ -456,8 +456,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
             title="제주 소원사 반야심경 듣기"
           >
             <img src="/images/avatar_yeomju_3d.png" alt="3D 염주" className="w-3.5 h-3.5 object-contain inline" />
-            <span>{isPlayingChant ? '반야심경 중' : '반야심경'}</span>
-            {isPlayingChant && <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse shrink-0" />}
+            <span>반야심경</span>
           </button>
 
           {/* 도량 바람소리 토글 버튼 */}
