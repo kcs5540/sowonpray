@@ -501,11 +501,11 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
         </div>
       </header>
 
-      {/* 우측 세로 정진 기록 위젯 (절 N배 / 목탁 N타 / 염주 N알 세로 정렬 HUD + 복나눔 버튼 - 슬림 너비 최적화) */}
+      {/* 우측 세로 정진 기록 위젯 (절 N배 / 목탁 N타 / 염주 N알 세로 정렬 HUD + 복나눔 버튼 - 은은한 반투명 글래스) */}
       <div className={`absolute right-2.5 sm:right-3.5 top-[38%] z-20 transition-opacity duration-500 flex flex-col items-center gap-1 ${
         isZenMode ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}>
-        <div className="w-[42px] sm:w-[46px] px-1 py-1.5 rounded-xl sm:rounded-2xl bg-black/40 backdrop-blur-md border border-[#F5D061]/30 shadow-lg flex flex-col items-center text-xs font-serif-kr">
+        <div className="w-[42px] sm:w-[46px] px-1 py-1.5 rounded-xl sm:rounded-2xl bg-black/20 backdrop-blur-sm border border-white/15 shadow-sm flex flex-col items-center text-xs font-serif-kr">
           <div className="w-full text-center border-b border-white/10 pb-0.5 mb-0.5">
             <span className="font-bold text-[#F5D061] text-[11px] sm:text-xs tracking-tight">{bowCount}배</span>
           </div>
@@ -517,7 +517,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
           </div>
         </div>
 
-        {/* 💌 가족·도반에게 참배 복(福) 나누기 (유튜브 스타일 슬림 나눔 버튼) */}
+        {/* 💌 가족·도반에게 참배 복(福) 나누기 (유튜브 스타일 은은한 반투명 나눔 버튼) */}
         <button
           type="button"
           onClick={(e) => {
@@ -534,7 +534,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               showToast('💌 가족·도반에게 대웅전 참배 복(福) 카드가 공유되었습니다.')
             }
           }}
-          className="w-full py-1.5 px-0.5 rounded-xl sm:rounded-2xl bg-black/45 hover:bg-black/60 active:scale-95 backdrop-blur-md border border-[#F5D061]/40 hover:border-[#F5D061] shadow-lg flex flex-col items-center justify-center gap-0.5 group transition-all cursor-pointer"
+          className="w-full py-1.5 px-0.5 rounded-xl sm:rounded-2xl bg-black/20 hover:bg-black/35 active:scale-95 backdrop-blur-sm border border-white/15 hover:border-[#F5D061]/40 shadow-sm flex flex-col items-center justify-center gap-0.5 group transition-all cursor-pointer"
           title="가족·도반에게 참배 복(福) 나누기 (카카오톡)"
         >
           {/* 유튜브 쇼츠 우측 공유 화살표 아이콘 */}
