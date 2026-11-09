@@ -32,7 +32,7 @@ export default function MobileAdminView({
 }) {
   const [activeTab, setActiveTab] = useState('bulsa') // 'bulsa' | 'visits' | 'lanterns' | 'members'
   const [bulsaStatusFilter, setBulsaStatusFilter] = useState('all') // 'all' | 'consulting' | 'in_progress' | 'completed'
-  const [visitDateFilter, setVisitDateFilter] = useState('today') // 'today' | 'tomorrow' | 'afterTomorrow' | 'geulpi' | 'past'
+  const [visitDateFilter, setVisitDateFilter] = useState('all') // 'all' | 'today' | 'tomorrow' | 'afterTomorrow' | 'geulpi'
   const [searchTerm, setSearchTerm] = useState('')
   const [copiedPhone, setCopiedPhone] = useState(null)
   const [isRegisterOpen, setIsRegisterOpen] = useState(false)
@@ -139,7 +139,6 @@ export default function MobileAdminView({
     if (visitDateFilter === 'tomorrow') return visitGroups.tomorrow
     if (visitDateFilter === 'afterTomorrow') return visitGroups.afterTomorrow
     if (visitDateFilter === 'geulpi') return visitGroups.geulpi
-    if (visitDateFilter === 'past') return visitGroups.past
     return visits
   }, [visitDateFilter, visitGroups, visits])
 
@@ -677,8 +676,23 @@ export default function MobileAdminView({
         {/* ============================================================== */}
         {activeTab === 'visits' && (
           <div className="space-y-3">
-            {/* 방문·공양 하위메뉴 4분할 바 (오늘 / 내일 / 모레 / 글피) */}
-            <div className="grid grid-cols-4 gap-1 text-[11px]">
+            {/* 방문·공양 하위메뉴 5분할 바 (전체 / 오늘 / 내일 / 모레 / 글피) */}
+            <div className="grid grid-cols-5 gap-1 text-[11px]">
+              <button
+                type="button"
+                onClick={() => setVisitDateFilter('all')}
+                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                  visitDateFilter === 'all'
+                    ? 'bg-[#1E293B] text-white border-[#1E293B] font-bold shadow-xs'
+                    : 'bg-white text-[#334155] border-[#DDD3BF] hover:bg-slate-50 font-semibold'
+                }`}
+              >
+                <span>전체</span>
+                <span className={`text-[11px] font-black ${visitDateFilter === 'all' ? 'text-amber-300' : 'text-[#64748B]'}`}>
+                  ({visits.length})
+                </span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => setVisitDateFilter('today')}
@@ -740,32 +754,15 @@ export default function MobileAdminView({
               </button>
             </div>
 
-            {/* 과거 지난 예약이 있는 경우 안내 링크 토글 */}
-            {visitGroups.past.length > 0 && (
-              <div className="flex justify-end pt-0.5">
-                <button
-                  type="button"
-                  onClick={() => setVisitDateFilter(visitDateFilter === 'past' ? 'today' : 'past')}
-                  className={`text-[10px] px-2 py-0.5 rounded-lg border transition cursor-pointer ${
-                    visitDateFilter === 'past'
-                      ? 'bg-gray-700 text-white border-gray-700 font-bold'
-                      : 'bg-[#F4F1EA] text-gray-500 border-gray-300 hover:text-gray-700'
-                  }`}
-                >
-                  {visitDateFilter === 'past' ? '← 오늘 예약 보기' : `이전 방문 내역 (${visitGroups.past.length}건)`}
-                </button>
-              </div>
-            )}
-
             {currentVisits.length === 0 ? (
               <div className="p-8 text-center bg-white rounded-2xl border border-[#E5DCB9] text-[#7A6B58] text-xs space-y-1 shadow-xs">
                 <Calendar className="w-7 h-7 mx-auto text-sky-600" />
                 <p className="font-bold text-[#2E2214]">
+                  {visitDateFilter === 'all' && '등록된 도량 방문·공양 예약이 없습니다.'}
                   {visitDateFilter === 'today' && '오늘 예정된 도량 방문·공양 예약이 없습니다.'}
                   {visitDateFilter === 'tomorrow' && '내일 예정된 도량 방문·공양 예약이 없습니다.'}
                   {visitDateFilter === 'afterTomorrow' && '모레 예정된 도량 방문·공양 예약이 없습니다.'}
                   {visitDateFilter === 'geulpi' && '글피 및 이후 예정된 도량 방문·공양 예약이 없습니다.'}
-                  {visitDateFilter === 'past' && '이전 도량 방문 내역이 없습니다.'}
                 </p>
               </div>
             ) : (
