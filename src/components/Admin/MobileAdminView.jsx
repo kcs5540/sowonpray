@@ -316,38 +316,58 @@ export default function MobileAdminView({
 
   return (
     <div className="fixed inset-0 z-50 bg-[#F4F1EA] text-[#2D241C] flex flex-col overflow-hidden font-sans">
-      {/* 1. 상단 모바일 관리자 헤더 (밝고 기품 있는 화이트·골드) */}
-      <header className="bg-white border-b-2 border-[#E8DEC8] px-3.5 py-2.5 flex items-center justify-between shrink-0 shadow-xs">
-        <div className="flex items-center gap-2">
-          <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#D4A024] to-[#C59B27] flex items-center justify-center text-xs font-black text-[#1C140A] shadow-xs">
-            卍
-          </span>
-          <div>
+      {/* 1. 상단 모바일 관리자 헤더 (제주 소원사 모바일 법당 정통 다크골드 헤더 스타일) */}
+      <header className="sticky top-0 z-40 bg-[#1B1815]/95 backdrop-blur-md text-[#FAF8F5] px-3.5 py-3 border-b-2 border-[#C59B27]/50 flex items-center justify-between gap-2 shadow-md shrink-0">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#2D241C] via-[#221C16] to-[#17130F] flex items-center justify-center shadow-[0_0_15px_rgba(245,208,97,0.35)] border border-[#C59B27]/60 p-1 shrink-0" title="제주 소원사 공식 심볼 (황금 연꽃)">
+            <svg className="w-full h-full filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M20 5C20 5 15 14.5 15 21C15 23.8 17.2 26 20 26C22.8 26 25 23.8 25 21C25 14.5 20 5 20 5Z" fill="url(#adminHeaderGoldLotusGrad)" opacity="0.95" />
+              <path d="M14 12C14 12 7.5 18.5 7.5 23C7.5 26.2 10.2 28 13.2 28C16.2 28 17.8 25.5 17.8 24C17.8 18.5 14 12 14 12Z" fill="url(#adminHeaderGoldLotusGrad)" opacity="0.82" />
+              <path d="M26 12C26 12 32.5 18.5 32.5 23C32.5 26.2 29.8 28 26.8 28C23.8 28 22.2 25.5 22.2 24C22.2 18.5 26 12 26 12Z" fill="url(#adminHeaderGoldLotusGrad)" opacity="0.82" />
+              <path d="M6.5 22.5C6.5 22.5 2.5 26 2.5 29C2.5 31.2 4.5 33 7.8 33C11.8 33 14.8 29.8 14.8 28C14.8 25.2 6.5 22.5 6.5 22.5Z" fill="url(#adminHeaderGoldLotusGrad)" opacity="0.65" />
+              <path d="M33.5 22.5C33.5 22.5 37.5 26 37.5 29C37.5 31.2 35.5 33 32.2 33C28.2 33 25.2 29.8 25.2 28C25.2 25.2 33.5 22.5 33.5 22.5Z" fill="url(#adminHeaderGoldLotusGrad)" opacity="0.65" />
+              <path d="M11.5 32C15.2 34.8 24.8 34.8 28.5 32C26.5 34.8 23.5 35.8 20 35.8C16.5 35.8 13.5 34.8 11.5 32Z" fill="url(#adminHeaderGoldLotusGrad)" />
+              <defs>
+                <linearGradient id="adminHeaderGoldLotusGrad" x1="5" y1="5" x2="35" y2="35" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#FDE68A" />
+                  <stop offset="0.5" stopColor="#F5D061" />
+                  <stop offset="1" stopColor="#B6861C" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <h1 className="text-sm font-serif-kr font-extrabold text-[#2E2214] tracking-tight">소원사 모바일 관제창</h1>
-              <span className="text-[10px] bg-red-600 text-white font-bold px-1.5 py-0.2 rounded-full shadow-xs">LIVE</span>
+              <span className="font-serif-kr font-extrabold text-base sm:text-lg tracking-tight text-[#F5D061] whitespace-nowrap">
+                소원사 모바일 관제창
+              </span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#C59B27]/25 text-[#FAF8F5] border border-[#C59B27]/50 font-semibold whitespace-nowrap">
+                실시간 관제
+              </span>
             </div>
-            <p className="text-[11px] text-[#7A6B58] truncate">
-              {currentUser?.name || '관리자'} ({currentUser?.role === 'master' ? '총괄대표' : '사찰본부'})
+            <p className="text-[10.5px] text-[#D6CEC2] truncate">
+              {currentUser?.name || '김철수'} ({currentUser?.role === 'master' ? '총괄대표' : '사찰본부'}) · 종무소 실시간 관제
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 shrink-0">
           <button
             type="button"
             onClick={handleRefresh}
-            className="w-8 h-8 rounded-lg bg-[#F8F5EE] hover:bg-[#EFEADF] border border-[#DDD3BF] flex items-center justify-center text-[#5C4D3B] active:scale-95 transition"
-            title="새로고침"
+            className="flex items-center justify-center w-8 h-8 rounded-full bg-[#2A2520] hover:bg-[#38312A] border border-[#C59B27]/40 text-[#F5D061] transition shadow-xs active:scale-95 cursor-pointer"
+            title="실시간 장부 새로고침"
           >
-            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-[#C59B27]' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 text-[#F5D061] ${isRefreshing ? 'animate-spin' : ''}`} />
           </button>
+
           <button
             type="button"
             onClick={onClose}
-            className="px-2.5 py-1.5 rounded-lg bg-[#2E2214] hover:bg-[#3D2E1B] text-[#F5D061] text-xs font-bold flex items-center gap-1 active:scale-95 transition shadow-xs"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#2A2520] hover:bg-[#38312A] border border-[#C59B27]/50 text-[#F5D061] text-[11px] font-bold whitespace-nowrap transition shadow-xs active:scale-95 cursor-pointer"
+            title="관제창 닫기"
           >
-            <X className="w-3.5 h-3.5" />
+            <X className="w-3.5 h-3.5 text-[#F5D061]" />
             <span>닫기</span>
           </button>
         </div>
