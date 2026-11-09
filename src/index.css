@@ -79,7 +79,7 @@
 }
 
 .animate-monk-walk {
-  animation: monkWalkIn 3.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: monkWalkIn 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .animate-monk-hapjang {
