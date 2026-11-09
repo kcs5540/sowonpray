@@ -33,6 +33,7 @@ export default function MobileAdminView({
   const [activeTab, setActiveTab] = useState('bulsa') // 'bulsa' | 'visits' | 'lanterns' | 'members'
   const [bulsaStatusFilter, setBulsaStatusFilter] = useState('all') // 'all' | 'consulting' | 'in_progress' | 'completed'
   const [visitDateFilter, setVisitDateFilter] = useState('all') // 'all' | 'today' | 'tomorrow' | 'afterTomorrow' | 'geulpi'
+  const [lanternFilter, setLanternFilter] = useState('all') // 'all' | 'today'
   const [searchTerm, setSearchTerm] = useState('')
   const [copiedPhone, setCopiedPhone] = useState(null)
   const [isRegisterOpen, setIsRegisterOpen] = useState(false)
@@ -159,6 +160,28 @@ export default function MobileAdminView({
       return !isBulsa && p.status !== 'consulting'
     })
   }, [prayers])
+
+  // 오늘 축원 대상 소원등 선별 (사시예불 축원 배정/접수 완료)
+  const todayLanterns = useMemo(() => {
+    const now = Date.now()
+    const todayKey = new Date().toISOString().slice(0, 10)
+    return regularLanterns.filter((p) => {
+      const prayedAt = String(p.prayed_at || '')
+      if (prayedAt.includes('오늘')) return true
+      if (p.created_at) {
+        if (String(p.created_at).startsWith(todayKey)) return true
+        const pTime = new Date(p.created_at).getTime()
+        if (!isNaN(pTime) && (now - pTime) <= 24 * 60 * 60 * 1000) return true
+      }
+      return false
+    })
+  }, [regularLanterns])
+
+  // 현재 필터링된 소원등 목록
+  const currentLanterns = useMemo(() => {
+    if (lanternFilter === 'today') return todayLanterns
+    return regularLanterns
+  }, [lanternFilter, todayLanterns, regularLanterns])
 
   // 3. 신도 검색 목록
   const searchedMembers = useMemo(() => {
@@ -902,18 +925,51 @@ export default function MobileAdminView({
         {/* ============================================================== */}
         {activeTab === 'lanterns' && (
           <div className="space-y-3">
-            <div className="p-3 rounded-xl bg-white border border-[#E8DEC8] flex items-center justify-between text-xs shadow-xs">
-              <span className="font-bold text-[#8A6510]">오늘 대웅전 사시예불 축원 명부</span>
-              <span className="text-[11px] font-bold text-[#5C4D3B]">총 {regularLanterns.length}위</span>
+            {/* 소원등 하위메뉴 2분할 세그먼트 바 (전체 / 오늘 축원 명부) */}
+            <div className="bg-[#EDE9E1] p-1 rounded-xl grid grid-cols-2 gap-1 text-xs">
+              <button
+                type="button"
+                onClick={() => setLanternFilter('all')}
+                className={`py-2 px-1 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                  lanternFilter === 'all'
+                    ? 'bg-[#1E1914] text-[#F5D061] font-black shadow-xs'
+                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
+                }`}
+              >
+                <span>전체</span>
+                <span className={`text-[11px] font-black ${lanternFilter === 'all' ? 'text-[#F5D061]' : 'text-[#8C8375]'}`}>
+                  ({regularLanterns.length})
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setLanternFilter('today')}
+                className={`py-2 px-1 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                  lanternFilter === 'today'
+                    ? 'bg-[#1E1914] text-[#F5D061] font-black shadow-xs'
+                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
+                }`}
+              >
+                <Flame className={`w-3.5 h-3.5 ${lanternFilter === 'today' ? 'text-amber-400' : 'text-[#8C8375]'}`} />
+                <span>오늘 축원 명부</span>
+                <span className={`text-[11px] font-black ${lanternFilter === 'today' ? 'text-amber-300' : 'text-[#8C8375]'}`}>
+                  ({todayLanterns.length})
+                </span>
+              </button>
             </div>
 
-            {regularLanterns.length === 0 ? (
+            {currentLanterns.length === 0 ? (
               <div className="p-8 text-center bg-white rounded-2xl border border-[#E5DCB9] text-[#7A6B58] text-xs space-y-1 shadow-xs">
                 <Flame className="w-7 h-7 mx-auto text-amber-600" />
-                <p className="font-bold text-[#2E2214]">등록된 1일 소원등이 없습니다.</p>
+                <p className="font-bold text-[#2E2214]">
+                  {lanternFilter === 'today'
+                    ? '오늘 대웅전 사시예불 축원 대상 소원등이 없습니다.'
+                    : '등록된 1일 소원등이 없습니다.'}
+                </p>
               </div>
             ) : (
-              regularLanterns.map((p) => {
+              currentLanterns.map((p) => {
                 const phone = p.believer_phone || ''
                 const cleanPhone = phone.replace(/[^0-9]/g, '')
                 return (
