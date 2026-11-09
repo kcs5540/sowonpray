@@ -65,6 +65,11 @@ export default function MobileAdminView({
     })
   }, [prayers])
 
+  // 긴급 상담대기 건수
+  const pendingBulsaCount = useMemo(() => {
+    return bulsaInquiries.filter((p) => p.status === 'consulting').length
+  }, [bulsaInquiries])
+
   // 상담 필터 적용 목록
   const filteredBulsaList = useMemo(() => {
     return bulsaInquiries.filter((p) => {
@@ -286,114 +291,87 @@ export default function MobileAdminView({
         </div>
       </header>
 
-      {/* 2. 상단 실시간 카운터 요약 바 (한눈에 보기) */}
-      <div className="bg-[#1F1812] px-3 py-2 border-b border-[#33271D] grid grid-cols-4 gap-1.5 text-center shrink-0">
-        <button
-          type="button"
-          onClick={() => { setActiveTab('bulsa'); setBulsaStatusFilter('consulting'); }}
-          className={`p-1.5 rounded-lg border transition ${
-            activeTab === 'bulsa' && bulsaStatusFilter === 'consulting'
-              ? 'bg-red-950/60 border-red-500/80'
-              : 'bg-[#291F17] border-[#3D3023]'
-          }`}
-        >
-          <div className="text-[10px] text-[#A89885] flex items-center justify-center gap-0.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-            상담대기
-          </div>
-          <div className="text-base font-extrabold text-red-400 mt-0.5">
-            {bulsaInquiries.filter((p) => p.status === 'consulting').length}
-          </div>
-        </button>
-
+      {/* 2. 통합 탭 메뉴바 (상단 요약 카운터 일체형 통합 - 중복 제거 및 공간 극대화) */}
+      <nav className="bg-[#1C1611] border-b border-[#3D3023] grid grid-cols-4 shrink-0 shadow-sm">
+        {/* 1) 불사·상담 탭 */}
         <button
           type="button"
           onClick={() => setActiveTab('bulsa')}
-          className={`p-1.5 rounded-lg border transition ${
-            activeTab === 'bulsa' && bulsaStatusFilter === 'all'
-              ? 'bg-[#3D2E1F] border-[#C59B27]'
-              : 'bg-[#291F17] border-[#3D3023]'
-          }`}
-        >
-          <div className="text-[10px] text-[#A89885]">불사·제사</div>
-          <div className="text-base font-extrabold text-[#F5D061] mt-0.5">{bulsaInquiries.length}</div>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('visits')}
-          className={`p-1.5 rounded-lg border transition ${
-            activeTab === 'visits' ? 'bg-[#1F2F3D] border-sky-500' : 'bg-[#291F17] border-[#3D3023]'
-          }`}
-        >
-          <div className="text-[10px] text-[#A89885]">방문예약</div>
-          <div className="text-base font-extrabold text-sky-400 mt-0.5">{visits.length}</div>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('lanterns')}
-          className={`p-1.5 rounded-lg border transition ${
-            activeTab === 'lanterns' ? 'bg-[#3D2E1F] border-[#C59B27]' : 'bg-[#291F17] border-[#3D3023]'
-          }`}
-        >
-          <div className="text-[10px] text-[#A89885]">소원등</div>
-          <div className="text-base font-extrabold text-amber-300 mt-0.5">{regularLanterns.length}</div>
-        </button>
-      </div>
-
-      {/* 3. 모바일 전산 탭 메뉴바 */}
-      <nav className="bg-[#241C15] border-b border-[#3D3023] flex text-xs font-bold shrink-0">
-        <button
-          type="button"
-          onClick={() => setActiveTab('bulsa')}
-          className={`flex-1 py-2.5 text-center border-b-2 transition flex items-center justify-center gap-1 ${
+          className={`py-2 px-1 text-center border-b-2 transition flex flex-col items-center justify-center relative ${
             activeTab === 'bulsa'
-              ? 'border-[#F5D061] text-[#F5D061] bg-[#2E2319]'
+              ? 'border-[#F5D061] bg-[#2C2117] text-[#F5D061]'
               : 'border-transparent text-[#9E8D76] hover:text-[#D1C3AF]'
           }`}
         >
-          <AlertCircle className="w-3.5 h-3.5 text-red-400" />
-          <span>불사·상담 ({bulsaInquiries.length})</span>
+          <div className="flex items-center gap-1 text-[11px] font-bold">
+            <AlertCircle className="w-3.5 h-3.5 text-red-400 shrink-0" />
+            <span className="truncate">불사·상담</span>
+          </div>
+          <div className="flex items-center gap-1 mt-0.5">
+            <span className="text-sm font-black">{bulsaInquiries.length}</span>
+            {pendingBulsaCount > 0 && (
+              <span className="text-[9.5px] font-extrabold bg-red-600 text-white px-1.5 py-0.2 rounded-full animate-pulse shadow-sm">
+                대기 {pendingBulsaCount}
+              </span>
+            )}
+          </div>
         </button>
 
+        {/* 2) 방문·공양 탭 */}
         <button
           type="button"
           onClick={() => setActiveTab('visits')}
-          className={`flex-1 py-2.5 text-center border-b-2 transition flex items-center justify-center gap-1 ${
+          className={`py-2 px-1 text-center border-b-2 transition flex flex-col items-center justify-center ${
             activeTab === 'visits'
-              ? 'border-sky-400 text-sky-400 bg-[#1E252E]'
+              ? 'border-sky-400 bg-[#16212B] text-sky-400'
               : 'border-transparent text-[#9E8D76] hover:text-[#D1C3AF]'
           }`}
         >
-          <Calendar className="w-3.5 h-3.5 text-sky-400" />
-          <span>방문·공양 ({visits.length})</span>
+          <div className="flex items-center gap-1 text-[11px] font-bold">
+            <Calendar className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+            <span className="truncate">방문·공양</span>
+          </div>
+          <div className="text-sm font-black mt-0.5 text-sky-300">
+            {visits.length}건
+          </div>
         </button>
 
+        {/* 3) 소원등 탭 */}
         <button
           type="button"
           onClick={() => setActiveTab('lanterns')}
-          className={`flex-1 py-2.5 text-center border-b-2 transition flex items-center justify-center gap-1 ${
+          className={`py-2 px-1 text-center border-b-2 transition flex flex-col items-center justify-center ${
             activeTab === 'lanterns'
-              ? 'border-amber-400 text-amber-400 bg-[#2E2319]'
+              ? 'border-amber-400 bg-[#2C2117] text-amber-400'
               : 'border-transparent text-[#9E8D76] hover:text-[#D1C3AF]'
           }`}
         >
-          <Flame className="w-3.5 h-3.5 text-amber-400" />
-          <span>소원등 ({regularLanterns.length})</span>
+          <div className="flex items-center gap-1 text-[11px] font-bold">
+            <Flame className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <span className="truncate">소원등</span>
+          </div>
+          <div className="text-sm font-black mt-0.5 text-amber-300">
+            {regularLanterns.length}위
+          </div>
         </button>
 
+        {/* 4) 신도조회 탭 */}
         <button
           type="button"
           onClick={() => setActiveTab('members')}
-          className={`flex-1 py-2.5 text-center border-b-2 transition flex items-center justify-center gap-1 ${
+          className={`py-2 px-1 text-center border-b-2 transition flex flex-col items-center justify-center ${
             activeTab === 'members'
-              ? 'border-emerald-400 text-emerald-400 bg-[#1E2E24]'
+              ? 'border-emerald-400 bg-[#14261B] text-emerald-400'
               : 'border-transparent text-[#9E8D76] hover:text-[#D1C3AF]'
           }`}
         >
-          <Users className="w-3.5 h-3.5 text-emerald-400" />
-          <span>신도조회</span>
+          <div className="flex items-center gap-1 text-[11px] font-bold">
+            <Users className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <span className="truncate">신도조회</span>
+          </div>
+          <div className="text-sm font-black mt-0.5 text-emerald-300">
+            {members.length}명
+          </div>
         </button>
       </nav>
 
