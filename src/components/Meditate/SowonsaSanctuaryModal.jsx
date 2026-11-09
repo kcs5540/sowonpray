@@ -1,6 +1,82 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { X, Volume2, VolumeX, Sparkles, DoorOpen, Share2, Award, ChevronRight } from 'lucide-react'
+import { X, Volume2, VolumeX, Sparkles, DoorOpen, Share2, Award, ChevronRight, ChevronDown, Play, Pause, Check, Music } from 'lucide-react'
 import { awardMerit, getDailyMeritInfo } from '../../lib/meritSystem'
+
+// 📿 대웅전 8대 법음 & 염불 트랙 라이브러리 (앱 홈 24시간 힐링 오디오 정식 연동)
+const SANCTUARY_AUDIO_TRACKS = [
+  {
+    id: 'sowonsa_prajna_meditation',
+    shortTitle: '반야심경(명상)',
+    title: '제주 소원사 반야심경',
+    subtitle: '대웅전 힐링 명상 (스님 저음 범패 & 묵직한 목탁)',
+    icon: '🧘',
+    audioUrl: '/audio/sowonsa_prajna_meditation.mp3',
+    tag: '대웅전 명상',
+  },
+  {
+    id: 'prajna_chanting',
+    shortTitle: '반야심경(정통)',
+    title: '반야심경 영인스님 정통 독경',
+    subtitle: '청아한 육성 원음 & 법당 목탁 (2분 51초)',
+    icon: '📿',
+    audioUrl: '/audio/prajna_chanting.mp3',
+    tag: '정통 독경',
+  },
+  {
+    id: 'dhammapada_wisdom',
+    shortTitle: '천수경',
+    title: '천수경 영인스님 정통 독경',
+    subtitle: '액난 소멸과 소원 성취 영험 독경 (3분 20초)',
+    icon: '📜',
+    audioUrl: '/audio/dhammapada_wisdom.mp3',
+    tag: '소원 성취',
+  },
+  {
+    id: 'sleep_meditation',
+    shortTitle: '광명진언',
+    title: '광명진언 영인스님 치유 독경',
+    subtitle: '마음의 불안을 잠재우는 치유 종송 (2분 46초)',
+    icon: '🌙',
+    audioUrl: '/audio/sleep_meditation.mp3',
+    tag: '마음 치유',
+  },
+  {
+    id: 'lotus_destiny',
+    shortTitle: '연꽃 인연',
+    title: '연꽃 인연 (소원사 힐링 찬불가)',
+    subtitle: '청아한 보컬 & 대금·해금·피아노 선율',
+    icon: '🌸',
+    audioUrl: '/audio/lotus_destiny.mp3',
+    tag: '힐링 찬불가',
+  },
+  {
+    id: 'jeju_sowonsa',
+    shortTitle: '도량 테마송',
+    title: '제주 소원사 (도량 공식 테마송)',
+    subtitle: '따뜻한 어쿠스틱 발라드 & 첼로 선율',
+    icon: '🍊',
+    audioUrl: '/audio/jeju_sowonsa.mp3',
+    tag: '공식 찬가',
+  },
+  {
+    id: 'rhythmic_moktak',
+    shortTitle: '박달목탁',
+    title: '박달나무 실물 목탁 원음',
+    subtitle: '천년고찰 대웅전 목탁 소리 & 법당 자연 잔향 (108배용)',
+    icon: '🪵',
+    audioUrl: '/audio/muyeok_moktak.mp3',
+    tag: '108배 정진',
+  },
+  {
+    id: 'temple_chime_nature',
+    shortTitle: '풍경·자연음',
+    title: '은방울 풍경소리 & 산새소리 ASMR',
+    subtitle: '처마 밑 은방울 풍경과 제주 산새소리 앰비언스',
+    icon: '🍃',
+    audioUrl: '/audio/sowonsa_wind.mp3',
+    tag: '자연 쉼터',
+  },
+]
 
 // 📿 실제 대추나무 단주/염주알 굴릴 때 나는 따뜻하고 묵직한 원목 구슬 소리 (쇠소리 완전 제거)
 function playYeomjuAcousticSynth() {
@@ -68,6 +144,8 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
   // 사운드 상태
   const [isPlayingSound, setIsPlayingSound] = useState(false)
   const [isPlayingChant, setIsPlayingChant] = useState(false)
+  const [selectedTrack, setSelectedTrack] = useState(() => SANCTUARY_AUDIO_TRACKS[0])
+  const [showAudioDrawer, setShowAudioDrawer] = useState(false)
 
   // 인터랙션 상태
   const [actionState, setActionState] = useState('idle') // 'idle' | 'hapjang' | 'bow' | 'moktak' | 'yeomju'
@@ -166,23 +244,43 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
     }
   }
 
-  // 2) 제주 소원사 반야심경 염불 토글
+  // 2) 대웅전 법음 & 염불 트랙 선택 및 토글
+  const handleSelectTrack = (track) => {
+    setSelectedTrack(track)
+    if (chantAudioRef.current) {
+      chantAudioRef.current.pause()
+      chantAudioRef.current.src = track.audioUrl
+      chantAudioRef.current.currentTime = 0
+      chantAudioRef.current.play().then(() => {
+        setIsPlayingChant(true)
+        if (showToast) showToast(`📿 [${track.title}] 봉독을 시작합니다`)
+      }).catch(() => {
+        setIsPlayingChant(false)
+      })
+    }
+    setShowAudioDrawer(false)
+  }
+
   const toggleChant = (e) => {
     e?.stopPropagation()
     if (!chantAudioRef.current) return
     if (isPlayingChant) {
       chantAudioRef.current.pause()
       setIsPlayingChant(false)
-      showActionToast('반야심경 소리가 멈췄습니다')
+      if (showToast) showToast('법음 소리가 멈췄습니다')
     } else {
+      if (!chantAudioRef.current.src || !chantAudioRef.current.src.includes(selectedTrack.audioUrl)) {
+        chantAudioRef.current.src = selectedTrack.audioUrl
+      }
       chantAudioRef.current.play().then(() => {
         setIsPlayingChant(true)
-        showActionToast('📿 제주 소원사 대웅전 반야심경을 봉독합니다')
+        if (showToast) showToast(`📿 [${selectedTrack.title}] 봉독을 시작합니다`)
       }).catch(() => {
         setIsPlayingChant(false)
       })
     }
   }
+
 
   // 3) 1배 올리기 (108배 마일스톤 축하)
   const handleBow = (e) => {
@@ -398,7 +496,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       >
       {/* 1. 배경 오디오 소스 */}
       <audio ref={ambientAudioRef} src="/audio/sowonsa_wind.mp3" loop preload="auto" />
-      <audio ref={chantAudioRef} src="/audio/sowonsa_prajna_meditation.mp3" loop preload="auto" />
+      <audio ref={chantAudioRef} src={selectedTrack.audioUrl} loop preload="auto" />
       <audio ref={moktakAudioRef} src="/audio/moktak.mp3" preload="auto" />
       <audio ref={yeomjuAudioRef} src="/audio/yeomju_click.wav" preload="auto" />
 
@@ -458,20 +556,44 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
         </div>
 
         <div className="flex items-center gap-1.5">
-          {/* 제주 소원사 반야심경 듣기 토글 버튼 */}
-          <button
-            type="button"
-            onClick={toggleChant}
-            className={`pl-2 pr-3 py-1.5 rounded-full backdrop-blur-md border text-[11px] font-serif-kr flex items-center justify-center gap-1 transition active:scale-95 ${
-              isPlayingChant
-                ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061] font-bold shadow-[0_0_12px_rgba(245,208,97,0.5)]'
-                : 'bg-black/60 text-[#D6CEC2] border-white/20 hover:text-white'
-            }`}
-            title="제주 소원사 반야심경 듣기"
-          >
-            <img src="/images/avatar_yeomju_3d.png" alt="3D 염주" className="w-3.5 h-3.5 object-contain inline shrink-0" />
-            <span className="whitespace-nowrap tracking-tight">반야심경</span>
-          </button>
+          {/* 제주 소원사 법음/염불 선택 & 토글 버튼 */}
+          <div className="flex items-center rounded-full backdrop-blur-md border border-white/20 bg-black/60 shadow overflow-hidden">
+            {/* 재생/일시정지 클릭 버튼 */}
+            <button
+              type="button"
+              onClick={toggleChant}
+              className={`pl-2.5 pr-1.5 py-1.5 text-[11px] font-serif-kr flex items-center justify-center gap-1 transition active:scale-95 cursor-pointer ${
+                isPlayingChant
+                  ? 'bg-[#F5D061] text-[#1B1815] font-bold shadow-[0_0_12px_rgba(245,208,97,0.5)]'
+                  : 'text-[#D6CEC2] hover:text-white'
+              }`}
+              title={isPlayingChant ? '일시 정지' : `${selectedTrack.title} 듣기`}
+            >
+              {isPlayingChant ? (
+                <span className="w-3.5 h-3.5 flex items-center justify-center text-xs animate-pulse">🔊</span>
+              ) : (
+                <span className="text-xs">{selectedTrack.icon}</span>
+              )}
+              <span className="whitespace-nowrap tracking-tight font-medium">{selectedTrack.shortTitle}</span>
+            </button>
+
+            {/* 곡 목록 열기 드롭다운 화살표 버튼 */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                setShowAudioDrawer((prev) => !prev)
+              }}
+              className={`px-1.5 py-1.5 border-l border-white/15 text-[10px] transition cursor-pointer ${
+                isPlayingChant
+                  ? 'bg-[#F5D061]/90 text-[#1B1815] hover:bg-[#F5D061]'
+                  : 'text-[#D6CEC2] hover:text-white bg-black/40'
+              }`}
+              title="염불·법음 곡 바꾸기 (8곡 선택)"
+            >
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showAudioDrawer ? 'rotate-180' : ''}`} />
+            </button>
+          </div>
 
           {/* 도량 바람소리 토글 버튼 */}
           <button
@@ -514,6 +636,158 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
           </button>
         </div>
       </header>
+
+      {/* 📿 [대웅전 법음·염불 마당 8곡 선택 팝업] */}
+      {showAudioDrawer && (
+        <div
+          className="absolute inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+          onClick={() => setShowAudioDrawer(false)}
+        >
+          <div
+            className="w-full max-w-sm rounded-2xl bg-gradient-to-b from-[#231B13] via-[#1B150F] to-[#14100C] border-2 border-[#F5D061]/50 text-white shadow-2xl overflow-hidden flex flex-col max-h-[88vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 상단 타이틀 */}
+            <div className="px-4 py-3 bg-[#2D2217] border-b border-[#F5D061]/25 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2">
+                <span className="text-base">📿</span>
+                <div>
+                  <h3 className="font-serif-kr font-bold text-sm text-[#F5D061]">
+                    대웅전 법음 · 염불 선택
+                  </h3>
+                  <p className="text-[10px] text-[#C5BBAA]">
+                    마음에 닿는 독경과 치유음을 선택해 보세요
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAudioDrawer(false)}
+                className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-[#D6CEC2] flex items-center justify-center transition cursor-pointer"
+                title="닫기"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* 현재 재생 중 바 & 정지/재생 컨트롤 */}
+            <div className="px-3.5 py-2.5 bg-black/50 border-b border-white/10 flex items-center justify-between gap-2 shrink-0">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="text-xl shrink-0">{selectedTrack.icon}</span>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-[#F5D061] font-bold bg-[#F5D061]/15 px-1.5 py-0.5 rounded border border-[#F5D061]/30">
+                      {selectedTrack.tag}
+                    </span>
+                    {isPlayingChant && (
+                      <span className="text-[9.5px] text-[#4ADE80] font-bold flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-ping" />
+                        법음 봉독 중
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs font-bold text-white truncate mt-0.5">
+                    {selectedTrack.title}
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={toggleChant}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 shrink-0 transition active:scale-95 cursor-pointer ${
+                  isPlayingChant
+                    ? 'bg-[#F5D061] text-[#1B1815] shadow-[0_0_12px_rgba(245,208,97,0.4)]'
+                    : 'bg-white/15 text-white hover:bg-white/25 border border-white/20'
+                }`}
+              >
+                {isPlayingChant ? (
+                  <>
+                    <Pause className="w-3.5 h-3.5 fill-current" />
+                    <span>정지</span>
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-3.5 h-3.5 fill-current" />
+                    <span>재생</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* 8대 트랙 리스트 (스크롤) */}
+            <div className="p-2.5 overflow-y-auto space-y-1.5 flex-1 divide-y divide-white/5">
+              {SANCTUARY_AUDIO_TRACKS.map((track) => {
+                const isCurrent = track.id === selectedTrack.id
+                return (
+                  <button
+                    key={track.id}
+                    type="button"
+                    onClick={() => handleSelectTrack(track)}
+                    className={`w-full text-left p-2.5 rounded-xl transition cursor-pointer flex items-center justify-between gap-2.5 ${
+                      isCurrent
+                        ? 'bg-[#F5D061]/15 border border-[#F5D061]/50 text-white shadow-sm'
+                        : 'bg-white/[0.03] hover:bg-white/[0.08] text-[#D6CEC2] border border-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-base ${
+                        isCurrent
+                          ? 'bg-[#F5D061] text-[#1B1815] shadow'
+                          : 'bg-white/10 text-white'
+                      }`}>
+                        {track.icon}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[9.5px] font-bold text-[#F5D061]/90">
+                            {track.tag}
+                          </span>
+                          {isCurrent && isPlayingChant && (
+                            <span className="text-[9px] text-[#4ADE80] font-bold">
+                              ● 봉독 중
+                            </span>
+                          )}
+                        </div>
+                        <div className={`text-xs font-bold truncate mt-0.5 ${
+                          isCurrent ? 'text-[#F5D061]' : 'text-white'
+                        }`}>
+                          {track.title}
+                        </div>
+                        <div className="text-[10px] text-[#A89F91] truncate mt-0.5">
+                          {track.subtitle}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="shrink-0 flex items-center">
+                      {isCurrent ? (
+                        <div className="w-6 h-6 rounded-full bg-[#F5D061] text-[#1B1815] flex items-center justify-center">
+                          <Check className="w-3.5 h-3.5 stroke-[3]" />
+                        </div>
+                      ) : (
+                        <div className="w-6 h-6 rounded-full bg-white/5 text-white/40 flex items-center justify-center">
+                          <Play className="w-3 h-3 fill-current ml-0.5" />
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* 하단 닫기 안내 */}
+            <div className="p-2.5 bg-[#17120D] border-t border-white/10 text-center shrink-0">
+              <button
+                type="button"
+                onClick={() => setShowAudioDrawer(false)}
+                className="w-full py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-xs text-[#D6CEC2] font-medium transition cursor-pointer"
+              >
+                닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 4. 중앙 공간 (부처님 시선 + 방석 위의 나) */}
       <div className={`relative z-10 flex-1 flex flex-col items-center justify-end pb-4 sm:pb-6 text-center px-3 transition-opacity duration-500 ${
