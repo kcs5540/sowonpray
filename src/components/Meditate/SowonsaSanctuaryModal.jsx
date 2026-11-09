@@ -73,8 +73,6 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
   const [actionState, setActionState] = useState('idle') // 'idle' | 'hapjang' | 'bow' | 'moktak' | 'yeomju'
   // 🎬 대웅전 입장 시네마틱 시퀀스: 'entering'(걸어들어옴) -> 'hapjang'(합장반배) -> 'seated'(착석완료)
   const [entranceStep, setEntranceStep] = useState('entering')
-  // 👣 왼발-오른발 보행 사이클 프레임 (0: 오른발 앞, 1: 왼발 앞)
-  const [walkFrame, setWalkFrame] = useState(0)
   const [bowCount, setBowCount] = useState(() => {
     const info = getDailyMeritInfo('bow', currentUser?.code || 'guest')
     return info.currentCount || 0
@@ -368,27 +366,20 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
     }
 
     // 🎬 대웅전 입장 시퀀스:
-    // 0~3.2s: 왼발-오른발과 양팔을 번갈아 흔들며 대청마루에서 걸어 들어오기 (walkFrame 480ms 자연스러운 보행 호흡)
-    // 3.2~5.4s: 방석 앞에 서서 삼존불 전 정중히 합장 반배 올리기
-    // 5.4s+: 비단 방석에 가부좌 틀고 착석 완료
+    // 0~2.5s: 대청마루에서 사뿐사뿐 부처님 전을 향해 걸어 들어오기
+    // 2.5~4.5s: 방석 앞에 단정히 서서 삼존불 전 깊고 정성스런 합장 반배 올리기
+    // 4.5s+: 비단 방석에 가부좌 틀고 착석 완료
     setEntranceStep('entering')
-    setWalkFrame(0)
-
-    const walkTimer = setInterval(() => {
-      setWalkFrame(f => (f === 0 ? 1 : 0))
-    }, 480)
 
     const tHapjang = setTimeout(() => {
-      clearInterval(walkTimer)
       setEntranceStep('hapjang')
-    }, 3200)
+    }, 2500)
 
     const tSeated = setTimeout(() => {
       setEntranceStep('seated')
-    }, 5400)
+    }, 4500)
 
     return () => {
-      clearInterval(walkTimer)
       clearTimeout(tHapjang)
       clearTimeout(tSeated)
     }
@@ -634,27 +625,15 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                 ? 'scale-105'
                 : ''
             }`}>
-              {/* 은은한 부처님 가피 후광 오라 */}
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#FFD700]/25 via-transparent to-transparent pointer-events-none scale-125" />
-
               {/* 3D 동자승 실사 캐릭터 (대웅전 자연스럽게 걷기 -> 방석 위 서서 합장 반배 -> 가부좌 착석 -> 절하기/참선) */}
               <div className="relative z-10 h-28 sm:h-34 flex items-end justify-center filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.9)]">
                 {entranceStep === 'entering' ? (
-                  /* 1단계: 두 팔을 자연스럽게 내리고 왼발-오른발을 번갈아 디디며 사뿐사뿐 걸어 들어오는 동자승 (부드러운 크로스페이드 보행) */
-                  <div className="relative flex items-center justify-center animate-monk-walk h-32 sm:h-38 w-28 sm:w-34">
+                  /* 1단계: 두 손을 단정히 모으고 대청마루에서 사뿐사뿐 걸어 들어오는 동자승 (2.5초) */
+                  <div className="flex flex-col items-center animate-monk-walk">
                     <img 
-                      src="/images/avatar_monk_walk.png" 
-                      alt="발걸음을 옮기는 동자승 오른발" 
-                      className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ${
-                        walkFrame === 0 ? 'opacity-100' : 'opacity-0'
-                      }`}
-                    />
-                    <img 
-                      src="/images/avatar_monk_walk_step2.png" 
-                      alt="발걸음을 옮기는 동자승 왼발" 
-                      className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ${
-                        walkFrame === 1 ? 'opacity-100' : 'opacity-0'
-                      }`}
+                      src="/images/avatar_monk_stand_hapjang.png" 
+                      alt="단정히 걸어 들어오는 동자승" 
+                      className="h-32 sm:h-38 object-contain"
                     />
                   </div>
                 ) : entranceStep === 'hapjang' ? (
@@ -663,7 +642,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                     <img 
                       src="/images/avatar_monk_stand_hapjang.png" 
                       alt="방석 위 서서 합장 반배 올리는 동자승" 
-                      className="h-32 sm:h-38 object-contain filter drop-shadow-[0_0_20px_rgba(255,215,0,0.7)]"
+                      className="h-32 sm:h-38 object-contain"
                     />
                   </div>
                 ) : actionState === 'bow' ? (
