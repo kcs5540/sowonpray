@@ -604,7 +604,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                 <img 
                   src="/images/avatar_moktak_3d.png" 
                   alt="3D 황금 목탁과 목탁채" 
-                  className="w-11 sm:w-13 object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
+                  className="w-[50px] sm:w-[58px] object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
                 />
                 {/* 목탁 타종 시 황금빛 음파 파동 이펙트 */}
                 {actionState === 'moktak' && (
