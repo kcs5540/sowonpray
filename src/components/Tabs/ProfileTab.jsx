@@ -767,10 +767,13 @@ export default function ProfileTab({
                           !p.wish_category?.includes('100일') &&
                           !p.wish_category?.includes('위패') &&
                           !p.wish_category?.includes('영전자수증') &&
-                          !p.wish_category?.includes('조성비')
+                          !p.wish_category?.includes('49재') &&
+                          !p.wish_category?.includes('천도재') &&
+                          !p.wish_category?.includes('조성비') &&
+                          !p.wish_category?.includes('불사')
                       ).length
-                      const totalMerit = Math.max(total1dCount, userLanternStats.totalCount, currentUser?.merit_count || 1)
-                      const currentStreak = userLanternStats.streak
+                      const totalMerit = Math.max(total1dCount, userLanternStats?.totalCount || 0, isLanternLit ? 1 : 0)
+                      const currentStreak = userLanternStats?.streak || (isLanternLit ? 1 : 0)
 
                       // 1년 인등, 100일 특별기도, 위패, 기타 불사 봉안 목록 도출
                       const activeIndeung = memberInfo?.lanterns?.find((l) => l.id === 'indeung_1yr' && l.active)
@@ -881,7 +884,9 @@ export default function ProfileTab({
                             >
                               <Award className="w-3.5 h-3.5 text-[#F5D061] shrink-0" />
                               <span>
-                                {isLanternLit ? `🔥 ${currentStreak}일 연속 정진 (총 ${totalMerit}회 점등)` : `총 ${totalMerit}회 점등`}
+                                {isLanternLit
+                                  ? `🔥 ${currentStreak}일 연속 정진 (총 ${totalMerit}회 점등)`
+                                  : (totalMerit > 0 ? `총 ${totalMerit}회 점등` : '소원등 0회 점등')}
                               </span>
                               <ChevronRight className="w-3 h-3 text-[#F5D061] -ml-0.5 shrink-0" />
                             </button>
