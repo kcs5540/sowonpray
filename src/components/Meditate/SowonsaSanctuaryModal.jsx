@@ -368,24 +368,24 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
     }
 
     // 🎬 대웅전 입장 시퀀스:
-    // 0~3.4s: 왼발-오른발을 번갈아 사뿐사뿐 내딛으며 대청마루에서 걸어 들어오기 (walkFrame 550ms 평온한 보행 호흡)
-    // 3.4~5.6s: 방석 앞에 서서 삼존불 전 정중히 합장 반배 올리기
-    // 5.6s+: 비단 방석에 가부좌 틀고 착석 완료
+    // 0~3.2s: 왼발-오른발과 양팔을 번갈아 흔들며 대청마루에서 걸어 들어오기 (walkFrame 480ms 자연스러운 보행 호흡)
+    // 3.2~5.4s: 방석 앞에 서서 삼존불 전 정중히 합장 반배 올리기
+    // 5.4s+: 비단 방석에 가부좌 틀고 착석 완료
     setEntranceStep('entering')
     setWalkFrame(0)
 
     const walkTimer = setInterval(() => {
       setWalkFrame(f => (f === 0 ? 1 : 0))
-    }, 550)
+    }, 480)
 
     const tHapjang = setTimeout(() => {
       clearInterval(walkTimer)
       setEntranceStep('hapjang')
-    }, 3400)
+    }, 3200)
 
     const tSeated = setTimeout(() => {
       setEntranceStep('seated')
-    }, 5600)
+    }, 5400)
 
     return () => {
       clearInterval(walkTimer)
