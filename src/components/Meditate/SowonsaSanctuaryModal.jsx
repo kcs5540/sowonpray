@@ -556,9 +556,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                 ? 'scale-95 translate-y-2'
                 : actionState === 'hapjang'
                 ? 'scale-105 -translate-y-1'
-                : actionState === 'moktak'
-                ? 'animate-pulse'
-                : actionState === 'yeomju'
+                : actionState === 'moktak' || actionState === 'yeomju'
                 ? 'scale-105'
                 : ''
             }`}>
