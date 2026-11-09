@@ -557,14 +557,8 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       }`}>
 
 
-        {/* 원경(중간 거리) 고요한 도량 빈 방석 2개 (산사 템플 스타일 3D 원근감) */}
-        <div className="w-full max-w-xs flex justify-around px-10 mb-2 opacity-35 pointer-events-none">
-          <div className="w-14 h-3 rounded-[100%] bg-gradient-to-r from-[#594228] via-[#8A6538] to-[#594228] border border-[#A8884C]/40 shadow-sm" />
-          <div className="w-14 h-3 rounded-[100%] bg-gradient-to-r from-[#594228] via-[#8A6538] to-[#594228] border border-[#A8884C]/40 shadow-sm" />
-        </div>
-
-        {/* 법당 마루: 동료 불자님 방석 + 나의 참선 방석 (3D 동자승 아바타 실사 구도) */}
-        <div className="relative w-full max-w-sm flex items-end justify-center gap-2 sm:gap-4 px-1">
+        {/* 법당 마루: 동료 불자님 방석 + 나의 참선 방석 (부처님 전 한 칸 앞으로 전진 배치) */}
+        <div className="relative w-full max-w-sm flex items-end justify-center gap-2 sm:gap-4 px-1 mb-2 sm:mb-3">
           {/* 좌측 동행 불자님 (제주 불자님) */}
           <div className="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
             <div className="px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-[8.5px] text-[#D6CEC2] border border-white/20 mb-1">
@@ -584,7 +578,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
             </div>
           </div>
 
-          {/* 중앙: 나의 참선 방석 (3D 동자승 대형 주인공 - '나의 방석' 명패 제거로 시야 확보) */}
+          {/* 중앙: 나의 참선 방석 (3D 동자승 대형 주인공 - 부처님 쪽으로 당당하게 전진) */}
           <div className="relative flex flex-col items-center z-10 -mb-1">
             {/* 나의 3D 동자승 아바타 모션 (크고 당당하게 전면 배치) */}
             <div className={`relative flex flex-col items-center transition-all duration-300 ${
@@ -677,14 +671,14 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
           </div>
         </div>
 
-        {/* 동자승 아래 정진 피드백 팝업 (대표님 지시: 상단 시야 가림 방지 및 동자승 바로 아래 배치) */}
+        {/* 동자승과 아래 텍스트 사이: 대표님 지정 여유로운 1칸 공간 (mt-5 / mb-2) */}
         {actionToast ? (
-          <div className="mt-2.5 mb-1 px-3.5 py-1.5 rounded-full bg-[#1F1914]/90 backdrop-blur-md border border-[#F5D061]/70 text-[#F5D061] text-xs font-medium shadow-[0_4px_20px_rgba(0,0,0,0.8)] animate-in fade-in zoom-in-95 duration-200 max-w-sm break-keep">
+          <div className="mt-4 sm:mt-5 mb-1.5 px-3.5 py-1.5 rounded-full bg-[#1F1914]/90 backdrop-blur-md border border-[#F5D061]/70 text-[#F5D061] text-xs font-medium shadow-[0_4px_20px_rgba(0,0,0,0.8)] animate-in fade-in zoom-in-95 duration-200 max-w-sm break-keep">
             {actionToast}
           </div>
         ) : (
-          /* 실시간 다른 불자님들의 정진 발원 티커 */
-          <div className="mt-2.5 mb-1 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-[#F5D061]/25 text-[10.5px] text-[#E8DFD1] flex items-center gap-1.5 shadow-lg transition-all duration-500 max-w-xs">
+          /* 실시간 다른 불자님들의 정진 발원 티커 (동자승과 한 칸 띄움 적용) */
+          <div className="mt-4 sm:mt-5 mb-1.5 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-[#F5D061]/25 text-[10.5px] text-[#E8DFD1] flex items-center gap-1.5 shadow-lg transition-all duration-500 max-w-xs">
             <span className="text-xs shrink-0">{liveStreamMsg.icon}</span>
             <span className="font-bold text-[#F5D061] shrink-0">{liveStreamMsg.name}</span>
             <span className="truncate text-white/85">{liveStreamMsg.action}</span>
