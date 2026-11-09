@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sowonpray-cache-v44'
+const CACHE_NAME = 'sowonpray-cache-v45'
 
 self.addEventListener('install', (event) => {
   self.skipWaiting()

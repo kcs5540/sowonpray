@@ -339,7 +339,7 @@ export default function MobileAdminView({
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
               <span className="font-serif-kr font-extrabold text-base sm:text-lg tracking-tight text-[#F5D061] whitespace-nowrap">
-                소원사 모바일 관제창
+                모바일 관제 센터
               </span>
             </div>
             <p className="text-[10.5px] text-[#D6CEC2] truncate">
