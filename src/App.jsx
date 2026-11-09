@@ -1834,7 +1834,14 @@ const CHAIRMEN_CODES = ['33065540', '53872248', '83855838', '35651669']
 function normalizeMemberHierarchy(m) {
   if (!m) return m
   // 양영문: 최상위 신도회장
-  if (m.code === '55570267' || m.name === '양영문' || m.role === 'temple_admin') {
+  if (m.code === '55570267' || m.name === '양영문') {
+    return { ...m, role: 'temple_admin', parent_code: null }
+  }
+  // 양형심: 종무소 사무장 (사찰 행정 및 관제센터 관리자)
+  if (m.code === '22662207' || m.name === '양형심') {
+    return { ...m, role: 'temple_admin', parent_code: '55570267' }
+  }
+  if (m.role === 'temple_admin') {
     return { ...m, role: 'temple_admin', parent_code: null }
   }
   // 김철수: 전국 포교위원장 (총괄대표)
@@ -4107,6 +4114,7 @@ function formatRelativeOrDate(dateStr) {
   const [savedLoginAccounts, setSavedLoginAccounts] = useState(() => {
     const defaultAccounts = [
       { code: '33065540', phone: '010-3306-5540', name: '김철수', dharma_name: '보현행', pw: '4157' },
+      { code: '22662207', phone: '010-2266-2207', name: '양형심', dharma_name: '대지월', pw: '2207' },
       { code: '99085540', phone: '010-9908-5540', name: '김나현', dharma_name: '', pw: '5540' },
       { code: '55570267', phone: '010-5557-0267', name: '양영문', dharma_name: '창건주', pw: '0267' },
     ]
@@ -7327,7 +7335,9 @@ function formatRelativeOrDate(dateStr) {
                     {currentUser.name}
                     {currentUser.dharma_name ? ` (${currentUser.dharma_name})` : ''}
                   </strong>
-                  {currentUser.role === 'temple_admin'
+                  {currentUser.code === '22662207' || currentUser.name === '양형심'
+                    ? ' 사무장님'
+                    : currentUser.role === 'temple_admin'
                     ? ' 신도회장님'
                     : currentUser.role === 'master'
                     ? ' 총괄위원장님'

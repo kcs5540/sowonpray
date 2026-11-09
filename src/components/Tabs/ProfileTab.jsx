@@ -418,7 +418,9 @@ export default function ProfileTab({
 
                     <div className="flex items-center gap-1.5 shrink-0">
                       <span className="text-[10.5px] px-2.5 py-1 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/50 font-bold whitespace-nowrap shadow-sm">
-                        {currentUser.role === 'temple_admin'
+                        {currentUser.code === '22662207' || currentUser.name === '양형심'
+                          ? '종무소 사무장'
+                          : currentUser.role === 'temple_admin'
                           ? '창건주 · 신도회장'
                           : currentUser.role === 'master'
                           ? '총괄위원장'
@@ -442,12 +444,21 @@ export default function ProfileTab({
                   <div className="pt-0.5 relative z-10">
                     <h2 className="font-serif-kr text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-baseline gap-1.5 flex-wrap">
                       <span>{currentUser.name}</span>
-                      {currentUser.role === 'temple_admin' ? (
+                      {currentUser.code === '22662207' || currentUser.name === '양형심' ? (
+                        <>
+                          {currentUser.dharma_name && (
+                            <span className="text-base sm:text-lg text-[#F5D061] font-bold">({currentUser.dharma_name})</span>
+                          )}
+                          <span className="text-base sm:text-lg text-[#F5D061] font-bold">사무장님</span>
+                        </>
+                      ) : currentUser.role === 'temple_admin' ? (
                         <span className="text-base sm:text-lg text-[#F5D061] font-bold">(창건주) 회장님</span>
                       ) : currentUser.dharma_name ? (
                         <span className="text-base sm:text-lg text-[#F5D061] font-bold">({currentUser.dharma_name})</span>
                       ) : null}
-                      <span className="text-sm sm:text-base text-[#D4AF37] font-semibold">불자님</span>
+                      {!(currentUser.code === '22662207' || currentUser.name === '양형심' || currentUser.role === 'temple_admin') && (
+                        <span className="text-sm sm:text-base text-[#D4AF37] font-semibold">불자님</span>
+                      )}
                     </h2>
                     <div className="flex items-center gap-2 text-xs text-[#BFB6AA] mt-1.5">
                       <span className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 font-mono text-[11px] text-[#F5D061]">
