@@ -578,9 +578,9 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
 
 
         {/* 원경 도량 빈 방석 2개 (원근감과 도량의 그윽한 입체감 복원) */}
-        <div className="w-full max-w-xs flex justify-around px-10 mb-2 opacity-40 pointer-events-none">
-          <div className="w-16 h-4 rounded-[100%] bg-gradient-to-r from-[#594228] via-[#8A6538] to-[#594228] border border-[#A8884C]/50 shadow-sm" />
-          <div className="w-16 h-4 rounded-[100%] bg-gradient-to-r from-[#594228] via-[#8A6538] to-[#594228] border border-[#A8884C]/50 shadow-sm" />
+        <div className="w-full max-w-xs flex justify-around px-10 mb-2 opacity-30 pointer-events-none">
+          <div className="w-16 h-4 rounded-[100%] bg-gradient-to-r from-[#4A351E] via-[#6B4D2B] to-[#4A351E] border border-[#5A4022]/40 shadow-sm" />
+          <div className="w-16 h-4 rounded-[100%] bg-gradient-to-r from-[#4A351E] via-[#6B4D2B] to-[#4A351E] border border-[#5A4022]/40 shadow-sm" />
         </div>
 
         {/* 법당 마루: 동료 불자님 방석 + 나의 참선 방석 (부처님 전 한 칸 앞으로 전진 배치) */}
@@ -655,8 +655,8 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                 )}
               </div>
 
-              {/* 도량 비단 방석 (도톰하고 품격 있는 황금빛 비단 참선 방석) */}
-              <div className="w-40 sm:w-48 h-8 sm:h-9 rounded-[100%] bg-gradient-to-r from-[#6E4F28] via-[#A87B3F] to-[#6E4F28] border-2 border-[#E5B556] mx-auto -mt-3 shadow-[0_12px_25px_rgba(0,0,0,0.95)] relative z-0" />
+              {/* 도량 비단 방석 (노란 불빛 링 원천 차단: 차분하고 도톰한 전통 사찰 밤색 비단 솜방석) */}
+              <div className="w-40 sm:w-48 h-8 sm:h-9 rounded-[100%] bg-gradient-to-r from-[#3B2816] via-[#5C3F22] to-[#3B2816] border border-[#7A5630]/40 mx-auto -mt-3 shadow-[0_12px_25px_rgba(0,0,0,0.95)] relative z-0" />
 
               {/* 방석 좌측 실제 3D 108 염주 (목탁과 완벽한 시각적 균형을 이루도록 정밀 축소) */}
               <div 
