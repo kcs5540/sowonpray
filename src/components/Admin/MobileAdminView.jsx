@@ -654,8 +654,8 @@ export default function MobileAdminView({
         </div>
       </header>
 
-      {/* 2. 현대적 세그먼트 컨트롤 탭 (2026 최신 트렌드: 일체형 트랙 & 플로팅 카드) */}
-      <nav className="bg-[#EDE9E1] p-1.5 border-b border-[#DDD6C8] shrink-0">
+      {/* 2. 현대적 세그먼트 컨트롤 탭 (하단 본문과 명확히 구분되는 품격있는 사찰 샌드스톤 톤) */}
+      <nav className="bg-[#DDD5C5] p-1.5 border-b-2 border-[#C5BBA7] shadow-[0_2px_6px_rgba(0,0,0,0.05)] shrink-0">
         <div className="grid grid-cols-4 gap-1">
           {/* 1) 불사·상담 탭 */}
           <button
@@ -663,12 +663,12 @@ export default function MobileAdminView({
             onClick={() => setActiveTab('bulsa')}
             className={`py-2 px-1 text-center rounded-xl transition cursor-pointer flex flex-col items-center justify-center relative ${
               activeTab === 'bulsa'
-                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#DDD6C8]/80'
-                : 'text-[#6E6659] hover:text-[#1E1914] hover:bg-white/40 font-semibold'
+                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_8px_rgba(0,0,0,0.12)] border border-[#C5BBA7]'
+                : 'text-[#5C5346] hover:text-[#1E1914] hover:bg-black/5 font-bold'
             }`}
           >
             <div className="flex items-center gap-1 text-[11px] font-bold">
-              <AlertCircle className={`w-3.5 h-3.5 ${activeTab === 'bulsa' ? 'text-red-600' : 'text-[#8C8375]'}`} />
+              <AlertCircle className={`w-3.5 h-3.5 ${activeTab === 'bulsa' ? 'text-red-600' : 'text-[#7A6F5D]'}`} />
               <span className="truncate">불사·상담</span>
             </div>
             <div className="text-sm font-black mt-0.5">
@@ -682,12 +682,12 @@ export default function MobileAdminView({
             onClick={() => setActiveTab('visits')}
             className={`py-2 px-1 text-center rounded-xl transition cursor-pointer flex flex-col items-center justify-center ${
               activeTab === 'visits'
-                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#DDD6C8]/80'
-                : 'text-[#6E6659] hover:text-[#1E1914] hover:bg-white/40 font-semibold'
+                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_8px_rgba(0,0,0,0.12)] border border-[#C5BBA7]'
+                : 'text-[#5C5346] hover:text-[#1E1914] hover:bg-black/5 font-bold'
             }`}
           >
             <div className="flex items-center gap-1 text-[11px] font-bold">
-              <Calendar className={`w-3.5 h-3.5 ${activeTab === 'visits' ? 'text-sky-600' : 'text-[#8C8375]'}`} />
+              <Calendar className={`w-3.5 h-3.5 ${activeTab === 'visits' ? 'text-sky-600' : 'text-[#7A6F5D]'}`} />
               <span className="truncate">방문·공양</span>
             </div>
             <div className="text-sm font-black mt-0.5">
@@ -701,12 +701,12 @@ export default function MobileAdminView({
             onClick={() => setActiveTab('lanterns')}
             className={`py-2 px-1 text-center rounded-xl transition cursor-pointer flex flex-col items-center justify-center ${
               activeTab === 'lanterns'
-                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#DDD6C8]/80'
-                : 'text-[#6E6659] hover:text-[#1E1914] hover:bg-white/40 font-semibold'
+                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_8px_rgba(0,0,0,0.12)] border border-[#C5BBA7]'
+                : 'text-[#5C5346] hover:text-[#1E1914] hover:bg-black/5 font-bold'
             }`}
           >
             <div className="flex items-center gap-1 text-[11px] font-bold">
-              <Flame className={`w-3.5 h-3.5 ${activeTab === 'lanterns' ? 'text-amber-600' : 'text-[#8C8375]'}`} />
+              <Flame className={`w-3.5 h-3.5 ${activeTab === 'lanterns' ? 'text-amber-600' : 'text-[#7A6F5D]'}`} />
               <span className="truncate">소원등</span>
             </div>
             <div className="text-sm font-black mt-0.5">
@@ -720,12 +720,12 @@ export default function MobileAdminView({
             onClick={() => setActiveTab('members')}
             className={`py-2 px-1 text-center rounded-xl transition cursor-pointer flex flex-col items-center justify-center ${
               activeTab === 'members'
-                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#DDD6C8]/80'
-                : 'text-[#6E6659] hover:text-[#1E1914] hover:bg-white/40 font-semibold'
+                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_8px_rgba(0,0,0,0.12)] border border-[#C5BBA7]'
+                : 'text-[#5C5346] hover:text-[#1E1914] hover:bg-black/5 font-bold'
             }`}
           >
             <div className="flex items-center gap-1 text-[11px] font-bold">
-              <Users className={`w-3.5 h-3.5 ${activeTab === 'members' ? 'text-emerald-600' : 'text-[#8C8375]'}`} />
+              <Users className={`w-3.5 h-3.5 ${activeTab === 'members' ? 'text-emerald-600' : 'text-[#7A6F5D]'}`} />
               <span className="truncate">신도조회</span>
             </div>
             <div className="text-sm font-black mt-0.5">
