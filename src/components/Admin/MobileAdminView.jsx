@@ -12,13 +12,9 @@ import {
   AlertCircle,
   X,
   RefreshCw,
-  ChevronRight,
-  User,
   Users,
   Clock,
-  Filter,
   CheckCircle2,
-  Sparkles,
 } from 'lucide-react'
 
 export default function MobileAdminView({
@@ -253,19 +249,19 @@ export default function MobileAdminView({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#16120E] text-[#EDE6D6] flex flex-col overflow-hidden font-sans">
-      {/* 1. 상단 모바일 관리자 헤더 */}
-      <header className="bg-[#241C15] border-b border-[#3D3023] px-3.5 py-2.5 flex items-center justify-between shrink-0 shadow-md">
+    <div className="fixed inset-0 z-50 bg-[#F4F1EA] text-[#2D241C] flex flex-col overflow-hidden font-sans">
+      {/* 1. 상단 모바일 관리자 헤더 (밝고 기품 있는 화이트·골드) */}
+      <header className="bg-white border-b-2 border-[#E8DEC8] px-3.5 py-2.5 flex items-center justify-between shrink-0 shadow-xs">
         <div className="flex items-center gap-2">
-          <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#D4A024] to-[#8C6D1F] flex items-center justify-center text-xs font-black text-[#1C140A] shadow-sm">
+          <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#D4A024] to-[#C59B27] flex items-center justify-center text-xs font-black text-[#1C140A] shadow-xs">
             卍
           </span>
           <div>
             <div className="flex items-center gap-1.5">
-              <h1 className="text-sm font-bold text-[#F5D061] tracking-tight">소원사 모바일 관제창</h1>
-              <span className="text-[10px] bg-red-600/80 text-white font-bold px-1.5 py-0.2 rounded-full">LIVE</span>
+              <h1 className="text-sm font-serif-kr font-extrabold text-[#2E2214] tracking-tight">소원사 모바일 관제창</h1>
+              <span className="text-[10px] bg-red-600 text-white font-bold px-1.5 py-0.2 rounded-full shadow-xs">LIVE</span>
             </div>
-            <p className="text-[10.5px] text-[#A6957E] truncate">
+            <p className="text-[11px] text-[#7A6B58] truncate">
               {currentUser?.name || '관리자'} ({currentUser?.role === 'master' ? '총괄대표' : '사찰본부'})
             </p>
           </div>
@@ -275,15 +271,15 @@ export default function MobileAdminView({
           <button
             type="button"
             onClick={handleRefresh}
-            className="w-8 h-8 rounded-lg bg-[#33271D] hover:bg-[#423326] flex items-center justify-center text-[#D8C6A5] active:scale-95 transition"
+            className="w-8 h-8 rounded-lg bg-[#F8F5EE] hover:bg-[#EFEADF] border border-[#DDD3BF] flex items-center justify-center text-[#5C4D3B] active:scale-95 transition"
             title="새로고침"
           >
-            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-[#F5D061]' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-[#C59B27]' : ''}`} />
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="px-2.5 py-1.5 rounded-lg bg-[#3D2918] hover:bg-[#4E351F] text-[#F5D061] text-xs font-bold flex items-center gap-1 active:scale-95 transition border border-[#6B4E1B]"
+            className="px-2.5 py-1.5 rounded-lg bg-[#2E2214] hover:bg-[#3D2E1B] text-[#F5D061] text-xs font-bold flex items-center gap-1 active:scale-95 transition shadow-xs"
           >
             <X className="w-3.5 h-3.5" />
             <span>닫기</span>
@@ -291,26 +287,26 @@ export default function MobileAdminView({
         </div>
       </header>
 
-      {/* 2. 통합 탭 메뉴바 (상단 요약 카운터 일체형 통합 - 중복 제거 및 공간 극대화) */}
-      <nav className="bg-[#1C1611] border-b border-[#3D3023] grid grid-cols-4 shrink-0 shadow-sm">
+      {/* 2. 통합 탭 메뉴바 (밝은 배경 & 4분할 일체형 카운터) */}
+      <nav className="bg-white border-b border-[#E8DEC8] grid grid-cols-4 shrink-0 shadow-xs">
         {/* 1) 불사·상담 탭 */}
         <button
           type="button"
           onClick={() => setActiveTab('bulsa')}
-          className={`py-2 px-1 text-center border-b-2 transition flex flex-col items-center justify-center relative ${
+          className={`py-2 px-1 text-center border-b-2 transition flex flex-col items-center justify-center cursor-pointer ${
             activeTab === 'bulsa'
-              ? 'border-[#F5D061] bg-[#2C2117] text-[#F5D061]'
-              : 'border-transparent text-[#9E8D76] hover:text-[#D1C3AF]'
+              ? 'border-[#C59B27] bg-[#FAF5EB] text-[#2E2214]'
+              : 'border-transparent text-[#7A6B58] hover:bg-[#FAF8F5]'
           }`}
         >
           <div className="flex items-center gap-1 text-[11px] font-bold">
-            <AlertCircle className="w-3.5 h-3.5 text-red-400 shrink-0" />
+            <AlertCircle className="w-3.5 h-3.5 text-red-600 shrink-0" />
             <span className="truncate">불사·상담</span>
           </div>
           <div className="flex items-center gap-1 mt-0.5">
-            <span className="text-sm font-black">{bulsaInquiries.length}</span>
+            <span className="text-sm font-black text-[#2E2214]">{bulsaInquiries.length}</span>
             {pendingBulsaCount > 0 && (
-              <span className="text-[9.5px] font-extrabold bg-red-600 text-white px-1.5 py-0.2 rounded-full animate-pulse shadow-sm">
+              <span className="text-[9.5px] font-extrabold bg-red-600 text-white px-1.5 py-0.2 rounded-full animate-pulse shadow-xs">
                 대기 {pendingBulsaCount}
               </span>
             )}
@@ -321,17 +317,17 @@ export default function MobileAdminView({
         <button
           type="button"
           onClick={() => setActiveTab('visits')}
-          className={`py-2 px-1 text-center border-b-2 transition flex flex-col items-center justify-center ${
+          className={`py-2 px-1 text-center border-b-2 transition flex flex-col items-center justify-center cursor-pointer ${
             activeTab === 'visits'
-              ? 'border-sky-400 bg-[#16212B] text-sky-400'
-              : 'border-transparent text-[#9E8D76] hover:text-[#D1C3AF]'
+              ? 'border-sky-600 bg-sky-50/70 text-sky-950 font-bold'
+              : 'border-transparent text-[#7A6B58] hover:bg-[#FAF8F5]'
           }`}
         >
           <div className="flex items-center gap-1 text-[11px] font-bold">
-            <Calendar className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+            <Calendar className="w-3.5 h-3.5 text-sky-600 shrink-0" />
             <span className="truncate">방문·공양</span>
           </div>
-          <div className="text-sm font-black mt-0.5 text-sky-300">
+          <div className="text-sm font-black mt-0.5 text-sky-700">
             {visits.length}건
           </div>
         </button>
@@ -340,17 +336,17 @@ export default function MobileAdminView({
         <button
           type="button"
           onClick={() => setActiveTab('lanterns')}
-          className={`py-2 px-1 text-center border-b-2 transition flex flex-col items-center justify-center ${
+          className={`py-2 px-1 text-center border-b-2 transition flex flex-col items-center justify-center cursor-pointer ${
             activeTab === 'lanterns'
-              ? 'border-amber-400 bg-[#2C2117] text-amber-400'
-              : 'border-transparent text-[#9E8D76] hover:text-[#D1C3AF]'
+              ? 'border-amber-600 bg-amber-50/70 text-amber-950 font-bold'
+              : 'border-transparent text-[#7A6B58] hover:bg-[#FAF8F5]'
           }`}
         >
           <div className="flex items-center gap-1 text-[11px] font-bold">
-            <Flame className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <Flame className="w-3.5 h-3.5 text-amber-600 shrink-0" />
             <span className="truncate">소원등</span>
           </div>
-          <div className="text-sm font-black mt-0.5 text-amber-300">
+          <div className="text-sm font-black mt-0.5 text-amber-800">
             {regularLanterns.length}위
           </div>
         </button>
@@ -359,23 +355,23 @@ export default function MobileAdminView({
         <button
           type="button"
           onClick={() => setActiveTab('members')}
-          className={`py-2 px-1 text-center border-b-2 transition flex flex-col items-center justify-center ${
+          className={`py-2 px-1 text-center border-b-2 transition flex flex-col items-center justify-center cursor-pointer ${
             activeTab === 'members'
-              ? 'border-emerald-400 bg-[#14261B] text-emerald-400'
-              : 'border-transparent text-[#9E8D76] hover:text-[#D1C3AF]'
+              ? 'border-emerald-600 bg-emerald-50/70 text-emerald-950 font-bold'
+              : 'border-transparent text-[#7A6B58] hover:bg-[#FAF8F5]'
           }`}
         >
           <div className="flex items-center gap-1 text-[11px] font-bold">
-            <Users className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <Users className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
             <span className="truncate">신도조회</span>
           </div>
-          <div className="text-sm font-black mt-0.5 text-emerald-300">
+          <div className="text-sm font-black mt-0.5 text-emerald-800">
             {members.length}명
           </div>
         </button>
       </nav>
 
-      {/* 4. 메인 콘텐츠 스크롤 영역 */}
+      {/* 3. 메인 콘텐츠 스크롤 영역 (밝은 아이보리 배경) */}
       <main className="flex-1 overflow-y-auto p-3 space-y-3 pb-20">
         {/* ============================================================== */}
         {/* 탭 1: 불사·제사·위패 상담 목록 */}
@@ -387,10 +383,10 @@ export default function MobileAdminView({
               <button
                 type="button"
                 onClick={() => setBulsaStatusFilter('all')}
-                className={`px-2.5 py-1 rounded-full border whitespace-nowrap font-medium transition ${
+                className={`px-3 py-1 rounded-full border whitespace-nowrap font-medium transition cursor-pointer ${
                   bulsaStatusFilter === 'all'
-                    ? 'bg-[#F5D061] text-[#1C140A] border-[#F5D061] font-bold'
-                    : 'bg-[#241C15] text-[#A6957E] border-[#3D3023]'
+                    ? 'bg-[#2E2214] text-[#F5D061] border-[#2E2214] font-bold shadow-xs'
+                    : 'bg-white text-[#635341] border-[#DDD3BF] hover:bg-[#F8F5EE]'
                 }`}
               >
                 전체 ({bulsaInquiries.length})
@@ -398,10 +394,10 @@ export default function MobileAdminView({
               <button
                 type="button"
                 onClick={() => setBulsaStatusFilter('consulting')}
-                className={`px-2.5 py-1 rounded-full border whitespace-nowrap font-medium transition ${
+                className={`px-3 py-1 rounded-full border whitespace-nowrap font-medium transition cursor-pointer ${
                   bulsaStatusFilter === 'consulting'
-                    ? 'bg-red-600 text-white border-red-500 font-bold'
-                    : 'bg-[#241C15] text-red-300 border-red-900/40'
+                    ? 'bg-red-600 text-white border-red-600 font-bold shadow-xs'
+                    : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'
                 }`}
               >
                 🚨 접수대기 ({bulsaInquiries.filter((p) => p.status === 'consulting').length})
@@ -409,10 +405,10 @@ export default function MobileAdminView({
               <button
                 type="button"
                 onClick={() => setBulsaStatusFilter('in_progress')}
-                className={`px-2.5 py-1 rounded-full border whitespace-nowrap font-medium transition ${
+                className={`px-3 py-1 rounded-full border whitespace-nowrap font-medium transition cursor-pointer ${
                   bulsaStatusFilter === 'in_progress'
-                    ? 'bg-amber-600 text-white border-amber-500 font-bold'
-                    : 'bg-[#241C15] text-amber-300 border-amber-900/40'
+                    ? 'bg-amber-600 text-white border-amber-600 font-bold shadow-xs'
+                    : 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100'
                 }`}
               >
                 상담진행중 ({bulsaInquiries.filter((p) => p.status === 'in_progress').length})
@@ -420,10 +416,10 @@ export default function MobileAdminView({
               <button
                 type="button"
                 onClick={() => setBulsaStatusFilter('completed')}
-                className={`px-2.5 py-1 rounded-full border whitespace-nowrap font-medium transition ${
+                className={`px-3 py-1 rounded-full border whitespace-nowrap font-medium transition cursor-pointer ${
                   bulsaStatusFilter === 'completed'
-                    ? 'bg-emerald-600 text-white border-emerald-500 font-bold'
-                    : 'bg-[#241C15] text-emerald-300 border-emerald-900/40'
+                    ? 'bg-emerald-600 text-white border-emerald-600 font-bold shadow-xs'
+                    : 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
                 }`}
               >
                 상담완료 ({bulsaInquiries.filter((p) => p.status === 'completed').length})
@@ -431,10 +427,10 @@ export default function MobileAdminView({
             </div>
 
             {filteredBulsaList.length === 0 ? (
-              <div className="p-8 text-center bg-[#211A13] rounded-2xl border border-[#33271D] text-[#8C7D6B] text-xs space-y-1">
-                <CheckCircle2 className="w-7 h-7 mx-auto text-emerald-600/70" />
-                <p className="font-bold text-[#C7B59D]">해당하는 상담 접수건이 없습니다.</p>
-                <p className="text-[11px]">새로운 상담 신청이 들어오면 실시간으로 카드가 생성됩니다.</p>
+              <div className="p-8 text-center bg-white rounded-2xl border border-[#E5DCB9] text-[#7A6B58] text-xs space-y-1 shadow-xs">
+                <CheckCircle2 className="w-7 h-7 mx-auto text-emerald-600" />
+                <p className="font-bold text-[#2E2214]">해당하는 상담 접수건이 없습니다.</p>
+                <p className="text-[11px] text-[#8C7D6B]">새로운 상담 신청이 들어오면 실시간으로 카드가 생성됩니다.</p>
               </div>
             ) : (
               filteredBulsaList.map((p) => {
@@ -447,32 +443,32 @@ export default function MobileAdminView({
                 return (
                   <div
                     key={p.id || p.db_id}
-                    className={`rounded-2xl p-3.5 border transition shadow-sm space-y-2.5 ${
+                    className={`rounded-2xl p-4 border transition shadow-sm space-y-3 ${
                       isPending
-                        ? 'bg-[#271714] border-red-700/60 shadow-red-950/30'
+                        ? 'bg-[#FFFDFB] border-red-300 ring-1 ring-red-100'
                         : isInProgress
-                        ? 'bg-[#271E14] border-amber-600/50'
-                        : 'bg-[#1F1913] border-[#382C1E]'
+                        ? 'bg-white border-amber-300'
+                        : 'bg-white border-[#E8DEC8]'
                     }`}
                   >
                     {/* 상단: 신청자 실명 & 종목 배지 & 상태 */}
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="text-sm font-extrabold text-[#F7E7C4]">
+                          <span className="text-base font-black text-[#1F1710]">
                             {p.believer_name || '신청 불자'}
                           </span>
-                          <span className="text-[10px] text-[#A6957E] font-mono">
+                          <span className="text-[11px] text-[#8C7D6B] font-mono">
                             #{p.member_code || cleanPhone.slice(-8) || '-'}
                           </span>
                         </div>
                         <div className="mt-1 flex items-center gap-1.5 flex-wrap">
-                          <span className="text-[10.5px] font-bold px-2 py-0.5 rounded-full bg-[#3D2916] text-[#F5D061] border border-[#6B4E1B]">
+                          <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399]">
                             {p.wish_category || '불사상담'}
                           </span>
                           {p.created_at && (
-                            <span className="text-[10px] text-[#8C7D6B] flex items-center gap-0.5">
-                              <Clock className="w-3 h-3" />
+                            <span className="text-[10.5px] text-[#8C7D6B] flex items-center gap-0.5">
+                              <Clock className="w-3 h-3 text-[#A89885]" />
                               {new Date(p.created_at).toLocaleDateString('ko-KR', {
                                 month: 'numeric',
                                 day: 'numeric',
@@ -486,33 +482,33 @@ export default function MobileAdminView({
 
                       {/* 상태 배지 */}
                       <span
-                        className={`text-[11px] font-bold px-2.5 py-1 rounded-full whitespace-nowrap shrink-0 border ${
+                        className={`text-[11px] font-extrabold px-2.5 py-1 rounded-full whitespace-nowrap shrink-0 border ${
                           isPending
-                            ? 'bg-red-950 text-red-300 border-red-600/80 animate-pulse'
+                            ? 'bg-red-600 text-white border-red-600 animate-pulse shadow-xs'
                             : isInProgress
-                            ? 'bg-amber-950 text-amber-300 border-amber-600/80'
-                            : 'bg-emerald-950 text-emerald-300 border-emerald-600/80'
+                            ? 'bg-amber-100 text-amber-900 border-amber-300 font-bold'
+                            : 'bg-emerald-100 text-emerald-900 border-emerald-300 font-bold'
                         }`}
                       >
                         {isPending ? '🚨 접수대기' : isInProgress ? '상담진행중' : '✓ 상담완료'}
                       </span>
                     </div>
 
-                    {/* 발원 및 상담 메모 전문 */}
-                    <div className="p-2.5 rounded-xl bg-[#140F0A] border border-[#2D2217] space-y-1">
-                      <p className="text-xs text-[#E5D7C0] leading-relaxed whitespace-pre-line break-keep font-serif-kr">
+                    {/* 발원 및 상담 메모 전문 (밝고 선명한 크림 박스) */}
+                    <div className="p-3 rounded-xl bg-[#FAF7F0] border border-[#EBE1CD] space-y-1">
+                      <p className="text-xs text-[#3D3328] leading-relaxed whitespace-pre-line break-keep font-serif-kr font-medium">
                         {p.wish_text || '발원문 메모가 없습니다.'}
                       </p>
                     </div>
 
                     {/* 원터치 액션 버튼 바 (전화걸기, 문자하기, 번호복사) */}
-                    <div className="grid grid-cols-3 gap-2 pt-1 border-t border-[#382C1E]/80">
+                    <div className="grid grid-cols-3 gap-2 pt-1 border-t border-[#EFE8DA]">
                       <a
                         href={cleanPhone ? `tel:${cleanPhone}` : '#'}
-                        className={`py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition ${
+                        className={`py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs active:scale-95 transition ${
                           cleanPhone
-                            ? 'bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer'
-                            : 'bg-[#291F17] text-[#6B5E4F] pointer-events-none'
+                            ? 'bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer'
+                            : 'bg-[#EEE8DB] text-[#9E907E] pointer-events-none'
                         }`}
                       >
                         <Phone className="w-3.5 h-3.5" />
@@ -527,10 +523,10 @@ export default function MobileAdminView({
                               )}`
                             : '#'
                         }
-                        className={`py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition ${
+                        className={`py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs active:scale-95 transition ${
                           cleanPhone
-                            ? 'bg-sky-600 hover:bg-sky-500 text-white cursor-pointer'
-                            : 'bg-[#291F17] text-[#6B5E4F] pointer-events-none'
+                            ? 'bg-sky-600 hover:bg-sky-700 text-white cursor-pointer'
+                            : 'bg-[#EEE8DB] text-[#9E907E] pointer-events-none'
                         }`}
                       >
                         <MessageSquare className="w-3.5 h-3.5" />
@@ -540,16 +536,16 @@ export default function MobileAdminView({
                       <button
                         type="button"
                         onClick={() => handleCopyPhone(phone)}
-                        className="py-2 rounded-xl bg-[#33261A] hover:bg-[#423223] text-[#D8C6A5] text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition border border-[#4D3A27]"
+                        className="py-2.5 rounded-xl bg-white hover:bg-[#F8F5ED] text-[#4A3D2D] text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition border border-[#D5C9B3] shadow-xs cursor-pointer"
                       >
                         {copiedPhone === phone ? (
                           <>
-                            <Check className="w-3.5 h-3.5 text-emerald-400" />
-                            <span className="text-emerald-400">복사됨!</span>
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                            <span className="text-emerald-700">복사됨!</span>
                           </>
                         ) : (
                           <>
-                            <Copy className="w-3.5 h-3.5" />
+                            <Copy className="w-3.5 h-3.5 text-[#7A6B58]" />
                             <span>번호복사</span>
                           </>
                         )}
@@ -557,16 +553,16 @@ export default function MobileAdminView({
                     </div>
 
                     {/* 상태 변경 버튼 바 */}
-                    <div className="flex items-center justify-between gap-1.5 pt-1.5 border-t border-[#291E15]">
-                      <span className="text-[10.5px] text-[#8C7D6B]">진행 상태 변경:</span>
+                    <div className="flex items-center justify-between gap-1.5 pt-2 border-t border-[#F0ECE1]">
+                      <span className="text-[11px] font-medium text-[#7A6B58]">진행 상태 변경:</span>
                       <div className="flex items-center gap-1">
                         <button
                           type="button"
                           onClick={() => handleUpdatePrayerStatus(p.id, 'consulting')}
-                          className={`px-2 py-0.5 rounded text-[10.5px] font-bold border transition ${
+                          className={`px-2.5 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer ${
                             isPending
-                              ? 'bg-red-900/60 text-red-200 border-red-500'
-                              : 'bg-[#1F1812] text-[#8C7D6B] border-[#382C1E]'
+                              ? 'bg-red-600 text-white border-red-600 shadow-xs'
+                              : 'bg-[#F4F0E6] text-[#695B49] border-[#DDD3BF] hover:bg-white'
                           }`}
                         >
                           대기
@@ -574,10 +570,10 @@ export default function MobileAdminView({
                         <button
                           type="button"
                           onClick={() => handleUpdatePrayerStatus(p.id, 'in_progress')}
-                          className={`px-2 py-0.5 rounded text-[10.5px] font-bold border transition ${
+                          className={`px-2.5 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer ${
                             isInProgress
-                              ? 'bg-amber-900/60 text-amber-200 border-amber-500'
-                              : 'bg-[#1F1812] text-[#8C7D6B] border-[#382C1E]'
+                              ? 'bg-amber-600 text-white border-amber-600 shadow-xs'
+                              : 'bg-[#F4F0E6] text-[#695B49] border-[#DDD3BF] hover:bg-white'
                           }`}
                         >
                           상담중
@@ -585,10 +581,10 @@ export default function MobileAdminView({
                         <button
                           type="button"
                           onClick={() => handleUpdatePrayerStatus(p.id, 'completed')}
-                          className={`px-2 py-0.5 rounded text-[10.5px] font-bold border transition ${
+                          className={`px-2.5 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer ${
                             isDone
-                              ? 'bg-emerald-900/60 text-emerald-200 border-emerald-500'
-                              : 'bg-[#1F1812] text-[#8C7D6B] border-[#382C1E]'
+                              ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                              : 'bg-[#F4F0E6] text-[#695B49] border-[#DDD3BF] hover:bg-white'
                           }`}
                         >
                           완료
@@ -608,52 +604,51 @@ export default function MobileAdminView({
         {activeTab === 'visits' && (
           <div className="space-y-3">
             {visits.length === 0 ? (
-              <div className="p-8 text-center bg-[#211A13] rounded-2xl border border-[#33271D] text-[#8C7D6B] text-xs space-y-1">
-                <Calendar className="w-7 h-7 mx-auto text-sky-500/60" />
-                <p className="font-bold text-[#C7B59D]">등록된 도량 방문 예약이 없습니다.</p>
+              <div className="p-8 text-center bg-white rounded-2xl border border-[#E5DCB9] text-[#7A6B58] text-xs space-y-1 shadow-xs">
+                <Calendar className="w-7 h-7 mx-auto text-sky-600" />
+                <p className="font-bold text-[#2E2214]">등록된 도량 방문 예약이 없습니다.</p>
               </div>
             ) : (
               visits.map((v) => {
                 const phone = v.visitor_phone || ''
                 const cleanPhone = phone.replace(/[^0-9]/g, '')
-                const isConfirmed = v.status === 'confirmed' || v.status === 'reserved'
 
                 return (
                   <div
                     key={v.id}
-                    className="rounded-2xl p-3.5 bg-[#1B222B] border border-[#2B3A4A] space-y-2.5 shadow-sm"
+                    className="rounded-2xl p-4 bg-white border border-[#D5E2F0] space-y-3 shadow-xs"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <div className="flex items-center gap-1.5">
-                          <span className="text-sm font-extrabold text-[#DCE8F5]">
+                          <span className="text-base font-black text-[#152336]">
                             {v.visitor_name || '방문자'}
                           </span>
-                          <span className="text-[11px] font-bold text-sky-400 bg-sky-950/70 px-2 py-0.5 rounded-full border border-sky-800/60">
+                          <span className="text-[11px] font-bold text-sky-800 bg-sky-100 px-2.5 py-0.5 rounded-full border border-sky-200">
                             총 {v.headcount || 1}명
                           </span>
                         </div>
-                        <div className="text-xs text-sky-200/90 font-bold mt-1 flex items-center gap-1">
-                          <Calendar className="w-3.5 h-3.5 text-sky-400" />
+                        <div className="text-xs text-sky-900 font-bold mt-1.5 flex items-center gap-1">
+                          <Calendar className="w-3.5 h-3.5 text-sky-600" />
                           <span>{v.visit_date} {v.visit_time}</span>
                         </div>
                       </div>
 
-                      <span className="text-[10.5px] font-bold px-2.5 py-1 rounded-full bg-sky-950 text-sky-300 border border-sky-600/70">
+                      <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-sky-50 text-sky-800 border border-sky-300">
                         {v.visit_purpose || '도량참배'}
                       </span>
                     </div>
 
                     {v.memo && (
-                      <div className="p-2.5 rounded-xl bg-[#11161D] border border-[#232F3D] text-xs text-[#CBD8E5] font-serif-kr">
+                      <div className="p-3 rounded-xl bg-[#F4F8FC] border border-[#DDE7F2] text-xs text-[#2A3B4E] font-serif-kr">
                         “{v.memo}”
                       </div>
                     )}
 
-                    <div className="grid grid-cols-3 gap-2 pt-1 border-t border-[#2B3A4A]">
+                    <div className="grid grid-cols-3 gap-2 pt-1 border-t border-[#E8EEF5]">
                       <a
                         href={cleanPhone ? `tel:${cleanPhone}` : '#'}
-                        className="py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition"
+                        className="py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition shadow-xs"
                       >
                         <Phone className="w-3.5 h-3.5" />
                         <span>통화연결</span>
@@ -667,7 +662,7 @@ export default function MobileAdminView({
                               )}`
                             : '#'
                         }
-                        className="py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition"
+                        className="py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition shadow-xs"
                       >
                         <MessageSquare className="w-3.5 h-3.5" />
                         <span>문자보내기</span>
@@ -676,34 +671,34 @@ export default function MobileAdminView({
                       <button
                         type="button"
                         onClick={() => handleCopyPhone(phone)}
-                        className="py-2 rounded-xl bg-[#232E3A] text-[#C2D3E5] text-xs font-bold flex items-center justify-center gap-1.5 border border-[#3A4B5E]"
+                        className="py-2.5 rounded-xl bg-white text-[#334659] text-xs font-bold flex items-center justify-center gap-1.5 border border-[#CFDAE6] hover:bg-[#F5F8FB] shadow-xs cursor-pointer"
                       >
-                        <Copy className="w-3.5 h-3.5" />
+                        <Copy className="w-3.5 h-3.5 text-[#5D738A]" />
                         <span>번호복사</span>
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between text-[10.5px] pt-1 text-[#869BB3]">
+                    <div className="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#F0F4F8] text-[#5D738A]">
                       <span>예약 관리:</span>
                       <div className="flex items-center gap-1">
                         <button
                           type="button"
                           onClick={() => handleUpdateVisitStatus(v.id, 'confirmed')}
-                          className="px-2 py-0.5 rounded bg-sky-950 text-sky-200 border border-sky-700/60 font-bold"
+                          className="px-2.5 py-1 rounded-md bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-300 font-bold cursor-pointer"
                         >
                           예약확정
                         </button>
                         <button
                           type="button"
                           onClick={() => handleUpdateVisitStatus(v.id, 'completed')}
-                          className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-200 border border-emerald-700/60 font-bold"
+                          className="px-2.5 py-1 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold cursor-pointer"
                         >
                           방문완료
                         </button>
                         <button
                           type="button"
                           onClick={() => handleUpdateVisitStatus(v.id, 'cancelled')}
-                          className="px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-700"
+                          className="px-2.5 py-1 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 cursor-pointer"
                         >
                           취소
                         </button>
@@ -721,15 +716,15 @@ export default function MobileAdminView({
         {/* ============================================================== */}
         {activeTab === 'lanterns' && (
           <div className="space-y-3">
-            <div className="p-3 rounded-xl bg-[#241C15] border border-[#3D3023] flex items-center justify-between text-xs">
-              <span className="font-bold text-[#F5D061]">오늘 대웅전 사시예불 축원 명부</span>
-              <span className="text-[11px] text-[#A6957E]">총 {regularLanterns.length}위</span>
+            <div className="p-3 rounded-xl bg-white border border-[#E8DEC8] flex items-center justify-between text-xs shadow-xs">
+              <span className="font-bold text-[#8A6510]">오늘 대웅전 사시예불 축원 명부</span>
+              <span className="text-[11px] font-bold text-[#5C4D3B]">총 {regularLanterns.length}위</span>
             </div>
 
             {regularLanterns.length === 0 ? (
-              <div className="p-8 text-center bg-[#211A13] rounded-2xl border border-[#33271D] text-[#8C7D6B] text-xs space-y-1">
-                <Flame className="w-7 h-7 mx-auto text-amber-500/60" />
-                <p className="font-bold text-[#C7B59D]">등록된 1일 소원등이 없습니다.</p>
+              <div className="p-8 text-center bg-white rounded-2xl border border-[#E5DCB9] text-[#7A6B58] text-xs space-y-1 shadow-xs">
+                <Flame className="w-7 h-7 mx-auto text-amber-600" />
+                <p className="font-bold text-[#2E2214]">등록된 1일 소원등이 없습니다.</p>
               </div>
             ) : (
               regularLanterns.map((p) => {
@@ -738,30 +733,30 @@ export default function MobileAdminView({
                 return (
                   <div
                     key={p.id || p.db_id}
-                    className="rounded-2xl p-3 bg-[#1F1913] border border-[#382C1E] space-y-1.5 shadow-sm"
+                    className="rounded-2xl p-3.5 bg-white border border-[#E8DEC8] space-y-2 shadow-xs"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-bold text-[#F5E6CC] truncate">
+                      <span className="text-sm font-bold text-[#2E2214] truncate">
                         🕯️ {p.believer_name}
                       </span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#3D2916] text-[#F5D061] border border-[#6B4E1B] shrink-0">
+                      <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] shrink-0">
                         {p.wish_category || '가족건강'}
                       </span>
                     </div>
 
-                    <p className="text-xs text-[#B8A78F] line-clamp-2 font-serif-kr">
+                    <p className="text-xs text-[#524436] line-clamp-2 font-serif-kr leading-relaxed">
                       “{p.wish_text}”
                     </p>
 
-                    <div className="flex items-center justify-between pt-1 border-t border-[#291E15] text-[10.5px] text-[#8C7D6B]">
+                    <div className="flex items-center justify-between pt-1.5 border-t border-[#F0ECE1] text-[11px] text-[#7A6B58]">
                       <span>{p.prayed_at || '사시예불 축원 배정'}</span>
                       {cleanPhone && (
                         <a
                           href={`tel:${cleanPhone}`}
-                          className="text-[#D4A024] hover:underline flex items-center gap-0.5 font-bold"
+                          className="text-[#8A6510] hover:underline flex items-center gap-1 font-bold"
                         >
-                          <Phone className="w-3 h-3 inline" />
-                          통화
+                          <Phone className="w-3 h-3 inline text-emerald-600" />
+                          통화하기
                         </a>
                       )}
                     </div>
@@ -786,13 +781,13 @@ export default function MobileAdminView({
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="신도 성함, 법명, 번호 뒷자리 검색..."
-                  className="w-full bg-[#241C15] border border-[#3D3023] rounded-xl pl-9 pr-3 py-2 text-xs text-[#F5E6CC] placeholder-[#736352] focus:outline-none focus:border-[#C59B27]"
+                  className="w-full bg-white border border-[#DDD3BF] rounded-xl pl-9 pr-3 py-2.5 text-xs text-[#2E2214] placeholder-[#9E907E] focus:outline-none focus:border-[#C59B27] shadow-xs"
                 />
               </div>
               <button
                 type="button"
                 onClick={() => setIsRegisterOpen(true)}
-                className="px-3 py-2 rounded-xl bg-gradient-to-r from-[#D4A024] to-[#C59B27] text-[#1C140A] text-xs font-bold flex items-center gap-1 active:scale-95 transition shadow-sm whitespace-nowrap"
+                className="px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4A024] to-[#C59B27] hover:brightness-105 text-[#1C140A] text-xs font-bold flex items-center gap-1 active:scale-95 transition shadow-xs whitespace-nowrap cursor-pointer"
               >
                 <UserPlus className="w-3.5 h-3.5" />
                 <span>간편등록</span>
@@ -807,21 +802,21 @@ export default function MobileAdminView({
                 return (
                   <div
                     key={m.code || m.id}
-                    className="p-3 rounded-xl bg-[#1F1913] border border-[#382C1E] flex items-center justify-between gap-2 shadow-sm"
+                    className="p-3.5 rounded-xl bg-white border border-[#E8DEC8] flex items-center justify-between gap-2 shadow-xs"
                   >
                     <div>
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="text-xs font-bold text-[#F7E7C4]">{m.name}</span>
+                        <span className="text-sm font-bold text-[#2E2214]">{m.name}</span>
                         {m.dharma_name && (
-                          <span className="text-[10px] text-[#F5D061] bg-[#3D2916] px-1.5 py-0.2 rounded border border-[#6B4E1B]">
+                          <span className="text-[10.5px] font-bold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.2 rounded border border-[#E5D399]">
                             {m.dharma_name}
                           </span>
                         )}
-                        <span className="text-[10px] text-[#8C7D6B] font-mono">#{m.code}</span>
+                        <span className="text-[10.5px] text-[#8C7D6B] font-mono">#{m.code}</span>
                       </div>
-                      <p className="text-[11px] text-[#A89885] mt-0.5">{phone}</p>
+                      <p className="text-xs text-[#524436] font-medium mt-0.5">{phone}</p>
                       {m.family_memo && (
-                        <p className="text-[10.5px] text-[#7A6B59] line-clamp-1 mt-0.5">
+                        <p className="text-[11px] text-[#7A6B58] line-clamp-1 mt-0.5">
                           {m.family_memo}
                         </p>
                       )}
@@ -831,7 +826,7 @@ export default function MobileAdminView({
                       {cleanPhone && (
                         <a
                           href={`tel:${cleanPhone}`}
-                          className="w-8 h-8 rounded-lg bg-emerald-600/80 hover:bg-emerald-500 text-white flex items-center justify-center active:scale-95 transition"
+                          className="w-8 h-8 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center active:scale-95 transition shadow-xs"
                           title="전화걸기"
                         >
                           <Phone className="w-3.5 h-3.5" />
@@ -840,7 +835,7 @@ export default function MobileAdminView({
                       <button
                         type="button"
                         onClick={() => handleCopyPhone(phone)}
-                        className="w-8 h-8 rounded-lg bg-[#33261A] text-[#D8C6A5] flex items-center justify-center border border-[#4D3A27]"
+                        className="w-8 h-8 rounded-lg bg-[#FAF7F0] text-[#5C4D3B] hover:bg-[#EFE9DB] flex items-center justify-center border border-[#DDD3BF] shadow-xs cursor-pointer"
                         title="번호복사"
                       >
                         <Copy className="w-3.5 h-3.5" />
@@ -854,19 +849,19 @@ export default function MobileAdminView({
         )}
       </main>
 
-      {/* 5. 현장 신규 신도 간편 등록 바텀시트 모달 */}
+      {/* 4. 현장 신규 신도 간편 등록 바텀시트 모달 */}
       {isRegisterOpen && (
-        <div className="fixed inset-0 z-60 bg-black/75 flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in">
-          <div className="w-full sm:max-w-md bg-[#241C15] border-t sm:border border-[#3D3023] rounded-t-3xl sm:rounded-2xl p-5 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#3D3023] pb-3">
-              <h3 className="text-sm font-bold text-[#F5D061] flex items-center gap-1.5">
-                <UserPlus className="w-4 h-4" />
+        <div className="fixed inset-0 z-60 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in">
+          <div className="w-full sm:max-w-md bg-white border-t sm:border border-[#E5DCB9] rounded-t-3xl sm:rounded-2xl p-5 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#F0EBE1] pb-3">
+              <h3 className="text-sm font-serif-kr font-bold text-[#2E2214] flex items-center gap-1.5">
+                <UserPlus className="w-4 h-4 text-[#C59B27]" />
                 현장 신규 신도 간편 등록
               </h3>
               <button
                 type="button"
                 onClick={() => setIsRegisterOpen(false)}
-                className="text-[#8C7D6B] hover:text-white p-1"
+                className="text-[#7A6B58] hover:text-[#2E2214] p-1 cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -874,48 +869,48 @@ export default function MobileAdminView({
 
             <form onSubmit={handleRegisterNewBeliever} className="space-y-3 text-xs">
               <div>
-                <label className="block text-[#A6957E] font-medium mb-1">성함 (실명) *</label>
+                <label className="block text-[#524436] font-bold mb-1">성함 (실명) *</label>
                 <input
                   type="text"
                   required
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   placeholder="예: 홍길동"
-                  className="w-full bg-[#1A140F] border border-[#3D3023] rounded-xl px-3 py-2.5 text-[#F5E6CC] focus:border-[#C59B27] focus:outline-none"
+                  className="w-full bg-[#FAF8F5] border border-[#DDD3BF] rounded-xl px-3 py-2.5 text-[#2E2214] focus:border-[#C59B27] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-[#A6957E] font-medium mb-1">법명 (선택)</label>
+                <label className="block text-[#524436] font-bold mb-1">법명 (선택)</label>
                 <input
                   type="text"
                   value={newDharmaName}
                   onChange={(e) => setNewDharmaName(e.target.value)}
                   placeholder="예: 보현행"
-                  className="w-full bg-[#1A140F] border border-[#3D3023] rounded-xl px-3 py-2.5 text-[#F5E6CC] focus:border-[#C59B27] focus:outline-none"
+                  className="w-full bg-[#FAF8F5] border border-[#DDD3BF] rounded-xl px-3 py-2.5 text-[#2E2214] focus:border-[#C59B27] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-[#A6957E] font-medium mb-1">연락처 *</label>
+                <label className="block text-[#524436] font-bold mb-1">연락처 *</label>
                 <input
                   type="tel"
                   required
                   value={newPhone}
                   onChange={(e) => setNewPhone(e.target.value)}
                   placeholder="010-0000-0000"
-                  className="w-full bg-[#1A140F] border border-[#3D3023] rounded-xl px-3 py-2.5 text-[#F5E6CC] focus:border-[#C59B27] focus:outline-none"
+                  className="w-full bg-[#FAF8F5] border border-[#DDD3BF] rounded-xl px-3 py-2.5 text-[#2E2214] focus:border-[#C59B27] focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-[#A6957E] font-medium mb-1">메모 (가족관계, 희망기도 등)</label>
+                <label className="block text-[#524436] font-bold mb-1">메모 (가족관계, 희망기도 등)</label>
                 <input
                   type="text"
                   value={newMemo}
                   onChange={(e) => setNewMemo(e.target.value)}
                   placeholder="예: 도량 현장 방문 신도, 자녀 시험 기도 희망"
-                  className="w-full bg-[#1A140F] border border-[#3D3023] rounded-xl px-3 py-2.5 text-[#F5E6CC] focus:border-[#C59B27] focus:outline-none"
+                  className="w-full bg-[#FAF8F5] border border-[#DDD3BF] rounded-xl px-3 py-2.5 text-[#2E2214] focus:border-[#C59B27] focus:outline-none"
                 />
               </div>
 
@@ -923,13 +918,13 @@ export default function MobileAdminView({
                 <button
                   type="button"
                   onClick={() => setIsRegisterOpen(false)}
-                  className="flex-1 py-2.5 rounded-xl bg-[#33261A] text-[#A6957E] font-bold"
+                  className="flex-1 py-2.5 rounded-xl bg-[#F0ECE1] text-[#695B49] font-bold cursor-pointer"
                 >
                   취소
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#D4A024] to-[#C59B27] text-[#1C140A] font-bold shadow-md active:scale-95 transition"
+                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#D4A024] to-[#C59B27] hover:brightness-105 text-[#1C140A] font-bold shadow-md active:scale-95 transition cursor-pointer"
                 >
                   등록 완료
                 </button>
