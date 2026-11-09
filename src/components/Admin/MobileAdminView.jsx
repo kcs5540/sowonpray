@@ -370,88 +370,91 @@ export default function MobileAdminView({
         </div>
       </header>
 
-      {/* 2. 통합 탭 메뉴바 (밝은 배경 & 4분할 일체형 카운터) */}
-      <nav className="bg-white border-b border-[#E8DEC8] grid grid-cols-4 shrink-0 shadow-xs">
-        {/* 1) 불사·상담 탭 */}
-        <button
-          type="button"
-          onClick={() => setActiveTab('bulsa')}
-          className={`py-2 px-1 text-center border-b-2 transition flex flex-col items-center justify-center cursor-pointer ${
-            activeTab === 'bulsa'
-              ? 'border-[#C59B27] bg-[#FAF5EB] text-[#2E2214]'
-              : 'border-transparent text-[#7A6B58] hover:bg-[#FAF8F5]'
-          }`}
-        >
-          <div className="flex items-center gap-1 text-[11px] font-bold">
-            <AlertCircle className="w-3.5 h-3.5 text-red-600 shrink-0" />
-            <span className="truncate">불사·상담</span>
-          </div>
-          <div className="flex items-center gap-1 mt-0.5">
-            <span className="text-sm font-black text-[#2E2214]">{bulsaInquiries.length}</span>
-            {pendingBulsaCount > 0 && (
-              <span className="text-[9.5px] font-extrabold bg-red-600 text-white px-1.5 py-0.2 rounded-full animate-pulse shadow-xs">
-                대기 {pendingBulsaCount}
-              </span>
-            )}
-          </div>
-        </button>
+      {/* 2. 현대적 세그먼트 컨트롤 탭 (2026 최신 트렌드: 일체형 트랙 & 플로팅 카드) */}
+      <nav className="bg-[#EDE9E1] p-1.5 border-b border-[#DDD6C8] shrink-0">
+        <div className="grid grid-cols-4 gap-1">
+          {/* 1) 불사·상담 탭 */}
+          <button
+            type="button"
+            onClick={() => setActiveTab('bulsa')}
+            className={`py-2 px-1 text-center rounded-xl transition cursor-pointer flex flex-col items-center justify-center relative ${
+              activeTab === 'bulsa'
+                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#DDD6C8]/80'
+                : 'text-[#6E6659] hover:text-[#1E1914] hover:bg-white/40 font-semibold'
+            }`}
+          >
+            <div className="flex items-center gap-1 text-[11px] font-bold">
+              <AlertCircle className={`w-3.5 h-3.5 ${activeTab === 'bulsa' ? 'text-red-600' : 'text-[#8C8375]'}`} />
+              <span className="truncate">불사·상담</span>
+            </div>
+            <div className="flex items-center gap-1 mt-0.5">
+              <span className="text-sm font-black">{bulsaInquiries.length}</span>
+              {pendingBulsaCount > 0 && (
+                <span className="text-[9.5px] font-extrabold bg-red-600 text-white px-1.5 py-0.2 rounded-full shadow-xs flex items-center gap-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                  대기 {pendingBulsaCount}
+                </span>
+              )}
+            </div>
+          </button>
 
-        {/* 2) 방문·공양 탭 */}
-        <button
-          type="button"
-          onClick={() => setActiveTab('visits')}
-          className={`py-2 px-1 text-center border-b-2 transition flex flex-col items-center justify-center cursor-pointer ${
-            activeTab === 'visits'
-              ? 'border-sky-600 bg-sky-50/70 text-sky-950 font-bold'
-              : 'border-transparent text-[#7A6B58] hover:bg-[#FAF8F5]'
-          }`}
-        >
-          <div className="flex items-center gap-1 text-[11px] font-bold">
-            <Calendar className="w-3.5 h-3.5 text-sky-600 shrink-0" />
-            <span className="truncate">방문·공양</span>
-          </div>
-          <div className="text-sm font-black mt-0.5 text-sky-700">
-            {visits.length}건
-          </div>
-        </button>
+          {/* 2) 방문·공양 탭 */}
+          <button
+            type="button"
+            onClick={() => setActiveTab('visits')}
+            className={`py-2 px-1 text-center rounded-xl transition cursor-pointer flex flex-col items-center justify-center ${
+              activeTab === 'visits'
+                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#DDD6C8]/80'
+                : 'text-[#6E6659] hover:text-[#1E1914] hover:bg-white/40 font-semibold'
+            }`}
+          >
+            <div className="flex items-center gap-1 text-[11px] font-bold">
+              <Calendar className={`w-3.5 h-3.5 ${activeTab === 'visits' ? 'text-sky-600' : 'text-[#8C8375]'}`} />
+              <span className="truncate">방문·공양</span>
+            </div>
+            <div className="text-sm font-black mt-0.5">
+              {visits.length}건
+            </div>
+          </button>
 
-        {/* 3) 소원등 탭 */}
-        <button
-          type="button"
-          onClick={() => setActiveTab('lanterns')}
-          className={`py-2 px-1 text-center border-b-2 transition flex flex-col items-center justify-center cursor-pointer ${
-            activeTab === 'lanterns'
-              ? 'border-amber-600 bg-amber-50/70 text-amber-950 font-bold'
-              : 'border-transparent text-[#7A6B58] hover:bg-[#FAF8F5]'
-          }`}
-        >
-          <div className="flex items-center gap-1 text-[11px] font-bold">
-            <Flame className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-            <span className="truncate">소원등</span>
-          </div>
-          <div className="text-sm font-black mt-0.5 text-amber-800">
-            {regularLanterns.length}위
-          </div>
-        </button>
+          {/* 3) 소원등 탭 */}
+          <button
+            type="button"
+            onClick={() => setActiveTab('lanterns')}
+            className={`py-2 px-1 text-center rounded-xl transition cursor-pointer flex flex-col items-center justify-center ${
+              activeTab === 'lanterns'
+                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#DDD6C8]/80'
+                : 'text-[#6E6659] hover:text-[#1E1914] hover:bg-white/40 font-semibold'
+            }`}
+          >
+            <div className="flex items-center gap-1 text-[11px] font-bold">
+              <Flame className={`w-3.5 h-3.5 ${activeTab === 'lanterns' ? 'text-amber-600' : 'text-[#8C8375]'}`} />
+              <span className="truncate">소원등</span>
+            </div>
+            <div className="text-sm font-black mt-0.5">
+              {regularLanterns.length}위
+            </div>
+          </button>
 
-        {/* 4) 신도조회 탭 */}
-        <button
-          type="button"
-          onClick={() => setActiveTab('members')}
-          className={`py-2 px-1 text-center border-b-2 transition flex flex-col items-center justify-center cursor-pointer ${
-            activeTab === 'members'
-              ? 'border-emerald-600 bg-emerald-50/70 text-emerald-950 font-bold'
-              : 'border-transparent text-[#7A6B58] hover:bg-[#FAF8F5]'
-          }`}
-        >
-          <div className="flex items-center gap-1 text-[11px] font-bold">
-            <Users className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-            <span className="truncate">신도조회</span>
-          </div>
-          <div className="text-sm font-black mt-0.5 text-emerald-800">
-            {members.length}명
-          </div>
-        </button>
+          {/* 4) 신도조회 탭 */}
+          <button
+            type="button"
+            onClick={() => setActiveTab('members')}
+            className={`py-2 px-1 text-center rounded-xl transition cursor-pointer flex flex-col items-center justify-center ${
+              activeTab === 'members'
+                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#DDD6C8]/80'
+                : 'text-[#6E6659] hover:text-[#1E1914] hover:bg-white/40 font-semibold'
+            }`}
+          >
+            <div className="flex items-center gap-1 text-[11px] font-bold">
+              <Users className={`w-3.5 h-3.5 ${activeTab === 'members' ? 'text-emerald-600' : 'text-[#8C8375]'}`} />
+              <span className="truncate">신도조회</span>
+            </div>
+            <div className="text-sm font-black mt-0.5">
+              {members.length}명
+            </div>
+          </button>
+        </div>
       </nav>
 
       {/* 3. 메인 콘텐츠 스크롤 영역 (밝은 아이보리 배경) */}
@@ -461,58 +464,67 @@ export default function MobileAdminView({
         {/* ============================================================== */}
         {activeTab === 'bulsa' && (
           <div className="space-y-3">
-            {/* 상태 필터 4분할 바 (글자 축약 및 4등분 그리드로 한 화면에 100% 다 보이게 처리) */}
-            <div className="grid grid-cols-4 gap-1 text-[11px]">
+            {/* 2026 최신 세그먼트 필터 바 (파스텔 테두리 퇴출 & 모던 럭셔리 다크차콜/웜화이트 조화) */}
+            <div className="bg-[#EDE9E1] p-1 rounded-xl grid grid-cols-4 gap-1 text-[11px]">
               <button
                 type="button"
                 onClick={() => setBulsaStatusFilter('all')}
-                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-1 whitespace-nowrap ${
                   bulsaStatusFilter === 'all'
-                    ? 'bg-[#2E2214] text-[#F5D061] border-[#2E2214] font-bold shadow-xs'
-                    : 'bg-white text-[#635341] border-[#DDD3BF] hover:bg-[#F8F5EE]'
+                    ? 'bg-[#1E1914] text-[#F5D061] font-black shadow-xs'
+                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
                 }`}
               >
-                <span className="font-bold">전체</span>
-                <span className="text-[11px] font-extrabold text-[#C59B27]">({bulsaInquiries.length})</span>
+                <span>전체</span>
+                <span className={`text-[10.5px] font-black ${bulsaStatusFilter === 'all' ? 'text-[#F5D061]' : 'text-[#8C8375]'}`}>
+                  ({bulsaInquiries.length})
+                </span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setBulsaStatusFilter('consulting')}
-                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-1 whitespace-nowrap ${
                   bulsaStatusFilter === 'consulting'
-                    ? 'bg-red-600 text-white border-red-600 font-bold shadow-xs'
-                    : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100 font-semibold'
+                    ? 'bg-red-600 text-white font-black shadow-xs'
+                    : 'text-red-700 hover:bg-white/60 font-bold'
                 }`}
               >
-                <span>🚨대기</span>
-                <span className="text-[11px] font-black">({bulsaInquiries.filter((p) => p.status === 'consulting').length})</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                <span>대기</span>
+                <span className="text-[10.5px] font-black">
+                  ({bulsaInquiries.filter((p) => p.status === 'consulting').length})
+                </span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setBulsaStatusFilter('in_progress')}
-                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-1 whitespace-nowrap ${
                   bulsaStatusFilter === 'in_progress'
-                    ? 'bg-amber-600 text-white border-amber-600 font-bold shadow-xs'
-                    : 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100 font-semibold'
+                    ? 'bg-[#1E1914] text-amber-300 font-black shadow-xs'
+                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
                 }`}
               >
                 <span>진행</span>
-                <span className="text-[11px] font-black">({bulsaInquiries.filter((p) => p.status === 'in_progress').length})</span>
+                <span className={`text-[10.5px] font-black ${bulsaStatusFilter === 'in_progress' ? 'text-amber-300' : 'text-[#8C8375]'}`}>
+                  ({bulsaInquiries.filter((p) => p.status === 'in_progress').length})
+                </span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setBulsaStatusFilter('completed')}
-                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-1 whitespace-nowrap ${
                   bulsaStatusFilter === 'completed'
-                    ? 'bg-emerald-600 text-white border-emerald-600 font-bold shadow-xs'
-                    : 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100 font-semibold'
+                    ? 'bg-[#1E1914] text-emerald-300 font-black shadow-xs'
+                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
                 }`}
               >
                 <span>완료</span>
-                <span className="text-[11px] font-black">({bulsaInquiries.filter((p) => p.status === 'completed').length})</span>
+                <span className={`text-[10.5px] font-black ${bulsaStatusFilter === 'completed' ? 'text-emerald-300' : 'text-[#8C8375]'}`}>
+                  ({bulsaInquiries.filter((p) => p.status === 'completed').length})
+                </span>
               </button>
             </div>
 
@@ -693,19 +705,19 @@ export default function MobileAdminView({
         {/* ============================================================== */}
         {activeTab === 'visits' && (
           <div className="space-y-3">
-            {/* 방문·공양 하위메뉴 5분할 바 (전체 / 오늘 / 내일 / 모레 / 글피) */}
-            <div className="grid grid-cols-5 gap-1 text-[11px]">
+            {/* 2026 최신 세그먼트 필터 바 (방문·공양: 전체 / 오늘 / 내일 / 모레 / 글피) */}
+            <div className="bg-[#EDE9E1] p-1 rounded-xl grid grid-cols-5 gap-1 text-[11px]">
               <button
                 type="button"
                 onClick={() => setVisitDateFilter('all')}
-                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
                   visitDateFilter === 'all'
-                    ? 'bg-[#1E293B] text-white border-[#1E293B] font-bold shadow-xs'
-                    : 'bg-white text-[#334155] border-[#DDD3BF] hover:bg-slate-50 font-semibold'
+                    ? 'bg-[#1E1914] text-[#F5D061] font-black shadow-xs'
+                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
                 }`}
               >
                 <span>전체</span>
-                <span className={`text-[11px] font-black ${visitDateFilter === 'all' ? 'text-amber-300' : 'text-[#64748B]'}`}>
+                <span className={`text-[10.5px] font-black ${visitDateFilter === 'all' ? 'text-[#F5D061]' : 'text-[#8C8375]'}`}>
                   ({visits.length})
                 </span>
               </button>
@@ -713,14 +725,14 @@ export default function MobileAdminView({
               <button
                 type="button"
                 onClick={() => setVisitDateFilter('today')}
-                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
                   visitDateFilter === 'today'
-                    ? 'bg-sky-700 text-white border-sky-700 font-bold shadow-xs'
-                    : 'bg-white text-sky-900 border-[#DDD3BF] hover:bg-sky-50 font-semibold'
+                    ? 'bg-sky-700 text-white font-black shadow-xs'
+                    : 'text-sky-900 hover:bg-white/60 font-bold'
                 }`}
               >
                 <span>오늘</span>
-                <span className={`text-[11px] font-black ${visitDateFilter === 'today' ? 'text-amber-300' : 'text-sky-700'}`}>
+                <span className={`text-[10.5px] font-black ${visitDateFilter === 'today' ? 'text-amber-300' : 'text-sky-700'}`}>
                   ({visitGroups.today.length})
                 </span>
               </button>
@@ -728,14 +740,14 @@ export default function MobileAdminView({
               <button
                 type="button"
                 onClick={() => setVisitDateFilter('tomorrow')}
-                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
                   visitDateFilter === 'tomorrow'
-                    ? 'bg-sky-700 text-white border-sky-700 font-bold shadow-xs'
-                    : 'bg-white text-sky-900 border-[#DDD3BF] hover:bg-sky-50 font-semibold'
+                    ? 'bg-[#1E1914] text-sky-300 font-black shadow-xs'
+                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
                 }`}
               >
                 <span>내일</span>
-                <span className={`text-[11px] font-black ${visitDateFilter === 'tomorrow' ? 'text-amber-300' : 'text-sky-700'}`}>
+                <span className={`text-[10.5px] font-black ${visitDateFilter === 'tomorrow' ? 'text-sky-300' : 'text-[#8C8375]'}`}>
                   ({visitGroups.tomorrow.length})
                 </span>
               </button>
@@ -743,14 +755,14 @@ export default function MobileAdminView({
               <button
                 type="button"
                 onClick={() => setVisitDateFilter('afterTomorrow')}
-                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
                   visitDateFilter === 'afterTomorrow'
-                    ? 'bg-sky-700 text-white border-sky-700 font-bold shadow-xs'
-                    : 'bg-white text-sky-900 border-[#DDD3BF] hover:bg-sky-50 font-semibold'
+                    ? 'bg-[#1E1914] text-sky-300 font-black shadow-xs'
+                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
                 }`}
               >
                 <span>모레</span>
-                <span className={`text-[11px] font-black ${visitDateFilter === 'afterTomorrow' ? 'text-amber-300' : 'text-sky-700'}`}>
+                <span className={`text-[10.5px] font-black ${visitDateFilter === 'afterTomorrow' ? 'text-sky-300' : 'text-[#8C8375]'}`}>
                   ({visitGroups.afterTomorrow.length})
                 </span>
               </button>
@@ -758,14 +770,14 @@ export default function MobileAdminView({
               <button
                 type="button"
                 onClick={() => setVisitDateFilter('geulpi')}
-                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
                   visitDateFilter === 'geulpi'
-                    ? 'bg-sky-700 text-white border-sky-700 font-bold shadow-xs'
-                    : 'bg-white text-sky-900 border-[#DDD3BF] hover:bg-sky-50 font-semibold'
+                    ? 'bg-[#1E1914] text-sky-300 font-black shadow-xs'
+                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
                 }`}
               >
                 <span>글피</span>
-                <span className={`text-[11px] font-black ${visitDateFilter === 'geulpi' ? 'text-amber-300' : 'text-sky-700'}`}>
+                <span className={`text-[10.5px] font-black ${visitDateFilter === 'geulpi' ? 'text-sky-300' : 'text-[#8C8375]'}`}>
                   ({visitGroups.geulpi.length})
                 </span>
               </button>
