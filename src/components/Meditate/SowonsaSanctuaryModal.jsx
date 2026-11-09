@@ -71,6 +71,8 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
 
   // 인터랙션 상태
   const [actionState, setActionState] = useState('idle') // 'idle' | 'hapjang' | 'bow' | 'moktak' | 'yeomju'
+  // 🎬 대웅전 입장 시네마틱 시퀀스: 'entering'(걸어들어옴) -> 'hapjang'(합장반배) -> 'seated'(착석완료)
+  const [entranceStep, setEntranceStep] = useState('entering')
   const [bowCount, setBowCount] = useState(() => {
     const info = getDailyMeritInfo('bow', currentUser?.code || 'guest')
     return info.currentCount || 0
@@ -185,6 +187,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
   // 3) 1배 올리기 (108배 마일스톤 축하)
   const handleBow = (e) => {
     e?.stopPropagation()
+    setEntranceStep('seated')
     if (!canExecuteAction()) return
     setActionState('bow')
     const nextCount = bowCount + 1
@@ -222,6 +225,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
   // 5) 목탁 치기
   const handleMoktak = (e) => {
     e?.stopPropagation()
+    setEntranceStep('seated')
     if (!canExecuteAction()) return
     setActionState('moktak')
     const nextTap = moktakTapCount + 1
@@ -259,6 +263,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
   // 6) 108 염주알 굴리기
   const handleYeomju = (e) => {
     e?.stopPropagation()
+    setEntranceStep('seated')
     if (!canExecuteAction()) return
     setActionState('yeomju')
     const nextYeomju = yeomjuCount >= 108 ? 1 : yeomjuCount + 1
@@ -347,7 +352,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
     }
   }, [isOpen])
 
-  // 닫을 때 모든 오디오 정지
+  // 닫을 때 모든 오디오 정지 및 대웅전 입장 시퀀스 타이머
   useEffect(() => {
     if (!isOpen) {
       if (ambientAudioRef.current) ambientAudioRef.current.pause()
@@ -355,6 +360,22 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       setIsPlayingSound(false)
       setIsPlayingChant(false)
       setIsZenMode(false)
+      setEntranceStep('entering')
+      return
+    }
+
+    // 🎬 대웅전 입장 시퀀스 시작: 0s 입장 -> 0.8s 부처님 전 합장반배 -> 2.0s 방석 착석 완료
+    setEntranceStep('entering')
+    const tHapjang = setTimeout(() => {
+      setEntranceStep('hapjang')
+    }, 800)
+    const tSeated = setTimeout(() => {
+      setEntranceStep('seated')
+    }, 2000)
+
+    return () => {
+      clearTimeout(tHapjang)
+      clearTimeout(tSeated)
     }
   }, [isOpen])
 
@@ -595,19 +616,39 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               {/* 은은한 부처님 가피 후광 오라 */}
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#FFD700]/25 via-transparent to-transparent pointer-events-none scale-125" />
 
-              {/* 3D 동자승 실사 캐릭터 (절하기 vs 참선) */}
+              {/* 3D 동자승 실사 캐릭터 (대웅전 입장 걸어오기 -> 합장 반배 -> 가부좌 착석 -> 절하기/참선) */}
               <div className="relative z-10 h-28 sm:h-34 flex items-end justify-center filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.9)]">
-                {actionState === 'bow' ? (
+                {entranceStep === 'entering' ? (
+                  /* 1단계: 마루를 밟고 부처님 앞으로 경건하게 걸어 들어오는 서 있는 동자승 */
+                  <div className="flex flex-col items-center animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
+                    <img 
+                      src="/images/avatar_monk_stand_hapjang.png" 
+                      alt="법당에 들어서는 동자승" 
+                      className="h-32 sm:h-38 object-contain"
+                    />
+                  </div>
+                ) : entranceStep === 'hapjang' ? (
+                  /* 2단계: 부처님 전을 향해 서서 두 손 모아 합장 반배 올리는 모습 */
+                  <div className="flex flex-col items-center transition-all duration-500 scale-100">
+                    <img 
+                      src="/images/avatar_monk_stand_hapjang.png" 
+                      alt="부처님 전 합장 반배 올리는 동자승" 
+                      className="h-32 sm:h-38 object-contain filter drop-shadow-[0_0_15px_rgba(255,215,0,0.6)]"
+                    />
+                  </div>
+                ) : actionState === 'bow' ? (
+                  /* 절하기 1배 모션 */
                   <img 
                     src="/images/avatar_monk_bow.png" 
                     alt="1배 올리는 동자승" 
                     className="h-24 sm:h-30 object-contain transition-transform duration-300"
                   />
                 ) : (
+                  /* 3단계 & 기본: 방석에 가부좌 틀고 고요히 참선하는 모습 (부드러운 착석 완료) */
                   <img 
                     src="/images/avatar_monk_meditate.png" 
                     alt="고요히 참선 중인 동자승" 
-                    className="h-28 sm:h-34 object-contain transition-transform duration-300"
+                    className="h-28 sm:h-34 object-contain transition-all duration-500 animate-in fade-in zoom-in-95"
                   />
                 )}
               </div>
@@ -675,6 +716,18 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
         {actionToast ? (
           <div className="mt-4 sm:mt-5 mb-1.5 px-3.5 py-1.5 rounded-full bg-[#1F1914]/90 backdrop-blur-md border border-[#F5D061]/70 text-[#F5D061] text-xs font-medium shadow-[0_4px_20px_rgba(0,0,0,0.8)] animate-in fade-in zoom-in-95 duration-200 max-w-sm break-keep">
             {actionToast}
+          </div>
+        ) : entranceStep === 'entering' ? (
+          <div className="mt-4 sm:mt-5 mb-1.5 px-3.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-[#F5D061]/40 text-[10.5px] text-[#F5D061] flex items-center gap-1.5 shadow-lg animate-pulse max-w-xs">
+            <span className="text-xs shrink-0">👣</span>
+            <span className="font-bold shrink-0">동자승</span>
+            <span className="truncate text-white/90">경건한 마음으로 대웅전에 들어섭니다...</span>
+          </div>
+        ) : entranceStep === 'hapjang' ? (
+          <div className="mt-4 sm:mt-5 mb-1.5 px-3.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-[#F5D061]/60 text-[10.5px] text-[#F5D061] flex items-center gap-1.5 shadow-lg animate-in fade-in max-w-xs">
+            <span className="text-xs shrink-0">🙏</span>
+            <span className="font-bold shrink-0">동자승</span>
+            <span className="truncate text-white/90">삼존불 전에 두 손 모아 합장 반배를 올립니다</span>
           </div>
         ) : (
           /* 실시간 다른 불자님들의 정진 발원 티커 (동자승과 한 칸 띄움 적용) */
