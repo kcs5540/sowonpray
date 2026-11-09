@@ -593,10 +593,10 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               {/* 도량 비단 방석 (노란 불빛 링 원천 차단: 차분하고 도톰한 전통 사찰 밤색 비단 솜방석) */}
               <div className="w-40 sm:w-48 h-8 sm:h-9 rounded-[100%] bg-gradient-to-r from-[#3B2816] via-[#5C3F22] to-[#3B2816] border border-[#7A5630]/40 mx-auto -mt-3 shadow-[0_12px_25px_rgba(0,0,0,0.95)] relative z-0" />
 
-              {/* 좌측 실제 3D 목탁과 목탁채 (동자승 무릎 가까이 안쪽으로 이동 배치) */}
+              {/* 좌측 실제 3D 목탁과 목탁채 (동자승 무릎 바로 옆으로 바짝 밀착 배치) */}
               <div 
                 onClick={handleMoktak}
-                className={`absolute left-0 sm:left-1.5 bottom-0 z-20 cursor-pointer transition-transform duration-200 ${
+                className={`absolute left-4 sm:left-6 bottom-0 z-20 cursor-pointer transition-transform duration-200 ${
                   actionState === 'moktak' ? 'scale-125 -rotate-12' : 'hover:scale-110 active:scale-95'
                 }`}
                 title="목탁 치기"
@@ -604,7 +604,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                 <img 
                   src="/images/avatar_moktak_3d.png" 
                   alt="3D 황금 목탁과 목탁채" 
-                  className="w-11 sm:w-13 object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
+                  className="w-10 sm:w-12 object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
                 />
                 {/* 목탁 타종 시 황금빛 음파 파동 이펙트 */}
                 {actionState === 'moktak' && (
@@ -612,10 +612,10 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                 )}
               </div>
 
-              {/* 우측 실제 3D 108 염주 (동자승 무릎 가까이 안쪽으로 이동 배치) */}
+              {/* 우측 실제 3D 108 염주 (동자승 무릎 바로 옆으로 바짝 밀착 배치) */}
               <div 
                 onClick={handleYeomju}
-                className={`absolute right-1 sm:right-2.5 bottom-0.5 z-20 cursor-pointer transition-transform duration-200 ${
+                className={`absolute right-4 sm:right-6 bottom-0.5 z-20 cursor-pointer transition-transform duration-200 ${
                   actionState === 'yeomju' ? 'scale-125 rotate-12' : 'hover:scale-110 active:scale-95'
                 }`}
                 title="108 염주알 굴리기"
@@ -623,7 +623,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                 <img 
                   src="/images/avatar_yeomju_3d.png" 
                   alt="3D 108 침향목 염주" 
-                  className="w-9 sm:w-10 object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
+                  className="w-8.5 sm:w-9.5 object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
                 />
                 {/* 염주 굴릴 때 황금빛 염송 파동 */}
                 {actionState === 'yeomju' && (
