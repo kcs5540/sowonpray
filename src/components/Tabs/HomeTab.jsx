@@ -156,7 +156,7 @@ export default function HomeTab({
             {(() => {
               const slide = HERO_SLIDES[heroSlideIdx] || HERO_SLIDES[0]
               return (
-                <div className="relative rounded-2xl overflow-hidden shadow-lg border border-[#D8CBB8] min-h-[224px] flex flex-col justify-between p-4 bg-[#161310]">
+                <div className="relative rounded-2xl overflow-hidden shadow-lg border border-[#D8CBB8] min-h-[224px] flex flex-col justify-between px-3.5 py-4 sm:p-4 bg-[#161310]">
                   {/* 좌우 동적 슬라이딩 이미지 트랙 */}
                   <div
                     className="absolute inset-0 flex transition-transform duration-700 ease-out"
@@ -210,7 +210,7 @@ export default function HomeTab({
                         {slide.titleHighlight}
                       </span>
                     </h1>
-                    <p className="text-xs text-[#E8DFD1] leading-relaxed break-keep">
+                    <p className="text-[11px] sm:text-xs text-[#E8DFD1] leading-relaxed tracking-tight break-keep">
                       {slide.description}
                     </p>
                     <div className="mt-2.5 flex items-center justify-between gap-2">
