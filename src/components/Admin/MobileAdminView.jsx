@@ -33,7 +33,7 @@ export default function MobileAdminView({
 }) {
   const [activeTab, setActiveTab] = useState('bulsa') // 'bulsa' | 'visits' | 'lanterns' | 'members'
   const [bulsaStatusFilter, setBulsaStatusFilter] = useState('consulting') // 기본 첫화면: 대기 ('consulting') 목록
-  const [visitDateFilter, setVisitDateFilter] = useState('all') // 'all' | 'today' | 'tomorrow' | 'afterTomorrow' | 'geulpi'
+  const [visitDateFilter, setVisitDateFilter] = useState('today') // 기본 첫화면: 오늘 예약 우선
   const [lanternFilter, setLanternFilter] = useState('all') // 'all' | 'today'
   const [memberSort, setMemberSort] = useState('recent') // 'recent' | 'name' | 'family' | 'merit'
   const [searchTerm, setSearchTerm] = useState('')
@@ -135,6 +135,52 @@ export default function MobileAdminView({
       past: pastList,
     }
   }, [visits, visitDateKeys])
+
+  // 방문 예정 D-Day 뱃지 계산 함수
+  const getVisitDDayBadge = (visitDate) => {
+    if (!visitDate) return null
+    if (visitDate === visitDateKeys.today) {
+      return (
+        <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-sky-600 text-white flex items-center gap-1 shadow-2xs">
+          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+          오늘 방문
+        </span>
+      )
+    }
+    if (visitDate === visitDateKeys.tomorrow) {
+      return (
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+          내일 (D-1)
+        </span>
+      )
+    }
+    if (visitDate === visitDateKeys.afterTomorrow) {
+      return (
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FAF5EB] text-[#7A6B58] border border-[#DDD3BF]">
+          모레 (D-2)
+        </span>
+      )
+    }
+    if (visitDate === visitDateKeys.geulpi) {
+      return (
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FAF5EB] text-[#7A6B58] border border-[#DDD3BF]">
+          글피 (D-3)
+        </span>
+      )
+    }
+    if (visitDate < visitDateKeys.today) {
+      return (
+        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#EFECE6] text-[#8C8375]">
+          지난 일정
+        </span>
+      )
+    }
+    return (
+      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FAF5EB] text-[#7A6B58] border border-[#DDD3BF]">
+        예정
+      </span>
+    )
+  }
 
   // 현재 선택된 일자의 방문 예약 목록
   const currentVisits = useMemo(() => {
@@ -780,23 +826,8 @@ export default function MobileAdminView({
         {/* ============================================================== */}
         {activeTab === 'visits' && (
           <div className="space-y-3">
-            {/* 2026 최신 세그먼트 필터 바 (방문·공양: 전체 / 오늘 / 내일 / 모레 / 글피) */}
+            {/* 2026 최신 세그먼트 필터 바 (방문·공양: 오늘 우선 배치 & 전체 / 내일 / 모레 / 글피) */}
             <div className="bg-[#EDE9E1] p-1 rounded-xl grid grid-cols-5 gap-1 text-[11px]">
-              <button
-                type="button"
-                onClick={() => setVisitDateFilter('all')}
-                className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
-                  visitDateFilter === 'all'
-                    ? 'bg-[#1E1914] text-[#F5D061] font-black shadow-xs'
-                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
-                }`}
-              >
-                <span>전체</span>
-                <span className={`text-[10.5px] font-black ${visitDateFilter === 'all' ? 'text-[#F5D061]' : 'text-[#8C8375]'}`}>
-                  ({visits.length})
-                </span>
-              </button>
-
               <button
                 type="button"
                 onClick={() => setVisitDateFilter('today')}
@@ -809,6 +840,21 @@ export default function MobileAdminView({
                 <span>오늘</span>
                 <span className={`text-[10.5px] font-black ${visitDateFilter === 'today' ? 'text-amber-300' : 'text-sky-700'}`}>
                   ({visitGroups.today.length})
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setVisitDateFilter('all')}
+                className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                  visitDateFilter === 'all'
+                    ? 'bg-[#1E1914] text-[#F5D061] font-black shadow-xs'
+                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
+                }`}
+              >
+                <span>전체</span>
+                <span className={`text-[10.5px] font-black ${visitDateFilter === 'all' ? 'text-[#F5D061]' : 'text-[#8C8375]'}`}>
+                  ({visits.length})
                 </span>
               </button>
 
@@ -859,7 +905,7 @@ export default function MobileAdminView({
             </div>
 
             {currentVisits.length === 0 ? (
-              <div className="p-8 text-center bg-white rounded-2xl border border-[#E5DCB9] text-[#7A6B58] text-xs space-y-1 shadow-xs">
+              <div className="p-8 text-center bg-white rounded-2xl border border-[#E5DCB9] text-[#7A6B58] text-xs space-y-2 shadow-xs">
                 <Calendar className="w-7 h-7 mx-auto text-sky-600" />
                 <p className="font-bold text-[#2E2214]">
                   {visitDateFilter === 'all' && '등록된 도량 방문·공양 예약이 없습니다.'}
@@ -868,80 +914,88 @@ export default function MobileAdminView({
                   {visitDateFilter === 'afterTomorrow' && '모레 예정된 도량 방문·공양 예약이 없습니다.'}
                   {visitDateFilter === 'geulpi' && '글피 및 이후 예정된 도량 방문·공양 예약이 없습니다.'}
                 </p>
+                {visitDateFilter !== 'all' && visits.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setVisitDateFilter('all')}
+                    className="inline-block px-3 py-1 bg-[#FAF5EB] hover:bg-[#F2EADA] text-sky-800 rounded-lg border border-[#DDD3BF] font-bold text-[11px] transition cursor-pointer"
+                  >
+                    전체 예약 ({visits.length}건) 보기
+                  </button>
+                )}
               </div>
             ) : (
               currentVisits.map((v) => {
                 const phone = v.visitor_phone || ''
                 const cleanPhone = phone.replace(/[^0-9]/g, '')
-                const statusLabel =
-                  v.status === 'confirmed' ? '예약확정' :
-                  v.status === 'completed' ? '방문완료' :
-                  v.status === 'cancelled' ? '취소됨' : '접수대기'
 
                 return (
                   <div
                     key={v.id}
-                    className="rounded-2xl p-4 bg-white border border-[#E5DEC8] space-y-3 shadow-xs"
+                    className="rounded-2xl p-3.5 bg-white border border-[#E5DEC8] space-y-2.5 shadow-xs"
                   >
-                    {/* 1) 상단: 성함 및 일체형 단일 뱃지 (넉넉한 공간 확보로 글자 잘림 완벽 해결) */}
-                    <div className="flex items-center justify-between gap-2 border-b border-[#F4EFE6] pb-2.5">
+                    {/* 1) 상단: 성함 및 일체형 단일 뱃지 */}
+                    <div className="flex items-center justify-between gap-2 border-b border-[#F4EFE6] pb-2">
                       <span className="text-base font-black text-[#241E17] truncate">
                         {v.visitor_name || '방문 불자님'}
                       </span>
 
-                      <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#FAF5EB] text-[#8A6510] border border-[#E8DEC8] shrink-0 whitespace-nowrap">
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-[#FAF5EB] text-[#8A6510] border border-[#E8DEC8] shrink-0 whitespace-nowrap">
                         {formatVisitPurpose(v.visit_purpose)} · {v.headcount || 1}명
                       </span>
                     </div>
 
-                    {/* 2) 방문 일시 (크고 시원하게 부각) */}
-                    <div className="flex items-center justify-between text-xs font-bold text-[#1E1914] bg-[#F7F4EE] px-3 py-2 rounded-xl border border-[#EDE7D9]">
+                    {/* 2) 방문 일시 & D-Day 뱃지 (상태 중복 제거 및 방문 시점 강조) */}
+                    <div className="flex items-center justify-between text-xs font-bold text-[#1E1914] bg-[#F7F4EE] px-2.5 py-1.5 rounded-xl border border-[#EDE7D9]">
                       <div className="flex items-center gap-1.5">
-                        <Calendar className="w-4 h-4 text-[#C59B27] shrink-0" />
+                        <Calendar className="w-3.5 h-3.5 text-[#C59B27] shrink-0" />
                         <span>{v.visit_date} {v.visit_time}</span>
                       </div>
-                      <span className={`text-[10.5px] px-2 py-0.5 rounded font-extrabold ${
-                        v.status === 'confirmed' ? 'bg-sky-100 text-sky-800' :
-                        v.status === 'completed' ? 'bg-emerald-100 text-emerald-800' :
-                        v.status === 'cancelled' ? 'bg-gray-100 text-gray-600' : 'bg-amber-100 text-amber-800'
-                      }`}>
-                        {statusLabel}
-                      </span>
+                      {getVisitDDayBadge(v.visit_date)}
                     </div>
 
-                    {/* 3) 요청 메모 */}
+                    {/* 3) 요청 메모 (있을 때만 깔끔하고 콤팩트하게) */}
                     {v.memo && (
-                      <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EFEAE1] text-xs text-[#524436] font-serif-kr leading-relaxed">
+                      <div className="px-2.5 py-2 rounded-xl bg-[#FAF8F5] border border-[#EFEAE1] text-[11.5px] text-[#524436] font-serif-kr leading-relaxed">
                         “{v.memo}”
                       </div>
                     )}
 
-                    {/* 4) 버튼 영역: 전화번호 + 2열 소통/관리 */}
-                    <div className="space-y-2 pt-1">
-                      {/* 전화번호 바 (통화/문자 버튼 바로 위에 여유롭게 배치) */}
+                    {/* 4) 버튼 영역: 전화번호 + 2열 소통/관리 (콤팩트 다이어트) */}
+                    <div className="space-y-1.5 pt-0.5">
+                      {/* 전화번호 바 (슬림 & 정돈) */}
                       {phone && (
-                        <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#F7F5EE] border border-[#EAE3D2] text-xs">
-                          <div className="flex items-center gap-2 text-[#5C4F3D]">
-                            <span className="font-bold text-[11px] text-[#8A6510]">연락처</span>
-                            <span className="font-mono text-sm font-black text-[#241E17] tracking-tight">{phone}</span>
+                        <div className="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-[#F7F5EE] border border-[#EAE3D2] text-xs">
+                          <div className="flex items-center gap-1.5 text-[#5C4F3D]">
+                            <span className="font-bold text-[10.5px] text-[#8A6510]">연락처</span>
+                            <span className="font-mono text-xs font-black text-[#241E17] tracking-tight">{phone}</span>
                           </div>
                           <button
                             type="button"
                             onClick={() => handleCopyPhone(phone)}
-                            className="px-2.5 py-1 rounded-lg bg-white border border-[#DDD3BF] text-[11px] font-bold text-[#5C4D3B] hover:bg-[#FAF8F5] active:scale-95 flex items-center gap-1 cursor-pointer transition shadow-2xs"
+                            className="px-2 py-0.5 rounded-lg bg-white border border-[#DDD3BF] text-[10.5px] font-bold text-[#5C4D3B] hover:bg-[#FAF8F5] active:scale-95 flex items-center gap-1 cursor-pointer transition shadow-2xs"
                             title="전화번호 복사"
                           >
-                            <Copy className="w-3 h-3 text-[#8C7D6B]" />
-                            <span>복사</span>
+                            {copiedPhone === phone ? (
+                              <>
+                                <Check className="w-3 h-3 text-emerald-600" />
+                                <span className="text-emerald-700">복사됨</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3 text-[#8C7D6B]" />
+                                <span>복사</span>
+                              </>
+                            )}
                           </button>
                         </div>
                       )}
 
-                      {/* 1열: 원터치 소통 액션 (균형 잡힌 2분할) */}
+                      {/* 1열: 원터치 소통 액션 (균형 잡힌 2분할, 콤팩트 높이) */}
                       <div className="grid grid-cols-2 gap-2">
                         <a
                           href={cleanPhone ? `tel:${cleanPhone}` : '#'}
-                          className="py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition shadow-xs"
+                          className="py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition shadow-xs"
                         >
                           <Phone className="w-3.5 h-3.5" />
                           <span>전화 연결</span>
@@ -951,18 +1005,19 @@ export default function MobileAdminView({
                           href={
                             cleanPhone
                               ? `sms:${cleanPhone}?body=${encodeURIComponent(
-                                  `[제주 소원사]\n${v.visitor_name} 불자님, ${v.visit_date} ${v.visit_time} 방문 및 공양 예약 확인차 연락드렸습니다.`
+                                  `[제주 소원사]
+${v.visitor_name} 불자님, ${v.visit_date} ${v.visit_time} 방문 및 공양 예약 확인차 연락드렸습니다.`
                                 )}`
                               : '#'
                           }
-                          className="py-2.5 rounded-xl bg-[#241E17] hover:bg-[#383025] text-[#F5D061] text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition shadow-xs"
+                          className="py-2 rounded-xl bg-[#241E17] hover:bg-[#383025] text-[#F5D061] text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition shadow-xs"
                         >
                           <MessageSquare className="w-3.5 h-3.5 text-[#F5D061]" />
                           <span>문자 발송</span>
                         </a>
                       </div>
 
-                      {/* 2열: 예약 상태 실시간 변경 4분할 세그먼트 버튼 (대기 / 확정 / 완료 / 취소) */}
+                      {/* 2열: 예약 상태 실시간 변경 4분할 세그먼트 버튼 (선택된 것만 컬러 포인트, 미선택은 단정한 웜그레이) */}
                       <div className="grid grid-cols-4 gap-1.5 pt-1 border-t border-[#F4EFE6] text-[11px]">
                         <button
                           type="button"
@@ -970,7 +1025,7 @@ export default function MobileAdminView({
                           className={`py-1.5 rounded-lg border text-center transition cursor-pointer font-bold ${
                             !v.status || v.status === 'reserved'
                               ? 'bg-amber-600 text-white border-amber-600 shadow-xs'
-                              : 'bg-white text-amber-800 border-amber-200 hover:bg-amber-50'
+                              : 'bg-white text-[#6E6455] border-[#DDD5C5] hover:bg-[#FAF8F3]'
                           }`}
                         >
                           접수대기
@@ -981,7 +1036,7 @@ export default function MobileAdminView({
                           className={`py-1.5 rounded-lg border text-center transition cursor-pointer font-bold ${
                             v.status === 'confirmed'
                               ? 'bg-sky-600 text-white border-sky-600 shadow-xs'
-                              : 'bg-white text-sky-800 border-sky-200 hover:bg-sky-50'
+                              : 'bg-white text-[#6E6455] border-[#DDD5C5] hover:bg-[#FAF8F3]'
                           }`}
                         >
                           예약확정
@@ -992,7 +1047,7 @@ export default function MobileAdminView({
                           className={`py-1.5 rounded-lg border text-center transition cursor-pointer font-bold ${
                             v.status === 'completed'
                               ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
-                              : 'bg-white text-emerald-800 border-emerald-200 hover:bg-emerald-50'
+                              : 'bg-white text-[#6E6455] border-[#DDD5C5] hover:bg-[#FAF8F3]'
                           }`}
                         >
                           방문완료
@@ -1002,8 +1057,8 @@ export default function MobileAdminView({
                           onClick={() => handleUpdateVisitStatus(v.id, 'cancelled')}
                           className={`py-1.5 rounded-lg border text-center transition cursor-pointer font-semibold ${
                             v.status === 'cancelled'
-                              ? 'bg-gray-600 text-white border-gray-600'
-                              : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                              ? 'bg-gray-600 text-white border-gray-600 shadow-xs'
+                              : 'bg-white text-[#6E6455] border-[#DDD5C5] hover:bg-[#FAF8F3]'
                           }`}
                         >
                           예약취소
