@@ -73,6 +73,8 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
   const [actionState, setActionState] = useState('idle') // 'idle' | 'hapjang' | 'bow' | 'moktak' | 'yeomju'
   // 🎬 대웅전 입장 시네마틱 시퀀스: 'entering'(걸어들어옴) -> 'hapjang'(합장반배) -> 'seated'(착석완료)
   const [entranceStep, setEntranceStep] = useState('entering')
+  // 👣 왼발-오른발 보행 사이클 프레임 (0: 오른발 앞, 1: 왼발 앞)
+  const [walkFrame, setWalkFrame] = useState(0)
   const [bowCount, setBowCount] = useState(() => {
     const info = getDailyMeritInfo('bow', currentUser?.code || 'guest')
     return info.currentCount || 0
@@ -361,19 +363,32 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       setIsPlayingChant(false)
       setIsZenMode(false)
       setEntranceStep('entering')
+      setWalkFrame(0)
       return
     }
 
-    // 🎬 대웅전 입장 시퀀스 시작: 0~2.2s 자연스럽게 걸어 들어오기 -> 2.2~4.2s 방석 위 서서 합장반배 -> 4.2s 가부좌 착석 완료
+    // 🎬 대웅전 입장 시퀀스:
+    // 0~2.4s: 왼발-오른발을 번갈아 뚜벅뚜벅 내딛으며 걸어 들어오기 (walkFrame 280ms 교차)
+    // 2.4~4.5s: 방석 위에 서서 삼존불 전 정중히 합장 반배 올리기
+    // 4.5s: 비단 방석에 가부좌 틀고 착석 완료
     setEntranceStep('entering')
+    setWalkFrame(0)
+
+    const walkTimer = setInterval(() => {
+      setWalkFrame(f => (f === 0 ? 1 : 0))
+    }, 280)
+
     const tHapjang = setTimeout(() => {
+      clearInterval(walkTimer)
       setEntranceStep('hapjang')
-    }, 2200)
+    }, 2400)
+
     const tSeated = setTimeout(() => {
       setEntranceStep('seated')
-    }, 4200)
+    }, 4500)
 
     return () => {
+      clearInterval(walkTimer)
       clearTimeout(tHapjang)
       clearTimeout(tSeated)
     }
@@ -578,6 +593,12 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       }`}>
 
 
+        {/* 원경 도량 빈 방석 2개 (원근감과 도량의 그윽한 입체감 복원) */}
+        <div className="w-full max-w-xs flex justify-around px-10 mb-2 opacity-40 pointer-events-none">
+          <div className="w-16 h-4 rounded-[100%] bg-gradient-to-r from-[#594228] via-[#8A6538] to-[#594228] border border-[#A8884C]/50 shadow-sm" />
+          <div className="w-16 h-4 rounded-[100%] bg-gradient-to-r from-[#594228] via-[#8A6538] to-[#594228] border border-[#A8884C]/50 shadow-sm" />
+        </div>
+
         {/* 법당 마루: 동료 불자님 방석 + 나의 참선 방석 (부처님 전 한 칸 앞으로 전진 배치) */}
         <div className="relative w-full max-w-sm flex items-end justify-center gap-2 sm:gap-4 px-1 mb-2 sm:mb-3">
           {/* 좌측 동행 불자님 (제주 불자님) */}
@@ -619,11 +640,11 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               {/* 3D 동자승 실사 캐릭터 (대웅전 자연스럽게 걷기 -> 방석 위 서서 합장 반배 -> 가부좌 착석 -> 절하기/참선) */}
               <div className="relative z-10 h-28 sm:h-34 flex items-end justify-center filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.9)]">
                 {entranceStep === 'entering' ? (
-                  /* 1단계: 두 팔을 자연스럽게 내리고 마루를 아장아장/사뿐사뿐 걸어 들어오는 서 있는 동자승 (2.2초) */
+                  /* 1단계: 두 팔을 자연스럽게 내리고 왼발-오른발을 번갈아 디디며 아장아장 걸어 들어오는 동자승 */
                   <div className="flex flex-col items-center animate-monk-walk">
                     <img 
-                      src="/images/avatar_monk_walk.png" 
-                      alt="자연스럽게 걸어 들어오는 동자승" 
+                      src={walkFrame === 0 ? "/images/avatar_monk_walk.png" : "/images/avatar_monk_walk_step2.png"} 
+                      alt="발걸음을 옮기며 걸어 들어오는 동자승" 
                       className="h-32 sm:h-38 object-contain"
                     />
                   </div>
@@ -653,8 +674,8 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                 )}
               </div>
 
-              {/* 도량 비단 방석 */}
-              <div className="w-34 sm:w-42 h-7 sm:h-8 rounded-[100%] bg-gradient-to-r from-[#6E4F28] via-[#A87B3F] to-[#6E4F28] border-2 border-[#E5B556]/60 mx-auto -mt-3 shadow-[0_12px_25px_rgba(0,0,0,0.95)] relative z-0" />
+              {/* 도량 비단 방석 (도톰하고 품격 있는 황금빛 비단 참선 방석) */}
+              <div className="w-40 sm:w-48 h-8 sm:h-9 rounded-[100%] bg-gradient-to-r from-[#6E4F28] via-[#A87B3F] to-[#6E4F28] border-2 border-[#E5B556] mx-auto -mt-3 shadow-[0_12px_25px_rgba(0,0,0,0.95)] relative z-0" />
 
               {/* 방석 좌측 실제 3D 108 염주 (목탁과 완벽한 시각적 균형을 이루도록 정밀 축소) */}
               <div 
