@@ -57,22 +57,36 @@ export default function MobileAdminView({
   const [editMemo, setEditMemo] = useState('')
   const [isSavingMember, setIsSavingMember] = useState(false)
 
-  // 1. 순수 불사·상담 신청 건만 선별 (49재, 천도재, 영구위패, 기일제사, 생전예수재 등 전문 상담건)
-  // ※ 일반 소원등/인등(prayed)은 3번 탭 [소원등] 명부로 가며, 불사·상담 데이터와 완전히 분리됨!
+  // ============================================================================
+  // [김철수 대표님 불사 운영 표준 철학 정립]
+  // 1. 1일 소원등만 무료 불사 (상담/입금 불필요, 24시간 후 자동 회향 -> 3번 탭 직행)
+  // 2. 그 외의 모든 유료 불사 (49재, 천도재, 위패, 기일제사, 1년 인등, 100일 기도, 공양미 등)는
+  //    종무소의 상담, 입금 확인, 완료(봉안/점등/회향) 관리가 반드시 필요하므로 1번 탭에 총집결!
+  // ============================================================================
   const bulsaInquiries = useMemo(() => {
     const rawList = (prayers || []).filter((p) => {
       const cat = String(p.wish_category || '')
-      const isBulsaCat =
+      const type = String(p.prayer_type || '')
+
+      // 유료 불사 판별 (상담, 입금, 완료 관리가 필요한 모든 불사 종목)
+      const isPaidBulsa =
+        type === 'indeung_1yr' ||
+        type === 'prayer_100d' ||
+        type === 'wipae' ||
         cat.includes('49재') ||
         cat.includes('천도재') ||
         cat.includes('위패') ||
         cat.includes('기일') ||
+        cat.includes('인등') ||
+        cat.includes('100일') ||
+        cat.includes('생전예수재') ||
         cat.includes('삼성각') ||
-        cat.includes('생전예수재')
-      
-      // 상담 대기/진행/완료 상태이거나 순수 불사 카테고리인 경우만 해당
-      // 일반 소원등 축원(prayed)이나 단순 인등은 불사·상담이 아니므로 철저히 분리
-      return (isBulsaCat && p.status !== 'prayed') || p.status === 'consulting' || p.status === 'in_progress'
+        cat.includes('공양미') ||
+        cat.includes('불사') ||
+        p.status === 'consulting' ||
+        p.status === 'in_progress'
+
+      return isPaidBulsa
     })
 
     // 동일 불자 + 동일 발원 + 동일 일자 중복 접수건 디둡 (중복 카드 연속 노출 착시 방지)
@@ -89,30 +103,34 @@ export default function MobileAdminView({
     return deduped
   }, [prayers])
 
-  // 불사·상담 전용 3대 상태 헬퍼 함수 ('consulting': 대기 | 'in_progress': 상담중 | 'completed': 완료)
-  const getBulsaStatus = (status) => {
+  // 유료 불사 3대 진행 상태 헬퍼 함수
+  // - consulting: 접수/입금대기 (빨간색 [대기])
+  // - in_progress: 상담/안내/입금확인중 (주황색 [상담중])
+  // - completed, paid, prayed: 입금확인/점등·봉안완료/회향 (초록색 [완료])
+  const getBulsaStatus = (p) => {
+    const status = typeof p === 'object' && p ? p.status : (typeof p === 'string' ? p : '')
     if (status === 'in_progress') return 'in_progress'
-    if (status === 'completed') return 'completed'
+    if (status === 'completed' || status === 'paid' || status === 'prayed') return 'completed'
     return 'consulting' // 기본값: 대기
   }
 
   // 상태별 건수 계산 (모든 카드가 100% 3개 중 하나로 매핑)
   const pendingBulsaCount = useMemo(() => {
-    return bulsaInquiries.filter((p) => getBulsaStatus(p.status) === 'consulting').length
+    return bulsaInquiries.filter((p) => getBulsaStatus(p) === 'consulting').length
   }, [bulsaInquiries])
 
   const inProgressBulsaCount = useMemo(() => {
-    return bulsaInquiries.filter((p) => getBulsaStatus(p.status) === 'in_progress').length
+    return bulsaInquiries.filter((p) => getBulsaStatus(p) === 'in_progress').length
   }, [bulsaInquiries])
 
   const completedBulsaCount = useMemo(() => {
-    return bulsaInquiries.filter((p) => getBulsaStatus(p.status) === 'completed').length
+    return bulsaInquiries.filter((p) => getBulsaStatus(p) === 'completed').length
   }, [bulsaInquiries])
 
   // 상담 필터 적용 목록
   const filteredBulsaList = useMemo(() => {
     return bulsaInquiries.filter((p) => {
-      const s = getBulsaStatus(p.status)
+      const s = getBulsaStatus(p)
       if (bulsaStatusFilter === 'consulting') return s === 'consulting'
       if (bulsaStatusFilter === 'in_progress') return s === 'in_progress'
       if (bulsaStatusFilter === 'completed') return s === 'completed'
@@ -854,7 +872,7 @@ export default function MobileAdminView({
               filteredBulsaList.map((p) => {
                 const phone = p.believer_phone || ''
                 const cleanPhone = phone.replace(/[^0-9]/g, '')
-                const statusKey = getBulsaStatus(p.status)
+                const statusKey = getBulsaStatus(p)
                 const isPending = statusKey === 'consulting'
                 const isInProgress = statusKey === 'in_progress'
                 const isDone = statusKey === 'completed'
