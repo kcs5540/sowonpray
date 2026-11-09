@@ -238,6 +238,15 @@ export default function MobileAdminView({
     })
   }, [members, searchTerm, memberSort])
 
+  // 방문 목적 텍스트를 한눈에 들어오게 간결하게 정돈
+  const formatVisitPurpose = (purpose) => {
+    const p = String(purpose || '')
+    if (p.includes('공양') || p.includes('식사') || p.includes('차')) return '차담 & 점심공양'
+    if (p.includes('상담') || p.includes('스님')) return '스님 차담상담'
+    if (p.includes('참배')) return '도량 참배'
+    return p || '도량 방문'
+  }
+
   // 전화번호 클립보드 복사
   const handleCopyPhone = (phone) => {
     if (!phone) return
@@ -857,95 +866,123 @@ export default function MobileAdminView({
               currentVisits.map((v) => {
                 const phone = v.visitor_phone || ''
                 const cleanPhone = phone.replace(/[^0-9]/g, '')
+                const statusLabel =
+                  v.status === 'confirmed' ? '예약확정' :
+                  v.status === 'completed' ? '방문완료' :
+                  v.status === 'cancelled' ? '취소됨' : '접수대기'
 
                 return (
                   <div
                     key={v.id}
-                    className="rounded-2xl p-4 bg-white border border-[#D5E2F0] space-y-3 shadow-xs"
+                    className="rounded-2xl p-4 bg-white border border-[#E5DEC8] space-y-3 shadow-xs"
                   >
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-base font-black text-[#152336]">
-                            {v.visitor_name || '방문자'}
-                          </span>
-                          <span className="text-[11px] font-bold text-sky-800 bg-sky-100 px-2.5 py-0.5 rounded-full border border-sky-200">
-                            총 {v.headcount || 1}명
-                          </span>
-                        </div>
-                        <div className="text-xs text-sky-900 font-bold mt-1.5 flex items-center gap-1">
-                          <Calendar className="w-3.5 h-3.5 text-sky-600" />
-                          <span>{v.visit_date} {v.visit_time}</span>
-                        </div>
+                    {/* 1) 상단: 성함 및 일체형 단일 뱃지 (줄바꿈 없이 깔끔하게 정돈) */}
+                    <div className="flex items-center justify-between gap-2 border-b border-[#F4EFE6] pb-2.5">
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="text-base font-black text-[#241E17] truncate">
+                          {v.visitor_name || '방문 불자님'}
+                        </span>
+                        {phone && (
+                          <button
+                            type="button"
+                            onClick={() => handleCopyPhone(phone)}
+                            className="text-[11px] text-[#8C8375] hover:text-[#241E17] flex items-center gap-0.5 cursor-pointer ml-1"
+                            title="전화번호 복사"
+                          >
+                            <span>{phone}</span>
+                            <Copy className="w-3 h-3 text-[#B0A798]" />
+                          </button>
+                        )}
                       </div>
 
-                      <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-sky-50 text-sky-800 border border-sky-300">
-                        {v.visit_purpose || '도량참배'}
+                      <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#FAF5EB] text-[#8A6510] border border-[#E8DEC8] shrink-0 whitespace-nowrap">
+                        {formatVisitPurpose(v.visit_purpose)} · {v.headcount || 1}명
                       </span>
                     </div>
 
+                    {/* 2) 방문 일시 (크고 시원하게 부각) */}
+                    <div className="flex items-center justify-between text-xs font-bold text-[#1E1914] bg-[#F7F4EE] px-3 py-2 rounded-xl border border-[#EDE7D9]">
+                      <div className="flex items-center gap-1.5">
+                        <Calendar className="w-4 h-4 text-[#C59B27] shrink-0" />
+                        <span>{v.visit_date} {v.visit_time}</span>
+                      </div>
+                      <span className={`text-[10.5px] px-2 py-0.5 rounded font-extrabold ${
+                        v.status === 'confirmed' ? 'bg-sky-100 text-sky-800' :
+                        v.status === 'completed' ? 'bg-emerald-100 text-emerald-800' :
+                        v.status === 'cancelled' ? 'bg-gray-100 text-gray-600' : 'bg-amber-100 text-amber-800'
+                      }`}>
+                        {statusLabel}
+                      </span>
+                    </div>
+
+                    {/* 3) 요청 메모 */}
                     {v.memo && (
-                      <div className="p-3 rounded-xl bg-[#F4F8FC] border border-[#DDE7F2] text-xs text-[#2A3B4E] font-serif-kr">
+                      <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#EFEAE1] text-xs text-[#524436] font-serif-kr leading-relaxed">
                         “{v.memo}”
                       </div>
                     )}
 
-                    <div className="grid grid-cols-3 gap-2 pt-1 border-t border-[#E8EEF5]">
-                      <a
-                        href={cleanPhone ? `tel:${cleanPhone}` : '#'}
-                        className="py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition shadow-xs"
-                      >
-                        <Phone className="w-3.5 h-3.5" />
-                        <span>통화연결</span>
-                      </a>
+                    {/* 4) 버튼 영역: 2026 최신 2열 정돈 (상단: 통화/문자 2분할, 하단: 상태관리 3분할) */}
+                    <div className="space-y-2 pt-1">
+                      {/* 1열: 원터치 소통 액션 (균형 잡힌 2분할) */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <a
+                          href={cleanPhone ? `tel:${cleanPhone}` : '#'}
+                          className="py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition shadow-xs"
+                        >
+                          <Phone className="w-3.5 h-3.5" />
+                          <span>전화 연결</span>
+                        </a>
 
-                      <a
-                        href={
-                          cleanPhone
-                            ? `sms:${cleanPhone}?body=${encodeURIComponent(
-                                `[제주 소원사]\n${v.visitor_name} 불자님, ${v.visit_date} ${v.visit_time} 방문 및 공양 예약 확인차 연락드렸습니다.`
-                              )}`
-                            : '#'
-                        }
-                        className="py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition shadow-xs"
-                      >
-                        <MessageSquare className="w-3.5 h-3.5" />
-                        <span>문자보내기</span>
-                      </a>
+                        <a
+                          href={
+                            cleanPhone
+                              ? `sms:${cleanPhone}?body=${encodeURIComponent(
+                                  `[제주 소원사]\n${v.visitor_name} 불자님, ${v.visit_date} ${v.visit_time} 방문 및 공양 예약 확인차 연락드렸습니다.`
+                                )}`
+                              : '#'
+                          }
+                          className="py-2.5 rounded-xl bg-[#241E17] hover:bg-[#383025] text-[#F5D061] text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition shadow-xs"
+                        >
+                          <MessageSquare className="w-3.5 h-3.5 text-[#F5D061]" />
+                          <span>문자 발송</span>
+                        </a>
+                      </div>
 
-                      <button
-                        type="button"
-                        onClick={() => handleCopyPhone(phone)}
-                        className="py-2.5 rounded-xl bg-white text-[#334659] text-xs font-bold flex items-center justify-center gap-1.5 border border-[#CFDAE6] hover:bg-[#F5F8FB] shadow-xs cursor-pointer"
-                      >
-                        <Copy className="w-3.5 h-3.5 text-[#5D738A]" />
-                        <span>번호복사</span>
-                      </button>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#F0F4F8] text-[#5D738A]">
-                      <span>예약 관리:</span>
-                      <div className="flex items-center gap-1">
+                      {/* 2열: 예약 상태 변경 3분할 세그먼트 버튼 (군더더기 없는 미니멀 스타일) */}
+                      <div className="grid grid-cols-3 gap-1.5 pt-1 border-t border-[#F4EFE6] text-[11px]">
                         <button
                           type="button"
                           onClick={() => handleUpdateVisitStatus(v.id, 'confirmed')}
-                          className="px-2.5 py-1 rounded-md bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-300 font-bold cursor-pointer"
+                          className={`py-1.5 rounded-lg border text-center transition cursor-pointer font-bold ${
+                            v.status === 'confirmed'
+                              ? 'bg-sky-600 text-white border-sky-600 shadow-xs'
+                              : 'bg-white text-sky-800 border-sky-200 hover:bg-sky-50'
+                          }`}
                         >
                           예약확정
                         </button>
                         <button
                           type="button"
                           onClick={() => handleUpdateVisitStatus(v.id, 'completed')}
-                          className="px-2.5 py-1 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold cursor-pointer"
+                          className={`py-1.5 rounded-lg border text-center transition cursor-pointer font-bold ${
+                            v.status === 'completed'
+                              ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                              : 'bg-white text-emerald-800 border-emerald-200 hover:bg-emerald-50'
+                          }`}
                         >
                           방문완료
                         </button>
                         <button
                           type="button"
                           onClick={() => handleUpdateVisitStatus(v.id, 'cancelled')}
-                          className="px-2.5 py-1 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 cursor-pointer"
+                          className={`py-1.5 rounded-lg border text-center transition cursor-pointer font-semibold ${
+                            v.status === 'cancelled'
+                              ? 'bg-gray-600 text-white border-gray-600'
+                              : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                          }`}
                         >
-                          취소
+                          예약취소
                         </button>
                       </div>
                     </div>
