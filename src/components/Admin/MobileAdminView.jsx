@@ -341,12 +341,9 @@ export default function MobileAdminView({
               <span className="font-serif-kr font-extrabold text-base sm:text-lg tracking-tight text-[#F5D061] whitespace-nowrap">
                 소원사 모바일 관제창
               </span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#C59B27]/25 text-[#FAF8F5] border border-[#C59B27]/50 font-semibold whitespace-nowrap">
-                실시간 관제
-              </span>
             </div>
             <p className="text-[10.5px] text-[#D6CEC2] truncate">
-              {currentUser?.name || '김철수'} ({currentUser?.role === 'master' ? '총괄대표' : '사찰본부'}) · 종무소 실시간 관제
+              {currentUser?.name || '김철수'} ({currentUser?.role === 'master' ? '총괄대표' : '사찰본부'})
             </p>
           </div>
         </div>
