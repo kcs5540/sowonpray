@@ -290,18 +290,31 @@ export default function MobileAdminView({
     showToast(`상태가 [${statusLabels[newStatus] || newStatus}]로 변경되었습니다.`)
   }
 
-  // 방문 예약 상태 변경
+  // 방문 예약 상태 변경 (DB 실시간 반영 및 토스트 안내)
   const handleUpdateVisitStatus = async (visitId, newStatus) => {
+    const statusLabels = {
+      reserved: '접수대기',
+      confirmed: '예약확정',
+      completed: '방문완료',
+      cancelled: '예약취소',
+    }
+
     setVisits((prev) =>
       prev.map((v) => (v.id === visitId ? { ...v, status: newStatus } : v))
     )
 
     if (supabase) {
       try {
-        await supabase.from('visits').update({ status: newStatus }).eq('id', visitId)
-      } catch (e) {}
+        const { error } = await supabase
+          .from('visits')
+          .update({ status: newStatus })
+          .eq('id', visitId)
+        if (error) console.error('Visits DB update error:', error)
+      } catch (e) {
+        console.error('Visits DB exception:', e)
+      }
     }
-    showToast('방문 예약 상태가 변경되었습니다.')
+    showToast(`방문 예약이 [${statusLabels[newStatus] || newStatus}] 상태로 DB에 저장되었습니다.`)
   }
 
   // 현장 신규 신도 등록
@@ -955,8 +968,19 @@ export default function MobileAdminView({
                         </a>
                       </div>
 
-                      {/* 2열: 예약 상태 변경 3분할 세그먼트 버튼 (군더더기 없는 미니멀 스타일) */}
-                      <div className="grid grid-cols-3 gap-1.5 pt-1 border-t border-[#F4EFE6] text-[11px]">
+                      {/* 2열: 예약 상태 실시간 변경 4분할 세그먼트 버튼 (대기 / 확정 / 완료 / 취소) */}
+                      <div className="grid grid-cols-4 gap-1.5 pt-1 border-t border-[#F4EFE6] text-[11px]">
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateVisitStatus(v.id, 'reserved')}
+                          className={`py-1.5 rounded-lg border text-center transition cursor-pointer font-bold ${
+                            !v.status || v.status === 'reserved'
+                              ? 'bg-amber-600 text-white border-amber-600 shadow-xs'
+                              : 'bg-white text-amber-800 border-amber-200 hover:bg-amber-50'
+                          }`}
+                        >
+                          접수대기
+                        </button>
                         <button
                           type="button"
                           onClick={() => handleUpdateVisitStatus(v.id, 'confirmed')}
