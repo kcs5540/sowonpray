@@ -515,56 +515,6 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
         </div>
       </header>
 
-      {/* 우측 세로 정진 기록 위젯 (절 N배 / 목탁 N타 / 염주 N알 세로 정렬 HUD + 복나눔 버튼 - 은은한 반투명 글래스) */}
-      <div className={`absolute right-2.5 sm:right-3.5 top-[38%] z-20 transition-opacity duration-500 flex flex-col items-center gap-1 ${
-        isZenMode ? 'opacity-0 pointer-events-none' : 'opacity-100'
-      }`}>
-        <div className="w-[42px] sm:w-[46px] px-1 py-1.5 rounded-xl sm:rounded-2xl bg-black/20 backdrop-blur-sm border border-white/15 shadow-sm flex flex-col items-center text-xs font-serif-kr">
-          <div className="w-full text-center border-b border-white/10 pb-0.5 mb-0.5">
-            <span className="font-bold text-[#F5D061] text-[11px] sm:text-xs tracking-tight">{bowCount}배</span>
-          </div>
-          <div className="w-full text-center border-b border-white/10 pb-0.5 mb-0.5">
-            <span className="font-bold text-[#F5D061] text-[11px] sm:text-xs tracking-tight">{moktakTapCount}타</span>
-          </div>
-          <div className="w-full text-center">
-            <span className="font-bold text-[#F5D061] text-[11px] sm:text-xs tracking-tight">{yeomjuCount}알</span>
-          </div>
-        </div>
-
-        {/* 💌 가족·도반에게 참배 복(福) 나누기 (유튜브 스타일 은은한 반투명 나눔 버튼) */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation()
-            if (handleShareSanctuary) {
-              handleShareSanctuary({
-                believerName: currentUser?.name,
-                bowCount: bowCount || sessionBows || 0,
-                moktakCount: moktakTapCount || sessionMoktaks || 0,
-                yeomjuCount: yeomjuCount || sessionYeomjus || 0,
-              })
-            }
-            if (showToast) {
-              showToast('💌 가족·도반에게 대웅전 참배 복(福) 카드가 공유되었습니다.')
-            }
-          }}
-          className="w-full py-1.5 px-0.5 rounded-xl sm:rounded-2xl bg-black/20 hover:bg-black/35 active:scale-95 backdrop-blur-sm border border-white/15 hover:border-[#F5D061]/40 shadow-sm flex flex-col items-center justify-center gap-0.5 group transition-all cursor-pointer"
-          title="가족·도반에게 참배 복(福) 나누기 (카카오톡)"
-        >
-          {/* 유튜브 쇼츠 우측 공유 화살표 아이콘 */}
-          <svg 
-            viewBox="0 0 24 24" 
-            className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#F5D061] group-hover:scale-110 group-active:scale-95 transition-transform filter drop-shadow-[0_2px_4px_rgba(245,208,97,0.5)]" 
-            fill="currentColor"
-          >
-            <path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z" />
-          </svg>
-          <span className="text-[10px] sm:text-[10.5px] font-bold text-[#F5D061] group-hover:text-yellow-300 font-serif-kr tracking-tight whitespace-nowrap">
-            나눔
-          </span>
-        </button>
-      </div>
-
       {/* 4. 중앙 공간 (부처님 시선 + 방석 위의 나) */}
       <div className={`relative z-10 flex-1 flex flex-col items-center justify-end pb-4 sm:pb-6 text-center px-3 transition-opacity duration-500 ${
         isZenMode ? 'opacity-0 pointer-events-none' : 'opacity-100'
@@ -715,9 +665,47 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
           </div>
         )}
 
-        <p className="text-[10px] sm:text-[10.5px] text-[#D6CEC2]/75 mt-1 font-serif-kr">
-          "바람 소리와 염불에 귀 기울이며, 잠시 생각을 내려놓으세요."
-        </p>
+        {/* 나의 실시간 정진 기록 가로형 바 (절 N배 · 목탁 N타 · 염주 N알) + 복 나눔 버튼 (대표님 지정 1번 위치에 품격 배치) */}
+        <div className="flex items-center justify-center gap-2 mt-1">
+          <div className="flex items-center gap-2.5 px-3.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-xs font-serif-kr shadow-sm">
+            <span className="font-bold text-[#F5D061] text-[11px] sm:text-xs tracking-tight">{bowCount}배</span>
+            <span className="w-px h-2.5 bg-white/20" />
+            <span className="font-bold text-[#F5D061] text-[11px] sm:text-xs tracking-tight">{moktakTapCount}타</span>
+            <span className="w-px h-2.5 bg-white/20" />
+            <span className="font-bold text-[#F5D061] text-[11px] sm:text-xs tracking-tight">{yeomjuCount}알</span>
+          </div>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              if (handleShareSanctuary) {
+                handleShareSanctuary({
+                  believerName: currentUser?.name,
+                  bowCount: bowCount || sessionBows || 0,
+                  moktakCount: moktakTapCount || sessionMoktaks || 0,
+                  yeomjuCount: yeomjuCount || sessionYeomjus || 0,
+                })
+              }
+              if (showToast) {
+                showToast('💌 가족·도반에게 대웅전 참배 복(福) 카드가 공유되었습니다.')
+              }
+            }}
+            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/60 hover:bg-black/80 active:scale-95 backdrop-blur-md border border-[#F5D061]/35 hover:border-[#F5D061]/70 text-xs font-serif-kr shadow-sm transition-all cursor-pointer group"
+            title="가족·도반에게 참배 복(福) 나누기 (카카오톡)"
+          >
+            <svg 
+              viewBox="0 0 24 24" 
+              className="w-3.5 h-3.5 text-[#F5D061] group-hover:scale-110 group-active:scale-95 transition-transform filter drop-shadow-[0_2px_4px_rgba(245,208,97,0.5)]" 
+              fill="currentColor"
+            >
+              <path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z" />
+            </svg>
+            <span className="text-[10.5px] font-bold text-[#F5D061] group-hover:text-yellow-300 tracking-tight whitespace-nowrap">
+              나눔
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* 5. 하단 4대 신행 인터랙션 바 (절하기 / 목탁 / 염주 / 나가기) */}
