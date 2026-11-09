@@ -361,7 +361,6 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       setIsPlayingChant(false)
       setIsZenMode(false)
       setEntranceStep('entering')
-      setWalkFrame(0)
       return
     }
 
