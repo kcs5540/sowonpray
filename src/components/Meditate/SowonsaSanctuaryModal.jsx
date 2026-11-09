@@ -149,8 +149,9 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
 
   // 인터랙션 상태
   const [actionState, setActionState] = useState('idle') // 'idle' | 'hapjang' | 'bow' | 'moktak' | 'yeomju'
-  // 🎬 대웅전 입장 시네마틱 시퀀스: 'entering'(걸어들어옴) -> 'hapjang'(합장반배) -> 'seated'(착석완료)
+  // 🎬 대웅전 시네마틱 시퀀스: 'entering'(걸어들어옴) -> 'hapjang'(합장반배) -> 'seated'(착석완료) -> 'exiting'(하직합장퇴장)
   const [entranceStep, setEntranceStep] = useState('entering')
+  const [isExiting, setIsExiting] = useState(false)
   const [bowCount, setBowCount] = useState(() => {
     const info = getDailyMeritInfo('bow', currentUser?.code || 'guest')
     return info.currentCount || 0
@@ -458,6 +459,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       setIsPlayingSound(false)
       setIsPlayingChant(false)
       setIsZenMode(false)
+      setIsExiting(false)
       setEntranceStep('entering')
       return
     }
@@ -466,6 +468,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
     // 0~2.5s: 대청마루에서 사뿐사뿐 걸어 방석 앞으로 들어오기
     // 2.5~4.5s: 방석 앞에 단정히 서서 부처님 전 깊고 정성스런 합장 반배 올리기
     // 4.5s+: 비단 방석에 가부좌 틀고 착석 완료
+    setIsExiting(false)
     setEntranceStep('entering')
 
     const tHapjang = setTimeout(() => {
@@ -481,6 +484,24 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       clearTimeout(tSeated)
     }
   }, [isOpen])
+
+  // 🚪 대웅전 하직 퇴당 시퀀스 (부처님 전 하직 합장 반배 후 공경히 물러남)
+  const handleExitWithBow = (e) => {
+    if (e) e.stopPropagation()
+    if (isExiting) {
+      onClose()
+      return
+    }
+    setIsExiting(true)
+    setEntranceStep('exiting')
+    showActionToast('🙏 부처님 전 하직 합장 반배를 올리고 물러납니다')
+
+    // 1.8초 동안 하직 합장 반배를 올린 후 정갈하게 법당 닫기
+    setTimeout(() => {
+      onClose()
+      setIsExiting(false)
+    }, 1800)
+  }
 
   if (!isOpen) return null
 
@@ -628,13 +649,10 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
             <Sparkles className="w-3.5 h-3.5" />
           </button>
 
-          {/* 닫기 버튼 */}
+          {/* 닫기 버튼 (부처님 전 하직 합장 반배 후 정갈한 퇴장) */}
           <button
             type="button"
-            onClick={(e) => {
-              e.stopPropagation()
-              onClose()
-            }}
+            onClick={handleExitWithBow}
             className="p-2 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[#D6CEC2] hover:text-white transition active:scale-95"
             title="법당 나가기"
           >
@@ -860,6 +878,15 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                       className="h-32 sm:h-38 object-contain"
                     />
                   </div>
+                ) : entranceStep === 'exiting' ? (
+                  /* 퇴장: 부처님 전 하직 합장 반배를 올리고 공경히 물러나는 모습 (1.8초) */
+                  <div className="flex flex-col items-center animate-monk-exit">
+                    <img 
+                      src="/images/avatar_monk_stand_hapjang.png?v=right" 
+                      alt="부처님 전 하직 합장 반배 올리는 동자승" 
+                      className="h-32 sm:h-38 object-contain"
+                    />
+                  </div>
                 ) : actionState === 'bow' ? (
                   /* 절하기 1배 모션 */
                   <img 
@@ -948,6 +975,12 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
             <span className="text-xs shrink-0">🙏</span>
             <span className="font-bold shrink-0">동자승</span>
             <span className="truncate text-white/90">부처님 전 공손히 합장 반배를 올립니다</span>
+          </div>
+        ) : entranceStep === 'exiting' ? (
+          <div className="mt-4 sm:mt-5 mb-1.5 px-3.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-[#F5D061]/80 text-[10.5px] text-[#F5D061] flex items-center gap-1.5 shadow-lg animate-in fade-in max-w-xs">
+            <span className="text-xs shrink-0">🙏</span>
+            <span className="font-bold shrink-0">동자승</span>
+            <span className="truncate text-white/90">부처님 전 하직 합장 반배를 올리고 물러납니다...</span>
           </div>
         ) : (
           /* 실시간 다른 불자님들의 정진 발원 티커 (동자승과 한 칸 띄움 적용) */
@@ -1057,21 +1090,26 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
             </span>
           </button>
 
-          {/* 버튼 4: 법당 나가기 (즉시 퇴장) */}
+          {/* 버튼 4: 법당 나가기 (부처님 전 하직 합장 반배 후 정갈한 퇴당) */}
           <button
             type="button"
-            onClick={(e) => {
-              e.stopPropagation()
-              onClose()
-            }}
-            className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 hover:border-[#F5D061]/50 transition group"
+            onClick={handleExitWithBow}
+            className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl active:scale-95 border transition group ${
+              isExiting
+                ? 'bg-[#F5D061]/25 border-[#F5D061] shadow-[0_0_15px_rgba(245,208,97,0.4)]'
+                : 'bg-white/10 hover:bg-white/15 border-white/15 hover:border-[#F5D061]/50'
+            }`}
             title="대웅전 나가기"
           >
             <div className="relative mb-0.5 flex items-center justify-center">
-              <DoorOpen className="w-5 h-5 sm:w-6 sm:h-6 text-[#F5D061] group-hover:scale-110 transition-transform filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.4)]" />
+              <DoorOpen className={`w-5 h-5 sm:w-6 sm:h-6 transition-transform filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.4)] ${
+                isExiting ? 'text-[#F5D061] animate-pulse' : 'text-[#F5D061] group-hover:scale-110'
+              }`} />
             </div>
-            <span className="text-[11px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061] transition">
-              나가기
+            <span className={`text-[11px] sm:text-xs font-bold transition ${
+              isExiting ? 'text-[#F5D061]' : 'text-[#E8DFD1] group-hover:text-[#F5D061]'
+            }`}>
+              {isExiting ? '하직 중...' : '나가기'}
             </span>
           </button>
         </div>
