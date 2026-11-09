@@ -699,12 +699,8 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
           </div>
         </div>
 
-        {/* 동자승과 아래 텍스트 사이: 대표님 지정 여유로운 1칸 공간 (mt-5 / mb-2) */}
-        {actionToast ? (
-          <div className="mt-4 sm:mt-5 mb-1.5 px-3.5 py-1.5 rounded-full bg-[#1F1914]/90 backdrop-blur-md border border-[#F5D061]/70 text-[#F5D061] text-xs font-medium shadow-[0_4px_20px_rgba(0,0,0,0.8)] animate-in fade-in zoom-in-95 duration-200 max-w-sm break-keep">
-            {actionToast}
-          </div>
-        ) : entranceStep === 'hapjang' ? (
+        {/* 동자승과 아래 텍스트 사이: 대표님 지정 여유로운 1칸 공간 (mt-5 / mb-2) - 팝업 제거하고 평온한 실시간 도량 온기만 유지 */}
+        {entranceStep === 'hapjang' ? (
           <div className="mt-4 sm:mt-5 mb-1.5 px-3.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-[#F5D061]/60 text-[10.5px] text-[#F5D061] flex items-center gap-1.5 shadow-lg animate-in fade-in max-w-xs">
             <span className="text-xs shrink-0">🙏</span>
             <span className="font-bold shrink-0">동자승</span>
