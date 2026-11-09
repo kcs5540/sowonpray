@@ -846,7 +846,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                   /* 1단계: 팔은 단정히 내리고, 왼발과 오른발을 번갈아 한 발짝씩 사뿐사뿐 내딛으며 대청마루를 걸어 들어오는 동자승 (2.5초) */
                   <div className="flex flex-col items-center animate-monk-walk">
                     <img 
-                      src="/images/avatar_monk_walking.webp?v=stride_clean" 
+                      src="/images/avatar_monk_walking.webp?v=symmetrical_stride_v27" 
                       alt="대청마루를 걸어 들어오는 동자승" 
                       className="h-32 sm:h-38 object-contain"
                     />
