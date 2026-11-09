@@ -32,6 +32,7 @@ export default function MobileAdminView({
 }) {
   const [activeTab, setActiveTab] = useState('bulsa') // 'bulsa' | 'visits' | 'lanterns' | 'members'
   const [bulsaStatusFilter, setBulsaStatusFilter] = useState('all') // 'all' | 'consulting' | 'in_progress' | 'completed'
+  const [visitDateFilter, setVisitDateFilter] = useState('today') // 'today' | 'tomorrow' | 'afterTomorrow' | 'geulpi' | 'past'
   const [searchTerm, setSearchTerm] = useState('')
   const [copiedPhone, setCopiedPhone] = useState(null)
   const [isRegisterOpen, setIsRegisterOpen] = useState(false)
@@ -75,6 +76,72 @@ export default function MobileAdminView({
       return true
     })
   }, [bulsaInquiries, bulsaStatusFilter])
+
+  // 도량 방문 예약 날짜 키 계산 (오늘, 내일, 모레, 글피)
+  const visitDateKeys = useMemo(() => {
+    const formatDate = (d) => {
+      const year = d.getFullYear()
+      const month = String(d.getMonth() + 1).padStart(2, '0')
+      const date = String(d.getDate()).padStart(2, '0')
+      return `${year}-${month}-${date}`
+    }
+    const now = new Date()
+    const d0 = new Date(now)
+    const d1 = new Date(now); d1.setDate(d1.getDate() + 1)
+    const d2 = new Date(now); d2.setDate(d2.getDate() + 2)
+    const d3 = new Date(now); d3.setDate(d3.getDate() + 3)
+
+    return {
+      today: formatDate(d0),
+      tomorrow: formatDate(d1),
+      afterTomorrow: formatDate(d2),
+      geulpi: formatDate(d3),
+    }
+  }, [])
+
+  // 일자별 방문 예약 그룹화
+  const visitGroups = useMemo(() => {
+    const todayList = []
+    const tomorrowList = []
+    const afterTomorrowList = []
+    const geulpiList = []
+    const pastList = []
+
+    ;(visits || []).forEach((v) => {
+      const vDate = String(v.visit_date || '').trim()
+      if (vDate === visitDateKeys.today) {
+        todayList.push(v)
+      } else if (vDate === visitDateKeys.tomorrow) {
+        tomorrowList.push(v)
+      } else if (vDate === visitDateKeys.afterTomorrow) {
+        afterTomorrowList.push(v)
+      } else if (vDate >= visitDateKeys.geulpi) {
+        geulpiList.push(v)
+      } else if (vDate < visitDateKeys.today) {
+        pastList.push(v)
+      } else {
+        todayList.push(v)
+      }
+    })
+
+    return {
+      today: todayList,
+      tomorrow: tomorrowList,
+      afterTomorrow: afterTomorrowList,
+      geulpi: geulpiList,
+      past: pastList,
+    }
+  }, [visits, visitDateKeys])
+
+  // 현재 선택된 일자의 방문 예약 목록
+  const currentVisits = useMemo(() => {
+    if (visitDateFilter === 'today') return visitGroups.today
+    if (visitDateFilter === 'tomorrow') return visitGroups.tomorrow
+    if (visitDateFilter === 'afterTomorrow') return visitGroups.afterTomorrow
+    if (visitDateFilter === 'geulpi') return visitGroups.geulpi
+    if (visitDateFilter === 'past') return visitGroups.past
+    return visits
+  }, [visitDateFilter, visitGroups, visits])
 
   // 2. 일반 1일 소원등 목록 (당일 사시예불 축원)
   const regularLanterns = useMemo(() => {
@@ -610,13 +677,99 @@ export default function MobileAdminView({
         {/* ============================================================== */}
         {activeTab === 'visits' && (
           <div className="space-y-3">
-            {visits.length === 0 ? (
+            {/* 방문·공양 하위메뉴 4분할 바 (오늘 / 내일 / 모레 / 글피) */}
+            <div className="grid grid-cols-4 gap-1 text-[11px]">
+              <button
+                type="button"
+                onClick={() => setVisitDateFilter('today')}
+                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                  visitDateFilter === 'today'
+                    ? 'bg-sky-700 text-white border-sky-700 font-bold shadow-xs'
+                    : 'bg-white text-sky-900 border-[#DDD3BF] hover:bg-sky-50 font-semibold'
+                }`}
+              >
+                <span>오늘</span>
+                <span className={`text-[11px] font-black ${visitDateFilter === 'today' ? 'text-amber-300' : 'text-sky-700'}`}>
+                  ({visitGroups.today.length})
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setVisitDateFilter('tomorrow')}
+                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                  visitDateFilter === 'tomorrow'
+                    ? 'bg-sky-700 text-white border-sky-700 font-bold shadow-xs'
+                    : 'bg-white text-sky-900 border-[#DDD3BF] hover:bg-sky-50 font-semibold'
+                }`}
+              >
+                <span>내일</span>
+                <span className={`text-[11px] font-black ${visitDateFilter === 'tomorrow' ? 'text-amber-300' : 'text-sky-700'}`}>
+                  ({visitGroups.tomorrow.length})
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setVisitDateFilter('afterTomorrow')}
+                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                  visitDateFilter === 'afterTomorrow'
+                    ? 'bg-sky-700 text-white border-sky-700 font-bold shadow-xs'
+                    : 'bg-white text-sky-900 border-[#DDD3BF] hover:bg-sky-50 font-semibold'
+                }`}
+              >
+                <span>모레</span>
+                <span className={`text-[11px] font-black ${visitDateFilter === 'afterTomorrow' ? 'text-amber-300' : 'text-sky-700'}`}>
+                  ({visitGroups.afterTomorrow.length})
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setVisitDateFilter('geulpi')}
+                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                  visitDateFilter === 'geulpi'
+                    ? 'bg-sky-700 text-white border-sky-700 font-bold shadow-xs'
+                    : 'bg-white text-sky-900 border-[#DDD3BF] hover:bg-sky-50 font-semibold'
+                }`}
+              >
+                <span>글피</span>
+                <span className={`text-[11px] font-black ${visitDateFilter === 'geulpi' ? 'text-amber-300' : 'text-sky-700'}`}>
+                  ({visitGroups.geulpi.length})
+                </span>
+              </button>
+            </div>
+
+            {/* 과거 지난 예약이 있는 경우 안내 링크 토글 */}
+            {visitGroups.past.length > 0 && (
+              <div className="flex justify-end pt-0.5">
+                <button
+                  type="button"
+                  onClick={() => setVisitDateFilter(visitDateFilter === 'past' ? 'today' : 'past')}
+                  className={`text-[10px] px-2 py-0.5 rounded-lg border transition cursor-pointer ${
+                    visitDateFilter === 'past'
+                      ? 'bg-gray-700 text-white border-gray-700 font-bold'
+                      : 'bg-[#F4F1EA] text-gray-500 border-gray-300 hover:text-gray-700'
+                  }`}
+                >
+                  {visitDateFilter === 'past' ? '← 오늘 예약 보기' : `이전 방문 내역 (${visitGroups.past.length}건)`}
+                </button>
+              </div>
+            )}
+
+            {currentVisits.length === 0 ? (
               <div className="p-8 text-center bg-white rounded-2xl border border-[#E5DCB9] text-[#7A6B58] text-xs space-y-1 shadow-xs">
                 <Calendar className="w-7 h-7 mx-auto text-sky-600" />
-                <p className="font-bold text-[#2E2214]">등록된 도량 방문 예약이 없습니다.</p>
+                <p className="font-bold text-[#2E2214]">
+                  {visitDateFilter === 'today' && '오늘 예정된 도량 방문·공양 예약이 없습니다.'}
+                  {visitDateFilter === 'tomorrow' && '내일 예정된 도량 방문·공양 예약이 없습니다.'}
+                  {visitDateFilter === 'afterTomorrow' && '모레 예정된 도량 방문·공양 예약이 없습니다.'}
+                  {visitDateFilter === 'geulpi' && '글피 및 이후 예정된 도량 방문·공양 예약이 없습니다.'}
+                  {visitDateFilter === 'past' && '이전 도량 방문 내역이 없습니다.'}
+                </p>
               </div>
             ) : (
-              visits.map((v) => {
+              currentVisits.map((v) => {
                 const phone = v.visitor_phone || ''
                 const cleanPhone = phone.replace(/[^0-9]/g, '')
 
