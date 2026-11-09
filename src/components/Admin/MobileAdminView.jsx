@@ -57,7 +57,8 @@ export default function MobileAdminView({
   const [editMemo, setEditMemo] = useState('')
   const [isSavingMember, setIsSavingMember] = useState(false)
 
-  // 1. 불사·49재·위패 등 상담 대상 건 필터링 (동일 일자 중복 접수건 스마트 단일화)
+  // 1. 순수 불사·상담 신청 건만 선별 (49재, 천도재, 영구위패, 기일제사, 생전예수재 등 전문 상담건)
+  // ※ 일반 소원등/인등(prayed)은 3번 탭 [소원등] 명부로 가며, 불사·상담 데이터와 완전히 분리됨!
   const bulsaInquiries = useMemo(() => {
     const rawList = (prayers || []).filter((p) => {
       const cat = String(p.wish_category || '')
@@ -67,11 +68,11 @@ export default function MobileAdminView({
         cat.includes('위패') ||
         cat.includes('기일') ||
         cat.includes('삼성각') ||
-        cat.includes('불사') ||
-        cat.includes('공양미') ||
-        cat.includes('인등') ||
         cat.includes('생전예수재')
-      return isBulsaCat || p.status === 'consulting'
+      
+      // 상담 대기/진행/완료 상태이거나 순수 불사 카테고리인 경우만 해당
+      // 일반 소원등 축원(prayed)이나 단순 인등은 불사·상담이 아니므로 철저히 분리
+      return (isBulsaCat && p.status !== 'prayed') || p.status === 'consulting' || p.status === 'in_progress'
     })
 
     // 동일 불자 + 동일 발원 + 동일 일자 중복 접수건 디둡 (중복 카드 연속 노출 착시 방지)
@@ -88,11 +89,10 @@ export default function MobileAdminView({
     return deduped
   }, [prayers])
 
-  // 불사·상담 상태 정규화 헬퍼 함수 ('consulting' | 'in_progress' | 'completed')
-  // DB의 기존 'prayed', 'paid' 등 축원/완료 건도 'completed'(완료)로 통합하여 빈 선택 방지
+  // 불사·상담 전용 3대 상태 헬퍼 함수 ('consulting': 대기 | 'in_progress': 상담중 | 'completed': 완료)
   const getBulsaStatus = (status) => {
     if (status === 'in_progress') return 'in_progress'
-    if (status === 'completed' || status === 'prayed' || status === 'paid') return 'completed'
+    if (status === 'completed') return 'completed'
     return 'consulting' // 기본값: 대기
   }
 
@@ -231,7 +231,7 @@ export default function MobileAdminView({
     return visits
   }, [visitDateFilter, visitGroups, visits])
 
-  // 2. 일반 1일 소원등 목록 (1일 1회 원칙 엄격 준수 & 동일일자 중복 단일화)
+  // 2. 일반 소원등 & 인등 목록 (부처님 전 일상 기도 & 사시예불 축원 대상)
   const regularLanterns = useMemo(() => {
     const rawList = (prayers || []).filter((p) => {
       const cat = String(p.wish_category || '')
@@ -241,11 +241,9 @@ export default function MobileAdminView({
         cat.includes('위패') ||
         cat.includes('기일') ||
         cat.includes('삼성각') ||
-        cat.includes('불사') ||
-        cat.includes('공양미') ||
-        cat.includes('인등') ||
         cat.includes('생전예수재')
-      return !isBulsa && p.status !== 'consulting'
+      // 불사 상담 접수건(대기, 상담중)이 아닌 순수 등/기도 건
+      return (!isBulsa || p.status === 'prayed') && p.status !== 'consulting' && p.status !== 'in_progress'
     })
 
     // 동일 일자 + 동일 불자 + 동일 발원 중복 노출 차단 (1일 1회 정진 원칙)
