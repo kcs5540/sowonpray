@@ -32,7 +32,7 @@ export default function MobileAdminView({
   showToast = () => {},
 }) {
   const [activeTab, setActiveTab] = useState('bulsa') // 'bulsa' | 'visits' | 'lanterns' | 'members'
-  const [bulsaStatusFilter, setBulsaStatusFilter] = useState('all') // 'all' | 'consulting' | 'in_progress' | 'completed'
+  const [bulsaStatusFilter, setBulsaStatusFilter] = useState('consulting') // 기본 첫화면: 대기 ('consulting') 목록
   const [visitDateFilter, setVisitDateFilter] = useState('all') // 'all' | 'today' | 'tomorrow' | 'afterTomorrow' | 'geulpi'
   const [lanternFilter, setLanternFilter] = useState('all') // 'all' | 'today'
   const [memberSort, setMemberSort] = useState('recent') // 'recent' | 'name' | 'family' | 'merit'
@@ -468,14 +468,8 @@ export default function MobileAdminView({
               <AlertCircle className={`w-3.5 h-3.5 ${activeTab === 'bulsa' ? 'text-red-600' : 'text-[#8C8375]'}`} />
               <span className="truncate">불사·상담</span>
             </div>
-            <div className="flex items-center gap-1 mt-0.5">
-              <span className="text-sm font-black">{bulsaInquiries.length}</span>
-              {pendingBulsaCount > 0 && (
-                <span className="text-[9.5px] font-extrabold bg-red-600 text-white px-1.5 py-0.2 rounded-full shadow-xs flex items-center gap-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-                  대기 {pendingBulsaCount}
-                </span>
-              )}
+            <div className="text-sm font-black mt-0.5">
+              {bulsaInquiries.length}건
             </div>
           </button>
 
@@ -549,21 +543,6 @@ export default function MobileAdminView({
             <div className="bg-[#EDE9E1] p-1 rounded-xl grid grid-cols-4 gap-1 text-[11px]">
               <button
                 type="button"
-                onClick={() => setBulsaStatusFilter('all')}
-                className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-1 whitespace-nowrap ${
-                  bulsaStatusFilter === 'all'
-                    ? 'bg-[#1E1914] text-[#F5D061] font-black shadow-xs'
-                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
-                }`}
-              >
-                <span>전체</span>
-                <span className={`text-[10.5px] font-black ${bulsaStatusFilter === 'all' ? 'text-[#F5D061]' : 'text-[#8C8375]'}`}>
-                  ({bulsaInquiries.length})
-                </span>
-              </button>
-
-              <button
-                type="button"
                 onClick={() => setBulsaStatusFilter('consulting')}
                 className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-1 whitespace-nowrap ${
                   bulsaStatusFilter === 'consulting'
@@ -575,6 +554,21 @@ export default function MobileAdminView({
                 <span>대기</span>
                 <span className="text-[10.5px] font-black">
                   ({bulsaInquiries.filter((p) => p.status === 'consulting').length})
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setBulsaStatusFilter('all')}
+                className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-1 whitespace-nowrap ${
+                  bulsaStatusFilter === 'all'
+                    ? 'bg-[#1E1914] text-[#F5D061] font-black shadow-xs'
+                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
+                }`}
+              >
+                <span>전체</span>
+                <span className={`text-[10.5px] font-black ${bulsaStatusFilter === 'all' ? 'text-[#F5D061]' : 'text-[#8C8375]'}`}>
+                  ({bulsaInquiries.length})
                 </span>
               </button>
 
