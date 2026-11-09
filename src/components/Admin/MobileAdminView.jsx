@@ -162,28 +162,32 @@ export default function MobileAdminView({
     })
   }, [prayers])
 
-  // 오늘 축원 대상 소원등 선별 (대웅전 사시예불 축원 명부 100% 실제 데이터 연동)
+  // 오늘 축원 대상 1일 소원등 선별 (인등 중복 배제 및 동일 불자님 중복 신청 정밀 디둡)
   const todayLanterns = useMemo(() => {
-    if (activeSasiPrayers && activeSasiPrayers.length > 0) {
-      return activeSasiPrayers
-    }
     const now = Date.now()
-    return (prayers || []).filter((p) => {
-      if (!p) return false
-      const c = p.wish_category || ''
-      if (c.includes('위패') || c.includes('천도재') || c.includes('49재') || c.includes('기일') || c.includes('예수재') || c.includes('공양미') || c.includes('불전시주')) return false
+    const seen = new Set()
+    const list = []
+
+    regularLanterns.forEach((p) => {
       let pTime = now
       if (p.created_at) {
         const parsed = new Date(p.created_at).getTime()
         if (!isNaN(parsed)) pTime = parsed
       }
       const diffMs = Math.max(0, now - pTime)
-      let maxDays = 2
-      if (c.includes('인등') || p.prayer_type === 'indeung_1yr') maxDays = 365
-      else if (c.includes('100일') || p.prayer_type === 'prayer_100d') maxDays = 100
-      return diffMs <= maxDays * 24 * 60 * 60 * 1000
+      // 당일 및 최근 48시간 이내 접수된 유효 1일 소원등
+      if (diffMs <= 48 * 60 * 60 * 1000) {
+        // 동일 불자님(이름+전화번호+발원분야) 중복 카드 단일화
+        const key = `${p.believer_name}_${(p.believer_phone || '').replace(/[^0-9]/g, '')}_${p.wish_category}`
+        if (!seen.has(key)) {
+          seen.add(key)
+          list.push(p)
+        }
+      }
     })
-  }, [activeSasiPrayers, prayers])
+
+    return list
+  }, [regularLanterns])
 
   // 현재 필터링된 소원등 목록
   const currentLanterns = useMemo(() => {
