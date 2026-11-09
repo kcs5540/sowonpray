@@ -15,6 +15,7 @@ import {
   Users,
   Clock,
   CheckCircle2,
+  Edit3,
 } from 'lucide-react'
 
 export default function MobileAdminView({
@@ -46,6 +47,15 @@ export default function MobileAdminView({
   const [newDharmaName, setNewDharmaName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [newMemo, setNewMemo] = useState('')
+
+  // 신도 상세 정보 조회 및 간편 수정 상태
+  const [editingMember, setEditingMember] = useState(null)
+  const [editName, setEditName] = useState('')
+  const [editDharmaName, setEditDharmaName] = useState('')
+  const [editPhone, setEditPhone] = useState('')
+  const [editAddress, setEditAddress] = useState('')
+  const [editMemo, setEditMemo] = useState('')
+  const [isSavingMember, setIsSavingMember] = useState(false)
 
   // 1. 불사·49재·위패 등 상담 대상 건 필터링
   const bulsaInquiries = useMemo(() => {
@@ -444,6 +454,70 @@ export default function MobileAdminView({
       }
     }
     showToast(`방문 예약이 [${statusLabels[newStatus] || newStatus}] 상태로 DB에 저장되었습니다.`)
+  }
+
+  // 신도 상세 정보 모달 열기
+  const handleOpenEditModal = (m) => {
+    setEditingMember(m)
+    setEditName(m.name || '')
+    setEditDharmaName(m.dharma_name || '')
+    setEditPhone(m.phone || '')
+    setEditAddress(m.address || '')
+    setEditMemo(m.family_memo || '')
+  }
+
+  // 신도 정보 수정 저장 (로컬 상태 + Supabase 실시간 동기화)
+  const handleSaveMemberEdit = async (e) => {
+    e.preventDefault()
+    if (!editingMember) return
+    if (!editName.trim() || !editPhone.trim()) {
+      showToast('성함과 연락처를 입력해 주세요.')
+      return
+    }
+
+    setIsSavingMember(true)
+    const cleanPhone = editPhone.replace(/[^0-9]/g, '')
+    const formattedPhone = cleanPhone.length === 11
+      ? `${cleanPhone.slice(0, 3)}-${cleanPhone.slice(3, 7)}-${cleanPhone.slice(7)}`
+      : editPhone.trim()
+
+    const updatedData = {
+      name: editName.trim(),
+      dharma_name: editDharmaName.trim(),
+      phone: formattedPhone,
+      address: editAddress.trim(),
+      family_memo: editMemo.trim(),
+      updated_at: new Date().toISOString(),
+    }
+
+    // 로컬 상태 즉시 동기화
+    setMembers((prev) =>
+      prev.map((m) =>
+        (m.id === editingMember.id || m.code === editingMember.code)
+          ? { ...m, ...updatedData }
+          : m
+      )
+    )
+
+    // Supabase 클라우드 실시간 반영
+    if (supabase) {
+      try {
+        let query = supabase.from('members').update(updatedData)
+        if (editingMember.id) {
+          query = query.eq('id', editingMember.id)
+        } else if (editingMember.code) {
+          query = query.eq('code', editingMember.code)
+        }
+        const { error } = await query
+        if (error) console.error('Member update error in Supabase:', error)
+      } catch (err) {
+        console.error('Member update exception:', err)
+      }
+    }
+
+    setIsSavingMember(false)
+    setEditingMember(null)
+    showToast(`[${updatedData.name}] 불자님 정보가 성공적으로 저장되었습니다.`)
   }
 
   // 현장 신규 신도 등록
@@ -1376,15 +1450,25 @@ ${v.visitor_name} 불자님, ${v.visit_date} ${v.visit_time} 방문 및 공양 �
                     key={m.code || m.id}
                     className="p-3.5 rounded-xl bg-white border border-[#E8DEC8] flex items-center justify-between gap-2 shadow-xs"
                   >
-                    <div className="min-w-0 flex-1">
+                    <div
+                      onClick={() => handleOpenEditModal(m)}
+                      className="min-w-0 flex-1 cursor-pointer active:opacity-75 transition"
+                      title="신도 상세 정보 확인 및 수정"
+                    >
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="text-sm font-bold text-[#2E2214]">{m.name}</span>
+                        <span className="text-sm font-bold text-[#2E2214] hover:text-[#C59B27] transition">
+                          {m.name}
+                        </span>
                         {m.dharma_name && (
                           <span className="text-[10.5px] font-bold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.2 rounded border border-[#E5D399]">
                             {m.dharma_name}
                           </span>
                         )}
                         <span className="text-[10.5px] text-[#8C7D6B] font-mono">#{m.code}</span>
+                        <span className="text-[9.5px] text-[#9A7618] font-bold bg-[#FAF5EB] px-1.5 py-0.2 rounded border border-[#E8DEC8] flex items-center gap-0.5 shadow-2xs">
+                          <Edit3 className="w-2.5 h-2.5" />
+                          수정
+                        </span>
                       </div>
                       <div className="flex items-center gap-2 mt-1 text-[11px] text-[#7A6B58] flex-wrap">
                         <span className="font-medium text-[#40362C]">{phone}</span>
@@ -1445,6 +1529,127 @@ ${m.name} 불자님, 안녕하십니까.`
           </div>
         )}
       </main>
+
+      {/* 5. 신도 정보 상세 및 수정 바텀시트 모달 */}
+      {editingMember && (
+        <div className="fixed inset-0 z-60 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in">
+          <div className="w-full sm:max-w-md bg-white border-t sm:border border-[#E5DCB9] rounded-t-3xl sm:rounded-2xl p-5 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            {/* 상단 헤더 */}
+            <div className="flex items-center justify-between border-b border-[#F0EBE1] pb-3">
+              <div>
+                <h3 className="text-sm font-serif-kr font-bold text-[#2E2214] flex items-center gap-1.5">
+                  <Edit3 className="w-4 h-4 text-[#C59B27]" />
+                  신도 정보 상세 및 수정
+                </h3>
+                <p className="text-[10.5px] text-[#8C7D6B] mt-0.5 font-mono">
+                  신도코드 #{editingMember.code}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditingMember(null)}
+                className="text-[#7A6B58] hover:text-[#2E2214] p-1 cursor-pointer"
+                title="닫기"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* 신도 기본 활동 현황 카드 */}
+            <div className="grid grid-cols-2 gap-2 bg-[#FAF8F5] p-2.5 rounded-xl border border-[#EDE7D9] text-xs">
+              <div className="flex items-center gap-1.5">
+                <Users className="w-3.5 h-3.5 text-sky-600" />
+                <span className="text-[#695B49]">인연신도:</span>
+                <span className="font-bold text-[#2E2214]">{Number(editingMember.believers_count || 0)}명</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Flame className="w-3.5 h-3.5 text-amber-600" />
+                <span className="text-[#695B49]">정진공덕:</span>
+                <span className="font-bold text-[#2E2214]">{Number(editingMember.merit_count || 0).toLocaleString()} 공덕</span>
+              </div>
+            </div>
+
+            {/* 수정 입력 폼 */}
+            <form onSubmit={handleSaveMemberEdit} className="space-y-3 text-xs">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-[#524436] font-bold mb-1">성함 (실명) *</label>
+                  <input
+                    type="text"
+                    required
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    placeholder="성함"
+                    className="w-full bg-[#FAF8F5] border border-[#DDD3BF] rounded-xl px-3 py-2 text-[#2E2214] focus:border-[#C59B27] focus:outline-none font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[#524436] font-bold mb-1">법명 (수계명)</label>
+                  <input
+                    type="text"
+                    value={editDharmaName}
+                    onChange={(e) => setEditDharmaName(e.target.value)}
+                    placeholder="예: 보현행, 주몽"
+                    className="w-full bg-[#FAF8F5] border border-[#DDD3BF] rounded-xl px-3 py-2 text-[#8A6510] focus:border-[#C59B27] focus:outline-none font-bold"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[#524436] font-bold mb-1">연락처 (휴대전화) *</label>
+                <input
+                  type="tel"
+                  required
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(e.target.value)}
+                  placeholder="010-0000-0000"
+                  className="w-full bg-[#FAF8F5] border border-[#DDD3BF] rounded-xl px-3 py-2 text-[#2E2214] focus:border-[#C59B27] focus:outline-none font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[#524436] font-bold mb-1">거주지 주소</label>
+                <input
+                  type="text"
+                  value={editAddress}
+                  onChange={(e) => setEditAddress(e.target.value)}
+                  placeholder="예: 서귀포시 남원읍 태흥리..."
+                  className="w-full bg-[#FAF8F5] border border-[#DDD3BF] rounded-xl px-3 py-2 text-[#2E2214] focus:border-[#C59B27] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[#524436] font-bold mb-1">관리자 상담 메모 / 특이사항</label>
+                <textarea
+                  rows={3}
+                  value={editMemo}
+                  onChange={(e) => setEditMemo(e.target.value)}
+                  placeholder="예: 서귀포 거주, 자녀 수능 백일기도 중, 초파일 인등 신청 희망 등"
+                  className="w-full bg-[#FAF8F5] border border-[#DDD3BF] rounded-xl p-2.5 text-[#2E2214] focus:border-[#C59B27] focus:outline-none font-serif-kr resize-none"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setEditingMember(null)}
+                  className="flex-1 py-2.5 rounded-xl bg-[#F0ECE1] text-[#695B49] font-bold cursor-pointer"
+                >
+                  취소
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingMember}
+                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#D4A024] to-[#C59B27] hover:brightness-105 text-[#1C140A] font-bold shadow-md active:scale-95 transition cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <Check className="w-3.5 h-3.5" />
+                  <span>{isSavingMember ? '저장 중...' : '수정사항 저장'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* 4. 현장 신규 신도 간편 등록 바텀시트 모달 */}
       {isRegisterOpen && (
