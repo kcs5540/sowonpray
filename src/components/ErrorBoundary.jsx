@@ -3,7 +3,7 @@ import React from 'react'
 export default class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { hasError: false, error: null }
+    this.state = { hasError: false, error: null, isReloading: false }
   }
 
   static getDerivedStateFromError(error) {
@@ -14,20 +14,33 @@ export default class ErrorBoundary extends React.Component {
     console.error('소원사 시스템 안전망(ErrorBoundary) 오류 포착:', error, errorInfo)
   }
 
-  handleReload = () => {
+  handleReload = (e) => {
+    e?.preventDefault?.()
+    e?.stopPropagation?.()
+    if (this.state.isReloading) return
+    this.setState({ isReloading: true })
+
     if (typeof window !== 'undefined') {
       try {
-        // 캐시 및 서비스워커 찌꺼기를 안전하게 정리하여 최신 코드를 즉시 받아오도록 조치
+        // 1. 서비스워커 등록 해제 및 캐시 전면 정리
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then((registrations) => {
+            registrations.forEach((r) => r.unregister())
+          })
+        }
         if ('caches' in window) {
           caches.keys().then((names) => {
             names.forEach((name) => caches.delete(name))
           })
         }
-      } catch (e) {
-        console.warn('Cache clear note:', e)
+      } catch (err) {
+        console.warn('Cache clear note:', err)
       }
-      // 캐시 방지 타임스탬프 쿼리를 붙여 무조건 서버의 최신 화면으로 강제 이동
-      window.location.replace(`/?t=${Date.now()}`)
+
+      // 2. 홈으로 즉시 강제 하드 리다이렉트
+      setTimeout(() => {
+        window.location.href = `/?reload=${Date.now()}`
+      }, 100)
     }
   }
 
@@ -66,9 +79,11 @@ export default class ErrorBoundary extends React.Component {
               <button
                 type="button"
                 onClick={this.handleReload}
-                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#C59B27] hover:brightness-110 active:scale-95 text-[#1B1815] font-serif-kr font-bold text-sm shadow-md transition cursor-pointer"
+                onTouchEnd={this.handleReload}
+                disabled={this.state.isReloading}
+                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#C59B27] hover:brightness-110 active:scale-95 text-[#1B1815] font-serif-kr font-bold text-sm shadow-md transition cursor-pointer disabled:opacity-75"
               >
-                🪷 소원사 법당 홈으로 안전하게 복귀
+                {this.state.isReloading ? '🔄 법당 홈으로 즉시 복귀 중...' : '🪷 소원사 법당 홈으로 안전하게 복귀'}
               </button>
             </div>
 
