@@ -876,24 +876,11 @@ export default function MobileAdminView({
                     key={v.id}
                     className="rounded-2xl p-4 bg-white border border-[#E5DEC8] space-y-3 shadow-xs"
                   >
-                    {/* 1) 상단: 성함 및 일체형 단일 뱃지 (줄바꿈 없이 깔끔하게 정돈) */}
+                    {/* 1) 상단: 성함 및 일체형 단일 뱃지 (넉넉한 공간 확보로 글자 잘림 완벽 해결) */}
                     <div className="flex items-center justify-between gap-2 border-b border-[#F4EFE6] pb-2.5">
-                      <div className="flex items-center gap-1.5 min-w-0">
-                        <span className="text-base font-black text-[#241E17] truncate">
-                          {v.visitor_name || '방문 불자님'}
-                        </span>
-                        {phone && (
-                          <button
-                            type="button"
-                            onClick={() => handleCopyPhone(phone)}
-                            className="text-[11px] text-[#8C8375] hover:text-[#241E17] flex items-center gap-0.5 cursor-pointer ml-1"
-                            title="전화번호 복사"
-                          >
-                            <span>{phone}</span>
-                            <Copy className="w-3 h-3 text-[#B0A798]" />
-                          </button>
-                        )}
-                      </div>
+                      <span className="text-base font-black text-[#241E17] truncate">
+                        {v.visitor_name || '방문 불자님'}
+                      </span>
 
                       <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#FAF5EB] text-[#8A6510] border border-[#E8DEC8] shrink-0 whitespace-nowrap">
                         {formatVisitPurpose(v.visit_purpose)} · {v.headcount || 1}명
@@ -922,8 +909,27 @@ export default function MobileAdminView({
                       </div>
                     )}
 
-                    {/* 4) 버튼 영역: 2026 최신 2열 정돈 (상단: 통화/문자 2분할, 하단: 상태관리 3분할) */}
+                    {/* 4) 버튼 영역: 전화번호 + 2열 소통/관리 */}
                     <div className="space-y-2 pt-1">
+                      {/* 전화번호 바 (통화/문자 버튼 바로 위에 여유롭게 배치) */}
+                      {phone && (
+                        <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#F7F5EE] border border-[#EAE3D2] text-xs">
+                          <div className="flex items-center gap-2 text-[#5C4F3D]">
+                            <span className="font-bold text-[11px] text-[#8A6510]">연락처</span>
+                            <span className="font-mono text-sm font-black text-[#241E17] tracking-tight">{phone}</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleCopyPhone(phone)}
+                            className="px-2.5 py-1 rounded-lg bg-white border border-[#DDD3BF] text-[11px] font-bold text-[#5C4D3B] hover:bg-[#FAF8F5] active:scale-95 flex items-center gap-1 cursor-pointer transition shadow-2xs"
+                            title="전화번호 복사"
+                          >
+                            <Copy className="w-3 h-3 text-[#8C7D6B]" />
+                            <span>복사</span>
+                          </button>
+                        </div>
+                      )}
+
                       {/* 1열: 원터치 소통 액션 (균형 잡힌 2분할) */}
                       <div className="grid grid-cols-2 gap-2">
                         <a
