@@ -566,7 +566,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                   /* 1단계: 부처님 전을 향해 두 손 모아 정중히 합장 반배 올리는 모습 (2.2초) */
                   <div className="flex flex-col items-center animate-monk-hapjang">
                     <img 
-                      src="/images/avatar_monk_stand_hapjang.png" 
+                      src="/images/avatar_monk_stand_hapjang.png?v=right" 
                       alt="부처님 전 합장 반배 올리는 동자승" 
                       className="h-32 sm:h-38 object-contain"
                     />
