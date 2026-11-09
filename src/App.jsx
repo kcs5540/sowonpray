@@ -113,7 +113,7 @@ const HERO_SLIDES = [
     titlePrefix: '간절한 기도가 응답받는 곳,',
     titleHighlight: '제주 소원사',
     description:
-      '거리가 멀어 직접 오시지 못하는 날에도, 모바일 법당에 올리신 한 줄 소원을 제주 소원사 대웅전 부처님 전에 정성껏 축원 올립니다.',
+      '거리가 멀어 오시지 못하는 날에도, 모바일 법당에 올리신 한 줄 소원을 대웅전 부처님 전에 정성껏 축원 올립니다.',
     targetTab: 'lantern',
     ctaLabel: '무료 소원등 켜기 ▶',
   },
