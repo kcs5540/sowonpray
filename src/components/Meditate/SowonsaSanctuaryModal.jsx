@@ -71,8 +71,8 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
 
   // 인터랙션 상태
   const [actionState, setActionState] = useState('idle') // 'idle' | 'hapjang' | 'bow' | 'moktak' | 'yeomju'
-  // 🎬 대웅전 입장 시네마틱 시퀀스: 'entering'(걸어들어옴) -> 'hapjang'(합장반배) -> 'seated'(착석완료)
-  const [entranceStep, setEntranceStep] = useState('entering')
+  // 🎬 대웅전 입장 시네마틱 시퀀스: 'hapjang'(합장반배) -> 'seated'(착석완료)
+  const [entranceStep, setEntranceStep] = useState('hapjang')
   const [bowCount, setBowCount] = useState(() => {
     const info = getDailyMeritInfo('bow', currentUser?.code || 'guest')
     return info.currentCount || 0
@@ -360,26 +360,20 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       setIsPlayingSound(false)
       setIsPlayingChant(false)
       setIsZenMode(false)
-      setEntranceStep('entering')
+      setEntranceStep('hapjang')
       return
     }
 
     // 🎬 대웅전 입장 시퀀스:
-    // 0~2.8s: 양팔을 흔들고 발을 내딛으며 대청마루에서 사뿐사뿐 걸어 들어오기 (12프레임 실사 애니메이션)
-    // 2.8~4.8s: 방석 앞에 단정히 서서 삼존불 전 깊고 정성스런 합장 반배 올리기
-    // 4.8s+: 비단 방석에 가부좌 틀고 착석 완료
-    setEntranceStep('entering')
-
-    const tHapjang = setTimeout(() => {
-      setEntranceStep('hapjang')
-    }, 2800)
+    // 0~2.2s: 부처님 전을 향해 두 손 모아 정중히 합장 반배 올리기
+    // 2.2s+: 비단 방석에 가부좌 틀고 착석 완료
+    setEntranceStep('hapjang')
 
     const tSeated = setTimeout(() => {
       setEntranceStep('seated')
-    }, 4800)
+    }, 2200)
 
     return () => {
-      clearTimeout(tHapjang)
       clearTimeout(tSeated)
     }
   }, [isOpen])
@@ -618,23 +612,14 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                 ? 'scale-105'
                 : ''
             }`}>
-              {/* 3D 동자승 실사 캐릭터 (대웅전 자연스럽게 걷기 -> 방석 위 서서 합장 반배 -> 가부좌 착석 -> 절하기/참선) */}
+              {/* 3D 동자승 실사 캐릭터 (대웅전 서서 합장 반배 -> 비단 방석 가부좌 착석 -> 절하기/참선) */}
               <div className="relative z-10 h-28 sm:h-34 flex items-end justify-center filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.9)]">
-                {entranceStep === 'entering' ? (
-                  /* 1단계: 양팔을 흔들고 왼발-오른발을 실제로 디디며 사뿐사뿐 걸어 들어오는 12프레임 실사 애니메이션 동자승 */
-                  <div className="flex flex-col items-center animate-monk-walk">
-                    <img 
-                      src="/images/avatar_monk_walking.webp" 
-                      alt="양팔과 다리를 움직이며 걸어 들어오는 동자승" 
-                      className="h-32 sm:h-38 object-contain"
-                    />
-                  </div>
-                ) : entranceStep === 'hapjang' ? (
-                  /* 2단계: 방석 앞에 우뚝 서서, 부처님 전을 향해 두 손 모아 정중히 합장 반배 올리는 모습 (2.0초) */
+                {entranceStep === 'hapjang' ? (
+                  /* 1단계: 부처님 전을 향해 두 손 모아 정중히 합장 반배 올리는 모습 (2.2초) */
                   <div className="flex flex-col items-center animate-monk-hapjang">
                     <img 
                       src="/images/avatar_monk_stand_hapjang.png" 
-                      alt="방석 위 서서 합장 반배 올리는 동자승" 
+                      alt="부처님 전 합장 반배 올리는 동자승" 
                       className="h-32 sm:h-38 object-contain"
                     />
                   </div>
@@ -646,7 +631,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                     className="h-24 sm:h-30 object-contain transition-transform duration-300"
                   />
                 ) : (
-                  /* 3단계 & 기본: 비단 방석에 가부좌 틀고 고요히 참선하는 모습 (착석 완료) */
+                  /* 2단계 & 기본: 비단 방석에 가부좌 틀고 고요히 참선하는 모습 (착석 완료) */
                   <img 
                     src="/images/avatar_monk_meditate.png" 
                     alt="고요히 참선 중인 동자승" 
@@ -719,17 +704,11 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
           <div className="mt-4 sm:mt-5 mb-1.5 px-3.5 py-1.5 rounded-full bg-[#1F1914]/90 backdrop-blur-md border border-[#F5D061]/70 text-[#F5D061] text-xs font-medium shadow-[0_4px_20px_rgba(0,0,0,0.8)] animate-in fade-in zoom-in-95 duration-200 max-w-sm break-keep">
             {actionToast}
           </div>
-        ) : entranceStep === 'entering' ? (
-          <div className="mt-4 sm:mt-5 mb-1.5 px-3.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-[#F5D061]/40 text-[10.5px] text-[#F5D061] flex items-center gap-1.5 shadow-lg animate-pulse max-w-xs">
-            <span className="text-xs shrink-0">👣</span>
-            <span className="font-bold shrink-0">동자승</span>
-            <span className="truncate text-white/90">법당 마루를 사뿐사뿐 걸어 들어섭니다...</span>
-          </div>
         ) : entranceStep === 'hapjang' ? (
           <div className="mt-4 sm:mt-5 mb-1.5 px-3.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-[#F5D061]/60 text-[10.5px] text-[#F5D061] flex items-center gap-1.5 shadow-lg animate-in fade-in max-w-xs">
             <span className="text-xs shrink-0">🙏</span>
             <span className="font-bold shrink-0">동자승</span>
-            <span className="truncate text-white/90">방석 위에 서서 삼존불 전 합장 반배를 올립니다</span>
+            <span className="truncate text-white/90">부처님 전 공손히 합장 반배를 올립니다</span>
           </div>
         ) : (
           /* 실시간 다른 불자님들의 정진 발원 티커 (동자승과 한 칸 띄움 적용) */
