@@ -2329,12 +2329,15 @@ function formatRelativeOrDate(dateStr) {
   // 오늘 사시예불 회향 안내 팝업 확인 완료 플래그 (메모리 Ref로 동시성 및 리렌더링 시 중복 노출 원천 차단)
   const hoehangDismissedRef = useRef(false)
 
-  // 소원등 유효 점등 여부 (보안 및 개인정보 보호: 로그아웃 상태이거나 다른 회원 접속 시 이전 회원의 등 비노출)
+  // 소원등 유효 점등 여부 (보안 및 개인정보 보호: 로그인된 불자 본인의 소원등만 정확히 매칭, 타인 캐시 혼선 차단)
   const isLanternLit = Boolean(
     lanternData &&
     lanternData.expire_at > Date.now() &&
-    (!lanternData.member_code || (currentUser && currentUser.code === lanternData.member_code)) &&
-    (currentUser || !members.some((m) => lanternData.believer_name && lanternData.believer_name.includes(m.name)))
+    (!currentUser
+      ? !lanternData.member_code
+      : ((currentUser.code && lanternData.member_code === currentUser.code) ||
+         ((currentUser.phone || '').replace(/[^0-9]/g, '') && (lanternData.believer_phone || '').replace(/[^0-9]/g, '') === (currentUser.phone || '').replace(/[^0-9]/g, '')) ||
+         ((currentUser.name || '').trim() && (lanternData.believer_name || '').includes(currentUser.name.trim()))))
   )
   const lanternDaysRemaining = isLanternLit
     ? Math.max(1, Math.ceil((lanternData.expire_at - Date.now()) / (1000 * 60 * 60 * 24)))
@@ -2363,13 +2366,13 @@ function formatRelativeOrDate(dateStr) {
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [latestSubmittedPrayerId, setLatestSubmittedPrayerId] = useState(null)
 
-  // 🪔 불자님의 실제 소원등 접수 장부(prayers) 및 누적 기록 기반 연속 정진 일수(Streak) 및 누적 총 횟수 정밀 연산
+  // 🪔 불자님의 실제 소원등 접수 장부(prayers) 및 누적 기록 기반 연속 정진 일수(Streak) 및 누적 총 횟수 정밀 연산 (타인 기기 캐시 오염 차단)
   const userLanternStats = useMemo(() => {
-    const cleanUserPhone = (currentUser?.phone || wishPhone || lanternData?.believer_phone || '').replace(/[^0-9]/g, '')
-    const userCode = currentUser?.code || lanternData?.member_code || ''
-    const userName = currentUser?.name || wishName || lanternData?.believer_name || ''
+    const cleanUserPhone = (currentUser?.phone || wishPhone || '').replace(/[^0-9]/g, '')
+    const userCode = currentUser?.code || ''
+    const userName = (currentUser?.name || wishName || '').trim()
 
-    // 1) 장부(prayers)에서 해당 불자님의 1일 소원등 목록 추출
+    // 1) 장부(prayers)에서 해당 불자님의 1일 소원등 목록 엄격 추출
     const my1dPrayers = (prayers || []).filter((p) => {
       if (!p || !p.created_at) return false
       const pCat = p.wish_category || ''
@@ -2390,11 +2393,18 @@ function formatRelativeOrDate(dateStr) {
       }
       const pPhone = (p.believer_phone || '').replace(/[^0-9]/g, '')
       const pCode = p.member_code || ''
-      const pName = p.believer_name || ''
-      const matchPhone = cleanUserPhone && pPhone && cleanUserPhone === pPhone
-      const matchCode = userCode && pCode && userCode === pCode
-      const matchName = userName && pName && (pName.includes(userName) || userName.includes(pName))
-      return matchPhone || matchCode || matchName
+      const pName = (p.believer_name || '').trim()
+
+      if (cleanUserPhone && pPhone) {
+        return cleanUserPhone === pPhone
+      }
+      if (userCode && pCode) {
+        return userCode === pCode
+      }
+      if (userName && pName) {
+        return pName === userName || pName.startsWith(userName + ' ') || pName.startsWith(userName + '(')
+      }
+      return false
     })
 
     // 2) 고유 사시예불 회차(sasiDateKey) 목록 추출 및 최신순 정렬
@@ -2416,23 +2426,43 @@ function formatRelativeOrDate(dateStr) {
       }
     }
 
-    // 로컬스토리지 백업 및 이전 저장된 streak 값과 비교하여 최대값 보장
-    let storedStreak = 1
-    try {
-      const raw = localStorage.getItem('sowonsa_lantern_streak_v2')
-      if (raw) {
-        const parsed = JSON.parse(raw)
-        if (parsed && Number(parsed.count) > 0) storedStreak = Number(parsed.count)
-      }
-    } catch (e) {}
+    // 4) 현재 활성화된 소원등이 본인의 것인지 정확히 확인
+    const isMyActiveLantern = Boolean(
+      isLanternLit &&
+      lanternData &&
+      ((userCode && lanternData.member_code === userCode) ||
+       (cleanUserPhone && (lanternData.believer_phone || '').replace(/[^0-9]/g, '') === cleanUserPhone) ||
+       (userName && (lanternData.believer_name || '').includes(userName)))
+    )
 
-    const streak = Math.max(calculatedStreak, storedStreak, lanternData?.streak || 1, 1)
+    // 사용자 고유 키로 로컬 저장소 조회 (공용 sowonsa_lantern_streak_v2 로 인한 타인 데이터 오염 원천 차단)
+    let storedStreak = 0
+    if (userCode || cleanUserPhone) {
+      try {
+        const userSpecificKey = `sowonsa_streak_${userCode || cleanUserPhone}`
+        const raw = localStorage.getItem(userSpecificKey)
+        if (raw) {
+          const parsed = JSON.parse(raw)
+          if (parsed && Number(parsed.count) > 0) storedStreak = Number(parsed.count)
+        }
+      } catch (e) {}
+    }
 
-    // 4) 총 소원등 점등 횟수 계산 (장부 기록 건수, 로컬 카운트, 최소 streak 중 최대값)
-    const totalCount = Math.max(my1dPrayers.length, lanternData?.total_count || 1, streak)
+    const streak = Math.max(calculatedStreak, storedStreak, isMyActiveLantern ? (lanternData?.streak || 1) : 0)
+    const totalCount = Math.max(my1dPrayers.length, isMyActiveLantern ? (lanternData?.total_count || 1) : 0, streak > 0 ? streak : 0)
 
-    return { streak, totalCount, prayersCount: my1dPrayers.length }
-  }, [prayers, currentUser, wishPhone, wishName, lanternData])
+    // 본인의 가장 최근 소원등
+    const latestMyPrayer = my1dPrayers[0] || (isMyActiveLantern ? lanternData : null)
+
+    return {
+      streak,
+      totalCount,
+      prayersCount: my1dPrayers.length,
+      latestCategory: latestMyPrayer?.wish_category || (isMyActiveLantern ? lanternData?.wish_category : null),
+      latestWishText: latestMyPrayer?.wish_text || (isMyActiveLantern ? lanternData?.wish_text : null),
+      isMyActiveLantern,
+    }
+  }, [prayers, currentUser, wishPhone, wishName, lanternData, isLanternLit])
 
   const previewNextStreakCount = (targetSasiDateKey, prevSasiDateKey) => {
     try {
@@ -9413,7 +9443,9 @@ function formatRelativeOrDate(dateStr) {
                       </span>
                       <span className="font-extrabold text-[#6B4E08] text-[13px]">
                         {meritCertType === 'lantern'
-                          ? `소원등 총 ${userLanternStats.totalCount}회 점등 (${userLanternStats.streak}일 연속)`
+                          ? (userLanternStats.totalCount > 0
+                              ? `소원등 총 ${userLanternStats.totalCount}회 점등 (${userLanternStats.streak}일 연속)`
+                              : '소원등 미점등 (첫 소원등을 켜보세요)')
                           : (currentSutra?.title || '반야심경')}
                       </span>
                     </div>
@@ -9422,14 +9454,25 @@ function formatRelativeOrDate(dateStr) {
                   {/* 중앙 본문 박스 (사경 구절 또는 소원등 발원문) */}
                   <div className="mt-3 p-3 rounded-xl bg-[#F8F3E8] border border-[#D5C59B] text-center shadow-[inset_0_1px_3px_rgba(197,155,39,0.06)]">
                     {meritCertType === 'lantern' ? (
-                      <div>
-                        <span className="inline-block text-[11px] font-extrabold text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-md border border-[#E5D399] mb-1">
-                          발원 분야: {lanternData?.wish_category || '가족건강'}
-                        </span>
-                        <p className="font-serif-kr text-[14.5px] sm:text-[15.5px] font-black text-[#1F1912] leading-relaxed break-keep mt-0.5">
-                          “{lanternData?.wish_text || '지극정성으로 온 가족의 무병장수와 만복·소원성취를 발원합니다.'}”
-                        </p>
-                      </div>
+                      userLanternStats.totalCount > 0 ? (
+                        <div>
+                          <span className="inline-block text-[11px] font-extrabold text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-md border border-[#E5D399] mb-1">
+                            발원 분야: {userLanternStats.latestCategory || '대웅전 소원등'}
+                          </span>
+                          <p className="font-serif-kr text-[14.5px] sm:text-[15.5px] font-black text-[#1F1912] leading-relaxed break-keep mt-0.5">
+                            “{userLanternStats.latestWishText || '지극정성으로 온 가족의 무병장수와 만복·소원성취를 발원합니다.'}”
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="py-2">
+                          <span className="inline-block text-[11px] font-extrabold text-[#8A6510] bg-[#FAF3DF] px-2.5 py-0.5 rounded-md border border-[#E5D399] mb-1">
+                            대웅전 소원등
+                          </span>
+                          <p className="font-serif-kr text-[13.5px] font-bold text-[#5C452D] leading-relaxed break-keep mt-1">
+                            부처님 전에 정성껏 소원등을 밝히시면<br />매일 사시예불 축원과 함께 정진 공덕장이 수여됩니다.
+                          </p>
+                        </div>
+                      )
                     ) : (
                       <div>
                         <p className="font-serif-kr text-[16px] sm:text-[17px] font-black text-[#1A1208] leading-relaxed tracking-normal whitespace-pre-line">
