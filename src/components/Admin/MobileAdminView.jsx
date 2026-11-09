@@ -57,9 +57,9 @@ export default function MobileAdminView({
   const [editMemo, setEditMemo] = useState('')
   const [isSavingMember, setIsSavingMember] = useState(false)
 
-  // 1. 불사·49재·위패 등 상담 대상 건 필터링
+  // 1. 불사·49재·위패 등 상담 대상 건 필터링 (동일 일자 중복 접수건 스마트 단일화)
   const bulsaInquiries = useMemo(() => {
-    return (prayers || []).filter((p) => {
+    const rawList = (prayers || []).filter((p) => {
       const cat = String(p.wish_category || '')
       const isBulsaCat =
         cat.includes('49재') ||
@@ -73,6 +73,19 @@ export default function MobileAdminView({
         cat.includes('생전예수재')
       return isBulsaCat || p.status === 'consulting'
     })
+
+    // 동일 불자 + 동일 발원 + 동일 일자 중복 접수건 디둡 (중복 카드 연속 노출 착시 방지)
+    const seen = new Set()
+    const deduped = []
+    rawList.forEach((p) => {
+      const dateKey = p.created_at ? p.created_at.slice(0, 10) : 'unknown'
+      const key = `${p.believer_name}_${(p.believer_phone || '').replace(/[^0-9]/g, '')}_${dateKey}_${p.wish_category}_${(p.wish_text || '').trim()}`
+      if (!seen.has(key)) {
+        seen.add(key)
+        deduped.push(p)
+      }
+    })
+    return deduped
   }, [prayers])
 
   // 긴급 상담대기 건수
@@ -399,34 +412,44 @@ export default function MobileAdminView({
     }
   }
 
-  // 상담 상태 변경 (접수대기 -> 상담중 -> 상담완료)
+  // 상담 상태 변경 (접수대기 -> 상담진행 -> 상담회향/완료)
   const handleUpdatePrayerStatus = async (prayerId, newStatus) => {
     const statusLabels = {
-      consulting: '접수대기',
-      in_progress: '상담진행중',
-      completed: '상담완료',
+      consulting: '대기',
+      in_progress: '상담중',
+      completed: '완료',
     }
 
+    const targetId = prayerId
     setPrayers((prev) =>
-      prev.map((p) =>
-        p.id === prayerId || p.db_id === prayerId
-          ? { ...p, status: newStatus }
-          : p
-      )
+      prev.map((p) => {
+        const matches =
+          String(p.id) === String(targetId) ||
+          (p.db_id && String(p.db_id) === String(targetId))
+        return matches ? { ...p, status: newStatus } : p
+      })
     )
 
-    if (supabase) {
+    if (supabase && targetId) {
       try {
-        const target = prayers.find((p) => p.id === prayerId || p.db_id === prayerId)
-        const dbId = target?.db_id || target?.id
-        await supabase
+        const target = prayers.find(
+          (p) =>
+            String(p.id) === String(targetId) ||
+            (p.db_id && String(p.db_id) === String(targetId))
+        )
+        const dbId = target?.db_id || target?.id || targetId
+        const { error } = await supabase
           .from('prayers')
           .update({ status: newStatus })
           .eq('id', dbId)
-      } catch (err) {}
+        if (error) console.error('Prayer status update error:', error)
+      } catch (err) {
+        console.error('Prayer status update exception:', err)
+      }
     }
 
-    showToast(`상태가 [${statusLabels[newStatus] || newStatus}]로 변경되었습니다.`)
+    const destTab = newStatus === 'consulting' ? '대기' : newStatus === 'in_progress' ? '진행' : '완료'
+    showToast(`진행 상태가 [${statusLabels[newStatus] || newStatus}]로 변경되었습니다. (→ [${destTab}] 탭)`)
   }
 
   // 방문 예약 상태 변경 (DB 실시간 반영 및 토스트 안내)
@@ -916,16 +939,19 @@ export default function MobileAdminView({
                       </button>
                     </div>
 
-                    {/* 상태 변경 버튼 바 (슬림 & 단정한 웜그레이 미선택) */}
+                    {/* 상태 변경 버튼 바 (슬림 & 단정한 웜그레이 미선택, 원터치 즉시 반응) */}
                     <div className="flex items-center justify-between gap-1 pt-1.5 border-t border-[#F0ECE1]">
-                      <span className="text-[10.5px] font-medium text-[#7A6B58]">진행 상태:</span>
+                      <span className="text-[10.5px] font-medium text-[#7A6B58]">진행 상태 변경:</span>
                       <div className="flex items-center gap-1">
                         <button
                           type="button"
-                          onClick={() => handleUpdatePrayerStatus(p.id, 'consulting')}
-                          className={`px-2 py-0.5 rounded text-[10.5px] font-bold border transition cursor-pointer ${
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleUpdatePrayerStatus(p.id || p.db_id, 'consulting')
+                          }}
+                          className={`px-2.5 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer active:scale-95 ${
                             isPending
-                              ? 'bg-red-600 text-white border-red-600 shadow-2xs'
+                              ? 'bg-red-600 text-white border-red-600 shadow-2xs font-black'
                               : 'bg-white text-[#6E6455] border-[#DDD5C5] hover:bg-[#FAF8F3]'
                           }`}
                         >
@@ -933,10 +959,13 @@ export default function MobileAdminView({
                         </button>
                         <button
                           type="button"
-                          onClick={() => handleUpdatePrayerStatus(p.id, 'in_progress')}
-                          className={`px-2 py-0.5 rounded text-[10.5px] font-bold border transition cursor-pointer ${
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleUpdatePrayerStatus(p.id || p.db_id, 'in_progress')
+                          }}
+                          className={`px-2.5 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer active:scale-95 ${
                             isInProgress
-                              ? 'bg-amber-600 text-white border-amber-600 shadow-2xs'
+                              ? 'bg-amber-600 text-white border-amber-600 shadow-2xs font-black'
                               : 'bg-white text-[#6E6455] border-[#DDD5C5] hover:bg-[#FAF8F3]'
                           }`}
                         >
@@ -944,10 +973,13 @@ export default function MobileAdminView({
                         </button>
                         <button
                           type="button"
-                          onClick={() => handleUpdatePrayerStatus(p.id, 'completed')}
-                          className={`px-2 py-0.5 rounded text-[10.5px] font-bold border transition cursor-pointer ${
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleUpdatePrayerStatus(p.id || p.db_id, 'completed')
+                          }}
+                          className={`px-2.5 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer active:scale-95 ${
                             isDone
-                              ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs'
+                              ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs font-black'
                               : 'bg-white text-[#6E6455] border-[#DDD5C5] hover:bg-[#FAF8F3]'
                           }`}
                         >
