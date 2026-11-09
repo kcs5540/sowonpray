@@ -78,6 +78,7 @@ import {
   notifyVisitReservation,
 } from './lib/smsNotifier'
 import AdminERPView from './components/Admin/AdminERPView'
+import MobileAdminView from './components/Admin/MobileAdminView'
 import MemberDetailModal from './components/Admin/MemberDetailModal'
 import {
   SettlementModal,
@@ -1683,6 +1684,14 @@ export default function App() {
       const p = window.location.pathname
       const s = window.location.search
       return p === '/admin' || p.startsWith('/admin') || s.includes('tab=admin')
+    }
+    return false
+  })
+  const [showMobileAdmin, setShowMobileAdmin] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const p = window.location.pathname
+      const s = window.location.search
+      return p === '/mobile-admin' || s.includes('tab=mobile-admin')
     }
     return false
   })
@@ -7221,6 +7230,23 @@ function formatRelativeOrDate(dateStr) {
 
   return (
     <div className={`min-h-screen bg-[#12100E] flex justify-center selection:bg-[#C59B27] selection:text-white w-full max-w-full overflow-x-clip ${activeTab === 'admin' ? 'p-0 sm:p-4' : ''}`}>
+      {/* 📱 스마트폰 전용 모바일 종무 관제창 (상담, 방문예약, 신도조회 1초 처리) */}
+      {showMobileAdmin && (
+        <MobileAdminView
+          currentUser={currentUser}
+          isMasterOrTempleAdmin={isMasterOrTempleAdmin}
+          members={members}
+          setMembers={setMembers}
+          prayers={prayers}
+          setPrayers={setPrayers}
+          visits={visits}
+          setVisits={setVisits}
+          supabase={supabase}
+          onClose={() => setShowMobileAdmin(false)}
+          showToast={showToast}
+        />
+      )}
+
       {/* 모바일 앱 컨테이너 (일반 탭: 480px, 관리자 탭: PC에서 최대 1280px 와이드 데스크톱 뷰) */}
       <div className={`w-full min-h-screen bg-[#FAF8F5] text-[#231F1C] flex flex-col relative shadow-[0_0_50px_rgba(0,0,0,0.8)] border-x border-[#E8DFD1]/30 pb-24 overflow-x-clip transition-all duration-300 ${
         activeTab === 'admin' ? 'max-w-7xl sm:rounded-3xl sm:border border-[#C59B27]/40 sm:my-2' : 'max-w-[480px]'
@@ -7260,6 +7286,18 @@ function formatRelativeOrDate(dateStr) {
               </p>
             </div>
           </div>
+
+          {isAdmin && (
+            <button
+              type="button"
+              onClick={() => setShowMobileAdmin(true)}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-gradient-to-r from-[#8A2B14] via-[#A83818] to-[#6E2210] hover:brightness-110 border border-[#F5D061]/80 text-[#FFF3D1] text-[11px] font-extrabold whitespace-nowrap shrink-0 transition shadow-md active:scale-95"
+              title="스마트폰 전용 모바일 종무 관제창 열기"
+            >
+              <span className="w-2 h-2 rounded-full bg-amber-300 animate-ping inline-block" />
+              <span>📱 관제창</span>
+            </button>
+          )}
 
           <button
             onClick={() => {
@@ -7561,6 +7599,8 @@ function formatRelativeOrDate(dateStr) {
                 {activeTab === 'profile' && (
           <ProfileTab
             isMaster={isMaster}
+            isMasterOrTempleAdmin={isMasterOrTempleAdmin}
+            setShowMobileAdmin={setShowMobileAdmin}
             currentUser={currentUser}
             showTestAccountSwitch={showTestAccountSwitch}
             setShowTestAccountSwitch={setShowTestAccountSwitch}

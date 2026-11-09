@@ -16,6 +16,8 @@ import { MERIT_RULES, getDailyMeritInfo } from '../../lib/meritSystem'
 
 export default function ProfileTab({
   isMaster,
+  isMasterOrTempleAdmin,
+  setShowMobileAdmin,
   currentUser,
   showTestAccountSwitch,
   setShowTestAccountSwitch,
@@ -367,6 +369,29 @@ export default function ProfileTab({
             ) : (
               /* [B] 로그인 상태일 때: 제주 소원사 VIP 모바일 신도증 & 고품격 신행 카드 */
               <>
+                {/* 📱 관리자 전용: 모바일 관제창 바로가기 배너 */}
+                {(isMaster || isMasterOrTempleAdmin || currentUser?.role === 'master' || currentUser?.role === 'temple_admin') && setShowMobileAdmin && (
+                  <button
+                    type="button"
+                    onClick={() => setShowMobileAdmin(true)}
+                    className="w-full p-3.5 rounded-2xl bg-gradient-to-r from-[#3D1E14] via-[#5C2B1B] to-[#3D1E14] border-2 border-[#F5D061] text-white flex items-center justify-between shadow-lg active:scale-98 transition group cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2.5 text-left">
+                      <span className="w-9 h-9 rounded-xl bg-amber-400 text-black flex items-center justify-center text-lg font-black shrink-0 shadow-md">
+                        📱
+                      </span>
+                      <div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-serif-kr font-black text-sm text-[#F5D061]">소원사 모바일 관제창</span>
+                          <span className="text-[10px] bg-red-600 text-white font-bold px-1.5 py-0.2 rounded-full animate-pulse">관리자전용</span>
+                        </div>
+                        <p className="text-[11px] text-[#E0D2C0]">불사·49재 상담, 방문 예약, 신도 간편 조회</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-[#F5D061] group-hover:translate-x-1 transition shrink-0" />
+                  </button>
+                )}
+
                 {/* 1. 🪷 제주 소원사 VIP 모바일 디지털 신도증 */}
                 <section className="rounded-3xl bg-gradient-to-br from-[#262019] via-[#1B1713] to-[#120F0C] text-white p-4 sm:p-6 border-2 border-[#D4AF37]/50 shadow-[0_10px_30px_rgba(212,175,55,0.18)] relative overflow-hidden space-y-3.5">
                   {/* 상단 장식 빛망울 */}
