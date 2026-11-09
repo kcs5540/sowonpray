@@ -59,6 +59,7 @@ import {
   MapPin,
   Eye,
   EyeOff,
+  Landmark,
 } from 'lucide-react'
 import QRCode from 'qrcode'
 import html2canvas from 'html2canvas'
@@ -1659,6 +1660,20 @@ function getTodayLunarAndJaeil() {
     jaeilBadge,
     upcomingJaeils,
   };
+}
+
+// 하단 네비게이션용 제주 소원사 공식 황금 연꽃 심볼
+function LotusNavIcon({ className = 'w-5 h-5' }) {
+  return (
+    <svg className={className} viewBox="0 0 40 40" fill="currentColor">
+      <path d="M20 5C20 5 15 14.5 15 21C15 23.8 17.2 26 20 26C22.8 26 25 23.8 25 21C25 14.5 20 5 20 5Z" opacity="0.95" />
+      <path d="M14 12C14 12 7.5 18.5 7.5 23C7.5 26.2 10.2 28 13.2 28C16.2 28 17.8 25.5 17.8 24C17.8 18.5 14 12 14 12Z" opacity="0.82" />
+      <path d="M26 12C26 12 32.5 18.5 32.5 23C32.5 26.2 29.8 28 26.8 28C23.8 28 22.2 25.5 22.2 24C22.2 18.5 26 12 26 12Z" opacity="0.82" />
+      <path d="M6.5 22.5C6.5 22.5 2.5 26 2.5 29C2.5 31.2 4.5 33 7.8 33C11.8 33 14.8 29.8 14.8 28C14.8 25.2 6.5 22.5 6.5 22.5Z" opacity="0.65" />
+      <path d="M33.5 22.5C33.5 22.5 37.5 26 37.5 29C37.5 31.2 35.5 33 32.2 33C28.2 33 25.2 29.8 25.2 28C25.2 25.2 33.5 22.5 33.5 22.5Z" opacity="0.65" />
+      <path d="M11.5 32C15.2 34.8 24.8 34.8 28.5 32C26.5 34.8 23.5 35.8 20 35.8C16.5 35.8 13.5 34.8 11.5 32Z" />
+    </svg>
+  )
 }
 
 export default function App() {
@@ -11475,13 +11490,13 @@ function formatRelativeOrDate(dateStr) {
           }}
         />
 
-        {/* 하단 네비게이션 바 (신행홈·소원등켜기·한줄사경·불사안내·내정보 5대 신행 메뉴 고정) */}
-        <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#1B1815]/95 backdrop-blur-md border-t border-[#C59B27]/35 px-2 py-2 flex items-center justify-around">
+        {/* 하단 네비게이션 바 (제주 소원사 정통 5대 신행 메뉴 바 - 황금 연꽃 & 사찰 전각 심볼) */}
+        <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#14110E]/95 backdrop-blur-md border-t border-[#C59B27]/40 px-2 py-1.5 flex items-center justify-around shadow-[0_-4px_25px_rgba(0,0,0,0.65)]">
           {[
-            { id: 'home', label: '신행홈', icon: Heart },
+            { id: 'home', label: '신행홈', icon: LotusNavIcon },
             { id: 'lantern', label: '소원등켜기', icon: Flame },
             { id: 'sutra', label: '한줄사경', icon: BookOpen },
-            { id: 'bulsa', label: '불사안내', icon: Award },
+            { id: 'bulsa', label: '불사안내', icon: Landmark },
             { id: 'profile', label: '내정보', icon: User },
           ].map((tab) => {
             const Icon = tab.icon
@@ -11491,16 +11506,33 @@ function formatRelativeOrDate(dateStr) {
             return (
               <button
                 key={tab.id}
+                type="button"
                 onClick={() => {
                   setActiveTab(tab.id)
                   window.scrollTo({ top: 0, behavior: 'smooth' })
                 }}
-                className={`flex-1 min-w-0 flex flex-col items-center justify-center py-1 px-1 rounded-xl transition ${
-                  isActive ? 'text-[#F5D061]' : 'text-[#9E9488] hover:text-[#D6CEC2]'
+                className={`flex-1 min-w-0 flex flex-col items-center justify-center py-1 px-0.5 transition-all outline-none focus:outline-none focus:ring-0 select-none cursor-pointer relative group ${
+                  isActive ? 'text-[#F5D061]' : 'text-[#8E8475] hover:text-[#D6CEC2]'
                 }`}
               >
-                <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'stroke-[2.4px]' : 'stroke-[1.8px]'}`} />
-                <span className="text-[10.5px] sm:text-[11px] font-semibold mt-1 tracking-tight text-center truncate w-full">
+                {/* 상단 은은한 골드 인디케이터 바 */}
+                {isActive && (
+                  <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-gradient-to-r from-[#F5D061] to-[#D4AF37] shadow-[0_0_8px_rgba(245,208,97,0.9)]" />
+                )}
+                <div
+                  className={`flex items-center justify-center transition-all ${
+                    isActive
+                      ? 'scale-110 drop-shadow-[0_0_8px_rgba(245,208,97,0.5)]'
+                      : 'group-hover:scale-105'
+                  }`}
+                >
+                  <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'stroke-[2.2px]' : 'stroke-[1.8px]'}`} />
+                </div>
+                <span
+                  className={`text-[10px] sm:text-[10.5px] mt-1 tracking-tight text-center truncate w-full transition-colors ${
+                    isActive ? 'font-black text-[#F5D061]' : 'font-medium text-[#8E8475]'
+                  }`}
+                >
                   {tab.label}
                 </span>
               </button>
