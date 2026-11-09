@@ -1113,7 +1113,7 @@ export default function MobileAdminView({
                     : 'text-[#5C5446] hover:bg-white/60 font-semibold'
                 }`}
               >
-                <span>가족많은순</span>
+                <span>인연신도순</span>
               </button>
 
               <button
@@ -1153,7 +1153,7 @@ export default function MobileAdminView({
                         <span className="font-medium text-[#40362C]">{phone}</span>
                         {Number(m.believers_count) > 0 && (
                           <span className="text-sky-800 bg-sky-50 px-1.5 py-0.2 rounded border border-sky-200 font-bold text-[10px]">
-                            가족 {m.believers_count}명
+                            인연신도 {m.believers_count}명
                           </span>
                         )}
                         {Number(m.merit_count) > 0 && (
