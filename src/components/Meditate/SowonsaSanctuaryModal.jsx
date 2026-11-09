@@ -368,24 +368,24 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
     }
 
     // 🎬 대웅전 입장 시퀀스:
-    // 0~2.4s: 왼발-오른발을 번갈아 뚜벅뚜벅 내딛으며 걸어 들어오기 (walkFrame 280ms 교차)
-    // 2.4~4.5s: 방석 위에 서서 삼존불 전 정중히 합장 반배 올리기
-    // 4.5s: 비단 방석에 가부좌 틀고 착석 완료
+    // 0~3.4s: 왼발-오른발을 번갈아 사뿐사뿐 내딛으며 대청마루에서 걸어 들어오기 (walkFrame 550ms 평온한 보행 호흡)
+    // 3.4~5.6s: 방석 앞에 서서 삼존불 전 정중히 합장 반배 올리기
+    // 5.6s+: 비단 방석에 가부좌 틀고 착석 완료
     setEntranceStep('entering')
     setWalkFrame(0)
 
     const walkTimer = setInterval(() => {
       setWalkFrame(f => (f === 0 ? 1 : 0))
-    }, 280)
+    }, 550)
 
     const tHapjang = setTimeout(() => {
       clearInterval(walkTimer)
       setEntranceStep('hapjang')
-    }, 2400)
+    }, 3400)
 
     const tSeated = setTimeout(() => {
       setEntranceStep('seated')
-    }, 4500)
+    }, 5600)
 
     return () => {
       clearInterval(walkTimer)
@@ -640,12 +640,21 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               {/* 3D 동자승 실사 캐릭터 (대웅전 자연스럽게 걷기 -> 방석 위 서서 합장 반배 -> 가부좌 착석 -> 절하기/참선) */}
               <div className="relative z-10 h-28 sm:h-34 flex items-end justify-center filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.9)]">
                 {entranceStep === 'entering' ? (
-                  /* 1단계: 두 팔을 자연스럽게 내리고 왼발-오른발을 번갈아 디디며 아장아장 걸어 들어오는 동자승 */
-                  <div className="flex flex-col items-center animate-monk-walk">
+                  /* 1단계: 두 팔을 자연스럽게 내리고 왼발-오른발을 번갈아 디디며 사뿐사뿐 걸어 들어오는 동자승 (부드러운 크로스페이드 보행) */
+                  <div className="relative flex items-center justify-center animate-monk-walk h-32 sm:h-38 w-28 sm:w-34">
                     <img 
-                      src={walkFrame === 0 ? "/images/avatar_monk_walk.png" : "/images/avatar_monk_walk_step2.png"} 
-                      alt="발걸음을 옮기며 걸어 들어오는 동자승" 
-                      className="h-32 sm:h-38 object-contain"
+                      src="/images/avatar_monk_walk.png" 
+                      alt="발걸음을 옮기는 동자승 오른발" 
+                      className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ${
+                        walkFrame === 0 ? 'opacity-100' : 'opacity-0'
+                      }`}
+                    />
+                    <img 
+                      src="/images/avatar_monk_walk_step2.png" 
+                      alt="발걸음을 옮기는 동자승 왼발" 
+                      className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ${
+                        walkFrame === 1 ? 'opacity-100' : 'opacity-0'
+                      }`}
                     />
                   </div>
                 ) : entranceStep === 'hapjang' ? (

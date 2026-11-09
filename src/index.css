@@ -6,57 +6,71 @@
 @keyframes monkWalkIn {
   0% {
     opacity: 0;
-    transform: translateY(70px) scale(1.18);
+    transform: translateY(68px) scale(1.14);
   }
-  15% {
+  8% {
     opacity: 1;
-    transform: translateY(58px) scale(1.15) rotate(-2.5deg);
+    transform: translateY(60px) scale(1.12);
   }
-  30% {
-    transform: translateY(46px) scale(1.12) rotate(2.5deg);
+  18% {
+    /* 1보 착지 */
+    transform: translateY(53px) scale(1.10);
   }
-  45% {
-    transform: translateY(34px) scale(1.08) rotate(-2deg);
+  28% {
+    transform: translateY(44px) scale(1.08);
   }
-  60% {
-    transform: translateY(22px) scale(1.05) rotate(2deg);
+  38% {
+    /* 2보 착지 */
+    transform: translateY(37px) scale(1.07);
   }
-  75% {
-    transform: translateY(12px) scale(1.03) rotate(-1deg);
+  48% {
+    transform: translateY(28px) scale(1.05);
   }
-  90% {
-    transform: translateY(4px) scale(1.01) rotate(0.5deg);
+  58% {
+    /* 3보 착지 */
+    transform: translateY(21px) scale(1.04);
+  }
+  68% {
+    transform: translateY(14px) scale(1.02);
+  }
+  78% {
+    /* 4보 착지 - 방석 앞 사뿐히 도달 */
+    transform: translateY(7px) scale(1.01);
+  }
+  88% {
+    transform: translateY(2px) scale(1.00);
   }
   100% {
     opacity: 1;
-    transform: translateY(0px) scale(1) rotate(0deg);
+    transform: translateY(0px) scale(1.00);
   }
 }
 
 @keyframes monkHapjangBowing {
   0% {
     opacity: 1;
-    transform: scale(1) translateY(0px) rotate(0deg);
+    transform: scale(1) translateY(0px);
   }
-  20% {
-    transform: scale(1) translateY(0px) rotate(0deg);
+  15% {
+    transform: scale(1) translateY(0px);
   }
-  50% {
-    transform: scale(0.96) translateY(6px) rotate(-1deg);
+  45% {
+    /* 부처님 전을 향해 깊고 정성스레 허리를 굽히는 합장 반배 */
+    transform: scale(0.97) translateY(5px);
   }
   75% {
-    transform: scale(0.96) translateY(6px) rotate(0deg);
+    transform: scale(0.97) translateY(5px);
   }
   100% {
     opacity: 1;
-    transform: scale(1) translateY(0px) rotate(0deg);
+    transform: scale(1) translateY(0px);
   }
 }
 
 @keyframes monkSitDown {
   0% {
-    opacity: 0.4;
-    transform: translateY(-12px) scale(1.05);
+    opacity: 0.3;
+    transform: translateY(-10px) scale(1.04);
   }
   100% {
     opacity: 1;
@@ -65,15 +79,15 @@
 }
 
 .animate-monk-walk {
-  animation: monkWalkIn 2.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: monkWalkIn 3.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .animate-monk-hapjang {
-  animation: monkHapjangBowing 2.0s ease-in-out forwards;
+  animation: monkHapjangBowing 2.2s ease-in-out forwards;
 }
 
 .animate-monk-sit {
-  animation: monkSitDown 1.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: monkSitDown 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @layer base {
