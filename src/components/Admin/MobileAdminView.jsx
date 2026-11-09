@@ -88,17 +88,34 @@ export default function MobileAdminView({
     return deduped
   }, [prayers])
 
-  // 긴급 상담대기 건수
+  // 불사·상담 상태 정규화 헬퍼 함수 ('consulting' | 'in_progress' | 'completed')
+  // DB의 기존 'prayed', 'paid' 등 축원/완료 건도 'completed'(완료)로 통합하여 빈 선택 방지
+  const getBulsaStatus = (status) => {
+    if (status === 'in_progress') return 'in_progress'
+    if (status === 'completed' || status === 'prayed' || status === 'paid') return 'completed'
+    return 'consulting' // 기본값: 대기
+  }
+
+  // 상태별 건수 계산 (모든 카드가 100% 3개 중 하나로 매핑)
   const pendingBulsaCount = useMemo(() => {
-    return bulsaInquiries.filter((p) => p.status === 'consulting').length
+    return bulsaInquiries.filter((p) => getBulsaStatus(p.status) === 'consulting').length
+  }, [bulsaInquiries])
+
+  const inProgressBulsaCount = useMemo(() => {
+    return bulsaInquiries.filter((p) => getBulsaStatus(p.status) === 'in_progress').length
+  }, [bulsaInquiries])
+
+  const completedBulsaCount = useMemo(() => {
+    return bulsaInquiries.filter((p) => getBulsaStatus(p.status) === 'completed').length
   }, [bulsaInquiries])
 
   // 상담 필터 적용 목록
   const filteredBulsaList = useMemo(() => {
     return bulsaInquiries.filter((p) => {
-      if (bulsaStatusFilter === 'consulting') return p.status === 'consulting'
-      if (bulsaStatusFilter === 'in_progress') return p.status === 'in_progress'
-      if (bulsaStatusFilter === 'completed') return p.status === 'completed'
+      const s = getBulsaStatus(p.status)
+      if (bulsaStatusFilter === 'consulting') return s === 'consulting'
+      if (bulsaStatusFilter === 'in_progress') return s === 'in_progress'
+      if (bulsaStatusFilter === 'completed') return s === 'completed'
       return true
     })
   }, [bulsaInquiries, bulsaStatusFilter])
@@ -779,7 +796,7 @@ export default function MobileAdminView({
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
                 <span>대기</span>
                 <span className="text-[10.5px] font-black">
-                  ({bulsaInquiries.filter((p) => p.status === 'consulting').length})
+                  ({pendingBulsaCount})
                 </span>
               </button>
 
@@ -809,7 +826,7 @@ export default function MobileAdminView({
               >
                 <span>진행</span>
                 <span className={`text-[10.5px] font-black ${bulsaStatusFilter === 'in_progress' ? 'text-amber-300' : 'text-[#8C8375]'}`}>
-                  ({bulsaInquiries.filter((p) => p.status === 'in_progress').length})
+                  ({inProgressBulsaCount})
                 </span>
               </button>
 
@@ -824,7 +841,7 @@ export default function MobileAdminView({
               >
                 <span>완료</span>
                 <span className={`text-[10.5px] font-black ${bulsaStatusFilter === 'completed' ? 'text-emerald-300' : 'text-[#8C8375]'}`}>
-                  ({bulsaInquiries.filter((p) => p.status === 'completed').length})
+                  ({completedBulsaCount})
                 </span>
               </button>
             </div>
@@ -839,9 +856,10 @@ export default function MobileAdminView({
               filteredBulsaList.map((p) => {
                 const phone = p.believer_phone || ''
                 const cleanPhone = phone.replace(/[^0-9]/g, '')
-                const isPending = p.status === 'consulting' || !p.status
-                const isInProgress = p.status === 'in_progress'
-                const isDone = p.status === 'completed'
+                const statusKey = getBulsaStatus(p.status)
+                const isPending = statusKey === 'consulting'
+                const isInProgress = statusKey === 'in_progress'
+                const isDone = statusKey === 'completed'
 
                 return (
                   <div
