@@ -279,29 +279,29 @@ export default function HomeTab({
               </div>
 
               <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
-                {/* 1) 대웅전 참배 (✨ 참배 동선 1순위: 부처님 전 참선 정진) */}
+                {/* 1) 대웅전 참배 (✨ 참배 동선 1순위: 부처님 전 참선 정진 - 3D 동자승) */}
                 <button
                   type="button"
                   onClick={() => {
                     playSingingBowlSound()
                     if (setShowSanctuaryModal) setShowSanctuaryModal(true)
                   }}
-                  className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFFDF5] via-[#FFF6DC] to-[#FCE8B3] hover:from-[#FFF9EB] hover:to-[#FBDD96] border-2 border-[#D4A024] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-[0_3px_12px_rgba(212,160,36,0.22)] group"
+                  className="py-3 px-1.5 rounded-2xl bg-gradient-to-b from-white via-[#FCF9F2] to-[#F7EED9] hover:from-white hover:to-[#F4E8CB] border border-[#DFCBA0] hover:border-[#C59B27] flex flex-col items-center justify-between text-center transition-all cursor-pointer active:scale-95 shadow-[0_3px_10px_rgba(180,140,50,0.12)] hover:shadow-[0_4px_16px_rgba(180,140,50,0.2)] group"
                 >
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#FFF0B3] via-[#F5D061] to-[#C59B27] text-white flex items-center justify-center shadow-sm mb-1.5 shrink-0 group-hover:scale-105 transition-transform overflow-hidden p-1 border border-[#FFF8DC]">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FFFDF5] via-[#FFF8E6] to-[#F5E6BF] flex items-center justify-center p-1.5 mb-1.5 shrink-0 group-hover:scale-105 transition-transform border border-[#ECD9A8] shadow-xs overflow-hidden">
                     <img src="/images/icon_monk_meditate_front.png" alt="대웅전 참배" className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform" />
                   </div>
-                  <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
-                    <span className="font-serif-kr text-[11.5px] sm:text-xs font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
+                  <div className="flex items-center justify-center w-full px-0.5">
+                    <span className="font-serif-kr text-[12px] sm:text-[12.5px] font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
                       대웅전 참배
                     </span>
                   </div>
-                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-bold mt-0.5 whitespace-nowrap block">
-                    부처님 전 참선 정진
+                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
+                    부처님 전 참선
                   </span>
                 </button>
 
-                {/* 2) 소원등 켜기 (✨ 참배 동선 2순위: 부처님 전 등불 공양) */}
+                {/* 2) 소원등 켜기 (✨ 참배 동선 2순위: 부처님 전 등불 공양 - 3D 황금 연등) */}
                 <button
                   type="button"
                   onClick={() => {
@@ -309,22 +309,22 @@ export default function HomeTab({
                     setActiveTab('lantern')
                     window.scrollTo({ top: 0, behavior: 'smooth' })
                   }}
-                  className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFFDF5] via-[#FFF6DC] to-[#FCE8B3] hover:from-[#FFF9EB] hover:to-[#FBDD96] border-2 border-[#D4A024] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-[0_3px_12px_rgba(212,160,36,0.22)] group"
+                  className="py-3 px-1.5 rounded-2xl bg-gradient-to-b from-white via-[#FCF9F2] to-[#F7EED9] hover:from-white hover:to-[#F4E8CB] border border-[#DFCBA0] hover:border-[#C59B27] flex flex-col items-center justify-between text-center transition-all cursor-pointer active:scale-95 shadow-[0_3px_10px_rgba(180,140,50,0.12)] hover:shadow-[0_4px_16px_rgba(180,140,50,0.2)] group"
                 >
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#E25C2B] to-[#F4B41A] text-white flex items-center justify-center shadow-sm mb-1.5 shrink-0 group-hover:scale-105 transition-transform p-2 ring-2 ring-[#F4B41A]/30">
-                    <Flame className="w-6 h-6 fill-current text-white drop-shadow-sm" />
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FFFDF5] via-[#FFF8E6] to-[#F5E6BF] flex items-center justify-center p-1.5 mb-1.5 shrink-0 group-hover:scale-105 transition-transform border border-[#ECD9A8] shadow-xs overflow-hidden">
+                    <img src="/images/sowon_lantern_realistic.png" alt="소원등 켜기" className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform" />
                   </div>
-                  <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
-                    <span className="font-serif-kr text-[11.5px] sm:text-xs font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
+                  <div className="flex items-center justify-center w-full px-0.5">
+                    <span className="font-serif-kr text-[12px] sm:text-[12.5px] font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
                       소원등 켜기
                     </span>
                   </div>
-                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-bold mt-0.5 whitespace-nowrap block">
+                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
                     1일등 · 100일등
                   </span>
                 </button>
 
-                {/* 3) 한줄 사경 (✨ 참배 동선 3순위: 지혜 사경 정진) */}
+                {/* 3) 한줄 사경 (✨ 참배 동선 3순위: 지혜 사경 정진 - 3D 황금 사경첩 & 붓) */}
                 <button
                   type="button"
                   onClick={() => {
@@ -332,17 +332,17 @@ export default function HomeTab({
                     setActiveTab('sutra')
                     window.scrollTo({ top: 0, behavior: 'smooth' })
                   }}
-                  className="pt-3.5 pb-2.5 px-1.5 rounded-xl bg-gradient-to-b from-[#FFFDF5] via-[#FFF6DC] to-[#FCE8B3] hover:from-[#FFF9EB] hover:to-[#FBDD96] border-2 border-[#D4A024] flex flex-col items-center justify-start text-center transition cursor-pointer active:scale-95 shadow-[0_3px_12px_rgba(212,160,36,0.22)] group"
+                  className="py-3 px-1.5 rounded-2xl bg-gradient-to-b from-white via-[#FCF9F2] to-[#F7EED9] hover:from-white hover:to-[#F4E8CB] border border-[#DFCBA0] hover:border-[#C59B27] flex flex-col items-center justify-between text-center transition-all cursor-pointer active:scale-95 shadow-[0_3px_10px_rgba(180,140,50,0.12)] hover:shadow-[0_4px_16px_rgba(180,140,50,0.2)] group"
                 >
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#8C6D15] to-[#C59B27] text-white flex items-center justify-center text-xl shadow-sm mb-1.5 shrink-0 group-hover:scale-105 transition-transform">
-                    ✍️
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FFFDF5] via-[#FFF8E6] to-[#F5E6BF] flex items-center justify-center p-1.5 mb-1.5 shrink-0 group-hover:scale-105 transition-transform border border-[#ECD9A8] shadow-xs overflow-hidden">
+                    <img src="/images/icon_sutra_brush_3d.png" alt="한줄 사경" className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform" />
                   </div>
-                  <div className="h-8 sm:h-9 flex items-center justify-center w-full px-0.5">
-                    <span className="font-serif-kr text-[11.5px] sm:text-xs font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
+                  <div className="flex items-center justify-center w-full px-0.5">
+                    <span className="font-serif-kr text-[12px] sm:text-[12.5px] font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
                       한줄 사경
                     </span>
                   </div>
-                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-bold mt-0.5 whitespace-nowrap block">
+                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
                     지혜 정진 사경
                   </span>
                 </button>
