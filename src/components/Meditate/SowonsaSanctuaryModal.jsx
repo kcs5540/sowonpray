@@ -843,10 +843,10 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               {/* 3D 동자승 실사 캐릭터 (대웅전 사뿐사뿐 걷기 -> 서서 합장 반배 -> 비단 방석 가부좌 착석 -> 절하기/참선) */}
               <div className="relative z-10 h-28 sm:h-34 flex items-end justify-center filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.9)]">
                 {entranceStep === 'entering' ? (
-                  /* 1단계: 손은 차분히 내리고 발을 사뿐히 내딛으며 걸어 들어오는 동자승 (2.4초) */
+                  /* 1단계: 손은 차분히 내리고 발을 사뿐사뿐 내딛으며 대청마루를 걸어 들어오는 실사 동자승 (2.5초) */
                   <div className="flex flex-col items-center animate-monk-walk">
                     <img 
-                      src="/images/avatar_monk_walk.png" 
+                      src="/images/avatar_monk_walking.webp" 
                       alt="대청마루를 걸어 들어오는 동자승" 
                       className="h-32 sm:h-38 object-contain"
                     />
