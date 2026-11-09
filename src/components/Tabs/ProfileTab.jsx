@@ -424,7 +424,7 @@ export default function ProfileTab({
                           ? '총괄위원장'
                           : currentUser.role === 'agent'
                           ? '포교위원장'
-                          : '소원사 일반신도'}
+                          : '일반신도'}
                       </span>
                       <button
                         type="button"
