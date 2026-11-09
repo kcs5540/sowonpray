@@ -364,14 +364,14 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       return
     }
 
-    // 🎬 대웅전 입장 시퀀스 시작: 0s 입장 -> 0.8s 부처님 전 합장반배 -> 2.0s 방석 착석 완료
+    // 🎬 대웅전 입장 시퀀스 시작: 0~1.4s 발걸음 걸어 들어오기 -> 1.4~2.9s 부처님 전 합장반배 -> 2.9s 방석 착석 완료
     setEntranceStep('entering')
     const tHapjang = setTimeout(() => {
       setEntranceStep('hapjang')
-    }, 800)
+    }, 1400)
     const tSeated = setTimeout(() => {
       setEntranceStep('seated')
-    }, 2000)
+    }, 2900)
 
     return () => {
       clearTimeout(tHapjang)
@@ -619,8 +619,8 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               {/* 3D 동자승 실사 캐릭터 (대웅전 입장 걸어오기 -> 합장 반배 -> 가부좌 착석 -> 절하기/참선) */}
               <div className="relative z-10 h-28 sm:h-34 flex items-end justify-center filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.9)]">
                 {entranceStep === 'entering' ? (
-                  /* 1단계: 마루를 밟고 부처님 앞으로 경건하게 걸어 들어오는 서 있는 동자승 */
-                  <div className="flex flex-col items-center animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
+                  /* 1단계: 마루 아래에서 부처님 앞으로 아장아장/사뿐사뿐 걸어 들어오는 서 있는 동자승 (1.4초) */
+                  <div className="flex flex-col items-center animate-monk-walk">
                     <img 
                       src="/images/avatar_monk_stand_hapjang.png" 
                       alt="법당에 들어서는 동자승" 
@@ -628,12 +628,12 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                     />
                   </div>
                 ) : entranceStep === 'hapjang' ? (
-                  /* 2단계: 부처님 전을 향해 서서 두 손 모아 합장 반배 올리는 모습 */
-                  <div className="flex flex-col items-center transition-all duration-500 scale-100">
+                  /* 2단계: 부처님 전을 향해 서서 두 손 모아 정중히 합장 반배 올리는 모습 (1.5초) */
+                  <div className="flex flex-col items-center animate-monk-hapjang">
                     <img 
                       src="/images/avatar_monk_stand_hapjang.png" 
                       alt="부처님 전 합장 반배 올리는 동자승" 
-                      className="h-32 sm:h-38 object-contain filter drop-shadow-[0_0_15px_rgba(255,215,0,0.6)]"
+                      className="h-32 sm:h-38 object-contain filter drop-shadow-[0_0_18px_rgba(255,215,0,0.7)]"
                     />
                   </div>
                 ) : actionState === 'bow' ? (
@@ -648,7 +648,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                   <img 
                     src="/images/avatar_monk_meditate.png" 
                     alt="고요히 참선 중인 동자승" 
-                    className="h-28 sm:h-34 object-contain transition-all duration-500 animate-in fade-in zoom-in-95"
+                    className="h-28 sm:h-34 object-contain animate-monk-sit"
                   />
                 )}
               </div>

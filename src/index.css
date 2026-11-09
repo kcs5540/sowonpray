@@ -2,6 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 🎬 동자승 대웅전 걸어 들어오는 발걸음 & 합장 반배 & 착석 시네마틱 애니메이션 */
+@keyframes monkWalkIn {
+  0% {
+    opacity: 0;
+    transform: translateY(65px) scale(1.15);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(50px) scale(1.12) rotate(-2deg);
+  }
+  40% {
+    transform: translateY(35px) scale(1.08) rotate(2deg);
+  }
+  60% {
+    transform: translateY(20px) scale(1.04) rotate(-1deg);
+  }
+  80% {
+    transform: translateY(8px) scale(1.02) rotate(1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes monkHapjangBowing {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  35% {
+    transform: scale(0.96) translateY(5px) rotate(-1deg);
+  }
+  70% {
+    transform: scale(0.96) translateY(5px) rotate(0deg);
+  }
+  100% {
+    transform: scale(1) translateY(0px) rotate(0deg);
+  }
+}
+
+@keyframes monkSitDown {
+  0% {
+    opacity: 0.5;
+    transform: translateY(-8px) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+  }
+}
+
+.animate-monk-walk {
+  animation: monkWalkIn 1.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.animate-monk-hapjang {
+  animation: monkHapjangBowing 1.5s ease-in-out forwards;
+}
+
+.animate-monk-sit {
+  animation: monkSitDown 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 @layer base {
   html, body {
     overflow-x: clip !important;
