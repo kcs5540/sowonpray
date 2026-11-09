@@ -831,38 +831,22 @@ export default function MobileAdminView({
                         : 'bg-white border-[#E8DEC8]'
                     }`}
                   >
-                    {/* 상단 1열: 신청자 성함 & 실시간 상태 배지 */}
+                    {/* 상단 헤더: 성함 + 불사종목 뱃지 + 접수일시 (중복 상태 뱃지 제거 및 1줄 통합) */}
                     <div className="flex items-center justify-between gap-1.5 border-b border-[#F5EFE6] pb-1.5">
-                      <div className="flex items-center gap-1.5 min-w-0">
+                      <div className="flex items-center gap-1.5 min-w-0 flex-wrap">
                         <span className="text-sm font-black text-[#1F1710] truncate">
                           {p.believer_name || '신청 불자'}
+                        </span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] shrink-0">
+                          {p.wish_category || '불사상담'}
                         </span>
                         <span className="text-[10px] text-[#8C7D6B] font-mono shrink-0">
                           #{p.member_code || cleanPhone.slice(-8) || '-'}
                         </span>
                       </div>
 
-                      {/* 상태 배지 */}
-                      <span
-                        className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full whitespace-nowrap shrink-0 border ${
-                          isPending
-                            ? 'bg-red-600 text-white border-red-600 animate-pulse shadow-2xs'
-                            : isInProgress
-                            ? 'bg-amber-100 text-amber-900 border-amber-300 font-bold'
-                            : 'bg-emerald-100 text-emerald-900 border-emerald-300 font-bold'
-                        }`}
-                      >
-                        {isPending ? '🚨 접수대기' : isInProgress ? '상담진행중' : '✓ 상담완료'}
-                      </span>
-                    </div>
-
-                    {/* 상단 2열: 불사 종목 칩 & 접수 일시 */}
-                    <div className="flex items-center justify-between text-[10.5px]">
-                      <span className="font-bold px-2 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399]">
-                        {p.wish_category || '불사상담'}
-                      </span>
                       {p.created_at && (
-                        <span className="text-[#8C7D6B] flex items-center gap-1 text-[10.5px] font-mono">
+                        <span className="text-[#8C7D6B] flex items-center gap-0.5 text-[10px] font-mono shrink-0">
                           <Clock className="w-2.5 h-2.5 text-[#A89885]" />
                           {new Date(p.created_at).toLocaleDateString('ko-KR', {
                             month: 'numeric',
