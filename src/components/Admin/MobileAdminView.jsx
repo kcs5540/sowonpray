@@ -654,24 +654,24 @@ export default function MobileAdminView({
         </div>
       </header>
 
-      {/* 2. 현대적 세그먼트 컨트롤 탭 (하단 본문과 명확히 구분되는 품격있는 사찰 샌드스톤 톤) */}
-      <nav className="bg-[#DDD5C5] p-1.5 border-b-2 border-[#C5BBA7] shadow-[0_2px_6px_rgba(0,0,0,0.05)] shrink-0">
+      {/* 2. 현대적 세그먼트 컨트롤 탭 (슬림 콤팩트 높이 & 하단 본문과의 확실한 시각적 분리) */}
+      <nav className="bg-[#DDD5C5] p-1 border-b-2 border-[#C5BBA7] shadow-[0_2px_5px_rgba(0,0,0,0.04)] shrink-0">
         <div className="grid grid-cols-4 gap-1">
           {/* 1) 불사·상담 탭 */}
           <button
             type="button"
             onClick={() => setActiveTab('bulsa')}
-            className={`py-2 px-1 text-center rounded-xl transition cursor-pointer flex flex-col items-center justify-center relative ${
+            className={`py-1 px-0.5 text-center rounded-lg transition cursor-pointer flex flex-col items-center justify-center relative ${
               activeTab === 'bulsa'
-                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_8px_rgba(0,0,0,0.12)] border border-[#C5BBA7]'
+                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_6px_rgba(0,0,0,0.12)] border border-[#C5BBA7]'
                 : 'text-[#5C5346] hover:text-[#1E1914] hover:bg-black/5 font-bold'
             }`}
           >
-            <div className="flex items-center gap-1 text-[11px] font-bold">
-              <AlertCircle className={`w-3.5 h-3.5 ${activeTab === 'bulsa' ? 'text-red-600' : 'text-[#7A6F5D]'}`} />
+            <div className="flex items-center gap-1 text-[10px] sm:text-[10.5px] font-bold leading-tight">
+              <AlertCircle className={`w-3 h-3 ${activeTab === 'bulsa' ? 'text-red-600' : 'text-[#7A6F5D]'}`} />
               <span className="truncate">불사·상담</span>
             </div>
-            <div className="text-sm font-black mt-0.5">
+            <div className="text-xs sm:text-[13px] font-black leading-tight mt-0.5">
               {bulsaInquiries.length}건
             </div>
           </button>
@@ -680,17 +680,17 @@ export default function MobileAdminView({
           <button
             type="button"
             onClick={() => setActiveTab('visits')}
-            className={`py-2 px-1 text-center rounded-xl transition cursor-pointer flex flex-col items-center justify-center ${
+            className={`py-1 px-0.5 text-center rounded-lg transition cursor-pointer flex flex-col items-center justify-center ${
               activeTab === 'visits'
-                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_8px_rgba(0,0,0,0.12)] border border-[#C5BBA7]'
+                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_6px_rgba(0,0,0,0.12)] border border-[#C5BBA7]'
                 : 'text-[#5C5346] hover:text-[#1E1914] hover:bg-black/5 font-bold'
             }`}
           >
-            <div className="flex items-center gap-1 text-[11px] font-bold">
-              <Calendar className={`w-3.5 h-3.5 ${activeTab === 'visits' ? 'text-sky-600' : 'text-[#7A6F5D]'}`} />
+            <div className="flex items-center gap-1 text-[10px] sm:text-[10.5px] font-bold leading-tight">
+              <Calendar className={`w-3 h-3 ${activeTab === 'visits' ? 'text-sky-600' : 'text-[#7A6F5D]'}`} />
               <span className="truncate">방문·공양</span>
             </div>
-            <div className="text-sm font-black mt-0.5">
+            <div className="text-xs sm:text-[13px] font-black leading-tight mt-0.5">
               {visits.length}건
             </div>
           </button>
@@ -699,17 +699,17 @@ export default function MobileAdminView({
           <button
             type="button"
             onClick={() => setActiveTab('lanterns')}
-            className={`py-2 px-1 text-center rounded-xl transition cursor-pointer flex flex-col items-center justify-center ${
+            className={`py-1 px-0.5 text-center rounded-lg transition cursor-pointer flex flex-col items-center justify-center ${
               activeTab === 'lanterns'
-                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_8px_rgba(0,0,0,0.12)] border border-[#C5BBA7]'
+                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_6px_rgba(0,0,0,0.12)] border border-[#C5BBA7]'
                 : 'text-[#5C5346] hover:text-[#1E1914] hover:bg-black/5 font-bold'
             }`}
           >
-            <div className="flex items-center gap-1 text-[11px] font-bold">
-              <Flame className={`w-3.5 h-3.5 ${activeTab === 'lanterns' ? 'text-amber-600' : 'text-[#7A6F5D]'}`} />
+            <div className="flex items-center gap-1 text-[10px] sm:text-[10.5px] font-bold leading-tight">
+              <Flame className={`w-3 h-3 ${activeTab === 'lanterns' ? 'text-amber-600' : 'text-[#7A6F5D]'}`} />
               <span className="truncate">소원등</span>
             </div>
-            <div className="text-sm font-black mt-0.5">
+            <div className="text-xs sm:text-[13px] font-black leading-tight mt-0.5">
               {regularLanterns.length}위
             </div>
           </button>
@@ -718,17 +718,17 @@ export default function MobileAdminView({
           <button
             type="button"
             onClick={() => setActiveTab('members')}
-            className={`py-2 px-1 text-center rounded-xl transition cursor-pointer flex flex-col items-center justify-center ${
+            className={`py-1 px-0.5 text-center rounded-lg transition cursor-pointer flex flex-col items-center justify-center ${
               activeTab === 'members'
-                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_8px_rgba(0,0,0,0.12)] border border-[#C5BBA7]'
+                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_6px_rgba(0,0,0,0.12)] border border-[#C5BBA7]'
                 : 'text-[#5C5346] hover:text-[#1E1914] hover:bg-black/5 font-bold'
             }`}
           >
-            <div className="flex items-center gap-1 text-[11px] font-bold">
-              <Users className={`w-3.5 h-3.5 ${activeTab === 'members' ? 'text-emerald-600' : 'text-[#7A6F5D]'}`} />
+            <div className="flex items-center gap-1 text-[10px] sm:text-[10.5px] font-bold leading-tight">
+              <Users className={`w-3 h-3 ${activeTab === 'members' ? 'text-emerald-600' : 'text-[#7A6F5D]'}`} />
               <span className="truncate">신도조회</span>
             </div>
-            <div className="text-sm font-black mt-0.5">
+            <div className="text-xs sm:text-[13px] font-black leading-tight mt-0.5">
               {members.length}명
             </div>
           </button>
