@@ -320,6 +320,54 @@ export default function MobileAdminView({
   }, [members, searchTerm, memberSort])
 
   // 방문 목적 텍스트를 한눈에 들어오게 간결하게 정돈
+  // 신도 최근 활동 및 메모 정돈 헬퍼 함수
+  const renderMemberActivityOrMemo = (memo) => {
+    if (!memo) return null
+    const text = String(memo).trim()
+
+    // 1) 소원등 신청 자동 등록 메모 처리
+    if (text.includes('대웅전 소원등(') || text.includes('소원등(')) {
+      const match = text.match(/소원등\(([^)]+)\)/)
+      const category = match ? match[1] : '가족건강'
+      return (
+        <div className="flex items-center gap-1 mt-1 text-[11px] text-[#8A6510]">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+          <span className="font-bold">최근 등:</span>
+          <span>{category}</span>
+        </div>
+      )
+    }
+
+    // 2) 불사·상담 신청 자동 등록 메모 처리
+    if (text.includes('상담 신청으로') || text.includes('불사안내(')) {
+      const match = text.match(/불사안내\(([^)]+)\)/)
+      const category = match ? match[1] : '49재/천도재'
+      return (
+        <div className="flex items-center gap-1 mt-1 text-[11px] text-red-700">
+          <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+          <span className="font-bold">상담:</span>
+          <span>{category}</span>
+        </div>
+      )
+    }
+
+    // 3) 관리자 간편등록 등 기타 자동 문구 정돈
+    if (text.includes('전산 자동 등록') || text.includes('모바일 관제센터')) {
+      return (
+        <div className="flex items-center gap-1 mt-1 text-[10.5px] text-[#8C8273]">
+          <span className="font-medium">신적부 등록 신도</span>
+        </div>
+      )
+    }
+
+    // 4) 실제 입력된 수기 메모
+    return (
+      <p className="text-[11px] text-[#5A4F43] line-clamp-1 mt-1 font-serif-kr">
+        “{text}”
+      </p>
+    )
+  }
+
   const formatVisitPurpose = (purpose) => {
     const p = String(purpose || '')
     if (p.includes('공양') || p.includes('식사') || p.includes('차')) return '차담 & 점심공양'
@@ -1328,7 +1376,7 @@ ${v.visitor_name} 불자님, ${v.visit_date} ${v.visit_time} 방문 및 공양 �
                     key={m.code || m.id}
                     className="p-3.5 rounded-xl bg-white border border-[#E8DEC8] flex items-center justify-between gap-2 shadow-xs"
                   >
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="text-sm font-bold text-[#2E2214]">{m.name}</span>
                         {m.dharma_name && (
@@ -1351,30 +1399,43 @@ ${v.visitor_name} 불자님, ${v.visit_date} ${v.visit_time} 방문 및 공양 �
                           </span>
                         )}
                       </div>
-                      {m.family_memo && (
-                        <p className="text-[11px] text-[#7A6B58] line-clamp-1 mt-0.5">
-                          {m.family_memo}
-                        </p>
-                      )}
+                      {renderMemberActivityOrMemo(m.family_memo)}
                     </div>
 
+                    {/* 원터치 3대 액션: 통화 / 문자 / 번호복사 */}
                     <div className="flex items-center gap-1 shrink-0">
                       {cleanPhone && (
                         <a
                           href={`tel:${cleanPhone}`}
-                          className="w-8 h-8 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center active:scale-95 transition shadow-xs"
+                          className="w-8 h-8 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center active:scale-95 transition shadow-xs cursor-pointer"
                           title="전화걸기"
                         >
                           <Phone className="w-3.5 h-3.5" />
                         </a>
                       )}
+                      {cleanPhone && (
+                        <a
+                          href={`sms:${cleanPhone}?body=${encodeURIComponent(
+                            `[제주 소원사]
+${m.name} 불자님, 안녕하십니까.`
+                          )}`}
+                          className="w-8 h-8 rounded-lg bg-sky-600 hover:bg-sky-700 text-white flex items-center justify-center active:scale-95 transition shadow-xs cursor-pointer"
+                          title="문자발송"
+                        >
+                          <MessageSquare className="w-3.5 h-3.5" />
+                        </a>
+                      )}
                       <button
                         type="button"
                         onClick={() => handleCopyPhone(phone)}
-                        className="w-8 h-8 rounded-lg bg-[#FAF7F0] text-[#5C4D3B] hover:bg-[#EFE9DB] flex items-center justify-center border border-[#DDD3BF] shadow-xs cursor-pointer"
+                        className="w-8 h-8 rounded-lg bg-[#FAF7F0] text-[#5C4D3B] hover:bg-[#EFE9DB] flex items-center justify-center border border-[#DDD3BF] shadow-xs cursor-pointer active:scale-95 transition"
                         title="번호복사"
                       >
-                        <Copy className="w-3.5 h-3.5" />
+                        {copiedPhone === phone ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5" />
+                        )}
                       </button>
                     </div>
                   </div>
