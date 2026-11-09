@@ -5251,10 +5251,22 @@ function formatRelativeOrDate(dateStr) {
         wish_category: cat,
         wish_text: finalWishText,
         status:
-          cat.includes('위패') || cat.includes('삼성각') ? 'consulting' : 'prayed',
+          cat.includes('위패') ||
+          cat.includes('삼성각') ||
+          cat.includes('49재') ||
+          cat.includes('천도재') ||
+          cat.includes('기일') ||
+          cat.includes('생전예수재')
+            ? 'consulting'
+            : 'prayed',
         prayed_at:
-          cat.includes('위패') || cat.includes('삼성각')
-            ? '종무소 위패·삼성각 불사 우선 상담 배정됨'
+          cat.includes('위패') ||
+          cat.includes('삼성각') ||
+          cat.includes('49재') ||
+          cat.includes('천도재') ||
+          cat.includes('기일') ||
+          cat.includes('생전예수재')
+            ? '종무소 49재·위패 불사 우선 상담 배정됨'
             : `${sasiInfo.shortLabel} 축원 배정완료`,
         created_at: new Date().toISOString(),
       }
@@ -5307,7 +5319,9 @@ function formatRelativeOrDate(dateStr) {
           birth_date: '',
           lunar_solar: '음력',
           address: '',
-          family_memo: `대웅전 소원등(${cat}) 신청으로 전산 자동 등록됨`,
+          family_memo: (paidFlag || cat.includes('49재') || cat.includes('위패') || cat.includes('천도재'))
+            ? `불사안내(${cat}) 상담 신청으로 전산 자동 등록됨`
+            : `대웅전 소원등(${cat}) 신청으로 전산 자동 등록됨`,
           role: 'believer',
           parent_code: assignedAgentCode,
           bank_name: '',
@@ -5316,7 +5330,7 @@ function formatRelativeOrDate(dateStr) {
           merit_count: 300,
           believers_count: 0,
           wipae_count: 0,
-          extra_data: { registered_via: 'wish_lantern' },
+          extra_data: { registered_via: (paidFlag || cat.includes('49재') || cat.includes('위패') || cat.includes('천도재')) ? 'bulsa_consultation' : 'wish_lantern' },
         }
         awardMerit('lantern', newBeliever.code, 1)
         setMembers((prev) => [newBeliever, ...prev])

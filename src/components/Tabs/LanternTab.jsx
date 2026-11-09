@@ -628,7 +628,25 @@ export default function LanternTab({
               const seenNames = new Set()
               const deduped = []
               prayers.forEach((p, idx) => {
-                if (p.status === 'completed') return
+                if (p.status === 'completed' || p.status === 'consulting') return
+                const pCat = String(p.wish_category || '')
+                // 🔥 불사안내(49재, 천도재, 위패, 기일 등) 상담 신청 건은 개인정보 보호 및 용도 구분을 위해 일반 소원등 피드에 절대 노출하지 않음
+                if (
+                  pCat.includes('위패') ||
+                  pCat.includes('49재') ||
+                  pCat.includes('천도재') ||
+                  pCat.includes('기일') ||
+                  pCat.includes('삼성각') ||
+                  pCat.includes('불사') ||
+                  pCat.includes('공양미') ||
+                  pCat.includes('인등') ||
+                  pCat.includes('특별기도') ||
+                  pCat.includes('생전예수재') ||
+                  pCat.includes('단청') ||
+                  pCat.includes('기와')
+                ) {
+                  return
+                }
                 const nameKey = String(p.believer_name || '').trim()
                 if (!nameKey || seenNames.has(nameKey)) return
                 seenNames.add(nameKey)
