@@ -35,6 +35,7 @@ export default function MobileAdminView({
   const [bulsaStatusFilter, setBulsaStatusFilter] = useState('all') // 'all' | 'consulting' | 'in_progress' | 'completed'
   const [visitDateFilter, setVisitDateFilter] = useState('all') // 'all' | 'today' | 'tomorrow' | 'afterTomorrow' | 'geulpi'
   const [lanternFilter, setLanternFilter] = useState('all') // 'all' | 'today'
+  const [memberSort, setMemberSort] = useState('recent') // 'recent' | 'name' | 'family' | 'merit'
   const [searchTerm, setSearchTerm] = useState('')
   const [copiedPhone, setCopiedPhone] = useState(null)
   const [isRegisterOpen, setIsRegisterOpen] = useState(false)
@@ -195,12 +196,14 @@ export default function MobileAdminView({
     return regularLanterns
   }, [lanternFilter, todayLanterns, regularLanterns])
 
-  // 3. 신도 검색 목록
-  const searchedMembers = useMemo(() => {
+  // 3. 신도 검색 및 다각도 정렬 목록 (최근등록순 / 이름순 / 가족많은순 / 정진공덕순)
+  const sortedAndSearchedMembers = useMemo(() => {
     const q = searchTerm.trim().toLowerCase()
-    if (!q) return members.slice(0, 30)
     const cleanQ = q.replace(/[^0-9]/g, '')
-    return members.filter((m) => {
+
+    // 1) 검색 필터링
+    let list = (members || []).filter((m) => {
+      if (!q) return true
       const name = String(m.name || '').toLowerCase()
       const dharma = String(m.dharma_name || '').toLowerCase()
       const phone = String(m.phone || '').replace(/[^0-9]/g, '')
@@ -212,7 +215,28 @@ export default function MobileAdminView({
         (cleanQ && phone.includes(cleanQ))
       )
     })
-  }, [members, searchTerm])
+
+    // 2) 정렬 기준 적용
+    return [...list].sort((a, b) => {
+      if (memberSort === 'name') {
+        return String(a.name || '').localeCompare(String(b.name || ''), 'ko')
+      }
+      if (memberSort === 'family') {
+        const famA = Number(a.believers_count) || (a.family_memo ? 2 : 1)
+        const famB = Number(b.believers_count) || (b.family_memo ? 2 : 1)
+        return famB - famA
+      }
+      if (memberSort === 'merit') {
+        const meritA = Number(a.merit_count) || 0
+        const meritB = Number(b.merit_count) || 0
+        return meritB - meritA
+      }
+      // 'recent' (최근 등록일시 최신순)
+      const timeA = a.created_at ? new Date(a.created_at).getTime() : 0
+      const timeB = b.created_at ? new Date(b.created_at).getTime() : 0
+      return timeB - timeA
+    })
+  }, [members, searchTerm, memberSort])
 
   // 전화번호 클립보드 복사
   const handleCopyPhone = (phone) => {
@@ -1054,9 +1078,60 @@ export default function MobileAdminView({
               </button>
             </div>
 
+            {/* 4분할 세그먼트 정렬 바 (최근순 / 이름순 / 가족순 / 정진순) */}
+            <div className="bg-[#EDE9E1] p-1 rounded-xl grid grid-cols-4 gap-1 text-[11px]">
+              <button
+                type="button"
+                onClick={() => setMemberSort('recent')}
+                className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                  memberSort === 'recent'
+                    ? 'bg-[#1E1914] text-[#F5D061] font-black shadow-xs'
+                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
+                }`}
+              >
+                <span>최근등록</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMemberSort('name')}
+                className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                  memberSort === 'name'
+                    ? 'bg-[#1E1914] text-[#F5D061] font-black shadow-xs'
+                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
+                }`}
+              >
+                <span>이름(ㄱ-ㅎ)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMemberSort('family')}
+                className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                  memberSort === 'family'
+                    ? 'bg-[#1E1914] text-[#F5D061] font-black shadow-xs'
+                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
+                }`}
+              >
+                <span>가족많은순</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMemberSort('merit')}
+                className={`py-1.5 px-0.5 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
+                  memberSort === 'merit'
+                    ? 'bg-[#1E1914] text-[#F5D061] font-black shadow-xs'
+                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
+                }`}
+              >
+                <span>정진공덕순</span>
+              </button>
+            </div>
+
             {/* 신도 목록 */}
             <div className="space-y-2">
-              {searchedMembers.map((m) => {
+              {sortedAndSearchedMembers.map((m) => {
                 const phone = m.phone || ''
                 const cleanPhone = phone.replace(/[^0-9]/g, '')
                 return (
@@ -1074,7 +1149,19 @@ export default function MobileAdminView({
                         )}
                         <span className="text-[10.5px] text-[#8C7D6B] font-mono">#{m.code}</span>
                       </div>
-                      <p className="text-xs text-[#524436] font-medium mt-0.5">{phone}</p>
+                      <div className="flex items-center gap-2 mt-1 text-[11px] text-[#7A6B58] flex-wrap">
+                        <span className="font-medium text-[#40362C]">{phone}</span>
+                        {Number(m.believers_count) > 0 && (
+                          <span className="text-sky-800 bg-sky-50 px-1.5 py-0.2 rounded border border-sky-200 font-bold text-[10px]">
+                            가족 {m.believers_count}명
+                          </span>
+                        )}
+                        {Number(m.merit_count) > 0 && (
+                          <span className="text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200 font-bold text-[10px]">
+                            {Number(m.merit_count).toLocaleString()} 공덕
+                          </span>
+                        )}
+                      </div>
                       {m.family_memo && (
                         <p className="text-[11px] text-[#7A6B58] line-clamp-1 mt-0.5">
                           {m.family_memo}
