@@ -7348,17 +7348,6 @@ function formatRelativeOrDate(dateStr) {
                 </span>
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
-                {isMasterOrTempleAdmin && (
-                  <button
-                    type="button"
-                    onClick={() => setShowMobileAdmin(true)}
-                    className="text-[10.5px] bg-gradient-to-r from-red-600 to-amber-600 hover:brightness-110 text-white border border-red-400/80 px-2.5 py-0.5 rounded-full font-bold whitespace-nowrap transition shadow-sm flex items-center gap-1 active:scale-95 cursor-pointer"
-                    title="모바일 관제센터 바로가기"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                    <span>관제센터</span>
-                  </button>
-                )}
                 <button
                   type="button"
                   onClick={() => setActiveTab('profile')}
