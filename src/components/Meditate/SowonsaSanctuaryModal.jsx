@@ -494,13 +494,19 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
     }
     setIsExiting(true)
     setEntranceStep('exiting')
-    showActionToast('🙏 부처님 전 하직 합장 반배를 올리고 물러납니다')
+    showActionToast('🙏 부처님 전 하직 합장 반배를 올립니다')
 
-    // 1.8초 동안 하직 합장 반배를 올린 후 정갈하게 법당 닫기
+    // 1.1초 후: 반배를 마치고 부처님을 마주보며 조용히 뒤로 물러나는 단계로 전환
+    setTimeout(() => {
+      setEntranceStep('retreating')
+      showActionToast('🚪 삼존불을 마주한 채 조용히 뒤로 물러납니다')
+    }, 1100)
+
+    // 2.2초 후: 법당 문밖으로 완전히 물러나며 평화롭게 닫기
     setTimeout(() => {
       onClose()
       setIsExiting(false)
-    }, 1800)
+    }, 2200)
   }
 
   if (!isOpen) return null
@@ -878,8 +884,8 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                       className="h-32 sm:h-38 object-contain"
                     />
                   </div>
-                ) : entranceStep === 'exiting' ? (
-                  /* 퇴장: 부처님 전 하직 합장 반배를 올리고 공경히 물러나는 모습 (1.8초) */
+                ) : entranceStep === 'exiting' || entranceStep === 'retreating' ? (
+                  /* 퇴장: 부처님 전 하직 합장 반배 후 공경히 뒤로 물러나는 모습 (2.2초) */
                   <div className="flex flex-col items-center animate-monk-exit">
                     <img 
                       src="/images/avatar_monk_stand_hapjang.png?v=right" 
@@ -980,7 +986,13 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
           <div className="mt-4 sm:mt-5 mb-1.5 px-3.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-[#F5D061]/80 text-[10.5px] text-[#F5D061] flex items-center gap-1.5 shadow-lg animate-in fade-in max-w-xs">
             <span className="text-xs shrink-0">🙏</span>
             <span className="font-bold shrink-0">동자승</span>
-            <span className="truncate text-white/90">부처님 전 하직 합장 반배를 올리고 물러납니다...</span>
+            <span className="truncate text-white/90">부처님 전 하직 합장 반배를 올립니다...</span>
+          </div>
+        ) : entranceStep === 'retreating' ? (
+          <div className="mt-4 sm:mt-5 mb-1.5 px-3.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-[#F5D061]/80 text-[10.5px] text-[#F5D061] flex items-center gap-1.5 shadow-lg animate-in fade-in max-w-xs">
+            <span className="text-xs shrink-0">🚪</span>
+            <span className="font-bold shrink-0">동자승</span>
+            <span className="truncate text-white/90">삼존불을 마주한 채 조용히 뒤로 물러납니다...</span>
           </div>
         ) : (
           /* 실시간 다른 불자님들의 정진 발원 티커 (동자승과 한 칸 띄움 적용) */

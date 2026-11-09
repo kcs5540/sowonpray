@@ -78,29 +78,34 @@
   }
 }
 
-/* 🚪 부처님 전 하직 합장 반배 후 정갈하게 물러나는 퇴당 애니메이션 */
+/* 🚪 부처님 전 하직 합장 반배 후 공경히 뒤로 물러나는 퇴당 애니메이션 (2.2초) */
 @keyframes monkExitBowing {
   0% {
     opacity: 1;
     transform: scale(1) translateY(0px);
   }
-  20% {
-    /* 1. 단정히 서서 부처님 전을 우러러봄 */
+  15% {
+    /* 1. 단정히 서서 부처님 전 우러러봄 */
     transform: scale(1) translateY(0px);
   }
-  50% {
-    /* 2. 깊고 정성스런 하직 합장 반배 */
-    transform: scale(0.97) translateY(5px);
+  40% {
+    /* 2. 깊고 지극한 하직 합장 반배 (허리 숙임) */
+    transform: scale(0.97) translateY(6px);
   }
-  75% {
-    /* 3. 허리를 펴며 공경히 일어섬 */
+  60% {
+    /* 3. 허리를 펴며 단정히 일어섬 */
     transform: scale(1) translateY(0px);
     opacity: 1;
   }
+  75% {
+    /* 4. 삼존불을 마주한 채 조용히 뒤로 1보 물러남 */
+    transform: scale(1.05) translateY(26px);
+    opacity: 0.85;
+  }
   100% {
-    /* 4. 삼존불을 마주한 채 조용히 뒤로 물러나며 퇴장 */
+    /* 5. 2보 물러나며 법당 문밖으로 완전히 페이드 아웃 */
+    transform: scale(1.12) translateY(56px);
     opacity: 0;
-    transform: scale(1.08) translateY(32px);
   }
 }
 
@@ -117,7 +122,7 @@
 }
 
 .animate-monk-exit {
-  animation: monkExitBowing 1.8s ease-in-out forwards;
+  animation: monkExitBowing 2.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
 @layer base {
