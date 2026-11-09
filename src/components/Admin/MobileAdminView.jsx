@@ -24,6 +24,7 @@ export default function MobileAdminView({
   setMembers,
   prayers = [],
   setPrayers,
+  activeSasiPrayers = [],
   visits = [],
   setVisits,
   supabase,
@@ -161,21 +162,28 @@ export default function MobileAdminView({
     })
   }, [prayers])
 
-  // 오늘 축원 대상 소원등 선별 (사시예불 축원 배정/접수 완료)
+  // 오늘 축원 대상 소원등 선별 (대웅전 사시예불 축원 명부 100% 실제 데이터 연동)
   const todayLanterns = useMemo(() => {
+    if (activeSasiPrayers && activeSasiPrayers.length > 0) {
+      return activeSasiPrayers
+    }
     const now = Date.now()
-    const todayKey = new Date().toISOString().slice(0, 10)
-    return regularLanterns.filter((p) => {
-      const prayedAt = String(p.prayed_at || '')
-      if (prayedAt.includes('오늘')) return true
+    return (prayers || []).filter((p) => {
+      if (!p) return false
+      const c = p.wish_category || ''
+      if (c.includes('위패') || c.includes('천도재') || c.includes('49재') || c.includes('기일') || c.includes('예수재') || c.includes('공양미') || c.includes('불전시주')) return false
+      let pTime = now
       if (p.created_at) {
-        if (String(p.created_at).startsWith(todayKey)) return true
-        const pTime = new Date(p.created_at).getTime()
-        if (!isNaN(pTime) && (now - pTime) <= 24 * 60 * 60 * 1000) return true
+        const parsed = new Date(p.created_at).getTime()
+        if (!isNaN(parsed)) pTime = parsed
       }
-      return false
+      const diffMs = Math.max(0, now - pTime)
+      let maxDays = 2
+      if (c.includes('인등') || p.prayer_type === 'indeung_1yr') maxDays = 365
+      else if (c.includes('100일') || p.prayer_type === 'prayer_100d') maxDays = 100
+      return diffMs <= maxDays * 24 * 60 * 60 * 1000
     })
-  }, [regularLanterns])
+  }, [activeSasiPrayers, prayers])
 
   // 현재 필터링된 소원등 목록
   const currentLanterns = useMemo(() => {
@@ -991,7 +999,13 @@ export default function MobileAdminView({
                     </p>
 
                     <div className="flex items-center justify-between pt-1.5 border-t border-[#F0ECE1] text-[11px] text-[#7A6B58]">
-                      <span>{p.prayed_at || '사시예불 축원 배정'}</span>
+                      <span className="font-medium text-[#8A6510]">
+                        {p.wish_category?.includes('인등') || p.prayer_type === 'indeung_1yr'
+                          ? '대웅전 1년 인등 (365일 사시예불 축원)'
+                          : p.wish_category?.includes('100일') || p.prayer_type === 'prayer_100d'
+                          ? '100일 특별기도 (사시예불 축원)'
+                          : (lanternFilter === 'today' ? '오늘 오전 10시 대웅전 사시예불 축원' : (p.prayed_at || '사시예불 축원 배정'))}
+                      </span>
                       {cleanPhone && (
                         <a
                           href={`tel:${cleanPhone}`}

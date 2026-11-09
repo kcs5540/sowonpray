@@ -7239,6 +7239,7 @@ function formatRelativeOrDate(dateStr) {
           setMembers={setMembers}
           prayers={prayers}
           setPrayers={setPrayers}
+          activeSasiPrayers={activeSasiPrayers}
           visits={visits}
           setVisits={setVisits}
           supabase={supabase}
