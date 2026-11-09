@@ -416,9 +416,6 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       >
         {/* 하단 액션바 영역 은은한 페이드 */}
         <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none" />
-
-        {/* 제단 촛불이 마루에 비치는 황금빛 온기 반사광 효과 */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_15%,_var(--tw-gradient-stops))] from-[#FFB703]/25 via-transparent to-transparent pointer-events-none" />
       </div>
 
       {/* 2-1. 대웅전 실제 전경 제단 뷰 (z-[1]: 수미단 목조 하단까지 원본 그대로 높고 웅장하게 전체 노출) */}
@@ -443,9 +440,6 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,_var(--tw-gradient-stops))] from-[#FFD700]/15 via-transparent to-transparent pointer-events-none" />
         </div>
       </div>
-
-      {/* 2-2. 법당 내부 은은한 향 연기/금빛 기운 효과 */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-[#FFB703]/10 via-transparent to-black/30 pointer-events-none z-[1]" />
 
       {/* 멍스테이 모드 안내 플로팅 팁 */}
       {isZenMode && (
