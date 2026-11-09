@@ -34,7 +34,7 @@ export default function MobileAdminView({
   const [activeTab, setActiveTab] = useState('bulsa') // 'bulsa' | 'visits' | 'lanterns' | 'members'
   const [bulsaStatusFilter, setBulsaStatusFilter] = useState('consulting') // 기본 첫화면: 대기 ('consulting') 목록
   const [visitDateFilter, setVisitDateFilter] = useState('today') // 기본 첫화면: 오늘 예약 우선
-  const [lanternFilter, setLanternFilter] = useState('all') // 'all' | 'today'
+  const [lanternFilter, setLanternFilter] = useState('today') // 기본 첫화면: 오늘 축원 명부 우선
   const [memberSort, setMemberSort] = useState('recent') // 'recent' | 'name' | 'family' | 'merit'
   const [searchTerm, setSearchTerm] = useState('')
   const [copiedPhone, setCopiedPhone] = useState(null)
@@ -191,9 +191,9 @@ export default function MobileAdminView({
     return visits
   }, [visitDateFilter, visitGroups, visits])
 
-  // 2. 일반 1일 소원등 목록 (당일 사시예불 축원)
+  // 2. 일반 1일 소원등 목록 (1일 1회 원칙 엄격 준수 & 동일일자 중복 단일화)
   const regularLanterns = useMemo(() => {
-    return (prayers || []).filter((p) => {
+    const rawList = (prayers || []).filter((p) => {
       const cat = String(p.wish_category || '')
       const isBulsa =
         cat.includes('49재') ||
@@ -207,7 +207,42 @@ export default function MobileAdminView({
         cat.includes('생전예수재')
       return !isBulsa && p.status !== 'consulting'
     })
+
+    // 동일 일자 + 동일 불자 + 동일 발원 중복 노출 차단 (1일 1회 정진 원칙)
+    const seen = new Set()
+    const dedupedList = []
+    rawList.forEach((p) => {
+      const dateKey = p.created_at ? p.created_at.slice(0, 10) : 'unknown'
+      const key = `${p.believer_name}_${(p.believer_phone || '').replace(/[^0-9]/g, '')}_${dateKey}_${(p.wish_text || '').trim()}`
+      if (!seen.has(key)) {
+        seen.add(key)
+        dedupedList.push(p)
+      }
+    })
+    return dedupedList
   }, [prayers])
+
+  // 소원등 접수 일자 친화적 포맷팅 함수 (오늘 / 어제 / 그저께 / 날짜)
+  const formatLanternDate = (dateStr) => {
+    if (!dateStr) return ''
+    try {
+      const d = new Date(dateStr)
+      if (isNaN(d.getTime())) return ''
+      const month = d.getMonth() + 1
+      const day = d.getDate()
+      const now = new Date()
+      const isToday = d.toDateString() === now.toDateString()
+      const yesterday = new Date(now)
+      yesterday.setDate(yesterday.getDate() - 1)
+      const isYesterday = d.toDateString() === yesterday.toDateString()
+
+      if (isToday) return `${month}.${day} (오늘)`
+      if (isYesterday) return `${month}.${day} (어제)`
+      return `${month}.${day}`
+    } catch (e) {
+      return ''
+    }
+  }
 
   // 오늘 축원 대상 1일 소원등 선별 (인등 중복 배제 및 동일 불자님 중복 신청 정밀 디둡)
   const todayLanterns = useMemo(() => {
@@ -1077,23 +1112,8 @@ ${v.visitor_name} 불자님, ${v.visit_date} ${v.visit_time} 방문 및 공양 �
         {/* ============================================================== */}
         {activeTab === 'lanterns' && (
           <div className="space-y-3">
-            {/* 소원등 하위메뉴 2분할 세그먼트 바 (전체 / 오늘 축원 명부) */}
-            <div className="bg-[#EDE9E1] p-1 rounded-xl grid grid-cols-2 gap-1 text-xs">
-              <button
-                type="button"
-                onClick={() => setLanternFilter('all')}
-                className={`py-2 px-1 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap ${
-                  lanternFilter === 'all'
-                    ? 'bg-[#1E1914] text-[#F5D061] font-black shadow-xs'
-                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
-                }`}
-              >
-                <span>전체</span>
-                <span className={`text-[11px] font-black ${lanternFilter === 'all' ? 'text-[#F5D061]' : 'text-[#8C8375]'}`}>
-                  ({regularLanterns.length})
-                </span>
-              </button>
-
+            {/* 소원등 하위메뉴 2분할 세그먼트 바 (오늘 축원 명부 우선 배치 & 전체) */}
+            <div className="bg-[#EDE9E1] p-1 rounded-xl grid grid-cols-2 gap-1 text-xs font-bold">
               <button
                 type="button"
                 onClick={() => setLanternFilter('today')}
@@ -1109,46 +1129,99 @@ ${v.visitor_name} 불자님, ${v.visit_date} ${v.visit_time} 방문 및 공양 �
                   ({todayLanterns.length})
                 </span>
               </button>
+
+              <button
+                type="button"
+                onClick={() => setLanternFilter('all')}
+                className={`py-2 px-1 rounded-lg text-center transition cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                  lanternFilter === 'all'
+                    ? 'bg-[#1E1914] text-[#F5D061] font-black shadow-xs'
+                    : 'text-[#5C5446] hover:bg-white/60 font-semibold'
+                }`}
+              >
+                <span>전체</span>
+                <span className={`text-[11px] font-black ${lanternFilter === 'all' ? 'text-[#F5D061]' : 'text-[#8C8375]'}`}>
+                  ({regularLanterns.length})
+                </span>
+              </button>
             </div>
 
             {currentLanterns.length === 0 ? (
-              <div className="p-8 text-center bg-white rounded-2xl border border-[#E5DCB9] text-[#7A6B58] text-xs space-y-1 shadow-xs">
+              <div className="p-8 text-center bg-white rounded-2xl border border-[#E5DCB9] text-[#7A6B58] text-xs space-y-2 shadow-xs">
                 <Flame className="w-7 h-7 mx-auto text-amber-600" />
                 <p className="font-bold text-[#2E2214]">
                   {lanternFilter === 'today'
                     ? '오늘 대웅전 사시예불 축원 대상 소원등이 없습니다.'
                     : '등록된 1일 소원등이 없습니다.'}
                 </p>
+                {lanternFilter === 'today' && regularLanterns.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setLanternFilter('all')}
+                    className="inline-block px-3 py-1 bg-[#FAF5EB] hover:bg-[#F2EADA] text-amber-900 rounded-lg border border-[#DDD3BF] font-bold text-[11px] transition cursor-pointer"
+                  >
+                    누적 전체 소원등 ({regularLanterns.length}위) 보기
+                  </button>
+                )}
               </div>
             ) : (
               currentLanterns.map((p) => {
                 const phone = p.believer_phone || ''
                 const cleanPhone = phone.replace(/[^0-9]/g, '')
+
+                // 당일 유효 축원 대상인지 확인 (최근 36시간 이내)
+                let isTodayPrayer = lanternFilter === 'today'
+                if (!isTodayPrayer && p.created_at) {
+                  const pTime = new Date(p.created_at).getTime()
+                  if (!isNaN(pTime)) {
+                    isTodayPrayer = (Date.now() - pTime) <= 36 * 60 * 60 * 1000
+                  }
+                }
+
                 return (
                   <div
                     key={p.id || p.db_id}
                     className="rounded-2xl p-3.5 bg-white border border-[#E8DEC8] space-y-2 shadow-xs"
                   >
+                    {/* 상단: 신청자 성함 + 접수 날짜 명기 + 기원 카테고리 배지 */}
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-bold text-[#2E2214] truncate">
-                        🕯️ {p.believer_name}
-                      </span>
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="text-sm font-bold text-[#2E2214] truncate">
+                          🕯️ {p.believer_name}
+                        </span>
+                        {p.created_at && (
+                          <span className="text-[10px] text-[#8C7D6B] font-mono shrink-0 px-1.5 py-0.2 rounded bg-[#F7F4EE] border border-[#EAE3D2]">
+                            {formatLanternDate(p.created_at)}
+                          </span>
+                        )}
+                      </div>
                       <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] shrink-0">
                         {p.wish_category || '가족건강'}
                       </span>
                     </div>
 
+                    {/* 발원문 내용 */}
                     <p className="text-xs text-[#524436] line-clamp-2 font-serif-kr leading-relaxed">
                       “{p.wish_text}”
                     </p>
 
+                    {/* 하단: 실시간 축원 상태 (오늘 축원은 강조, 과거 지난 축원은 회향완료 표시) */}
                     <div className="flex items-center justify-between pt-1.5 border-t border-[#F0ECE1] text-[11px] text-[#7A6B58]">
-                      <span className="font-medium text-[#8A6510]">
-                        {p.wish_category?.includes('인등') || p.prayer_type === 'indeung_1yr'
-                          ? '대웅전 1년 인등 (365일 사시예불 축원)'
-                          : p.wish_category?.includes('100일') || p.prayer_type === 'prayer_100d'
-                          ? '100일 특별기도 (사시예불 축원)'
-                          : (lanternFilter === 'today' ? '오늘 오전 10시 대웅전 사시예불 축원' : (p.prayed_at || '사시예불 축원 배정'))}
+                      <span className="font-medium">
+                        {p.wish_category?.includes('인등') || p.prayer_type === 'indeung_1yr' ? (
+                          <span className="text-[#8A6510] font-bold">대웅전 1년 인등 (365일 사시예불 축원)</span>
+                        ) : p.wish_category?.includes('100일') || p.prayer_type === 'prayer_100d' ? (
+                          <span className="text-[#8A6510] font-bold">100일 특별기도 (사시예불 축원)</span>
+                        ) : isTodayPrayer ? (
+                          <span className="inline-flex items-center gap-1 text-[#8A6510] font-bold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                            오늘 오전 10시 사시예불 축원 배정
+                          </span>
+                        ) : (
+                          <span className="text-[#8C8273]">
+                            ✓ 사시예불 축원 회향완료
+                          </span>
+                        )}
                       </span>
                       {cleanPhone && (
                         <a
