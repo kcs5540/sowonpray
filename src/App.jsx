@@ -7287,18 +7287,6 @@ function formatRelativeOrDate(dateStr) {
             </div>
           </div>
 
-          {isAdmin && (
-            <button
-              type="button"
-              onClick={() => setShowMobileAdmin(true)}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-gradient-to-r from-[#8A2B14] via-[#A83818] to-[#6E2210] hover:brightness-110 border border-[#F5D061]/80 text-[#FFF3D1] text-[11px] font-extrabold whitespace-nowrap shrink-0 transition shadow-md active:scale-95"
-              title="스마트폰 전용 모바일 종무 관제창 열기"
-            >
-              <span className="w-2 h-2 rounded-full bg-amber-300 animate-ping inline-block" />
-              <span>📱 관제창</span>
-            </button>
-          )}
-
           <button
             onClick={() => {
               playBeomjongSound()
