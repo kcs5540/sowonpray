@@ -463,18 +463,18 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
     }
 
     // 🎬 대웅전 입장 시퀀스:
-    // 0~2.2s: 대청마루에서 사뿐사뿐 걸어 들어오기 (시네마틱 보행)
-    // 2.2~4.2s: 부처님 전을 향해 두 손 모아 정중히 합장 반배 올리기
-    // 4.2s+: 비단 방석에 가부좌 틀고 착석 완료
+    // 0~2.8s: 양팔을 흔들고 발을 내딛으며 대청마루에서 사뿐사뿐 걸어 들어오기 (12프레임 실사 보행 애니메이션)
+    // 2.8~4.8s: 방석 앞에 단정히 서서 삼존불 전 깊고 정성스런 합장 반배 올리기
+    // 4.8s+: 비단 방석에 가부좌 틀고 착석 완료
     setEntranceStep('entering')
 
     const tHapjang = setTimeout(() => {
       setEntranceStep('hapjang')
-    }, 2200)
+    }, 2800)
 
     const tSeated = setTimeout(() => {
       setEntranceStep('seated')
-    }, 4200)
+    }, 4800)
 
     return () => {
       clearTimeout(tHapjang)
@@ -843,11 +843,11 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               {/* 3D 동자승 실사 캐릭터 (대웅전 사뿐사뿐 걷기 -> 서서 합장 반배 -> 비단 방석 가부좌 착석 -> 절하기/참선) */}
               <div className="relative z-10 h-28 sm:h-34 flex items-end justify-center filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.9)]">
                 {entranceStep === 'entering' ? (
-                  /* 1단계: 대청마루에서 사뿐사뿐 걸어 들어오는 동자승 (2.2초) */
+                  /* 1단계: 양팔을 흔들고 왼발-오른발을 실제로 디디며 사뿐사뿐 걸어 들어오는 12프레임 실사 애니메이션 동자승 (2.8초) */
                   <div className="flex flex-col items-center animate-monk-walk">
                     <img 
-                      src="/images/avatar_monk_stand_hapjang.png?v=right" 
-                      alt="대웅전에 걸어 들어오는 동자승" 
+                      src="/images/avatar_monk_walking.webp" 
+                      alt="양팔과 다리를 움직이며 걸어 들어오는 동자승" 
                       className="h-32 sm:h-38 object-contain"
                     />
                   </div>
