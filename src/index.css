@@ -6,20 +6,26 @@
 @keyframes monkWalkIn {
   0% {
     opacity: 0;
-    transform: translateY(65px) scale(1.15);
+    transform: translateY(70px) scale(1.18);
   }
-  20% {
+  15% {
     opacity: 1;
-    transform: translateY(50px) scale(1.12) rotate(-2deg);
+    transform: translateY(58px) scale(1.15) rotate(-2.5deg);
   }
-  40% {
-    transform: translateY(35px) scale(1.08) rotate(2deg);
+  30% {
+    transform: translateY(46px) scale(1.12) rotate(2.5deg);
+  }
+  45% {
+    transform: translateY(34px) scale(1.08) rotate(-2deg);
   }
   60% {
-    transform: translateY(20px) scale(1.04) rotate(-1deg);
+    transform: translateY(22px) scale(1.05) rotate(2deg);
   }
-  80% {
-    transform: translateY(8px) scale(1.02) rotate(1deg);
+  75% {
+    transform: translateY(12px) scale(1.03) rotate(-1deg);
+  }
+  90% {
+    transform: translateY(4px) scale(1.01) rotate(0.5deg);
   }
   100% {
     opacity: 1;
@@ -29,23 +35,28 @@
 
 @keyframes monkHapjangBowing {
   0% {
-    transform: scale(1) rotate(0deg);
+    opacity: 1;
+    transform: scale(1) translateY(0px) rotate(0deg);
   }
-  35% {
-    transform: scale(0.96) translateY(5px) rotate(-1deg);
+  20% {
+    transform: scale(1) translateY(0px) rotate(0deg);
   }
-  70% {
-    transform: scale(0.96) translateY(5px) rotate(0deg);
+  50% {
+    transform: scale(0.96) translateY(6px) rotate(-1deg);
+  }
+  75% {
+    transform: scale(0.96) translateY(6px) rotate(0deg);
   }
   100% {
+    opacity: 1;
     transform: scale(1) translateY(0px) rotate(0deg);
   }
 }
 
 @keyframes monkSitDown {
   0% {
-    opacity: 0.5;
-    transform: translateY(-8px) scale(1.04);
+    opacity: 0.4;
+    transform: translateY(-12px) scale(1.05);
   }
   100% {
     opacity: 1;
@@ -54,15 +65,15 @@
 }
 
 .animate-monk-walk {
-  animation: monkWalkIn 1.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: monkWalkIn 2.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
 .animate-monk-hapjang {
-  animation: monkHapjangBowing 1.5s ease-in-out forwards;
+  animation: monkHapjangBowing 2.0s ease-in-out forwards;
 }
 
 .animate-monk-sit {
-  animation: monkSitDown 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: monkSitDown 1.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @layer base {

@@ -364,14 +364,14 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       return
     }
 
-    // 🎬 대웅전 입장 시퀀스 시작: 0~1.4s 발걸음 걸어 들어오기 -> 1.4~2.9s 부처님 전 합장반배 -> 2.9s 방석 착석 완료
+    // 🎬 대웅전 입장 시퀀스 시작: 0~2.2s 자연스럽게 걸어 들어오기 -> 2.2~4.2s 방석 위 서서 합장반배 -> 4.2s 가부좌 착석 완료
     setEntranceStep('entering')
     const tHapjang = setTimeout(() => {
       setEntranceStep('hapjang')
-    }, 1400)
+    }, 2200)
     const tSeated = setTimeout(() => {
       setEntranceStep('seated')
-    }, 2900)
+    }, 4200)
 
     return () => {
       clearTimeout(tHapjang)
@@ -616,24 +616,24 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
               {/* 은은한 부처님 가피 후광 오라 */}
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#FFD700]/25 via-transparent to-transparent pointer-events-none scale-125" />
 
-              {/* 3D 동자승 실사 캐릭터 (대웅전 입장 걸어오기 -> 합장 반배 -> 가부좌 착석 -> 절하기/참선) */}
+              {/* 3D 동자승 실사 캐릭터 (대웅전 자연스럽게 걷기 -> 방석 위 서서 합장 반배 -> 가부좌 착석 -> 절하기/참선) */}
               <div className="relative z-10 h-28 sm:h-34 flex items-end justify-center filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.9)]">
                 {entranceStep === 'entering' ? (
-                  /* 1단계: 마루 아래에서 부처님 앞으로 아장아장/사뿐사뿐 걸어 들어오는 서 있는 동자승 (1.4초) */
+                  /* 1단계: 두 팔을 자연스럽게 내리고 마루를 아장아장/사뿐사뿐 걸어 들어오는 서 있는 동자승 (2.2초) */
                   <div className="flex flex-col items-center animate-monk-walk">
                     <img 
-                      src="/images/avatar_monk_stand_hapjang.png" 
-                      alt="법당에 들어서는 동자승" 
+                      src="/images/avatar_monk_walk.png" 
+                      alt="자연스럽게 걸어 들어오는 동자승" 
                       className="h-32 sm:h-38 object-contain"
                     />
                   </div>
                 ) : entranceStep === 'hapjang' ? (
-                  /* 2단계: 부처님 전을 향해 서서 두 손 모아 정중히 합장 반배 올리는 모습 (1.5초) */
+                  /* 2단계: 방석 앞에 우뚝 서서, 부처님 전을 향해 두 손 모아 정중히 합장 반배 올리는 모습 (2.0초) */
                   <div className="flex flex-col items-center animate-monk-hapjang">
                     <img 
                       src="/images/avatar_monk_stand_hapjang.png" 
-                      alt="부처님 전 합장 반배 올리는 동자승" 
-                      className="h-32 sm:h-38 object-contain filter drop-shadow-[0_0_18px_rgba(255,215,0,0.7)]"
+                      alt="방석 위 서서 합장 반배 올리는 동자승" 
+                      className="h-32 sm:h-38 object-contain filter drop-shadow-[0_0_20px_rgba(255,215,0,0.7)]"
                     />
                   </div>
                 ) : actionState === 'bow' ? (
@@ -644,7 +644,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
                     className="h-24 sm:h-30 object-contain transition-transform duration-300"
                   />
                 ) : (
-                  /* 3단계 & 기본: 방석에 가부좌 틀고 고요히 참선하는 모습 (부드러운 착석 완료) */
+                  /* 3단계 & 기본: 비단 방석에 가부좌 틀고 고요히 참선하는 모습 (착석 완료) */
                   <img 
                     src="/images/avatar_monk_meditate.png" 
                     alt="고요히 참선 중인 동자승" 
@@ -721,13 +721,13 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
           <div className="mt-4 sm:mt-5 mb-1.5 px-3.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-[#F5D061]/40 text-[10.5px] text-[#F5D061] flex items-center gap-1.5 shadow-lg animate-pulse max-w-xs">
             <span className="text-xs shrink-0">👣</span>
             <span className="font-bold shrink-0">동자승</span>
-            <span className="truncate text-white/90">경건한 마음으로 대웅전에 들어섭니다...</span>
+            <span className="truncate text-white/90">법당 마루를 사뿐사뿐 걸어 들어섭니다...</span>
           </div>
         ) : entranceStep === 'hapjang' ? (
           <div className="mt-4 sm:mt-5 mb-1.5 px-3.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-[#F5D061]/60 text-[10.5px] text-[#F5D061] flex items-center gap-1.5 shadow-lg animate-in fade-in max-w-xs">
             <span className="text-xs shrink-0">🙏</span>
             <span className="font-bold shrink-0">동자승</span>
-            <span className="truncate text-white/90">삼존불 전에 두 손 모아 합장 반배를 올립니다</span>
+            <span className="truncate text-white/90">방석 위에 서서 삼존불 전 합장 반배를 올립니다</span>
           </div>
         ) : (
           /* 실시간 다른 불자님들의 정진 발원 티커 (동자승과 한 칸 띄움 적용) */
