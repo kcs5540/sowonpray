@@ -5340,6 +5340,7 @@ function formatRelativeOrDate(dateStr) {
       const { name: parsedName, dharmaName: parsedDharma } = parseNameAndDharmaName(wishNameClean)
 
       if (!existingPrayerMember) {
+        const isBulsaReg = Boolean(paidFlag || cat.includes('49재') || cat.includes('위패') || cat.includes('천도재'))
         const newBeliever = {
           code: prayerCode8,
           phone: formatPhone11(wishPhoneClean),
@@ -5349,7 +5350,7 @@ function formatRelativeOrDate(dateStr) {
           birth_date: '',
           lunar_solar: '음력',
           address: '',
-          family_memo: (paidFlag || cat.includes('49재') || cat.includes('위패') || cat.includes('천도재'))
+          family_memo: isBulsaReg
             ? `불사안내(${cat}) 상담 신청으로 전산 자동 등록됨`
             : `대웅전 소원등(${cat}) 신청으로 전산 자동 등록됨`,
           role: 'believer',
@@ -5357,15 +5358,19 @@ function formatRelativeOrDate(dateStr) {
           bank_name: '',
           bank_account: '',
           account_holder: '',
-          merit_count: 300,
+          merit_count: isBulsaReg ? 0 : 300,
           believers_count: 0,
           wipae_count: 0,
-          extra_data: { registered_via: (paidFlag || cat.includes('49재') || cat.includes('위패') || cat.includes('천도재')) ? 'bulsa_consultation' : 'wish_lantern' },
+          extra_data: { registered_via: isBulsaReg ? 'bulsa_consultation' : 'wish_lantern' },
         }
-        awardMerit('lantern', newBeliever.code, 1)
+        if (!isBulsaReg) {
+          awardMerit('lantern', newBeliever.code, 1)
+        }
         setMembers((prev) => [newBeliever, ...prev])
         try {
-          localStorage.setItem(`sowonpray_merit_${newBeliever.code}`, '300')
+          if (!isBulsaReg) {
+            localStorage.setItem(`sowonpray_merit_${newBeliever.code}`, '300')
+          }
         } catch (e) {}
         if (supabase) {
           supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
