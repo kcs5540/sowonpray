@@ -378,51 +378,58 @@ export default function MobileAdminView({
         {/* ============================================================== */}
         {activeTab === 'bulsa' && (
           <div className="space-y-3">
-            {/* 상태 필터 바 */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+            {/* 상태 필터 4분할 바 (글자 축약 및 4등분 그리드로 한 화면에 100% 다 보이게 처리) */}
+            <div className="grid grid-cols-4 gap-1 text-[11px]">
               <button
                 type="button"
                 onClick={() => setBulsaStatusFilter('all')}
-                className={`px-3 py-1 rounded-full border whitespace-nowrap font-medium transition cursor-pointer ${
+                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
                   bulsaStatusFilter === 'all'
                     ? 'bg-[#2E2214] text-[#F5D061] border-[#2E2214] font-bold shadow-xs'
                     : 'bg-white text-[#635341] border-[#DDD3BF] hover:bg-[#F8F5EE]'
                 }`}
               >
-                전체 ({bulsaInquiries.length})
+                <span className="font-bold">전체</span>
+                <span className="text-[11px] font-extrabold text-[#C59B27]">({bulsaInquiries.length})</span>
               </button>
+
               <button
                 type="button"
                 onClick={() => setBulsaStatusFilter('consulting')}
-                className={`px-3 py-1 rounded-full border whitespace-nowrap font-medium transition cursor-pointer ${
+                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
                   bulsaStatusFilter === 'consulting'
                     ? 'bg-red-600 text-white border-red-600 font-bold shadow-xs'
-                    : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'
+                    : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100 font-semibold'
                 }`}
               >
-                🚨 접수대기 ({bulsaInquiries.filter((p) => p.status === 'consulting').length})
+                <span>🚨대기</span>
+                <span className="text-[11px] font-black">({bulsaInquiries.filter((p) => p.status === 'consulting').length})</span>
               </button>
+
               <button
                 type="button"
                 onClick={() => setBulsaStatusFilter('in_progress')}
-                className={`px-3 py-1 rounded-full border whitespace-nowrap font-medium transition cursor-pointer ${
+                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
                   bulsaStatusFilter === 'in_progress'
                     ? 'bg-amber-600 text-white border-amber-600 font-bold shadow-xs'
-                    : 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100'
+                    : 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100 font-semibold'
                 }`}
               >
-                상담진행중 ({bulsaInquiries.filter((p) => p.status === 'in_progress').length})
+                <span>진행</span>
+                <span className="text-[11px] font-black">({bulsaInquiries.filter((p) => p.status === 'in_progress').length})</span>
               </button>
+
               <button
                 type="button"
                 onClick={() => setBulsaStatusFilter('completed')}
-                className={`px-3 py-1 rounded-full border whitespace-nowrap font-medium transition cursor-pointer ${
+                className={`py-1.5 px-0.5 rounded-xl border text-center transition cursor-pointer flex items-center justify-center gap-0.5 whitespace-nowrap ${
                   bulsaStatusFilter === 'completed'
                     ? 'bg-emerald-600 text-white border-emerald-600 font-bold shadow-xs'
-                    : 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
+                    : 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100 font-semibold'
                 }`}
               >
-                상담완료 ({bulsaInquiries.filter((p) => p.status === 'completed').length})
+                <span>완료</span>
+                <span className="text-[11px] font-black">({bulsaInquiries.filter((p) => p.status === 'completed').length})</span>
               </button>
             </div>
 

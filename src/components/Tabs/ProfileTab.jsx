@@ -797,8 +797,12 @@ export default function ProfileTab({
                           !p.wish_category?.includes('조성비') &&
                           !p.wish_category?.includes('불사')
                       ).length
-                      const totalMerit = Math.max(total1dCount, userLanternStats?.totalCount || 0, isLanternLit ? 1 : 0)
-                      const currentStreak = userLanternStats?.streak || (isLanternLit ? 1 : 0)
+                      const totalMerit = isLanternLit
+                        ? Math.max(total1dCount, userLanternStats?.totalCount || 0, 1)
+                        : total1dCount
+                      const currentStreak = isLanternLit
+                        ? (userLanternStats?.streak || 1)
+                        : (total1dCount > 0 ? (userLanternStats?.streak || 0) : 0)
 
                       // 1년 인등, 100일 특별기도, 위패, 기타 불사 봉안 목록 도출
                       const activeIndeung = memberInfo?.lanterns?.find((l) => l.id === 'indeung_1yr' && l.active)
@@ -878,7 +882,7 @@ export default function ProfileTab({
                                 <span className="block text-[11px] text-[#D6CEC2] truncate">
                                   {isLanternLit
                                     ? `📅 ${getSasiDisplayInfo(lanternData?.sasi_date_key).shortLabel} 축원 (11시 회향)`
-                                    : '매일 사시예불 축원으로 공덕을 쌓으세요'}
+                                    : '매일 사시예불 축원 봉행'}
                                 </span>
                               </div>
                             </div>
