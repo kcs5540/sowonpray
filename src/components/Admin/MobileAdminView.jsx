@@ -823,7 +823,7 @@ export default function MobileAdminView({
                 return (
                   <div
                     key={p.id || p.db_id}
-                    className={`rounded-2xl p-4 border transition shadow-sm space-y-3 ${
+                    className={`rounded-2xl p-3 border transition shadow-xs space-y-2 ${
                       isPending
                         ? 'bg-[#FFFDFB] border-red-300 ring-1 ring-red-100'
                         : isInProgress
@@ -831,40 +831,22 @@ export default function MobileAdminView({
                         : 'bg-white border-[#E8DEC8]'
                     }`}
                   >
-                    {/* 상단: 신청자 실명 & 종목 배지 & 상태 */}
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="text-base font-black text-[#1F1710]">
-                            {p.believer_name || '신청 불자'}
-                          </span>
-                          <span className="text-[11px] text-[#8C7D6B] font-mono">
-                            #{p.member_code || cleanPhone.slice(-8) || '-'}
-                          </span>
-                        </div>
-                        <div className="mt-1 flex items-center gap-1.5 flex-wrap">
-                          <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399]">
-                            {p.wish_category || '불사상담'}
-                          </span>
-                          {p.created_at && (
-                            <span className="text-[10.5px] text-[#8C7D6B] flex items-center gap-0.5">
-                              <Clock className="w-3 h-3 text-[#A89885]" />
-                              {new Date(p.created_at).toLocaleDateString('ko-KR', {
-                                month: 'numeric',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                              })}
-                            </span>
-                          )}
-                        </div>
+                    {/* 상단 1열: 신청자 성함 & 실시간 상태 배지 */}
+                    <div className="flex items-center justify-between gap-1.5 border-b border-[#F5EFE6] pb-1.5">
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="text-sm font-black text-[#1F1710] truncate">
+                          {p.believer_name || '신청 불자'}
+                        </span>
+                        <span className="text-[10px] text-[#8C7D6B] font-mono shrink-0">
+                          #{p.member_code || cleanPhone.slice(-8) || '-'}
+                        </span>
                       </div>
 
                       {/* 상태 배지 */}
                       <span
-                        className={`text-[11px] font-extrabold px-2.5 py-1 rounded-full whitespace-nowrap shrink-0 border ${
+                        className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full whitespace-nowrap shrink-0 border ${
                           isPending
-                            ? 'bg-red-600 text-white border-red-600 animate-pulse shadow-xs'
+                            ? 'bg-red-600 text-white border-red-600 animate-pulse shadow-2xs'
                             : isInProgress
                             ? 'bg-amber-100 text-amber-900 border-amber-300 font-bold'
                             : 'bg-emerald-100 text-emerald-900 border-emerald-300 font-bold'
@@ -874,24 +856,42 @@ export default function MobileAdminView({
                       </span>
                     </div>
 
-                    {/* 발원 및 상담 메모 전문 (밝고 선명한 크림 박스) */}
-                    <div className="p-3 rounded-xl bg-[#FAF7F0] border border-[#EBE1CD] space-y-1">
-                      <p className="text-xs text-[#3D3328] leading-relaxed whitespace-pre-line break-keep font-serif-kr font-medium">
+                    {/* 상단 2열: 불사 종목 칩 & 접수 일시 */}
+                    <div className="flex items-center justify-between text-[10.5px]">
+                      <span className="font-bold px-2 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399]">
+                        {p.wish_category || '불사상담'}
+                      </span>
+                      {p.created_at && (
+                        <span className="text-[#8C7D6B] flex items-center gap-1 text-[10.5px] font-mono">
+                          <Clock className="w-2.5 h-2.5 text-[#A89885]" />
+                          {new Date(p.created_at).toLocaleDateString('ko-KR', {
+                            month: 'numeric',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* 발원 및 상담 메모 전문 (슬림 & 정갈한 크림 박스) */}
+                    <div className="px-2.5 py-1.5 rounded-lg bg-[#FAF7F0] border border-[#EBE1CD]">
+                      <p className="text-[11.5px] text-[#3D3328] leading-relaxed whitespace-pre-line break-keep font-serif-kr">
                         {p.wish_text || '발원문 메모가 없습니다.'}
                       </p>
                     </div>
 
-                    {/* 원터치 액션 버튼 바 (전화걸기, 문자하기, 번호복사) */}
-                    <div className="grid grid-cols-3 gap-2 pt-1 border-t border-[#EFE8DA]">
+                    {/* 원터치 액션 버튼 바 (전화걸기, 문자하기, 번호복사 - 콤팩트 높이) */}
+                    <div className="grid grid-cols-3 gap-1.5 pt-0.5">
                       <a
                         href={cleanPhone ? `tel:${cleanPhone}` : '#'}
-                        className={`py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs active:scale-95 transition ${
+                        className={`py-1.5 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1 shadow-2xs active:scale-95 transition ${
                           cleanPhone
                             ? 'bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer'
                             : 'bg-[#EEE8DB] text-[#9E907E] pointer-events-none'
                         }`}
                       >
-                        <Phone className="w-3.5 h-3.5" />
+                        <Phone className="w-3 h-3" />
                         <span>전화걸기</span>
                       </a>
 
@@ -903,46 +903,46 @@ export default function MobileAdminView({
                               )}`
                             : '#'
                         }
-                        className={`py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs active:scale-95 transition ${
+                        className={`py-1.5 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1 shadow-2xs active:scale-95 transition ${
                           cleanPhone
                             ? 'bg-sky-600 hover:bg-sky-700 text-white cursor-pointer'
                             : 'bg-[#EEE8DB] text-[#9E907E] pointer-events-none'
                         }`}
                       >
-                        <MessageSquare className="w-3.5 h-3.5" />
+                        <MessageSquare className="w-3 h-3" />
                         <span>문자하기</span>
                       </a>
 
                       <button
                         type="button"
                         onClick={() => handleCopyPhone(phone)}
-                        className="py-2.5 rounded-xl bg-white hover:bg-[#F8F5ED] text-[#4A3D2D] text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition border border-[#D5C9B3] shadow-xs cursor-pointer"
+                        className="py-1.5 rounded-lg bg-white hover:bg-[#F8F5ED] text-[#4A3D2D] text-[11px] font-bold flex items-center justify-center gap-1 active:scale-95 transition border border-[#D5C9B3] shadow-2xs cursor-pointer"
                       >
                         {copiedPhone === phone ? (
                           <>
-                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                            <Check className="w-3 h-3 text-emerald-600" />
                             <span className="text-emerald-700">복사됨!</span>
                           </>
                         ) : (
                           <>
-                            <Copy className="w-3.5 h-3.5 text-[#7A6B58]" />
+                            <Copy className="w-3 h-3 text-[#7A6B58]" />
                             <span>번호복사</span>
                           </>
                         )}
                       </button>
                     </div>
 
-                    {/* 상태 변경 버튼 바 */}
-                    <div className="flex items-center justify-between gap-1.5 pt-2 border-t border-[#F0ECE1]">
-                      <span className="text-[11px] font-medium text-[#7A6B58]">진행 상태 변경:</span>
+                    {/* 상태 변경 버튼 바 (슬림 & 단정한 웜그레이 미선택) */}
+                    <div className="flex items-center justify-between gap-1 pt-1.5 border-t border-[#F0ECE1]">
+                      <span className="text-[10.5px] font-medium text-[#7A6B58]">진행 상태:</span>
                       <div className="flex items-center gap-1">
                         <button
                           type="button"
                           onClick={() => handleUpdatePrayerStatus(p.id, 'consulting')}
-                          className={`px-2.5 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer ${
+                          className={`px-2 py-0.5 rounded text-[10.5px] font-bold border transition cursor-pointer ${
                             isPending
-                              ? 'bg-red-600 text-white border-red-600 shadow-xs'
-                              : 'bg-[#F4F0E6] text-[#695B49] border-[#DDD3BF] hover:bg-white'
+                              ? 'bg-red-600 text-white border-red-600 shadow-2xs'
+                              : 'bg-white text-[#6E6455] border-[#DDD5C5] hover:bg-[#FAF8F3]'
                           }`}
                         >
                           대기
@@ -950,10 +950,10 @@ export default function MobileAdminView({
                         <button
                           type="button"
                           onClick={() => handleUpdatePrayerStatus(p.id, 'in_progress')}
-                          className={`px-2.5 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer ${
+                          className={`px-2 py-0.5 rounded text-[10.5px] font-bold border transition cursor-pointer ${
                             isInProgress
-                              ? 'bg-amber-600 text-white border-amber-600 shadow-xs'
-                              : 'bg-[#F4F0E6] text-[#695B49] border-[#DDD3BF] hover:bg-white'
+                              ? 'bg-amber-600 text-white border-amber-600 shadow-2xs'
+                              : 'bg-white text-[#6E6455] border-[#DDD5C5] hover:bg-[#FAF8F3]'
                           }`}
                         >
                           상담중
@@ -961,10 +961,10 @@ export default function MobileAdminView({
                         <button
                           type="button"
                           onClick={() => handleUpdatePrayerStatus(p.id, 'completed')}
-                          className={`px-2.5 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer ${
+                          className={`px-2 py-0.5 rounded text-[10.5px] font-bold border transition cursor-pointer ${
                             isDone
-                              ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
-                              : 'bg-[#F4F0E6] text-[#695B49] border-[#DDD3BF] hover:bg-white'
+                              ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs'
+                              : 'bg-white text-[#6E6455] border-[#DDD5C5] hover:bg-[#FAF8F3]'
                           }`}
                         >
                           완료
