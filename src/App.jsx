@@ -9075,6 +9075,27 @@ function formatRelativeOrDate(dateStr) {
           const isChondoOnly = (wishCategory || '').includes('천도재')
           const isGiilOnly = (wishCategory || '').includes('기일')
 
+          const isBulsa = Boolean(
+            isWipaeCat ||
+            isSamseongCat ||
+            isIndeungCat ||
+            is100dCat ||
+            is49jaeOnly ||
+            isChondoOnly ||
+            isGiilOnly ||
+            isRiceCat ||
+            (wishCategory &&
+              ![
+                '가족건강',
+                '사업번창',
+                '학업/시험합격',
+                '마음평안/소원성취',
+                '자녀축복/취업성취',
+                '액운소멸/무병장수',
+                '대웅전 소원등',
+              ].includes(wishCategory))
+          )
+
           const title = isWipaeCat
             ? '🏛️ 영구 위패 봉안 불사 접수 확인'
             : isSamseongCat
@@ -9172,14 +9193,44 @@ function formatRelativeOrDate(dateStr) {
                 </div>
 
                 <div className="text-xs text-[#E2DAD0] leading-snug space-y-1 break-keep px-1">
-                  {isWipaeCat ? (
+                  {isIndeungCat ? (
                     <>
-                      <p>소원사 법당에 정결하게 위패 봉안,</p>
-                      <p><strong className="text-[#F5D061]">매일 사시예불</strong>에 영가 극락왕생 축원 올립니다.</p>
+                      <p>부처님 전에 <strong className="text-[#F5D061]">365일 가족 인등</strong>이 밝혀지며,</p>
+                      <p>매일 오전 10시 사시예불에 온 가족을 정성껏 축원합니다.</p>
+                    </>
+                  ) : is100dCat ? (
+                    <>
+                      <p>대웅전 <strong className="text-[#F5D061]">100일 특별 정진 기도</strong>가 입재되며,</p>
+                      <p>100일 동안 매일 사시예불에 간절한 소원을 축원 올립니다.</p>
+                    </>
+                  ) : is49jaeOnly ? (
+                    <>
+                      <p>영가 극락왕생 <strong className="text-[#F5D061]">49재 봉행</strong>이 정식 접수되었으며,</p>
+                      <p>주지스님께서 유족께 전화로 상세 일정을 상담 안내해 드립니다.</p>
+                    </>
+                  ) : isChondoOnly ? (
+                    <>
+                      <p>선망 조상 <strong className="text-[#F5D061]">천도재 봉행</strong>이 정식 접수되었으며,</p>
+                      <p>종무소에서 전화로 일정 및 준비 절차를 상담 안내해 드립니다.</p>
+                    </>
+                  ) : isGiilOnly ? (
+                    <>
+                      <p>사찰 <strong className="text-[#F5D061]">기일제사 봉행</strong>이 정식 접수되었으며,</p>
+                      <p>고인의 기일에 맞춰 정갈한 제사 봉행을 상담 안내해 드립니다.</p>
+                    </>
+                  ) : isRiceCat ? (
+                    <>
+                      <p>부처님 전에 <strong className="text-[#F5D061]">공양미와 황초</strong>가 정결히 공양되며,</p>
+                      <p>{nowSasiInfo.shortLabel}에 공덕을 정성껏 축원 올립니다.</p>
+                    </>
+                  ) : isWipaeCat ? (
+                    <>
+                      <p>소원사 법당에 정결하게 위패가 봉안되며,</p>
+                      <p><strong className="text-[#F5D061]">매일 사시예불</strong>에 영가 극락왕생을 영구히 축원합니다.</p>
                     </>
                   ) : isSamseongCat ? (
                     <>
-                      <p>삼성각 성전 건립 대작불사 동참,</p>
+                      <p>삼성각 성전 건립 대작불사 동참이 접수되었으며,</p>
                       <p><strong className="text-[#F5D061]">매일 사시예불</strong>에 성인의 가피를 축원 올립니다.</p>
                     </>
                   ) : (
@@ -9232,19 +9283,23 @@ function formatRelativeOrDate(dateStr) {
                     type="button"
                     onClick={() => {
                       handleConfirmSubmittedPrayer({ closeModal: true })
-                      setActiveTab('lantern')
-                      const scrollToTop = () => {
-                        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-                        if (typeof document !== 'undefined') {
-                          if (document.documentElement) document.documentElement.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-                          if (document.body) document.body.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-                          const topElem = document.getElementById('lantern-top-view')
-                          if (topElem) topElem.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                      if (!isBulsa) {
+                        setActiveTab('lantern')
+                        const scrollToTop = () => {
+                          window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+                          if (typeof document !== 'undefined') {
+                            if (document.documentElement) document.documentElement.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+                            if (document.body) document.body.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+                            const topElem = document.getElementById('lantern-top-view')
+                            if (topElem) topElem.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                          }
                         }
+                        scrollToTop()
+                        setTimeout(scrollToTop, 60)
+                        setTimeout(scrollToTop, 200)
+                      } else {
+                        showToast(`🙏 [${wishCategory || '불사'}] 동참 접수가 정성껏 완료되었습니다.`)
                       }
-                      scrollToTop()
-                      setTimeout(scrollToTop, 60)
-                      setTimeout(scrollToTop, 200)
                     }}
                     className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F5D061] to-[#AA7C11] hover:brightness-110 text-[#1B1815] font-black text-xs sm:text-sm active:scale-95 transition cursor-pointer shadow-md flex items-center justify-center gap-1.5"
                   >
