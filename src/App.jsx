@@ -8977,10 +8977,10 @@ function formatRelativeOrDate(dateStr) {
 
                 <div className="text-xs text-[#E2DAD0] leading-snug space-y-1 break-keep px-1">
                   <p>
-                    <strong className="text-[#FAF8F5]">{alreadyLitModalData.believer_name}</strong> 불자님의 소원등이 켜져 있으며,
+                    <strong className="text-[#FAF8F5]">{alreadyLitModalData.believer_name}</strong> 불자님 소원등 점등 중,
                   </p>
                   <p>
-                    <strong className="text-[#F5D061]">{sasiInfo.shortLabel}</strong>에 스님께서 정성껏 축원 올립니다.
+                    <strong className="text-[#F5D061]">{sasiInfo.shortLabel}</strong>에 정성껏 축원 올립니다.
                   </p>
                   <p className="text-[11px] text-[#A89D8E]">
                     (오전 11시 회향 후 다시 밝히실 수 있습니다.)
@@ -9030,7 +9030,7 @@ function formatRelativeOrDate(dateStr) {
                   className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F5D061] to-[#AA7C11] hover:brightness-110 text-[#1B1815] font-black text-sm active:scale-95 transition cursor-pointer shadow-md flex items-center justify-center gap-1.5"
                 >
                   <Flame className="w-4 h-4 fill-current shrink-0" />
-                  <span>합장하며 내 소원등 보러가기 (상단 이동)</span>
+                  <span>합장하며 내 소원등 보러가기</span>
                 </button>
               </div>
             </div>
