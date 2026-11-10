@@ -82,17 +82,17 @@ export default function BulsaTab({
               </button>
             </div>
 
-            {/* [큰 항목 1] 상시 기도 및 공덕 불사 종목 (4종) - 가벼운 일상 공덕 우선 배치 */}
+            {/* [큰 항목 1] 상시 기도 및 공덕 불사 종목 (6종) - 가벼운 일상 공덕 우선 배치 */}
             <section
               id="bulsa-section-1"
               className="bg-white rounded-2xl p-5 shadow-md border-2 border-[#C59B27] space-y-3.5 scroll-mt-20"
             >
               <div>
                 <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#FAF3DF] text-[#7A5707] border-2 border-[#C59B27] text-[11.5px] font-black whitespace-nowrap shadow-sm mb-1.5">
-                  1. 상시 기도 및 공덕 불사 (4종)
+                  1. 상시 기도 및 공덕 불사 (6종)
                 </span>
                 <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
-                  공양미 시주 · 1년 가족 인등 · 100일 특별기도 · 천도재
+                  공양미·초 시주 · 1년 가족 인등 · 100일 특별기도 · 49재 · 조상 천도재 · 기일제사
                 </h3>
                 <p className="text-xs text-[#575049] mt-1 leading-relaxed break-keep">
                   부처님 전에 정성 어린 공양을 올리고 온 가족의 건강·평안과 조상 영가님의 극락왕생을 발원하는 상시 기도입니다.
@@ -102,28 +102,40 @@ export default function BulsaTab({
               <div className="grid grid-cols-1 gap-2.5">
                 {[
                   {
-                    key: '대웅전 공양미/불전시주',
+                    key: '공양미·초 시주',
                     badge: '무량 공덕 보시',
-                    title: '① 대웅전 공양미 · 초 · 향 시주 불사',
-                    desc: '부처님 전에 올리는 맑은 공양미와 황초·향 시주 및 제주 소원사 도량 수호 불사에 누구나 가볍게 동참하실 수 있습니다.',
+                    title: '① 공양미 · 초 시주',
+                    desc: '부처님 전에 올리는 맑은 공양미와 황초 시주 및 제주 소원사 도량 수호에 누구나 가볍게 동참하는 일상 보시입니다.',
                   },
                   {
-                    key: '대웅전 1년 인등(가족등)',
+                    key: '1년 가족 인등',
                     badge: '365일 상시 점등',
-                    title: '② 대웅전 1년 가족 인등(연등) 불사',
+                    title: '② 1년 가족 인등',
                     desc: '대웅전 부처님 전에 1년 365일 꺼지지 않는 등불을 밝혀 온 가족의 건강, 자녀 학업·취업, 사업 번창을 매일 사시예불(오전 10시)에 축원합니다.',
                   },
                   {
-                    key: '100일 소원성취 특별기도',
+                    key: '100일 특별기도',
                     badge: '백일 정진 가피',
-                    title: '③ 대웅전 100일 소원성취 특별기도',
+                    title: '③ 100일 특별기도',
                     desc: '수능·학업·취업·시험합격, 사업번창 및 건강 쾌유를 위해 100일 동안 스님께서 매일 정성껏 축원 올리는 특별 정진 기도입니다.',
                   },
                   {
-                    key: '49재/천도재/기일제사',
-                    badge: '극락왕생 천도',
-                    title: '④ 49재 · 천도재 · 기일제사 봉행',
-                    desc: '돌아가신 부모·조상님, 수자령(태아령)의 극락왕생을 발원하는 천도재 및 가정에서 모시기 어려운 기일 제사를 사찰에서 정성껏 봉행합니다.',
+                    key: '49재 봉행',
+                    badge: '영가 극락왕생',
+                    title: '④ 49재 봉행',
+                    desc: '고인이 돌아가신 후 다음 생을 결정짓는 49일 동안, 7일마다 스님께서 법문을 설하고 영가의 업장을 소멸하여 극락세계 왕생을 돕는 정통 의식입니다.',
+                  },
+                  {
+                    key: '조상 천도재',
+                    badge: '조상 해원·우환 소멸',
+                    title: '⑤ 조상 천도재',
+                    desc: '돌아가신 조상님, 집안의 원인 모를 우환, 빛을 보지 못한 태아령(수자령)의 맺힌 한을 풀고 가내 평안을 회복하는 특별 천도재입니다.',
+                  },
+                  {
+                    key: '사찰 기일제사',
+                    badge: '사찰 정갈한 제사',
+                    title: '⑥ 사찰 기일제사',
+                    desc: '현대 가정에서 제사상을 차리기 어려울 때, 고인의 기일에 맞춰 사찰 대웅전에서 스님 집전 아래 정갈하게 모셔드리는 기일 제사입니다.',
                   },
                 ].map((item) => {
                   const isSelected = wishCategory === item.key
@@ -406,12 +418,18 @@ export default function BulsaTab({
                           ? '① 생전예수재 황금빛 위패 (살아계신 분)'
                           : wishCategory === '조상영구위패(흑색)'
                           ? '② 조상 영가 품격 흑색 영구위패'
-                          : wishCategory === '대웅전 공양미/불전시주'
-                          ? '① 대웅전 공양미 / 불전시주'
-                          : wishCategory === '대웅전 1년 인등(가족등)'
-                          ? '② 대웅전 1년 인등 (가족등)'
-                          : wishCategory === '100일 소원성취 특별기도'
-                          ? '③ 100일 소원성취 특별기도'
+                          : wishCategory === '공양미·초 시주' || wishCategory === '대웅전 공양미/불전시주'
+                          ? '① 공양미 · 초 시주'
+                          : wishCategory === '1년 가족 인등' || wishCategory === '대웅전 1년 인등(가족등)'
+                          ? '② 1년 가족 인등'
+                          : wishCategory === '100일 특별기도' || wishCategory === '100일 소원성취 특별기도'
+                          ? '③ 100일 특별기도'
+                          : wishCategory === '49재 봉행'
+                          ? '④ 49재 봉행'
+                          : wishCategory === '조상 천도재'
+                          ? '⑤ 조상 천도재'
+                          : wishCategory === '사찰 기일제사'
+                          ? '⑥ 사찰 기일제사'
                           : wishCategory === '49재/천도재/기일제사'
                           ? '④ 49재 / 천도재 / 기일제사'
                           : wishCategory === '삼성각 소원기와불사'
@@ -434,6 +452,12 @@ export default function BulsaTab({
                 </div>
 
                 {[
+                  '공양미·초 시주',
+                  '1년 가족 인등',
+                  '100일 특별기도',
+                  '49재 봉행',
+                  '조상 천도재',
+                  '사찰 기일제사',
                   '대웅전 공양미/불전시주',
                   '대웅전 1년 인등(가족등)',
                   '100일 소원성취 특별기도',

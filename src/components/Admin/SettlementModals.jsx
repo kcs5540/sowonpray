@@ -282,11 +282,13 @@ export function SettlementEditModal({
                     }}
                     className="w-full px-3 py-2 rounded-xl bg-white border border-[#D5C59B] text-xs font-semibold text-[#1B1815]"
                   >
-                    <optgroup label="🪷 1. 대웅전 상시 기도 및 공덕 불사">
-                      <option value="대웅전 공양미 / 불전시주">① 대웅전 공양미 / 불전시주 (50,000원)</option>
-                      <option value="대웅전 1년 인등 (가족등)">② 대웅전 1년 인등 (가족등) (100,000원)</option>
-                      <option value="100일 소원성취 특별기도">③ 100일 소원성취 특별기도 (100,000원)</option>
-                      <option value="49재 / 천도재 / 기일제사">④ 49재 / 천도재 / 기일제사</option>
+                    <optgroup label="🪷 1. 대웅전 상시 기도 및 공덕 불사 (6종)">
+                      <option value="공양미·초 시주">① 공양미 · 초 시주 (자율보시)</option>
+                      <option value="1년 가족 인등">② 1년 가족 인등 (100,000원)</option>
+                      <option value="100일 특별기도">③ 100일 특별기도 (100,000원)</option>
+                      <option value="49재 봉행">④ 49재 봉행 (맞춤상담)</option>
+                      <option value="조상 천도재">⑤ 조상 천도재 (맞춤상담)</option>
+                      <option value="사찰 기일제사">⑥ 사찰 기일제사 (맞춤상담)</option>
                     </optgroup>
                     <optgroup label="🏛️ 2. 영구 위패 봉안 불사">
                       <option value="생전예수재 황금빛 위패 (살아계신 분)">① 생전예수재 황금빛 위패 (살아계신 분) (200만원)</option>
@@ -649,11 +651,13 @@ export function SettlementModal({
                     }}
                     className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#D5C59B] text-xs font-semibold text-[#1B1815] shadow-inner"
                   >
-                    <optgroup label="🪷 1. 대웅전 상시 기도 및 공덕 불사">
-                      <option value="대웅전 공양미 / 불전시주">① 대웅전 공양미 / 불전시주 (50,000원)</option>
-                      <option value="대웅전 1년 인등 (가족등)">② 대웅전 1년 인등 (가족등) (100,000원)</option>
-                      <option value="100일 소원성취 특별기도">③ 100일 소원성취 특별기도 (100,000원)</option>
-                      <option value="49재 / 천도재 / 기일제사">④ 49재 / 천도재 / 기일제사 (상담 및 직접입력)</option>
+                    <optgroup label="🪷 1. 대웅전 상시 기도 및 공덕 불사 (6종)">
+                      <option value="공양미·초 시주">① 공양미 · 초 시주 (자율보시)</option>
+                      <option value="1년 가족 인등">② 1년 가족 인등 (100,000원)</option>
+                      <option value="100일 특별기도">③ 100일 특별기도 (100,000원)</option>
+                      <option value="49재 봉행">④ 49재 봉행 (상담 및 직접입력)</option>
+                      <option value="조상 천도재">⑤ 조상 천도재 (상담 및 직접입력)</option>
+                      <option value="사찰 기일제사">⑥ 사찰 기일제사 (상담 및 직접입력)</option>
                     </optgroup>
                     <optgroup label="🏛️ 2. 영구 위패 봉안 불사">
                       <option value="생전예수재 황금빛 위패 (살아계신 분)">① 생전예수재 황금빛 위패 (살아계신 분) (200만원)</option>
