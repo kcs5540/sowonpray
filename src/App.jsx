@@ -9079,7 +9079,7 @@ function formatRelativeOrDate(dateStr) {
             ? '🪷 영가 극락왕생 및 칠칠재 천도발원'
             : isRiceCat
             ? '🪷 부처님 전 공양 공덕 및 복덕구족'
-            : `🪔 ${previewStreak}일 연속 정진! (${nowSasiInfo.shortLabel} 축원)`
+            : `🪔 대웅전 1일 소원등 (${nowSasiInfo.shortLabel} 축원)`
 
           const desc = isWipaeCat
             ? '소원사 법당에 정결하게 위패를 봉안하고, 매일 오전 10시 사시예불마다 영가 극락왕생과 가내 평안을 정성껏 축원합니다.'
@@ -9155,7 +9155,7 @@ function formatRelativeOrDate(dateStr) {
                   ) : (
                     <>
                       <p>
-                        <strong className="text-[#FAF8F5]">{wishName.trim()}</strong> 불자님 소원등 점등,
+                        소원등을 밝히시면 대웅전에 즉시 점등되며,
                       </p>
                       <p>
                         <strong className="text-[#F5D061]">{nowSasiInfo.shortLabel}</strong>에 정성껏 축원 올립니다.
@@ -9188,39 +9188,40 @@ function formatRelativeOrDate(dateStr) {
                   </div>
                 </div>
 
-                {/* 합장하며 확인 메인 버튼 (점등 팝업과 통일된 황금빛 버튼) */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleConfirmSubmittedPrayer({ closeModal: true })
-                    setActiveTab('lantern')
-                    const scrollToTop = () => {
-                      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-                      if (typeof document !== 'undefined') {
-                        if (document.documentElement) document.documentElement.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-                        if (document.body) document.body.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-                        const topElem = document.getElementById('lantern-top-view')
-                        if (topElem) topElem.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                {/* 하단 2단 버튼: 좌(접수 취소) / 우(합장하며 확인) */}
+                <div className="grid grid-cols-2 gap-2.5 pt-1">
+                  <button
+                    type="button"
+                    onClick={handleCancelSubmittedPrayer}
+                    className="w-full py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#D6CEC2] border border-white/15 font-bold text-xs sm:text-sm active:scale-95 transition cursor-pointer flex items-center justify-center"
+                    title="접수를 취소하고 소원등 양식으로 돌아갑니다"
+                  >
+                    접수 취소
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleConfirmSubmittedPrayer({ closeModal: true })
+                      setActiveTab('lantern')
+                      const scrollToTop = () => {
+                        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+                        if (typeof document !== 'undefined') {
+                          if (document.documentElement) document.documentElement.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+                          if (document.body) document.body.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+                          const topElem = document.getElementById('lantern-top-view')
+                          if (topElem) topElem.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                        }
                       }
-                    }
-                    scrollToTop()
-                    setTimeout(scrollToTop, 60)
-                    setTimeout(scrollToTop, 200)
-                  }}
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F5D061] to-[#AA7C11] hover:brightness-110 text-[#1B1815] font-black text-sm active:scale-95 transition cursor-pointer shadow-md flex items-center justify-center gap-1.5"
-                >
-                  <Flame className="w-4 h-4 fill-current shrink-0" />
-                  <span>합장하며 확인</span>
-                </button>
-
-                {/* 슬림형 접수 취소 보조 버튼 */}
-                <button
-                  type="button"
-                  onClick={handleCancelSubmittedPrayer}
-                  className="w-full py-1 text-xs text-[#A89D8E] hover:text-[#D6CEC2] transition cursor-pointer"
-                >
-                  접수 취소
-                </button>
+                      scrollToTop()
+                      setTimeout(scrollToTop, 60)
+                      setTimeout(scrollToTop, 200)
+                    }}
+                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F5D061] to-[#AA7C11] hover:brightness-110 text-[#1B1815] font-black text-xs sm:text-sm active:scale-95 transition cursor-pointer shadow-md flex items-center justify-center gap-1.5"
+                  >
+                    <Flame className="w-4 h-4 fill-current shrink-0" />
+                    <span>합장하며 확인</span>
+                  </button>
+                </div>
               </div>
             </div>
           )
