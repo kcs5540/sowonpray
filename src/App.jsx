@@ -8975,14 +8975,17 @@ function formatRelativeOrDate(dateStr) {
                   현재 소원등이 점등 중입니다
                 </h3>
 
-                <p className="text-xs text-[#E2DAD0] leading-relaxed break-keep">
-                  <strong className="text-[#FAF8F5]">{alreadyLitModalData.believer_name}</strong> 불자님의 1일 소원등이 이미 대웅전에 밝게 켜져 있으며,{' '}
-                  <strong className="text-[#F5D061]">{sasiInfo.shortLabel}</strong>에 스님께서 정성껏 축원 올립니다.
-                  <br />
-                  <span className="text-[11px] text-[#B8AEA0]">
-                    (예불이 끝나는 오전 11시에 미점등으로 전환되며, 이후 다시 밝히실 수 있습니다.)
-                  </span>
-                </p>
+                <div className="text-xs text-[#E2DAD0] leading-snug space-y-1 break-keep px-1">
+                  <p>
+                    <strong className="text-[#FAF8F5]">{alreadyLitModalData.believer_name}</strong> 불자님의 소원등이 켜져 있으며,
+                  </p>
+                  <p>
+                    <strong className="text-[#F5D061]">{sasiInfo.shortLabel}</strong>에 스님께서 정성껏 축원 올립니다.
+                  </p>
+                  <p className="text-[11px] text-[#A89D8E]">
+                    (오전 11시 회향 후 다시 밝히실 수 있습니다.)
+                  </p>
+                </div>
 
                 <div className="p-3 rounded-2xl bg-[#2A231B] border border-[#C59B27]/60 text-left shadow-md space-y-1.5 text-xs">
                   <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-1.5">
