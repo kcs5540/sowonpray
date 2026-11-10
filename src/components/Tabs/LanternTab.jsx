@@ -54,6 +54,12 @@ function maskSingleWord(str) {
   return str[0] + '*'.repeat(midCount) + str[len - 1]
 }
 
+// 대상 표기 제거 (예: '김철수 (보현행) (대상: 딸 김나현)' -> '김철수 (보현행)')
+function stripTargetFromName(rawName) {
+  if (!rawName || typeof rawName !== 'string') return ''
+  return rawName.replace(/\s*\((?:기원)?대상\s*:[^)]*\)/gi, '').trim()
+}
+
 export default function LanternTab({
   isLanternLit,
   lanternData,
@@ -97,7 +103,7 @@ export default function LanternTab({
     const shareUrl = origin + '/?ref=' + code + '&tab=lantern';
     const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=3';
 
-    const believerName = lanternData?.believer_name || (typeof wishName === 'string' && wishName.trim()) || currentUser?.name || '불자';
+    const believerName = stripTargetFromName(lanternData?.believer_name || (typeof wishName === 'string' && wishName.trim()) || currentUser?.name || '불자');
     const categoryName = lanternData?.wish_category || wishCategory || '가족건강';
     const streakDays = userLanternStats?.streak || 1;
     const totalCount = userLanternStats?.totalCount || 1;
@@ -204,7 +210,7 @@ export default function LanternTab({
                   </h2>
                   <p className="text-xs text-[#E8DFD1] max-w-xs mx-auto leading-relaxed mb-3 break-keep">
                     스님께서 매일 오전 10시 사시예불마다{' '}
-                    <strong className="text-[#F5D061]">{lanternData?.believer_name}</strong> 불자님의 소원을 정성껏 축원 올리고 있습니다.
+                    <strong className="text-[#F5D061]">{stripTargetFromName(lanternData?.believer_name)}</strong> 불자님의 소원을 정성껏 축원 올리고 있습니다.
                   </p>
                 </>
               ) : (
@@ -316,11 +322,11 @@ export default function LanternTab({
                   </div>
                   <div className="font-serif-kr text-sm sm:text-base font-bold text-white">
                     {isLanternLit
-                      ? `${lanternData?.believer_name} 불자님`
+                      ? `${stripTargetFromName(lanternData?.believer_name)} 불자님`
                       : wishName.trim()
-                      ? `${wishName.trim()} 불자님`
+                      ? `${stripTargetFromName(wishName.trim())} 불자님`
                       : currentUser?.name
-                      ? `${currentUser.name} 불자님`
+                      ? `${stripTargetFromName(currentUser.name)} 불자님`
                       : '소원성취 발원 대기'}
                   </div>
                   {currentUser?.address && (
@@ -353,7 +359,7 @@ export default function LanternTab({
                     <div className="flex items-center justify-center gap-1.5 font-bold text-[#F5D061] mb-1.5 flex-wrap text-center">
                       <Sparkles className="w-3.5 h-3.5 shrink-0 text-[#F5D061]" />
                       <span className="text-[#FAF8F5]">
-                        {lanternData?.believer_name} 불자님의 소원등 점등 중
+                        {stripTargetFromName(lanternData?.believer_name)} 불자님의 소원등 점등 중
                       </span>
                       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 text-[#F5D061] border border-[#F5D061]/40 text-[11px] font-extrabold whitespace-nowrap shadow-xs">
                         🪔 누적 {userLanternStats.totalCount}회 점등 · 🔥 {userLanternStats.streak}일 연속 정진
