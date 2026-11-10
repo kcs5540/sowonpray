@@ -8940,6 +8940,10 @@ function formatRelativeOrDate(dateStr) {
         {/* 이미 현재 사시예불 회차에 1일 소원등이 점등 중인 회원에게 띄우는 안내 팝업 (중복 DB 등록 및 중복 문자 발송 없음) */}
         {alreadyLitModalData && (() => {
           const sasiInfo = getSasiDisplayInfo(alreadyLitModalData.sasi_date_key)
+          // 아래 점등 내역에 대상이 명시되어 있으므로 상단 안내문에서는 (대상: ...)을 제거하여 단 1줄로 정갈하게 표시
+          const cleanBelieverName = (alreadyLitModalData.believer_name || '')
+            .replace(/\s*\((?:기원)?대상\s*:[^)]*\)/gi, '')
+            .trim()
           return (
             <div
               className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
@@ -8977,7 +8981,7 @@ function formatRelativeOrDate(dateStr) {
 
                 <div className="text-xs text-[#E2DAD0] leading-snug space-y-1 break-keep px-1">
                   <p>
-                    <strong className="text-[#FAF8F5]">{alreadyLitModalData.believer_name}</strong> 불자님 소원등 점등 중,
+                    <strong className="text-[#FAF8F5]">{cleanBelieverName}</strong> 불자님 소원등 점등 중,
                   </p>
                   <p>
                     <strong className="text-[#F5D061]">{sasiInfo.shortLabel}</strong>에 정성껏 축원 올립니다.
