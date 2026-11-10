@@ -3258,8 +3258,8 @@ function formatRelativeOrDate(dateStr) {
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { id: 'lantern_1d', label: '1일 소원등', price: '무료 (0원)' },
-                  { id: 'prayer_100d', label: '100일 특별기도', price: '100,000원' },
-                  { id: 'indeung_1yr', label: '1년 인등(가족등)', price: '100,000원' },
+                  { id: 'prayer_100d', label: '100일 특별기도', price: '맞춤상담' },
+                  { id: 'indeung_1yr', label: '1년 인등(가족등)', price: '맞춤상담' },
                 ].map((t) => (
                   <button
                     key={t.id}
@@ -3338,7 +3338,7 @@ function formatRelativeOrDate(dateStr) {
               <div className="p-3 rounded-2xl bg-white border border-[#E6DEC8] flex items-center justify-between">
                 <div>
                   <span className="font-bold text-[11px] text-[#554E45] block">보시금 납부 상태</span>
-                  <span className="text-[10px] text-[#8C8071]">100,000원 정성 봉안</span>
+                  <span className="text-[10px] text-[#8C8071]">사찰 정성 축원 봉안 (맞춤상담)</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <button
@@ -4845,9 +4845,9 @@ function formatRelativeOrDate(dateStr) {
         title: '🪷 1. 대웅전 상시 기도 및 공덕 불사 (6종)',
         badge: '상시 기도',
         items: [
-          { value: '공양미·초 시주', label: '① 공양미 · 초 시주', price: '자율보시' },
-          { value: '1년 가족 인등', label: '② 1년 가족 인등', price: '100,000원' },
-          { value: '100일 특별기도', label: '③ 100일 특별기도', price: '100,000원' },
+          { value: '공양미·초 시주', label: '① 공양미 · 초 시주', price: '맞춤상담' },
+          { value: '1년 가족 인등', label: '② 1년 가족 인등', price: '맞춤상담' },
+          { value: '100일 특별기도', label: '③ 100일 특별기도', price: '맞춤상담' },
           { value: '49재 봉행', label: '④ 49재 봉행', price: '맞춤상담' },
           { value: '조상 천도재', label: '⑤ 조상 천도재', price: '맞춤상담' },
           { value: '사찰 기일제사', label: '⑥ 사찰 기일제사', price: '맞춤상담' },
@@ -4857,17 +4857,17 @@ function formatRelativeOrDate(dateStr) {
         title: '🏛️ 2. 영구 위패 봉안 불사',
         badge: '영구 봉안',
         items: [
-          { value: '생전예수재(황금위패)', label: '① 생전예수재 황금빛 위패 (살아계신 분)', price: '200만원' },
-          { value: '조상영구위패(흑색)', label: '② 조상 영가 품격 흑색 영구위패', price: '200만원' },
+          { value: '생전예수재(황금위패)', label: '① 생전예수재 황금빛 위패 (살아계신 분)', price: '맞춤상담' },
+          { value: '조상영구위패(흑색)', label: '② 조상 영가 품격 흑색 영구위패', price: '맞춤상담' },
         ],
       },
       {
         title: '🏔️ 3. 삼성각 성전 건립 대작불사',
         badge: '성전 건립',
         items: [
-          { value: '삼성각 소원기와불사', label: '① 삼성각 건립 소원 기와 불사 (1장)', price: '10만원' },
-          { value: '삼성각 기둥·단청불사', label: '② 삼성각 대들보 · 기둥 · 오색단청 불사', price: '100만원' },
-          { value: '삼성각 영구축원명패', label: '③ 삼성각 가족 영구축원 명패 · 주춧돌', price: '100만원' },
+          { value: '삼성각 소원기와불사', label: '① 삼성각 건립 소원 기와 불사 (1장)', price: '맞춤상담' },
+          { value: '삼성각 기둥·단청불사', label: '② 삼성각 대들보 · 기둥 · 오색단청 불사', price: '맞춤상담' },
+          { value: '삼성각 영구축원명패', label: '③ 삼성각 가족 영구축원 명패 · 주춧돌', price: '맞춤상담' },
           { value: '기타 특별기도 상담', label: '④ 기타 특별기도 및 맞춤 불사 상담', price: '맞춤상담' },
         ],
       },
