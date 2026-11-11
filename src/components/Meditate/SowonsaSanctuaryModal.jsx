@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { X, Volume2, VolumeX, Sparkles, DoorOpen, Share2, Award, ChevronRight, ChevronDown, Play, Pause, Check, Music } from 'lucide-react'
 import { awardMerit, getDailyMeritInfo } from '../../lib/meritSystem'
+import { playMoktakSound } from '../../lib/moktakAudio'
 
 // 📿 대웅전 8대 법음 & 염불 트랙 라이브러리 (앱 홈 24시간 힐링 오디오 정식 연동)
 const SANCTUARY_AUDIO_TRACKS = [
@@ -184,7 +185,6 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
 
   const ambientAudioRef = useRef(null)
   const chantAudioRef = useRef(null)
-  const moktakAudioRef = useRef(null)
   const yeomjuAudioRef = useRef(null)
   const toastTimerRef = useRef(null)
   const lastActionTimeRef = useRef(0)
@@ -330,12 +330,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
     const nextTap = moktakTapCount + 1
     setMoktakTapCount(nextTap)
     setSessionMoktaks(prev => prev + 1)
-    try {
-      if (moktakAudioRef.current) {
-        moktakAudioRef.current.currentTime = 0
-        moktakAudioRef.current.play().catch(() => {})
-      }
-    } catch {}
+    playMoktakSound({ pitchJitter: 0.035, baseVolume: 0.95, reverbAmount: 0.32 })
 
     const userCode = currentUser?.code || 'guest'
     const meritRes = awardMerit('moktak', userCode, 1)
@@ -530,7 +525,6 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       {/* 1. 배경 오디오 소스 */}
       <audio ref={ambientAudioRef} src="/audio/sowonsa_wind.mp3" loop preload="auto" />
       <audio ref={chantAudioRef} src={selectedTrack.audioUrl} loop preload="auto" />
-      <audio ref={moktakAudioRef} src="/audio/moktak.mp3" preload="auto" />
       <audio ref={yeomjuAudioRef} src="/audio/yeomju_click.wav" preload="auto" />
 
       {/* 2. 대웅전 옻칠 대청마루 바닥 레이어 (z-0: 제단 밑바닥과 바닥 전체에 자연스럽게 깔림) */}

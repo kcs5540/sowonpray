@@ -73,6 +73,7 @@ import HomeTab from './components/Tabs/HomeTab'
 import SowonsaSanctuaryModal from './components/Meditate/SowonsaSanctuaryModal'
 import ProfileTab from './components/Tabs/ProfileTab'
 import { awardMerit, MERIT_RULES, getDailyMeritInfo } from './lib/meritSystem'
+import { playMoktakSound, preloadMoktakAudio, prefetchMoktakBytes } from './lib/moktakAudio'
 import {
   notifyPrayerSubmission,
   notifyPrayerCancellation,
@@ -1258,95 +1259,7 @@ function playBeomjongAcousticSynth() {
 // 기존 싱잉볼 호출과의 하위 호환성을 위한 별칭
 const playSingingBowlSound = playBeomjongSound
 
-// 실제 사찰 목탁 타격음 (고음질 실제 사찰 목탁 오디오 엔진)
-function playMoktakSound() {
-  try {
-    const audio = new Audio('/audio/moktak.mp3')
-    audio.volume = 1.0
-    const playPromise = audio.play()
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        playMoktakAcousticSynth()
-      })
-    }
-  } catch (e) {
-    playMoktakAcousticSynth()
-  }
-}
-
-// 오프라인/파일 지연 시 실제 전통 사찰 목탁 주파수를 정밀 재현하는 물리 음향 합성기
-function playMoktakAcousticSynth() {
-  try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext
-    if (!AudioCtx) return
-    const ctx = new AudioCtx()
-    const now = ctx.currentTime
-
-    // 1. 목탁 타격 순간의 나무 채 어택 (3200Hz 대역 대나무 채 클릭)
-    const noiseBuffer = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.015), ctx.sampleRate)
-    const output = noiseBuffer.getChannelData(0)
-    for (let i = 0; i < noiseBuffer.length; i++) {
-      output[i] = Math.random() * 2 - 1
-    }
-    const noise = ctx.createBufferSource()
-    noise.buffer = noiseBuffer
-    const noiseFilter = ctx.createBiquadFilter()
-    noiseFilter.type = 'bandpass'
-    noiseFilter.frequency.setValueAtTime(3200, now)
-    noiseFilter.Q.setValueAtTime(3, now)
-    const noiseGain = ctx.createGain()
-    noiseGain.gain.setValueAtTime(0.4, now)
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.015)
-    noise.connect(noiseFilter)
-    noiseFilter.connect(noiseGain)
-    noiseGain.connect(ctx.destination)
-    noise.start(now)
-
-    // 2. 목탁 본체 고유 공명음 (한국 전통 박달나무 목탁의 540Hz 맑고 깊은 통울림)
-    const bodyOsc = ctx.createOscillator()
-    const bodyGain = ctx.createGain()
-    bodyOsc.type = 'sine'
-    // 타격 순간 미세한 피치 드롭 (620Hz -> 535Hz)
-    bodyOsc.frequency.setValueAtTime(620, now)
-    bodyOsc.frequency.exponentialRampToValueAtTime(535, now + 0.035)
-    bodyGain.gain.setValueAtTime(0.001, now)
-    bodyGain.gain.linearRampToValueAtTime(0.7, now + 0.003)
-    bodyGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.28)
-    bodyOsc.connect(bodyGain)
-    bodyGain.connect(ctx.destination)
-    bodyOsc.start(now)
-    bodyOsc.stop(now + 0.3)
-
-    // 3. 목탁 내부 공동 배음 (1120Hz 맑은 윗소리)
-    const overtoneOsc = ctx.createOscillator()
-    const overtoneGain = ctx.createGain()
-    overtoneOsc.type = 'sine'
-    overtoneOsc.frequency.setValueAtTime(1180, now)
-    overtoneOsc.frequency.exponentialRampToValueAtTime(1110, now + 0.025)
-    overtoneGain.gain.setValueAtTime(0.001, now)
-    overtoneGain.gain.linearRampToValueAtTime(0.25, now + 0.004)
-    overtoneGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12)
-    overtoneOsc.connect(overtoneGain)
-    overtoneGain.connect(ctx.destination)
-    overtoneOsc.start(now)
-    overtoneOsc.stop(now + 0.15)
-
-    // 4. 목탁 바닥 통울림 (360Hz 묵직한 베이스 바디감)
-    const lowOsc = ctx.createOscillator()
-    const lowGain = ctx.createGain()
-    lowOsc.type = 'sine'
-    lowOsc.frequency.setValueAtTime(360, now)
-    lowGain.gain.setValueAtTime(0.001, now)
-    lowGain.gain.linearRampToValueAtTime(0.35, now + 0.004)
-    lowGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16)
-    lowOsc.connect(lowGain)
-    lowGain.connect(ctx.destination)
-    lowOsc.start(now)
-    lowOsc.stop(now + 0.18)
-  } catch (e) {
-    // 오디오 컨텍스트 제한 시 무시
-  }
-}
+// 대웅전 박달나무 목탁 zero-latency Web Audio 엔진은 src/lib/moktakAudio.js에서 제공
 
 // 24시간 힐링 법음 & 수면 명상 5대 테마 트랙 (국보급 방송용 스튜디오 마스터 음원 전면 개편)
 const HEALING_AUDIO_TRACKS = [
@@ -1889,6 +1802,22 @@ export default function App() {
       } catch (e) {}
     }
   }, [healingAudioTrack, isHealingPlaying])
+
+  // 대웅전 실물 박달나무 목탁 오디오 메모리 프리로드 (0ms 지연 타격 준비)
+  useEffect(() => {
+    prefetchMoktakBytes()
+    const unlock = () => {
+      preloadMoktakAudio()
+    }
+    window.addEventListener('pointerdown', unlock, { once: true, passive: true })
+    window.addEventListener('touchstart', unlock, { once: true, passive: true })
+    window.addEventListener('keydown', unlock, { once: true, passive: true })
+    return () => {
+      window.removeEventListener('pointerdown', unlock)
+      window.removeEventListener('touchstart', unlock)
+      window.removeEventListener('keydown', unlock)
+    }
+  }, [])
 
 // [소원사 공인 직책 및 계보 규격]
 // - 양영문: 최상위 신도회장 (temple_admin, parent_code: null)
@@ -5980,21 +5909,12 @@ function formatRelativeOrDate(dateStr) {
     return () => clearInterval(timer)
   }, [isAutoMoktakOn, show108MoktakModal, is108Completed, moktak108Count])
 
-  // 전용 108 목탁 멍 타격 핸들러 (실물 오디오 + 햅틱 진동 + 랜덤 피치 + 공덕 적립)
+  // 전용 108 목탁 멍 타격 핸들러 (0ms 지연 AudioBuffer + 법당 리버브 + 햅틱 진동 + 손맛 변주)
   const handle108MoktakTap = () => {
-    try {
-      if (typeof navigator !== 'undefined' && navigator.vibrate) {
-        navigator.vibrate(22)
-      }
-      const audio = new Audio('/audio/moktak.mp3')
-      audio.volume = 1.0
-      audio.playbackRate = 0.96 + Math.random() * 0.08
-      audio.play().catch(() => {
-        playMoktakAcousticSynth()
-      })
-    } catch (e) {
-      playMoktakAcousticSynth()
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      navigator.vibrate(22)
     }
+    playMoktakSound({ pitchJitter: 0.04, baseVolume: 0.96, reverbAmount: 0.34 })
 
     const next = moktak108Count + 1
     setMoktak108Count(next)
