@@ -187,21 +187,20 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
   const chantAudioRef = useRef(null)
   const yeomjuAudioRef = useRef(null)
   const toastTimerRef = useRef(null)
-  const lastActionTimeRef = useRef(0)
+  const actionResetTimerRef = useRef(null)
 
-  // 1회당 최소 2.5초 간격 엄수 (대표님 지시: 정성스러운 호흡과 무분별한 연타 방지)
-  const MIN_ACTION_INTERVAL_MS = 1500
-
-  const canExecuteAction = () => {
-    const now = Date.now()
-    const elapsed = now - lastActionTimeRef.current
-    if (elapsed < MIN_ACTION_INTERVAL_MS) {
-      const remainingSec = ((MIN_ACTION_INTERVAL_MS - elapsed) / 1000).toFixed(1)
-      showActionToast(`🙏 정성을 다해 호흡을 고르세요 (${remainingSec}초 대기)`)
-      return false
+  // 지연 대기 없이 연타에도 모션과 리플이 끊기지 않게 부드럽게 트리거
+  const triggerActionMotion = (type, durationMs = 500) => {
+    if (actionResetTimerRef.current) clearTimeout(actionResetTimerRef.current)
+    setActionState('idle')
+    if (typeof window !== 'undefined' && window.requestAnimationFrame) {
+      window.requestAnimationFrame(() => setActionState(type))
+    } else {
+      setActionState(type)
     }
-    lastActionTimeRef.current = now
-    return true
+    actionResetTimerRef.current = setTimeout(() => {
+      setActionState('idle')
+    }, durationMs)
   }
 
   // 실시간 기도/정진 발원 피드 목록
@@ -287,8 +286,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
   const handleBow = (e) => {
     e?.stopPropagation()
     setEntranceStep('seated')
-    if (!canExecuteAction()) return
-    setActionState('bow')
+    triggerActionMotion('bow', 1100)
     const nextCount = bowCount + 1
     setBowCount(nextCount)
     setSessionBows(prev => prev + 1)
@@ -318,15 +316,13 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       action: `삼존불 전에 ${nextCount}배를 정성스레 올렸습니다`,
       icon: '🙇'
     })
-    setTimeout(() => setActionState('idle'), 1500)
   }
 
   // 5) 목탁 치기
   const handleMoktak = (e) => {
     e?.stopPropagation()
     setEntranceStep('seated')
-    if (!canExecuteAction()) return
-    setActionState('moktak')
+    triggerActionMotion('moktak', 450)
     const nextTap = moktakTapCount + 1
     setMoktakTapCount(nextTap)
     setSessionMoktaks(prev => prev + 1)
@@ -351,15 +347,13 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
       action: `맑은 목탁 소리(${nextTap}타)로 번뇌와 잡념을 비워냅니다`,
       icon: '🪵'
     })
-    setTimeout(() => setActionState('idle'), 1500)
   }
 
   // 6) 108 염주알 굴리기
   const handleYeomju = (e) => {
     e?.stopPropagation()
     setEntranceStep('seated')
-    if (!canExecuteAction()) return
-    setActionState('yeomju')
+    triggerActionMotion('yeomju', 450)
     const nextYeomju = yeomjuCount >= 108 ? 1 : yeomjuCount + 1
     setYeomjuCount(nextYeomju)
     setSessionYeomjus(prev => prev + 1)
@@ -407,7 +401,6 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
         icon: '📿'
       })
     }
-    setTimeout(() => setActionState('idle'), 1500)
   }
 
   // 실시간 도량 활기 효과 (동행 불자님 모션 + 라이브 피드 + 인원 변동)
