@@ -1,14 +1,13 @@
 // src/lib/moktakAudio.js
 // 제주 소원사 대웅전 실물 박달나무 목탁 zero-latency Web Audio 엔진
+// 모바일 폰 스피커 최적화: 화이트노이즈 리버브 완전 제거 + 마스터 소프트 리미터 + 원목 대역 튜닝
 
 let sharedAudioCtx = null
 let rawMoktakBytes = null
 let moktakAudioBuffer = null
 let rawFetchPromise = null
 let bufferDecodePromise = null
-let templeConvolverNode = null
-let templeWetGain = null
-let templeDryGain = null
+let masterBus = null
 
 // 앱 시작 시 네트워크에서 raw bytes만 미리 받아둠 (AudioContext 경고 없이 즉시 캐싱)
 export function prefetchMoktakBytes() {
@@ -16,7 +15,7 @@ export function prefetchMoktakBytes() {
   if (rawFetchPromise) return rawFetchPromise
   if (typeof window === 'undefined' || typeof fetch === 'undefined') return Promise.resolve(null)
 
-  rawFetchPromise = fetch('/audio/moktak.mp3?v=3', { cache: 'force-cache' })
+  rawFetchPromise = fetch('/audio/moktak.mp3?v=4', { cache: 'force-cache' })
     .then((res) => (res.ok ? res.arrayBuffer() : null))
     .then((buf) => {
       if (buf) rawMoktakBytes = buf
@@ -34,7 +33,7 @@ function ensureAudioContext() {
   if (!AudioCtx) return null
   if (!sharedAudioCtx || sharedAudioCtx.state === 'closed') {
     sharedAudioCtx = new AudioCtx()
-    templeConvolverNode = null
+    masterBus = null
   }
   if (sharedAudioCtx.state === 'suspended') {
     sharedAudioCtx.resume().catch(() => {})
@@ -42,52 +41,49 @@ function ensureAudioContext() {
   return sharedAudioCtx
 }
 
-// 대웅전 목조 법당 공간 임펄스 리버브(IR) 생성 (~0.85초 따뜻한 목조 잔향)
-function ensureTempleHallChain(ctx) {
+// 모바일 스피커 클리핑(찌직거림) 완벽 방지 마스터 체인 + 순수 목조 초기 반사음 (화이트노이즈 0%)
+function ensureMasterBus(ctx) {
   if (!ctx) return null
-  if (templeConvolverNode && templeDryGain && templeWetGain) {
-    return { dry: templeDryGain, wet: templeWetGain, convolver: templeConvolverNode }
-  }
+  if (masterBus) return masterBus
 
-  const sampleRate = ctx.sampleRate
-  const duration = 0.85
-  const length = Math.floor(sampleRate * duration)
-  const impulse = ctx.createBuffer(2, length, sampleRate)
+  // 1. 소프트 리미터 (모바일 스피커 과부하/찢어짐 물리 차단)
+  const compressor = ctx.createDynamicsCompressor()
+  compressor.threshold.value = -8
+  compressor.knee.value = 12
+  compressor.ratio.value = 6
+  compressor.attack.value = 0.002
+  compressor.release.value = 0.12
 
-  for (let ch = 0; ch < 2; ch++) {
-    const channelData = impulse.getChannelData(ch)
-    let lpState = 0
-    for (let i = 0; i < length; i++) {
-      const t = i / sampleRate
-      // 초기 목조 반사음(Early Reflections) + 부드러운 지수 감쇠
-      const envelope = Math.exp(-t * 4.6) * (1 - Math.exp(-t * 95))
-      const white = Math.random() * 2 - 1
-      // 목조 법당 특유의 고역 원목 흡수 감쇠
-      lpState = lpState * 0.72 + white * 0.28
-      channelData[i] = lpState * envelope * 0.9
-    }
-  }
+  // 2. 따뜻한 목조 톤 보호 로우패스 (폰 트위터 치찰음 방지)
+  const masterFilter = ctx.createBiquadFilter()
+  masterFilter.type = 'lowpass'
+  masterFilter.frequency.value = 4200
 
-  templeConvolverNode = ctx.createConvolver()
-  templeConvolverNode.buffer = impulse
+  // 3. 입력 합산 노드 -> 직접음(dry) + 은은한 법당 목조 반사(32ms 단일 클린 딜레이, 노이즈 없음)
+  const inputNode = ctx.createGain()
+  inputNode.gain.value = 0.90
 
-  // 리버브 전용 저역/중역 따뜻한 EQ 필터 (2.4kHz 이상 치찰음 억제)
-  const hallFilter = ctx.createBiquadFilter()
-  hallFilter.type = 'lowpass'
-  hallFilter.frequency.value = 2400
+  const earlyDelay = ctx.createDelay(0.1)
+  earlyDelay.delayTime.value = 0.032
 
-  templeDryGain = ctx.createGain()
-  templeDryGain.gain.value = 0.88
+  const roomWarmFilter = ctx.createBiquadFilter()
+  roomWarmFilter.type = 'lowpass'
+  roomWarmFilter.frequency.value = 1250
 
-  templeWetGain = ctx.createGain()
-  templeWetGain.gain.value = 0.30
+  const earlyGain = ctx.createGain()
+  earlyGain.gain.value = 0.14
 
-  templeDryGain.connect(ctx.destination)
-  templeConvolverNode.connect(hallFilter)
-  hallFilter.connect(templeWetGain)
-  templeWetGain.connect(ctx.destination)
+  inputNode.connect(masterFilter)
+  inputNode.connect(earlyDelay)
+  earlyDelay.connect(roomWarmFilter)
+  roomWarmFilter.connect(earlyGain)
+  earlyGain.connect(masterFilter)
 
-  return { dry: templeDryGain, wet: templeWetGain, convolver: templeConvolverNode }
+  masterFilter.connect(compressor)
+  compressor.connect(ctx.destination)
+
+  masterBus = { input: inputNode, roomGain: earlyGain }
+  return masterBus
 }
 
 // 첫 사용자 제스처 시 오디오 버퍼 디코딩 완료 (0ms 지연 재생 준비)
@@ -101,7 +97,6 @@ export function preloadMoktakAudio() {
       if (!ctx) return null
       const bytes = rawMoktakBytes || (await prefetchMoktakBytes())
       if (!bytes) return null
-      // decodeAudioData는 ArrayBuffer를 detach할 수 있으므로 slice(0) 복사본 전달
       moktakAudioBuffer = await ctx.decodeAudioData(bytes.slice(0))
       return moktakAudioBuffer
     } catch {
@@ -113,63 +108,42 @@ export function preloadMoktakAudio() {
   return bufferDecodePromise
 }
 
-// 오프라인/최초 1회 디코딩 직전 1~2ms 간극용: 642Hz + 570Hz 박달나무 물리 합성음 + 법당 리버브
+// 오프라인/디코딩 전 찰나 대체용: 화이트노이즈 없는 따뜻한 원목 목탁 음향 합성 (폰 스피커 안전)
 export function playMoktakAcousticSynth(pitchRate = 1.0) {
   try {
     const ctx = ensureAudioContext()
     if (!ctx) return
-    const chain = ensureTempleHallChain(ctx)
+    const bus = ensureMasterBus(ctx)
+    const dest = bus ? bus.input : ctx.destination
     const now = ctx.currentTime
 
-    // 1. 목탁 채 어택 (대나무/박달나무 타격 순간)
-    const noiseBuffer = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.014), ctx.sampleRate)
-    const output = noiseBuffer.getChannelData(0)
-    for (let i = 0; i < noiseBuffer.length; i++) {
-      output[i] = Math.random() * 2 - 1
-    }
-    const noise = ctx.createBufferSource()
-    noise.buffer = noiseBuffer
-    const noiseFilter = ctx.createBiquadFilter()
-    noiseFilter.type = 'bandpass'
-    noiseFilter.frequency.setValueAtTime(2800 * pitchRate, now)
-    noiseFilter.Q.setValueAtTime(2.5, now)
-    const noiseGain = ctx.createGain()
-    noiseGain.gain.setValueAtTime(0.35, now)
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.014)
-    noise.connect(noiseFilter)
-    noiseFilter.connect(noiseGain)
-    noiseGain.connect(chain ? chain.dry : ctx.destination)
-    if (chain) noiseGain.connect(chain.convolver)
-    noise.start(now)
-
-    // 2. 주 공명음 (박달나무 본체 642Hz 공명)
+    // 1. 주 원목 공명 (460Hz -> 380Hz 부드러운 대추/박달나무 타격)
     const bodyOsc = ctx.createOscillator()
     const bodyGain = ctx.createGain()
     bodyOsc.type = 'sine'
-    bodyOsc.frequency.setValueAtTime(695 * pitchRate, now)
-    bodyOsc.frequency.exponentialRampToValueAtTime(642 * pitchRate, now + 0.03)
+    bodyOsc.frequency.setValueAtTime(520 * pitchRate, now)
+    bodyOsc.frequency.exponentialRampToValueAtTime(420 * pitchRate, now + 0.035)
     bodyGain.gain.setValueAtTime(0.001, now)
-    bodyGain.gain.linearRampToValueAtTime(0.68, now + 0.003)
-    bodyGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.34)
+    bodyGain.gain.linearRampToValueAtTime(0.45, now + 0.004)
+    bodyGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22)
     bodyOsc.connect(bodyGain)
-    bodyGain.connect(chain ? chain.dry : ctx.destination)
-    if (chain) bodyGain.connect(chain.convolver)
+    bodyGain.connect(dest)
     bodyOsc.start(now)
-    bodyOsc.stop(now + 0.36)
+    bodyOsc.stop(now + 0.24)
 
-    // 3. 부 공명음 (목탁 깊은 배음 570Hz)
+    // 2. 따뜻한 목탁 통 배음 (590Hz 순수 원목 울림)
     const subOsc = ctx.createOscillator()
     const subGain = ctx.createGain()
-    subOsc.type = 'sine'
-    subOsc.frequency.setValueAtTime(570 * pitchRate, now)
+    subOsc.type = 'triangle'
+    subOsc.frequency.setValueAtTime(620 * pitchRate, now)
+    subOsc.frequency.exponentialRampToValueAtTime(540 * pitchRate, now + 0.025)
     subGain.gain.setValueAtTime(0.001, now)
-    subGain.gain.linearRampToValueAtTime(0.32, now + 0.004)
-    subGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.25)
+    subGain.gain.linearRampToValueAtTime(0.18, now + 0.004)
+    subGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14)
     subOsc.connect(subGain)
-    subGain.connect(chain ? chain.dry : ctx.destination)
-    if (chain) subGain.connect(chain.convolver)
+    subGain.connect(dest)
     subOsc.start(now)
-    subOsc.stop(now + 0.27)
+    subOsc.stop(now + 0.16)
   } catch {
     // 오디오 컨텍스트 제한 시 무시
   }
@@ -178,14 +152,14 @@ export function playMoktakAcousticSynth(pitchRate = 1.0) {
 /**
  * 실시간 0ms 지연 대웅전 박달나무 목탁 타격 실행
  * @param {object} options
- * @param {number} [options.pitchJitter=0.025] 타격마다 미세 음정 변화 폭 (자연스러운 스님 손맛)
- * @param {number} [options.baseVolume=0.92] 기본 음량
- * @param {number} [options.reverbAmount=0.30] 법당 공간 울림 비율 (0~1)
+ * @param {number} [options.pitchJitter=0.02] 타격마다 미세 음정 변화 폭
+ * @param {number} [options.baseVolume=0.88] 기본 음량
+ * @param {number} [options.reverbAmount=0.14] 은은한 목조 반사 비율 (0~0.35)
  */
 export function playMoktakSound({
-  pitchJitter = 0.025,
-  baseVolume = 0.92,
-  reverbAmount = 0.30,
+  pitchJitter = 0.02,
+  baseVolume = 0.88,
+  reverbAmount = 0.14,
 } = {}) {
   try {
     const ctx = ensureAudioContext()
@@ -195,12 +169,11 @@ export function playMoktakSound({
       preloadMoktakAudio()
     }
 
-    // 타격마다 맑고 자연스러운 미세 손맛 변화 (음정 ±2.5~4%, 강약 88~100%)
     const rate = 1.0 + (Math.random() * 2 - 1) * pitchJitter
-    const velocity = baseVolume * (0.88 + Math.random() * 0.12)
+    const velocity = baseVolume * (0.90 + Math.random() * 0.10)
 
     if (moktakAudioBuffer) {
-      const chain = ensureTempleHallChain(ctx)
+      const bus = ensureMasterBus(ctx)
       const source = ctx.createBufferSource()
       source.buffer = moktakAudioBuffer
       source.playbackRate.value = rate
@@ -209,10 +182,9 @@ export function playMoktakSound({
       hitGain.gain.value = velocity
 
       source.connect(hitGain)
-      if (chain) {
-        chain.wet.gain.setTargetAtTime(reverbAmount, ctx.currentTime, 0.01)
-        hitGain.connect(chain.dry)
-        hitGain.connect(chain.convolver)
+      if (bus) {
+        bus.roomGain.gain.setTargetAtTime(Math.min(0.25, reverbAmount), ctx.currentTime, 0.01)
+        hitGain.connect(bus.input)
       } else {
         hitGain.connect(ctx.destination)
       }
@@ -221,7 +193,6 @@ export function playMoktakSound({
       return
     }
 
-    // 첫 탭 시 디코딩 중이면 즉시 642Hz 물리 합성음으로 지연 0ms 대체 재생
     playMoktakAcousticSynth(rate)
   } catch {
     playMoktakAcousticSynth()

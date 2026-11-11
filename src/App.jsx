@@ -5914,7 +5914,7 @@ function formatRelativeOrDate(dateStr) {
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       navigator.vibrate(22)
     }
-    playMoktakSound({ pitchJitter: 0.04, baseVolume: 0.96, reverbAmount: 0.34 })
+    playMoktakSound({ pitchJitter: 0.025, baseVolume: 0.90, reverbAmount: 0.16 })
 
     const next = moktak108Count + 1
     setMoktak108Count(next)

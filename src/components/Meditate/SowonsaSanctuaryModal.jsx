@@ -326,7 +326,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
     const nextTap = moktakTapCount + 1
     setMoktakTapCount(nextTap)
     setSessionMoktaks(prev => prev + 1)
-    playMoktakSound({ pitchJitter: 0.035, baseVolume: 0.95, reverbAmount: 0.32 })
+    playMoktakSound({ pitchJitter: 0.025, baseVolume: 0.90, reverbAmount: 0.16 })
 
     const userCode = currentUser?.code || 'guest'
     const meritRes = awardMerit('moktak', userCode, 1)
