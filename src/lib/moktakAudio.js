@@ -1,6 +1,6 @@
 // src/lib/moktakAudio.js
-// 제주 소원사 대웅전 실물 박달나무 목탁 zero-latency Web Audio 엔진
-// 모바일 폰 스피커 최적화: 화이트노이즈 리버브 완전 제거 + 마스터 소프트 리미터 + 원목 대역 튜닝
+// 스튜디오 원목 목탁 zero-latency Web Audio 엔진
+// 원음 그대로의 투명한 재생 + 연타 시 폰 스피커 클리핑 방지용 소프트 리미터
 
 let sharedAudioCtx = null
 let rawMoktakBytes = null
@@ -15,7 +15,7 @@ export function prefetchMoktakBytes() {
   if (rawFetchPromise) return rawFetchPromise
   if (typeof window === 'undefined' || typeof fetch === 'undefined') return Promise.resolve(null)
 
-  rawFetchPromise = fetch('/audio/moktak.mp3?v=4', { cache: 'force-cache' })
+  rawFetchPromise = fetch('/audio/moktak.mp3?v=5', { cache: 'force-cache' })
     .then((res) => (res.ok ? res.arrayBuffer() : null))
     .then((buf) => {
       if (buf) rawMoktakBytes = buf
@@ -41,48 +41,26 @@ function ensureAudioContext() {
   return sharedAudioCtx
 }
 
-// 모바일 스피커 클리핑(찌직거림) 완벽 방지 마스터 체인 + 순수 목조 초기 반사음 (화이트노이즈 0%)
+// 모바일 스피커 연타 시 과부하만 방어하고 원음은 왜곡 없이 통과시키는 마스터 체인
 function ensureMasterBus(ctx) {
   if (!ctx) return null
   if (masterBus) return masterBus
 
-  // 1. 소프트 리미터 (모바일 스피커 과부하/찢어짐 물리 차단)
+  // 소프트 리미터 (단타는 무압축 원음 통과, 빠른 연타 합산 피크만 안전하게 제한)
   const compressor = ctx.createDynamicsCompressor()
-  compressor.threshold.value = -8
-  compressor.knee.value = 12
-  compressor.ratio.value = 6
+  compressor.threshold.value = -4
+  compressor.knee.value = 8
+  compressor.ratio.value = 4
   compressor.attack.value = 0.002
-  compressor.release.value = 0.12
+  compressor.release.value = 0.10
 
-  // 2. 따뜻한 목조 톤 보호 로우패스 (폰 트위터 치찰음 방지)
-  const masterFilter = ctx.createBiquadFilter()
-  masterFilter.type = 'lowpass'
-  masterFilter.frequency.value = 4200
-
-  // 3. 입력 합산 노드 -> 직접음(dry) + 은은한 법당 목조 반사(32ms 단일 클린 딜레이, 노이즈 없음)
   const inputNode = ctx.createGain()
-  inputNode.gain.value = 0.90
+  inputNode.gain.value = 0.94
 
-  const earlyDelay = ctx.createDelay(0.1)
-  earlyDelay.delayTime.value = 0.032
-
-  const roomWarmFilter = ctx.createBiquadFilter()
-  roomWarmFilter.type = 'lowpass'
-  roomWarmFilter.frequency.value = 1250
-
-  const earlyGain = ctx.createGain()
-  earlyGain.gain.value = 0.14
-
-  inputNode.connect(masterFilter)
-  inputNode.connect(earlyDelay)
-  earlyDelay.connect(roomWarmFilter)
-  roomWarmFilter.connect(earlyGain)
-  earlyGain.connect(masterFilter)
-
-  masterFilter.connect(compressor)
+  inputNode.connect(compressor)
   compressor.connect(ctx.destination)
 
-  masterBus = { input: inputNode, roomGain: earlyGain }
+  masterBus = { input: inputNode }
   return masterBus
 }
 
@@ -108,7 +86,7 @@ export function preloadMoktakAudio() {
   return bufferDecodePromise
 }
 
-// 오프라인/디코딩 전 찰나 대체용: 화이트노이즈 없는 따뜻한 원목 목탁 음향 합성 (폰 스피커 안전)
+// 오프라인/디코딩 전 찰나 대체용: 순수 원목 공명 합성 (폰 스피커 안전)
 export function playMoktakAcousticSynth(pitchRate = 1.0) {
   try {
     const ctx = ensureAudioContext()
@@ -117,12 +95,12 @@ export function playMoktakAcousticSynth(pitchRate = 1.0) {
     const dest = bus ? bus.input : ctx.destination
     const now = ctx.currentTime
 
-    // 1. 주 원목 공명 (460Hz -> 380Hz 부드러운 대추/박달나무 타격)
+    // 1. 주 원목 공명 (640Hz -> 585Hz 맑은 박달나무 공명)
     const bodyOsc = ctx.createOscillator()
     const bodyGain = ctx.createGain()
     bodyOsc.type = 'sine'
-    bodyOsc.frequency.setValueAtTime(520 * pitchRate, now)
-    bodyOsc.frequency.exponentialRampToValueAtTime(420 * pitchRate, now + 0.035)
+    bodyOsc.frequency.setValueAtTime(640 * pitchRate, now)
+    bodyOsc.frequency.exponentialRampToValueAtTime(585 * pitchRate, now + 0.030)
     bodyGain.gain.setValueAtTime(0.001, now)
     bodyGain.gain.linearRampToValueAtTime(0.45, now + 0.004)
     bodyGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22)
@@ -131,14 +109,14 @@ export function playMoktakAcousticSynth(pitchRate = 1.0) {
     bodyOsc.start(now)
     bodyOsc.stop(now + 0.24)
 
-    // 2. 따뜻한 목탁 통 배음 (590Hz 순수 원목 울림)
+    // 2. 따뜻한 보조 공명 (575Hz -> 530Hz)
     const subOsc = ctx.createOscillator()
     const subGain = ctx.createGain()
     subOsc.type = 'triangle'
-    subOsc.frequency.setValueAtTime(620 * pitchRate, now)
-    subOsc.frequency.exponentialRampToValueAtTime(540 * pitchRate, now + 0.025)
+    subOsc.frequency.setValueAtTime(575 * pitchRate, now)
+    subOsc.frequency.exponentialRampToValueAtTime(530 * pitchRate, now + 0.025)
     subGain.gain.setValueAtTime(0.001, now)
-    subGain.gain.linearRampToValueAtTime(0.18, now + 0.004)
+    subGain.gain.linearRampToValueAtTime(0.16, now + 0.004)
     subGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14)
     subOsc.connect(subGain)
     subGain.connect(dest)
@@ -150,16 +128,16 @@ export function playMoktakAcousticSynth(pitchRate = 1.0) {
 }
 
 /**
- * 실시간 0ms 지연 대웅전 박달나무 목탁 타격 실행
+ * 실시간 0ms 지연 원목 목탁 타격 실행
  * @param {object} options
  * @param {number} [options.pitchJitter=0.02] 타격마다 미세 음정 변화 폭
  * @param {number} [options.baseVolume=0.88] 기본 음량
- * @param {number} [options.reverbAmount=0.14] 은은한 목조 반사 비율 (0~0.35)
+ * @param {number} [options.reverbAmount=0] 하위 호환용 옵션 (원음 그대로 재생)
  */
 export function playMoktakSound({
   pitchJitter = 0.02,
   baseVolume = 0.88,
-  reverbAmount = 0.14,
+  reverbAmount = 0, // eslint-disable-line no-unused-vars
 } = {}) {
   try {
     const ctx = ensureAudioContext()
@@ -182,12 +160,7 @@ export function playMoktakSound({
       hitGain.gain.value = velocity
 
       source.connect(hitGain)
-      if (bus) {
-        bus.roomGain.gain.setTargetAtTime(Math.min(0.25, reverbAmount), ctx.currentTime, 0.01)
-        hitGain.connect(bus.input)
-      } else {
-        hitGain.connect(ctx.destination)
-      }
+      hitGain.connect(bus ? bus.input : ctx.destination)
 
       source.start(0)
       return
