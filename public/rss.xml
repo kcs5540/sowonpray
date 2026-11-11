@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>제주소원사 모바일 법당</title>
+    <title>대한불교 조계종 제주소원사 모바일 법당</title>
     <link>https://sowonpray.vercel.app/</link>
-    <description>간절한 한 가지 소원이 이루어지는 소원성취 기도도량 제주소원사 모바일 법당입니다. 무료 소원등 켜기, 매일 오전 10시 대웅전 사시예불 축원, 영구위패봉안, 천도재, 1년 인등 접수.</description>
+    <description>간절한 한 가지 소원이 이루어지는 소원성취 기도도량 대한불교 조계종 제주소원사 모바일 법당입니다. 무료 소원등 켜기, 매일 오전 10시 대웅전 사시예불 축원, 영구위패봉안, 49재, 천도재, 생전예수재, 1년 인등 접수.</description>
     <language>ko</language>
-    <pubDate>Tue, 10 Nov 2026 08:00:00 GMT</pubDate>
+    <pubDate>Thu, 12 Nov 2026 00:00:00 +0900</pubDate>
     <item>
-      <title>제주소원사 3D 광명 소원등 켜기</title>
-      <link>https://sowonpray.vercel.app/?tab=lantern</link>
-      <description>전국 어디서나 스마트폰으로 대웅전 부처님 전에 무료 소원등을 밝히고 매일 사시예불 축원을 받으세요.</description>
-      <pubDate>Tue, 10 Nov 2026 08:00:00 GMT</pubDate>
+      <title>제주소원사 무료 소원등 켜기 &amp; 대웅전 사시예불 축원</title>
+      <link>https://sowonpray.vercel.app/lantern</link>
+      <description>전국 어디서나 스마트폰으로 대웅전 부처님 전에 무료 소원등을 밝히고 매일 오전 10시 사시예불 축원을 받으세요.</description>
+      <pubDate>Thu, 12 Nov 2026 00:00:00 +0900</pubDate>
     </item>
     <item>
-      <title>제주소원사 영구위패봉안 및 천도재·생전예수재</title>
-      <link>https://sowonpray.vercel.app/?tab=bulsa</link>
-      <description>조상님의 평안한 안식을 모시는 영구위패봉안과 49재, 천도재, 생전예수재 불사 접수 안내.</description>
-      <pubDate>Tue, 10 Nov 2026 08:00:00 GMT</pubDate>
+      <title>제주소원사 영구위패봉안 · 49재 · 천도재 · 생전예수재 불사 안내</title>
+      <link>https://sowonpray.vercel.app/bulsa</link>
+      <description>조상님의 평안한 안식을 모시는 영구위패봉안과 1년 가족 인등, 49재, 천도재, 생전예수재 및 삼성각 불사 안내.</description>
+      <pubDate>Thu, 12 Nov 2026 00:00:00 +0900</pubDate>
     </item>
     <item>
-      <title>제주소원사 108 목탁 명상 및 한 줄 사경</title>
-      <link>https://sowonpray.vercel.app/?tab=sutra</link>
-      <description>청아한 목탁 소리와 함께 마음의 평안을 얻는 108 목탁 명상 및 경전 사경 정진.</description>
-      <pubDate>Tue, 10 Nov 2026 08:00:00 GMT</pubDate>
+      <title>제주소원사 한 줄 사경 &amp; 108 목탁 명상 수행</title>
+      <link>https://sowonpray.vercel.app/sutra</link>
+      <description>청아한 목탁 소리와 함께 마음의 평안을 얻는 108 목탁 명상, 반야심경 한 줄 사경 및 불교 경전 공부.</description>
+      <pubDate>Thu, 12 Nov 2026 00:00:00 +0900</pubDate>
     </item>
   </channel>
 </rss>

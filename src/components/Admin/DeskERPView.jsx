@@ -1826,7 +1826,7 @@ export default function DeskERPView({
               </div>
               <div className="flex justify-between">
                 <span className="text-[#7A6E5E]">영수 사찰:</span>
-                <span className="font-bold">대한불교 본원종 제주 소원사</span>
+                <span className="font-bold">대한불교 조계종 제주 소원사</span>
               </div>
             </div>
 
@@ -1923,7 +1923,7 @@ export default function DeskERPView({
                     <tbody>
                       <tr>
                         <th className="border border-black bg-gray-50 p-2 w-24">단 체 명</th>
-                        <td className="border border-black p-2 font-bold">대한불교 본원종 제주 소원사</td>
+                        <td className="border border-black p-2 font-bold">대한불교 조계종 제주 소원사</td>
                         <th className="border border-black bg-gray-50 p-2 w-28">고유번호</th>
                         <td className="border border-black p-2 font-mono">616-82-00000 (종교단체)</td>
                       </tr>
@@ -1969,7 +1969,7 @@ export default function DeskERPView({
                 <div className="text-center pt-3 space-y-2">
                   <p className="text-[11px]">위와 같이 종교단체 지정기부금(보시금)을 기부하였음을 증명합니다.</p>
                   <p className="font-mono text-xs">{new Date().toISOString().slice(0, 10)}</p>
-                  <p className="font-serif-kr text-base font-black pt-1">대한불교 본원종 제주 소원사 주지 (직인)</p>
+                  <p className="font-serif-kr text-base font-black pt-1">대한불교 조계종 제주 소원사 주지 (직인)</p>
                 </div>
               </div>
 
@@ -2027,7 +2027,7 @@ export default function DeskERPView({
                       {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''} 귀하
                     </div>
                     <div className="flex justify-between text-[10px] text-gray-400 font-mono border-t border-dashed border-gray-200 pt-1 mt-1">
-                      <span>대한불교 본원종 소원사</span>
+                      <span>대한불교 조계종 소원사</span>
                       <span>{m.code}</span>
                     </div>
                   </div>

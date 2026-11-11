@@ -1689,7 +1689,7 @@ function LotusNavIcon({ className = 'w-5 h-5' }) {
 }
 
 export default function App() {
-  // 탭 상태: 'home' | 'lantern' | 'sutra' | 'bulsa' | 'agent' | 'admin' | 'profile' (URL ?tab= 파라미터 직접 진입 지원)
+  // 탭 상태: 'home' | 'lantern' | 'sutra' | 'bulsa' | 'agent' | 'admin' | 'profile' (경로 /lantern·/bulsa·/sutra 및 ?tab= 모두 지원)
   const [activeTab, setActiveTab] = useState(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search)
@@ -1697,9 +1697,62 @@ export default function App() {
       if (tabParam && ['home', 'lantern', 'sutra', 'bulsa', 'agent', 'admin', 'profile', 'card'].includes(tabParam)) {
         return tabParam
       }
+      const cleanPath = window.location.pathname.replace(/\/+$/, '') || '/'
+      if (cleanPath === '/lantern') return 'lantern'
+      if (cleanPath === '/bulsa') return 'bulsa'
+      if (cleanPath === '/sutra') return 'sutra'
+      if (cleanPath === '/card') return 'card'
     }
     return 'home'
   })
+
+  // 공개 탭 전환 시 페이지별 <title> · description · canonical · URL 경로 동기화 (결제 콜백·관리자 모드 제외)
+  useEffect(() => {
+    if (typeof window === 'undefined' || isStandaloneAdmin || showMobileAdmin) return
+    const TAB_META = {
+      home: {
+        path: '/',
+        title: '제주소원사 모바일 법당 | 소원등 켜기 & 사시예불 축원 기도도량',
+        description:
+          '간절한 한 가지 소원이 이루어지는 소원성취 기도도량 대한불교 조계종 제주소원사 모바일 법당입니다. 무료 소원등 켜기, 매일 오전 10시 대웅전 사시예불 축원, 1년 인등, 영구위패봉안, 천도재, 생전예수재, 한 줄 사경, 108 목탁 명상.',
+      },
+      lantern: {
+        path: '/lantern',
+        title: '무료 소원등 켜기 & 대웅전 사시예불 축원 | 대한불교 조계종 제주 소원사',
+        description:
+          '제주 소원사 대웅전 부처님 전에 무료 디지털 소원등을 켜고 매일 오전 10시 사시예불 축원을 받으세요.',
+      },
+      bulsa: {
+        path: '/bulsa',
+        title: '상시 기도·공덕 불사(1년 인등·영구위패·천도재·생전예수재) | 제주 소원사',
+        description:
+          '대한불교 조계종 제주 소원사 1년 가족 인등, 영구위패봉안, 49재, 천도재, 생전예수재, 백미 공양미 및 삼성각 불사 맞춤 상담 안내.',
+      },
+      sutra: {
+        path: '/sutra',
+        title: '한 줄 사경·108 목탁 명상·불교 경전 공부 | 제주 소원사',
+        description:
+          '반야심경 한 줄 사경, 108 목탁 명상, 오늘의 불교 명언과 경전 공부로 마음의 평안을 찾는 제주 소원사 수행 공간.',
+      },
+    }
+    const meta = TAB_META[activeTab]
+    if (!meta) return
+
+    document.title = meta.title
+    const descEl = document.querySelector('meta[name="description"]')
+    if (descEl) descEl.setAttribute('content', meta.description)
+    const canonicalEl = document.querySelector('link[rel="canonical"]')
+    if (canonicalEl) canonicalEl.setAttribute('href', `https://sowonpray.vercel.app${meta.path}`)
+
+    const params = new URLSearchParams(window.location.search)
+    if (params.has('paymentKey') || params.get('tab') === 'admin') return
+    params.delete('tab')
+    const qs = params.toString()
+    const nextUrl = qs ? `${meta.path}?${qs}` : meta.path
+    if (`${window.location.pathname}${window.location.search}` !== nextUrl) {
+      window.history.replaceState(null, '', nextUrl)
+    }
+  }, [activeTab])
   const [heroSlideIdx, setHeroSlideIdx] = useState(0)
   // 🪪 [소원사 모바일 전자명함 시스템] 전용 상태
   const [showBusinessCardModal, setShowBusinessCardModal] = useState(false)
@@ -11406,7 +11459,7 @@ function formatRelativeOrDate(dateStr) {
               {/* 주문 요약 */}
               <div className="px-5 py-3.5 bg-[#F2F4F6] flex items-center justify-between border-b border-[#E5E8EB]">
                 <div className="min-w-0">
-                  <div className="text-[11px] text-[#6B7684] font-semibold">대한불교 본원종 제주 소원사</div>
+                  <div className="text-[11px] text-[#6B7684] font-semibold">대한불교 조계종 제주 소원사</div>
                   <div className="text-sm font-extrabold text-[#191F28] truncate">
                     {wishCategory || '대웅전 1년 인등(가족등)'} ({wishName || '홍길동 불자'})
                   </div>

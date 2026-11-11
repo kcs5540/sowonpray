@@ -136,7 +136,7 @@ export default function IndeungNameplatePrintModal({
                 <span>인쇄일자: {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
               </div>
               <div className="inline-block px-2.5 py-0.5 rounded-full bg-[#FAF3E0] border border-[#D4AF37] text-[10px] text-[#8A6510] font-bold mb-1">
-                대한불교 본원종 제주 소원사 대웅전 인등대 봉안 원장
+                대한불교 조계종 제주 소원사 대웅전 인등대 봉안 원장
               </div>
               <h1 className="text-xl sm:text-2xl font-black tracking-wider text-[#1B1815] font-serif-kr">
                 대 웅 전 1 년 가 족 인 등 전 통 명 패 (燈 牌)
@@ -218,13 +218,13 @@ export default function IndeungNameplatePrintModal({
             {/* 하단 사찰 공식 축원문 및 직인 */}
             <div className="pt-3 border-t-2 border-[#1B1815] mt-3">
               <p className="text-center text-[10px] font-bold text-[#333] mb-2 leading-relaxed">
-                위 불자 및 권속은 대한불교 본원종 제주 소원사 대웅전에 1년간 가족 인등을 밝히고<br />
+                위 불자 및 권속은 대한불교 조계종 제주 소원사 대웅전에 1년간 가족 인등을 밝히고<br />
                 매일 사시예불 축원을 올리오니, 부처님의 자비광명으로 가내 평안하고 만사여의원만하기를 지심 축원합니다.
               </p>
               <div className="grid grid-cols-2 gap-3 text-center text-[10px]">
                 <div className="border border-[#444] py-2 px-1 rounded bg-[#FAF8F5]">
                   <div className="text-[9px] text-[#666]">대웅전 축원 증명</div>
-                  <div className="font-extrabold text-[#111] mt-0.5 text-xs">대한불교 본원종 제주 소원사</div>
+                  <div className="font-extrabold text-[#111] mt-0.5 text-xs">대한불교 조계종 제주 소원사</div>
                   <div className="text-[10px] font-bold text-[#8A6510] mt-0.5">주지스님 직인 (인)</div>
                 </div>
                 <div className="border border-[#444] py-2 px-1 rounded bg-[#FAF8F5]">

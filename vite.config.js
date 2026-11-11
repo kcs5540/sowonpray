@@ -1,6 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import https from 'https'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import { generateSeoPrerenderPages } from './scripts/seoPrerender.mjs'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   server: {
@@ -10,6 +15,12 @@ export default defineConfig({
   },
   plugins: [
     react(),
+    {
+      name: 'sowonpray-seo-prerender',
+      closeBundle() {
+        generateSeoPrerenderPages(path.resolve(__dirname, 'dist'))
+      },
+    },
     {
       name: 'local-tts-api',
       configureServer(server) {

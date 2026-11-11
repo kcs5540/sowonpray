@@ -117,7 +117,7 @@ export default function BusinessCardModal({
     if (navigator.share) {
       navigator.share({
         title: `[제주 소원사] ${m.name} 모바일 전자명함`,
-        text: `[대한불교 본원종 제주 소원사]\n${m.name} (${roleTitle}) 모바일 전자명함입니다.\n부처님의 자비광명이 함께하시기를 축원합니다.\n\n👉 전자명함 바로보기:\n${cardShareUrl}`,
+        text: `[대한불교 조계종 제주 소원사]\n${m.name} (${roleTitle}) 모바일 전자명함입니다.\n부처님의 자비광명이 함께하시기를 축원합니다.\n\n👉 전자명함 바로보기:\n${cardShareUrl}`,
       }).catch(() => {})
     } else if (navigator.clipboard) {
       navigator.clipboard.writeText(cardShareUrl)

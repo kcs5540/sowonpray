@@ -259,7 +259,7 @@ export default function SasiPrayerPrintModal({
           {/* A4 인쇄 시 공식 상단 서식 */}
           <div className="hidden print:block pb-3 mb-2 border-b-2 border-[#1B1815] text-center font-serif-kr">
             <div className="flex justify-between items-center text-[10px] text-[#666666] mb-1 pb-1 border-b border-[#CCCCCC]">
-              <span>대한불교 본원종 제주 소원사 종무원</span>
+              <span>대한불교 조계종 제주 소원사 종무원</span>
               <span>사시예불 축원 원장 (매일 오전 10:30 사시마지 봉행)</span>
               <span>인쇄일시: {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
             </div>
@@ -343,7 +343,7 @@ export default function SasiPrayerPrintModal({
           {/* 하단 사찰 공식 직인란 */}
           <div className="pt-6 border-t-2 border-[#1B1815] flex items-center justify-between text-xs text-[#444444] font-serif-kr">
             <div>
-              <div className="font-bold text-[#1B1815]">대한불교 본원종 제주 소원사</div>
+              <div className="font-bold text-[#1B1815]">대한불교 조계종 제주 소원사</div>
               <div className="text-[10px] text-[#777777]">제주특별자치도 제주시 죽성서길 75 (오등동)</div>
             </div>
             <div className="flex items-center gap-6 text-center">

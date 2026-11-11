@@ -40,9 +40,9 @@ export default function BulsaTab({
               <span className="block text-[11px] text-[#F5D061] font-bold whitespace-nowrap">
                 제주 소원사 상시 기도 · 공덕 불사 · 위패 봉안 · 삼성각 건립
               </span>
-              <h2 className="font-serif-kr text-lg sm:text-xl font-bold mt-1 break-keep">
+              <h1 className="font-serif-kr text-lg sm:text-xl font-bold mt-1 break-keep">
                 현세의 복덕과 자손만대 번창을 발원합니다
-              </h2>
+              </h1>
               <p className="text-xs text-[#D6CEC2] mt-1.5 leading-relaxed break-keep">
                 원하시는 불사 항목을 터치하여 선택하시고 아래 신청란에 남겨주시면 제주 소원사 종무소에서 정성껏 안내 및 축원을 도와드립니다.
               </p>

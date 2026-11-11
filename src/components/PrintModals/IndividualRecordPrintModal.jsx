@@ -85,7 +85,7 @@ export default function IndividualRecordPrintModal({
                   <span>인쇄일자: {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                 </div>
                 <div className="inline-block px-2.5 py-0.5 rounded-full bg-[#FAF3E0] border border-[#D4AF37] text-[10px] text-[#8A6510] font-bold mb-1">
-                  대한불교 본원종 제주 소원사 영구 보존 원장
+                  대한불교 조계종 제주 소원사 영구 보존 원장
                 </div>
                 <h1 className="text-xl sm:text-2xl font-black tracking-wider text-[#1B1815] font-serif-kr">
                   신 도 교 적 대 장 (信 籍 簿)
@@ -278,13 +278,13 @@ export default function IndividualRecordPrintModal({
               {/* 하단 사찰 공식 증명 및 직인 날인처 */}
               <div className="pt-2 border-t-2 border-[#1B1815] mt-1.5">
                 <p className="text-center text-[9.5px] font-bold text-[#333] mb-1.5 leading-tight">
-                  위 신도 및 권속은 대한불교 본원종 제주 소원사의 정진 신도로서<br />
+                  위 신도 및 권속은 대한불교 조계종 제주 소원사의 정진 신도로서<br />
                   부처님 전 지극한 정성으로 소원등을 밝히고 사찰 불사에 동참하였기에 이 교적대장을 영구 보존 원장으로 기록·증명합니다.
                 </p>
                 <div className="grid grid-cols-3 gap-2 text-center text-[9.5px]">
                   <div className="border border-[#444] py-1.5 px-1 rounded bg-[#FAF8F5]">
                     <div className="text-[8.5px] text-[#666]">교적대장 기록 증명</div>
-                    <div className="font-extrabold text-[#111] mt-0.5 text-[10.5px]">대한불교 본원종 제주 소원사</div>
+                    <div className="font-extrabold text-[#111] mt-0.5 text-[10.5px]">대한불교 조계종 제주 소원사</div>
                     <div className="text-[9.5px] font-bold text-[#8A6510] mt-0.5">주지스님 직인 (인)</div>
                   </div>
                   <div className="border border-[#444] py-1.5 px-1 rounded bg-[#FAF8F5]">

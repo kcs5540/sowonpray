@@ -204,10 +204,10 @@ export default function LanternTab({
               </div>
               {isLanternLit ? (
                 <>
-                  <h2 className="font-serif-kr text-xl sm:text-2xl font-bold mb-2 leading-snug">
+                  <h1 className="font-serif-kr text-xl sm:text-2xl font-bold mb-2 leading-snug">
                     <span className="text-[#F5D061] block sm:inline">대웅전 부처님 전에 </span>
                     <span className="block sm:inline">소원등이 켜져 있습니다</span>
-                  </h2>
+                  </h1>
                   <p className="text-xs text-[#E8DFD1] max-w-xs mx-auto leading-relaxed mb-3 break-keep">
                     스님께서 매일 오전 10시 사시예불마다{' '}
                     <strong className="text-[#F5D061]">{stripTargetFromName(lanternData?.believer_name)}</strong> 불자님의 소원을 정성껏 축원 올리고 있습니다.
@@ -215,10 +215,10 @@ export default function LanternTab({
                 </>
               ) : (
                 <>
-                  <h2 className="font-serif-kr text-xl sm:text-2xl font-bold mb-2 leading-snug">
+                  <h1 className="font-serif-kr text-xl sm:text-2xl font-bold mb-2 leading-snug">
                     <span className="block sm:inline">소원등 켜고, </span>
                     <span className="block sm:inline">간절한 소원을 올려보세요</span>
-                  </h2>
+                  </h1>
                   <p className="text-xs text-[#D6CEC2] max-w-xs mx-auto leading-relaxed mb-4 break-keep">
                     정성으로 발원문을 올리시면 대웅전에 소원등이 밝혀지고 매일 오전 10시 사시예불에서 축원해 드립니다.
                   </p>

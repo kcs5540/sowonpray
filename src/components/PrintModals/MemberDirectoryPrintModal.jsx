@@ -228,7 +228,7 @@ export default function MemberDirectoryPrintModal({
                   </div>
                   <div className="border border-[#444444] p-2.5 rounded-lg bg-[#FAF8F5]">
                     <div className="text-[10px] text-[#666666]">대웅전 축원 증명</div>
-                    <div className="font-extrabold text-[#111111] mt-1 text-xs">대한불교 본원종 제주 소원사</div>
+                    <div className="font-extrabold text-[#111111] mt-1 text-xs">대한불교 조계종 제주 소원사</div>
                     <div className="text-[10.5px] font-bold text-[#8A6510] mt-0.5">주지스님 직인 (인)</div>
                   </div>
                 </div>

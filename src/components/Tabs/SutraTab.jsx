@@ -81,9 +81,9 @@ export default function SutraTab({
                   <span>공덕장 보기 ›</span>
                 </button>
               </div>
-              <h2 className="font-serif-kr text-2xl sm:text-3xl font-bold mt-1.5 break-keep">
+              <h1 className="font-serif-kr text-2xl sm:text-3xl font-bold mt-1.5 break-keep">
                 누적 수행 공덕 <span className="text-[#F5D061]">{Number(currentMeritCount || 0).toLocaleString()}</span> 공덕
-              </h2>
+              </h1>
               <p className="text-[11.5px] text-[#BFB6AA] mt-1 break-keep">
                 사경·명언·경전공부·지혜퀴즈로 매일 맑은 복덕을 쌓아보세요.
               </p>

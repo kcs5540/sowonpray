@@ -56,7 +56,7 @@ export default class ErrorBoundary extends React.Component {
 
             <div className="space-y-1.5">
               <span className="text-[11px] font-bold text-[#D4AF37] tracking-widest font-serif-kr block">
-                대한불교 본원종 제주 소원사
+                대한불교 조계종 제주 소원사
               </span>
               <h2 className="font-serif-kr text-xl sm:text-2xl font-black text-[#FAF8F5]">
                 도량 시스템 안전 보호 작동
