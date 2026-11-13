@@ -108,8 +108,8 @@ export default function LanternTab({
     const streakDays = userLanternStats?.streak || 1;
     const totalCount = userLanternStats?.totalCount || 1;
 
-    const shareTitle = '🪔 ' + believerName + '님이 소원등의 복(福)을 전했습니다';
-    const shareDesc = '“우리 가족과 소중한 분들의 평안을 빌며 등을 밝혔어요.\n당신을 위한 소원등도 무료로 밝히고 복 받아가세요! ✨\n(매일 아침 스님께서 직접 축원해 주십니다)”';
+    const shareTitle = '🪔 ' + believerName + '님이 소원등을 전했습니다';
+    const shareDesc = '“우리 가족과 소중한 분들의 평안을 빌며 등을 밝혔어요.\n당신을 위한 소원등도 함께 밝히고 좋은 기운 가득 받아가세요! ✨\n(매일 아침 스님께서 직접 축원해 주십니다)”';
 
     // 1) 카카오톡 공식 JavaScript SDK 피드 카드 전송
     if (typeof window !== 'undefined' && window.Kakao) {
@@ -143,7 +143,7 @@ export default function LanternTab({
             },
             buttons: [
               {
-                title: '🪔 내 소원등 켜고 복 받기 (무료)',
+                title: '🪔 내 소원등 켜고 복 받기',
                 link: {
                   mobileWebUrl: shareUrl,
                   webUrl: shareUrl,
@@ -159,7 +159,7 @@ export default function LanternTab({
     }
 
     // 2) Web Share API (모바일 네이티브 공유)
-    const nativeShareText = '🪔 ' + believerName + '님이 제주 소원사 소원등의 복(福)을 전했습니다!\n\n우리 가족과 소중한 분들의 평안을 빌며 등을 켰어요.\n당신을 위한 소원등도 무료로 하나 켜고 좋은 기운 가득 받아가세요! ✨\n(매일 아침 스님이 직접 정성껏 축원해 주십니다)\n\n👉 내 소원등 무료로 켜기:\n' + shareUrl;
+    const nativeShareText = '🪔 ' + believerName + '님이 제주 소원사 소원등을 전했습니다!\n\n우리 가족과 소중한 분들의 평안을 빌며 등을 켰어요.\n당신을 위한 소원등도 함께 켜고 좋은 기운 가득 받아가세요! ✨\n(매일 아침 스님이 직접 정성껏 축원해 주십니다)\n\n👉 내 소원등 켜기:\n' + shareUrl;
 
     if (navigator.share) {
       navigator.share({
