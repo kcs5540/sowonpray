@@ -108,7 +108,7 @@ export default function LanternTab({
     const streakDays = userLanternStats?.streak || 1;
     const totalCount = userLanternStats?.totalCount || 1;
 
-    const shareTitle = '🪔 ' + believerName + '님이 소원등을 전했습니다';
+    const shareTitle = '🪔 제주 소원사 소원등 축원 드립니다';
     const shareDesc = '소원등을 밝히고, 스님의 정성 어린 축원과 좋은 기운을 받아가세요! ✨';
 
     // 1) 카카오톡 공식 JavaScript SDK 피드 카드 전송
@@ -149,7 +149,7 @@ export default function LanternTab({
     }
 
     // 2) Web Share API (모바일 네이티브 공유)
-    const nativeShareText = '🪔 ' + believerName + '님이 제주 소원사 소원등을 전했습니다!\n\n우리 가족과 소중한 분들의 평안을 빌며 등을 켰어요.\n당신을 위한 소원등도 함께 켜고 좋은 기운 가득 받아가세요! ✨\n(매일 아침 스님이 직접 정성껏 축원해 주십니다)\n\n👉 내 소원등 켜기:\n' + shareUrl;
+    const nativeShareText = '🪔 제주 소원사 소원등 축원 드립니다\n\n소원등을 밝히고, 스님의 정성 어린 축원과 좋은 기운을 받아가세요! ✨\n\n👉 내 소원등 켜기:\n' + shareUrl;
 
     if (navigator.share) {
       navigator.share({
