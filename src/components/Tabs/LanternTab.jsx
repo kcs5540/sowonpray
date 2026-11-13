@@ -101,7 +101,7 @@ export default function LanternTab({
     const code = currentUser?.code || referralCode || '33065540';
     const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app';
     const shareUrl = origin + '/?ref=' + code + '&tab=lantern';
-    const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=3';
+    const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_night_lanterns.jpg?v=1';
 
     const believerName = stripTargetFromName(lanternData?.believer_name || (typeof wishName === 'string' && wishName.trim()) || currentUser?.name || '불자');
     const categoryName = lanternData?.wish_category || wishCategory || '가족건강';
