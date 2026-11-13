@@ -108,8 +108,8 @@ export default function LanternTab({
     const streakDays = userLanternStats?.streak || 1;
     const totalCount = userLanternStats?.totalCount || 1;
 
-    const shareTitle = '🪔 제주 소원사에서 전하는 소원 축원';
-    const shareDesc = '소원등을 밝히고, 스님의 정성 어린 축원과 좋은 기운을 받아가세요! ✨';
+    const shareTitle = '🪔 제주 소원사 소원성취 축원';
+    const shareDesc = '소원등을 밝히고, 스님의 정성 어린 축원과 복을 받아가세요! ✨';
 
     // 1) 카카오톡 공식 JavaScript SDK 피드 카드 전송
     if (typeof window !== 'undefined' && window.Kakao) {
@@ -149,7 +149,7 @@ export default function LanternTab({
     }
 
     // 2) Web Share API (모바일 네이티브 공유)
-    const nativeShareText = '🪔 제주 소원사에서 전하는 소원 축원\n\n소원등을 밝히고, 스님의 정성 어린 축원과 좋은 기운을 받아가세요! ✨\n\n👉 내 소원등 켜기:\n' + shareUrl;
+    const nativeShareText = '🪔 제주 소원사 소원성취 축원\n\n소원등을 밝히고, 스님의 정성 어린 축원과 복을 받아가세요! ✨\n\n👉 내 소원등 켜기:\n' + shareUrl;
 
     if (navigator.share) {
       navigator.share({
