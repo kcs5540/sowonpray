@@ -108,8 +108,8 @@ export default function LanternTab({
     const streakDays = userLanternStats?.streak || 1;
     const totalCount = userLanternStats?.totalCount || 1;
 
-    const shareTitle = '🪔 [제주 소원사] ' + believerName + ' 불자님의 소원등 점등';
-    const shareDesc = '대웅전 부처님 전에 간절한 소원등이 밝혀졌습니다.\n매일 오전 10시 사시예불마다 스님께서 정성껏 축원 올립니다.';
+    const shareTitle = '🪔 ' + believerName + '님이 소원등의 복(福)을 전했습니다';
+    const shareDesc = '“우리 가족과 소중한 분들의 평안을 빌며 등을 밝혔어요.\n당신을 위한 소원등도 무료로 밝히고 복 받아가세요! ✨\n(매일 아침 스님께서 직접 축원해 주십니다)”';
 
     // 1) 카카오톡 공식 JavaScript SDK 피드 카드 전송
     if (typeof window !== 'undefined' && window.Kakao) {
@@ -132,19 +132,18 @@ export default function LanternTab({
               },
             },
             itemContent: {
-              profileText: '제주 소원사 대웅전 실시간 연동',
-              titleImageText: categoryName + ' 축원등',
-              titleImageCategory: '대웅전 실시간 연동',
+              profileText: '대한불교 조계종 제주 소원사',
+              titleImageText: '마음이 쉬어가는 소원등불',
+              titleImageCategory: '자비 법공양 선물',
               items: [
-                { item: '축원불자', itemOp: believerName + ' 불자님' },
-                { item: '소원분야', itemOp: categoryName },
-                { item: '정진현황', itemOp: '누적 ' + totalCount + '회 · ' + streakDays + '일 연속 점등' },
-                { item: '사시예불', itemOp: '매일 오전 10시 대웅전' },
+                { item: '보낸 정성', itemOp: believerName + '님의 소원등 점등' },
+                { item: '함께 비는 마음', itemOp: categoryName + ' 발원' },
+                { item: '사시예불 축원', itemOp: '매일 오전 10시 스님 직접 축원' },
               ],
             },
             buttons: [
               {
-                title: '🪔 대웅전 소원등 함께 밝히기',
+                title: '🪔 내 소원등 켜고 복 받기 (무료)',
                 link: {
                   mobileWebUrl: shareUrl,
                   webUrl: shareUrl,
@@ -160,7 +159,7 @@ export default function LanternTab({
     }
 
     // 2) Web Share API (모바일 네이티브 공유)
-    const nativeShareText = '[제주 소원사 대웅전 소원등]\n' + believerName + ' 불자님의 소원등이 대웅전 부처님 전에 밝혀졌습니다.\n매일 오전 10시 사시예불마다 스님께서 정성껏 축원 올립니다.\n\n함께 소원등 밝히기:\n' + shareUrl;
+    const nativeShareText = '🪔 ' + believerName + '님이 제주 소원사 소원등의 복(福)을 전했습니다!\n\n우리 가족과 소중한 분들의 평안을 빌며 등을 켰어요.\n당신을 위한 소원등도 무료로 하나 켜고 좋은 기운 가득 받아가세요! ✨\n(매일 아침 스님이 직접 정성껏 축원해 주십니다)\n\n👉 내 소원등 무료로 켜기:\n' + shareUrl;
 
     if (navigator.share) {
       navigator.share({
