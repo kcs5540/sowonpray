@@ -3748,16 +3748,14 @@ function formatRelativeOrDate(dateStr) {
   }, [currentUser])
 
   // 🪷 [오전 11시 사시예불 축원 원만회향 알림 팝업 감지 엔진]
-  // 소원등을 켰던 신도님이 11:00 예불 회향 이후 접속 시 감동의 회향 팝업 1회 노출
+  // 소원등을 켰던 신도님이 11:00 예불 회향 이후 접속 시 감동의 회향 팝업 1회만 노출
   useEffect(() => {
-    if (hoehangDismissedRef.current) return
-
     const now = new Date()
     const todayKey = formatLocalDateKey(now)
-    const isPast11AM = now.getHours() >= 11
-
-    // 이미 오늘 회향 팝업을 확인했으면 재노출 안 함 (localStorage + sessionStorage 2중 체크)
     const seenKey = `sowonsa_hoehang_seen_${todayKey}`
+
+    // 1) 이번 세션에서 이미 닫았거나, 오늘 이미 본 경우 절대 재노출 안 함
+    if (hoehangDismissedRef.current) return
     try {
       if (localStorage.getItem(seenKey) === 'true' || sessionStorage.getItem(seenKey) === 'true') {
         hoehangDismissedRef.current = true
@@ -3765,20 +3763,23 @@ function formatRelativeOrDate(dateStr) {
       }
     } catch (e) {}
 
-    // 1) localStorage 7일 소원등 데이터 확인
+    const isPast11AM = now.getHours() >= 11
+    if (!isPast11AM) return
+
+    // 2) localStorage 7일 소원등 데이터 확인
     let candidate = null
     try {
       const raw = localStorage.getItem('sowonsa_7day_lantern')
       if (raw) {
         const parsed = JSON.parse(raw)
         // 오늘이 회향일(sasi_date_key === todayKey)이고 11시가 지났거나 회향 만료된 경우 (이미 회향 확인한 경우 제외)
-        if (parsed.sasi_date_key === todayKey && isPast11AM && !parsed.hoehang_seen) {
+        if (parsed.sasi_date_key === todayKey && !parsed.hoehang_seen) {
           candidate = parsed
         }
       }
     } catch (e) {}
 
-    // 2) prayers 배열에서 본인 최근 기도 확인
+    // 3) prayers 배열에서 본인 최근 기도 확인
     if (!candidate && prayers && prayers.length > 0) {
       const cleanUserPhone = (currentUser?.phone || wishPhone || '').replace(/[^0-9]/g, '')
       const userCode = currentUser?.code || ''
@@ -3798,7 +3799,7 @@ function formatRelativeOrDate(dateStr) {
             (userName && pName && (pName.includes(userName) || userName.includes(pName)))
           if (!isMe) return false
           const sched = computeSasiSchedule(pTime)
-          return sched.sasiDateKey === todayKey && isPast11AM
+          return sched.sasiDateKey === todayKey
         })
         if (myPrayer) {
           candidate = {
