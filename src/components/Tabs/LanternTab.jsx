@@ -109,7 +109,7 @@ export default function LanternTab({
     const totalCount = userLanternStats?.totalCount || 1;
 
     const shareTitle = '🪔 ' + believerName + '님이 소원등을 전했습니다';
-    const shareDesc = '가족과 소중한 분들의 평안을 빌며 등을 켰어요. 당신의 소원등도 밝히고 좋은 기운 받아가세요! ✨';
+    const shareDesc = '부처님 전에 소원등을 밝히고, 매일 아침 스님의 정성 어린 축원과 좋은 기운을 받아가세요! ✨';
 
     // 1) 카카오톡 공식 JavaScript SDK 피드 카드 전송
     if (typeof window !== 'undefined' && window.Kakao) {
