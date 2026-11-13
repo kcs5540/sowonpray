@@ -131,19 +131,9 @@ export default function LanternTab({
                 webUrl: shareUrl,
               },
             },
-            itemContent: {
-              profileText: '대한불교 조계종 제주 소원사',
-              titleImageText: '마음이 쉬어가는 소원등불',
-              titleImageCategory: '자비 법공양 선물',
-              items: [
-                { item: '보낸 정성', itemOp: believerName + '님의 소원등 점등' },
-                { item: '함께 비는 마음', itemOp: categoryName + ' 발원' },
-                { item: '사시예불 축원', itemOp: '매일 오전 10시 스님 직접 축원' },
-              ],
-            },
             buttons: [
               {
-                title: '🪔 내 소원등 켜고 복 받기',
+                title: '🪔 내 소원등 켜기',
                 link: {
                   mobileWebUrl: shareUrl,
                   webUrl: shareUrl,
