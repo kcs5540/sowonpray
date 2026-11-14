@@ -739,12 +739,9 @@ export default function HomeTab({
                   </span>
                 </button>
 
-                {/* 하단: 종무소 직통 전화 바로연결 (1줄 정돈) */}
+                {/* 하단: 종무소 직통 전화 바로연결 (1줄 정돈, 군더더기 글자 없이 깔끔한 번호 안내) */}
                 <div className="py-2 px-3 bg-[#FAF7F0] flex items-center justify-center gap-1.5 text-[11px] sm:text-xs text-[#3D352B] font-bold whitespace-nowrap overflow-hidden">
-                  <span className="inline-flex items-center gap-1 text-[#7A5608] font-extrabold shrink-0">
-                    <Phone className="w-3 h-3 text-[#B8860B] fill-current shrink-0" />
-                    <span>전화 예약:</span>
-                  </span>
+                  <Phone className="w-3 h-3 text-[#B8860B] fill-current shrink-0" />
                   <a
                     href="tel:064-805-2007"
                     className="text-[#231F1C] hover:text-[#7A5608] font-extrabold transition shrink-0"
