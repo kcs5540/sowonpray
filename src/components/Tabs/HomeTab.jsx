@@ -1400,43 +1400,6 @@ export default function HomeTab({
                         <span className="text-[#F5D061] font-semibold">1공덕 = 정성의 복덕</span>
                       </div>
                     </div>
-                    {/* 💌 가족·도반에게 복(福) 나누기 (카카오톡 공유 & 공덕장 바로가기) */}
-                    <div className="space-y-2 pt-1">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (handleShareMyLantern) {
-                            handleShareMyLantern(currentUser?.name || lanternData?.believer_name, {
-                              type: 'lantern',
-                              category: lanternData?.wish_category,
-                              wishText: lanternData?.wish_text,
-                              streak: userLanternStats?.streak,
-                              totalCount: userLanternStats?.totalCount,
-                            })
-                          }
-                          if (showToast) {
-                            showToast('💌 가족·도반에게 소원등 복(福) 나눔 카드가 공유되었습니다.')
-                          }
-                        }}
-                        className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#FEE500] via-[#FDD835] to-[#FBC02D] hover:brightness-105 active:scale-95 text-[#3C1E1E] font-black text-[13px] sm:text-sm shadow-[0_4px_16px_rgba(253,216,53,0.35)] flex items-center justify-center gap-2 transition cursor-pointer"
-                      >
-                        <Share2 className="w-4 h-4 text-[#3C1E1E] shrink-0" />
-                        <span>가족·도반에게 복(福) 나누기 (카톡)</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setShowMeritInfoModal(false)
-                          if (setMeritCertType) setMeritCertType('lantern')
-                          if (setShowMeritCertModal) setShowMeritCertModal(true)
-                        }}
-                        className="w-full py-2.5 rounded-xl bg-[#2A231C] hover:bg-[#382E24] text-[#F5D061] border border-[#D4A024]/50 font-serif-kr font-bold text-xs transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
-                      >
-                        <span>📜 나의 정진 공덕장 (황금 인증서) 열기</span>
-                        <ChevronRight className="w-3.5 h-3.5 text-[#F5D061]" />
-                      </button>
-                    </div>
                   </div>
 
                   {/* 하단 버튼 바 */}
