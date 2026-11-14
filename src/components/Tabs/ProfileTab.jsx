@@ -1239,14 +1239,14 @@ export default function ProfileTab({
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-1 flex-wrap">
                           <span className="text-xs font-bold text-[#F5D061]">
-                            인연 전달 시 5,000 공덕 (1일 한도 50,000) · 인연 받은 분 5,000 공덕
+                            인연 전달 시 5,000 공덕 (1일 한도 50,000) · (신규) 인연 받은 분 5,000 공덕
                           </span>
                           <span className="text-[10px] text-[#E5D7B5] bg-white/10 px-1.5 py-0.5 rounded font-medium">
                             기념품 구입 or 불사 참여 사용
                           </span>
                         </div>
                         <p className="text-[11px] text-[#BFB6AA] mt-1 leading-relaxed break-keep">
-                          소원등 링크를 전달하여 상대방이 소원등을 켤 때마다 <strong className="text-white">인연 전달한 분께 5,000 공덕 (1일 한도 50,000 공덕)</strong>, <strong className="text-[#F5D061]">인연 받은 분께도 5,000 공덕</strong>이 적립됩니다. 또한 매일 주요 3대 정진(대웅전 참배 1,000 · 소원등 1,000 · 한줄사경 1,000)으로도 풍성한 복덕을 쌓으실 수 있습니다.
+                          소원등 링크를 전달하여 상대방이 소원등을 켤 때마다 <strong className="text-white">인연 전달한 분께 5,000 공덕 (1일 한도 50,000 공덕)</strong>, <strong className="text-[#F5D061]">(신규) 인연 받은 분께도 5,000 공덕</strong>이 적립됩니다. 또한 매일 주요 3대 정진(대웅전 참배 1,000 · 소원등 1,000 · 한줄사경 1,000)으로도 풍성한 복덕을 쌓으실 수 있습니다.
                         </p>
                       </div>
                     </div>

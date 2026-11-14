@@ -1366,14 +1366,16 @@ export default function HomeTab({
                           </div>
                         </div>
 
-                        {/* 5) 인연 받은 사람 */}
+                        {/* 5) (신규) 인연 받은 사람 */}
                         <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-[#E6DEC8] shadow-xs">
                           <div className="flex items-center gap-2.5">
                             <div className="w-8 h-8 rounded-lg bg-[#FFF0F5] flex items-center justify-center text-base shrink-0">
                               🌸
                             </div>
                             <div>
-                              <div className="font-bold text-[11.5px] text-[#2B1F11]">인연 받은 사람</div>
+                              <div className="font-bold text-[11.5px] text-[#2B1F11]">
+                                <span className="text-[#B8325E] font-extrabold mr-1">(신규)</span>인연 받은 사람
+                              </div>
                               <div className="text-[10px] text-[#7A6B58]">상대방이 소원등 켰을 경우</div>
                             </div>
                           </div>
