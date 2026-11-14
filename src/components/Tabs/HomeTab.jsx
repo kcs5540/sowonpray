@@ -1294,7 +1294,7 @@ export default function HomeTab({
                           <span>어떻게 공덕을 쌓나요?</span>
                         </span>
                         <span className="text-[10px] text-[#8C6D15] font-bold bg-[#F4E8CB] px-2 py-0.5 rounded-full">
-                          하루 최대 3,840 공덕
+                          매일 주요 3대 정진 각 1,000 공덕
                         </span>
                       </div>
 
@@ -1303,15 +1303,15 @@ export default function HomeTab({
                         <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-[#E6DEC8] shadow-xs">
                           <div className="flex items-center gap-2.5">
                             <div className="w-8 h-8 rounded-lg bg-[#FFF4D4] flex items-center justify-center text-base shrink-0">
-                              🙇
+                              🏛️
                             </div>
                             <div>
-                              <div className="font-bold text-[11.5px] text-[#2B1F11]">대웅전 참배 (절·목탁·염주)</div>
-                              <div className="text-[10px] text-[#7A6B58]">절 1배 · 목탁 1타 · 염주 1알 정진</div>
+                              <div className="font-bold text-[11.5px] text-[#2B1F11]">대웅전 참배</div>
+                              <div className="text-[10px] text-[#7A6B58]">들어갔다 나오면 회향 시 적립</div>
                             </div>
                           </div>
                           <span className="text-[11px] font-extrabold text-[#9A7418] shrink-0 bg-[#FFF9EC] px-2 py-1 rounded-lg border border-[#D4A024]/20">
-                            각 +10 공덕
+                            1일 1회 +1,000
                           </span>
                         </div>
 
@@ -1322,12 +1322,12 @@ export default function HomeTab({
                               🪔
                             </div>
                             <div>
-                              <div className="font-bold text-[11.5px] text-[#2B1F11]">소원등 켜기 (1일등·100일등)</div>
-                              <div className="text-[10px] text-[#7A6B58]">부처님 전 정성스런 등불 공양</div>
+                              <div className="font-bold text-[11.5px] text-[#2B1F11]">소원등 켜기</div>
+                              <div className="text-[10px] text-[#7A6B58]">1회 점등 시 정성 축원</div>
                             </div>
                           </div>
                           <span className="text-[11px] font-extrabold text-[#D9531E] shrink-0 bg-[#FFF5EC] px-2 py-1 rounded-lg border border-[#D9531E]/20">
-                            1일 1회 +300
+                            1일 1회 +1,000
                           </span>
                         </div>
 
@@ -1338,12 +1338,12 @@ export default function HomeTab({
                               ✍️
                             </div>
                             <div>
-                              <div className="font-bold text-[11.5px] text-[#2B1F11]">한줄 사경 (지혜 정진)</div>
-                              <div className="text-[10px] text-[#7A6B58]">부처님 말씀 1문장 필사 정진</div>
+                              <div className="font-bold text-[11.5px] text-[#2B1F11]">한줄 사경</div>
+                              <div className="text-[10px] text-[#7A6B58]">1회 사경 정진 시 원만 회향</div>
                             </div>
                           </div>
                           <span className="text-[11px] font-extrabold text-[#785C10] shrink-0 bg-[#FBF9F0] px-2 py-1 rounded-lg border border-[#785C10]/20">
-                            회당 +100 (최대 3회)
+                            1일 1회 +1,000
                           </span>
                         </div>
                       </div>

@@ -594,19 +594,20 @@ export default function ProfileTab({
                         {/* 2. ✨ 매일 5대 일일 신행(信行) 정진 공덕 개편 */}
                         {(() => {
                           const uCode = currentUser?.code || 'guest'
+                          const sanctuaryInfo = getDailyMeritInfo('sanctuary', uCode)
+                          const lanternInfo = getDailyMeritInfo('lantern', uCode)
+                          const sutraInfo = getDailyMeritInfo('sutra', uCode)
                           const bowInfo = getDailyMeritInfo('bow', uCode)
                           const moktakInfo = getDailyMeritInfo('moktak', uCode)
                           const yeomjuInfo = getDailyMeritInfo('yeomju', uCode)
-                          const sutraInfo = getDailyMeritInfo('sutra', uCode)
-                          const lanternInfo = getDailyMeritInfo('lantern', uCode)
-                          const todayTotalDaily = bowInfo.currentPoints + moktakInfo.currentPoints + yeomjuInfo.currentPoints + sutraInfo.currentPoints + lanternInfo.currentPoints
+                          const todayTotalDaily = sanctuaryInfo.currentPoints + lanternInfo.currentPoints + sutraInfo.currentPoints + bowInfo.currentPoints + moktakInfo.currentPoints + yeomjuInfo.currentPoints
 
                           return (
                             <div className="space-y-1.5 p-2.5 sm:p-3 rounded-2xl bg-gradient-to-b from-[#F5D061]/10 to-black/30 border border-[#F5D061]/40 shadow-sm">
                               <div className="flex items-center justify-between pb-1.5 border-b border-[#F5D061]/20 px-0.5">
                                 <div className="text-xs font-extrabold text-[#FFE58A] flex items-center gap-1">
                                   <span>✨</span>
-                                  <span>매일 5대 일일 신행 공덕</span>
+                                  <span>매일 신행 정진 공덕</span>
                                 </div>
                                 <span className="text-[10px] font-black text-emerald-300 bg-emerald-500/20 border border-emerald-400/40 px-2 py-0.5 rounded-full shrink-0">
                                   오늘 +{todayTotalDaily.toLocaleString()} 공덕
@@ -614,7 +615,40 @@ export default function ProfileTab({
                               </div>
 
                               <div className="space-y-1.5 pt-0.5">
-                                {/* 신행 1) 소원등 점등: 1일 1회 300 공덕 (최대 300 공덕) */}
+                                {/* 신행 1) 대웅전 참배: 들어갔다 나오면 1,000 공덕 (최대 1,000 공덕) */}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (onOpenSanctuary) onOpenSanctuary()
+                                  }}
+                                  className="w-full px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
+                                  title="대웅전 참배하러 가기"
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-base shrink-0">🏛️</span>
+                                      <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                        대웅전 참배
+                                      </span>
+                                    </div>
+                                    <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
+                                      오늘 {sanctuaryInfo.currentCount}/1회
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center justify-between mt-1 text-[11px]">
+                                    <span className="text-[#A89C8E]">
+                                      들어갔다 나오면 1,000 공덕{' '}
+                                      <span className="text-emerald-400 font-semibold">
+                                        (최대 1,000 공덕)
+                                      </span>
+                                    </span>
+                                    <span className="font-mono font-bold text-emerald-300">
+                                      +{sanctuaryInfo.currentPoints.toLocaleString()} / 1,000 공덕
+                                    </span>
+                                  </div>
+                                </button>
+
+                                {/* 신행 2) 소원등 점등: 1일 1회 1,000 공덕 (최대 1,000 공덕) */}
                                 <button
                                   type="button"
                                   onClick={() => {
@@ -637,18 +671,18 @@ export default function ProfileTab({
                                   </div>
                                   <div className="flex items-center justify-between mt-1 text-[11px]">
                                     <span className="text-[#A89C8E]">
-                                      1일 1회 300 공덕{' '}
+                                      1회 점등 시 1,000 공덕{' '}
                                       <span className="text-emerald-400 font-semibold">
-                                        (최대 300 공덕)
+                                        (최대 1,000 공덕)
                                       </span>
                                     </span>
                                     <span className="font-mono font-bold text-emerald-300">
-                                      +{lanternInfo.currentPoints.toLocaleString()} / 300 공덕
+                                      +{lanternInfo.currentPoints.toLocaleString()} / 1,000 공덕
                                     </span>
                                   </div>
                                 </button>
 
-                                {/* 신행 2) 한줄사경 정진: 1회 100 공덕 (1일 최대 3회 = 300 공덕) */}
+                                {/* 신행 3) 한줄사경 정진: 1회 1,000 공덕 (최대 1,000 공덕) */}
                                 <button
                                   type="button"
                                   onClick={() => {
@@ -666,18 +700,18 @@ export default function ProfileTab({
                                       </span>
                                     </div>
                                     <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
-                                      오늘 {sutraInfo.currentCount}/3회
+                                      오늘 {sutraInfo.currentCount}/1회
                                     </span>
                                   </div>
                                   <div className="flex items-center justify-between mt-1 text-[11px]">
                                     <span className="text-[#A89C8E]">
-                                      1회 100 공덕{' '}
+                                      1회 사경 시 1,000 공덕{' '}
                                       <span className="text-emerald-400 font-semibold">
-                                        (최대 300 공덕)
+                                        (최대 1,000 공덕)
                                       </span>
                                     </span>
                                     <span className="font-mono font-bold text-emerald-300">
-                                      +{sutraInfo.currentPoints.toLocaleString()} / 300 공덕
+                                      +{sutraInfo.currentPoints.toLocaleString()} / 1,000 공덕
                                     </span>
                                   </div>
                                 </button>

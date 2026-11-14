@@ -5406,7 +5406,7 @@ function formatRelativeOrDate(dateStr) {
           bank_name: '',
           bank_account: '',
           account_holder: '',
-          merit_count: isBulsaReg ? 0 : 300,
+          merit_count: isBulsaReg ? 0 : 1000,
           believers_count: 0,
           wipae_count: 0,
           extra_data: { registered_via: isBulsaReg ? 'bulsa_consultation' : 'wish_lantern' },
@@ -5417,14 +5417,14 @@ function formatRelativeOrDate(dateStr) {
         setMembers((prev) => [newBeliever, ...prev])
         try {
           if (!isBulsaReg) {
-            localStorage.setItem(`sowonpray_merit_${newBeliever.code}`, '300')
+            localStorage.setItem(`sowonpray_merit_${newBeliever.code}`, '1000')
           }
         } catch (e) {}
         if (supabase) {
           supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
         }
       } else {
-        // 기존 회원이 소원등을 올릴 때도 공덕 (1일 1회 최대 300) 적립
+        // 기존 회원이 소원등을 올릴 때도 공덕 (1일 1회 최대 1,000) 적립
         const meritRes = awardMerit('lantern', existingPrayerMember.code, 1)
         const nextMerit = (existingPrayerMember.merit_count || 0) + (meritRes.earnedPoints || 0)
         const updatedMember = {
@@ -5743,7 +5743,7 @@ function formatRelativeOrDate(dateStr) {
   }
 
   const addSutraMerit = () => {
-    // 한줄사경: 1회 100 공덕 (1일 최대 300 공덕)
+    // 한줄사경: 1회 1,000 공덕 (1일 한도 1,000)
     const userCode = currentUser?.code || 'guest'
     const meritRes = awardMerit('sutra', userCode, 1)
 
@@ -5759,7 +5759,7 @@ function formatRelativeOrDate(dateStr) {
         todayCount = Number(localStorage.getItem(dailyKey)) || 0
       } catch (e) {}
 
-      const isEligible = todayCount < 3
+      const isEligible = todayCount < 1
       const nextDaily = todayCount + 1
       try {
         localStorage.setItem(dailyKey, String(nextDaily))
@@ -5809,9 +5809,9 @@ function formatRelativeOrDate(dateStr) {
     }
 
     if (meritRes.earnedPoints > 0) {
-      showToast(`✍️ 한줄사경 원만 회향! (+100 공덕 적립 | 오늘 ${meritRes.currentDailyPoints}/300 공덕) 🙏`)
+      showToast(`✍️ 한줄사경 원만 회향! (+1,000 공덕 적립) 🙏`)
     } else {
-      showToast('✍️ 한줄사경 회향! (오늘 사경 공덕 최대 300 공덕 달성 완료) 🙏')
+      showToast('✍️ 한줄사경 회향! (오늘 사경 공덕 1,000 공덕 달성 완료) 🙏')
     }
   }
 
@@ -11553,7 +11553,15 @@ function formatRelativeOrDate(dateStr) {
         {/* 🍃 [산사 힐링 감성] 제주 소원사 고요 법당 (멍스테이) 독립 모달 */}
         <SowonsaSanctuaryModal
           isOpen={showSanctuaryModal}
-          onClose={() => setShowSanctuaryModal(false)}
+          onClose={() => {
+            const userCode = currentUser?.code || 'guest'
+            const meritRes = awardMerit('sanctuary', userCode, 1)
+            if (meritRes.earnedPoints > 0) {
+              addMerit(meritRes.earnedPoints)
+              showToast('🏛️ 대웅전 참배 회향! (+1,000 공덕 적립) 🙏')
+            }
+            setShowSanctuaryModal(false)
+          }}
           currentUser={currentUser}
           onAddMerit={addMerit}
           handleShareSanctuary={handleShareSanctuary}

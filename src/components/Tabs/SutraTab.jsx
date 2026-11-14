@@ -91,8 +91,8 @@ export default function SutraTab({
               <div className="flex items-center justify-between gap-2 mt-3 pt-2.5 border-t border-white/10 text-[11.5px] flex-wrap">
                 <span className="text-[#BFB6AA]">오늘 사경 공덕:</span>
                 <span className="px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 border border-[#F5D061]/40 text-[#F5D061] font-bold inline-flex items-center gap-1.5">
-                  <span>✨ {userMeritReward.todaySutraRewardCount} / 3회 적립</span>
-                  <span>({(userMeritReward.todaySutraRewardCount * 100).toLocaleString()} / 300 공덕)</span>
+                  <span>✨ {Math.min(1, userMeritReward.todaySutraRewardCount)} / 1회 적립</span>
+                  <span>({(Math.min(1, userMeritReward.todaySutraRewardCount) * 1000).toLocaleString()} / 1,000 공덕)</span>
                 </span>
               </div>
             </div>

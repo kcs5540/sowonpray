@@ -473,16 +473,34 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
     }
   }, [isOpen])
 
+  // 🏛️ 대웅전 참배 회향 공덕 적립 (들어갔다 나오면 1회 1,000 공덕 · 1일 한도 1,000)
+  const handleAwardSanctuaryMerit = () => {
+    const userCode = currentUser?.code || 'guest'
+    const meritRes = awardMerit('sanctuary', userCode, 1)
+    if (meritRes.earnedPoints > 0) {
+      if (onAddMerit) onAddMerit(meritRes.earnedPoints)
+      if (showToast) {
+        showToast('🏛️ 대웅전 참배 회향! (+1,000 공덕 적립 완료) 🙏')
+      }
+    }
+  }
+
+  const triggerClose = () => {
+    handleAwardSanctuaryMerit()
+    onClose()
+  }
+
   // 🚪 대웅전 하직 퇴당 시퀀스 (부처님 전 하직 합장 반배 후 공경히 물러남)
   const handleExitWithBow = (e) => {
     if (e) e.stopPropagation()
+    handleAwardSanctuaryMerit()
     if (isExiting) {
       onClose()
       return
     }
     setIsExiting(true)
     setEntranceStep('exiting')
-    showActionToast('🙏 부처님 전 하직 합장 반배를 올립니다')
+    showActionToast('🙏 부처님 전 하직 합장 반배를 올립니다 (+1,000 공덕 회향)')
 
     // 1.1초 후: 반배를 마치고 부처님을 마주보며 조용히 뒤로 물러나는 단계로 전환
     setTimeout(() => {
@@ -501,7 +519,7 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
 
   return (
     <div 
-      onClick={onClose}
+      onClick={triggerClose}
       className="fixed inset-0 z-[100] bg-black/90 flex justify-center items-center overflow-hidden animate-fadeIn select-none"
     >
       <div 
