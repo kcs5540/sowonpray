@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react'
+import React, { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react'
 import { createPortal } from 'react-dom'
 import {
   Flame,
@@ -79,8 +79,14 @@ import {
   notifyPrayerCancellation,
   notifyVisitReservation,
 } from './lib/smsNotifier'
-import AdminERPView from './components/Admin/AdminERPView'
-import MobileAdminView from './components/Admin/MobileAdminView'
+// 관리자 전용 화면은 필요할 때만 불러옵니다 (일반 신도 앱 첫 로딩 경량화)
+const AdminERPView = lazy(() => import('./components/Admin/AdminERPView'))
+const MobileAdminView = lazy(() => import('./components/Admin/MobileAdminView'))
+const AdminLoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center bg-[#12100E] text-[#F5D061] text-sm font-semibold">
+    관리 화면을 불러오는 중입니다...
+  </div>
+)
 import MemberDetailModal from './components/Admin/MemberDetailModal'
 import {
   SettlementModal,
@@ -7199,6 +7205,7 @@ function formatRelativeOrDate(dateStr) {
   // =========================================================================
   if (isStandaloneAdmin) {
     return (
+      <Suspense fallback={<AdminLoadingFallback />}>
       <AdminERPView
         currentUser={currentUser}
         isMasterOrTempleAdmin={isMasterOrTempleAdmin}
@@ -7329,6 +7336,7 @@ function formatRelativeOrDate(dateStr) {
         setActiveBelieverCode={setActiveBelieverCode}
         setCurrentUserCode={setCurrentUserCode}
       />
+      </Suspense>
     )
   }
 
@@ -7336,6 +7344,7 @@ function formatRelativeOrDate(dateStr) {
     <div className={`min-h-screen bg-[#12100E] flex justify-center selection:bg-[#C59B27] selection:text-white w-full max-w-full overflow-x-clip ${activeTab === 'admin' ? 'p-0 sm:p-4' : ''}`}>
       {/* 📱 스마트폰 전용 모바일 종무 관제창 (상담, 방문예약, 신도조회 1초 처리) */}
       {showMobileAdmin && (
+        <Suspense fallback={<AdminLoadingFallback />}>
         <MobileAdminView
           currentUser={currentUser}
           isMasterOrTempleAdmin={isMasterOrTempleAdmin}
@@ -7350,6 +7359,7 @@ function formatRelativeOrDate(dateStr) {
           onClose={() => setShowMobileAdmin(false)}
           showToast={showToast}
         />
+        </Suspense>
       )}
 
       {/* 모바일 앱 컨테이너 (일반 탭: 480px, 관리자 탭: PC에서 최대 1280px 와이드 데스크톱 뷰) */}
