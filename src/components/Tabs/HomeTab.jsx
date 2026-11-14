@@ -1036,19 +1036,19 @@ export default function HomeTab({
                       <span>다가오는 사찰 주요 재일</span>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
                       {(upcomingJaeils || []).slice(0, 3).map((j) => (
                         <div
                           key={j.name}
-                          className={`p-2.5 rounded-xl border flex items-center justify-between sm:flex-col sm:items-start gap-1 select-none ${
+                          className={`p-2 sm:p-2.5 rounded-xl border flex flex-col items-center text-center select-none transition ${
                             j.isToday
                               ? 'bg-amber-500/10 border-amber-500/40 text-amber-900 shadow-xs'
                               : 'bg-[#FAF8F5] border-[#E8DFC9] text-[#2C251E]'
                           }`}
                         >
-                          <div className="min-w-0">
-                            <div className="text-xs font-bold truncate flex items-center gap-1.5">
-                              <span>{j.isToday ? '🔥' : '🗓️'}</span>
+                          <div className="w-full min-w-0">
+                            <div className="text-[11px] sm:text-xs font-bold truncate flex items-center justify-center gap-1">
+                              <span className="shrink-0">{j.isToday ? '🔥' : '🗓️'}</span>
                               <span className="truncate">{j.name}</span>
                             </div>
                             <div className="text-[10px] text-[#8C7A5B] mt-0.5">
@@ -1056,10 +1056,10 @@ export default function HomeTab({
                             </div>
                           </div>
                           <span
-                            className={`text-xs font-black px-2 py-0.5 rounded-md shrink-0 font-mono ${
+                            className={`mt-1.5 text-[10.5px] sm:text-xs font-black px-2 py-0.5 rounded-md shrink-0 font-mono ${
                               j.isToday
-                                ? 'bg-amber-500 text-white animate-pulse'
-                                : 'bg-[#EFE7D6] text-[#7D6320]'
+                                ? 'bg-amber-500 text-white animate-pulse shadow-xs'
+                                : 'bg-[#EFE7D6] text-[#7D6320] border border-[#DDD3BF]'
                             }`}
                           >
                             {j.ddayText}
