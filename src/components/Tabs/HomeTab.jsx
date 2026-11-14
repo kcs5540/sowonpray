@@ -256,13 +256,18 @@ export default function HomeTab({
 
             {/* 👑 [시니어 맞춤 6대 핵심 비주얼 퀵 메뉴판] - 아이콘 세로 위치 및 텍스트 베이스라인 완전 일치 정돈 */}
             <section className="bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#E6DEC8]">
-              {/* 단정하고 맑은 한 줄 타이틀 + 우측 공덕 안내 팝업 버튼 (군더더기 없는 절제의 미) */}
+              {/* 단정하고 맑은 타이틀 + 서브 문구 + 우측 공덕 안내 팝업 버튼 */}
               <div className="flex items-center justify-between gap-2 mb-2.5 px-0.5">
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <GoldenLotusIcon className="w-[18px] h-[18px] sm:w-[19px] sm:h-[19px] shrink-0" />
-                  <h3 className="font-sans text-[14px] sm:text-[15px] font-bold text-[#2B1F11] tracking-tight truncate">
-                    매일 기도와 공덕 쌓기
-                  </h3>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <GoldenLotusIcon className="w-[18px] h-[18px] sm:w-[19px] sm:h-[19px] shrink-0" />
+                    <h3 className="font-sans text-[14.5px] sm:text-[15.5px] font-bold text-[#2B1F11] tracking-tight">
+                      오늘의 공덕
+                    </h3>
+                  </div>
+                  <p className="text-[11px] sm:text-[11.5px] text-[#8E8475] font-normal mt-0.5 pl-[24px] tracking-tight">
+                    작은 기도와 실천이 모여 큰 공덕이 됩니다
+                  </p>
                 </div>
                 <button
                   type="button"
