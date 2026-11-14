@@ -759,13 +759,18 @@ export default function HomeTab({
                       <label className="text-xs text-[#E8DFD1] font-bold whitespace-nowrap">
                         방문 예정일
                       </label>
-                      <input
-                        type="date"
-                        style={{ colorScheme: 'dark' }}
-                        value={visitDate}
-                        onChange={(e) => setVisitDate(e.target.value)}
-                        className="date-input-gold block w-full max-w-full min-w-0 box-border px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061] cursor-pointer"
-                      />
+                      <div className="relative flex items-center w-full">
+                        <input
+                          type="date"
+                          style={{ colorScheme: 'dark' }}
+                          value={visitDate}
+                          onChange={(e) => setVisitDate(e.target.value)}
+                          className="date-input-custom-wrapper block w-full max-w-full min-w-0 box-border pl-2.5 pr-9 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061] cursor-pointer"
+                        />
+                        <div className="absolute right-2.5 pointer-events-none flex items-center justify-center">
+                          <Calendar className="w-4 h-4 text-[#F5D061] drop-shadow-[0_0_6px_rgba(245,208,97,0.85)]" />
+                        </div>
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-[80px_minmax(0,1fr)] items-center gap-2 w-full">

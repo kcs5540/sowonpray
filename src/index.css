@@ -417,3 +417,15 @@ p, span, h1, h2, h3, h4, h5, h6, label, button {
   opacity: 1;
   filter: invert(0.9) sepia(100%) saturate(1200%) hue-rotate(5deg);
 }
+
+/* date-input-custom-wrapper: 브라우저 기본의 흐릿한 아이콘을 투명하게 처리하고 황금빛 캘린더 아이콘 노출 */
+.date-input-custom-wrapper::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 10;
+}
