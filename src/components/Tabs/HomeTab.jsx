@@ -1028,24 +1028,17 @@ export default function HomeTab({
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                       {(upcomingJaeils || []).slice(0, 3).map((j) => (
-                        <button
+                        <div
                           key={j.name}
-                          type="button"
-                          onClick={() => {
-                            playSingingBowlSound()
-                            setActiveTab('lantern')
-                            window.scrollTo({ top: 0, behavior: 'smooth' })
-                          }}
-                          className={`p-2.5 rounded-xl border text-left transition cursor-pointer active:scale-95 flex items-center justify-between sm:flex-col sm:items-start gap-1 ${
+                          className={`p-2.5 rounded-xl border flex items-center justify-between sm:flex-col sm:items-start gap-1 select-none ${
                             j.isToday
                               ? 'bg-amber-500/10 border-amber-500/40 text-amber-900 shadow-xs'
-                              : 'bg-[#FAF8F5] hover:bg-[#F5EFE4] border-[#E8DFC9] text-[#2C251E]'
+                              : 'bg-[#FAF8F5] border-[#E8DFC9] text-[#2C251E]'
                           }`}
-                          title={`${j.name} 소원등 올리기`}
                         >
                           <div className="min-w-0">
-                            <div className="text-xs font-bold truncate flex items-center gap-1">
-                              <span>{j.isToday ? '🔥' : '🪔'}</span>
+                            <div className="text-xs font-bold truncate flex items-center gap-1.5">
+                              <span>{j.isToday ? '🔥' : '🗓️'}</span>
                               <span className="truncate">{j.name}</span>
                             </div>
                             <div className="text-[10px] text-[#8C7A5B] mt-0.5">
@@ -1061,7 +1054,7 @@ export default function HomeTab({
                           >
                             {j.ddayText}
                           </span>
-                        </button>
+                        </div>
                       ))}
                     </div>
                   </div>
