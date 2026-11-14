@@ -720,17 +720,17 @@ export default function HomeTab({
                 </div>
               </div>
 
-              {/* 예약창 열기/닫기 버튼 */}
+              {/* 예약창 열기/닫기 버튼 (온화하고 옅은 크림 골드 톤으로 화사하게 개선) */}
               <button
                 type="button"
                 onClick={() => setShowVisitForm((prev) => !prev)}
-                className="w-full py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#26201A] via-[#332A21] to-[#26201A] text-[#F5D061] border border-[#C59B27] font-extrabold text-xs shadow hover:brightness-110 transition flex items-center justify-between gap-1.5 cursor-pointer"
+                className="w-full py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#FFFDF9] via-[#FFF5DE] to-[#FFFDF9] text-[#2B1F11] border-2 border-[#D4A024]/70 hover:border-[#D4A024] font-extrabold text-xs shadow-sm hover:shadow transition flex items-center justify-between gap-1.5 cursor-pointer active:scale-[0.99]"
               >
-                <span className="flex items-center gap-1.5 whitespace-nowrap">
-                  <Calendar className="w-4 h-4 text-[#F5D061] shrink-0" />
-                  <span className="text-[#FAF8F5]">사찰 방문 · 차담 예약</span>
+                <span className="flex items-center gap-2 whitespace-nowrap">
+                  <Calendar className="w-4 h-4 text-[#C59B27] shrink-0" />
+                  <span className="text-[#2B1F11] font-bold text-xs sm:text-[13px]">사찰 방문 · 차담 예약</span>
                 </span>
-                <span className="px-2.5 py-1 rounded-lg bg-[#F5D061] text-[#1B1815] text-[10.5px] font-extrabold whitespace-nowrap shrink-0">
+                <span className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#F5D061] to-[#E5BD45] text-[#231A0E] text-[10.5px] font-black whitespace-nowrap shrink-0 shadow-xs">
                   {showVisitForm ? '창 닫기 ▲' : '창 열기 ▼'}
                 </span>
               </button>
