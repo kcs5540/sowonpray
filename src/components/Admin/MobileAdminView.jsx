@@ -68,27 +68,7 @@ export default function MobileAdminView({
   const [noticeCategory, setNoticeCategory] = useState('법회')
   const [noticeTitle, setNoticeTitle] = useState('')
   const [noticeContent, setNoticeContent] = useState('')
-  const [noticeTargetTab, setNoticeTargetTab] = useState('lantern')
-  const [noticeCtaLabel, setNoticeCtaLabel] = useState('소원등 켜고 축원 올리기 ▶')
   const [previewingNotice, setPreviewingNotice] = useState(null)
-
-  // 공지 분류 변경 시 바로가기 탭 및 버튼 문구 자동 세팅
-  const handleSelectNoticeCategory = (cat) => {
-    setNoticeCategory(cat)
-    if (cat === '법회') {
-      setNoticeTargetTab('lantern')
-      setNoticeCtaLabel('소원등 켜고 축원 올리기 ▶')
-    } else if (cat === '불사') {
-      setNoticeTargetTab('bulsa')
-      setNoticeCtaLabel('소원 기와 · 위패 불사 보기 ▶')
-    } else if (cat === '안내') {
-      setNoticeTargetTab('home')
-      setNoticeCtaLabel('도량 참배 · 차담 예약하기 ▶')
-    } else {
-      setNoticeTargetTab('home')
-      setNoticeCtaLabel('자세히 보기 ▶')
-    }
-  }
 
   // 새 공지사항 등록
   const handleCreateNotice = (e) => {
@@ -113,8 +93,6 @@ export default function MobileAdminView({
       title: noticeTitle.trim(),
       summary: noticeContent.trim().slice(0, 70) + (noticeContent.trim().length > 70 ? '...' : ''),
       content: noticeContent.trim(),
-      targetTab: noticeTargetTab,
-      ctaLabel: noticeCtaLabel.trim() || '자세히 보기 ▶',
       isPinned: false,
     }
 
@@ -1781,33 +1759,6 @@ ${m.name} 불자님, 안녕하십니까.`
                     />
                   </div>
 
-                  {/* 4) 바로가기 탭 및 버튼 문구 */}
-                  <div className="grid grid-cols-2 gap-2 bg-[#FAF8F5] p-2.5 rounded-xl border border-[#EDE7D9]">
-                    <div>
-                      <label className="block text-[#524436] font-bold mb-1 text-[11px]">클릭 시 이동할 탭</label>
-                      <select
-                        value={noticeTargetTab}
-                        onChange={(e) => setNoticeTargetTab(e.target.value)}
-                        className="w-full bg-white border border-[#DDD3BF] rounded-lg px-2 py-1.5 text-xs text-[#2E2214] font-bold focus:border-[#C59B27] focus:outline-none cursor-pointer"
-                      >
-                        <option value="lantern">소원등 켜기 탭</option>
-                        <option value="bulsa">불사 안내 탭</option>
-                        <option value="home">신행홈 (참배·차담)</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-[#524436] font-bold mb-1 text-[11px]">바로가기 버튼 문구</label>
-                      <input
-                        type="text"
-                        value={noticeCtaLabel}
-                        onChange={(e) => setNoticeCtaLabel(e.target.value)}
-                        placeholder="버튼 문구"
-                        className="w-full bg-white border border-[#DDD3BF] rounded-lg px-2 py-1.5 text-xs text-[#2E2214] font-bold focus:border-[#C59B27] focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
                   {/* 등록 버튼 */}
                   <div className="flex items-center gap-2 pt-1">
                     <button
@@ -1892,11 +1843,10 @@ ${m.name} 불자님, 안녕하십니까.`
                         {notice.summary || notice.content}
                       </p>
 
-                      {/* 카드 하단: 바로가기 정보 및 미리보기 버튼 */}
+                      {/* 카드 하단: 등록 순서/ID 및 미리보기 버튼 */}
                       <div className="flex items-center justify-between pt-1 border-t border-[#F5F2EA] text-[11px]">
-                        <span className="text-[#8A6510] font-bold flex items-center gap-1">
-                          <span>🔗</span>
-                          <span>{notice.ctaLabel || '바로가기 연동'}</span>
+                        <span className="text-[#8C7D6B] font-mono">
+                          #{notice.id ? String(notice.id).replace('notice-', '') : idx + 1}
                         </span>
 
                         <button

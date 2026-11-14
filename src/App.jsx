@@ -9790,27 +9790,13 @@ function formatRelativeOrDate(dateStr) {
               </div>
 
               {/* 모달 하단 액션 버튼 바 */}
-              <div className="p-4 bg-[#F2ECE1] border-t border-[#DDD3C1] shrink-0 space-y-2">
-                {selectedNotice.targetTab && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      playSingingBowlSound()
-                      setShowNoticeModal(false)
-                      setActiveTab(selectedNotice.targetTab)
-                      window.scrollTo({ top: 0, behavior: 'smooth' })
-                    }}
-                    className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-extrabold text-xs shadow-md hover:brightness-105 active:scale-95 transition flex items-center justify-center gap-1.5"
-                  >
-                    <span>{selectedNotice.ctaLabel || '관련 정진 바로가기 ▶'}</span>
-                  </button>
-                )}
+              <div className="p-4 bg-[#F2ECE1] border-t border-[#DDD3C1] shrink-0">
                 <button
                   type="button"
                   onClick={() => setShowNoticeModal(false)}
-                  className="w-full py-2.5 rounded-xl bg-white hover:bg-[#FAF8F5] text-[#5C5042] border border-[#DDD3C1] font-bold text-xs transition active:scale-95"
+                  className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#2A231D] to-[#1E1813] hover:from-[#383028] hover:to-[#2A231D] text-[#F5D061] border border-[#C59B27]/40 font-bold text-xs shadow-md transition active:scale-95 cursor-pointer flex items-center justify-center gap-1"
                 >
-                  확인 및 닫기
+                  <span>확인 및 닫기</span>
                 </button>
               </div>
             </div>
