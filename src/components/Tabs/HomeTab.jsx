@@ -349,47 +349,6 @@ export default function HomeTab({
               </div>
             </section>
 
-            
-            {/* 🍃 [산사 Sansa 템플 감성] 제주 소원사 3D 고요 법당 쉼터 배너 */}
-            <div 
-              onClick={() => {
-                playSingingBowlSound()
-                if (setShowSanctuaryModal) setShowSanctuaryModal(true)
-              }}
-              className="rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-[#1F1914] via-[#2D2319] to-[#1F1914] text-white border-2 border-[#D4AF37]/60 shadow-lg cursor-pointer hover:border-[#F5D061] transition active:scale-[0.99] relative overflow-hidden group"
-            >
-              <div 
-                className="absolute inset-0 bg-cover bg-center opacity-20 group-hover:scale-105 transition-transform duration-700 pointer-events-none"
-                style={{ backgroundImage: "url('/images/sowonsa_daewoongjeon_altar_front.jpg')" }}
-              />
-              <div className="relative z-10 flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 border border-[#F5D061]/40 text-[#F5D061] text-[10.5px] font-bold inline-flex items-center gap-1.5 whitespace-nowrap shrink-0">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
-                      <span>대웅전 참배</span>
-                    </span>
-                    <span className="text-[11px] text-[#C2B6A6] whitespace-nowrap truncate">잠깐 쉬어가도 괜찮아요 🍃</span>
-                  </div>
-                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white group-hover:text-[#F5D061] transition whitespace-nowrap tracking-tight">
-                    대웅전 참선 입장하기
-                  </h3>
-                  <p className="text-[11px] text-[#A89D8E] mt-0.5 truncate">
-                    도량 바람 소리 듣기 · 부처님 전 1배 올리기 · 목탁 치기
-                  </p>
-                </div>
-                <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-gradient-to-br from-[#FFF0B3] via-[#F5D061] to-[#C59B27] border-2 border-[#FFF8DC] flex flex-col items-center justify-center shadow-[0_4px_20px_rgba(245,208,97,0.45)] shrink-0 group-hover:scale-105 transition-all duration-300 p-1 relative overflow-hidden">
-                  <img 
-                    src="/images/icon_monk_meditate_front.png" 
-                    alt="3D 참선 동자승" 
-                    className="w-full h-full object-contain filter drop-shadow-[0_3px_8px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-300" 
-                  />
-                  {/* 황금빛 펄스 광채 */}
-                  <span className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/20 via-transparent to-white/30 pointer-events-none" />
-                </div>
-              </div>
-            </div>
-
             {/* 오늘의 부처님 말씀 + 사찰 음력 일진·재일 법력 안내 */}
             <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] relative overflow-hidden">
               {(() => {

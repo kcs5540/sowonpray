@@ -1601,6 +1601,22 @@ function LotusNavIcon({ className = 'w-5 h-5' }) {
   )
 }
 
+// 하단 네비게이션용 제주 소원사 대웅전 전각 심볼 (전통 사찰 기와 처마 곡선 + 법당 기둥 + 기단)
+function SanctuaryNavIcon({ className = 'w-5 h-5' }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 9.5C6.5 8 9.5 7 12 7C14.5 7 17.5 8 21 9.5" />
+      <path d="M12 3.8V7" />
+      <path d="M5 9.5L6.5 13H17.5L19 9.5" />
+      <path d="M7.5 13V19" />
+      <path d="M16.5 13V19" />
+      <path d="M12 13V19" />
+      <path d="M3 19H21" />
+      <path d="M5 21H19" />
+    </svg>
+  )
+}
+
 export default function App() {
   // 탭 상태: 'home' | 'lantern' | 'sutra' | 'bulsa' | 'agent' | 'admin' | 'profile' (경로 /lantern·/bulsa·/sutra 및 ?tab= 모두 지원)
   const [activeTab, setActiveTab] = useState(() => {
@@ -11545,10 +11561,11 @@ function formatRelativeOrDate(dateStr) {
           }}
         />
 
-        {/* 하단 네비게이션 바 (제주 소원사 정통 5대 신행 메뉴 바 - 황금 연꽃 & 사찰 전각 심볼) */}
-        <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#14110E]/95 backdrop-blur-md border-t border-[#C59B27]/40 px-2 py-1.5 flex items-center justify-around shadow-[0_-4px_25px_rgba(0,0,0,0.65)]">
+        {/* 하단 네비게이션 바 (제주 소원사 정통 신행 6대 메뉴 바 - 대웅전 참배 & 연등·사경·불사 통합) */}
+        <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#14110E]/95 backdrop-blur-md border-t border-[#C59B27]/40 px-1.5 py-1.5 flex items-center justify-around shadow-[0_-4px_25px_rgba(0,0,0,0.65)]">
           {[
             { id: 'home', label: '신행홈', icon: LotusNavIcon },
+            { id: 'sanctuary', label: '대웅전참배', icon: SanctuaryNavIcon },
             { id: 'lantern', label: '소원등켜기', icon: Flame },
             { id: 'sutra', label: '한줄사경', icon: BookOpen },
             { id: 'bulsa', label: '불사안내', icon: Landmark },
@@ -11556,15 +11573,24 @@ function formatRelativeOrDate(dateStr) {
           ].map((tab) => {
             const Icon = tab.icon
             const isActive =
-              activeTab === tab.id ||
-              (tab.id === 'profile' && (activeTab === 'agent' || activeTab === 'admin'))
+              (tab.id === 'sanctuary' && showSanctuaryModal) ||
+              (!showSanctuaryModal && (
+                activeTab === tab.id ||
+                (tab.id === 'profile' && (activeTab === 'agent' || activeTab === 'admin'))
+              ))
             return (
               <button
                 key={tab.id}
                 type="button"
                 onClick={() => {
-                  setActiveTab(tab.id)
-                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                  if (tab.id === 'sanctuary') {
+                    if (playSingingBowlSound) playSingingBowlSound()
+                    setShowSanctuaryModal(true)
+                  } else {
+                    if (showSanctuaryModal) setShowSanctuaryModal(false)
+                    setActiveTab(tab.id)
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }
                 }}
                 className={`flex-1 min-w-0 flex flex-col items-center justify-center py-1 px-0.5 transition-all outline-none focus:outline-none focus:ring-0 select-none cursor-pointer relative group ${
                   isActive ? 'text-[#F5D061]' : 'text-[#8E8475] hover:text-[#D6CEC2]'
@@ -11584,7 +11610,7 @@ function formatRelativeOrDate(dateStr) {
                   <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'stroke-[2.2px]' : 'stroke-[1.8px]'}`} />
                 </div>
                 <span
-                  className={`text-[10px] sm:text-[10.5px] mt-1 tracking-tight text-center truncate w-full transition-colors ${
+                  className={`text-[9.5px] sm:text-[10px] mt-1 tracking-tight text-center truncate w-full transition-colors ${
                     isActive ? 'font-black text-[#F5D061]' : 'font-medium text-[#8E8475]'
                   }`}
                 >
