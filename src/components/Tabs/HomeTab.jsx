@@ -1160,7 +1160,7 @@ export default function HomeTab({
                     },
                     {
                       name: '네이버',
-                      url: 'https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%86%8C%EC%9B%90%EC%82%AC',
+                      url: 'https://search.naver.com/search.naver?query=%EC%A0%9C%EC%A3%BC%EC%86%8C%EC%9B%90%EC%82%AC',
                       icon: (
                         <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#03C75A] flex items-center justify-center shadow-xs group-hover:scale-105 group-hover:shadow-sm transition-all">
                           <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white" aria-hidden="true">
