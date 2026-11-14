@@ -225,17 +225,17 @@ const INITIAL_NOTICES = [
     id: 'notice-3',
     category: '안내',
     badge: '도량참배',
-    title: '제주 소원사 도량 참배 및 스님 차담·점심공양 사전 예약 안내',
+    title: '제주 소원사 도량 참배 및 스님 차담 사전 예약 안내',
     date: '2026.10.20',
-    summary: '제주 여행이나 도량 참배로 방문하시는 불자님들께 따뜻한 차와 정성 어린 사찰 공양을 대접해 드립니다.',
-    content: `제주 소원사를 찾아주시는 불자님들을 따뜻하게 맞이하고자 차담 및 사찰공양 사전 예약제를 운영합니다.\n\n한라산의 청정한 정기가 감도는 제주 소원사 도량에 걸음하시어, 고요한 법당에서 부처님께 삼배 올리시고 지친 일상을 쉬어가시기 바랍니다.\n\n■ 사전 예약 혜택:\n  - 주지스님과의 따뜻한 1:1 신행 차담 및 인생 상담\n  - 정갈하고 건강한 제주 소원사 사찰 점심공양(식사) 대접\n  - 도량 전각 및 위패·삼성각 건립지 친절 안내\n\n공양 준비와 스님 일정 조율을 위해 방문 하루 전 모바일 법당 또는 종무소(010-4912-1083)로 편안하게 예약해 주시기 바랍니다.`,
-    targetTab: 'bulsa',
+    summary: '제주 여행이나 도량 참배로 방문하시는 불자님들께 따뜻한 차와 정성 어린 환대를 전합니다.',
+    content: `제주 소원사를 찾아주시는 불자님들을 따뜻하게 맞이하고자 도량 참배 및 스님 차담 사전 예약제를 운영합니다.\n\n한라산의 청정한 정기가 감도는 제주 소원사 도량에 걸음하시어, 고요한 법당에서 부처님께 삼배 올리시고 지친 일상을 쉬어가시기 바랍니다.\n\n■ 사전 예약 안내:\n  - 주지스님과의 따뜻한 1:1 신행 차담 및 인생 상담\n  - 고요한 대웅전 참배 및 목탁·108배 쉼터\n  - 도량 전각 및 위패·삼성각 건립지 친절 안내\n\n따뜻한 맞이와 스님 일정 조율을 위해 방문 전 모바일 법당 또는 종무소(010-4912-1083)로 편안하게 예약해 주시기 바랍니다.`,
+    targetTab: 'home',
     ctaLabel: '사찰 참배 · 차담 예약하기 ▶',
     isPinned: false,
   },
 ]
 
-// 사찰 방문 및 차담·공양 예약 시간대 & 목적 슬롯 (한눈에 선택하는 원터치 버튼)
+// 사찰 방문 및 차담 예약 시간대 & 목적 슬롯 (한눈에 선택하는 원터치 버튼)
 const VISIT_TIME_SLOTS = [
   {
     time: '오전 10:30',
@@ -245,10 +245,10 @@ const VISIT_TIME_SLOTS = [
   },
   {
     time: '오전 11:30',
-    fullTime: '오전 11:30 (점심공양)',
-    title: '점심공양 (식사)',
-    purpose: '따뜻한 차 & 사찰 공양(식사) 대접 예약',
-    badge: '인기',
+    fullTime: '오전 11:30 (사시예불·참배)',
+    title: '사시예불 · 참배',
+    purpose: '사시예불 동참 및 도량 참배',
+    badge: '추천',
   },
   {
     time: '오후 02:00',
@@ -5543,7 +5543,7 @@ function formatRelativeOrDate(dateStr) {
     const assignedAgentCode = currentUser?.parent_code || matchedMember?.parent_code || referralCode || '33065540'
     const finalMemo =
       visitMemo.trim() ||
-      `방문 인원 총 ${exactHeadcount}명 초하루·지장재일 따뜻한 차와 사찰 공양(${exactHeadcount}인분) 부탁드립니다.`
+      `방문 인원 총 ${exactHeadcount}명 도량 참배 및 따뜻한 차담 예약입니다.`
 
     playSingingBowlSound()
     setVisitHeadcount(exactHeadcount)
@@ -9314,9 +9314,9 @@ function formatRelativeOrDate(dateStr) {
           const vMemo =
             draft.memo ||
             visitMemo.trim() ||
-            `방문 인원 총 ${vCount}명 초하루·지장재일 따뜻한 차와 사찰 공양(${vCount}인분) 부탁드립니다.`
+            `방문 인원 총 ${vCount}명 도량 참배 및 따뜻한 차담 예약입니다.`
 
-          const visitShareMsg = `🍵 [제주 소원사 초하루 · 지장재일 공양 예약]\n${vName} 불자님 외 총 ${vCount}명 초하루·지장재일 사찰 공양 예약이 접수되었습니다.\n\n• 방문 일시: ${vDate} ${vTime}\n• 방문 인원: 총 ${vCount}명 (${vPurpose})\n• 요청 메모: "${vMemo}"\n• 종무소 문의: 064-805-2007 / 010-4912-1083`
+          const visitShareMsg = `🍵 [제주 소원사 사찰 방문 · 차담 예약]\n${vName} 불자님 외 총 ${vCount}명 사찰 방문 예약이 접수되었습니다.\n\n• 방문 일시: ${vDate} ${vTime}\n• 방문 인원: 총 ${vCount}명 (${vPurpose})\n• 요청 메모: "${vMemo}"\n• 종무소 문의: 064-805-2007 / 010-4912-1083`
 
           return (
             <div
@@ -9341,7 +9341,7 @@ function formatRelativeOrDate(dateStr) {
                 </div>
 
                 <h3 className="font-serif-kr text-lg sm:text-xl font-bold text-[#F5D061] leading-snug px-4">
-                  초하루 · 지장재일 사찰 공양 예약 확인
+                  제주 소원사 사찰 방문 · 차담 예약 확인
                 </h3>
 
                 <div className="inline-flex items-center gap-1.5 px-3 py-0.5 sm:py-1 rounded-full bg-[#F5D061]/15 border border-[#F5D061]/50 text-[11px] sm:text-xs font-bold text-[#F5D061]">

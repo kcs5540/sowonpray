@@ -698,7 +698,7 @@ export default function HomeTab({
               )}
             </section>
 
-            {/* 따뜻한 차와 사찰 공양(식사) 대접 온라인 사전예약 카드 (온화한 전통 한지 다실 톤으로 상단 먹색 플레이어와 명암 대비 조화) */}
+            {/* 따뜻한 차와 도량 참배 온라인 사전예약 카드 (온화한 전통 한지 다실 톤으로 상단 먹색 플레이어와 명암 대비 조화) */}
             <section id="visit-reserve-section" className="rounded-2xl bg-gradient-to-br from-[#FFFDF9] via-[#FAF3E3] to-[#F3E7CC] text-[#231F1C] p-4 sm:p-5 border-2 border-[#DEC896] shadow-md space-y-3.5 relative overflow-hidden">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#2A221A] to-[#1B1612] border border-[#C59B27] flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
@@ -706,15 +706,15 @@ export default function HomeTab({
                 </div>
                 <div className="flex-1 min-w-0">
                   <span className="inline-block text-[10.5px] text-[#8A6510] bg-[#FAF0D7] px-2 py-0.5 rounded-full border border-[#E5D399] font-extrabold break-keep">
-                    🍵 초하루 · 지장재일 사찰 공양(식사) 무료 대접
+                    🍵 도량 참배 · 스님과의 따뜻한 차담(茶談)
                   </span>
                   <h3 className="font-serif-kr text-base sm:text-lg font-extrabold text-[#1F1A14] mt-1 break-keep">
-                    “초하루 · 지장재일 법회에 따뜻한 공양을 나눕니다”
+                    “도량에서 따뜻한 차 한 잔 나누세요”
                   </h3>
                   <p className="text-xs text-[#574E42] mt-1 leading-relaxed break-keep">
                     제주 소원사는 모든 불자님께 언제나 열려 있습니다.{' '}
                     <strong className="text-[#7A5608] font-bold">
-                      매월 초하루(음력 1일) 및 지장재일(음력 18일) 정기 법회에 오시는 불자님들께 따뜻한 차와 정성스러운 사찰 공양(식사)을 무료로 대접해 드립니다. 원활한 공양 준비를 위해 전날까지 미리 예약해 주시기 바랍니다.
+                      도량 참배나 스님과의 편안한 신행 차담을 원하시는 불자님께서는 미리 방문 예약을 남겨주시면 정성껏 맞이해 드립니다.
                     </strong>
                   </p>
                 </div>
@@ -728,14 +728,14 @@ export default function HomeTab({
               >
                 <span className="flex items-center gap-1.5 whitespace-nowrap">
                   <Calendar className="w-4 h-4 text-[#F5D061] shrink-0" />
-                  <span className="text-[#FAF8F5]">초하루 · 지장재일 사찰 공양(식사) 예약</span>
+                  <span className="text-[#FAF8F5]">사찰 방문 · 차담 예약</span>
                 </span>
                 <span className="px-2.5 py-1 rounded-lg bg-[#F5D061] text-[#1B1815] text-[10.5px] font-extrabold whitespace-nowrap shrink-0">
                   {showVisitForm ? '창 닫기 ▲' : '창 열기 ▼'}
                 </span>
               </button>
 
-              {/* 버튼 클릭 시에만 펼쳐지는 온라인 전날 방문 & 식사(공양) 예약 폼 */}
+              {/* 버튼 클릭 시에만 펼쳐지는 온라인 사찰 방문 & 차담 예약 폼 */}
               {showVisitForm && (
                 <form
                   onSubmit={handleVisitSubmit}
@@ -744,7 +744,7 @@ export default function HomeTab({
                   <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2.5">
                     <div className="flex items-center gap-1.5 text-xs font-bold text-[#F5D061] whitespace-nowrap">
                       <Calendar className="w-3.5 h-3.5 shrink-0" />
-                      <span>초하루 · 지장재일 공양 예약 신청서</span>
+                      <span>사찰 방문 · 차담 예약 신청서</span>
                     </div>
                     {currentUser && (
                       <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/30 whitespace-nowrap shrink-0">
@@ -752,10 +752,6 @@ export default function HomeTab({
                       </span>
                     )}
                   </div>
-
-                  <p className="text-[11px] text-[#C5B39A] bg-[#26211C] p-2.5 rounded-lg border border-[#C59B27]/30 leading-relaxed break-keep">
-                    💡 사찰 공양(점심 식사)은 정기 법회일인 <strong className="text-[#F5D061]">초하루(음력 1일)</strong>와 <strong className="text-[#F5D061]">지장재일(음력 18일)</strong>에 공양간에서 정성껏 준비됩니다. (일반 도량 참배 및 스님 차담은 상시 가능)
-                  </p>
 
                   {/* 1열 가로줄 배치: 모든 입력/선택창 좌우 끝선 100% 칼정렬 (grid-cols-[80px_minmax(0,1fr)]) */}
                   <div className="space-y-2 w-full">
@@ -910,7 +906,7 @@ export default function HomeTab({
                         type="text"
                         value={visitMemo}
                         onChange={(e) => setVisitMemo(e.target.value)}
-                        placeholder={`예: 총 ${visitHeadcount || 1}명 점심 공양 부탁드립니다`}
+                        placeholder="예: 스님과 신행 차담 및 도량 참배 희망합니다"
                         className="block w-full max-w-full min-w-0 box-border px-2.5 py-2 rounded-lg bg-[#FFFDF9] border border-[#C59B27]/60 text-[#1B1815] text-xs"
                       />
                     </div>
@@ -921,7 +917,7 @@ export default function HomeTab({
                     className="w-full py-3 rounded-xl bg-[#F5D061] text-[#1B1815] font-extrabold text-xs shadow hover:brightness-105 transition flex items-center justify-center gap-1.5 whitespace-nowrap"
                   >
                     <CheckCircle2 className="w-4 h-4 shrink-0" />
-                    <span>총 {visitHeadcount || 1}명 초하루 · 지장재일 공양 예약 접수하기</span>
+                    <span>총 {visitHeadcount || 1}명 사찰 방문 · 차담 예약 접수하기</span>
                   </button>
                 </form>
               )}
