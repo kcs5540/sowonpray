@@ -324,8 +324,8 @@ export default function HomeTab({
                       소원등 켜기
                     </span>
                   </div>
-                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
-                    무료 소원등
+                  <span className="text-[9px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block tracking-tight">
+                    1일 무료 소원등
                   </span>
                 </button>
 
