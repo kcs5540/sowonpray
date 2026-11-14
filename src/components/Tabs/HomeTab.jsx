@@ -460,17 +460,17 @@ export default function HomeTab({
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-black text-[#F5D061] bg-[#F5D061]/15 px-1.5 py-0.2 rounded border border-[#F5D061]/30 whitespace-nowrap">
+                      <span className="text-[11px] sm:text-[11.5px] font-black text-[#F5D061] bg-[#F5D061]/15 px-2 py-0.5 rounded border border-[#F5D061]/30 whitespace-nowrap">
                         24시간 법음 쉼터
                       </span>
                       {isHealingPlaying && (
-                        <span className="flex items-center gap-1 text-[9.5px] text-[#4ADE80] font-bold">
+                        <span className="flex items-center gap-1 text-[10.5px] text-[#4ADE80] font-bold">
                           <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-ping" />
                           치유중
                         </span>
                       )}
                     </div>
-                    <div className="text-xs sm:text-sm font-bold text-white truncate mt-0.5 flex items-center gap-1">
+                    <div className="text-[13.5px] sm:text-[14.5px] font-bold text-white truncate mt-0.5 flex items-center gap-1">
                       <span>{HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.icon}</span>
                       <span className="truncate">
                         {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.title}
@@ -962,14 +962,14 @@ export default function HomeTab({
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 mb-0.5">
-                        <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#C59B27]/30 text-[#F5D061] border border-[#F5D061]/30 whitespace-nowrap">
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-[#C59B27]/30 text-[#F5D061] border border-[#F5D061]/30 whitespace-nowrap">
                           {curNotice.badge || curNotice.category || '도량소식'}
                         </span>
-                        <span className="text-[10px] text-[#A89D8E] font-mono whitespace-nowrap">
+                        <span className="text-[11px] text-[#A89D8E] font-mono whitespace-nowrap">
                           {curNotice.date}
                         </span>
                       </div>
-                      <p className="text-xs font-semibold text-[#FBF8F3] group-hover:text-[#F5D061] transition truncate">
+                      <p className="text-[13.5px] sm:text-[14px] font-bold text-[#FBF8F3] group-hover:text-[#F5D061] transition truncate">
                         {curNotice.title}
                       </p>
                     </div>
@@ -982,7 +982,7 @@ export default function HomeTab({
                         playMoktakSound()
                         setShowNoticeListModal(true)
                       }}
-                      className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#F5D061] border border-[#F5D061]/30 text-[10.5px] font-bold transition whitespace-nowrap cursor-pointer active:scale-95"
+                      className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#F5D061] border border-[#F5D061]/30 text-[11.5px] font-bold transition whitespace-nowrap cursor-pointer active:scale-95"
                     >
                       전체보기
                     </button>
