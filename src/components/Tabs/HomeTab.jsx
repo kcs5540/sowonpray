@@ -325,7 +325,7 @@ export default function HomeTab({
                     </span>
                   </div>
                   <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
-                    1일등 · 100일등
+                    무료 소원등
                   </span>
                 </button>
 
