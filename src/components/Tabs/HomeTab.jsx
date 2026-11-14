@@ -1066,7 +1066,7 @@ export default function HomeTab({
                     </div>
                   </div>
 
-                  {/* 원터치 소원등 켜기 바로가기 */}
+                  {/* 사시예불 축원 소원등 바로가기 */}
                   <button
                     type="button"
                     onClick={() => {
@@ -1074,10 +1074,11 @@ export default function HomeTab({
                       setActiveTab('lantern')
                       window.scrollTo({ top: 0, behavior: 'smooth' })
                     }}
-                    className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#F5D061] via-[#E5BF47] to-[#D4AF37] hover:brightness-105 active:scale-[0.99] text-[#1B1815] font-black text-xs flex items-center justify-center gap-1.5 transition shadow-sm cursor-pointer"
+                    className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#2C231A] via-[#3A2F22] to-[#241C15] hover:from-[#382E22] hover:to-[#2C2219] border border-[#D4A024]/50 active:scale-[0.99] text-[#F5D061] font-serif-kr font-bold text-xs flex items-center justify-center gap-1.5 transition shadow-xs cursor-pointer"
                   >
-                    <Flame className="w-3.5 h-3.5 fill-current text-[#7A5B0B]" />
-                    <span>내 소원등 켜고 사시예불 축원 올리기 ➜</span>
+                    <Flame className="w-3.5 h-3.5 text-[#F5D061]" />
+                    <span>사시예불 축원 소원등 올리기</span>
+                    <ChevronRight className="w-3.5 h-3.5 text-[#F5D061]/80" />
                   </button>
                 </section>
               )
