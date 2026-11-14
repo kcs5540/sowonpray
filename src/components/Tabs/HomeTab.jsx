@@ -720,20 +720,48 @@ export default function HomeTab({
                 </div>
               </div>
 
-              {/* 예약창 열기/닫기 버튼 (온화하고 옅은 크림 골드 톤으로 화사하게 개선) */}
-              <button
-                type="button"
-                onClick={() => setShowVisitForm((prev) => !prev)}
-                className="w-full py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#FFFDF9] via-[#FFF5DE] to-[#FFFDF9] text-[#2B1F11] border-2 border-[#D4A024]/70 hover:border-[#D4A024] font-extrabold text-xs shadow-sm hover:shadow transition flex items-center justify-between gap-1.5 cursor-pointer active:scale-[0.99]"
-              >
-                <span className="flex items-center gap-2 whitespace-nowrap">
-                  <Calendar className="w-4 h-4 text-[#C59B27] shrink-0" />
-                  <span className="text-[#2B1F11] font-bold text-xs sm:text-[13px]">사찰 방문 · 차담 예약</span>
-                </span>
-                <span className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#F5D061] to-[#E5BD45] text-[#231A0E] text-[10.5px] font-black whitespace-nowrap shrink-0 shadow-xs">
-                  {showVisitForm ? '창 닫기 ▲' : '창 열기 ▼'}
-                </span>
-              </button>
+              {/* 사찰 방문 예약 & 종무소 직통 전화 일체형 통합 위젯 */}
+              <div className="rounded-2xl bg-white border-2 border-[#D4A024]/60 shadow-xs overflow-hidden divide-y divide-[#EADFC7]/80">
+                {/* 상단: 온라인 사찰 방문 & 차담 예약 트리거 */}
+                <button
+                  type="button"
+                  onClick={() => setShowVisitForm((prev) => !prev)}
+                  className="w-full py-2.5 px-3.5 bg-gradient-to-r from-[#FFFDF9] via-[#FFF8E7] to-[#FFFDF9] hover:bg-[#FFF5DE] transition flex items-center justify-between gap-2 cursor-pointer active:scale-[0.995]"
+                >
+                  <span className="flex items-center gap-2 whitespace-nowrap min-w-0">
+                    <Calendar className="w-4 h-4 text-[#C59B27] shrink-0" />
+                    <span className="text-[#2B1F11] font-bold text-xs sm:text-[13px] truncate">
+                      사찰 방문 · 차담 예약
+                    </span>
+                  </span>
+                  <span className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#F5D061] to-[#E5BD45] text-[#231A0E] text-[10.5px] font-black whitespace-nowrap shrink-0 shadow-xs">
+                    {showVisitForm ? '창 닫기 ▲' : '창 열기 ▼'}
+                  </span>
+                </button>
+
+                {/* 하단: 종무소 직통 전화 바로연결 (1줄 정돈) */}
+                <div className="py-2 px-3 bg-[#FAF7F0] flex items-center justify-center gap-1.5 text-[11px] sm:text-xs text-[#3D352B] font-bold whitespace-nowrap overflow-hidden">
+                  <span className="inline-flex items-center gap-1 text-[#7A5608] font-extrabold shrink-0">
+                    <Phone className="w-3 h-3 text-[#B8860B] fill-current shrink-0" />
+                    <span>전화 예약:</span>
+                  </span>
+                  <a
+                    href="tel:064-805-2007"
+                    className="text-[#231F1C] hover:text-[#7A5608] font-extrabold transition shrink-0"
+                    title="종무소 일반전화 통화"
+                  >
+                    064-805-2007
+                  </a>
+                  <span className="text-[#C8BFA8] shrink-0">·</span>
+                  <a
+                    href="tel:010-4912-1083"
+                    className="text-[#7A5608] hover:text-[#5C3F05] font-extrabold transition shrink-0"
+                    title="종무소 직통 휴대전화 통화"
+                  >
+                    010-4912-1083
+                  </a>
+                </div>
+              </div>
 
               {/* 버튼 클릭 시에만 펼쳐지는 온라인 사찰 방문 & 차담 예약 폼 */}
               {showVisitForm && (
@@ -927,21 +955,6 @@ export default function HomeTab({
                   </button>
                 </form>
               )}
-
-              {/* 전화 예약 통합 바로가기 바 (좁은 스마트폰에서도 1줄 고정) */}
-              <div className="flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl bg-white text-[#3D352B] text-[11px] sm:text-xs tracking-tight font-bold border border-[#D8C28E] shadow-xs whitespace-nowrap overflow-hidden">
-                <span className="inline-flex items-center gap-1 text-[#7A5608] font-extrabold shrink-0">
-                  <Phone className="w-3 h-3 text-[#B8860B] fill-current shrink-0" />
-                  <span>종무소</span>
-                </span>
-                <a href="tel:064-805-2007" className="text-[#231F1C] hover:text-[#7A5608] font-extrabold transition shrink-0">
-                  064-805-2007
-                </a>
-                <span className="text-[#C8BFA8] shrink-0">·</span>
-                <a href="tel:010-4912-1083" className="text-[#7A5608] hover:text-[#5C3F05] font-extrabold transition shrink-0">
-                  010-4912-1083
-                </a>
-              </div>
             </section>
 
             {/* 📢 제주 소원사 도량 소식 & 공지사항 롤링 바 (터치 시 모달 오픈) */}
