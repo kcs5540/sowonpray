@@ -1572,7 +1572,7 @@ function getTodayLunarAndJaeil() {
   const jaeilBadge =
     minDaysLeft === 0
       ? `📿 오늘: ${nextJaeil.name} 봉행`
-      : `📿 ${nextJaeil.name}(${nextJaeil.day}일) D-${minDaysLeft}`;
+      : `📿 ${nextJaeil.name} D-${minDaysLeft}`;
 
   // 다가오는 주요 사찰 재일 D-Day 순 정렬
   const upcomingJaeils = JAEIL_LIST.map((j) => {

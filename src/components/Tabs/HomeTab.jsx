@@ -470,7 +470,7 @@ export default function HomeTab({
                         </span>
                       )}
                     </div>
-                    <div className="text-[13.5px] sm:text-[14.5px] font-bold text-white truncate mt-0.5 flex items-center gap-1">
+                    <div className="text-[13px] sm:text-[14px] font-bold text-white truncate mt-0.5 flex items-center gap-1">
                       <span>{HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.icon}</span>
                       <span className="truncate">
                         {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.title}
