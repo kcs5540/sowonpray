@@ -302,7 +302,7 @@ export default function HomeTab({
                     </span>
                   </div>
                   <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
-                    부처님 전 참선
+                    마음 쉬어가기
                   </span>
                 </button>
 
