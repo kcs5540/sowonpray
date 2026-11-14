@@ -761,9 +761,10 @@ export default function HomeTab({
                       </label>
                       <input
                         type="date"
+                        style={{ colorScheme: 'dark' }}
                         value={visitDate}
                         onChange={(e) => setVisitDate(e.target.value)}
-                        className="block w-full max-w-full min-w-0 box-border px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061]"
+                        className="date-input-gold block w-full max-w-full min-w-0 box-border px-2.5 py-2 rounded-lg bg-[#26211C] border border-[#C59B27]/50 text-white text-xs font-bold focus:outline-none focus:border-[#F5D061] cursor-pointer"
                       />
                     </div>
 
