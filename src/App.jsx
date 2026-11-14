@@ -5543,7 +5543,7 @@ function formatRelativeOrDate(dateStr) {
     const assignedAgentCode = currentUser?.parent_code || matchedMember?.parent_code || referralCode || '33065540'
     const finalMemo =
       visitMemo.trim() ||
-      `방문 인원 총 ${exactHeadcount}명 따뜻한 차와 사찰 공양(${exactHeadcount}인분) 부탁드립니다.`
+      `방문 인원 총 ${exactHeadcount}명 초하루·지장재일 따뜻한 차와 사찰 공양(${exactHeadcount}인분) 부탁드립니다.`
 
     playSingingBowlSound()
     setVisitHeadcount(exactHeadcount)
@@ -9314,9 +9314,9 @@ function formatRelativeOrDate(dateStr) {
           const vMemo =
             draft.memo ||
             visitMemo.trim() ||
-            `방문 인원 총 ${vCount}명 따뜻한 차와 사찰 공양(${vCount}인분) 부탁드립니다.`
+            `방문 인원 총 ${vCount}명 초하루·지장재일 따뜻한 차와 사찰 공양(${vCount}인분) 부탁드립니다.`
 
-          const visitShareMsg = `🍵 [제주 소원사 도량 방문 · 사찰 공양 예약]\n${vName} 불자님 외 총 ${vCount}명 방문 및 사찰 공양 예약이 접수되었습니다.\n\n• 방문 일시: ${vDate} ${vTime}\n• 방문 인원: 총 ${vCount}명 (${vPurpose})\n• 요청 메모: "${vMemo}"\n• 종무소 문의: 064-805-2007 / 010-4912-1083`
+          const visitShareMsg = `🍵 [제주 소원사 초하루 · 지장재일 공양 예약]\n${vName} 불자님 외 총 ${vCount}명 초하루·지장재일 사찰 공양 예약이 접수되었습니다.\n\n• 방문 일시: ${vDate} ${vTime}\n• 방문 인원: 총 ${vCount}명 (${vPurpose})\n• 요청 메모: "${vMemo}"\n• 종무소 문의: 064-805-2007 / 010-4912-1083`
 
           return (
             <div
@@ -9341,7 +9341,7 @@ function formatRelativeOrDate(dateStr) {
                 </div>
 
                 <h3 className="font-serif-kr text-lg sm:text-xl font-bold text-[#F5D061] leading-snug px-4">
-                  도량 방문 · 사찰 공양 예약 확인
+                  초하루 · 지장재일 사찰 공양 예약 확인
                 </h3>
 
                 <div className="inline-flex items-center gap-1.5 px-3 py-0.5 sm:py-1 rounded-full bg-[#F5D061]/15 border border-[#F5D061]/50 text-[11px] sm:text-xs font-bold text-[#F5D061]">
