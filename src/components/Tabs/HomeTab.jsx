@@ -1040,18 +1040,18 @@ export default function HomeTab({
                       {(upcomingJaeils || []).slice(0, 3).map((j) => (
                         <div
                           key={j.name}
-                          className={`p-2 sm:p-2.5 rounded-xl border flex flex-col items-center text-center select-none transition ${
+                          className={`py-2 px-1 sm:px-2 rounded-xl border flex flex-col items-center justify-between text-center select-none transition ${
                             j.isToday
                               ? 'bg-amber-500/10 border-amber-500/40 text-amber-900 shadow-xs'
                               : 'bg-[#FAF8F5] border-[#E8DFC9] text-[#2C251E]'
                           }`}
                         >
-                          <div className="w-full min-w-0">
-                            <div className="text-[11px] sm:text-xs font-bold truncate flex items-center justify-center gap-1">
-                              <span className="shrink-0">{j.isToday ? '🔥' : '🗓️'}</span>
-                              <span className="truncate">{j.name}</span>
+                          <div className="w-full">
+                            <div className="text-[11px] sm:text-xs font-bold leading-tight break-keep text-[#231F1C]">
+                              {j.isToday && <span className="inline-block mr-0.5 text-xs">🔥</span>}
+                              <span>{j.name}</span>
                             </div>
-                            <div className="text-[10px] text-[#8C7A5B] mt-0.5">
+                            <div className="text-[10px] text-[#8C7A5B] mt-0.5 font-medium">
                               음력 {j.day}일
                             </div>
                           </div>
