@@ -16,6 +16,10 @@ import {
   Clock,
   CheckCircle2,
   Edit3,
+  Megaphone,
+  Trash2,
+  Plus,
+  Eye,
 } from 'lucide-react'
 
 export default function MobileAdminView({
@@ -28,6 +32,8 @@ export default function MobileAdminView({
   activeSasiPrayers = [],
   visits = [],
   setVisits,
+  notices = [],
+  setNotices,
   supabase,
   onClose,
   showToast = () => {},
@@ -56,6 +62,80 @@ export default function MobileAdminView({
   const [editAddress, setEditAddress] = useState('')
   const [editMemo, setEditMemo] = useState('')
   const [isSavingMember, setIsSavingMember] = useState(false)
+
+  // 도량 공지사항 실시간 관리 상태
+  const [isNoticeFormOpen, setIsNoticeFormOpen] = useState(false)
+  const [noticeCategory, setNoticeCategory] = useState('법회')
+  const [noticeTitle, setNoticeTitle] = useState('')
+  const [noticeContent, setNoticeContent] = useState('')
+  const [noticeTargetTab, setNoticeTargetTab] = useState('lantern')
+  const [noticeCtaLabel, setNoticeCtaLabel] = useState('소원등 켜고 축원 올리기 ▶')
+  const [previewingNotice, setPreviewingNotice] = useState(null)
+
+  // 공지 분류 변경 시 바로가기 탭 및 버튼 문구 자동 세팅
+  const handleSelectNoticeCategory = (cat) => {
+    setNoticeCategory(cat)
+    if (cat === '법회') {
+      setNoticeTargetTab('lantern')
+      setNoticeCtaLabel('소원등 켜고 축원 올리기 ▶')
+    } else if (cat === '불사') {
+      setNoticeTargetTab('bulsa')
+      setNoticeCtaLabel('소원 기와 · 위패 불사 보기 ▶')
+    } else if (cat === '안내') {
+      setNoticeTargetTab('home')
+      setNoticeCtaLabel('도량 참배 · 차담 예약하기 ▶')
+    } else {
+      setNoticeTargetTab('home')
+      setNoticeCtaLabel('자세히 보기 ▶')
+    }
+  }
+
+  // 새 공지사항 등록
+  const handleCreateNotice = (e) => {
+    e.preventDefault()
+    if (!noticeTitle.trim() || !noticeContent.trim()) {
+      showToast('공지 제목과 상세 내용을 입력해 주세요.')
+      return
+    }
+
+    const badgeMap = {
+      '법회': '특별법회',
+      '불사': '대작불사',
+      '안내': '도량참배',
+      '일반': '도량소식',
+    }
+
+    const newNotice = {
+      id: 'notice-' + Date.now(),
+      category: noticeCategory,
+      badge: badgeMap[noticeCategory] || '도량소식',
+      date: new Date().toISOString().slice(0, 10).replace(/-/g, '.'),
+      title: noticeTitle.trim(),
+      summary: noticeContent.trim().slice(0, 70) + (noticeContent.trim().length > 70 ? '...' : ''),
+      content: noticeContent.trim(),
+      targetTab: noticeTargetTab,
+      ctaLabel: noticeCtaLabel.trim() || '자세히 보기 ▶',
+      isPinned: false,
+    }
+
+    if (typeof setNotices === 'function') {
+      setNotices((prev) => [newNotice, ...prev])
+    }
+    setNoticeTitle('')
+    setNoticeContent('')
+    setIsNoticeFormOpen(false)
+    showToast('📢 새 공지사항이 등록되어 신행홈에 실시간 전파되었습니다.')
+  }
+
+  // 공지사항 삭제
+  const handleDeleteNotice = (noticeId, title) => {
+    if (window.confirm(`'${title}'\n\n이 공지사항을 삭제하시겠습니까?\n삭제 즉시 모든 신도님의 홈 화면 롤링 배너에서도 제외됩니다.`)) {
+      if (typeof setNotices === 'function') {
+        setNotices((prev) => prev.filter((item) => item.id !== noticeId))
+      }
+      showToast('공지사항이 삭제되었습니다.')
+    }
+  }
 
   // ============================================================================
   // [김철수 대표님 불사 운영 표준 철학 정립]
@@ -712,7 +792,7 @@ export default function MobileAdminView({
 
       {/* 2. 현대적 세그먼트 컨트롤 탭 (슬림 콤팩트 높이 & 하단 본문과의 확실한 시각적 분리) */}
       <nav className="bg-[#DDD5C5] p-1 border-b-2 border-[#C5BBA7] shadow-[0_2px_5px_rgba(0,0,0,0.04)] shrink-0">
-        <div className="grid grid-cols-4 gap-1">
+        <div className="grid grid-cols-5 gap-1">
           {/* 1) 불사·상담 탭 */}
           <button
             type="button"
@@ -723,9 +803,9 @@ export default function MobileAdminView({
                 : 'text-[#5C5346] hover:text-[#1E1914] hover:bg-black/5 font-bold'
             }`}
           >
-            <div className="flex items-center gap-1 text-[10px] sm:text-[10.5px] font-bold leading-tight">
+            <div className="flex items-center gap-0.5 text-[9.5px] sm:text-[10.5px] font-bold leading-tight">
               <AlertCircle className={`w-3 h-3 ${activeTab === 'bulsa' ? 'text-red-600' : 'text-[#7A6F5D]'}`} />
-              <span className="truncate">불사·상담</span>
+              <span className="truncate">불사상담</span>
             </div>
             <div className="text-xs sm:text-[13px] font-black leading-tight mt-0.5">
               {bulsaInquiries.length}건
@@ -742,9 +822,9 @@ export default function MobileAdminView({
                 : 'text-[#5C5346] hover:text-[#1E1914] hover:bg-black/5 font-bold'
             }`}
           >
-            <div className="flex items-center gap-1 text-[10px] sm:text-[10.5px] font-bold leading-tight">
+            <div className="flex items-center gap-0.5 text-[9.5px] sm:text-[10.5px] font-bold leading-tight">
               <Calendar className={`w-3 h-3 ${activeTab === 'visits' ? 'text-sky-600' : 'text-[#7A6F5D]'}`} />
-              <span className="truncate">방문·차담</span>
+              <span className="truncate">방문차담</span>
             </div>
             <div className="text-xs sm:text-[13px] font-black leading-tight mt-0.5">
               {visits.length}건
@@ -761,7 +841,7 @@ export default function MobileAdminView({
                 : 'text-[#5C5346] hover:text-[#1E1914] hover:bg-black/5 font-bold'
             }`}
           >
-            <div className="flex items-center gap-1 text-[10px] sm:text-[10.5px] font-bold leading-tight">
+            <div className="flex items-center gap-0.5 text-[9.5px] sm:text-[10.5px] font-bold leading-tight">
               <Flame className={`w-3 h-3 ${activeTab === 'lanterns' ? 'text-amber-600' : 'text-[#7A6F5D]'}`} />
               <span className="truncate">소원등</span>
             </div>
@@ -780,12 +860,31 @@ export default function MobileAdminView({
                 : 'text-[#5C5346] hover:text-[#1E1914] hover:bg-black/5 font-bold'
             }`}
           >
-            <div className="flex items-center gap-1 text-[10px] sm:text-[10.5px] font-bold leading-tight">
+            <div className="flex items-center gap-0.5 text-[9.5px] sm:text-[10.5px] font-bold leading-tight">
               <Users className={`w-3 h-3 ${activeTab === 'members' ? 'text-emerald-600' : 'text-[#7A6F5D]'}`} />
-              <span className="truncate">신도조회</span>
+              <span className="truncate">신도장부</span>
             </div>
             <div className="text-xs sm:text-[13px] font-black leading-tight mt-0.5">
               {members.length}명
+            </div>
+          </button>
+
+          {/* 5) 공지관리 탭 */}
+          <button
+            type="button"
+            onClick={() => setActiveTab('notices')}
+            className={`py-1 px-0.5 text-center rounded-lg transition cursor-pointer flex flex-col items-center justify-center ${
+              activeTab === 'notices'
+                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_6px_rgba(0,0,0,0.12)] border border-[#C5BBA7]'
+                : 'text-[#5C5346] hover:text-[#1E1914] hover:bg-black/5 font-bold'
+            }`}
+          >
+            <div className="flex items-center gap-0.5 text-[9.5px] sm:text-[10.5px] font-bold leading-tight">
+              <Megaphone className={`w-3 h-3 ${activeTab === 'notices' ? 'text-[#C59B27]' : 'text-[#7A6F5D]'}`} />
+              <span className="truncate">공지관리</span>
+            </div>
+            <div className="text-xs sm:text-[13px] font-black leading-tight mt-0.5">
+              {notices.length}건
             </div>
           </button>
         </div>
@@ -1578,6 +1677,244 @@ ${m.name} 불자님, 안녕하십니까.`
             </div>
           </div>
         )}
+
+        {/* ============================================================== */}
+        {/* 탭 5: 도량 공지사항 실시간 관리 */}
+        {/* ============================================================== */}
+        {activeTab === 'notices' && (
+          <div className="space-y-3">
+            {/* 상단 액션 바: 총 공지 수 및 새 공지 작성 토글 버튼 */}
+            <div className="bg-white rounded-xl border border-[#DDD3BF] p-3 shadow-xs flex items-center justify-between gap-2">
+              <div>
+                <h3 className="text-xs sm:text-sm font-bold text-[#2E2214] font-serif-kr flex items-center gap-1.5">
+                  <Megaphone className="w-4 h-4 text-[#C59B27]" />
+                  <span>도량 공지사항 관리</span>
+                  <span className="text-[11px] font-mono px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 font-bold">
+                    {notices.length}건
+                  </span>
+                </h3>
+                <p className="text-[10.5px] text-[#7A6F5D] mt-0.5">
+                  등록 즉시 신행홈 상단 롤링 배너에 실시간으로 전파됩니다.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsNoticeFormOpen((prev) => !prev)}
+                className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#D4A024] to-[#C59B27] hover:brightness-105 text-[#1C140A] text-xs font-bold shadow-xs active:scale-95 transition flex items-center gap-1 cursor-pointer shrink-0"
+              >
+                {isNoticeFormOpen ? (
+                  <>
+                    <X className="w-3.5 h-3.5" />
+                    <span>닫기</span>
+                  </>
+                ) : (
+                  <>
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>새 공지 등록</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* 새 공지사항 등록 폼 (접이식) */}
+            {isNoticeFormOpen && (
+              <div className="bg-white rounded-2xl border-2 border-[#C59B27]/40 p-3.5 shadow-md space-y-3 animate-in fade-in">
+                <div className="flex items-center justify-between border-b border-[#F0ECE1] pb-2">
+                  <span className="text-xs font-bold text-[#8A6510] flex items-center gap-1">
+                    <Edit3 className="w-3.5 h-3.5" />
+                    <span>새 공지사항 작성하기</span>
+                  </span>
+                  <span className="text-[10px] text-[#8C7D6B]">모바일 법당 실시간 노출</span>
+                </div>
+
+                <form onSubmit={handleCreateNotice} className="space-y-3 text-xs">
+                  {/* 1) 공지 분류 퀵 셀렉터 */}
+                  <div>
+                    <label className="block text-[#524436] font-bold mb-1.5">공지 분류 선택 *</label>
+                    <div className="grid grid-cols-4 gap-1.5">
+                      {[
+                        { id: '법회', label: '특별법회' },
+                        { id: '불사', label: '대작불사' },
+                        { id: '안내', label: '도량참배' },
+                        { id: '일반', label: '일반소식' },
+                      ].map((item) => (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => handleSelectNoticeCategory(item.id)}
+                          className={`py-1.5 px-1 rounded-lg text-center font-bold text-[11px] transition cursor-pointer border ${
+                            noticeCategory === item.id
+                              ? 'bg-[#2E2214] text-[#F5D061] border-[#2E2214] shadow-xs'
+                              : 'bg-[#FAF8F5] text-[#695B49] border-[#DDD3BF] hover:bg-[#F0ECE1]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 2) 공지 제목 */}
+                  <div>
+                    <label className="block text-[#524436] font-bold mb-1">공지 제목 *</label>
+                    <input
+                      type="text"
+                      required
+                      value={noticeTitle}
+                      onChange={(e) => setNoticeTitle(e.target.value)}
+                      placeholder="예: 12월 동지맞이 특별 팥죽 공양 및 기도 법회 안내"
+                      className="w-full bg-[#FAF8F5] border border-[#DDD3BF] rounded-xl px-3 py-2 text-[#2E2214] font-bold focus:border-[#C59B27] focus:outline-none"
+                    />
+                  </div>
+
+                  {/* 3) 공지 상세 내용 */}
+                  <div>
+                    <label className="block text-[#524436] font-bold mb-1">공지 상세 내용 *</label>
+                    <textarea
+                      required
+                      rows={5}
+                      value={noticeContent}
+                      onChange={(e) => setNoticeContent(e.target.value)}
+                      placeholder="불자님들께 전할 상세 일정과 안내 말씀을 정성껏 적어주세요. (줄바꿈 지원)"
+                      className="w-full bg-[#FAF8F5] border border-[#DDD3BF] rounded-xl p-2.5 text-[#2E2214] focus:border-[#C59B27] focus:outline-none font-serif-kr resize-none leading-relaxed"
+                    />
+                  </div>
+
+                  {/* 4) 바로가기 탭 및 버튼 문구 */}
+                  <div className="grid grid-cols-2 gap-2 bg-[#FAF8F5] p-2.5 rounded-xl border border-[#EDE7D9]">
+                    <div>
+                      <label className="block text-[#524436] font-bold mb-1 text-[11px]">클릭 시 이동할 탭</label>
+                      <select
+                        value={noticeTargetTab}
+                        onChange={(e) => setNoticeTargetTab(e.target.value)}
+                        className="w-full bg-white border border-[#DDD3BF] rounded-lg px-2 py-1.5 text-xs text-[#2E2214] font-bold focus:border-[#C59B27] focus:outline-none cursor-pointer"
+                      >
+                        <option value="lantern">소원등 켜기 탭</option>
+                        <option value="bulsa">불사 안내 탭</option>
+                        <option value="home">신행홈 (참배·차담)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[#524436] font-bold mb-1 text-[11px]">바로가기 버튼 문구</label>
+                      <input
+                        type="text"
+                        value={noticeCtaLabel}
+                        onChange={(e) => setNoticeCtaLabel(e.target.value)}
+                        placeholder="버튼 문구"
+                        className="w-full bg-white border border-[#DDD3BF] rounded-lg px-2 py-1.5 text-xs text-[#2E2214] font-bold focus:border-[#C59B27] focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* 등록 버튼 */}
+                  <div className="flex items-center gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setIsNoticeFormOpen(false)}
+                      className="flex-1 py-2.5 rounded-xl bg-[#F0ECE1] text-[#695B49] font-bold cursor-pointer"
+                    >
+                      취소
+                    </button>
+                    <button
+                      type="submit"
+                      className="flex-2 py-2.5 rounded-xl bg-gradient-to-r from-[#D4A024] to-[#C59B27] hover:brightness-105 text-[#1C140A] font-bold shadow-md active:scale-95 transition cursor-pointer flex items-center justify-center gap-1.5"
+                    >
+                      <Check className="w-4 h-4" />
+                      <span>📢 공지 즉시 등록 & 실시간 전파</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {/* 등록된 공지사항 목록 */}
+            <div className="space-y-2.5">
+              {notices.length === 0 ? (
+                <div className="bg-white rounded-2xl border border-[#DDD3BF] p-8 text-center text-[#7A6F5D]">
+                  <Megaphone className="w-8 h-8 text-[#C59B27] mx-auto mb-2 opacity-50" />
+                  <p className="font-bold text-sm text-[#2E2214]">등록된 도량 공지사항이 없습니다.</p>
+                  <p className="text-xs text-[#8C7D6B] mt-1">상단의 [+ 새 공지 등록] 버튼을 눌러 첫 공지를 띄워보세요.</p>
+                </div>
+              ) : (
+                notices.map((notice, idx) => {
+                  const badge = notice.badge || notice.category || '공지'
+                  const isSpecial = badge.includes('특별') || badge.includes('법회')
+                  const isBulsa = badge.includes('불사')
+
+                  return (
+                    <div
+                      key={notice.id || idx}
+                      className="bg-white rounded-xl border border-[#DDD3BF] p-3.5 shadow-xs space-y-2 transition hover:border-[#C59B27]"
+                    >
+                      {/* 카드 상단: 분류 배지, 등록일, 삭제 버튼 */}
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-1.5">
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                              isSpecial
+                                ? 'bg-amber-100 text-amber-900 border-amber-300'
+                                : isBulsa
+                                ? 'bg-red-100 text-red-900 border-red-300'
+                                : 'bg-sky-100 text-sky-900 border-sky-300'
+                            }`}
+                          >
+                            {badge}
+                          </span>
+                          <span className="text-[11px] text-[#8C7D6B] font-mono">
+                            {notice.date || '도량 공지'}
+                          </span>
+                          {idx === 0 && (
+                            <span className="text-[9.5px] font-bold px-1.5 py-0.2 rounded-md bg-[#2E2214] text-[#F5D061]">
+                              롤링 1순위
+                            </span>
+                          )}
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteNotice(notice.id, notice.title)}
+                          className="w-7 h-7 rounded-lg bg-[#FAF8F5] hover:bg-red-50 text-[#8C7D6B] hover:text-red-600 border border-[#DDD3BF] flex items-center justify-center transition cursor-pointer active:scale-95"
+                          title="공지 삭제"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      {/* 공지 제목 */}
+                      <h4 className="font-serif-kr font-bold text-sm text-[#2E2214] leading-snug">
+                        {notice.title}
+                      </h4>
+
+                      {/* 공지 요약/내용 미리보기 */}
+                      <p className="text-xs text-[#524436] line-clamp-2 leading-relaxed bg-[#FAF8F5] p-2 rounded-lg font-serif-kr">
+                        {notice.summary || notice.content}
+                      </p>
+
+                      {/* 카드 하단: 바로가기 정보 및 미리보기 버튼 */}
+                      <div className="flex items-center justify-between pt-1 border-t border-[#F5F2EA] text-[11px]">
+                        <span className="text-[#8A6510] font-bold flex items-center gap-1">
+                          <span>🔗</span>
+                          <span>{notice.ctaLabel || '바로가기 연동'}</span>
+                        </span>
+
+                        <button
+                          type="button"
+                          onClick={() => setPreviewingNotice(notice)}
+                          className="px-2.5 py-1 rounded-lg bg-[#FAF8F5] hover:bg-[#F0ECE1] border border-[#DDD3BF] text-[#524436] font-bold flex items-center gap-1 transition cursor-pointer active:scale-95"
+                        >
+                          <Eye className="w-3 h-3 text-[#C59B27]" />
+                          <span>미리보기</span>
+                        </button>
+                      </div>
+                    </div>
+                  )
+                })
+              )}
+            </div>
+          </div>
+        )}
       </main>
 
       {/* 5. 신도 정보 상세 및 수정 바텀시트 모달 */}
@@ -1782,6 +2119,48 @@ ${m.name} 불자님, 안녕하십니까.`
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* 5. 공지사항 모바일 미리보기 모달 (신도가 보게 되는 한지 카드 스타일 완벽 재현) */}
+      {previewingNotice && (
+        <div className="fixed inset-0 z-60 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in">
+          <div className="w-full sm:max-w-md bg-[#FAF8F5] border-t-2 sm:border-2 border-[#C59B27]/60 rounded-t-3xl sm:rounded-2xl p-5 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#E8DFD1] pb-3">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#C59B27] text-white">
+                {previewingNotice.badge || previewingNotice.category}
+              </span>
+              <button
+                type="button"
+                onClick={() => setPreviewingNotice(null)}
+                className="text-[#7A6B58] hover:text-[#2E2214] p-1 cursor-pointer"
+                title="닫기"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div>
+              <p className="text-[11px] text-[#8C7D6B] font-mono mb-1">{previewingNotice.date}</p>
+              <h3 className="font-serif-kr font-bold text-base text-[#2E2214] leading-snug">
+                {previewingNotice.title}
+              </h3>
+            </div>
+
+            <div className="text-xs text-[#3E342B] font-serif-kr leading-relaxed whitespace-pre-wrap bg-white p-3.5 rounded-xl border border-[#E8DFD1]">
+              {previewingNotice.content}
+            </div>
+
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => setPreviewingNotice(null)}
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#D4A024] to-[#C59B27] hover:brightness-105 text-[#1C140A] font-bold shadow-md cursor-pointer transition active:scale-95"
+              >
+                미리보기 닫기
+              </button>
+            </div>
           </div>
         </div>
       )}

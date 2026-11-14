@@ -7355,6 +7355,8 @@ function formatRelativeOrDate(dateStr) {
           activeSasiPrayers={activeSasiPrayers}
           visits={visits}
           setVisits={setVisits}
+          notices={notices}
+          setNotices={setNotices}
           supabase={supabase}
           onClose={() => setShowMobileAdmin(false)}
           showToast={showToast}
