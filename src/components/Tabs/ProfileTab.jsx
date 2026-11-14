@@ -597,10 +597,12 @@ export default function ProfileTab({
                           const sanctuaryInfo = getDailyMeritInfo('sanctuary', uCode)
                           const lanternInfo = getDailyMeritInfo('lantern', uCode)
                           const sutraInfo = getDailyMeritInfo('sutra', uCode)
+                          const inyeonGiverInfo = getDailyMeritInfo('inyeon_giver', uCode)
+                          const inyeonReceiverInfo = getDailyMeritInfo('inyeon_receiver', uCode)
                           const bowInfo = getDailyMeritInfo('bow', uCode)
                           const moktakInfo = getDailyMeritInfo('moktak', uCode)
                           const yeomjuInfo = getDailyMeritInfo('yeomju', uCode)
-                          const todayTotalDaily = sanctuaryInfo.currentPoints + lanternInfo.currentPoints + sutraInfo.currentPoints + bowInfo.currentPoints + moktakInfo.currentPoints + yeomjuInfo.currentPoints
+                          const todayTotalDaily = sanctuaryInfo.currentPoints + lanternInfo.currentPoints + sutraInfo.currentPoints + inyeonGiverInfo.currentPoints + inyeonReceiverInfo.currentPoints + bowInfo.currentPoints + moktakInfo.currentPoints + yeomjuInfo.currentPoints
 
                           return (
                             <div className="space-y-1.5 p-2.5 sm:p-3 rounded-2xl bg-gradient-to-b from-[#F5D061]/10 to-black/30 border border-[#F5D061]/40 shadow-sm">
@@ -715,6 +717,32 @@ export default function ProfileTab({
                                     </span>
                                   </div>
                                 </button>
+
+                                {/* 신행 4) 인연 전달 한 사람: 상대방이 소원등 켰을 때 5,000 공덕 (한도 1일 50,000) */}
+                                <div className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-left">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-base shrink-0">🤝</span>
+                                      <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                        인연 전달 공덕
+                                      </span>
+                                    </div>
+                                    <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
+                                      오늘 {inyeonGiverInfo.currentCount}/10회
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center justify-between mt-1 text-[11px]">
+                                    <span className="text-[#A89C8E]">
+                                      상대방 점등 시 5,000 공덕{' '}
+                                      <span className="text-emerald-400 font-semibold">
+                                        (한도 1일 50,000)
+                                      </span>
+                                    </span>
+                                    <span className="font-mono font-bold text-emerald-300">
+                                      +{inyeonGiverInfo.currentPoints.toLocaleString()} / 50,000 공덕
+                                    </span>
+                                  </div>
+                                </div>
 
                                 {/* 신행 3) 108배 절 정진: 1배 10 공덕 (1일 최대 1,080 공덕) */}
                                 <button
@@ -1211,14 +1239,14 @@ export default function ProfileTab({
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-1 flex-wrap">
                           <span className="text-xs font-bold text-[#F5D061]">
-                            법연 1,000 공덕 · 매일 3대 신행 최대 1,000 공덕(등 200 · 사경 300 · 목탁 500)
+                            인연 전달 시 5,000 공덕 (1일 한도 50,000) · 인연 받은 분 5,000 공덕
                           </span>
                           <span className="text-[10px] text-[#E5D7B5] bg-white/10 px-1.5 py-0.5 rounded font-medium">
                             기념품 구입 or 불사 참여 사용
                           </span>
                         </div>
                         <p className="text-[11px] text-[#BFB6AA] mt-1 leading-relaxed break-keep">
-                          소원등을 선물하여 법연을 맺을 때마다 <strong className="text-white">1인 1,000 공덕</strong>, 매일 3대 신행(소원등 점등 200 + 한줄사경 3회 300 + 108 목탁 500) 정진 시 <strong className="text-[#F5D061]">하루 최대 1,000 공덕</strong>의 신행 복덕이 실시간 적립됩니다. (적립된 공덕은 제주 소원사 종무소에서 기념품 구입 및 불사 참여에 사용 가능합니다.)
+                          소원등 링크를 전달하여 상대방이 소원등을 켤 때마다 <strong className="text-white">인연 전달한 분께 5,000 공덕 (1일 한도 50,000 공덕)</strong>, <strong className="text-[#F5D061]">인연 받은 분께도 5,000 공덕</strong>이 적립됩니다. 또한 매일 주요 3대 정진(대웅전 참배 1,000 · 소원등 1,000 · 한줄사경 1,000)으로도 풍성한 복덕을 쌓으실 수 있습니다.
                         </p>
                       </div>
                     </div>

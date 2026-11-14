@@ -5386,9 +5386,21 @@ function formatRelativeOrDate(dateStr) {
       const prayerCode8 = extractPhone8Code(cleanPrayerPhone)
       const existingPrayerMember = members.find((m) => m.code === prayerCode8)
       const { name: parsedName, dharmaName: parsedDharma } = parseNameAndDharmaName(wishNameClean)
+      const isBulsa = Boolean(paidFlag || cat.includes('49재') || cat.includes('위패') || cat.includes('천도재'))
+      const referrerCode = assignedAgentCode && assignedAgentCode !== prayerCode8 ? assignedAgentCode : null
 
       if (!existingPrayerMember) {
-        const isBulsaReg = Boolean(paidFlag || cat.includes('49재') || cat.includes('위패') || cat.includes('천도재'))
+        const isBulsaReg = isBulsa
+        let initialMerit = isBulsaReg ? 0 : 1000
+
+        // 🌸 인연 받은 사람: 상대방에게 인연을 받아 소원등 켰을 경우 5,000 공덕
+        if (!isBulsaReg && referrerCode) {
+          const recRes = awardMerit('inyeon_receiver', prayerCode8, 1)
+          if (recRes.earnedPoints > 0) {
+            initialMerit += recRes.earnedPoints
+          }
+        }
+
         const newBeliever = {
           code: prayerCode8,
           phone: formatPhone11(wishPhoneClean),
@@ -5406,7 +5418,7 @@ function formatRelativeOrDate(dateStr) {
           bank_name: '',
           bank_account: '',
           account_holder: '',
-          merit_count: isBulsaReg ? 0 : 1000,
+          merit_count: initialMerit,
           believers_count: 0,
           wipae_count: 0,
           extra_data: { registered_via: isBulsaReg ? 'bulsa_consultation' : 'wish_lantern' },
@@ -5417,7 +5429,7 @@ function formatRelativeOrDate(dateStr) {
         setMembers((prev) => [newBeliever, ...prev])
         try {
           if (!isBulsaReg) {
-            localStorage.setItem(`sowonpray_merit_${newBeliever.code}`, '1000')
+            localStorage.setItem(`sowonpray_merit_${newBeliever.code}`, String(initialMerit))
           }
         } catch (e) {}
         if (supabase) {
@@ -5426,7 +5438,17 @@ function formatRelativeOrDate(dateStr) {
       } else {
         // 기존 회원이 소원등을 올릴 때도 공덕 (1일 1회 최대 1,000) 적립
         const meritRes = awardMerit('lantern', existingPrayerMember.code, 1)
-        const nextMerit = (existingPrayerMember.merit_count || 0) + (meritRes.earnedPoints || 0)
+        let addedMerit = meritRes.earnedPoints || 0
+
+        // 🌸 인연 받은 사람: 상대방에게 인연을 받아 소원등 켰을 경우 5,000 공덕 (1일 한도 5,000)
+        if (!isBulsa && existingPrayerMember.parent_code && existingPrayerMember.parent_code !== existingPrayerMember.code) {
+          const recRes = awardMerit('inyeon_receiver', existingPrayerMember.code, 1)
+          if (recRes.earnedPoints > 0) {
+            addedMerit += recRes.earnedPoints
+          }
+        }
+
+        const nextMerit = (existingPrayerMember.merit_count || 0) + addedMerit
         const updatedMember = {
           ...existingPrayerMember,
           merit_count: nextMerit,
@@ -5443,6 +5465,28 @@ function formatRelativeOrDate(dateStr) {
             merit_count: nextMerit,
             dharma_name: updatedMember.dharma_name,
           }).eq('code', existingPrayerMember.code).then()
+        }
+      }
+
+      // 🤝 인연 전달 한 사람: 상대방이 소원등 켰을 경우 5,000 공덕 (한도 1일 50,000)
+      if (!isBulsa && referrerCode) {
+        const giverRes = awardMerit('inyeon_giver', referrerCode, 1)
+        if (giverRes.earnedPoints > 0) {
+          setMembers((prev) =>
+            prev.map((m) => {
+              if (m.code === referrerCode) {
+                const nextGiverMerit = (m.merit_count || 0) + giverRes.earnedPoints
+                try {
+                  localStorage.setItem(`sowonpray_merit_${m.code}`, String(nextGiverMerit))
+                } catch (e) {}
+                if (supabase) {
+                  supabase.from('members').update({ merit_count: nextGiverMerit }).eq('code', m.code).then()
+                }
+                return { ...m, merit_count: nextGiverMerit }
+              }
+              return m
+            })
+          )
         }
       }
 
@@ -5488,7 +5532,9 @@ function formatRelativeOrDate(dateStr) {
         ? '🏔️ [삼성각 성전 건립 불사] 동참이 정식 접수되어 종무소로 알림이 전송되었습니다.'
         : isIndeungToast
         ? '🪔 [대웅전 1년 인등 불사]가 정식 접수되어 종무소로 알림이 전송되었습니다.'
-        : '🙏 간절한 발원이 정식 접수되어 사시예불 축원 명부에 등재되었습니다.'
+        : referrerCode
+        ? '🙏 소원등 점등 완료! (+1,000 공덕)\n🌸 복덕 인연 맞이 (+5,000 공덕)가 함께 적립되었습니다!'
+        : '🙏 소원등 점등 완료! (+1,000 공덕 적립) 사시예불 축원 명부에 등재되었습니다.'
       showToast(toastMsg, 5000)
     }
 

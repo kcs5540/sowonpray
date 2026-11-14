@@ -1294,7 +1294,7 @@ export default function HomeTab({
                           <span>어떻게 공덕을 쌓나요?</span>
                         </span>
                         <span className="text-[10px] text-[#8C6D15] font-bold bg-[#F4E8CB] px-2 py-0.5 rounded-full">
-                          매일 주요 3대 정진 각 1,000 공덕
+                          신행 정진 & 복덕 인연 나눔
                         </span>
                       </div>
 
@@ -1344,6 +1344,41 @@ export default function HomeTab({
                           </div>
                           <span className="text-[11px] font-extrabold text-[#785C10] shrink-0 bg-[#FBF9F0] px-2 py-1 rounded-lg border border-[#785C10]/20">
                             1일 1회 +1,000
+                          </span>
+                        </div>
+
+                        {/* 4) 인연 전달 한 사람 */}
+                        <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-[#E6DEC8] shadow-xs">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-lg bg-[#EBF7EE] flex items-center justify-center text-base shrink-0">
+                              🤝
+                            </div>
+                            <div>
+                              <div className="font-bold text-[11.5px] text-[#2B1F11]">인연 전달 한 사람</div>
+                              <div className="text-[10px] text-[#7A6B58]">상대방이 소원등 켰을 경우</div>
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-end shrink-0">
+                            <span className="text-[11px] font-extrabold text-[#1B7E43] bg-[#EAF7EE] px-2 py-0.5 rounded-lg border border-[#1B7E43]/20">
+                              +5,000
+                            </span>
+                            <span className="text-[9.5px] text-[#8C7A68] mt-0.5">한도 1일 50,000</span>
+                          </div>
+                        </div>
+
+                        {/* 5) 인연 받은 사람 */}
+                        <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-[#E6DEC8] shadow-xs">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-lg bg-[#FFF0F5] flex items-center justify-center text-base shrink-0">
+                              🌸
+                            </div>
+                            <div>
+                              <div className="font-bold text-[11.5px] text-[#2B1F11]">인연 받은 사람</div>
+                              <div className="text-[10px] text-[#7A6B58]">상대방이 소원등 켰을 경우</div>
+                            </div>
+                          </div>
+                          <span className="text-[11px] font-extrabold text-[#B8325E] shrink-0 bg-[#FFF0F5] px-2 py-1 rounded-lg border border-[#B8325E]/20">
+                            +5,000
                           </span>
                         </div>
                       </div>
