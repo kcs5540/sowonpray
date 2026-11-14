@@ -11622,8 +11622,8 @@ function formatRelativeOrDate(dateStr) {
         <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#14110E]/95 backdrop-blur-md border-t border-[#C59B27]/40 px-1.5 py-1.5 flex items-center justify-around shadow-[0_-4px_25px_rgba(0,0,0,0.65)]">
           {[
             { id: 'home', label: '신행홈', icon: LotusNavIcon },
-            { id: 'sanctuary', label: '대웅전참배', icon: SanctuaryNavIcon },
             { id: 'lantern', label: '소원등켜기', icon: Flame },
+            { id: 'sanctuary', label: '대웅전참배', icon: SanctuaryNavIcon },
             { id: 'sutra', label: '한줄사경', icon: BookOpen },
             { id: 'bulsa', label: '불사안내', icon: Landmark },
             { id: 'profile', label: '내정보', icon: User },

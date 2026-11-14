@@ -284,29 +284,7 @@ export default function HomeTab({
               </div>
 
               <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
-                {/* 1) 대웅전 참배 (✨ 참배 동선 1순위: 부처님 전 참선 정진 - 3D 동자승) */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    playSingingBowlSound()
-                    if (setShowSanctuaryModal) setShowSanctuaryModal(true)
-                  }}
-                  className="py-3 px-1.5 rounded-2xl bg-gradient-to-b from-white via-[#FCF9F2] to-[#F7EED9] hover:from-white hover:to-[#F4E8CB] border border-[#DFCBA0] hover:border-[#C59B27] flex flex-col items-center justify-between text-center transition-all cursor-pointer active:scale-95 shadow-[0_3px_10px_rgba(180,140,50,0.12)] hover:shadow-[0_4px_16px_rgba(180,140,50,0.2)] group"
-                >
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FFFDF5] via-[#FFF8E6] to-[#F5E6BF] flex items-center justify-center p-1.5 mb-1.5 shrink-0 group-hover:scale-105 transition-transform border border-[#ECD9A8] shadow-xs overflow-hidden">
-                    <img src="/images/icon_monk_meditate_front.png" alt="대웅전 참배" className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform" />
-                  </div>
-                  <div className="flex items-center justify-center w-full px-0.5">
-                    <span className="font-serif-kr text-[12px] sm:text-[12.5px] font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
-                      대웅전 참배
-                    </span>
-                  </div>
-                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
-                    마음 쉬어가기
-                  </span>
-                </button>
-
-                {/* 2) 소원등 켜기 (✨ 참배 동선 2순위: 부처님 전 등불 공양 - 3D 황금 연등) */}
+                {/* 1) 소원등 켜기 (✨ 참배 동선 1순위: 부처님 전 등불 공양 - 3D 황금 연등) */}
                 <button
                   type="button"
                   onClick={() => {
@@ -326,6 +304,28 @@ export default function HomeTab({
                   </div>
                   <span className="text-[9px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block tracking-tight">
                     1일 무료 소원등
+                  </span>
+                </button>
+
+                {/* 2) 대웅전 참배 (✨ 참배 동선 2순위: 부처님 전 참선 정진 - 3D 동자승) */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSingingBowlSound()
+                    if (setShowSanctuaryModal) setShowSanctuaryModal(true)
+                  }}
+                  className="py-3 px-1.5 rounded-2xl bg-gradient-to-b from-white via-[#FCF9F2] to-[#F7EED9] hover:from-white hover:to-[#F4E8CB] border border-[#DFCBA0] hover:border-[#C59B27] flex flex-col items-center justify-between text-center transition-all cursor-pointer active:scale-95 shadow-[0_3px_10px_rgba(180,140,50,0.12)] hover:shadow-[0_4px_16px_rgba(180,140,50,0.2)] group"
+                >
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FFFDF5] via-[#FFF8E6] to-[#F5E6BF] flex items-center justify-center p-1.5 mb-1.5 shrink-0 group-hover:scale-105 transition-transform border border-[#ECD9A8] shadow-xs overflow-hidden">
+                    <img src="/images/icon_monk_meditate_front.png" alt="대웅전 참배" className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform" />
+                  </div>
+                  <div className="flex items-center justify-center w-full px-0.5">
+                    <span className="font-serif-kr text-[12px] sm:text-[12.5px] font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
+                      대웅전 참배
+                    </span>
+                  </div>
+                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
+                    마음 쉬어가기
                   </span>
                 </button>
 
@@ -1299,23 +1299,7 @@ export default function HomeTab({
                       </div>
 
                       <div className="flex flex-col gap-2">
-                        {/* 1) 대웅전 참배 */}
-                        <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-[#E6DEC8] shadow-xs">
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-8 h-8 rounded-lg bg-[#FFF4D4] flex items-center justify-center text-base shrink-0">
-                              🏛️
-                            </div>
-                            <div>
-                              <div className="font-bold text-[11.5px] text-[#2B1F11]">대웅전 참배</div>
-                              <div className="text-[10px] text-[#7A6B58]">들어갔다 나오면 회향 시 적립</div>
-                            </div>
-                          </div>
-                          <span className="text-[11px] font-extrabold text-[#9A7418] shrink-0 bg-[#FFF9EC] px-2 py-1 rounded-lg border border-[#D4A024]/20">
-                            1일 1회 +1,000
-                          </span>
-                        </div>
-
-                        {/* 2) 소원등 켜기 */}
+                        {/* 1) 소원등 켜기 */}
                         <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-[#E6DEC8] shadow-xs">
                           <div className="flex items-center gap-2.5">
                             <div className="w-8 h-8 rounded-lg bg-[#FFEAD9] flex items-center justify-center text-base shrink-0">
@@ -1327,6 +1311,22 @@ export default function HomeTab({
                             </div>
                           </div>
                           <span className="text-[11px] font-extrabold text-[#D9531E] shrink-0 bg-[#FFF5EC] px-2 py-1 rounded-lg border border-[#D9531E]/20">
+                            1일 1회 +1,000
+                          </span>
+                        </div>
+
+                        {/* 2) 대웅전 참배 */}
+                        <div className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-[#E6DEC8] shadow-xs">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-lg bg-[#FFF4D4] flex items-center justify-center text-base shrink-0">
+                              🏛️
+                            </div>
+                            <div>
+                              <div className="font-bold text-[11.5px] text-[#2B1F11]">대웅전 참배</div>
+                              <div className="text-[10px] text-[#7A6B58]">들어갔다 나오면 회향 시 적립</div>
+                            </div>
+                          </div>
+                          <span className="text-[11px] font-extrabold text-[#9A7418] shrink-0 bg-[#FFF9EC] px-2 py-1 rounded-lg border border-[#D4A024]/20">
                             1일 1회 +1,000
                           </span>
                         </div>

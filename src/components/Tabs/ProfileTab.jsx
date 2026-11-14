@@ -617,40 +617,7 @@ export default function ProfileTab({
                               </div>
 
                               <div className="space-y-1.5 pt-0.5">
-                                {/* 신행 1) 대웅전 참배: 들어갔다 나오면 1,000 공덕 (최대 1,000 공덕) */}
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    if (onOpenSanctuary) onOpenSanctuary()
-                                  }}
-                                  className="w-full px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
-                                  title="대웅전 참배하러 가기"
-                                >
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-base shrink-0">🏛️</span>
-                                      <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
-                                        대웅전 참배
-                                      </span>
-                                    </div>
-                                    <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
-                                      오늘 {sanctuaryInfo.currentCount}/1회
-                                    </span>
-                                  </div>
-                                  <div className="flex items-center justify-between mt-1 text-[11px]">
-                                    <span className="text-[#A89C8E]">
-                                      들어갔다 나오면 1,000 공덕{' '}
-                                      <span className="text-emerald-400 font-semibold">
-                                        (최대 1,000 공덕)
-                                      </span>
-                                    </span>
-                                    <span className="font-mono font-bold text-emerald-300">
-                                      +{sanctuaryInfo.currentPoints.toLocaleString()} / 1,000 공덕
-                                    </span>
-                                  </div>
-                                </button>
-
-                                {/* 신행 2) 소원등 점등: 1일 1회 1,000 공덕 (최대 1,000 공덕) */}
+                                {/* 신행 1) 소원등 점등: 1일 1회 1,000 공덕 (최대 1,000 공덕) */}
                                 <button
                                   type="button"
                                   onClick={() => {
@@ -680,6 +647,39 @@ export default function ProfileTab({
                                     </span>
                                     <span className="font-mono font-bold text-emerald-300">
                                       +{lanternInfo.currentPoints.toLocaleString()} / 1,000 공덕
+                                    </span>
+                                  </div>
+                                </button>
+
+                                {/* 신행 2) 대웅전 참배: 들어갔다 나오면 1,000 공덕 (최대 1,000 공덕) */}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (onOpenSanctuary) onOpenSanctuary()
+                                  }}
+                                  className="w-full px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
+                                  title="대웅전 참배하러 가기"
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-base shrink-0">🏛️</span>
+                                      <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                        대웅전 참배
+                                      </span>
+                                    </div>
+                                    <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
+                                      오늘 {sanctuaryInfo.currentCount}/1회
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center justify-between mt-1 text-[11px]">
+                                    <span className="text-[#A89C8E]">
+                                      들어갔다 나오면 1,000 공덕{' '}
+                                      <span className="text-emerald-400 font-semibold">
+                                        (최대 1,000 공덕)
+                                      </span>
+                                    </span>
+                                    <span className="font-mono font-bold text-emerald-300">
+                                      +{sanctuaryInfo.currentPoints.toLocaleString()} / 1,000 공덕
                                     </span>
                                   </div>
                                 </button>
