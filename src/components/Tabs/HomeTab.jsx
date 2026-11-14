@@ -259,8 +259,8 @@ export default function HomeTab({
               {/* 단정하고 맑은 한 줄 타이틀 + 우측 공덕 안내 팝업 버튼 (군더더기 없는 절제의 미) */}
               <div className="flex items-center justify-between gap-2 mb-2.5 px-0.5">
                 <div className="flex items-center gap-1.5 min-w-0">
-                  <GoldenLotusIcon className="w-4 h-4 sm:w-[17px] sm:h-[17px]" />
-                  <h3 className="font-serif-kr text-[12.5px] sm:text-[13px] font-bold text-[#2B1F11] tracking-tight truncate">
+                  <GoldenLotusIcon className="w-[18px] h-[18px] sm:w-[19px] sm:h-[19px] shrink-0" />
+                  <h3 className="font-sans text-[14px] sm:text-[15px] font-bold text-[#2B1F11] tracking-tight truncate">
                     매일 기도와 공덕 쌓기
                   </h3>
                 </div>
