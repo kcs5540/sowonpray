@@ -744,7 +744,7 @@ export default function MobileAdminView({
           >
             <div className="flex items-center gap-1 text-[10px] sm:text-[10.5px] font-bold leading-tight">
               <Calendar className={`w-3 h-3 ${activeTab === 'visits' ? 'text-sky-600' : 'text-[#7A6F5D]'}`} />
-              <span className="truncate">방문·공양</span>
+              <span className="truncate">방문·차담</span>
             </div>
             <div className="text-xs sm:text-[13px] font-black leading-tight mt-0.5">
               {visits.length}건
@@ -1115,11 +1115,11 @@ export default function MobileAdminView({
               <div className="p-8 text-center bg-white rounded-2xl border border-[#E5DCB9] text-[#7A6B58] text-xs space-y-2 shadow-xs">
                 <Calendar className="w-7 h-7 mx-auto text-sky-600" />
                 <p className="font-bold text-[#2E2214]">
-                  {visitDateFilter === 'all' && '등록된 도량 방문·공양 예약이 없습니다.'}
-                  {visitDateFilter === 'today' && '오늘 예정된 도량 방문·공양 예약이 없습니다.'}
-                  {visitDateFilter === 'tomorrow' && '내일 예정된 도량 방문·공양 예약이 없습니다.'}
-                  {visitDateFilter === 'afterTomorrow' && '모레 예정된 도량 방문·공양 예약이 없습니다.'}
-                  {visitDateFilter === 'geulpi' && '글피 및 이후 예정된 도량 방문·공양 예약이 없습니다.'}
+                  {visitDateFilter === 'all' && '등록된 사찰 방문·차담 예약이 없습니다.'}
+                  {visitDateFilter === 'today' && '오늘 예정된 사찰 방문·차담 예약이 없습니다.'}
+                  {visitDateFilter === 'tomorrow' && '내일 예정된 사찰 방문·차담 예약이 없습니다.'}
+                  {visitDateFilter === 'afterTomorrow' && '모레 예정된 사찰 방문·차담 예약이 없습니다.'}
+                  {visitDateFilter === 'geulpi' && '글피 및 이후 예정된 사찰 방문·차담 예약이 없습니다.'}
                 </p>
                 {visitDateFilter !== 'all' && visits.length > 0 && (
                   <button
@@ -1213,7 +1213,7 @@ export default function MobileAdminView({
                             cleanPhone
                               ? `sms:${cleanPhone}?body=${encodeURIComponent(
                                   `[제주 소원사]
-${v.visitor_name} 불자님, ${v.visit_date} ${v.visit_time} 방문 및 공양 예약 확인차 연락드렸습니다.`
+${v.visitor_name} 불자님, ${v.visit_date} ${v.visit_time} 사찰 방문 및 차담 예약 확인차 연락드렸습니다.`
                                 )}`
                               : '#'
                           }

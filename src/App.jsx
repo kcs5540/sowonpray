@@ -2668,8 +2668,11 @@ function formatRelativeOrDate(dateStr) {
   // 도량 방문 & 차담·사찰 공양(식사) 사전 예약 폼 상태 (첫 화면 부담을 줄이기 위해 기본 접힘)
   const [showVisitForm, setShowVisitForm] = useState(false)
   const [visitDate, setVisitDate] = useState(() => {
-    const tomorrow = new Date(Date.now() + 86400000)
-    return tomorrow.toISOString().split('T')[0]
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const date = String(now.getDate()).padStart(2, '0')
+    return `${year}-${month}-${date}`
   })
   const [visitTime, setVisitTime] = useState('오전 11:30 (점심공양)')
   const [visitHeadcount, setVisitHeadcount] = useState(2)
