@@ -587,8 +587,8 @@ export default function LanternTab({
                           회원 연동됨
                         </span>
                       ) : (
-                        <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1 py-0.2 rounded border border-[#E5D399]">
-                          간지 자동계산
+                        <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
+                          자동간지계산
                         </span>
                       )}
                     </label>
