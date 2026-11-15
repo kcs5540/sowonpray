@@ -4602,16 +4602,27 @@ function formatRelativeOrDate(dateStr) {
     const todayMoktakRewardCount = 0
 
     // 9) 실시간 자동 정산 총 합계
-    // 전법 법연(직접) + 도량 권선(산하) + 오늘 5대 신행(소원등 1,000 + 대웅전 1,000 + 사경 1,000 + 인연전달 5,000~50,000 + 신규인연받음 5,000)
-    // 🌟 대표님 지침: 기확인 공덕(오다혜 13,390, 김철수 35,100)을 온전히 보존하고, 이 다음 활동부터 누적 가산
-    const baseSavedMerit = Math.max(
-      Number(currentUser?.merit_count) || 0,
-      currentUser?.code === '33065540' ? 35100 : 0,
-      currentUser?.code === '83855838' ? 13390 : 0
-    )
-    const calculatedReward = believersReward + lanternReward + sanctuaryReward + sutraReward + inyeonGiverReward + inyeonReceiverReward
-    const totalReward = Math.max(baseSavedMerit, calculatedReward)
-    const previousProtectedMerit = Math.max(0, totalReward - calculatedReward)
+    // 🌟 대표님 지침: 기확인 공덕(김철수 35,100, 오다혜 13,390)을 영구 베이스로 온전히 보존하고,
+    // 오늘 진행하는 5대 일일 신행(소원등 1,000 + 대웅전 1,000 + 사경 1,000 + 인연전달 5,000~50,000 + 신규인연받음 5,000)을
+    // 그 위에 실시간으로 '누적 가산'한다!
+    const todayDailyReward = lanternReward + sanctuaryReward + sutraReward + inyeonGiverReward + inyeonReceiverReward
+
+    let previousProtectedMerit = 0
+    let totalReward = 0
+
+    if (currentUser?.code === '33065540') {
+      previousProtectedMerit = 35100
+      totalReward = previousProtectedMerit + todayDailyReward
+    } else if (currentUser?.code === '83855838') {
+      previousProtectedMerit = 13390
+      totalReward = previousProtectedMerit + todayDailyReward
+    } else {
+      // 일반 신도 및 기타 포교위원: 법연 공덕 + 오늘 5대 신행 활동
+      const calculatedReward = believersReward + todayDailyReward
+      const dbBase = Number(currentUser?.merit_count) || 0
+      totalReward = Math.max(dbBase, calculatedReward)
+      previousProtectedMerit = Math.max(0, totalReward - calculatedReward)
+    }
 
     return {
       isAgent,
@@ -6024,6 +6035,7 @@ function formatRelativeOrDate(dateStr) {
     if (currentUser) {
       const baseCount = Number(currentUser.merit_count) || 0
       const newCount = baseCount + amount
+      setCurrentUser((prev) => (prev ? { ...prev, merit_count: newCount } : prev))
       setMembers((prev) =>
         prev.map((m) =>
           m.code === currentUser.code
