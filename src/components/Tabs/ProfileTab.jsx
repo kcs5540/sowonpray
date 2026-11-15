@@ -599,10 +599,7 @@ export default function ProfileTab({
                           const sutraInfo = getDailyMeritInfo('sutra', uCode)
                           const inyeonGiverInfo = getDailyMeritInfo('inyeon_giver', uCode)
                           const inyeonReceiverInfo = getDailyMeritInfo('inyeon_receiver', uCode)
-                          const bowInfo = getDailyMeritInfo('bow', uCode)
-                          const moktakInfo = getDailyMeritInfo('moktak', uCode)
-                          const yeomjuInfo = getDailyMeritInfo('yeomju', uCode)
-                          const todayTotalDaily = sanctuaryInfo.currentPoints + lanternInfo.currentPoints + sutraInfo.currentPoints + inyeonGiverInfo.currentPoints + inyeonReceiverInfo.currentPoints + bowInfo.currentPoints + moktakInfo.currentPoints + yeomjuInfo.currentPoints
+                          const todayTotalDaily = sanctuaryInfo.currentPoints + lanternInfo.currentPoints + sutraInfo.currentPoints + inyeonGiverInfo.currentPoints + inyeonReceiverInfo.currentPoints
 
                           return (
                             <div className="space-y-1.5 p-2.5 sm:p-3 rounded-2xl bg-gradient-to-b from-[#F5D061]/10 to-black/30 border border-[#F5D061]/40 shadow-sm">
@@ -744,104 +741,31 @@ export default function ProfileTab({
                                   </div>
                                 </div>
 
-                                {/* 신행 3) 108배 절 정진: 1배 10 공덕 (1일 최대 1,080 공덕) */}
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    if (onOpenSanctuary) onOpenSanctuary()
-                                  }}
-                                  className="w-full px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
-                                  title="대웅전 참선 쉼터에서 절 올리기"
-                                >
+                                {/* 신행 5) (신규) 인연 받은 사람: 상대방이 소원등 켰을 때 5,000 공덕 (1일 5,000) */}
+                                <div className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-left">
                                   <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
-                                      <span className="text-base shrink-0">🙇</span>
+                                      <span className="text-base shrink-0">🌸</span>
                                       <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
-                                        108배 절 올리기
+                                        <span className="text-[#F472B6] font-extrabold mr-1">(신규)</span>인연 받음 공덕
                                       </span>
                                     </div>
                                     <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
-                                      오늘 {bowInfo.currentCount}/108배
+                                      오늘 {inyeonReceiverInfo.currentCount}/1회
                                     </span>
                                   </div>
                                   <div className="flex items-center justify-between mt-1 text-[11px]">
                                     <span className="text-[#A89C8E]">
-                                      1배 10 공덕{' '}
+                                      상대방 점등 시 5,000 공덕{' '}
                                       <span className="text-emerald-400 font-semibold">
-                                        (최대 1,080 공덕)
+                                        (1일 5,000)
                                       </span>
                                     </span>
                                     <span className="font-mono font-bold text-emerald-300">
-                                      +{bowInfo.currentPoints.toLocaleString()} / 1,080 공덕
+                                      +{inyeonReceiverInfo.currentPoints.toLocaleString()} / 5,000 공덕
                                     </span>
                                   </div>
-                                </button>
-
-                                {/* 신행 4) 목탁 치기 정진: 1타 10 공덕 (1일 최대 1,080 공덕) */}
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    if (onOpenSanctuary) onOpenSanctuary()
-                                  }}
-                                  className="w-full px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
-                                  title="대웅전 참선 쉼터에서 목탁 치기"
-                                >
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-base shrink-0">🪵</span>
-                                      <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
-                                        목탁 치기 정진
-                                      </span>
-                                    </div>
-                                    <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
-                                      오늘 {moktakInfo.currentCount}/108타
-                                    </span>
-                                  </div>
-                                  <div className="flex items-center justify-between mt-1 text-[11px]">
-                                    <span className="text-[#A89C8E]">
-                                      1타 10 공덕{' '}
-                                      <span className="text-emerald-400 font-semibold">
-                                        (최대 1,080 공덕)
-                                      </span>
-                                    </span>
-                                    <span className="font-mono font-bold text-emerald-300">
-                                      +{moktakInfo.currentPoints.toLocaleString()} / 1,080 공덕
-                                    </span>
-                                  </div>
-                                </button>
-
-                                {/* 신행 5) 108 염주 정진: 1알 10 공덕 (1일 최대 1,080 공덕) */}
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    if (onOpenSanctuary) onOpenSanctuary()
-                                  }}
-                                  className="w-full px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
-                                  title="대웅전 참선 쉼터에서 108 염주 굴리기"
-                                >
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-base shrink-0">📿</span>
-                                      <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
-                                        108 염주 정진
-                                      </span>
-                                    </div>
-                                    <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
-                                      오늘 {yeomjuInfo.currentCount}/108알
-                                    </span>
-                                  </div>
-                                  <div className="flex items-center justify-between mt-1 text-[11px]">
-                                    <span className="text-[#A89C8E]">
-                                      1알 10 공덕{' '}
-                                      <span className="text-emerald-400 font-semibold">
-                                        (최대 1,080 공덕)
-                                      </span>
-                                    </span>
-                                    <span className="font-mono font-bold text-emerald-300">
-                                      +{yeomjuInfo.currentPoints.toLocaleString()} / 1,080 공덕
-                                    </span>
-                                  </div>
-                                </button>
+                                </div>
                               </div>
                             </div>
                           )

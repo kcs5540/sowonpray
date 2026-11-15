@@ -4404,27 +4404,13 @@ function formatRelativeOrDate(dateStr) {
     } catch (e) {}
     const todaySutraRewardCount = Math.min(3, todaySutraCount)
 
-    // 5) 108 목탁멍: 1회당 500원 (1일 최대 1회 제한, 정성이 담긴 108타 완주 회향 시 적립)
-    let storedMoktak = 0
-    try {
-      storedMoktak =
-        Number(localStorage.getItem(`sowonpray_moktak_reward_count_${currentUser.code}`)) ||
-        Number(localStorage.getItem(`sowonpray_moktak_count_${currentUser.code}`)) ||
-        0
-    } catch (e) {}
-    const dbMoktak = Number(currentUser.moktak_reward_count || currentUser.moktak_count) || 0
-    const moktakCount = Math.max(dbMoktak, storedMoktak)
-    const moktakReward = moktakCount * 500
+    // 5) 목탁멍은 공덕 포인트 적립 대상에서 제외 (0 처리)
+    const moktakCount = 0
+    const moktakReward = 0
+    const todayMoktakRewardCount = 0
 
-    // 오늘 적립한 목탁 횟수 (1일 최대 1회 제한 = 500원)
-    let todayMoktakCount = 0
-    try {
-      todayMoktakCount = Number(localStorage.getItem(`sowonpray_moktak_daily_${currentUser.code}_${todayKey}`)) || 0
-    } catch (e) {}
-    const todayMoktakRewardCount = Math.min(1, todayMoktakCount)
-
-    // 6) 총 합계 실시간 반영 (1일 3대 신행 매일 최대 1,000원 = 소원등 200원 + 사경 3회 300원 + 목탁 500원)
-    const totalReward = believersReward + lanternReward + sutraReward + moktakReward
+    // 6) 총 합계 실시간 반영 (어제 정립한 공식 신행 공덕 규격 준용)
+    const totalReward = believersReward + lanternReward + sutraReward
 
     return {
       isAgent,
