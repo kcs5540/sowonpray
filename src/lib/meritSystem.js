@@ -88,20 +88,19 @@ export const getDailyMeritInfo = (activityKey, userCode = 'guest', cloudPoints =
 
   const today = getTodayKey()
   const storageKey = `sowon_daily_merit_${activityKey}_${userCode || 'guest'}_${today}`
+  
+  // 🌟 클라우드 DB 우선 원칙 (Single Source of Truth): 클라우드 포인트가 있으면 무조건 우선 적용
   let currentPoints = 0
-  try {
-    const val = localStorage.getItem(storageKey)
-    if (val) currentPoints = parseInt(val, 10) || 0
-  } catch (e) {}
-
   if (cloudPoints !== null && cloudPoints !== undefined) {
-    const cPoints = Number(cloudPoints) || 0
-    if (cPoints > currentPoints) {
-      currentPoints = cPoints
-      try {
-        localStorage.setItem(storageKey, String(currentPoints))
-      } catch (e) {}
-    }
+    currentPoints = Number(cloudPoints) || 0
+    try {
+      localStorage.setItem(storageKey, String(currentPoints))
+    } catch (e) {}
+  } else {
+    try {
+      const val = localStorage.getItem(storageKey)
+      if (val) currentPoints = parseInt(val, 10) || 0
+    } catch (e) {}
   }
 
   const currentCount = rule.pointsPerUnit > 0 ? Math.floor(currentPoints / rule.pointsPerUnit) : 0
@@ -164,7 +163,7 @@ export const getAllDailyMeritSummary = (userCode = 'guest') => {
  * @param {number} customUnits - 단위 수량 (기본 1)
  * @returns {object} { earnedPoints, currentDailyPoints, maxDailyPoints, isMax, isNewlyMax, message }
  */
-export const awardMerit = (activityKey, userCode = 'guest', customUnits = 1) => {
+export const awardMerit = (activityKey, userCode = 'guest', customUnits = 1, cloudPoints = null) => {
   const rule = Object.values(MERIT_RULES).find((r) => r.key === activityKey)
   if (!rule) {
     return { earnedPoints: 0, isMax: false, isNewlyMax: false, currentDailyPoints: 0, message: '' }
@@ -174,10 +173,14 @@ export const awardMerit = (activityKey, userCode = 'guest', customUnits = 1) => 
   const code = userCode || 'guest'
   const storageKey = `sowon_daily_merit_${activityKey}_${code}_${today}`
   let currentPoints = 0
-  try {
-    const val = localStorage.getItem(storageKey)
-    if (val) currentPoints = parseInt(val, 10) || 0
-  } catch (e) {}
+  if (cloudPoints !== null && cloudPoints !== undefined) {
+    currentPoints = Number(cloudPoints) || 0
+  } else {
+    try {
+      const val = localStorage.getItem(storageKey)
+      if (val) currentPoints = parseInt(val, 10) || 0
+    } catch (e) {}
+  }
 
   const maxPoints = rule.dailyMax
   if (maxPoints !== null && currentPoints >= maxPoints) {

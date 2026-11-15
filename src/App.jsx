@@ -1971,20 +1971,6 @@ function formatRelativeOrDate(dateStr) {
         localStorage.removeItem('sowonpray_merit_82341088')
       } catch (e) {}
 
-      const applyLocalMerit = (list) =>
-        list.map((m) => {
-          try {
-            const localCached = localStorage.getItem(`sowonpray_merit_${m.code}`)
-            if (localCached && localCached !== '108' && localCached !== '109') {
-              const parsed = parseInt(localCached, 10)
-              if (!isNaN(parsed) && parsed > (m.merit_count || 0)) {
-                return { ...m, merit_count: parsed }
-              }
-            }
-          } catch (e) {}
-          return m
-        })
-
       if (saved) {
         const parsed = JSON.parse(saved)
         const cleaned = parsed
@@ -1997,9 +1983,9 @@ function formatRelativeOrDate(dateStr) {
           seen.add(m.code)
           return true
         })
-        return applyLocalMerit(unique)
+        return unique
       }
-      return applyLocalMerit(INITIAL_MEMBERS.map(normalizeMemberHierarchy))
+      return INITIAL_MEMBERS.map(normalizeMemberHierarchy)
     } catch {
       return INITIAL_MEMBERS.map(normalizeMemberHierarchy)
     }
@@ -2354,19 +2340,7 @@ function formatRelativeOrDate(dateStr) {
             .filter((m) => m.code !== '49121083' && m.code !== '74200267')
             .map((m) => {
               const fixedParent = (m.parent_code === '49121083' || m.parent_code === '74200267' ? '55570267' : m.parent_code)
-              let meritCount = m.merit_count || 0
-              try {
-                const localCached = localStorage.getItem(`sowonpray_merit_${m.code}`)
-                if (localCached && localCached !== '108' && localCached !== '109') {
-                  const parsed = parseInt(localCached, 10)
-                  if (!isNaN(parsed) && parsed > meritCount) {
-                    meritCount = parsed
-                    // Supabase에 로컬 캐시된 최신 공덕수 역동기화
-                    supabase.from('members').update({ merit_count: parsed }).eq('code', m.code).then()
-                  }
-                }
-              } catch (e) {}
-              return { ...m, parent_code: fixedParent, merit_count: meritCount }
+              return { ...m, parent_code: fixedParent, merit_count: Number(m.merit_count) || 0 }
             })
 
           const merged = sanitizedCloud
