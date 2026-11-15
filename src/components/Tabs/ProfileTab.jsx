@@ -595,7 +595,17 @@ export default function ProfileTab({
                         {(() => {
                           const uCode = currentUser?.code || 'guest'
                           const sanctuaryInfo = getDailyMeritInfo('sanctuary', uCode)
-                          const lanternInfo = getDailyMeritInfo('lantern', uCode)
+                          const rawLanternInfo = getDailyMeritInfo('lantern', uCode)
+                          const isUserLanternActive = Boolean(isLanternLit || rawLanternInfo.currentPoints >= 1000)
+                          const lanternInfo = isUserLanternActive
+                            ? {
+                                ...rawLanternInfo,
+                                currentPoints: Math.max(1000, rawLanternInfo.currentPoints),
+                                currentCount: 1,
+                                remainingPoints: 0,
+                                isMax: true,
+                              }
+                            : rawLanternInfo
                           const sutraInfo = getDailyMeritInfo('sutra', uCode)
                           const inyeonGiverInfo = getDailyMeritInfo('inyeon_giver', uCode)
                           const inyeonReceiverInfo = getDailyMeritInfo('inyeon_receiver', uCode)

@@ -3912,6 +3912,16 @@ function formatRelativeOrDate(dateStr) {
     }
   }, [currentUser, prayers, wishPhone, wishName])
 
+  // 🪔 소원등이 현재 켜져 있는 상태(isLanternLit)라면 오늘의 소원등 공덕(1일 1회 1,000)을 즉시 자동 동기화/보장
+  useEffect(() => {
+    if (isLanternLit && currentUser?.code) {
+      const info = getDailyMeritInfo('lantern', currentUser.code)
+      if (info.currentPoints < 1000) {
+        awardMerit('lantern', currentUser.code, 1)
+      }
+    }
+  }, [isLanternLit, currentUser])
+
   // 사경/법문/경전공부/지혜퀴즈 탭 상태
   const [sutraSubTab, setSutraSubTab] = useState('copy') // 'copy' | 'wisdom' | 'study' | 'quiz'
   const [selectedSutraIdx, setSelectedSutraIdx] = useState(0)
@@ -5416,7 +5426,8 @@ function formatRelativeOrDate(dateStr) {
           extra_data: { registered_via: isBulsaReg ? 'bulsa_consultation' : 'wish_lantern' },
         }
         if (!isBulsaReg) {
-          awardMerit('lantern', newBeliever.code, 1)
+          const targetCode = currentUser?.code || newBeliever.code
+          awardMerit('lantern', targetCode, 1)
         }
         setMembers((prev) => [newBeliever, ...prev])
         try {
@@ -5429,7 +5440,8 @@ function formatRelativeOrDate(dateStr) {
         }
       } else {
         // 기존 회원이 소원등을 올릴 때도 공덕 (1일 1회 최대 1,000) 적립
-        const meritRes = awardMerit('lantern', existingPrayerMember.code, 1)
+        const targetCode = currentUser?.code || existingPrayerMember.code
+        const meritRes = awardMerit('lantern', targetCode, 1)
         let addedMerit = meritRes.earnedPoints || 0
 
         // 🌸 인연 받은 사람: 상대방에게 인연을 받아 소원등 켰을 경우 5,000 공덕 (1일 한도 5,000)
