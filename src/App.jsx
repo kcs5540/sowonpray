@@ -1577,9 +1577,15 @@ function getTodayLunarAndJaeil() {
   // 다가오는 주요 사찰 재일 D-Day 순 정렬
   const upcomingJaeils = JAEIL_LIST.map((j) => {
     let diff = j.day - currentLunarDay;
-    if (diff < 0) diff += 30;
+    let targetMonth = currentLunarMonth;
+    if (diff < 0) {
+      diff += 30;
+      targetMonth = (currentLunarMonth % 12) + 1;
+    }
     return {
       ...j,
+      month: targetMonth,
+      dateFormatted: `${targetMonth}-${j.day}일`,
       daysLeft: diff,
       isToday: diff === 0,
       ddayText: diff === 0 ? '오늘 봉행' : `D-${diff}`,

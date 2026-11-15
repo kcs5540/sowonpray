@@ -1063,8 +1063,8 @@ export default function HomeTab({
                               {j.isToday && <span className="text-xs">🔥</span>}
                               <span>{j.name}</span>
                             </div>
-                            <div className="text-[10px] text-[#8C7A5B] mt-1 font-medium">
-                              음력 {j.day}일
+                            <div className="text-[10.5px] text-[#8C7A5B] mt-1 font-medium font-mono">
+                              음력 {j.dateFormatted || `${j.day}일`}
                             </div>
                           </div>
                           <span
