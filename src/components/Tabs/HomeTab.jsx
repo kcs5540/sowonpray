@@ -217,8 +217,13 @@ export default function HomeTab({
                       <button
                         type="button"
                         onClick={() => {
-                          playMoktakSound()
-                          setActiveTab(slide.targetTab)
+                          if (slide.targetTab === 'sanctuary') {
+                            if (playSingingBowlSound) playSingingBowlSound()
+                            if (setShowSanctuaryModal) setShowSanctuaryModal(true)
+                          } else {
+                            playMoktakSound()
+                            setActiveTab(slide.targetTab)
+                          }
                         }}
                         className="px-3 py-1 rounded-lg bg-[#F5D061]/20 hover:bg-[#F5D061]/30 text-[#F5D061] border border-[#F5D061]/40 text-[11px] font-bold transition whitespace-nowrap"
                       >

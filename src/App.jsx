@@ -134,8 +134,8 @@ const HERO_SLIDES = [
     titleHighlight: '광명 소원등',
     description:
       '불자님께서 정성껏 밝히신 소원등과 한 줄 사경의 공덕이 매일 아침 대웅전 예불 독경 소리와 함께 하늘에 닿습니다.',
-    targetTab: 'sutra',
-    ctaLabel: '한 줄 사경 · 경전공부 ▶',
+    targetTab: 'sanctuary',
+    ctaLabel: '모바일 대웅전 참배 ▶',
   },
   {
     id: 'slide-3',
