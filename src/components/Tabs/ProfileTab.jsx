@@ -592,7 +592,7 @@ export default function ProfileTab({
                                   <span>오늘의 신행 공덕</span>
                                 </div>
                                 <span className="text-xs sm:text-[13px] font-black text-emerald-300 bg-emerald-500/20 border border-emerald-400/40 px-2.5 py-0.5 rounded-full shrink-0">
-                                  오늘 +{todayTotalDaily.toLocaleString()} 공덕
+                                  +{todayTotalDaily.toLocaleString()} 공덕
                                 </span>
                               </div>
 
