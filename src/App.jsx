@@ -2129,6 +2129,10 @@ function formatRelativeOrDate(dateStr) {
     toastTimerRef.current = setTimeout(() => setToast(null), duration)
   }
 
+  // 💬 카카오 최초 신규 가입 시 전화번호 연동 모달 상태
+  const [kakaoPendingUser, setKakaoPendingUser] = useState(null)
+  const [kakaoPhoneInput, setKakaoPhoneInput] = useState('')
+
   // 💬 카카오 로그인 공식 OAuth 인가 콜백 감지 (?code=XXXXX)
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -2157,9 +2161,9 @@ function formatRelativeOrDate(dateStr) {
 
         const { id: kakaoId, nickname, profile_image: profileImg } = data.user
 
-        // 1) 기존 회원 중 카카오 고유 ID 또는 매칭 회원이 있는지 확인
+        // 1) 기존 회원 중 카카오 고유 ID가 이미 연결된 회원이 있는지 확인
         const existing = members.find(
-          (m) => m.extra_data?.kakao_id === kakaoId || m.code === `K${kakaoId.slice(-7)}`
+          (m) => m.extra_data?.kakao_id === kakaoId
         )
 
         if (existing) {
@@ -2175,48 +2179,95 @@ function formatRelativeOrDate(dateStr) {
           return
         }
 
-        // 2) 신규 회원 자동 생성 & 즉시 로그인
-        const newCode = `K${kakaoId.slice(-7)}`
-        const newMember = {
-          code: newCode,
-          phone: `010-0000-${kakaoId.slice(-4)}`,
-          password_pin: '0000',
-          name: nickname || '소원사 불자',
-          dharma_name: '',
-          birth_date: '',
-          lunar_solar: 'solar',
-          address: '',
-          family_memo: '카카오톡 원클릭 가입 불자',
-          role: 'believer',
-          parent_code: referralCode || '33065540',
-          bank_name: '',
-          bank_account: '',
-          account_holder: '',
-          merit_count: 1,
-          believers_count: 0,
-          wipae_count: 0,
-          extra_data: { kakao_id: kakaoId, profile_image: profileImg, is_kakao_user: true },
-        }
-
-        setMembers((prev) => [newMember, ...prev])
-        setCurrentUserCode(newMember.code)
-        try {
-          localStorage.setItem('sowonpray_remember_login', 'true')
-          localStorage.setItem('sowonpray_saved_login_id', newMember.code)
-          localStorage.setItem('sowonpray_saved_login_pw', '0000')
-        } catch (e) {}
-        if (supabase) {
-          supabase.from('members').upsert([newMember], { onConflict: 'code' }).then()
-        }
-        playSingingBowlSound()
-        showToast(`🎉 환영합니다, ${nickname} 불자님! 카카오톡 계정으로 자동 가입 및 로그인되었습니다.`)
-        setActiveTab('home')
+        // 2) 카카오 최초 가입자: 전화번호를 입력받아 소원사 8자리 코드로 생성 유도!
+        setKakaoPendingUser({ id: kakaoId, nickname, profile_image: profileImg })
       })
       .catch((err) => {
         console.error('Kakao callback error:', err)
         showToast('카카오 로그인 처리 중 오류가 발생했습니다.')
       })
-  }, [members, referralCode])
+  }, [members])
+
+  // 💬 카카오 전화번호 입력 완료 & 소원사 8자리 신도 코드 확정 핸들러
+  const handleConfirmKakaoPhone = () => {
+    const rawCode8 = extractPhone8Code(kakaoPhoneInput)
+    if (rawCode8.length !== 8) {
+      showToast('휴대폰 번호를 정확히 입력해 주세요. (예: 010-1234-5678)')
+      return
+    }
+
+    if (!kakaoPendingUser) return
+
+    const { id: kakaoId, nickname, profile_image: profileImg } = kakaoPendingUser
+
+    // 1) 이미 해당 전화번호 8자리로 등록된 기존 회원이 있는 경우: 카카오 계정 즉시 연동!
+    const existing = members.find((m) => m.code === rawCode8)
+    if (existing) {
+      const updated = {
+        ...existing,
+        extra_data: {
+          ...(existing.extra_data || {}),
+          kakao_id: kakaoId,
+          profile_image: profileImg || existing.extra_data?.profile_image,
+          is_kakao_user: true,
+        },
+      }
+      setMembers((prev) => prev.map((m) => (m.code === rawCode8 ? updated : m)))
+      setCurrentUserCode(rawCode8)
+      try {
+        localStorage.setItem('sowonpray_remember_login', 'true')
+        localStorage.setItem('sowonpray_saved_login_id', existing.phone || rawCode8)
+        localStorage.setItem('sowonpray_saved_login_pw', existing.password_pin || '0000')
+      } catch (e) {}
+      if (supabase) {
+        supabase.from('members').upsert([updated], { onConflict: 'code' }).then()
+      }
+      setKakaoPendingUser(null)
+      setKakaoPhoneInput('')
+      playSingingBowlSound()
+      showToast(`🙏 성불하세요, ${existing.name} 불자님! 기존 소원사 계정과 카카오톡이 연동되었습니다.`)
+      setActiveTab('home')
+      return
+    }
+
+    // 2) 신규 회원인 경우: 전화번호 뒤 8자리 아이디 + 초기비번 0000으로 즉시 생성!
+    const newMember = {
+      code: rawCode8,
+      phone: formatPhone11(kakaoPhoneInput),
+      password_pin: '0000', // 대표님 지정: 초기 비밀번호 0000 고정
+      name: nickname || '소원사 불자',
+      dharma_name: '',
+      birth_date: '',
+      lunar_solar: 'solar',
+      address: '',
+      family_memo: '카카오톡 원클릭 가입 불자',
+      role: 'believer',
+      parent_code: referralCode || '33065540',
+      bank_name: '',
+      bank_account: '',
+      account_holder: '',
+      merit_count: 1,
+      believers_count: 0,
+      wipae_count: 0,
+      extra_data: { kakao_id: kakaoId, profile_image: profileImg, is_kakao_user: true },
+    }
+
+    setMembers((prev) => [newMember, ...prev])
+    setCurrentUserCode(newMember.code)
+    try {
+      localStorage.setItem('sowonpray_remember_login', 'true')
+      localStorage.setItem('sowonpray_saved_login_id', newMember.phone)
+      localStorage.setItem('sowonpray_saved_login_pw', '0000')
+    } catch (e) {}
+    if (supabase) {
+      supabase.from('members').upsert([newMember], { onConflict: 'code' }).then()
+    }
+    setKakaoPendingUser(null)
+    setKakaoPhoneInput('')
+    playSingingBowlSound()
+    showToast(`🎉 환영합니다, ${newMember.name} 불자님! 전화번호 계정(초기비번 0000)이 생성되어 자동 로그인되었습니다.`)
+    setActiveTab('home')
+  }
 
   // 발원문 접수일시 친화적 포맷팅 함수
   const formatPrayerDate = (dateStr) => {
@@ -7671,6 +7722,65 @@ function formatRelativeOrDate(dateStr) {
                 </button>
               </>
             )}
+          </div>
+        )}
+
+        {/* 💬 카카오 최초 신규 가입 시 휴대폰 번호 연동 모달 */}
+        {kakaoPendingUser && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl border-2 border-[#C59B27] space-y-4 animate-in zoom-in-95 duration-200">
+              <div className="text-center space-y-1">
+                <div className="w-12 h-12 rounded-full bg-[#FAF3DF] border border-[#C59B27] flex items-center justify-center mx-auto text-2xl">
+                  🙏
+                </div>
+                <h3 className="text-lg font-bold text-[#1B1815]">
+                  소원사 도량 등록을 환영합니다!
+                </h3>
+                <p className="text-xs text-[#6B5E51] leading-relaxed">
+                  <strong>{kakaoPendingUser.nickname}</strong> 불자님의 대웅전 축원 및 도량 신도 등록을 위해 휴대전화 번호를 입력해 주세요.
+                </p>
+              </div>
+
+              <div className="space-y-2 pt-1">
+                <label className="block text-xs font-bold text-[#3D3630]">
+                  휴대전화 번호 (필수)
+                </label>
+                <input
+                  type="tel"
+                  autoFocus
+                  value={kakaoPhoneInput}
+                  onChange={(e) => setKakaoPhoneInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleConfirmKakaoPhone()
+                  }}
+                  placeholder="010-0000-0000"
+                  className="w-full px-4 py-3 rounded-xl bg-[#FAF8F5] border border-[#C59B27]/50 text-base font-bold text-[#1B1815] focus:outline-none focus:border-[#C59B27] text-center"
+                />
+                <p className="text-[11px] text-[#8C8071] text-center">
+                  * 초기 비밀번호는 <strong>0000</strong>으로 자동 설정됩니다.
+                </p>
+              </div>
+
+              <div className="pt-1 space-y-2">
+                <button
+                  type="button"
+                  onClick={handleConfirmKakaoPhone}
+                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#C59B27] text-black font-extrabold text-sm shadow-md hover:brightness-110 transition active:scale-95 cursor-pointer"
+                >
+                  소원사 모바일법당 입장하기 ▶
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setKakaoPendingUser(null)
+                    setKakaoPhoneInput('')
+                  }}
+                  className="w-full py-2 text-xs text-[#8C8071] hover:text-[#1B1815] transition"
+                >
+                  다음에 하기 (취소)
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
