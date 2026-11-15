@@ -61,6 +61,19 @@ function stripTargetFromName(rawName) {
   return rawName.replace(/\s*\((?:기원)?대상\s*:[^)]*\)/gi, '').trim()
 }
 
+// 생년월일 자동 하이픈(Auto-hyphen) 포맷터 (예: 19700101 -> 1970-01-01)
+function formatBirthDateInput(val) {
+  if (!val) return ''
+  const clean = String(val).replace(/[^0-9]/g, '').slice(0, 8)
+  if (clean.length <= 4) {
+    return clean
+  } else if (clean.length <= 6) {
+    return `${clean.slice(0, 4)}-${clean.slice(4)}`
+  } else {
+    return `${clean.slice(0, 4)}-${clean.slice(4, 6)}-${clean.slice(6, 8)}`
+  }
+}
+
 export default function LanternTab({
   isLanternLit,
   lanternData,
@@ -624,15 +637,16 @@ export default function LanternTab({
                         </button>
                       </div>
 
-                      {/* 생년월일 입력창 */}
+                      {/* 생년월일 입력창 (숫자만 치면 0000-00-00 자동 하이픈 연동) */}
                       <input
                         type="text"
                         value={hasDbBirth ? currentUser.birth_date : (wishBirthDate || '')}
                         onChange={(e) => {
                           if (!hasDbBirth && setWishBirthDate) {
-                            setWishBirthDate(e.target.value)
+                            setWishBirthDate(formatBirthDateInput(e.target.value))
                           }
                         }}
+                        maxLength={10}
                         readOnly={hasDbBirth}
                         placeholder={hasDbBirth ? currentUser.birth_date : "0000-00-00"}
                         className={`flex-1 min-w-0 px-3 py-2 rounded-xl border-2 text-xs sm:text-sm font-bold shadow-inner transition ${
