@@ -352,28 +352,17 @@ export default function LanternTab({
                     <button
                       type="button"
                       onClick={() => {
-                        const inputYear = window.prompt('부처님 전에 올릴 사주 간지 산출을 위해 생년(예: 1978 또는 780512)을 입력해 주세요:\n(입력 즉시 회원 DB에 영구 저장됩니다)', '')
-                        if (inputYear && inputYear.trim()) {
-                          const cleanYear = inputYear.trim()
-                          if (setWishBirthDate) setWishBirthDate(cleanYear)
-                          try {
-                            const raw = localStorage.getItem('sowonsa_7day_lantern')
-                            if (raw) {
-                              const parsed = JSON.parse(raw)
-                              parsed.birth_date = cleanYear
-                              localStorage.setItem('sowonsa_7day_lantern', JSON.stringify(parsed))
-                            }
-                          } catch (e) {}
-                          if (currentUser && supabase) {
-                            const formatted = cleanYear.length === 4 ? `${cleanYear}-01-01` : cleanYear
-                            supabase.from('members').update({ birth_date: formatted }).eq('code', currentUser.code).then()
-                            currentUser.birth_date = formatted
-                          }
-                          if (showToast) showToast('사주 간지가 성공적으로 등록되어 회원정보 DB에 저장되었습니다.')
+                        const el = document.getElementById('lantern-birth-input')
+                        if (el) {
+                          el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                          setTimeout(() => el.focus(), 300)
+                        } else {
+                          const formEl = document.getElementById('lantern-prayer-form')
+                          if (formEl) formEl.scrollIntoView({ behavior: 'smooth' })
                         }
                       }}
-                      className="inline-flex items-center gap-1 px-2.5 py-0.5 mb-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FFE899] border border-[#D4AF37]/50 text-[10.5px] font-semibold cursor-pointer transition"
-                      title="생년을 입력하시면 만세력 사주 간지가 자동으로 명패에 등재됩니다"
+                      className="inline-flex items-center gap-1 px-2.5 py-0.5 mb-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FFE899] border border-[#D4AF37]/50 text-[10.5px] font-semibold cursor-pointer transition active:scale-95"
+                      title="아래 생년월일 입력란으로 바로 이동합니다"
                     >
                       <Sparkles className="w-3 h-3 text-[#F5D061]" />
                       <span>사주간지(생년) 등록하기 ✎</span>
@@ -640,6 +629,7 @@ export default function LanternTab({
 
                       {/* 생년월일 입력창 (숫자만 치면 0000-00-00 자동 하이픈 연동) */}
                       <input
+                        id="lantern-birth-input"
                         type="text"
                         value={hasDbBirth ? currentUser.birth_date : (wishBirthDate || '')}
                         onChange={(e) => {
