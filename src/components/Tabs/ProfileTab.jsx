@@ -587,11 +587,11 @@ export default function ProfileTab({
                           return (
                             <div className="space-y-1.5 p-2.5 sm:p-3 rounded-2xl bg-gradient-to-b from-[#F5D061]/10 to-black/30 border border-[#F5D061]/40 shadow-sm">
                               <div className="flex items-center justify-between pb-1.5 border-b border-[#F5D061]/20 px-0.5">
-                                <div className="text-xs font-extrabold text-[#FFE58A] flex items-center gap-1">
-                                  <span>✨</span>
+                                <div className="text-sm sm:text-base font-black text-[#FFE58A] flex items-center gap-1.5">
+                                  <span className="text-sm">✨</span>
                                   <span>오늘의 신행 공덕</span>
                                 </div>
-                                <span className="text-[10px] font-black text-emerald-300 bg-emerald-500/20 border border-emerald-400/40 px-2 py-0.5 rounded-full shrink-0">
+                                <span className="text-xs sm:text-[13px] font-black text-emerald-300 bg-emerald-500/20 border border-emerald-400/40 px-2.5 py-0.5 rounded-full shrink-0">
                                   오늘 +{todayTotalDaily.toLocaleString()} 공덕
                                 </span>
                               </div>
