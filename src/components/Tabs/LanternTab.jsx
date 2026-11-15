@@ -634,7 +634,7 @@ export default function LanternTab({
                           }
                         }}
                         readOnly={hasDbBirth}
-                        placeholder={hasDbBirth ? currentUser.birth_date : "예: 19780512 또는 1978"}
+                        placeholder={hasDbBirth ? currentUser.birth_date : "0000-00-00"}
                         className={`flex-1 min-w-0 px-3 py-2 rounded-xl border-2 text-xs sm:text-sm font-bold shadow-inner transition ${
                           hasDbBirth
                             ? 'bg-[#F3EFE6] border-[#D5C59B]/70 text-[#5A5046] cursor-not-allowed'
