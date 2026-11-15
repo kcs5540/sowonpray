@@ -364,12 +364,12 @@ export default function HomeTab({
               {(() => {
                 const { lunarText, jaeilBadge } = getTodayLunarAndJaeil()
                 return (
-                  <div className="flex items-center justify-between gap-2 pb-2.5 mb-3 border-b border-[#F0EAE0] text-xs">
-                    <div className="flex items-center gap-1.5 text-[#6E5D45] font-bold truncate">
+                  <div className="flex flex-wrap items-center justify-between gap-y-1.5 gap-x-2 pb-2.5 mb-3 border-b border-[#F0EAE0] text-xs">
+                    <div className="flex items-center gap-1.5 text-[#6E5D45] font-bold shrink-0">
                       <Calendar className="w-4 h-4 text-[#C59B27] shrink-0" />
-                      <span className="text-[12.5px] tracking-tight">{lunarText}</span>
+                      <span className="text-[12px] sm:text-[12.5px] tracking-tight whitespace-nowrap">{lunarText}</span>
                     </div>
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] text-[11.5px] font-extrabold border border-[#E5D399] whitespace-nowrap shrink-0">
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] text-[11px] sm:text-[11.5px] font-extrabold border border-[#E5D399] whitespace-nowrap shrink-0">
                       {jaeilBadge}
                     </span>
                   </div>

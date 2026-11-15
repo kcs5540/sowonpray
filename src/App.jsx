@@ -1545,12 +1545,12 @@ function getTodayLunarAndJaeil() {
   const baseJi = 1;
   const ganIdx = ((baseGan + diffDays) % 10 + 10) % 10;
   const jiIdx = ((baseJi + diffDays) % 12 + 12) % 12;
-  const iljinStr = `${GAN[ganIdx]}${JI[jiIdx]}일`;
+  const iljinStr = `${GAN[ganIdx]}${JI[jiIdx]}`;
 
   // 주요 5대 재일 (음력 기준)
   // 초하루(1일), 약사재일(8일), 보름/미타재일(15일), 지장재일(18일), 관음재일(24일)
   const JAEIL_LIST = [
-    { day: 1, name: '초하루 인등·축원법회' },
+    { day: 1, name: '초하루법회' },
     { day: 8, name: '약사여래재일' },
     { day: 15, name: '보름 미타재일' },
     { day: 18, name: '지장재일' },
@@ -1571,7 +1571,7 @@ function getTodayLunarAndJaeil() {
 
   const jaeilBadge =
     minDaysLeft === 0
-      ? `📿 오늘: ${nextJaeil.name} 봉행`
+      ? `📿 오늘: ${nextJaeil.name}`
       : `📿 ${nextJaeil.name} D-${minDaysLeft}`;
 
   // 다가오는 주요 사찰 재일 D-Day 순 정렬
