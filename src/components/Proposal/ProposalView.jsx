@@ -131,7 +131,7 @@ export default function ProposalView({ onEnterTemple }) {
 
         {/* 📉 2. 전국 사찰이 직면한 3대 현실 위기 */}
         <section className="space-y-4">
-          <div className="text-center md:text-left">
+          <div className="text-center">
             <span className="text-xs font-bold text-[#F5D061] tracking-wider uppercase block mb-1">
               01. 현실 위기 분석
             </span>
@@ -175,7 +175,7 @@ export default function ProposalView({ onEnterTemple }) {
 
         {/* 🔄 3. 패러다임 대전환 */}
         <section className="bg-gradient-to-br from-[#201A16] to-[#15110E] p-6 md:p-8 rounded-3xl border border-[#C59B27]/40 shadow-xl space-y-4">
-          <div>
+          <div className="text-center">
             <span className="text-xs font-bold text-[#F5D061] tracking-wider uppercase block mb-1">
               02. 패러다임 대전환
             </span>
@@ -185,7 +185,7 @@ export default function ProposalView({ onEnterTemple }) {
             </h3>
           </div>
 
-          <p className="text-xs md:text-sm text-[#C8BCAC] leading-relaxed">
+          <p className="text-xs md:text-sm text-[#C8BCAC] leading-relaxed text-center max-w-2xl mx-auto">
             서울, 부산, 미국, 유럽 등 어디에 살든 내 손안의 스마트폰으로 고향 사찰 부처님께 매일 소원등을 켜고, 
             가족을 위한 기도를 올릴 수 있습니다. 전통의 경건함에 첨단 AI 기술을 더해 <strong>전국 10만 불자 도량</strong>으로 도약합니다.
           </p>
@@ -216,7 +216,7 @@ export default function ProposalView({ onEnterTemple }) {
 
         {/* ⚡ 4. 4대 핵심 킬러 솔루션 */}
         <section className="space-y-6">
-          <div>
+          <div className="text-center">
             <span className="text-xs font-bold text-[#F5D061] tracking-wider uppercase block mb-1">
               03. 4대 핵심 킬러 솔루션
             </span>
@@ -290,7 +290,7 @@ export default function ProposalView({ onEnterTemple }) {
 
         {/* 🎬 5. 스님을 사로잡는 3분 현장 데모 시연 가이드 */}
         <section className="bg-[#181310] p-6 md:p-8 rounded-3xl border border-[#C59B27]/50 shadow-2xl space-y-5">
-          <div>
+          <div className="text-center">
             <span className="text-xs font-bold text-[#F5D061] tracking-wider uppercase block mb-1">
               04. 3분 현장 데모 시연 프로세스
             </span>
@@ -351,7 +351,7 @@ export default function ProposalView({ onEnterTemple }) {
 
         {/* 🤝 6. 상생 도입 모델 (스님 부담 제로) */}
         <section className="space-y-4">
-          <div>
+          <div className="text-center">
             <span className="text-xs font-bold text-[#F5D061] tracking-wider uppercase block mb-1">
               05. 상생 도입 모델 안내
             </span>
@@ -418,7 +418,7 @@ export default function ProposalView({ onEnterTemple }) {
 
         {/* 🚀 7. 7일 쾌속 구축 로드맵 */}
         <section className="bg-[#16120F] p-6 md:p-8 rounded-3xl border border-[#C59B27]/30 space-y-4">
-          <div>
+          <div className="text-center">
             <span className="text-xs font-bold text-[#F5D061] tracking-wider uppercase block mb-1">
               06. 7일 쾌속 구축 로드맵
             </span>
