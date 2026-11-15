@@ -2421,6 +2421,7 @@ function formatRelativeOrDate(dateStr) {
   const [wishName, setWishName] = useState('')
   const [wishTarget, setWishTarget] = useState('')
   const [wishPhone, setWishPhone] = useState('')
+  const [wishBirthDate, setWishBirthDate] = useState('')
   const [showBulsaCategorySheet, setShowBulsaCategorySheet] = useState(false)
   const [wishCategory, setWishCategory] = useState('가족건강')
   const [wishText, setWishText] = useState(
@@ -3769,6 +3770,7 @@ function formatRelativeOrDate(dateStr) {
         : currentUser.name
       setWishName(displayName)
       setWishPhone(currentUser.phone)
+      setWishBirthDate(currentUser.birth_date || '')
       setProfileForm({
         name: currentUser.name || '',
         phone: currentUser.phone || '',
@@ -3785,6 +3787,7 @@ function formatRelativeOrDate(dateStr) {
     } else {
       setWishName('')
       setWishPhone('')
+      setWishBirthDate('')
     }
   }, [currentUser])
 
@@ -5293,6 +5296,7 @@ function formatRelativeOrDate(dateStr) {
     pendingPrayerDraftRef.current = {
       wishNameClean: wishName.trim(),
       wishPhoneClean: wishPhone.trim(),
+      wishBirthDateClean: (wishBirthDate || '').trim(),
       finalTarget,
       formattedBelieverName,
       wishCategory,
@@ -5313,12 +5317,17 @@ function formatRelativeOrDate(dateStr) {
       const {
         wishNameClean,
         wishPhoneClean,
+        wishBirthDateClean,
         finalTarget,
         formattedBelieverName,
         wishCategory: cat,
         finalWishText,
         isPaidPrayer: paidFlag,
       } = draft
+
+      const effectiveBirth = wishBirthDateClean || currentUser?.birth_date || ''
+      const ganjiResult = computeZodiacAndGanji(effectiveBirth)
+      const effectiveGanji = ganjiResult?.label || ''
 
       const now = Date.now()
       const schedule = computeSasiSchedule(now)
@@ -5344,6 +5353,8 @@ function formatRelativeOrDate(dateStr) {
         believer_name: formattedBelieverName,
         wish_target: finalTarget || '본인',
         believer_phone: wishPhoneClean,
+        birth_date: effectiveBirth,
+        ganji: effectiveGanji,
         wish_category: cat,
         wish_text: finalWishText,
         lit_at: now,
@@ -5368,6 +5379,8 @@ function formatRelativeOrDate(dateStr) {
         believer_name: formattedBelieverName,
         wish_target: finalTarget || '본인',
         believer_phone: wishPhoneClean,
+        birth_date: effectiveBirth,
+        ganji: effectiveGanji,
         agent_code: assignedAgentCode,
         wish_category: cat,
         wish_text: finalWishText,
@@ -5444,13 +5457,14 @@ function formatRelativeOrDate(dateStr) {
           }
         }
 
+        const formattedBirth = effectiveBirth ? (effectiveBirth.length === 4 ? `${effectiveBirth}-01-01` : effectiveBirth) : ''
         const newBeliever = {
           code: prayerCode8,
           phone: formatPhone11(wishPhoneClean),
           password_pin: prayerCode8.slice(-4) || '1234',
           name: parsedName,
           dharma_name: parsedDharma,
-          birth_date: '',
+          birth_date: formattedBirth,
           lunar_solar: '음력',
           address: '',
           family_memo: isBulsaReg
@@ -7677,6 +7691,8 @@ function formatRelativeOrDate(dateStr) {
             setWishTarget={setWishTarget}
             wishText={wishText}
             setWishText={setWishText}
+            wishBirthDate={wishBirthDate}
+            setWishBirthDate={setWishBirthDate}
             currentUser={currentUser}
             prayers={prayers}
             handlePrayerSubmit={handlePrayerSubmit}

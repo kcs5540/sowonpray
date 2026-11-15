@@ -57,12 +57,30 @@ const JIJI = ['자', '축', '인', '묘', '진', '사', '오', '미', '신', '�
 const ZODIAC_ANIMALS = ['쥐띠', '소띠', '호랑이띠', '토끼띠', '용띠', '뱀띠', '말띠', '양띠', '원숭이띠', '닭띠', '개띠', '돼지띠']
 
 // 태어난 연도로부터 사주 육십간지(예: 1962년 -> 임인생) 및 12간지 띠(호랑이띠) 자동 계산 엔진
+// 4자리(1975), 8자리(19750512), 6자리(750512), 2자리(75), 날짜형(1975-05-12) 등 전 형식 지원
 export function computeZodiacAndGanji(birthYearInput) {
-  if (!birthYearInput) return { ganji: '', animal: '', label: '' }
-  const match = String(birthYearInput).match(/\d{4}/)
-  if (!match) return { ganji: '', animal: '', label: '' }
-  const year = parseInt(match[0], 10)
-  if (isNaN(year) || year < 1900 || year > 2100) return { ganji: '', animal: '', label: '' }
+  if (!birthYearInput) return { ganji: '', animal: '', label: '', year: null }
+  const cleanStr = String(birthYearInput).replace(/[^0-9]/g, '')
+  if (!cleanStr) return { ganji: '', animal: '', label: '', year: null }
+
+  let year = null
+  if (cleanStr.length >= 4) {
+    const first4 = parseInt(cleanStr.slice(0, 4), 10)
+    if (first4 >= 1900 && first4 <= 2100) {
+      year = first4
+    } else if (cleanStr.length === 6) {
+      // 6자리 주민번호 앞자리 (예: 750512 -> 1975, 050312 -> 2005)
+      const yy = parseInt(cleanStr.slice(0, 2), 10)
+      year = yy > 30 ? 1900 + yy : 2000 + yy
+    }
+  } else if (cleanStr.length === 2) {
+    const yy = parseInt(cleanStr, 10)
+    year = yy > 30 ? 1900 + yy : 2000 + yy
+  }
+
+  if (!year || isNaN(year) || year < 1900 || year > 2100) {
+    return { ganji: '', animal: '', label: '', year: null }
+  }
 
   // 서기 4년이 갑자년(甲子年) 기준
   const ganIndex = (year - 4) % 10
@@ -72,7 +90,7 @@ export function computeZodiacAndGanji(birthYearInput) {
   const animal = ZODIAC_ANIMALS[(jiIndex + 12) % 12]
   const ganji = `${gan}${ji}생`
   const label = `${ganji} (${animal})`
-  return { ganji, animal, label }
+  return { ganji, animal, label, year }
 }
 
 // 통합 회원 초기 시드 데이터 (총괄대표 + 소원사본부 + 포교사 + 일반신도)

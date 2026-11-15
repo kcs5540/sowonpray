@@ -9,6 +9,7 @@ import {
   HelpCircle,
   ShieldCheck,
 } from 'lucide-react'
+import { computeZodiacAndGanji } from '../../lib/supabase'
 
 // 개인정보 안심 마스킹 (외부 노출 시 '이우제' -> '이*제', '오다혜 (대상: 박형목)' -> '오*혜 (대상: 박*목)')
 function maskPrivacyName(rawName) {
@@ -73,6 +74,8 @@ export default function LanternTab({
   setWishTarget,
   wishText,
   setWishText,
+  wishBirthDate,
+  setWishBirthDate,
   currentUser,
   prayers,
   handlePrayerSubmit,
@@ -90,6 +93,12 @@ export default function LanternTab({
   showToast,
   referralCode,
 }) {
+  // 🪷 AI 사주 간지(육십간지 + 띠) 실시간 자동 연산 (신도 본인 및 현재 점등된 등 기준)
+  const currentBirthSource = isLanternLit
+    ? (lanternData?.birth_date || lanternData?.ganji || currentUser?.birth_date || wishBirthDate || '')
+    : (wishBirthDate || currentUser?.birth_date || '')
+  const liveGanjiInfo = computeZodiacAndGanji(currentBirthSource)
+
   // 소원등 켜진 상태에서 가족·지인에게 카카오톡 축원 카드 공유
   const handleShareLitLantern = () => {
     if (playMoktakSound) playMoktakSound();
@@ -306,9 +315,16 @@ export default function LanternTab({
                       : 'from-[#241E18] to-[#16120E] border-[#6E5D46]'
                   }`}
                 >
-                  <div className="text-[10px] text-[#F5D061] font-bold tracking-widest border-b border-[#D4AF37]/30 pb-1 mb-1 whitespace-nowrap">
+                  <div className="text-[10px] text-[#F5D061] font-bold tracking-widest border-b border-[#D4AF37]/30 pb-1 mb-1.5 whitespace-nowrap">
                     卍 제주 소원사 대웅전 축원 명패
                   </div>
+                  {/* 만세력 사주 간지 실시간 자동 표기 뱃지 */}
+                  {liveGanjiInfo.ganji && (
+                    <div className="inline-flex items-center gap-1 px-2.5 py-0.5 mb-1.5 rounded-full bg-gradient-to-r from-[#D4AF37]/25 to-[#F5D061]/25 text-[#FFE899] border border-[#F5D061]/50 text-[11px] font-bold shadow-xs animate-fadeIn">
+                      <Sparkles className="w-3 h-3 text-[#F5D061]" />
+                      <span>{liveGanjiInfo.ganji} ({liveGanjiInfo.animal})</span>
+                    </div>
+                  )}
                   <div className="font-serif-kr text-sm sm:text-base font-bold text-white">
                     {isLanternLit
                       ? `${stripTargetFromName(lanternData?.believer_name)} 불자님`
@@ -318,6 +334,13 @@ export default function LanternTab({
                       ? `${stripTargetFromName(currentUser.name)} 불자님`
                       : '소원성취 발원 대기'}
                   </div>
+                  {/* 축원 대상이 있는 경우 명패에 기원 대상 표기 */}
+                  {((isLanternLit && lanternData?.wish_target && lanternData.wish_target !== '본인') ||
+                    (!isLanternLit && wishTarget.trim() && wishTarget.trim() !== '본인')) && (
+                    <div className="text-[11px] text-[#F5E6BE] mt-0.5 font-medium">
+                      (기원 대상: {isLanternLit ? lanternData.wish_target : wishTarget.trim()})
+                    </div>
+                  )}
                   {currentUser?.address && (
                     <div className="text-[10px] text-[#C8C0B7] mt-0.5 truncate max-w-[200px] mx-auto">
                       {currentUser.address}
@@ -469,12 +492,12 @@ export default function LanternTab({
                   </div>
                 </div>
 
-                {/* 2. 성함 & 연락처 (2열 그리드) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-0.5">
+                {/* 2. 성함 & 연락처 & 생년월일(사주간지) (3열 반응형 그리드) */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-0.5">
                   <div>
                     <label className="block text-xs font-bold text-[#3D3630] mb-1 flex items-center gap-1">
                       <span className="w-1.5 h-3.5 rounded-full bg-[#C59B27]" />
-                      <span>신청자 성함 (또는 법명)</span>
+                      <span>신청자 성함(법명)</span>
                       <span className="text-[#B8860B]">*</span>
                     </label>
                     <input
@@ -482,7 +505,7 @@ export default function LanternTab({
                       value={wishName}
                       onChange={(e) => setWishName(e.target.value)}
                       placeholder="예: 홍길동 (무량심)"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF8F5] border-2 border-[#D5C59B] focus:bg-white focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner transition"
+                      className="w-full px-3 py-2.5 rounded-xl bg-[#FAF8F5] border-2 border-[#D5C59B] focus:bg-white focus:border-[#C59B27] focus:outline-none text-xs sm:text-sm font-bold text-[#231F1C] shadow-inner transition"
                     />
                   </div>
                   <div>
@@ -496,10 +519,44 @@ export default function LanternTab({
                       value={wishPhone}
                       onChange={(e) => setWishPhone(e.target.value)}
                       placeholder="010-0000-0000"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF8F5] border-2 border-[#D5C59B] focus:bg-white focus:border-[#C59B27] focus:outline-none text-sm font-bold text-[#231F1C] shadow-inner transition"
+                      className="w-full px-3 py-2.5 rounded-xl bg-[#FAF8F5] border-2 border-[#D5C59B] focus:bg-white focus:border-[#C59B27] focus:outline-none text-xs sm:text-sm font-bold text-[#231F1C] shadow-inner transition"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[#3D3630] mb-1 flex items-center justify-between">
+                      <span className="flex items-center gap-1">
+                        <span className="w-1.5 h-3.5 rounded-full bg-[#C59B27]" />
+                        <span>생년월일 (사주)</span>
+                      </span>
+                      <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1 py-0.2 rounded border border-[#E5D399]">
+                        간지 자동계산
+                      </span>
+                    </label>
+                    <input
+                      type="text"
+                      value={wishBirthDate || ''}
+                      onChange={(e) => setWishBirthDate && setWishBirthDate(e.target.value)}
+                      placeholder="예: 1974 또는 740512"
+                      className="w-full px-3 py-2.5 rounded-xl bg-[#FAF8F5] border-2 border-[#D5C59B] focus:bg-white focus:border-[#C59B27] focus:outline-none text-xs sm:text-sm font-bold text-[#231F1C] shadow-inner transition"
                     />
                   </div>
                 </div>
+
+                {/* AI 사주 간지 실시간 자동 산출 알림 뱃지 */}
+                {liveGanjiInfo.ganji && (
+                  <div className="p-2.5 rounded-xl bg-gradient-to-r from-[#FAF3DF] via-[#FFF9E6] to-[#FAF3DF] border border-[#E5D399] flex items-center justify-between text-xs animate-fadeIn shadow-xs">
+                    <div className="flex items-center gap-1.5 text-[#8A6510] font-bold">
+                      <Sparkles className="w-4 h-4 text-[#C59B27] shrink-0" />
+                      <span>만세력 사주 간지:</span>
+                      <span className="px-2 py-0.5 rounded-md bg-[#8A6510] text-[#FFF9E6] font-extrabold shadow-xs">
+                        {liveGanjiInfo.ganji} ({liveGanjiInfo.animal})
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-[#A68020] font-medium hidden sm:inline">
+                      소원등 축원 명패에 자동 반영됨
+                    </span>
+                  </div>
+                )}
 
                 {/* 3. 축원 대상란 (소원발원 대상) */}
                 <div>
