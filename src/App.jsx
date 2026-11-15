@@ -5508,22 +5508,31 @@ function formatRelativeOrDate(dateStr) {
         }
 
         const nextMerit = (existingPrayerMember.merit_count || 0) + addedMerit
+        const needsBirthUpdate = !existingPrayerMember.birth_date && formattedBirth
         const updatedMember = {
           ...existingPrayerMember,
           merit_count: nextMerit,
           dharma_name: (!existingPrayerMember.dharma_name && parsedDharma) ? parsedDharma : existingPrayerMember.dharma_name,
+          birth_date: needsBirthUpdate ? formattedBirth : existingPrayerMember.birth_date,
         }
         setMembers((prev) =>
           prev.map((m) => (m.code === existingPrayerMember.code ? updatedMember : m))
         )
+        if (currentUser && currentUser.code === existingPrayerMember.code && needsBirthUpdate) {
+          setCurrentUser((prev) => (prev ? { ...prev, birth_date: formattedBirth } : prev))
+        }
         try {
           localStorage.setItem(`sowonpray_merit_${existingPrayerMember.code}`, String(nextMerit))
         } catch (e) {}
         if (supabase) {
-          supabase.from('members').update({
+          const updatePayload = {
             merit_count: nextMerit,
             dharma_name: updatedMember.dharma_name,
-          }).eq('code', existingPrayerMember.code).then()
+          }
+          if (needsBirthUpdate) {
+            updatePayload.birth_date = formattedBirth
+          }
+          supabase.from('members').update(updatePayload).eq('code', existingPrayerMember.code).then()
         }
       }
 

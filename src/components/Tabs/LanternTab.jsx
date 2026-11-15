@@ -9,7 +9,7 @@ import {
   HelpCircle,
   ShieldCheck,
 } from 'lucide-react'
-import { computeZodiacAndGanji } from '../../lib/supabase'
+import { supabase, computeZodiacAndGanji } from '../../lib/supabase'
 
 // 개인정보 안심 마스킹 (외부 노출 시 '이우제' -> '이*제', '오다혜 (대상: 박형목)' -> '오*혜 (대상: 박*목)')
 function maskPrivacyName(rawName) {
@@ -93,11 +93,13 @@ export default function LanternTab({
   showToast,
   referralCode,
 }) {
-  // 🪷 AI 사주 간지(육십간지 + 띠) 실시간 자동 연산 (사용자 실시간 입력 최우선 반영)
-  const currentBirthSource =
-    (wishBirthDate && String(wishBirthDate).trim()) ||
-    (isLanternLit ? (lanternData?.birth_date || currentUser?.birth_date) : currentUser?.birth_date) ||
-    ''
+  // 🪷 AI 사주 간지 단일 진실 공급원(Single Source of Truth) 연산
+  // 1) 로그인 회원의 생년월일이 DB에 이미 있으면 -> DB 생년월일 기준 고정
+  // 2) 로그인 회원인데 DB에 생년월일이 없거나 비회원이면 -> 입력창(wishBirthDate) 실시간 반영
+  const hasDbBirth = Boolean(currentUser?.birth_date && String(currentUser.birth_date).trim())
+  const currentBirthSource = hasDbBirth
+    ? currentUser.birth_date
+    : ((wishBirthDate && String(wishBirthDate).trim()) || (isLanternLit ? lanternData?.birth_date : '') || '')
   const liveGanjiInfo = computeZodiacAndGanji(currentBirthSource)
 
   // 소원등 켜진 상태에서 가족·지인에게 카카오톡 축원 카드 공유
@@ -332,18 +334,24 @@ export default function LanternTab({
                     <button
                       type="button"
                       onClick={() => {
-                        const inputYear = window.prompt('부처님 전에 올릴 사주 간지 산출을 위해 생년(예: 1978 또는 780512)을 입력해 주세요:', '')
+                        const inputYear = window.prompt('부처님 전에 올릴 사주 간지 산출을 위해 생년(예: 1978 또는 780512)을 입력해 주세요:\n(입력 즉시 회원 DB에 영구 저장됩니다)', '')
                         if (inputYear && inputYear.trim()) {
-                          if (setWishBirthDate) setWishBirthDate(inputYear.trim())
+                          const cleanYear = inputYear.trim()
+                          if (setWishBirthDate) setWishBirthDate(cleanYear)
                           try {
                             const raw = localStorage.getItem('sowonsa_7day_lantern')
                             if (raw) {
                               const parsed = JSON.parse(raw)
-                              parsed.birth_date = inputYear.trim()
+                              parsed.birth_date = cleanYear
                               localStorage.setItem('sowonsa_7day_lantern', JSON.stringify(parsed))
                             }
                           } catch (e) {}
-                          if (showToast) showToast('사주 간지가 성공적으로 등록되었습니다.')
+                          if (currentUser && supabase) {
+                            const formatted = cleanYear.length === 4 ? `${cleanYear}-01-01` : cleanYear
+                            supabase.from('members').update({ birth_date: formatted }).eq('code', currentUser.code).then()
+                            currentUser.birth_date = formatted
+                          }
+                          if (showToast) showToast('사주 간지가 성공적으로 등록되어 회원정보 DB에 저장되었습니다.')
                         }
                       }}
                       className="inline-flex items-center gap-1 px-2.5 py-0.5 mb-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FFE899] border border-[#D4AF37]/50 text-[10.5px] font-semibold cursor-pointer transition"
@@ -556,17 +564,53 @@ export default function LanternTab({
                         <span className="w-1.5 h-3.5 rounded-full bg-[#C59B27]" />
                         <span>생년월일 (사주)</span>
                       </span>
-                      <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1 py-0.2 rounded border border-[#E5D399]">
-                        간지 자동계산
-                      </span>
+                      {hasDbBirth ? (
+                        <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-300">
+                          🔒 회원 DB 연동
+                        </span>
+                      ) : currentUser ? (
+                        <span className="text-[10px] font-bold text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-300 animate-pulse">
+                          ⚠️ 미등록 (DB 자동저장)
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1 py-0.2 rounded border border-[#E5D399]">
+                          간지 자동계산
+                        </span>
+                      )}
                     </label>
                     <input
                       type="text"
-                      value={wishBirthDate || ''}
-                      onChange={(e) => setWishBirthDate && setWishBirthDate(e.target.value)}
-                      placeholder="예: 1974 또는 740512"
-                      className="w-full px-3 py-2.5 rounded-xl bg-[#FAF8F5] border-2 border-[#D5C59B] focus:bg-white focus:border-[#C59B27] focus:outline-none text-xs sm:text-sm font-bold text-[#231F1C] shadow-inner transition"
+                      value={hasDbBirth ? currentUser.birth_date : (wishBirthDate || '')}
+                      onChange={(e) => {
+                        if (!hasDbBirth && setWishBirthDate) {
+                          setWishBirthDate(e.target.value)
+                        }
+                      }}
+                      readOnly={hasDbBirth}
+                      placeholder={hasDbBirth ? currentUser.birth_date : "예: 1974 또는 740512"}
+                      className={`w-full px-3 py-2.5 rounded-xl border-2 text-xs sm:text-sm font-bold shadow-inner transition ${
+                        hasDbBirth
+                          ? 'bg-[#F3EFE6] border-[#D5C59B]/70 text-[#5A5046] cursor-not-allowed'
+                          : 'bg-[#FAF8F5] border-[#D5C59B] focus:bg-white focus:border-[#C59B27] focus:outline-none text-[#231F1C]'
+                      }`}
                     />
+                    {hasDbBirth ? (
+                      <div className="flex items-center justify-between text-[10.5px] text-[#8A7552] mt-1 px-0.5">
+                        <span>회원 정보 기준 자동 잠금</span>
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab && setActiveTab('profile')}
+                          className="text-[#B8860B] hover:text-[#8A6510] font-bold underline flex items-center gap-0.5 cursor-pointer"
+                        >
+                          <span>내정보에서 수정</span>
+                          <ChevronRight className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ) : currentUser ? (
+                      <div className="text-[10.5px] text-[#B8860B] mt-1 px-0.5 font-medium">
+                        생년월일을 넣으시면 회원 DB에 영구 저장됩니다.
+                      </div>
+                    ) : null}
                   </div>
                 </div>
 
