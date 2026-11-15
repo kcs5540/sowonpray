@@ -117,7 +117,7 @@ export default function ProposalView({ onEnterTemple }) {
               className="w-full sm:w-auto px-4 sm:px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#F5D061] via-[#D4AF37] to-[#AA7C11] text-black font-extrabold text-xs sm:text-sm md:text-base shadow-xl hover:brightness-110 flex items-center justify-center gap-1.5 transition whitespace-nowrap tracking-tight"
             >
               <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-red-900 animate-pulse shrink-0" />
-              <span className="whitespace-nowrap">제주 소원사 모바일법당 1초 체험하기 ▶</span>
+              <span className="whitespace-nowrap">제주 소원사 모바일법당 체험하기 ▶</span>
             </button>
             <a
               href="tel:010-3306-5540"
