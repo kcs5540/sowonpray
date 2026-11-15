@@ -132,7 +132,9 @@ export default function ProposalView({ onEnterTemple }) {
         {/* 📉 2. 전국 사찰이 직면한 3대 현실 위기 */}
         <section className="space-y-4">
           <div className="text-center md:text-left">
-            <span className="text-xs font-bold text-[#C59B27] tracking-wider uppercase">01. 현실 위기 분석</span>
+            <span className="text-xs font-bold text-[#F5D061] tracking-wider uppercase block mb-1">
+              01. 현실 위기 분석
+            </span>
             <h3 className="text-xl md:text-2xl font-bold text-white mt-1">
               "절에 오시는 보살님들은 연로해지시고, 자녀 세대는 절을 찾지 않습니다"
             </h3>
@@ -173,15 +175,15 @@ export default function ProposalView({ onEnterTemple }) {
 
         {/* 🔄 3. 패러다임 대전환 */}
         <section className="bg-gradient-to-br from-[#201A16] to-[#15110E] p-6 md:p-8 rounded-3xl border border-[#C59B27]/40 shadow-xl space-y-4">
-          <div className="flex items-center gap-2 text-[#F5D061] text-xs font-bold uppercase tracking-wider">
-            <TrendingUp className="w-4 h-4" />
-            <span>02. 패러다임 대전환</span>
+          <div>
+            <span className="text-xs font-bold text-[#F5D061] tracking-wider uppercase block mb-1">
+              02. 패러다임 대전환
+            </span>
+            <h3 className="text-xl md:text-2xl font-bold text-white">
+              '찾아오기만을 기다리는 사찰'에서 <br className="sm:hidden" />
+              <span className="text-[#F5D061]">365일 신도의 일상에 머무는 도량</span>으로
+            </h3>
           </div>
-
-          <h3 className="text-xl md:text-2xl font-bold text-white">
-            '찾아오기만을 기다리는 사찰'에서 <br className="sm:hidden" />
-            <span className="text-[#F5D061]">365일 신도의 일상에 머무는 도량</span>으로
-          </h3>
 
           <p className="text-xs md:text-sm text-[#C8BCAC] leading-relaxed">
             서울, 부산, 미국, 유럽 등 어디에 살든 내 손안의 스마트폰으로 고향 사찰 부처님께 매일 소원등을 켜고, 
@@ -215,7 +217,9 @@ export default function ProposalView({ onEnterTemple }) {
         {/* ⚡ 4. 4대 핵심 킬러 솔루션 */}
         <section className="space-y-6">
           <div>
-            <span className="text-xs font-bold text-[#C59B27] tracking-wider uppercase">03. 4대 킬러 솔루션</span>
+            <span className="text-xs font-bold text-[#F5D061] tracking-wider uppercase block mb-1">
+              03. 4대 핵심 킬러 솔루션
+            </span>
             <h3 className="text-xl md:text-2xl font-bold text-white mt-1">
               스님과 종무소의 일손은 90% 줄이고, 신도의 참여는 500% 폭증합니다
             </h3>
@@ -286,14 +290,14 @@ export default function ProposalView({ onEnterTemple }) {
 
         {/* 🎬 5. 스님을 사로잡는 3분 현장 데모 시연 가이드 */}
         <section className="bg-[#181310] p-6 md:p-8 rounded-3xl border border-[#C59B27]/50 shadow-2xl space-y-5">
-          <div className="flex items-center gap-2 text-[#F5D061] text-xs font-bold uppercase tracking-wider">
-            <Clock className="w-4 h-4" />
-            <span>04. 3분 현장 데모 시연 프로세스</span>
+          <div>
+            <span className="text-xs font-bold text-[#F5D061] tracking-wider uppercase block mb-1">
+              04. 3분 현장 데모 시연 프로세스
+            </span>
+            <h3 className="text-xl md:text-2xl font-bold text-white">
+              스님 스마트폰으로 3분 만에 끝내는 현장 검증
+            </h3>
           </div>
-
-          <h3 className="text-xl md:text-2xl font-bold text-white">
-            스님 스마트폰으로 3분 만에 끝내는 현장 검증
-          </h3>
 
           <div className="space-y-3 text-xs md:text-sm">
             <div className="flex items-start gap-3 p-3.5 rounded-xl bg-[#201A16] border border-[#C59B27]/20">
@@ -348,7 +352,9 @@ export default function ProposalView({ onEnterTemple }) {
         {/* 🤝 6. 상생 도입 모델 (스님 부담 제로) */}
         <section className="space-y-4">
           <div>
-            <span className="text-xs font-bold text-[#C59B27] tracking-wider uppercase">05. 도입 모델 안내</span>
+            <span className="text-xs font-bold text-[#F5D061] tracking-wider uppercase block mb-1">
+              05. 상생 도입 모델 안내
+            </span>
             <h3 className="text-xl md:text-2xl font-bold text-white mt-1">
               사찰의 초기 재정 부담을 완전히 없앤 맞춤형 파트너십
             </h3>
@@ -412,10 +418,14 @@ export default function ProposalView({ onEnterTemple }) {
 
         {/* 🚀 7. 7일 쾌속 구축 로드맵 */}
         <section className="bg-[#16120F] p-6 md:p-8 rounded-3xl border border-[#C59B27]/30 space-y-4">
-          <span className="text-xs font-bold text-[#C59B27] tracking-wider uppercase">06. 구축 로드맵</span>
-          <h3 className="text-xl md:text-2xl font-bold text-white">
-            신청 후 단 7일이면 스님 사찰의 이름으로 모바일법당이 열립니다
-          </h3>
+          <div>
+            <span className="text-xs font-bold text-[#F5D061] tracking-wider uppercase block mb-1">
+              06. 7일 쾌속 구축 로드맵
+            </span>
+            <h3 className="text-xl md:text-2xl font-bold text-white">
+              신청 후 단 7일이면 스님 사찰의 이름으로 모바일법당이 열립니다
+            </h3>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2 text-xs">
             <div className="bg-[#1F1915] p-3.5 rounded-xl border border-white/5 space-y-1">
