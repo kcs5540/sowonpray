@@ -587,9 +587,14 @@ export default function LanternTab({
                           회원 연동됨
                         </span>
                       ) : (
-                        <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
-                          자동간지계산
-                        </span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
+                            선택사항
+                          </span>
+                          <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
+                            자동간지계산
+                          </span>
+                        </div>
                       )}
                     </label>
 
