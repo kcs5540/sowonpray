@@ -4808,6 +4808,101 @@ function formatRelativeOrDate(dateStr) {
     setActiveTab('home')
   }
 
+  // 💬 카카오 1초 원클릭 자동 회원가입 & 로그인 핸들러
+  const handleKakaoAuthLogin = () => {
+    const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
+    if (typeof window === 'undefined' || !window.Kakao) {
+      showToast('카카오톡 인증 모듈을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.')
+      return
+    }
+
+    try {
+      if (!window.Kakao.isInitialized()) {
+        window.Kakao.init(kakaoKey)
+      }
+
+      window.Kakao.Auth.login({
+        scope: 'profile_nickname,profile_image',
+        success: () => {
+          window.Kakao.API.request({
+            url: '/v2/user/me',
+            success: (res) => {
+              const kakaoId = String(res.id)
+              const nickname = res.kakao_account?.profile?.nickname || res.properties?.nickname || '카카오불자'
+              const profileImg = res.kakao_account?.profile?.profile_image_url || ''
+
+              // 1) 기존 회원 중 카카오 고유ID 또는 매칭 회원이 있는지 확인
+              const existing = members.find(
+                (m) => m.extra_data?.kakao_id === kakaoId || m.code === `K${kakaoId.slice(-7)}`
+              )
+
+              if (existing) {
+                setCurrentUserCode(existing.code)
+                try {
+                  localStorage.setItem('sowonpray_remember_login', 'true')
+                  localStorage.setItem('sowonpray_saved_login_id', existing.phone || existing.code)
+                  localStorage.setItem('sowonpray_saved_login_pw', existing.password_pin || '0000')
+                } catch (e) {}
+                playSingingBowlSound()
+                showToast(`🙏 성불하세요, ${existing.name} 불자님! 카카오 계정으로 로그인되었습니다.`)
+                setActiveTab('home')
+                return
+              }
+
+              // 2) 없으면 카카오 정보로 즉시 신규 회원 자동 생성 & 로그인!
+              const newCode = `K${kakaoId.slice(-7)}`
+              const newMember = {
+                code: newCode,
+                phone: `010-0000-${kakaoId.slice(-4)}`,
+                password_pin: '0000',
+                name: nickname,
+                dharma_name: '',
+                birth_date: '',
+                lunar_solar: 'solar',
+                address: '',
+                family_memo: '카카오톡 간편가입 불자',
+                role: 'believer',
+                parent_code: referralCode || '33065540',
+                bank_name: '',
+                bank_account: '',
+                account_holder: '',
+                merit_count: 1,
+                believers_count: 0,
+                wipae_count: 0,
+                extra_data: { kakao_id: kakaoId, profile_image: profileImg, is_kakao_user: true },
+              }
+
+              setMembers((prev) => [newMember, ...prev])
+              setCurrentUserCode(newMember.code)
+              try {
+                localStorage.setItem('sowonpray_remember_login', 'true')
+                localStorage.setItem('sowonpray_saved_login_id', newMember.code)
+                localStorage.setItem('sowonpray_saved_login_pw', '0000')
+              } catch (e) {}
+              if (supabase) {
+                supabase.from('members').upsert([newMember], { onConflict: 'code' }).then()
+              }
+              playSingingBowlSound()
+              showToast(`🎉 환영합니다, ${nickname} 불자님! 카카오 계정으로 자동 가입 및 로그인되었습니다.`)
+              setActiveTab('home')
+            },
+            fail: (err) => {
+              console.warn('Kakao user info fail:', err)
+              showToast('카카오 계정 정보를 가져오지 못했습니다. 아래 전화번호로 로그인해 주세요.')
+            },
+          })
+        },
+        fail: (err) => {
+          console.warn('Kakao login fail:', err)
+          showToast('카카오톡 인증이 취소되었거나 팝업이 닫혔습니다.')
+        },
+      })
+    } catch (err) {
+      console.warn('Kakao auth error:', err)
+      showToast('카카오 로그인 중 오류가 발생했습니다. 전화번호로 로그인해 주세요.')
+    }
+  }
+
   // 내 정보(기본정보 + 사찰 축원 확장정보 + 정산계좌) 저장 핸들러
   const handleSaveProfile = (e) => {
     e.preventDefault()
@@ -7836,6 +7931,7 @@ function formatRelativeOrDate(dateStr) {
 
                 {activeTab === 'profile' && (
           <ProfileTab
+            handleKakaoAuthLogin={handleKakaoAuthLogin}
             isMaster={isMaster}
             isMasterOrTempleAdmin={isMasterOrTempleAdmin}
             setShowMobileAdmin={setShowMobileAdmin}

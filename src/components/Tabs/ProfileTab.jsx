@@ -15,6 +15,7 @@ import { extractPhone8Code, formatPhone11 } from '../../lib/supabase'
 import { MERIT_RULES, getDailyMeritInfo } from '../../lib/meritSystem'
 
 export default function ProfileTab({
+  handleKakaoAuthLogin,
   isMaster,
   isMasterOrTempleAdmin,
   setShowMobileAdmin,
@@ -101,6 +102,30 @@ export default function ProfileTab({
             {/* [A] 로그아웃 상태일 때: 로그인 / 신규 회원가입 폼 */}
             {!currentUser ? (
               <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DEC8] space-y-4">
+                {/* 🟡 1순위: 카카오톡 1초 원클릭 자동 회원가입 & 로그인 */}
+                <div className="space-y-1.5 pb-1">
+                  <button
+                    type="button"
+                    onClick={handleKakaoAuthLogin}
+                    className="w-full py-3.5 px-4 rounded-xl bg-[#FEE500] hover:bg-[#FDD835] active:bg-[#FBC02D] text-[#191919] font-extrabold text-sm flex items-center justify-center gap-2 shadow-sm transition active:scale-[0.98] cursor-pointer border border-[#E8D200]"
+                  >
+                    <svg className="w-5 h-5 fill-[#191919] shrink-0" viewBox="0 0 24 24">
+                      <path d="M12 3c-5.523 0-10 3.582-10 8 0 2.868 1.895 5.394 4.773 6.786l-1.22 4.471c-.106.39.345.696.673.456l5.228-3.484c.182.012.366.021.551.021 5.523 0 10-3.582 10-8s-4.477-8-10-8z"/>
+                    </svg>
+                    <span className="whitespace-nowrap">카카오로 1초 시작하기 (자동가입·로그인)</span>
+                  </button>
+                  <p className="text-[11px] text-[#8C8071] text-center font-medium">
+                    아이디·비밀번호 입력 없이 터치 한 번으로 즉시 시작됩니다.
+                  </p>
+                </div>
+
+                {/* 구분선 */}
+                <div className="flex items-center gap-2 py-0.5">
+                  <div className="flex-1 h-[1px] bg-[#EAE3D5]" />
+                  <span className="text-[11px] text-[#A69B8D] font-medium shrink-0">또는 전화번호로 시작</span>
+                  <div className="flex-1 h-[1px] bg-[#EAE3D5]" />
+                </div>
+
                 <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-[#FAF8F5] border border-[#E4DDD0]">
                   <button
                     type="button"
