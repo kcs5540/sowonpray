@@ -93,10 +93,11 @@ export default function LanternTab({
   showToast,
   referralCode,
 }) {
-  // 🪷 AI 사주 간지(육십간지 + 띠) 실시간 자동 연산 (신도 본인 및 현재 점등된 등 기준)
-  const currentBirthSource = isLanternLit
-    ? (lanternData?.birth_date || lanternData?.ganji || currentUser?.birth_date || wishBirthDate || '')
-    : (wishBirthDate || currentUser?.birth_date || '')
+  // 🪷 AI 사주 간지(육십간지 + 띠) 실시간 자동 연산 (사용자 실시간 입력 최우선 반영)
+  const currentBirthSource =
+    (wishBirthDate && String(wishBirthDate).trim()) ||
+    (isLanternLit ? (lanternData?.birth_date || currentUser?.birth_date) : currentUser?.birth_date) ||
+    ''
   const liveGanjiInfo = computeZodiacAndGanji(currentBirthSource)
 
   // 소원등 켜진 상태에서 가족·지인에게 카카오톡 축원 카드 공유
