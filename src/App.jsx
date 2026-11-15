@@ -82,6 +82,7 @@ import {
 // 관리자 전용 화면은 필요할 때만 불러옵니다 (일반 신도 앱 첫 로딩 경량화)
 const AdminERPView = lazy(() => import('./components/Admin/AdminERPView'))
 const MobileAdminView = lazy(() => import('./components/Admin/MobileAdminView'))
+const ProposalView = lazy(() => import('./components/Proposal/ProposalView'))
 const AdminLoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-[#12100E] text-[#F5D061] text-sm font-semibold">
     관리 화면을 불러오는 중입니다...
@@ -1649,7 +1650,7 @@ export default function App() {
 
   // 공개 탭 전환 시 페이지별 <title> · description · canonical · URL 경로 동기화 (결제 콜백·관리자 모드 제외)
   useEffect(() => {
-    if (typeof window === 'undefined' || isStandaloneAdmin || showMobileAdmin) return
+    if (typeof window === 'undefined' || isStandaloneAdmin || showMobileAdmin || isProposalView) return
     const TAB_META = {
       home: {
         path: '/',
@@ -1698,6 +1699,33 @@ export default function App() {
   // 🪪 [소원사 모바일 전자명함 시스템] 전용 상태
   const [showBusinessCardModal, setShowBusinessCardModal] = useState(false)
   const [businessCardTarget, setBusinessCardTarget] = useState(null)
+
+  // 📜 [전국 사찰 B2B 모바일법당 제안서 뷰 모드]: /proposal 또는 ?tab=proposal
+  const [isProposalView, setIsProposalView] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const p = window.location.pathname.replace(/\/+$/, '')
+      const s = window.location.search
+      return p === '/proposal' || p === '/b2b' || s.includes('tab=proposal') || s.includes('tab=b2b')
+    }
+    return false
+  })
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const handlePopState = () => {
+      const p = window.location.pathname.replace(/\/+$/, '')
+      const s = window.location.search
+      setIsProposalView(p === '/proposal' || p === '/b2b' || s.includes('tab=proposal') || s.includes('tab=b2b'))
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
+  useEffect(() => {
+    if (isProposalView && typeof document !== 'undefined') {
+      document.title = '차세대 사찰 모바일법당 & 스마트 종무 시스템 도입 제안서 | 제주소원사 전국 포교위원회 · 제주AI파트너'
+    }
+  }, [isProposalView])
 
   // 🏛️ [독립형 종무행정 ERP 모드]: URL이 /admin 또는 ?tab=admin 일 때 모바일 틀을 벗어나 PC 100% 와이드 단독 전산 화면으로 가동
   const [isStandaloneAdmin, setIsStandaloneAdmin] = useState(() => {
@@ -7201,6 +7229,24 @@ function formatRelativeOrDate(dateStr) {
   const isTempleAdmin = currentUser?.role === 'temple_admin'
   const isMasterOrTempleAdmin = isMaster || isTempleAdmin
   const isAdmin = isMasterOrTempleAdmin
+
+  // =========================================================================
+  // 📜 [전국 사찰 B2B 모바일법당 제안서 전용 뷰 분기]
+  // =========================================================================
+  if (isProposalView) {
+    return (
+      <Suspense fallback={<AdminLoadingFallback />}>
+        <ProposalView
+          onEnterTemple={() => {
+            setIsProposalView(false)
+            if (typeof window !== 'undefined') {
+              window.history.pushState(null, '', '/')
+            }
+          }}
+        />
+      </Suspense>
+    )
+  }
 
   // =========================================================================
   // 🏛️ [독립형 종무행정 ERP 풀스크린 데스크톱 모드 분기 - AdminERPView 모듈 호출]
