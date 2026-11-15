@@ -15,14 +15,14 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: '인가 코드(code)가 필요합니다.' })
   }
 
-  const REST_API_KEY = process.env.KAKAO_REST_API_KEY || 'e27846c11008fb06b0d208ab449db1d9'
+  const CLIENT_ID = process.env.KAKAO_REST_API_KEY || '6e9a618a3862f884e3eece4bb6550922'
   const REDIRECT_URI = redirect_uri || 'https://sowonpray.vercel.app'
 
   try {
     // 1) 인가 코드로 카카오 액세스 토큰 요청
     const tokenParams = new URLSearchParams()
     tokenParams.append('grant_type', 'authorization_code')
-    tokenParams.append('client_id', REST_API_KEY)
+    tokenParams.append('client_id', CLIENT_ID)
     tokenParams.append('redirect_uri', REDIRECT_URI)
     tokenParams.append('code', code)
 

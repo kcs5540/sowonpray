@@ -4899,13 +4899,12 @@ function formatRelativeOrDate(dateStr) {
 
   // 💬 카카오 1초 원클릭 자동 회원가입 & 로그인 핸들러 (카카오 공식 OAuth 인증)
   const handleKakaoAuthLogin = () => {
-    const REST_API_KEY = 'e27846c11008fb06b0d208ab449db1d9'
-    const redirectUri = typeof window !== 'undefined'
-      ? (window.location.origin.includes('localhost') ? window.location.origin : 'https://sowonpray.vercel.app')
-      : 'https://sowonpray.vercel.app'
+    // 대표님이 등록하신 JavaScript 키와 100% 일치
+    const KAKAO_CLIENT_ID = '6e9a618a3862f884e3eece4bb6550922'
+    const redirectUri = 'https://sowonpray.vercel.app'
 
     // 카카오 공식 인증창으로 즉시 이동
-    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code`
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code`
     window.location.href = kakaoAuthUrl
   }
 
