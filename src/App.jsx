@@ -4656,7 +4656,6 @@ function formatRelativeOrDate(dateStr) {
     if (!supabase || !currentUser?.code || typeof userMeritReward?.totalReward !== 'number') return
     const dbMerit = Number(currentUser.merit_count) || 0
     if (userMeritReward.totalReward !== dbMerit) {
-      setCurrentUser((prev) => (prev ? { ...prev, merit_count: userMeritReward.totalReward } : prev))
       setMembers((prev) =>
         prev.map((m) => (m.code === currentUser.code ? { ...m, merit_count: userMeritReward.totalReward } : m))
       )
@@ -5685,9 +5684,6 @@ function formatRelativeOrDate(dateStr) {
           awardMerit('lantern', newBeliever.code, 1)
         }
         setMembers((prev) => [newBeliever, ...prev])
-        if (currentUser && currentUser.code === newBeliever.code) {
-          setCurrentUser(newBeliever)
-        }
         try {
           if (!isBulsaReg) {
             localStorage.setItem(`sowonpray_merit_${newBeliever.code}`, String(initialMerit))
@@ -5722,9 +5718,6 @@ function formatRelativeOrDate(dateStr) {
         setMembers((prev) =>
           prev.map((m) => (m.code === existingPrayerMember.code ? updatedMember : m))
         )
-        if (currentUser && currentUser.code === existingPrayerMember.code) {
-          setCurrentUser((prev) => (prev ? { ...prev, ...updatedMember } : prev))
-        }
         try {
           localStorage.setItem(`sowonpray_merit_${existingPrayerMember.code}`, String(nextMerit))
         } catch (e) {}
@@ -5760,9 +5753,6 @@ function formatRelativeOrDate(dateStr) {
               return m
             })
           )
-          if (currentUser && currentUser.code === referrerCode) {
-            setCurrentUser((prev) => (prev ? { ...prev, merit_count: (prev.merit_count || 0) + giverRes.earnedPoints } : prev))
-          }
         }
       }
 
@@ -6035,7 +6025,6 @@ function formatRelativeOrDate(dateStr) {
     if (currentUser) {
       const baseCount = Number(currentUser.merit_count) || 0
       const newCount = baseCount + amount
-      setCurrentUser((prev) => (prev ? { ...prev, merit_count: newCount } : prev))
       setMembers((prev) =>
         prev.map((m) =>
           m.code === currentUser.code
