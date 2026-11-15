@@ -429,6 +429,22 @@ export default function SowonsaSanctuaryModal({
     setIsExiting(false)
     setEntranceStep('entering')
 
+    // 🍃 대웅전 입장 시 청아한 도량 바람·은방울 풍경소리 ASMR 자동 활성화
+    if (ambientAudioRef.current) {
+      ambientAudioRef.current.volume = 0.65
+      const playPromise = ambientAudioRef.current.play()
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsPlayingSound(true)
+          })
+          .catch(() => {
+            // 브라우저 첫 진입 자동재생 정책으로 대기 시
+            setIsPlayingSound(false)
+          })
+      }
+    }
+
     const tHapjang = setTimeout(() => {
       setEntranceStep('hapjang')
     }, 2500)
@@ -506,6 +522,11 @@ export default function SowonsaSanctuaryModal({
         if (isZenMode) {
           setIsZenMode(false)
           showActionToast('법당 메뉴가 다시 열렸습니다')
+        }
+        // 첫 진입 시 브라우저 정책으로 소리가 대기 중이었다면 터치 시 자동 재생
+        if (!isPlayingSound && ambientAudioRef.current) {
+          ambientAudioRef.current.volume = 0.65
+          ambientAudioRef.current.play().then(() => setIsPlayingSound(true)).catch(() => {})
         }
       }}
       className={`relative w-full max-w-[480px] bg-black flex flex-col justify-between overflow-hidden select-none ${
