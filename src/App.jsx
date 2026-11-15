@@ -4437,10 +4437,17 @@ function formatRelativeOrDate(dateStr) {
     const moktakReward = 0
     const todayMoktakRewardCount = 0
 
-    // 7) 100% 투명하고 정직한 실시간 자동 정산 총 합계
+    // 7) 실시간 자동 정산 총 합계
     // 전법 법연(직접) + 도량 권선(산하) + 오늘 3대 신행(소원등 1,000 + 대웅전 1,000 + 사경 1,000)
-    // 땜질식 차액 보정 없이, 실제 신행 활동의 정확한 합산으로 자동 정산됩니다.
-    const totalReward = believersReward + lanternReward + sanctuaryReward + sutraReward
+    // 🌟 대표님 지침: 기확인 공덕(오다혜 13,390, 김철수 35,100)을 온전히 보존하고, 이 다음 활동부터 누적 가산
+    const baseSavedMerit = Math.max(
+      Number(currentUser?.merit_count) || 0,
+      currentUser?.code === '33065540' ? 35100 : 0,
+      currentUser?.code === '83855838' ? 13390 : 0
+    )
+    const calculatedReward = believersReward + lanternReward + sanctuaryReward + sutraReward
+    const totalReward = Math.max(baseSavedMerit, calculatedReward)
+    const previousProtectedMerit = Math.max(0, totalReward - calculatedReward)
 
     return {
       isAgent,
@@ -4459,6 +4466,7 @@ function formatRelativeOrDate(dateStr) {
       moktakReward,
       todayMoktakRewardCount,
       totalReward,
+      previousProtectedMerit,
     }
   }, [currentUser, currentUserAffiliatedMembers, currentUserBelieversCount, userLanternStats, isLanternLit, lanternData, sutraDailyVersion, moktakDailyVersion])
 
