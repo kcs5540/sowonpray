@@ -584,11 +584,7 @@ export default function LanternTab({
                       </span>
                       {hasDbBirth ? (
                         <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-300">
-                          🔒 회원 DB 연동
-                        </span>
-                      ) : currentUser ? (
-                        <span className="text-[10px] font-bold text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-300 animate-pulse">
-                          ⚠️ 미등록 (DB 자동저장)
+                          회원 연동됨
                         </span>
                       ) : (
                         <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1 py-0.2 rounded border border-[#E5D399]">
