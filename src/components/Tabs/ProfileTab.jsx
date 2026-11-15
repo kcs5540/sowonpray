@@ -594,9 +594,14 @@ export default function ProfileTab({
                         {/* 2. ✨ 매일 5대 일일 신행(信行) 정진 공덕 개편 */}
                         {(() => {
                           const uCode = currentUser?.code || 'guest'
-                          const sanctuaryInfo = getDailyMeritInfo('sanctuary', uCode)
-                          const rawLanternInfo = getDailyMeritInfo('lantern', uCode)
-                          const isUserLanternActive = Boolean(isLanternLit || rawLanternInfo.currentPoints >= 1000)
+                          const todayKey = (() => {
+                            const d = new Date()
+                            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+                          })()
+                          const dbDaily = currentUser?.extra_data?.daily_merits?.[todayKey] || {}
+                          const sanctuaryInfo = getDailyMeritInfo('sanctuary', uCode, dbDaily.sanctuary)
+                          const rawLanternInfo = getDailyMeritInfo('lantern', uCode, dbDaily.lantern)
+                          const isUserLanternActive = Boolean(isLanternLit || rawLanternInfo.currentPoints >= 1000 || (dbDaily.lantern && dbDaily.lantern >= 1000))
                           const lanternInfo = isUserLanternActive
                             ? {
                                 ...rawLanternInfo,
@@ -606,9 +611,9 @@ export default function ProfileTab({
                                 isMax: true,
                               }
                             : rawLanternInfo
-                          const sutraInfo = getDailyMeritInfo('sutra', uCode)
-                          const inyeonGiverInfo = getDailyMeritInfo('inyeon_giver', uCode)
-                          const inyeonReceiverInfo = getDailyMeritInfo('inyeon_receiver', uCode)
+                          const sutraInfo = getDailyMeritInfo('sutra', uCode, dbDaily.sutra)
+                          const inyeonGiverInfo = getDailyMeritInfo('inyeon_giver', uCode, dbDaily.inyeon_giver)
+                          const inyeonReceiverInfo = getDailyMeritInfo('inyeon_receiver', uCode, dbDaily.inyeon_receiver)
                           const todayTotalDaily = sanctuaryInfo.currentPoints + lanternInfo.currentPoints + sutraInfo.currentPoints + inyeonGiverInfo.currentPoints + inyeonReceiverInfo.currentPoints
 
                           return (

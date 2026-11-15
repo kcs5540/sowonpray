@@ -1911,15 +1911,13 @@ function normalizeMemberHierarchy(m) {
     return { ...m, role: 'agent', parent_code: '33065540' }
   }
 
-  // 나머지는 전부 일반신도 (4대 포교위원장 산하로 랜덤/균등 배정)
+  // 일반신도: DB에 이미 지정된 parent_code가 있으면 절대 임의 변경하지 않고 100% 보존
   let parentCode = m.parent_code
-  if (!CHAIRMEN_CODES.includes(parentCode)) {
-    const codeStr = String(m.code || m.name || '0')
-    const charSum = codeStr.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
-    parentCode = CHAIRMEN_CODES[charSum % CHAIRMEN_CODES.length]
+  if (!parentCode) {
+    parentCode = '33065540' // 기본 상위 추천인: 김철수 총괄대표
   }
 
-  return { ...m, role: 'believer', parent_code: parentCode }
+  return { ...m, role: m.role || 'believer', parent_code: parentCode }
 }
 
 // 상대 시간 또는 일자 포맷터 (예: '오늘 17:19', '어제 14:30', '2026.10.30')
@@ -2219,23 +2217,7 @@ function formatRelativeOrDate(dateStr) {
               return { ...m, parent_code: fixedParent, merit_count: meritCount }
             })
 
-          const cloudCodes = new Set(sanitizedCloud.map((m) => m.code))
-          const merged = [
-            ...sanitizedCloud,
-            ...INITIAL_MEMBERS.filter((m) => !cloudCodes.has(m.code) && m.code !== '49121083' && m.code !== '74200267').map((m) => {
-              let meritCount = m.merit_count || 0
-              try {
-                const localCached = localStorage.getItem(`sowonpray_merit_${m.code}`)
-                if (localCached && localCached !== '108' && localCached !== '109') {
-                  const parsed = parseInt(localCached, 10)
-                  if (!isNaN(parsed) && parsed > meritCount) {
-                    meritCount = parsed
-                  }
-                }
-              } catch (e) {}
-              return { ...m, merit_count: meritCount }
-            }),
-          ]
+          const merged = sanitizedCloud
           const seen = new Set()
           const finalMembers = merged
             .map(normalizeMemberHierarchy)
@@ -2280,17 +2262,17 @@ function formatRelativeOrDate(dateStr) {
 
     loadCloudData()
 
-    // 실시간 DB 변경 감지 (신규 소원등 및 방문예약 자동 갱신)
+    // 📡 실시간 DB 변경 감지 (신규 소원등, 공덕, 회원 정보 변동 시 전 기기 1초 자동 갱신)
     const channel = supabase
       .channel('realtime-sowonpray-channel')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'prayers' }, (payload) => {
-        setPrayers((prev) => [payload.new, ...prev.filter((p) => p.id !== payload.new.id)])
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'prayers' }, () => {
+        loadCloudData()
       })
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'visits' }, (payload) => {
-        setVisits((prev) => [payload.new, ...prev.filter((v) => v.id !== payload.new.id)])
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'visits' }, () => {
+        loadCloudData()
       })
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'members' }, (payload) => {
-        setMembers((prev) => [payload.new, ...prev.filter((m) => m.code !== payload.new.code)])
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, () => {
+        loadCloudData()
       })
       .subscribe()
 
@@ -4416,8 +4398,12 @@ function formatRelativeOrDate(dateStr) {
     const believersCount = isAgent ? directBelieversCount + indirectBelieversCount : directBelieversCount
     const believersReward = directBelieversReward + indirectBelieversReward
 
+    const todayKey = getTodayDateKey()
+    const dbDaily = currentUser?.extra_data?.daily_merits?.[todayKey] || {}
+
     // 3) 소원등 점등: 공식 규격 1회 1,000 공덕 (1일 1회 한도)
     const hasLanternRecord = Boolean(
+      (dbDaily.lantern && dbDaily.lantern >= 1000) ||
       (userLanternStats?.prayersCount && userLanternStats.prayersCount > 0) ||
       isLanternLit ||
       (lanternData && lanternData.lit_at) ||
@@ -4427,12 +4413,12 @@ function formatRelativeOrDate(dateStr) {
     const lanternReward = lanternCount * 1000
 
     // 4) 대웅전 참배: 공식 규격 1회 1,000 공덕 (1일 1회 한도)
-    const sanctuaryInfo = getDailyMeritInfo('sanctuary', currentUser.code)
-    const sanctuaryCount = sanctuaryInfo.currentCount > 0 ? 1 : 0
+    const sanctuaryInfo = getDailyMeritInfo('sanctuary', currentUser.code, dbDaily.sanctuary)
+    const sanctuaryCount = (sanctuaryInfo.currentCount > 0 || (dbDaily.sanctuary && dbDaily.sanctuary >= 1000)) ? 1 : 0
     const sanctuaryReward = sanctuaryCount * 1000
 
     // 5) 한줄사경: 공식 규격 1회 1,000 공덕 (1일 1회 한도)
-    const sutraInfo = getDailyMeritInfo('sutra', currentUser.code)
+    const sutraInfo = getDailyMeritInfo('sutra', currentUser.code, dbDaily.sutra)
     let storedSutra = 0
     try {
       storedSutra =
@@ -4441,7 +4427,7 @@ function formatRelativeOrDate(dateStr) {
         0
     } catch (e) {}
     const dbSutra = Number(currentUser.sutra_reward_count || currentUser.sutra_count) || 0
-    const hasSutra = dbSutra > 0 || storedSutra > 0 || (sutraInfo?.currentPoints && sutraInfo.currentPoints > 0)
+    const hasSutra = (dbDaily.sutra && dbDaily.sutra >= 1000) || dbSutra > 0 || storedSutra > 0 || (sutraInfo?.currentPoints && sutraInfo.currentPoints > 0)
     const sutraCount = hasSutra ? 1 : 0
     const sutraReward = sutraCount * 1000
     const todaySutraRewardCount = sutraCount

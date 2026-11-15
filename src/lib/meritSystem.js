@@ -7,6 +7,8 @@
 // 4. 인연 전달 한 사람: 상대방이 소원등 켰을 경우 5,000 공덕 (한도 1일 50,000)
 // 5. (신규) 인연 받은 사람: 상대방이 소원등 켰을 경우 5,000 공덕 (1일 5,000)
 
+import { supabase } from './supabase'
+
 export const MERIT_RULES = {
   LANTERN: {
     key: 'lantern',
@@ -69,9 +71,9 @@ export const getTodayKey = () => {
 }
 
 /**
- * 특정 활동의 오늘 적립 현황 조회
+ * 특정 활동의 오늘 적립 현황 조회 (클라우드 DB 동기화 지원)
  */
-export const getDailyMeritInfo = (activityKey, userCode = 'guest') => {
+export const getDailyMeritInfo = (activityKey, userCode = 'guest', cloudPoints = null) => {
   const rule = Object.values(MERIT_RULES).find((r) => r.key === activityKey)
   if (!rule) {
     return {
@@ -92,6 +94,16 @@ export const getDailyMeritInfo = (activityKey, userCode = 'guest') => {
     if (val) currentPoints = parseInt(val, 10) || 0
   } catch (e) {}
 
+  if (cloudPoints !== null && cloudPoints !== undefined) {
+    const cPoints = Number(cloudPoints) || 0
+    if (cPoints > currentPoints) {
+      currentPoints = cPoints
+      try {
+        localStorage.setItem(storageKey, String(currentPoints))
+      } catch (e) {}
+    }
+  }
+
   const currentCount = rule.pointsPerUnit > 0 ? Math.floor(currentPoints / rule.pointsPerUnit) : 0
   const maxPoints = rule.dailyMax
   const isMax = maxPoints !== null && currentPoints >= maxPoints
@@ -103,6 +115,26 @@ export const getDailyMeritInfo = (activityKey, userCode = 'guest') => {
     currentCount,
     remainingPoints,
     isMax,
+  }
+}
+
+/**
+ * 일일 신행 공덕을 Supabase 클라우드 DB에 실시간 백업/동기화
+ */
+export async function syncDailyMeritToCloud(activityKey, userCode, points) {
+  if (!supabase || !userCode || userCode === 'guest') return
+  try {
+    const today = getTodayKey()
+    const { data: member } = await supabase.from('members').select('extra_data').eq('code', userCode).maybeSingle()
+    if (!member) return
+    const extra = member.extra_data || {}
+    const daily = extra.daily_merits || {}
+    const todayDaily = daily[today] || {}
+    todayDaily[activityKey] = Math.max(Number(todayDaily[activityKey]) || 0, points)
+    daily[today] = todayDaily
+    await supabase.from('members').update({ extra_data: { ...extra, daily_merits: daily } }).eq('code', userCode)
+  } catch (err) {
+    console.error('syncDailyMeritToCloud note:', err)
   }
 }
 
@@ -169,6 +201,9 @@ export const awardMerit = (activityKey, userCode = 'guest', customUnits = 1) => 
   try {
     localStorage.setItem(storageKey, String(nextPoints))
   } catch (e) {}
+
+  // ☁️ Supabase 클라우드 실시간 동기화 (전국 모든 기기 공덕 실시간 일치)
+  syncDailyMeritToCloud(activityKey, code, nextPoints)
 
   const isNowMax = maxPoints !== null && nextPoints >= maxPoints
 
