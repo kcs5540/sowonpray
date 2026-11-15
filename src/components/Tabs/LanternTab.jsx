@@ -416,8 +416,8 @@ export default function LanternTab({
                         🪔 누적 {userLanternStats.totalCount}회 점등 · 🔥 {userLanternStats.streak}일 연속 정진
                       </span>
                     </div>
-                    <p className="text-[11px] text-[#D6CEC2] text-center">
-                      📅 <strong>{getSasiDisplayInfo(lanternData?.sasi_date_key).detailLabel}</strong>되며, 예불 회향 후 오전 11시에 다음 등불을 밝히실 수 있습니다.
+                    <p className="text-xs text-[#FAF8F5] text-center font-medium">
+                      📅 내일 11시 사시예불 회향후 다시 등불을 밝히세요.
                     </p>
                   </div>
 
