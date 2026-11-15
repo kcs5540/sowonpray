@@ -2422,6 +2422,7 @@ function formatRelativeOrDate(dateStr) {
   const [wishTarget, setWishTarget] = useState('')
   const [wishPhone, setWishPhone] = useState('')
   const [wishBirthDate, setWishBirthDate] = useState('')
+  const [wishLunarSolar, setWishLunarSolar] = useState('음력')
   const [showBulsaCategorySheet, setShowBulsaCategorySheet] = useState(false)
   const [wishCategory, setWishCategory] = useState('가족건강')
   const [wishText, setWishText] = useState(
@@ -3771,6 +3772,7 @@ function formatRelativeOrDate(dateStr) {
       setWishName(displayName)
       setWishPhone(currentUser.phone)
       setWishBirthDate(currentUser.birth_date || '')
+      setWishLunarSolar(currentUser.lunar_solar || '음력')
       setProfileForm({
         name: currentUser.name || '',
         phone: currentUser.phone || '',
@@ -3788,6 +3790,7 @@ function formatRelativeOrDate(dateStr) {
       setWishName('')
       setWishPhone('')
       setWishBirthDate('')
+      setWishLunarSolar('음력')
     }
   }, [currentUser])
 
@@ -5297,6 +5300,7 @@ function formatRelativeOrDate(dateStr) {
       wishNameClean: wishName.trim(),
       wishPhoneClean: wishPhone.trim(),
       wishBirthDateClean: (wishBirthDate || '').trim(),
+      wishLunarSolarClean: wishLunarSolar || '음력',
       finalTarget,
       formattedBelieverName,
       wishCategory,
@@ -5318,6 +5322,7 @@ function formatRelativeOrDate(dateStr) {
         wishNameClean,
         wishPhoneClean,
         wishBirthDateClean,
+        wishLunarSolarClean,
         finalTarget,
         formattedBelieverName,
         wishCategory: cat,
@@ -5326,8 +5331,9 @@ function formatRelativeOrDate(dateStr) {
       } = draft
 
       const effectiveBirth = wishBirthDateClean || currentUser?.birth_date || ''
+      const effectiveLunarSolar = wishLunarSolarClean || currentUser?.lunar_solar || '음력'
       const ganjiResult = computeZodiacAndGanji(effectiveBirth)
-      const effectiveGanji = ganjiResult?.label || ''
+      const effectiveGanji = ganjiResult?.label ? `${ganjiResult.label} · ${effectiveLunarSolar}` : ''
 
       const now = Date.now()
       const schedule = computeSasiSchedule(now)
@@ -5354,6 +5360,7 @@ function formatRelativeOrDate(dateStr) {
         wish_target: finalTarget || '본인',
         believer_phone: wishPhoneClean,
         birth_date: effectiveBirth,
+        lunar_solar: effectiveLunarSolar,
         ganji: effectiveGanji,
         wish_category: cat,
         wish_text: finalWishText,
@@ -5380,6 +5387,7 @@ function formatRelativeOrDate(dateStr) {
         wish_target: finalTarget || '본인',
         believer_phone: wishPhoneClean,
         birth_date: effectiveBirth,
+        lunar_solar: effectiveLunarSolar,
         ganji: effectiveGanji,
         agent_code: assignedAgentCode,
         wish_category: cat,
@@ -5465,7 +5473,7 @@ function formatRelativeOrDate(dateStr) {
           name: parsedName,
           dharma_name: parsedDharma,
           birth_date: formattedBirth,
-          lunar_solar: '음력',
+          lunar_solar: effectiveLunarSolar,
           address: '',
           family_memo: isBulsaReg
             ? `불사안내(${cat}) 상담 신청으로 전산 자동 등록됨`
@@ -5514,12 +5522,13 @@ function formatRelativeOrDate(dateStr) {
           merit_count: nextMerit,
           dharma_name: (!existingPrayerMember.dharma_name && parsedDharma) ? parsedDharma : existingPrayerMember.dharma_name,
           birth_date: needsBirthUpdate ? formattedBirth : existingPrayerMember.birth_date,
+          lunar_solar: needsBirthUpdate ? effectiveLunarSolar : (existingPrayerMember.lunar_solar || '음력'),
         }
         setMembers((prev) =>
           prev.map((m) => (m.code === existingPrayerMember.code ? updatedMember : m))
         )
         if (currentUser && currentUser.code === existingPrayerMember.code && needsBirthUpdate) {
-          setCurrentUser((prev) => (prev ? { ...prev, birth_date: formattedBirth } : prev))
+          setCurrentUser((prev) => (prev ? { ...prev, birth_date: formattedBirth, lunar_solar: effectiveLunarSolar } : prev))
         }
         try {
           localStorage.setItem(`sowonpray_merit_${existingPrayerMember.code}`, String(nextMerit))
@@ -5531,6 +5540,7 @@ function formatRelativeOrDate(dateStr) {
           }
           if (needsBirthUpdate) {
             updatePayload.birth_date = formattedBirth
+            updatePayload.lunar_solar = effectiveLunarSolar
           }
           supabase.from('members').update(updatePayload).eq('code', existingPrayerMember.code).then()
         }
@@ -7702,6 +7712,8 @@ function formatRelativeOrDate(dateStr) {
             setWishText={setWishText}
             wishBirthDate={wishBirthDate}
             setWishBirthDate={setWishBirthDate}
+            wishLunarSolar={wishLunarSolar}
+            setWishLunarSolar={setWishLunarSolar}
             currentUser={currentUser}
             prayers={prayers}
             handlePrayerSubmit={handlePrayerSubmit}

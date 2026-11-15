@@ -76,6 +76,8 @@ export default function LanternTab({
   setWishText,
   wishBirthDate,
   setWishBirthDate,
+  wishLunarSolar = '음력',
+  setWishLunarSolar,
   currentUser,
   prayers,
   handlePrayerSubmit,
@@ -94,9 +96,12 @@ export default function LanternTab({
   referralCode,
 }) {
   // 🪷 AI 사주 간지 단일 진실 공급원(Single Source of Truth) 연산
-  // 1) 로그인 회원의 생년월일이 DB에 이미 있으면 -> DB 생년월일 기준 고정
-  // 2) 로그인 회원인데 DB에 생년월일이 없거나 비회원이면 -> 입력창(wishBirthDate) 실시간 반영
+  // 1) 로그인 회원의 생년월일이 DB에 이미 있으면 -> DB 생년월일 & 양력/음력 기준 고정
+  // 2) 로그인 회원인데 DB에 생년월일이 없거나 비회원이면 -> 입력창(wishBirthDate, wishLunarSolar) 실시간 반영
   const hasDbBirth = Boolean(currentUser?.birth_date && String(currentUser.birth_date).trim())
+  const activeLunarSolar = hasDbBirth
+    ? (currentUser.lunar_solar || '음력')
+    : (wishLunarSolar || (isLanternLit ? (lanternData?.lunar_solar || '음력') : '음력'))
   const currentBirthSource = hasDbBirth
     ? currentUser.birth_date
     : ((wishBirthDate && String(wishBirthDate).trim()) || (isLanternLit ? lanternData?.birth_date : '') || '')
@@ -212,7 +217,7 @@ export default function LanternTab({
                   <p className="text-xs text-[#E8DFD1] max-w-xs mx-auto leading-relaxed mb-3 break-keep">
                     스님께서 매일 오전 10시 사시예불마다{' '}
                     <strong className="text-[#F5D061]">
-                      {liveGanjiInfo.ganji ? `[${liveGanjiInfo.ganji}] ` : ''}
+                      {liveGanjiInfo.ganji ? `[${liveGanjiInfo.ganji} · ${activeLunarSolar}] ` : ''}
                       {stripTargetFromName(lanternData?.believer_name)}
                     </strong> 불자님의 소원을 정성껏 축원 올리고 있습니다.
                   </p>
@@ -324,11 +329,11 @@ export default function LanternTab({
                   <div className="text-[10px] text-[#F5D061] font-bold tracking-widest border-b border-[#D4AF37]/30 pb-1 mb-1.5 whitespace-nowrap">
                     卍 제주 소원사 대웅전 축원 명패
                   </div>
-                  {/* 만세력 사주 간지 실시간 자동 표기 뱃지 */}
+                  {/* 만세력 사주 간지 실시간 자동 표기 뱃지 (양력/음력 명시) */}
                   {liveGanjiInfo.ganji ? (
                     <div className="inline-flex items-center gap-1 px-2.5 py-0.5 mb-1.5 rounded-full bg-gradient-to-r from-[#D4AF37]/25 to-[#F5D061]/25 text-[#FFE899] border border-[#F5D061]/50 text-[11px] font-bold shadow-xs animate-fadeIn">
                       <Sparkles className="w-3 h-3 text-[#F5D061]" />
-                      <span>{liveGanjiInfo.ganji} ({liveGanjiInfo.animal})</span>
+                      <span>{liveGanjiInfo.ganji} ({liveGanjiInfo.animal}) · {activeLunarSolar}</span>
                     </div>
                   ) : isLanternLit ? (
                     <button
@@ -562,7 +567,7 @@ export default function LanternTab({
                     <label className="block text-xs font-bold text-[#3D3630] mb-1 flex items-center justify-between">
                       <span className="flex items-center gap-1">
                         <span className="w-1.5 h-3.5 rounded-full bg-[#C59B27]" />
-                        <span>생년월일 (사주)</span>
+                        <span>생년월일 (사주간지)</span>
                       </span>
                       {hasDbBirth ? (
                         <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-300">
@@ -578,25 +583,69 @@ export default function LanternTab({
                         </span>
                       )}
                     </label>
-                    <input
-                      type="text"
-                      value={hasDbBirth ? currentUser.birth_date : (wishBirthDate || '')}
-                      onChange={(e) => {
-                        if (!hasDbBirth && setWishBirthDate) {
-                          setWishBirthDate(e.target.value)
-                        }
-                      }}
-                      readOnly={hasDbBirth}
-                      placeholder={hasDbBirth ? currentUser.birth_date : "예: 1974 또는 740512"}
-                      className={`w-full px-3 py-2.5 rounded-xl border-2 text-xs sm:text-sm font-bold shadow-inner transition ${
-                        hasDbBirth
-                          ? 'bg-[#F3EFE6] border-[#D5C59B]/70 text-[#5A5046] cursor-not-allowed'
-                          : 'bg-[#FAF8F5] border-[#D5C59B] focus:bg-white focus:border-[#C59B27] focus:outline-none text-[#231F1C]'
-                      }`}
-                    />
+
+                    {/* 양력/음력 토글 선택 + 생년월일 입력 복합 필드 */}
+                    <div className="flex items-center gap-1.5">
+                      {/* 음력/양력 토글 버튼 */}
+                      <div className="shrink-0 flex rounded-xl border-2 border-[#D5C59B] bg-[#FAF8F5] p-0.5 overflow-hidden">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!hasDbBirth && setWishLunarSolar) {
+                              setWishLunarSolar('음력')
+                            }
+                          }}
+                          disabled={hasDbBirth}
+                          className={`px-2 py-1.5 rounded-lg text-xs font-bold transition ${
+                            activeLunarSolar === '음력'
+                              ? 'bg-[#8A6510] text-white shadow-xs'
+                              : 'text-[#7A6B58] hover:text-[#231F1C]'
+                          } ${hasDbBirth ? 'cursor-not-allowed opacity-90' : 'cursor-pointer'}`}
+                          title={hasDbBirth ? '회원정보 DB에 음력으로 연동됨' : '사찰 전통 음력 기준 축원'}
+                        >
+                          음력
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!hasDbBirth && setWishLunarSolar) {
+                              setWishLunarSolar('양력')
+                            }
+                          }}
+                          disabled={hasDbBirth}
+                          className={`px-2 py-1.5 rounded-lg text-xs font-bold transition ${
+                            activeLunarSolar === '양력'
+                              ? 'bg-[#8A6510] text-white shadow-xs'
+                              : 'text-[#7A6B58] hover:text-[#231F1C]'
+                          } ${hasDbBirth ? 'cursor-not-allowed opacity-90' : 'cursor-pointer'}`}
+                          title={hasDbBirth ? '회원정보 DB에 양력으로 연동됨' : '신분증상 양력 기준 축원'}
+                        >
+                          양력
+                        </button>
+                      </div>
+
+                      {/* 생년월일 입력창 */}
+                      <input
+                        type="text"
+                        value={hasDbBirth ? currentUser.birth_date : (wishBirthDate || '')}
+                        onChange={(e) => {
+                          if (!hasDbBirth && setWishBirthDate) {
+                            setWishBirthDate(e.target.value)
+                          }
+                        }}
+                        readOnly={hasDbBirth}
+                        placeholder={hasDbBirth ? currentUser.birth_date : "예: 19780512 또는 1978"}
+                        className={`flex-1 min-w-0 px-3 py-2 rounded-xl border-2 text-xs sm:text-sm font-bold shadow-inner transition ${
+                          hasDbBirth
+                            ? 'bg-[#F3EFE6] border-[#D5C59B]/70 text-[#5A5046] cursor-not-allowed'
+                            : 'bg-[#FAF8F5] border-[#D5C59B] focus:bg-white focus:border-[#C59B27] focus:outline-none text-[#231F1C]'
+                        }`}
+                      />
+                    </div>
+
                     {hasDbBirth ? (
                       <div className="flex items-center justify-between text-[10.5px] text-[#8A7552] mt-1 px-0.5">
-                        <span>회원 정보 기준 자동 잠금</span>
+                        <span>회원 정보 기준 자동 잠금 ({activeLunarSolar})</span>
                         <button
                           type="button"
                           onClick={() => setActiveTab && setActiveTab('profile')}
@@ -608,11 +657,46 @@ export default function LanternTab({
                       </div>
                     ) : currentUser ? (
                       <div className="text-[10.5px] text-[#B8860B] mt-1 px-0.5 font-medium">
-                        생년월일을 넣으시면 회원 DB에 영구 저장됩니다.
+                        생년월일·{activeLunarSolar}을 입력하시면 회원 DB에 영구 저장됩니다.
                       </div>
                     ) : null}
                   </div>
                 </div>
+
+                {/* 💡 생년월일 미등록 상태일 때 친절한 입력 가이드 박스 */}
+                {!hasDbBirth && (
+                  <div className="p-3 rounded-xl bg-gradient-to-br from-[#FAF8F5] via-[#FFFDF8] to-[#FAF3DF] border border-[#E5D399] text-[11px] space-y-1.5 shadow-xs animate-fadeIn">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 font-bold text-[#8A6510]">
+                        <HelpCircle className="w-3.5 h-3.5 text-[#B8860B] shrink-0" />
+                        <span>생년월일 입력 가이드 (만세력 사주 자동 계산)</span>
+                      </div>
+                      <span className="text-[10px] text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.2 rounded border border-[#E5D399] font-semibold">
+                        기본: 음력
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 text-[10.5px] text-[#5A4A28]">
+                      <div className="bg-white/90 p-2 rounded-lg border border-[#E5D399]/70 shadow-2xs">
+                        <div className="font-bold text-[#B8860B]">① 8자리 (정밀)</div>
+                        <div className="font-mono text-[#2B231D] font-bold text-xs mt-0.5">19780512</div>
+                        <div className="text-[9.5px] text-[#887766] mt-0.5">년·월·일 전체 축원</div>
+                      </div>
+                      <div className="bg-white/90 p-2 rounded-lg border border-[#E5D399]/70 shadow-2xs">
+                        <div className="font-bold text-[#B8860B]">② 4자리 (연도만)</div>
+                        <div className="font-mono text-[#2B231D] font-bold text-xs mt-0.5">1978</div>
+                        <div className="text-[9.5px] text-[#887766] mt-0.5">태어난 해만 넣어도 산출</div>
+                      </div>
+                      <div className="bg-white/90 p-2 rounded-lg border border-[#E5D399]/70 shadow-2xs">
+                        <div className="font-bold text-[#B8860B]">③ 6자리 (주민앞)</div>
+                        <div className="font-mono text-[#2B231D] font-bold text-xs mt-0.5">780512</div>
+                        <div className="text-[9.5px] text-[#887766] mt-0.5">앞자리로 자동 인식</div>
+                      </div>
+                    </div>
+                    <p className="text-[10px] text-[#7A6A4E] leading-relaxed pt-0.5">
+                      ※ 사찰 대웅전 축원은 전통적으로 <strong>음력</strong>을 기준으로 올립니다. 신분증상 생일이 양력이시면 위의 <strong>[양력]</strong> 버튼을 선택해 주세요.
+                    </p>
+                  </div>
+                )}
 
                 {/* AI 사주 간지 실시간 자동 산출 알림 뱃지 */}
                 {liveGanjiInfo.ganji && (
@@ -621,7 +705,7 @@ export default function LanternTab({
                       <Sparkles className="w-4 h-4 text-[#C59B27] shrink-0" />
                       <span>만세력 사주 간지:</span>
                       <span className="px-2 py-0.5 rounded-md bg-[#8A6510] text-[#FFF9E6] font-extrabold shadow-xs">
-                        {liveGanjiInfo.ganji} ({liveGanjiInfo.animal})
+                        {liveGanjiInfo.ganji} ({liveGanjiInfo.animal}) · {activeLunarSolar}
                       </span>
                     </div>
                     <span className="text-[11px] text-[#A68020] font-medium hidden sm:inline">
