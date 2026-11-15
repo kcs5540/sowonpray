@@ -417,7 +417,7 @@ export default function LanternTab({
                       </span>
                     </div>
                     <p className="text-xs text-[#FAF8F5] text-center font-medium">
-                      📅 내일 11시 사시예불 회향후 다시 등불을 밝히세요.
+                      내일 11시 사시예불 회향후 다시 등불을 밝히세요.
                     </p>
                   </div>
 
