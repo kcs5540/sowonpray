@@ -2161,9 +2161,13 @@ function formatRelativeOrDate(dateStr) {
 
         const { id: kakaoId, nickname, profile_image: profileImg } = data.user
 
-        // 1) 기존 회원 중 카카오 고유 ID가 이미 연결된 회원이 있는지 확인
+        // 1) 기존 회원 중 카카오 고유 ID가 연결된 '유효한 전화번호 계정(8자리)'이 있는지 확인
         const existing = members.find(
-          (m) => m.extra_data?.kakao_id === kakaoId
+          (m) =>
+            m.extra_data?.kakao_id === kakaoId &&
+            !m.code.startsWith('K') &&
+            m.phone &&
+            !m.phone.includes('0000')
         )
 
         if (existing) {
@@ -2174,12 +2178,12 @@ function formatRelativeOrDate(dateStr) {
             localStorage.setItem('sowonpray_saved_login_pw', existing.password_pin || '0000')
           } catch (e) {}
           playSingingBowlSound()
-          showToast(`🙏 성불하세요, ${existing.name} 불자님! 카카오 계정으로 로그인되었습니다.`)
+          showToast(`🙏 성불하세요, ${existing.name} 불자님! 본인 계정으로 카카오 로그인되었습니다.`)
           setActiveTab('home')
           return
         }
 
-        // 2) 카카오 최초 가입자: 전화번호를 입력받아 소원사 8자리 코드로 생성 유도!
+        // 2) 아직 전화번호와 통합되지 않은 카카오 계정이면 -> 전화번호 입력 팝업으로 즉시 본 계정 연동!
         setKakaoPendingUser({ id: kakaoId, nickname, profile_image: profileImg })
       })
       .catch((err) => {
