@@ -393,11 +393,7 @@ export default function LanternTab({
                     <span className={isLanternLit ? 'text-[#F5D061]' : 'text-[#A89C8A]'}>
                       [{isLanternLit ? lanternData?.wish_category : wishCategory}]
                     </span>
-                    {isLanternLit ? (
-                      <span className="px-1.5 py-0.2 rounded bg-[#F5D061]/25 text-[#FFE58A] text-[10px] font-bold border border-[#F5D061]/50">
-                        오늘 정진 점등 중
-                      </span>
-                    ) : (
+                    {!isLanternLit && (
                       <span className="px-1.5 py-0.2 rounded bg-white/10 text-[#C2B8AB] text-[9.5px]">
                         매일 무료 사시예불 축원
                       </span>
