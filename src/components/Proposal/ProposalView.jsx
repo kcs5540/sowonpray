@@ -129,44 +129,44 @@ export default function ProposalView({ onEnterTemple }) {
           </div>
         </section>
 
-        {/* 📉 2. 전국 사찰이 직면한 3대 현실 위기 */}
-        <section className="space-y-4">
+        {/* 📉 2. 전국 사찰이 직면한 3대 현실 위기 (밝은 한지 아이보리 리포트 톤) */}
+        <section className="space-y-4 bg-[#FAF8F5] p-6 md:p-8 rounded-3xl border border-[#C59B27]/40 shadow-xl text-[#231F1C]">
           <div className="text-center">
-            <span className="text-xs font-bold text-[#F5D061] tracking-wider uppercase block mb-1">
+            <span className="text-xs font-bold text-[#AA7C11] tracking-wider uppercase block mb-1">
               01. 현실 위기 분석
             </span>
-            <h3 className="text-xl md:text-2xl font-bold text-white mt-1">
+            <h3 className="text-xl md:text-2xl font-bold text-[#1B1815] mt-1">
               "절에 오시는 보살님들은 연로해지시고, 자녀 세대는 절을 찾지 않습니다"
             </h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-            <div className="bg-[#1A1613] p-5 rounded-2xl border border-red-500/20 shadow-lg space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-red-950/60 border border-red-500/40 flex items-center justify-center text-red-400 font-bold text-lg">
+            <div className="bg-white p-5 rounded-2xl border border-red-200/80 shadow-md space-y-2">
+              <div className="w-10 h-10 rounded-xl bg-red-50 border border-red-200 flex items-center justify-center text-red-600 font-bold text-lg">
                 👵
               </div>
-              <h4 className="font-bold text-white text-base">신도 고령화와 세대 단절</h4>
-              <p className="text-xs text-[#9E9080] leading-relaxed">
+              <h4 className="font-bold text-[#1B1815] text-base">신도 고령화와 세대 단절</h4>
+              <p className="text-xs text-[#5C5247] leading-relaxed">
                 도량을 지탱해오신 60~80대 신도들의 거동이 불편해지며 오프라인 참배가 급감하고, 30~50대 청년·중장년 자녀들은 불교와 멀어지고 있습니다.
               </p>
             </div>
 
-            <div className="bg-[#1A1613] p-5 rounded-2xl border border-amber-500/20 shadow-lg space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-amber-950/60 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-lg">
+            <div className="bg-white p-5 rounded-2xl border border-amber-200/80 shadow-md space-y-2">
+              <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 font-bold text-lg">
                 📉
               </div>
-              <h4 className="font-bold text-white text-base">사찰 재정의 구조적 한계</h4>
-              <p className="text-xs text-[#9E9080] leading-relaxed">
+              <h4 className="font-bold text-[#1B1815] text-base">사찰 재정의 구조적 한계</h4>
+              <p className="text-xs text-[#5C5247] leading-relaxed">
                 초하루·보름에 직접 사찰에 오는 신도에게만 의존하다 보니, 지리적 한계로 인해 연등·기도 접수와 불사 보시금이 해마다 감소하고 있습니다.
               </p>
             </div>
 
-            <div className="bg-[#1A1613] p-5 rounded-2xl border border-[#C59B27]/20 shadow-lg space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-yellow-950/60 border border-[#C59B27]/40 flex items-center justify-center text-yellow-400 font-bold text-lg">
+            <div className="bg-white p-5 rounded-2xl border border-[#C59B27]/30 shadow-md space-y-2">
+              <div className="w-10 h-10 rounded-xl bg-yellow-50 border border-[#C59B27]/40 flex items-center justify-center text-[#B6861C] font-bold text-lg">
                 ⏳
               </div>
-              <h4 className="font-bold text-white text-base">20년 전 구형 전산의 피로</h4>
-              <p className="text-xs text-[#9E9080] leading-relaxed">
+              <h4 className="font-bold text-[#1B1815] text-base">20년 전 구형 전산의 피로</h4>
+              <p className="text-xs text-[#5C5247] leading-relaxed">
                 구형 전산(두손모아 등)과 수기 장부로 인해 신도 접수 때마다 만세력 책을 뒤지고 명패를 워드로 타이핑하느라 법회 때마다 야근에 시달립니다.
               </p>
             </div>
@@ -214,73 +214,73 @@ export default function ProposalView({ onEnterTemple }) {
           </div>
         </section>
 
-        {/* ⚡ 4. 4대 핵심 킬러 솔루션 */}
-        <section className="space-y-6">
+        {/* ⚡ 4. 4대 핵심 킬러 솔루션 (밝은 한지 아이보리 테마) */}
+        <section className="space-y-6 bg-[#FAF8F5] p-6 md:p-8 rounded-3xl border border-[#C59B27]/40 shadow-xl text-[#231F1C]">
           <div className="text-center">
-            <span className="text-xs font-bold text-[#F5D061] tracking-wider uppercase block mb-1">
+            <span className="text-xs font-bold text-[#AA7C11] tracking-wider uppercase block mb-1">
               03. 4대 핵심 킬러 솔루션
             </span>
-            <h3 className="text-xl md:text-2xl font-bold text-white mt-1">
+            <h3 className="text-xl md:text-2xl font-bold text-[#1B1815] mt-1">
               스님과 종무소의 일손은 90% 줄이고, 신도의 참여는 500% 폭증합니다
             </h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* 솔루션 1 */}
-            <div className="bg-[#1A1613] p-5 rounded-2xl border border-[#C59B27]/30 space-y-3">
+            <div className="bg-white p-5 rounded-2xl border border-[#C59B27]/30 shadow-md space-y-3">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded bg-[#C59B27]/20 text-[#F5D061] text-xs font-bold">킬러 1</span>
-                <h4 className="font-bold text-white text-base">자가 접수 & AI 사주간지 자동 산출</h4>
+                <span className="px-2 py-0.5 rounded bg-[#FAF1D6] text-[#9A6708] border border-[#E3BF6B] text-xs font-bold">킬러 1</span>
+                <h4 className="font-bold text-[#1B1815] text-base">자가 접수 & AI 사주간지 자동 산출</h4>
               </div>
-              <p className="text-xs text-[#B5A898] leading-relaxed">
+              <p className="text-xs text-[#5C5247] leading-relaxed">
                 신도가 집에서 스마트폰으로 이름과 생년월일만 입력하면, 만세력 책을 찾을 필요 없이 <strong>사주 간지(예: 갑인생 甲寅生)</strong>가 즉시 자동 변환되어 종무소 ERP에 입력됩니다.
               </p>
-              <div className="p-2.5 rounded-xl bg-[#120F0D] border border-white/5 text-[11px] text-[#9E9080]">
+              <div className="p-3 rounded-xl bg-[#F5F2EB] border border-[#E5DECF] text-[11px] text-[#4A4036] font-medium leading-relaxed">
                 • 양력/음력/윤달 오차 제로 자동 연산 <br />
                 • 축원 발원문 및 가족 명단 원터치 동시 등록
               </div>
             </div>
 
             {/* 솔루션 2 */}
-            <div className="bg-[#1A1613] p-5 rounded-2xl border border-[#C59B27]/30 space-y-3">
+            <div className="bg-white p-5 rounded-2xl border border-[#C59B27]/30 shadow-md space-y-3">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded bg-[#C59B27]/20 text-[#F5D061] text-xs font-bold">킬러 2</span>
-                <h4 className="font-bold text-white text-base">대웅전 축원 명패 원터치 1초 인쇄</h4>
+                <span className="px-2 py-0.5 rounded bg-[#FAF1D6] text-[#9A6708] border border-[#E3BF6B] text-xs font-bold">킬러 2</span>
+                <h4 className="font-bold text-[#1B1815] text-base">대웅전 축원 명패 원터치 1초 인쇄</h4>
               </div>
-              <p className="text-xs text-[#B5A898] leading-relaxed">
+              <p className="text-xs text-[#5C5247] leading-relaxed">
                 신도가 온라인으로 접수한 기도·연등 데이터가 사찰 종무소 관리자에 실시간 연동되어, <strong>[명패 인쇄] 버튼 단 한 번 클릭</strong>으로 대웅전 규격 명패가 출력됩니다.
               </p>
-              <div className="p-2.5 rounded-xl bg-[#120F0D] border border-white/5 text-[11px] text-[#9E9080]">
+              <div className="p-3 rounded-xl bg-[#F5F2EB] border border-[#E5DECF] text-[11px] text-[#4A4036] font-medium leading-relaxed">
                 • 초하루/부처님오신날 수기 타이핑 야근 완전 소멸 <br />
                 • 오타 걱정 없는 사찰 표준 명패 서식 자동 정렬
               </div>
             </div>
 
             {/* 솔루션 3 */}
-            <div className="bg-[#1A1613] p-5 rounded-2xl border border-[#C59B27]/30 space-y-3">
+            <div className="bg-white p-5 rounded-2xl border border-[#C59B27]/30 shadow-md space-y-3">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded bg-[#C59B27]/20 text-[#F5D061] text-xs font-bold">킬러 3</span>
-                <h4 className="font-bold text-white text-base">매일 3분 신행 & 공덕 마일리지 락인</h4>
+                <span className="px-2 py-0.5 rounded bg-[#FAF1D6] text-[#9A6708] border border-[#E3BF6B] text-xs font-bold">킬러 3</span>
+                <h4 className="font-bold text-[#1B1815] text-base">매일 3분 신행 & 공덕 마일리지 락인</h4>
               </div>
-              <p className="text-xs text-[#B5A898] leading-relaxed">
+              <p className="text-xs text-[#5C5247] leading-relaxed">
                 소원등 켜기(+1,000), 대웅전 참배(+1,000), 한줄사경(+1,000) 등 매일 신행을 할 때마다 복덕 공덕이 적립되어, 신도가 매일 도량을 찾게 만드는 강력한 습관을 형성합니다.
               </p>
-              <div className="p-2.5 rounded-xl bg-[#120F0D] border border-white/5 text-[11px] text-[#9E9080]">
+              <div className="p-3 rounded-xl bg-[#F5F2EB] border border-[#E5DECF] text-[11px] text-[#4A4036] font-medium leading-relaxed">
                 • 적립된 공덕은 종무소 단주/기념품 또는 불사 동참 시 사용 <br />
                 • 단순 방문을 넘어 진정한 신행의 보람 제공
               </div>
             </div>
 
             {/* 솔루션 4 */}
-            <div className="bg-[#1A1613] p-5 rounded-2xl border border-[#C59B27]/30 space-y-3">
+            <div className="bg-white p-5 rounded-2xl border border-[#C59B27]/30 shadow-md space-y-3">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded bg-[#C59B27]/20 text-[#F5D061] text-xs font-bold">킬러 4</span>
-                <h4 className="font-bold text-white text-base">신도가 신도를 모셔오는 카톡 전법</h4>
+                <span className="px-2 py-0.5 rounded bg-[#FAF1D6] text-[#9A6708] border border-[#E3BF6B] text-xs font-bold">킬러 4</span>
+                <h4 className="font-bold text-[#1B1815] text-base">신도가 신도를 모셔오는 카톡 전법</h4>
               </div>
-              <p className="text-xs text-[#B5A898] leading-relaxed">
+              <p className="text-xs text-[#5C5247] leading-relaxed">
                 신도가 가족과 친구에게 <em>"우리 절 모바일법당에서 무료 소원등 켜고 성불하세요"</em>라며 카톡으로 등을 선물하면, 상대방도 신도로 자동 가입되는 전법 네트워크입니다.
               </p>
-              <div className="p-2.5 rounded-xl bg-[#120F0D] border border-white/5 text-[11px] text-[#9E9080]">
+              <div className="p-3 rounded-xl bg-[#F5F2EB] border border-[#E5DECF] text-[11px] text-[#4A4036] font-medium leading-relaxed">
                 • 전법 추천인에게 신행 공덕 보너스 부여 <br />
                 • 전국·해외의 자녀·친척 세대까지 자연스럽게 신도화
               </div>
@@ -349,67 +349,67 @@ export default function ProposalView({ onEnterTemple }) {
           </div>
         </section>
 
-        {/* 🤝 6. 상생 도입 모델 (스님 부담 제로) */}
-        <section className="space-y-4">
+        {/* 🤝 6. 상생 도입 모델 (밝은 한지 아이보리 테마) */}
+        <section className="space-y-4 bg-[#FAF8F5] p-6 md:p-8 rounded-3xl border border-[#C59B27]/40 shadow-xl text-[#231F1C]">
           <div className="text-center">
-            <span className="text-xs font-bold text-[#F5D061] tracking-wider uppercase block mb-1">
+            <span className="text-xs font-bold text-[#AA7C11] tracking-wider uppercase block mb-1">
               05. 상생 도입 모델 안내
             </span>
-            <h3 className="text-xl md:text-2xl font-bold text-white mt-1">
+            <h3 className="text-xl md:text-2xl font-bold text-[#1B1815] mt-1">
               사찰의 초기 재정 부담을 완전히 없앤 맞춤형 파트너십
             </h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
             {/* 옵션 A */}
-            <div className="bg-[#1F1915] p-6 rounded-2xl border-2 border-[#F5D061] relative shadow-xl space-y-4">
-              <div className="absolute -top-3 right-4 px-3 py-0.5 rounded-full bg-[#F5D061] text-black text-[10px] font-extrabold uppercase">
+            <div className="bg-white p-6 rounded-2xl border-2 border-[#D4AF37] relative shadow-lg space-y-4">
+              <div className="absolute -top-3 right-4 px-3 py-0.5 rounded-full bg-[#D4AF37] text-white text-[10px] font-extrabold uppercase shadow-sm">
                 스님 선호도 1위 · 적극 추천
               </div>
               <div>
-                <span className="text-xs text-[#C59B27] font-semibold">Option A</span>
-                <h4 className="text-lg font-bold text-white">상생 파트너형 (초기비용 0원)</h4>
+                <span className="text-xs text-[#AA7C11] font-bold">Option A</span>
+                <h4 className="text-lg font-bold text-[#1B1815]">상생 파트너형 (초기비용 0원)</h4>
               </div>
-              <div className="space-y-2 text-xs text-[#B5A898]">
-                <div className="flex justify-between border-b border-white/5 pb-1">
+              <div className="space-y-2 text-xs text-[#5C5247]">
+                <div className="flex justify-between border-b border-[#EAE4D8] pb-1.5">
                   <span>초기 구축비</span>
-                  <strong className="text-[#F5D061] text-sm">0원 (전액 무료 구축)</strong>
+                  <strong className="text-[#9A6708] font-bold text-sm">0원 (전액 무료 구축)</strong>
                 </div>
-                <div className="flex justify-between border-b border-white/5 pb-1">
+                <div className="flex justify-between border-b border-[#EAE4D8] pb-1.5">
                   <span>월 고정 유지비</span>
-                  <strong className="text-white">0원 (고정비 없음)</strong>
+                  <strong className="text-[#1B1815] font-bold">0원 (고정비 없음)</strong>
                 </div>
-                <div className="flex justify-between border-b border-white/5 pb-1">
+                <div className="flex justify-between border-b border-[#EAE4D8] pb-1.5">
                   <span>정산 방식</span>
-                  <strong className="text-white">신규 유입 온라인 보시금 배분</strong>
+                  <strong className="text-[#1B1815] font-bold">신규 유입 온라인 보시금 배분</strong>
                 </div>
               </div>
-              <p className="text-[11px] text-[#A89C8C] leading-relaxed bg-[#14100D] p-3 rounded-xl">
+              <p className="text-[11px] text-[#4A4036] leading-relaxed bg-[#F5F2EB] border border-[#E5DECF] p-3.5 rounded-xl font-medium">
                 사찰에서 돈 한 푼 들이지 않고 최첨단 모바일법당을 열어, 기존에 없던 온라인 보시금 수익을 창출하므로 사찰에 위험 부담이 전혀 없습니다.
               </p>
             </div>
 
             {/* 옵션 B */}
-            <div className="bg-[#181411] p-6 rounded-2xl border border-[#C59B27]/30 shadow-lg space-y-4">
+            <div className="bg-white p-6 rounded-2xl border border-[#C59B27]/30 shadow-md space-y-4">
               <div>
-                <span className="text-xs text-[#8C8071] font-semibold">Option B</span>
-                <h4 className="text-lg font-bold text-white">단독 독립 솔루션형</h4>
+                <span className="text-xs text-[#8C8071] font-bold">Option B</span>
+                <h4 className="text-lg font-bold text-[#1B1815]">단독 독립 솔루션형</h4>
               </div>
-              <div className="space-y-2 text-xs text-[#9E9080]">
-                <div className="flex justify-between border-b border-white/5 pb-1">
+              <div className="space-y-2 text-xs text-[#5C5247]">
+                <div className="flex justify-between border-b border-[#EAE4D8] pb-1.5">
                   <span>초기 구축비</span>
-                  <strong className="text-white">300만 ~ 500만 원 (1회)</strong>
+                  <strong className="text-[#1B1815] font-bold">300만 ~ 500만 원 (1회)</strong>
                 </div>
-                <div className="flex justify-between border-b border-white/5 pb-1">
+                <div className="flex justify-between border-b border-[#EAE4D8] pb-1.5">
                   <span>월 유지관리비</span>
-                  <strong className="text-white">월 15만 원 (서버·기술지원)</strong>
+                  <strong className="text-[#1B1815] font-bold">월 15만 원 (서버·기술지원)</strong>
                 </div>
-                <div className="flex justify-between border-b border-white/5 pb-1">
+                <div className="flex justify-between border-b border-[#EAE4D8] pb-1.5">
                   <span>정산 방식</span>
-                  <strong className="text-white">온라인 보시금 100% 사찰 귀속</strong>
+                  <strong className="text-[#1B1815] font-bold">온라인 보시금 100% 사찰 귀속</strong>
                 </div>
               </div>
-              <p className="text-[11px] text-[#8C8071] leading-relaxed bg-[#120F0D] p-3 rounded-xl">
+              <p className="text-[11px] text-[#5C5247] leading-relaxed bg-[#F5F2EB] border border-[#E5DECF] p-3.5 rounded-xl">
                 독립적인 전산 자산화를 원하시는 대형 사찰 및 본사급 도량에 적합한 정액제 모델입니다.
               </p>
             </div>
