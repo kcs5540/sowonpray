@@ -260,8 +260,8 @@ export default function HomeTab({
               <div className="mb-2.5 px-0.5">
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1.5 shrink-0">
-                    <GoldenLotusIcon className="w-[18px] h-[18px] sm:w-[19px] sm:h-[19px] shrink-0" />
-                    <h3 className="font-sans text-[14.5px] sm:text-[15.5px] font-bold text-[#2B1F11] tracking-tight whitespace-nowrap">
+                    <GoldenLotusIcon className="w-[20px] h-[20px] sm:w-[21px] sm:h-[21px] shrink-0" />
+                    <h3 className="font-sans text-[16px] sm:text-[17px] font-bold text-[#2B1F11] tracking-tight whitespace-nowrap">
                       오늘의 공덕
                     </h3>
                   </div>
@@ -271,14 +271,14 @@ export default function HomeTab({
                       if (playSingingBowlSound) playSingingBowlSound()
                       setShowMeritInfoModal(true)
                     }}
-                    className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#FCFBF8] hover:bg-[#F5EEDC] border border-[#D4A024]/40 text-[#8C6D15] hover:text-[#5C4505] text-[10.5px] font-bold transition shrink-0 cursor-pointer shadow-2xs active:scale-95"
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FCFBF8] hover:bg-[#F5EEDC] border border-[#D4A024]/40 text-[#8C6D15] hover:text-[#5C4505] text-[11.5px] font-bold transition shrink-0 cursor-pointer shadow-2xs active:scale-95"
                     title="신행 공덕이란? 안내 보기"
                   >
                     <Info className="w-3.5 h-3.5 text-[#D4A024] shrink-0" />
                     <span>공덕 안내</span>
                   </button>
                 </div>
-                <p className="text-[11px] sm:text-[11.5px] text-[#8E8475] font-normal mt-1 pl-[25px] tracking-tight">
+                <p className="text-[12.5px] sm:text-[13px] text-[#554A3D] font-medium mt-1 pl-[26px] tracking-tight">
                   작은 기도와 실천이 모여 큰 공덕이 됩니다
                 </p>
               </div>
