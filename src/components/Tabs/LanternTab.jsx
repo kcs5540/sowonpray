@@ -405,18 +405,14 @@ export default function LanternTab({
               <div className="mt-3">
                 {isLanternLit ? (
                   <>
-                  <div className="bg-[#FAF3DF]/10 border border-[#F5D061]/35 rounded-xl p-3 text-xs text-[#FAF8F5] leading-relaxed break-keep">
-                    <div className="flex items-center justify-center gap-1.5 font-bold text-[#F5D061] mb-1.5 flex-wrap text-center">
-                      <Sparkles className="w-3.5 h-3.5 shrink-0 text-[#F5D061]" />
-                      <span className="text-[#FAF8F5]">
-                        {stripTargetFromName(lanternData?.believer_name)} 불자님의 소원등 점등 중
-                      </span>
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#F5D061]/20 text-[#F5D061] border border-[#F5D061]/40 text-[11px] font-extrabold whitespace-nowrap shadow-xs">
+                  <div className="bg-[#FAF3DF]/10 border border-[#F5D061]/35 rounded-xl p-3 text-xs text-[#FAF8F5] leading-relaxed break-keep text-center">
+                    <div className="flex items-center justify-center mb-1.5">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F5D061]/20 text-[#F5D061] border border-[#F5D061]/40 text-xs font-extrabold whitespace-nowrap shadow-xs">
                         🪔 누적 {userLanternStats.totalCount}회 점등 · 🔥 {userLanternStats.streak}일 연속 정진
                       </span>
                     </div>
                     <p className="text-xs text-[#FAF8F5] text-center font-medium">
-                      내일 11시 사시예불 회향후 다시 등불을 밝히세요.
+                      내일 11시 사시예불 회향 후 다시 등불을 밝히세요.
                     </p>
                   </div>
 
