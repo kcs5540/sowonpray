@@ -110,21 +110,21 @@ export default function ProposalView({ onEnterTemple }) {
           </div>
 
           {/* 주요 CTA 버튼들 */}
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-2.5 max-w-xl mx-auto">
             <button
               type="button"
               onClick={onEnterTemple}
-              className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#F5D061] via-[#D4AF37] to-[#AA7C11] text-black font-extrabold text-sm md:text-base shadow-xl hover:brightness-110 flex items-center justify-center gap-2 transition"
+              className="w-full sm:w-auto px-4 sm:px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#F5D061] via-[#D4AF37] to-[#AA7C11] text-black font-extrabold text-xs sm:text-sm md:text-base shadow-xl hover:brightness-110 flex items-center justify-center gap-1.5 transition whitespace-nowrap tracking-tight"
             >
-              <Flame className="w-5 h-5 text-red-900 animate-pulse" />
-              <span>제주 소원사 모바일법당 1초 체험하기 ▶</span>
+              <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-red-900 animate-pulse shrink-0" />
+              <span className="whitespace-nowrap">제주 소원사 모바일법당 1초 체험하기 ▶</span>
             </button>
             <a
               href="tel:010-3306-5540"
-              className="w-full sm:w-auto px-5 py-3.5 rounded-xl bg-[#28221D] hover:bg-[#342D26] border border-[#C59B27]/50 text-[#F5D061] font-semibold text-sm flex items-center justify-center gap-2 transition"
+              className="w-full sm:w-auto px-4 sm:px-5 py-3.5 rounded-xl bg-[#28221D] hover:bg-[#342D26] border border-[#C59B27]/50 text-[#F5D061] font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition whitespace-nowrap tracking-tight"
             >
-              <Phone className="w-4 h-4 text-[#F5D061]" />
-              <span>김철수 총괄대표 직통 상담 (010-3306-5540)</span>
+              <Phone className="w-4 h-4 text-[#F5D061] shrink-0" />
+              <span className="whitespace-nowrap">김철수 총괄대표 직통 상담 (010-3306-5540)</span>
             </a>
           </div>
         </section>
@@ -473,21 +473,21 @@ export default function ProposalView({ onEnterTemple }) {
             요청하시면 사찰을 직접 찾아뵙고 스님과 종무소장님께 스마트폰과 노트북으로 3분 시연을 직접 보여드립니다.
           </p>
 
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2.5 max-w-xl mx-auto">
             <a
               href="tel:010-3306-5540"
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#C59B27] text-black font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg hover:brightness-110 transition"
+              className="w-full sm:w-auto px-4 sm:px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#C59B27] text-black font-extrabold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-lg hover:brightness-110 transition whitespace-nowrap tracking-tight"
             >
-              <Phone className="w-4 h-4" />
-              <span>김철수 총괄대표 직통 전화 (010-3306-5540)</span>
+              <Phone className="w-4 h-4 shrink-0" />
+              <span className="whitespace-nowrap">김철수 총괄대표 직통 전화 (010-3306-5540)</span>
             </a>
             <button
               type="button"
               onClick={handlePrint}
-              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-[#28221D] hover:bg-[#342D26] border border-[#C59B27]/40 text-[#D5C59B] text-xs font-semibold flex items-center justify-center gap-2 transition"
+              className="w-full sm:w-auto px-4 sm:px-5 py-3.5 rounded-xl bg-[#28221D] hover:bg-[#342D26] border border-[#C59B27]/40 text-[#D5C59B] text-xs font-semibold flex items-center justify-center gap-1.5 transition whitespace-nowrap tracking-tight"
             >
-              <Printer className="w-4 h-4" />
-              <span>A4 제안서 인쇄 / PDF 저장</span>
+              <Printer className="w-4 h-4 shrink-0" />
+              <span className="whitespace-nowrap">A4 제안서 인쇄 / PDF 저장</span>
             </button>
           </div>
 
