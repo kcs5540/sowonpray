@@ -40,37 +40,56 @@ export default function ProposalView({ onEnterTemple }) {
 
   return (
     <div className="min-h-screen bg-[#120F0D] text-[#E8DFD5] font-sans selection:bg-[#C59B27] selection:text-black">
-      {/* 🏛️ 상단 고정 헤더 바 */}
-      <header className="sticky top-0 z-50 bg-[#1A1512]/95 backdrop-blur border-b border-[#C59B27]/30 px-4 py-3">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🪷</span>
-            <div>
-              <span className="text-[11px] font-semibold tracking-wider text-[#C59B27] block">
-                제주 소원사 실증 성공 모델 기반
+      {/* 🏛️ 상단 고정 헤더 바 (품격 있는 공식 B2B 제안서 브랜딩) */}
+      <header className="sticky top-0 z-50 bg-[#1A1512]/95 backdrop-blur border-b border-[#C59B27]/40 px-3 sm:px-4 py-2.5 sm:py-3 shadow-lg">
+        <div className="max-w-4xl mx-auto flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
+            {/* 제주소원사 공식 황금 연꽃 엠블럼 마크 */}
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#2D241C] via-[#221C16] to-[#17130F] flex items-center justify-center shadow-[0_0_12px_rgba(245,208,97,0.35)] border border-[#C59B27]/60 p-1 shrink-0" title="대한불교 조계종 제주 소원사 공식 심볼">
+              <svg className="w-full h-full filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M20 5C20 5 15 14.5 15 21C15 23.8 17.2 26 20 26C22.8 26 25 23.8 25 21C25 14.5 20 5 20 5Z" fill="url(#proposalHeaderGoldLotus)" opacity="0.95" />
+                <path d="M14 12C14 12 7.5 18.5 7.5 23C7.5 26.2 10.2 28 13.2 28C16.2 28 17.8 25.5 17.8 24C17.8 18.5 14 12 14 12Z" fill="url(#proposalHeaderGoldLotus)" opacity="0.82" />
+                <path d="M26 12C26 12 32.5 18.5 32.5 23C32.5 26.2 29.8 28 26.8 28C23.8 28 22.2 25.5 22.2 24C22.2 18.5 26 12 26 12Z" fill="url(#proposalHeaderGoldLotus)" opacity="0.82" />
+                <path d="M6.5 22.5C6.5 22.5 2.5 26 2.5 29C2.5 31.2 4.5 33 7.8 33C11.8 33 14.8 29.8 14.8 28C14.8 25.2 6.5 22.5 6.5 22.5Z" fill="url(#proposalHeaderGoldLotus)" opacity="0.65" />
+                <path d="M33.5 22.5C33.5 22.5 37.5 26 37.5 29C37.5 31.2 35.5 33 32.2 33C28.2 33 25.2 29.8 25.2 28C25.2 25.2 33.5 22.5 33.5 22.5Z" fill="url(#proposalHeaderGoldLotus)" opacity="0.65" />
+                <path d="M11.5 32C15.2 34.8 24.8 34.8 28.5 32C26.5 34.8 23.5 35.8 20 35.8C16.5 35.8 13.5 34.8 11.5 32Z" fill="url(#proposalHeaderGoldLotus)" />
+                <defs>
+                  <linearGradient id="proposalHeaderGoldLotus" x1="5" y1="5" x2="35" y2="35" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#FDE68A" />
+                    <stop offset="0.5" stopColor="#F5D061" />
+                    <stop offset="1" stopColor="#B6861C" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] sm:text-[11px] font-semibold tracking-wider text-[#F5D061] truncate block font-serif-kr">
+                대한불교 조계종 · 제주소원사 전국포교위원회
               </span>
-              <h1 className="text-sm md:text-base font-bold text-white tracking-tight">
-                차세대 모바일법당 & 스마트 종무 ERP 제안서
+              <h1 className="text-xs sm:text-sm md:text-base font-extrabold text-white tracking-tight truncate sm:whitespace-normal">
+                스마트 모바일법당 & 종무 ERP 도입 제안서
               </h1>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <button
               type="button"
               onClick={handleCopyLink}
-              className="px-2.5 py-1.5 rounded-lg bg-[#28221D] hover:bg-[#342D26] text-[11px] text-[#D5C59B] border border-[#C59B27]/40 flex items-center gap-1 transition"
+              className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg bg-[#28221D] hover:bg-[#342D26] text-[11px] text-[#D5C59B] border border-[#C59B27]/40 flex items-center gap-1 transition cursor-pointer"
+              title="제안서 링크 복사"
             >
-              {copied ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>{copied ? '복사됨!' : '링크 복사'}</span>
+              {copied ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-[#F5D061]" />}
+              <span className="hidden sm:inline">{copied ? '복사됨!' : '링크 복사'}</span>
             </button>
             <button
               type="button"
               onClick={onEnterTemple}
-              className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#AA7C11] text-black font-bold text-xs shadow-md hover:brightness-110 flex items-center gap-1 transition"
+              className="px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#AA7C11] text-black font-extrabold text-[11px] sm:text-xs shadow-md hover:brightness-110 flex items-center gap-1 transition cursor-pointer shrink-0"
+              title="제주 소원사 모바일 법당 실물 체험"
             >
-              <span>모바일법당 체험</span>
-              <ChevronRight className="w-3.5 h-3.5" />
+              <span>체험하기</span>
+              <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
             </button>
           </div>
         </div>
