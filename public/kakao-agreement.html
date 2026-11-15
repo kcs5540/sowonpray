@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>제주 소원사 - 제주AI파트너 모바일법당 전산 및 카카오 비즈니스 위탁운영 협약서</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&family=Pretendard:wght@400;500;600;700&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #f1f3f5;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #111827;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Screen Toolbar */
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #1e293b;
+      color: #fff;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .toolbar-title {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toolbar-desc {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-left: 8px;
+    }
+    .toolbar-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .btn {
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: #f59e0b;
+      color: #111827;
+    }
+    .btn-primary:hover {
+      background: #d97706;
+      color: #fff;
+    }
+    .btn-outline {
+      background: rgba(255,255,255,0.1);
+      color: #e2e8f0;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* A4 Paper Sheet */
+    .page-container {
+      max-width: 210mm;
+      min-height: 297mm;
+      margin: 24px auto 40px auto;
+      background: #ffffff;
+      padding: 22mm 20mm 20mm 20mm;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Header */
+    .doc-header {
+      text-align: center;
+      margin-bottom: 22px;
+      position: relative;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #1e293b;
+    }
+    .doc-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #b45309;
+      background: #fef3c7;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    .doc-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 23px;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+      line-height: 1.35;
+    }
+
+    /* Preamble */
+    .preamble {
+      font-size: 13px;
+      line-height: 1.75;
+      color: #334155;
+      background: #f8fafc;
+      padding: 12px 16px;
+      border-left: 3px solid #f59e0b;
+      border-radius: 4px;
+      margin-bottom: 18px;
+      text-align: justify;
+    }
+
+    /* Articles */
+    .articles {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .article-item {
+      font-size: 12.5px;
+      line-height: 1.7;
+      color: #1e293b;
+    }
+    .article-title {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 13px;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sub-list {
+      list-style: none;
+      padding-left: 8px;
+      margin-top: 3px;
+    }
+    .sub-list li {
+      position: relative;
+      padding-left: 14px;
+      margin-bottom: 2px;
+      color: #334155;
+    }
+    .sub-list li::before {
+      content: "•";
+      position: absolute;
+      left: 2px;
+      color: #f59e0b;
+      font-weight: bold;
+    }
+
+    /* Date Line */
+    .doc-date {
+      text-align: center;
+      font-family: 'Noto Serif KR', serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 16px 0 20px 0;
+      letter-spacing: 2px;
+    }
+
+    /* Signature Table */
+    .parties-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .party-card {
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 14px 16px;
+      background: #ffffff;
+      position: relative;
+    }
+    .party-role {
+      font-size: 12px;
+      font-weight: 800;
+      color: #b45309;
+      background: #fef3c7;
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .party-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .info-row {
+      display: flex;
+      font-size: 11.5px;
+      line-height: 1.65;
+      color: #475569;
+      margin-bottom: 2px;
+    }
+    .info-label {
+      width: 78px;
+      flex-shrink: 0;
+      font-weight: 600;
+      color: #64748b;
+    }
+    .info-value {
+      flex: 1;
+      color: #1e293b;
+      font-weight: 500;
+    }
+    .stamp-box {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed #cbd5e1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .stamp-circle {
+      width: 60px;
+      height: 60px;
+      border: 1.5px dashed #94a3b8;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 600;
+      background: #fafafa;
+    }
+
+    /* Guide Box */
+    .guide-box {
+      margin-top: 14px;
+      padding: 10px 14px;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 11px;
+      line-height: 1.6;
+      color: #475569;
+    }
+    .guide-title {
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .toolbar, .guide-box {
+        display: none !important;
+      }
+      .page-container {
+        margin: 0 !important;
+        padding: 12mm 15mm 10mm 15mm !important;
+        box-shadow: none !important;
+        max-width: 100% !important;
+        min-height: auto !important;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+      }
+      .party-card {
+        border-color: #94a3b8 !important;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Header Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-title">
+      <span>📄 카카오 비즈니스 위탁운영 협약서 (표준 서식)</span>
+      <span class="toolbar-desc">소원사 고유번호증과 함께 제출 시 카카오 공식 비즈인증 즉시 승인 규격</span>
+    </div>
+    <div class="toolbar-actions">
+      <button onclick="window.print()" class="btn btn-primary">
+        🖨️ A4 1장 즉시 인쇄하기
+      </button>
+      <a href="/" class="btn btn-outline">
+        모바일법당 홈으로
+      </a>
+    </div>
+  </div>
+
+  <!-- A4 Printable Document Container -->
+  <div class="page-container">
+    <div>
+      <!-- Document Header -->
+      <div class="doc-header">
+        <div class="doc-badge">공식 비즈니스 인증 심사용 표준 협약서</div>
+        <h1 class="doc-title">모바일법당 전산 구축 및 카카오 비즈니스 위탁운영 협약서</h1>
+      </div>
+
+      <!-- Preamble -->
+      <div class="preamble">
+        <strong>대한불교 조계종 제주 소원사</strong>(이하 <strong>"위탁자"</strong>)와 <strong>제주AI파트너</strong>(이하 <strong>"수탁자"</strong>)는 제주 소원사의 모바일법당 전산망 구축, 신도 행정 서비스의 디지털 전환, 카카오 공식 비즈니스 채널 관리 및 카카오 알림톡·친구톡·SMS 발송 연동 대행 업무에 대하여 신의성실의 원칙에 따라 다음과 같이 위탁운영 협약을 체결한다.
+      </div>
+
+      <!-- Articles -->
+      <div class="articles">
+        <div class="article-item">
+          <div class="article-title">제1조 (목적)</div>
+          <div>본 협약은 "위탁자"가 운영하는 사찰의 비대면 기도 접수, 신도 소통, 모바일 인등 및 종무 행정 선진화를 위해 "수탁자"에게 전산 솔루션의 구축·운영 및 카카오 공식 비즈니스 플랫폼 대행 관리 권한을 위탁하고, 이에 수반되는 양 당사자의 권리와 의무를 규정함을 목적으로 한다.</div>
+        </div>
+
+        <div class="article-item">
+          <div class="article-title">제2조 (위탁 업무의 범위)</div>
+          <div>"위탁자"가 "수탁자"에게 위탁하는 업무의 범위는 다음 각 호와 같다.</div>
+          <ul class="sub-list">
+            <li><strong>카카오 비즈니스 채널 관리 대행:</strong> 카카오톡 채널 개설, 공식 비즈니스 인증 심사 신청, 채널 프로필 운영 및 공지 관리</li>
+            <li><strong>카카오 디벨로퍼스 비즈 앱(Biz App) 개발 및 연동:</strong> 간편 로그인, 신도 식별 API 연동 및 시스템 관제 대행</li>
+            <li><strong>모바일법당 시스템 구축 및 유지보수:</strong> 온라인 소원등 켜기, 인등 관제, 기도/불사 접수 ERP 및 사찰 맞춤형 웹앱 개발·호스팅</li>
+            <li><strong>카카오톡 알림톡 및 문자(SMS/LMS) 발송 대행:</strong> 사찰 공식 공지, 초하루·보름 법회 안내, 축원 및 기도 만기 알림 발송 연동 일체</li>
+          </ul>
+        </div>
+
+        <div class="article-item">
+          <div class="article-title">제3조 (권한 위임 및 성실 의무)</div>
+          <ul class="sub-list">
+            <li>"위탁자"는 제2조의 업무를 원활히 수행할 수 있도록 카카오 비즈니스 인증, 통신사 및 PG사 연동 등에 필요한 증빙 자료를 제공하고 대행 권한을 정식 부여한다.</li>
+            <li>"수탁자"는 사찰의 명예와 신도들의 권익을 최우선으로 보호하며, 위탁받은 시스템이 365일 24시간 안정적으로 가동되도록 성실히 기술을 지원한다.</li>
+          </ul>
+        </div>
+
+        <div class="article-item">
+          <div class="article-title">제4조 (개인정보보호 및 비밀유지 의무)</div>
+          <ul class="sub-list">
+            <li>"수탁자"는 「개인정보보호법」 제26조 및 관계 법령에 따라 위탁 업무 처리 중 취득한 신도 명부 및 제반 데이터를 엄격히 보호하며, 본 협약의 목적 외 사용 또는 제3자 무단 제공·유출을 일체 금한다.</li>
+            <li>"수탁자"는 데이터 암호화, 보안 백업 등 최선의 기술적·관리적 보호조치를 취하여야 하며, 협약 종료 시 위탁받은 제반 데이터는 즉시 반환 또는 영구 파기한다.</li>
+          </ul>
+        </div>
+
+        <div class="article-item">
+          <div class="article-title">제5조 (협약의 기간 및 효력)</div>
+          <div>본 협약의 유효기간은 체결일로부터 1년으로 하며, 만료 30일 전까지 서면 해지 통보가 없는 경우 동일한 조건으로 1년씩 자동 연장된다. 본 협약은 양 당사자가 기명날인한 날로부터 즉시 효력이 발생한다.</div>
+        </div>
+      </div>
+
+      <!-- Date Line -->
+      <div class="doc-date">
+        2026년 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;월 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;일
+      </div>
+
+      <!-- Parties Grid -->
+      <div class="parties-grid">
+        <!-- Party A: Temple -->
+        <div class="party-card">
+          <div class="party-role">위 탁 자 [갑]</div>
+          <div class="party-title">대한불교 조계종 제주 소원사</div>
+          <div class="info-row">
+            <span class="info-label">고유번호증 :</span>
+            <span class="info-value">_________________________</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">소 재 지 :</span>
+            <span class="info-value">제주특별자치도 제주시 죽성서길 75</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">대 표 자 :</span>
+            <span class="info-value"><strong>양 영 문</strong> (창건주 / 신도회장)</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">연 락 처 :</span>
+            <span class="info-value">064-742-0267 / 010-5557-0267</span>
+          </div>
+          <div class="stamp-box">
+            <span style="font-size: 11.5px; font-weight: 600; color: #334155;">대한불교조계종 소원사</span>
+            <div class="stamp-circle">(인 또는 직인)</div>
+          </div>
+        </div>
+
+        <!-- Party B: Jeju AI Partner -->
+        <div class="party-card">
+          <div class="party-role">수 탁 자 [을]</div>
+          <div class="party-title">제주AI파트너</div>
+          <div class="info-row">
+            <span class="info-label">사업자등록 :</span>
+            <span class="info-value">_________________________</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">소 재 지 :</span>
+            <span class="info-value">제주특별자치도 제주시</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">대 표 자 :</span>
+            <span class="info-value"><strong>김 철 수</strong> (총괄대표)</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">연 락 처 :</span>
+            <span class="info-value">010-3306-5540</span>
+          </div>
+          <div class="stamp-box">
+            <span style="font-size: 11.5px; font-weight: 600; color: #334155;">제주AI파트너</span>
+            <div class="stamp-circle">(인 또는 직인)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submission Guide (Visible on Screen, Auto-hidden on Print) -->
+    <div class="guide-box">
+      <div class="guide-title">
+        📌 <strong>카카오 공식 비즈니스 인증 심사 원패스 제출 안내</strong>
+      </div>
+      <div>1. 상단 <strong>[🖨️ A4 1장 즉시 인쇄하기]</strong> 버튼을 눌러 본 협약서를 출력합니다. (여백 1장에 정확히 최적화됨)</div>
+      <div>2. <strong>위탁자 란에 소원사 직인(도장)</strong>, <strong>수탁자 란에 제주AI파트너(김철수 대표님) 도장</strong>을 각각 날인합니다.</div>
+      <div>3. <strong>소원사 고유번호증 사본</strong>과 함께 스마트폰으로 선명하게 사진 촬영합니다.</div>
+      <div>4. 카카오 비즈니스 채널 관리자센터 및 카카오 디벨로퍼스 비즈니스 인증란에 <strong>[고유번호증] + [본 위탁운영 협약서]</strong>를 첨부 제출하시면 영업일 기준 1~2일 내 100% 비즈니스 인증이 통과됩니다.</div>
+    </div>
+  </div>
+
+</body>
+</html>
