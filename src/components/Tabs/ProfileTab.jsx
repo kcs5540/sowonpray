@@ -597,7 +597,7 @@ export default function ProfileTab({
                               </div>
 
                               <div className="space-y-1.5 pt-0.5">
-                                {/* 신행 1) 소원등 점등: 1일 1회 1,000 공덕 (최대 1,000 공덕) */}
+                                {/* 신행 1) 소원등 점등 */}
                                 <button
                                   type="button"
                                   onClick={() => {
@@ -618,20 +618,14 @@ export default function ProfileTab({
                                       오늘 {lanternInfo.currentCount}/1회
                                     </span>
                                   </div>
-                                  <div className="flex items-center justify-between mt-1 text-[11px]">
-                                    <span className="text-[#A89C8E]">
-                                      1회 점등 시 1,000 공덕{' '}
-                                      <span className="text-emerald-400 font-semibold">
-                                        (최대 1,000 공덕)
-                                      </span>
-                                    </span>
-                                    <span className="font-mono font-bold text-emerald-300">
-                                      +{lanternInfo.currentPoints.toLocaleString()} / 1,000 공덕
+                                  <div className="flex items-center justify-end mt-1">
+                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300">
+                                      +{lanternInfo.currentPoints.toLocaleString()} 공덕
                                     </span>
                                   </div>
                                 </button>
 
-                                {/* 신행 2) 대웅전 참배: 들어갔다 나오면 1,000 공덕 (최대 1,000 공덕) */}
+                                {/* 신행 2) 대웅전 참배 */}
                                 <button
                                   type="button"
                                   onClick={() => {
@@ -651,20 +645,14 @@ export default function ProfileTab({
                                       오늘 {sanctuaryInfo.currentCount}/1회
                                     </span>
                                   </div>
-                                  <div className="flex items-center justify-between mt-1 text-[11px]">
-                                    <span className="text-[#A89C8E]">
-                                      들어갔다 나오면 1,000 공덕{' '}
-                                      <span className="text-emerald-400 font-semibold">
-                                        (최대 1,000 공덕)
-                                      </span>
-                                    </span>
-                                    <span className="font-mono font-bold text-emerald-300">
-                                      +{sanctuaryInfo.currentPoints.toLocaleString()} / 1,000 공덕
+                                  <div className="flex items-center justify-end mt-1">
+                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300">
+                                      +{sanctuaryInfo.currentPoints.toLocaleString()} 공덕
                                     </span>
                                   </div>
                                 </button>
 
-                                {/* 신행 3) 한줄사경 정진: 1회 1,000 공덕 (최대 1,000 공덕) */}
+                                {/* 신행 3) 한줄사경 정진 */}
                                 <button
                                   type="button"
                                   onClick={() => {
@@ -685,20 +673,14 @@ export default function ProfileTab({
                                       오늘 {sutraInfo.currentCount}/1회
                                     </span>
                                   </div>
-                                  <div className="flex items-center justify-between mt-1 text-[11px]">
-                                    <span className="text-[#A89C8E]">
-                                      1회 사경 시 1,000 공덕{' '}
-                                      <span className="text-emerald-400 font-semibold">
-                                        (최대 1,000 공덕)
-                                      </span>
-                                    </span>
-                                    <span className="font-mono font-bold text-emerald-300">
-                                      +{sutraInfo.currentPoints.toLocaleString()} / 1,000 공덕
+                                  <div className="flex items-center justify-end mt-1">
+                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300">
+                                      +{sutraInfo.currentPoints.toLocaleString()} 공덕
                                     </span>
                                   </div>
                                 </button>
 
-                                {/* 신행 4) 인연 전달 한 사람: 상대방이 소원등 켰을 때 5,000 공덕 (한도 1일 50,000) */}
+                                {/* 신행 4) 인연 전달 공덕 */}
                                 <div className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-left">
                                   <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
@@ -711,20 +693,14 @@ export default function ProfileTab({
                                       오늘 {inyeonGiverInfo.currentCount}/10회
                                     </span>
                                   </div>
-                                  <div className="flex items-center justify-between mt-1 text-[11px]">
-                                    <span className="text-[#A89C8E]">
-                                      상대방 점등 시 5,000 공덕{' '}
-                                      <span className="text-emerald-400 font-semibold">
-                                        (한도 1일 50,000)
-                                      </span>
-                                    </span>
-                                    <span className="font-mono font-bold text-emerald-300">
-                                      +{inyeonGiverInfo.currentPoints.toLocaleString()} / 50,000 공덕
+                                  <div className="flex items-center justify-end mt-1">
+                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300">
+                                      +{inyeonGiverInfo.currentPoints.toLocaleString()} 공덕
                                     </span>
                                   </div>
                                 </div>
 
-                                {/* 신행 5) (신규) 인연 받은 사람: 상대방이 소원등 켰을 때 5,000 공덕 (1일 5,000) */}
+                                {/* 신행 5) (신규) 인연 받음 공덕 */}
                                 <div className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-left">
                                   <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
@@ -737,15 +713,9 @@ export default function ProfileTab({
                                       오늘 {inyeonReceiverInfo.currentCount}/1회
                                     </span>
                                   </div>
-                                  <div className="flex items-center justify-between mt-1 text-[11px]">
-                                    <span className="text-[#A89C8E]">
-                                      상대방 점등 시 5,000 공덕{' '}
-                                      <span className="text-emerald-400 font-semibold">
-                                        (1일 5,000)
-                                      </span>
-                                    </span>
-                                    <span className="font-mono font-bold text-emerald-300">
-                                      +{inyeonReceiverInfo.currentPoints.toLocaleString()} / 5,000 공덕
+                                  <div className="flex items-center justify-end mt-1">
+                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300">
+                                      +{inyeonReceiverInfo.currentPoints.toLocaleString()} 공덕
                                     </span>
                                   </div>
                                 </div>
