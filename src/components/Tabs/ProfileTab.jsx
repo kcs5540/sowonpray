@@ -433,9 +433,8 @@ export default function ProfileTab({
                           <path d="M11.5 32C15.2 34.8 24.8 34.8 28.5 32C26.5 34.8 23.5 35.8 20 35.8C16.5 35.8 13.5 34.8 11.5 32Z" fill="#F5D061" />
                         </svg>
                       </div>
-                      <div className="min-w-0 leading-tight">
-                        <div className="text-[10px] text-[#C59B27] font-semibold tracking-wider">제주 소원사</div>
-                        <div className="font-serif-kr text-xs font-extrabold text-[#F5D061] tracking-tight whitespace-nowrap">
+                      <div className="min-w-0">
+                        <div className="font-serif-kr text-sm sm:text-base font-extrabold text-[#F5D061] tracking-tight whitespace-nowrap">
                           디지털 신도증
                         </div>
                       </div>
