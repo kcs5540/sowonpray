@@ -402,7 +402,7 @@ export default function ProposalView({ onEnterTemple }) {
                 </div>
                 <div className="flex justify-between border-b border-[#EAE4D8] pb-1.5">
                   <span>월 유지관리비</span>
-                  <strong className="text-[#1B1815] font-bold">월 15만 원 (서버·기술지원)</strong>
+                  <strong className="text-[#1B1815] font-bold">월 30만 원 (전용 서버·보안·전담 기술지원)</strong>
                 </div>
                 <div className="flex justify-between border-b border-[#EAE4D8] pb-1.5">
                   <span>정산 방식</span>
