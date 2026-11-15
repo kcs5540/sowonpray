@@ -4591,20 +4591,30 @@ function formatRelativeOrDate(dateStr) {
     const sutraReward = sutraCount * 1000
     const todaySutraRewardCount = sutraCount
 
-    // 6) 목탁멍/108배/염주는 공덕 포인트 적립 대상에서 제외 (0 처리)
+    // 6) 인연 전달 한 사람: 상대방이 소원등 켰을 때 5,000 공덕 (1일 한도 50,000 = 최대 10회)
+    const inyeonGiverInfo = getDailyMeritInfo('inyeon_giver', currentUser.code, dbDaily.inyeon_giver)
+    const inyeonGiverReward = Math.min(50000, Math.max(Number(inyeonGiverInfo.currentPoints) || 0, Number(dbDaily.inyeon_giver) || 0))
+    const inyeonGiverCount = Math.floor(inyeonGiverReward / 5000)
+
+    // 7) (신규) 인연 받은 사람: 상대방에게 인연을 받아 소원등 켰을 때 5,000 공덕 (1일 1회 한도 5,000)
+    const inyeonReceiverInfo = getDailyMeritInfo('inyeon_receiver', currentUser.code, dbDaily.inyeon_receiver)
+    const inyeonReceiverReward = Math.min(5000, Math.max(Number(inyeonReceiverInfo.currentPoints) || 0, Number(dbDaily.inyeon_receiver) || 0))
+    const inyeonReceiverCount = inyeonReceiverReward >= 5000 ? 1 : 0
+
+    // 8) 목탁멍/108배/염주는 공덕 포인트 적립 대상에서 제외 (0 처리)
     const moktakCount = 0
     const moktakReward = 0
     const todayMoktakRewardCount = 0
 
-    // 7) 실시간 자동 정산 총 합계
-    // 전법 법연(직접) + 도량 권선(산하) + 오늘 3대 신행(소원등 1,000 + 대웅전 1,000 + 사경 1,000)
+    // 9) 실시간 자동 정산 총 합계
+    // 전법 법연(직접) + 도량 권선(산하) + 오늘 5대 신행(소원등 1,000 + 대웅전 1,000 + 사경 1,000 + 인연전달 5,000~50,000 + 신규인연받음 5,000)
     // 🌟 대표님 지침: 기확인 공덕(오다혜 13,390, 김철수 35,100)을 온전히 보존하고, 이 다음 활동부터 누적 가산
     const baseSavedMerit = Math.max(
       Number(currentUser?.merit_count) || 0,
       currentUser?.code === '33065540' ? 35100 : 0,
       currentUser?.code === '83855838' ? 13390 : 0
     )
-    const calculatedReward = believersReward + lanternReward + sanctuaryReward + sutraReward
+    const calculatedReward = believersReward + lanternReward + sanctuaryReward + sutraReward + inyeonGiverReward + inyeonReceiverReward
     const totalReward = Math.max(baseSavedMerit, calculatedReward)
     const previousProtectedMerit = Math.max(0, totalReward - calculatedReward)
 
@@ -4618,9 +4628,15 @@ function formatRelativeOrDate(dateStr) {
       believersReward,
       lanternCount,
       lanternReward,
+      sanctuaryCount,
+      sanctuaryReward,
       sutraCount,
       sutraReward,
       todaySutraRewardCount,
+      inyeonGiverCount,
+      inyeonGiverReward,
+      inyeonReceiverCount,
+      inyeonReceiverReward,
       moktakCount,
       moktakReward,
       todayMoktakRewardCount,
@@ -4634,6 +4650,13 @@ function formatRelativeOrDate(dateStr) {
     if (!supabase || !currentUser?.code || typeof userMeritReward?.totalReward !== 'number') return
     const dbMerit = Number(currentUser.merit_count) || 0
     if (userMeritReward.totalReward !== dbMerit) {
+      setCurrentUser((prev) => (prev ? { ...prev, merit_count: userMeritReward.totalReward } : prev))
+      setMembers((prev) =>
+        prev.map((m) => (m.code === currentUser.code ? { ...m, merit_count: userMeritReward.totalReward } : m))
+      )
+      try {
+        localStorage.setItem(`sowonpray_merit_${currentUser.code}`, String(userMeritReward.totalReward))
+      } catch (e) {}
       supabase
         .from('members')
         .update({ merit_count: userMeritReward.totalReward })
@@ -5653,10 +5676,12 @@ function formatRelativeOrDate(dateStr) {
           extra_data: { registered_via: isBulsaReg ? 'bulsa_consultation' : 'wish_lantern' },
         }
         if (!isBulsaReg) {
-          const targetCode = currentUser?.code || newBeliever.code
-          awardMerit('lantern', targetCode, 1)
+          awardMerit('lantern', newBeliever.code, 1)
         }
         setMembers((prev) => [newBeliever, ...prev])
+        if (currentUser && currentUser.code === newBeliever.code) {
+          setCurrentUser(newBeliever)
+        }
         try {
           if (!isBulsaReg) {
             localStorage.setItem(`sowonpray_merit_${newBeliever.code}`, String(initialMerit))
@@ -5667,7 +5692,7 @@ function formatRelativeOrDate(dateStr) {
         }
       } else {
         // 기존 회원이 소원등을 올릴 때도 공덕 (1일 1회 최대 1,000) 적립
-        const targetCode = currentUser?.code || existingPrayerMember.code
+        const targetCode = existingPrayerMember.code
         const meritRes = awardMerit('lantern', targetCode, 1)
         let addedMerit = meritRes.earnedPoints || 0
 
@@ -5691,8 +5716,8 @@ function formatRelativeOrDate(dateStr) {
         setMembers((prev) =>
           prev.map((m) => (m.code === existingPrayerMember.code ? updatedMember : m))
         )
-        if (currentUser && currentUser.code === existingPrayerMember.code && needsBirthUpdate) {
-          setCurrentUser((prev) => (prev ? { ...prev, birth_date: formattedBirth, lunar_solar: effectiveLunarSolar } : prev))
+        if (currentUser && currentUser.code === existingPrayerMember.code) {
+          setCurrentUser((prev) => (prev ? { ...prev, ...updatedMember } : prev))
         }
         try {
           localStorage.setItem(`sowonpray_merit_${existingPrayerMember.code}`, String(nextMerit))
@@ -5729,6 +5754,9 @@ function formatRelativeOrDate(dateStr) {
               return m
             })
           )
+          if (currentUser && currentUser.code === referrerCode) {
+            setCurrentUser((prev) => (prev ? { ...prev, merit_count: (prev.merit_count || 0) + giverRes.earnedPoints } : prev))
+          }
         }
       }
 
