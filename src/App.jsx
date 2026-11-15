@@ -2129,6 +2129,95 @@ function formatRelativeOrDate(dateStr) {
     toastTimerRef.current = setTimeout(() => setToast(null), duration)
   }
 
+  // 💬 카카오 로그인 공식 OAuth 인가 콜백 감지 (?code=XXXXX)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    const kakaoCode = params.get('code')
+    if (!kakaoCode) return
+
+    // 즉시 브라우저 URL에서 code 파라미터 깔끔하게 제거 (중복 요청 방지)
+    const cleanUrl = window.location.origin + window.location.pathname
+    window.history.replaceState({}, '', cleanUrl)
+
+    showToast('카카오톡 계정을 안전하게 확인하고 있습니다...')
+
+    const redirectUri = window.location.origin.includes('localhost')
+      ? window.location.origin
+      : 'https://sowonpray.vercel.app'
+
+    fetch(`/api/kakao-login?code=${encodeURIComponent(kakaoCode)}&redirect_uri=${encodeURIComponent(redirectUri)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.success || !data.user) {
+          console.warn('Kakao login api response error:', data)
+          showToast('카카오 계정 인증에 실패했습니다. 전화번호로 로그인해 주세요.')
+          return
+        }
+
+        const { id: kakaoId, nickname, profile_image: profileImg } = data.user
+
+        // 1) 기존 회원 중 카카오 고유 ID 또는 매칭 회원이 있는지 확인
+        const existing = members.find(
+          (m) => m.extra_data?.kakao_id === kakaoId || m.code === `K${kakaoId.slice(-7)}`
+        )
+
+        if (existing) {
+          setCurrentUserCode(existing.code)
+          try {
+            localStorage.setItem('sowonpray_remember_login', 'true')
+            localStorage.setItem('sowonpray_saved_login_id', existing.phone || existing.code)
+            localStorage.setItem('sowonpray_saved_login_pw', existing.password_pin || '0000')
+          } catch (e) {}
+          playSingingBowlSound()
+          showToast(`🙏 성불하세요, ${existing.name} 불자님! 카카오 계정으로 로그인되었습니다.`)
+          setActiveTab('home')
+          return
+        }
+
+        // 2) 신규 회원 자동 생성 & 즉시 로그인
+        const newCode = `K${kakaoId.slice(-7)}`
+        const newMember = {
+          code: newCode,
+          phone: `010-0000-${kakaoId.slice(-4)}`,
+          password_pin: '0000',
+          name: nickname || '소원사 불자',
+          dharma_name: '',
+          birth_date: '',
+          lunar_solar: 'solar',
+          address: '',
+          family_memo: '카카오톡 원클릭 가입 불자',
+          role: 'believer',
+          parent_code: referralCode || '33065540',
+          bank_name: '',
+          bank_account: '',
+          account_holder: '',
+          merit_count: 1,
+          believers_count: 0,
+          wipae_count: 0,
+          extra_data: { kakao_id: kakaoId, profile_image: profileImg, is_kakao_user: true },
+        }
+
+        setMembers((prev) => [newMember, ...prev])
+        setCurrentUserCode(newMember.code)
+        try {
+          localStorage.setItem('sowonpray_remember_login', 'true')
+          localStorage.setItem('sowonpray_saved_login_id', newMember.code)
+          localStorage.setItem('sowonpray_saved_login_pw', '0000')
+        } catch (e) {}
+        if (supabase) {
+          supabase.from('members').upsert([newMember], { onConflict: 'code' }).then()
+        }
+        playSingingBowlSound()
+        showToast(`🎉 환영합니다, ${nickname} 불자님! 카카오톡 계정으로 자동 가입 및 로그인되었습니다.`)
+        setActiveTab('home')
+      })
+      .catch((err) => {
+        console.error('Kakao callback error:', err)
+        showToast('카카오 로그인 처리 중 오류가 발생했습니다.')
+      })
+  }, [members, referralCode])
+
   // 발원문 접수일시 친화적 포맷팅 함수
   const formatPrayerDate = (dateStr) => {
     if (!dateStr) return '최근'
@@ -4808,102 +4897,16 @@ function formatRelativeOrDate(dateStr) {
     setActiveTab('home')
   }
 
-  // 💬 카카오 1초 원클릭 자동 회원가입 & 로그인 핸들러
+  // 💬 카카오 1초 원클릭 자동 회원가입 & 로그인 핸들러 (카카오 공식 OAuth 인증)
   const handleKakaoAuthLogin = () => {
-    const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
-    
-    // 카카오 SDK 및 팝업 로그인 가능 여부 점검
-    if (typeof window !== 'undefined' && window.Kakao) {
-      try {
-        if (!window.Kakao.isInitialized()) {
-          window.Kakao.init(kakaoKey)
-        }
+    const REST_API_KEY = 'e27846c11008fb06b0d208ab449db1d9'
+    const redirectUri = typeof window !== 'undefined'
+      ? (window.location.origin.includes('localhost') ? window.location.origin : 'https://sowonpray.vercel.app')
+      : 'https://sowonpray.vercel.app'
 
-        // Kakao SDK v1/v2 로그인 메서드 존재 시 시도
-        if (window.Kakao.Auth && typeof window.Kakao.Auth.login === 'function') {
-          window.Kakao.Auth.login({
-            scope: 'profile_nickname,profile_image',
-            success: () => {
-              window.Kakao.API.request({
-                url: '/v2/user/me',
-                success: (res) => {
-                  const kakaoId = String(res.id)
-                  const nickname = res.kakao_account?.profile?.nickname || res.properties?.nickname || '카카오불자'
-                  const profileImg = res.kakao_account?.profile?.profile_image_url || ''
-
-                  const existing = members.find(
-                    (m) => m.extra_data?.kakao_id === kakaoId || m.code === `K${kakaoId.slice(-7)}`
-                  )
-
-                  if (existing) {
-                    setCurrentUserCode(existing.code)
-                    try {
-                      localStorage.setItem('sowonpray_remember_login', 'true')
-                      localStorage.setItem('sowonpray_saved_login_id', existing.phone || existing.code)
-                      localStorage.setItem('sowonpray_saved_login_pw', existing.password_pin || '0000')
-                    } catch (e) {}
-                    playSingingBowlSound()
-                    showToast(`🙏 성불하세요, ${existing.name} 불자님! 카카오 계정으로 로그인되었습니다.`)
-                    setActiveTab('home')
-                    return
-                  }
-
-                  const newCode = `K${kakaoId.slice(-7)}`
-                  const newMember = {
-                    code: newCode,
-                    phone: `010-0000-${kakaoId.slice(-4)}`,
-                    password_pin: '0000',
-                    name: nickname,
-                    dharma_name: '',
-                    birth_date: '',
-                    lunar_solar: 'solar',
-                    address: '',
-                    family_memo: '카카오톡 간편가입 불자',
-                    role: 'believer',
-                    parent_code: referralCode || '33065540',
-                    bank_name: '',
-                    bank_account: '',
-                    account_holder: '',
-                    merit_count: 1,
-                    believers_count: 0,
-                    wipae_count: 0,
-                    extra_data: { kakao_id: kakaoId, profile_image: profileImg, is_kakao_user: true },
-                  }
-
-                  setMembers((prev) => [newMember, ...prev])
-                  setCurrentUserCode(newMember.code)
-                  try {
-                    localStorage.setItem('sowonpray_remember_login', 'true')
-                    localStorage.setItem('sowonpray_saved_login_id', newMember.code)
-                    localStorage.setItem('sowonpray_saved_login_pw', '0000')
-                  } catch (e) {}
-                  if (supabase) {
-                    supabase.from('members').upsert([newMember], { onConflict: 'code' }).then()
-                  }
-                  playSingingBowlSound()
-                  showToast(`🎉 환영합니다, ${nickname} 불자님! 카카오 계정으로 자동 가입 및 로그인되었습니다.`)
-                  setActiveTab('home')
-                },
-                fail: () => fallbackSimpleSignup(),
-              })
-            },
-            fail: () => fallbackSimpleSignup(),
-          })
-          return
-        }
-      } catch (err) {
-        console.warn('Kakao direct login failed, using quick signup fallback:', err)
-      }
-    }
-
-    // 카카오 콘솔 설정 미완료 환경일 때 친절한 10초 간편 가입 전환 (에러창 방지)
-    fallbackSimpleSignup()
-  }
-
-  // 카카오 간편 가입 모드 폴백 핸들러
-  const fallbackSimpleSignup = () => {
-    setAuthMode('signup')
-    showToast('💡 성함과 휴대폰 번호만 입력하시면 10초 만에 즉시 법당 계정이 생성됩니다.')
+    // 카카오 공식 인증창으로 즉시 이동
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code`
+    window.location.href = kakaoAuthUrl
   }
 
   // 내 정보(기본정보 + 사찰 축원 확장정보 + 정산계좌) 저장 핸들러
