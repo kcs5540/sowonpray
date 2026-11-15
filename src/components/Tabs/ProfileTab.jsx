@@ -840,13 +840,8 @@ export default function ProfileTab({
                                 <Flame className="w-4 h-4 fill-current text-[#FFF7CE] flame-flicker" />
                               </div>
                               <div className="min-w-0">
-                                <span className="block text-xs font-black text-[#F5D061] tracking-wide">
+                                <span className="block text-xs sm:text-sm font-black text-[#F5D061] tracking-wide">
                                   {isLanternLit ? '소원등 점등 중' : '나의 등불 & 기도 정진'}
-                                </span>
-                                <span className="block text-[11px] text-[#D6CEC2] truncate">
-                                  {isLanternLit
-                                    ? `📅 ${getSasiDisplayInfo(lanternData?.sasi_date_key).shortLabel} 축원 (11시 회향)`
-                                    : '매일 사시예불 축원 봉행'}
                                 </span>
                               </div>
                             </div>
