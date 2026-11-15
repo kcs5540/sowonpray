@@ -63,24 +63,26 @@ export default function ProposalView({ onEnterTemple }) {
               </svg>
             </div>
             <div className="min-w-0 flex-1">
-              <span className="text-[10px] sm:text-[11px] font-semibold tracking-wider text-[#F5D061] truncate block font-serif-kr">
-                대한불교 조계종 · 제주소원사 전국포교위원회
+              <span className="text-[10px] sm:text-[11px] font-semibold tracking-wider text-[#F5D061] block font-serif-kr leading-tight whitespace-nowrap">
+                대한불교 조계종 제주소원사
               </span>
-              <h1 className="text-xs sm:text-sm md:text-base font-extrabold text-white tracking-tight truncate sm:whitespace-normal">
-                스마트 모바일법당 & 종무 ERP 도입 제안서
+              <h1 className="text-[12px] sm:text-sm md:text-base font-extrabold text-white tracking-tight leading-tight mt-0.5 whitespace-nowrap">
+                <span className="sm:hidden">스마트 모바일법당 & 종무 ERP</span>
+                <span className="hidden sm:inline">스마트 모바일법당 & 종무 ERP 제안서</span>
               </h1>
             </div>
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            {/* 링크 복사: 모바일에서는 타이틀 공간 확보를 위해 본문 버튼으로 유도하고 데스크톱에서 상시 표시 */}
             <button
               type="button"
               onClick={handleCopyLink}
-              className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg bg-[#28221D] hover:bg-[#342D26] text-[11px] text-[#D5C59B] border border-[#C59B27]/40 flex items-center gap-1 transition cursor-pointer"
+              className="hidden sm:flex px-2.5 py-1.5 rounded-lg bg-[#28221D] hover:bg-[#342D26] text-[11px] text-[#D5C59B] border border-[#C59B27]/40 items-center gap-1 transition cursor-pointer"
               title="제안서 링크 복사"
             >
               {copied ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-[#F5D061]" />}
-              <span className="hidden sm:inline">{copied ? '복사됨!' : '링크 복사'}</span>
+              <span>{copied ? '복사됨!' : '링크 복사'}</span>
             </button>
             <button
               type="button"
