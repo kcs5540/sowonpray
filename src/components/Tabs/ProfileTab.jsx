@@ -657,8 +657,22 @@ export default function ProfileTab({
                               }
                             : rawLanternInfo
                           const sutraInfo = getDailyMeritInfo('sutra', uCode, dbDaily.sutra)
-                          const inyeonGiverInfo = getDailyMeritInfo('inyeon_giver', uCode, dbDaily.inyeon_giver)
-                          const inyeonReceiverInfo = getDailyMeritInfo('inyeon_receiver', uCode, dbDaily.inyeon_receiver)
+                          const inyeonGiverInfoRaw = getDailyMeritInfo('inyeon_giver', uCode, dbDaily.inyeon_giver)
+                          const effectiveInyeonGiverPoints = Math.max(inyeonGiverInfoRaw.currentPoints, userMeritReward?.inyeonGiverReward || 0)
+                          const inyeonGiverInfo = {
+                            ...inyeonGiverInfoRaw,
+                            currentPoints: effectiveInyeonGiverPoints,
+                            currentCount: Math.floor(effectiveInyeonGiverPoints / 5000),
+                          }
+
+                          const inyeonReceiverInfoRaw = getDailyMeritInfo('inyeon_receiver', uCode, dbDaily.inyeon_receiver)
+                          const effectiveInyeonReceiverPoints = Math.max(inyeonReceiverInfoRaw.currentPoints, userMeritReward?.inyeonReceiverReward || 0)
+                          const inyeonReceiverInfo = {
+                            ...inyeonReceiverInfoRaw,
+                            currentPoints: effectiveInyeonReceiverPoints,
+                            currentCount: effectiveInyeonReceiverPoints >= 5000 ? 1 : 0,
+                          }
+
                           const todayTotalDaily = sanctuaryInfo.currentPoints + lanternInfo.currentPoints + sutraInfo.currentPoints + inyeonGiverInfo.currentPoints + inyeonReceiverInfo.currentPoints
 
                           return (

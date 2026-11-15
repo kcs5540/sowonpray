@@ -4592,8 +4592,29 @@ function formatRelativeOrDate(dateStr) {
     const todaySutraRewardCount = sutraCount
 
     // 6) 인연 전달 한 사람: 상대방이 소원등 켰을 때 5,000 공덕 (1일 한도 50,000 = 최대 10회)
+    // 오늘 산하 신도가 올린 소원등에서 발생한 인연 전달 건수 실시간 계산 (기기/로컬스토리지 무관 클라우드 DB 연동)
+    const todayPrayersUnderAgent = (prayers || []).filter((p) => {
+      if (p.agent_code !== currentUser.code || p.member_code === currentUser.code) return false
+      const pDate = p.created_at ? new Date(p.created_at) : null
+      if (!pDate || isNaN(pDate.getTime())) return false
+      const pYear = pDate.getFullYear()
+      const pMonth = String(pDate.getMonth() + 1).padStart(2, '0')
+      const pDay = String(pDate.getDate()).padStart(2, '0')
+      const pDateKey = `${pYear}-${pMonth}-${pDay}`
+      return pDateKey === todayKey
+    })
+    const distinctPrayerMembersToday = new Set(todayPrayersUnderAgent.map((p) => p.member_code)).size
+    const prayersInyeonGiverPoints = Math.min(50000, distinctPrayerMembersToday * 5000)
+
     const inyeonGiverInfo = getDailyMeritInfo('inyeon_giver', currentUser.code, dbDaily.inyeon_giver)
-    const inyeonGiverReward = Math.min(50000, Math.max(Number(inyeonGiverInfo.currentPoints) || 0, Number(dbDaily.inyeon_giver) || 0))
+    const inyeonGiverReward = Math.min(
+      50000,
+      Math.max(
+        prayersInyeonGiverPoints,
+        Number(inyeonGiverInfo.currentPoints) || 0,
+        Number(dbDaily.inyeon_giver) || 0
+      )
+    )
     const inyeonGiverCount = Math.floor(inyeonGiverReward / 5000)
 
     // 7) (신규) 인연 받은 사람: 상대방에게 인연을 받아 소원등 켰을 때 5,000 공덕 (1일 1회 한도 5,000)
@@ -4643,7 +4664,7 @@ function formatRelativeOrDate(dateStr) {
       totalReward,
       previousProtectedMerit,
     }
-  }, [currentUser, currentUserAffiliatedMembers, currentUserBelieversCount, userLanternStats, isLanternLit, lanternData, sutraDailyVersion, moktakDailyVersion])
+  }, [currentUser, currentUserAffiliatedMembers, currentUserBelieversCount, userLanternStats, isLanternLit, lanternData, sutraDailyVersion, moktakDailyVersion, prayers])
 
   // 🌟 [공덕 DB 실시간 정산 동기화]: totalReward를 Supabase DB의 merit_count와 실시간 일치
   useEffect(() => {
