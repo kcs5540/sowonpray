@@ -591,7 +591,27 @@ export default function ProfileTab({
                           )}
                         </div>
 
-                        {/* 2. ✨ 매일 5대 일일 신행(信行) 정진 공덕 개편 */}
+                        {/* 🛡️ 2. 기득권 공덕 100% 영구 보존 (불소급의 대원칙) */}
+                        {userMeritReward.previousProtectedMerit > 0 && (
+                          <div className="p-2.5 sm:p-3 rounded-2xl bg-gradient-to-r from-[#C59B27]/15 to-transparent border border-[#F5D061]/30 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="text-base shrink-0">🛡️</span>
+                              <div>
+                                <span className="text-xs sm:text-sm font-bold text-[#F5D061] block">
+                                  기존 누적 신행 공덕
+                                </span>
+                                <span className="text-[10px] text-[#A89C8E]">
+                                  불소급 원칙에 따른 기득권 공덕 영구 보존
+                                </span>
+                              </div>
+                            </div>
+                            <span className="font-mono font-bold text-emerald-300 text-xs sm:text-sm">
+                              +{userMeritReward.previousProtectedMerit.toLocaleString()} 공덕
+                            </span>
+                          </div>
+                        )}
+
+                        {/* 3. ✨ 매일 5대 일일 신행(信行) 정진 공덕 개편 */}
                         {(() => {
                           const uCode = currentUser?.code || 'guest'
                           const todayKey = (() => {

@@ -4437,8 +4437,18 @@ function formatRelativeOrDate(dateStr) {
     const moktakReward = 0
     const todayMoktakRewardCount = 0
 
-    // 7) 총 합계 실시간 반영 (전법 법연 + 오늘 3대 신행: 소원등 1,000 + 대웅전 1,000 + 사경 1,000)
-    const totalReward = believersReward + lanternReward + sanctuaryReward + sutraReward
+    // 7) 총 합계 실시간 반영
+    // 🌟 [신행 공덕 불소급의 철칙]: 
+    // 이미 적립되거나 불자님들이 확인하신 기득권 공덕(DB merit_count 및 기존 공덕금)은 영구 보존 하한선(Floor)으로 유지되며,
+    // 정책이나 계산 공식이 변경되더라도 기존 공덕이 단 1점도 소급 삭감되지 않고 오직 앞으로의 정진에 대해서만 누적 가산됩니다.
+    const baseSavedMerit = Math.max(
+      Number(currentUser?.merit_count) || 0,
+      currentUser?.code === '33065540' ? 35100 : 0, // 김철수 대표님 기존 확인 공덕 100% 보존
+      currentUser?.code === '83855838' ? 10000 : 0  // 오다혜 위원장 기존 확인 공덕 100% 보존
+    )
+    const calculatedReward = believersReward + lanternReward + sanctuaryReward + sutraReward
+    const totalReward = Math.max(baseSavedMerit, calculatedReward)
+    const previousProtectedMerit = Math.max(0, totalReward - calculatedReward)
 
     return {
       isAgent,
@@ -4457,8 +4467,22 @@ function formatRelativeOrDate(dateStr) {
       moktakReward,
       todayMoktakRewardCount,
       totalReward,
+      previousProtectedMerit,
     }
   }, [currentUser, currentUserAffiliatedMembers, currentUserBelieversCount, userLanternStats, isLanternLit, lanternData, sutraDailyVersion, moktakDailyVersion])
+
+  // 🌟 [불소급 공덕 DB 영구 보존 동기화]: totalReward가 DB의 merit_count보다 크면 Supabase DB에 실시간 잠금
+  useEffect(() => {
+    if (!supabase || !currentUser?.code || !userMeritReward?.totalReward) return
+    const dbMerit = Number(currentUser.merit_count) || 0
+    if (userMeritReward.totalReward > dbMerit) {
+      supabase
+        .from('members')
+        .update({ merit_count: userMeritReward.totalReward })
+        .eq('code', currentUser.code)
+        .then()
+    }
+  }, [userMeritReward?.totalReward, currentUser?.code])
 
   // 🌿 현재 로그인 회원의 산하 인연 신도 최근 가입순(최신순) 정렬 목록 & 필터 상태
   const [infoAffiliatedMode, setInfoAffiliatedMode] = useState('list') // 'list' | 'tree'
