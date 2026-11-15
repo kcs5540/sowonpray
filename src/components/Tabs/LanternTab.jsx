@@ -389,12 +389,12 @@ export default function LanternTab({
                       {currentUser.address}
                     </div>
                   )}
-                  <div className="text-[11px] mt-0.5 font-semibold flex items-center justify-center gap-1.5">
+                  <div className="text-sm sm:text-base mt-1 font-bold flex items-center justify-center gap-1.5">
                     <span className={isLanternLit ? 'text-[#F5D061]' : 'text-[#A89C8A]'}>
                       [{isLanternLit ? lanternData?.wish_category : wishCategory}]
                     </span>
                     {!isLanternLit && (
-                      <span className="px-1.5 py-0.2 rounded bg-white/10 text-[#C2B8AB] text-[9.5px]">
+                      <span className="px-2 py-0.5 rounded bg-white/10 text-[#C2B8AB] text-xs font-normal">
                         매일 무료 사시예불 축원
                       </span>
                     )}
