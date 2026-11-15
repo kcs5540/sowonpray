@@ -368,7 +368,7 @@ export default function LanternTab({
                       <span>사주간지(생년) 등록하기 ✎</span>
                     </button>
                   ) : null}
-                  <div className="font-serif-kr text-sm sm:text-base font-bold text-white">
+                  <div className="font-serif-kr text-lg sm:text-xl font-bold text-white tracking-wide my-0.5">
                     {isLanternLit
                       ? `${stripTargetFromName(lanternData?.believer_name)} 불자님`
                       : wishName.trim()
