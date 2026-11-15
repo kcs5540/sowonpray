@@ -124,7 +124,7 @@ export default function ProposalView({ onEnterTemple }) {
               className="w-full sm:w-auto px-4 sm:px-5 py-3.5 rounded-xl bg-[#28221D] hover:bg-[#342D26] border border-[#C59B27]/50 text-[#F5D061] font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition whitespace-nowrap tracking-tight"
             >
               <Phone className="w-4 h-4 text-[#F5D061] shrink-0" />
-              <span className="whitespace-nowrap">김철수 총괄대표 직통 상담 (010-3306-5540)</span>
+              <span className="whitespace-nowrap">제주AI파트너 김철수 대표 (010-3306-5540)</span>
             </a>
           </div>
         </section>
@@ -479,7 +479,7 @@ export default function ProposalView({ onEnterTemple }) {
               className="w-full sm:w-auto px-4 sm:px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#C59B27] text-black font-extrabold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-lg hover:brightness-110 transition whitespace-nowrap tracking-tight"
             >
               <Phone className="w-4 h-4 shrink-0" />
-              <span className="whitespace-nowrap">김철수 총괄대표 직통 전화 (010-3306-5540)</span>
+              <span className="whitespace-nowrap">제주AI파트너 김철수 대표 (010-3306-5540)</span>
             </a>
             <button
               type="button"
@@ -493,7 +493,7 @@ export default function ProposalView({ onEnterTemple }) {
 
           <div className="pt-4 border-t border-white/5 text-[11px] text-[#7A6E5E] space-y-1">
             <p><strong>제안 기관</strong>: 제주소원사 전국 포교위원회 · 제주AI파트너</p>
-            <p><strong>총괄대표</strong>: 김철수 (010-3306-5540) | <strong>이메일</strong>: kcs5540@naver.com</p>
+            <p><strong>대표</strong>: 김철수 (제주AI파트너 대표 / 010-3306-5540) | <strong>이메일</strong>: kcs5540@naver.com</p>
             <p><strong>온라인 데모 도량</strong>: https://sowonpray.vercel.app</p>
           </div>
         </section>
