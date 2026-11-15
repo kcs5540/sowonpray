@@ -227,13 +227,12 @@ export default function LanternTab({
                     <span className="text-[#F5D061] block sm:inline">대웅전 부처님 전에 </span>
                     <span className="block sm:inline">소원등이 켜져 있습니다</span>
                   </h1>
-                  <p className="text-xs text-[#E8DFD1] max-w-xs mx-auto leading-relaxed mb-3 break-keep">
-                    스님께서 매일 오전 10시 사시예불마다{' '}
-                    <strong className="text-[#F5D061]">
-                      {liveGanjiInfo.ganji ? `[${liveGanjiInfo.ganji} · ${activeLunarSolar}] ` : ''}
-                      {stripTargetFromName(lanternData?.believer_name)}
-                    </strong> 불자님의 소원을 정성껏 축원 올리고 있습니다.
-                  </p>
+                  <div className="flex items-center justify-center mb-2">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#F5D061]/15 border border-[#F5D061]/35 text-[11px] sm:text-xs font-semibold text-[#FFE58A] shadow-xs">
+                      <span>🙏</span>
+                      <span>매일 오전 10시 사시예불 축원 정진 중</span>
+                    </span>
+                  </div>
                 </>
               ) : (
                 <>
