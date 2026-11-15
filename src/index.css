@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 🛡️ 삼성인터넷/크롬의 '웹페이지 강제 다크모드(색상 자동반전)' 방어 */
+:root, html, body {
+  color-scheme: light only;
+}
+
 /* 🎬 동자승 대웅전 걸어 들어오는 발걸음 & 합장 반배 & 착석 시네마틱 애니메이션 */
 @keyframes monkWalkIn {
   0% {
