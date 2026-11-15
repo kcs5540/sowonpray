@@ -52,13 +52,13 @@ export const MERIT_RULES = {
   },
   INYEON_RECEIVER: {
     key: 'inyeon_receiver',
-    name: '(신규) 인연 받은 사람',
-    shortName: '(신규) 인연 받음',
+    name: '신규회원공덕',
+    shortName: '신규회원공덕',
     icon: '🌸',
     pointsPerUnit: 5000,
-    dailyMax: 5000, // 상대방이 소원등 켰을 경우 5,000 (1일 5,000)
+    dailyMax: 5000, // 신규 가입 후 점등 시 5,000 공덕
     unitName: '회',
-    desc: '상대방이 소원등 켰을 경우 5,000 공덕',
+    desc: '신규 가입 후 점등 시 5,000 공덕',
   },
 }
 

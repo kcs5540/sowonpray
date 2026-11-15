@@ -712,13 +712,13 @@ export default function ProfileTab({
                                   </div>
                                 </div>
 
-                                {/* 신행 5) (신규) 인연 받음 공덕 */}
+                                {/* 신행 5) 신규회원공덕 */}
                                 <div className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-left">
                                   <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                       <span className="text-base shrink-0">🌸</span>
                                       <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
-                                        <span className="text-[#F472B6] font-extrabold mr-1">(신규)</span>인연 받음 공덕
+                                        신규회원공덕
                                       </span>
                                     </div>
                                     <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
