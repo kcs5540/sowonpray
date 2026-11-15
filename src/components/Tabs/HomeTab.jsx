@@ -1034,36 +1034,43 @@ export default function HomeTab({
                     </span>
                   </div>
 
-                  {/* 다가오는 사찰 주요 3대 재일 (D-Day 캘린더 칩) */}
-                  <div className="space-y-1.5 pt-0.5">
-                    <div className="text-[11.5px] font-bold text-[#6E5D45] flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-[#C59B27]" />
-                      <span>다가오는 사찰 주요 재일</span>
+                  {/* 다가오는 사찰 5대 주요 재일 (가로 스와이프 캘린더 카드) */}
+                  <div className="space-y-2 pt-0.5">
+                    <div className="text-[12px] font-bold text-[#6E5D45] flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5 text-[#C59B27]" />
+                        <span>다가오는 사찰 5대 재일</span>
+                      </div>
+                      <span className="text-[10.5px] text-[#A89C8E] font-medium flex items-center gap-1">
+                        <span>좌우 스와이프</span>
+                        <span className="text-xs">↔</span>
+                      </span>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
-                      {(upcomingJaeils || []).slice(0, 3).map((j) => (
+                    {/* 가로 스와이프 컨테이너 (부드러운 터치 스크롤 & 스크롤바 숨김 & 스냅 정렬) */}
+                    <div className="flex items-stretch gap-2.5 overflow-x-auto pb-2 pt-1 -mx-1 px-1 scrollbar-none snap-x snap-mandatory">
+                      {(upcomingJaeils || []).map((j) => (
                         <div
                           key={j.name}
-                          className={`py-2 px-1 sm:px-2 rounded-xl border flex flex-col items-center justify-between text-center select-none transition ${
+                          className={`min-w-[112px] sm:min-w-[120px] py-2.5 px-2 rounded-2xl border flex flex-col items-center justify-between text-center select-none transition-all snap-start shrink-0 shadow-2xs ${
                             j.isToday
-                              ? 'bg-amber-500/10 border-amber-500/40 text-amber-900 shadow-xs'
-                              : 'bg-[#FAF8F5] border-[#E8DFC9] text-[#2C251E]'
+                              ? 'bg-gradient-to-b from-[#FFFDF5] via-[#FFF8E6] to-[#FDF1D2] border-[#E8B949] text-amber-950 shadow-[0_2px_8px_rgba(217,119,6,0.18)] scale-[1.02]'
+                              : 'bg-[#FAF8F5] hover:bg-[#F5EFE3] border-[#E8DFC9] text-[#2C251E]'
                           }`}
                         >
                           <div className="w-full">
-                            <div className="text-[11px] sm:text-xs font-bold leading-tight break-keep text-[#231F1C]">
-                              {j.isToday && <span className="inline-block mr-0.5 text-xs">🔥</span>}
+                            <div className="text-[11.5px] sm:text-xs font-bold leading-tight break-keep text-[#231F1C] flex items-center justify-center gap-1">
+                              {j.isToday && <span className="text-xs">🔥</span>}
                               <span>{j.name}</span>
                             </div>
-                            <div className="text-[10px] text-[#8C7A5B] mt-0.5 font-medium">
+                            <div className="text-[10px] text-[#8C7A5B] mt-1 font-medium">
                               음력 {j.day}일
                             </div>
                           </div>
                           <span
-                            className={`mt-1.5 text-[10.5px] sm:text-xs font-black px-2 py-0.5 rounded-md shrink-0 font-mono ${
+                            className={`mt-2.5 text-[11px] font-black px-2.5 py-0.5 rounded-lg shrink-0 font-mono ${
                               j.isToday
-                                ? 'bg-amber-500 text-white animate-pulse shadow-xs'
+                                ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xs'
                                 : 'bg-[#EFE7D6] text-[#7D6320] border border-[#DDD3BF]'
                             }`}
                           >
