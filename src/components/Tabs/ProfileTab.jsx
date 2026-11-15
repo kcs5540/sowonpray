@@ -589,7 +589,7 @@ export default function ProfileTab({
                               <div className="flex items-center justify-between pb-1.5 border-b border-[#F5D061]/20 px-0.5">
                                 <div className="text-xs font-extrabold text-[#FFE58A] flex items-center gap-1">
                                   <span>✨</span>
-                                  <span>매일 신행 정진 공덕</span>
+                                  <span>오늘의 신행 공덕</span>
                                 </div>
                                 <span className="text-[10px] font-black text-emerald-300 bg-emerald-500/20 border border-emerald-400/40 px-2 py-0.5 rounded-full shrink-0">
                                   오늘 +{todayTotalDaily.toLocaleString()} 공덕
