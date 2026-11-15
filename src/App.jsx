@@ -4382,19 +4382,23 @@ function formatRelativeOrDate(dateStr) {
     const believersCount = isAgent ? directBelieversCount + indirectBelieversCount : directBelieversCount
     const believersReward = directBelieversReward + indirectBelieversReward
 
-    // 3) 소원등 점등: 1회당 200원 (실제 1일 소원등 접수 장부 기록이나 점등 이력이 있는 경우에만 정확히 계산)
+    // 3) 소원등 점등: 공식 규격 1회 1,000 공덕 (1일 1회 한도)
     const hasLanternRecord = Boolean(
       (userLanternStats?.prayersCount && userLanternStats.prayersCount > 0) ||
       isLanternLit ||
       (lanternData && lanternData.lit_at) ||
       (Number(currentUser?.lantern_count) > 0)
     )
-    const lanternCount = hasLanternRecord
-      ? Math.max(userLanternStats?.prayersCount || 0, lanternData?.total_count || 0, isLanternLit ? 1 : 0, Number(currentUser?.lantern_count) || 0)
-      : 0
-    const lanternReward = lanternCount * 200
+    const lanternCount = hasLanternRecord ? 1 : 0
+    const lanternReward = lanternCount * 1000
 
-    // 4) 한줄사경: 1회당 100원 (1일 최대 3회 = 300원 적립된 정식 횟수만 반영)
+    // 4) 대웅전 참배: 공식 규격 1회 1,000 공덕 (1일 1회 한도)
+    const sanctuaryInfo = getDailyMeritInfo('sanctuary', currentUser.code)
+    const sanctuaryCount = sanctuaryInfo.currentCount > 0 ? 1 : 0
+    const sanctuaryReward = sanctuaryCount * 1000
+
+    // 5) 한줄사경: 공식 규격 1회 1,000 공덕 (1일 1회 한도)
+    const sutraInfo = getDailyMeritInfo('sutra', currentUser.code)
     let storedSutra = 0
     try {
       storedSutra =
@@ -4403,24 +4407,18 @@ function formatRelativeOrDate(dateStr) {
         0
     } catch (e) {}
     const dbSutra = Number(currentUser.sutra_reward_count || currentUser.sutra_count) || 0
-    const sutraCount = Math.max(dbSutra, storedSutra)
-    const sutraReward = sutraCount * 100
+    const hasSutra = dbSutra > 0 || storedSutra > 0 || (sutraInfo?.currentPoints && sutraInfo.currentPoints > 0)
+    const sutraCount = hasSutra ? 1 : 0
+    const sutraReward = sutraCount * 1000
+    const todaySutraRewardCount = sutraCount
 
-    // 오늘 적립한 사경 횟수 (1일 최대 3회 제한 = 300원)
-    const todayKey = getTodayDateKey()
-    let todaySutraCount = 0
-    try {
-      todaySutraCount = Number(localStorage.getItem(`sowonpray_sutra_daily_${currentUser.code}_${todayKey}`)) || 0
-    } catch (e) {}
-    const todaySutraRewardCount = Math.min(3, todaySutraCount)
-
-    // 5) 목탁멍은 공덕 포인트 적립 대상에서 제외 (0 처리)
+    // 6) 목탁멍/108배/염주는 공덕 포인트 적립 대상에서 제외 (0 처리)
     const moktakCount = 0
     const moktakReward = 0
     const todayMoktakRewardCount = 0
 
-    // 6) 총 합계 실시간 반영 (어제 정립한 공식 신행 공덕 규격 준용)
-    const totalReward = believersReward + lanternReward + sutraReward
+    // 7) 총 합계 실시간 반영 (전법 법연 + 오늘 3대 신행: 소원등 1,000 + 대웅전 1,000 + 사경 1,000)
+    const totalReward = believersReward + lanternReward + sanctuaryReward + sutraReward
 
     return {
       isAgent,
