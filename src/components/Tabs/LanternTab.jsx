@@ -643,7 +643,7 @@ export default function LanternTab({
                       />
                     </div>
 
-                    {hasDbBirth ? (
+                    {hasDbBirth && (
                       <div className="flex items-center justify-between text-[10.5px] text-[#8A7552] mt-1 px-0.5">
                         <span>회원 정보 기준 자동 잠금 ({activeLunarSolar})</span>
                         <button
@@ -655,48 +655,9 @@ export default function LanternTab({
                           <ChevronRight className="w-3 h-3" />
                         </button>
                       </div>
-                    ) : currentUser ? (
-                      <div className="text-[10.5px] text-[#B8860B] mt-1 px-0.5 font-medium">
-                        생년월일·{activeLunarSolar}을 입력하시면 회원 DB에 영구 저장됩니다.
-                      </div>
-                    ) : null}
+                    )}
                   </div>
                 </div>
-
-                {/* 💡 생년월일 미등록 상태일 때 친절한 입력 가이드 박스 */}
-                {!hasDbBirth && (
-                  <div className="p-3 rounded-xl bg-gradient-to-br from-[#FAF8F5] via-[#FFFDF8] to-[#FAF3DF] border border-[#E5D399] text-[11px] space-y-1.5 shadow-xs animate-fadeIn">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 font-bold text-[#8A6510]">
-                        <HelpCircle className="w-3.5 h-3.5 text-[#B8860B] shrink-0" />
-                        <span>생년월일 입력 가이드 (만세력 사주 자동 계산)</span>
-                      </div>
-                      <span className="text-[10px] text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.2 rounded border border-[#E5D399] font-semibold">
-                        기본: 음력
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 text-[10.5px] text-[#5A4A28]">
-                      <div className="bg-white/90 p-2 rounded-lg border border-[#E5D399]/70 shadow-2xs">
-                        <div className="font-bold text-[#B8860B]">① 8자리 (정밀)</div>
-                        <div className="font-mono text-[#2B231D] font-bold text-xs mt-0.5">19780512</div>
-                        <div className="text-[9.5px] text-[#887766] mt-0.5">년·월·일 전체 축원</div>
-                      </div>
-                      <div className="bg-white/90 p-2 rounded-lg border border-[#E5D399]/70 shadow-2xs">
-                        <div className="font-bold text-[#B8860B]">② 4자리 (연도만)</div>
-                        <div className="font-mono text-[#2B231D] font-bold text-xs mt-0.5">1978</div>
-                        <div className="text-[9.5px] text-[#887766] mt-0.5">태어난 해만 넣어도 산출</div>
-                      </div>
-                      <div className="bg-white/90 p-2 rounded-lg border border-[#E5D399]/70 shadow-2xs">
-                        <div className="font-bold text-[#B8860B]">③ 6자리 (주민앞)</div>
-                        <div className="font-mono text-[#2B231D] font-bold text-xs mt-0.5">780512</div>
-                        <div className="text-[9.5px] text-[#887766] mt-0.5">앞자리로 자동 인식</div>
-                      </div>
-                    </div>
-                    <p className="text-[10px] text-[#7A6A4E] leading-relaxed pt-0.5">
-                      ※ 사찰 대웅전 축원은 전통적으로 <strong>음력</strong>을 기준으로 올립니다. 신분증상 생일이 양력이시면 위의 <strong>[양력]</strong> 버튼을 선택해 주세요.
-                    </p>
-                  </div>
-                )}
 
                 {/* AI 사주 간지 실시간 자동 산출 알림 뱃지 */}
                 {liveGanjiInfo.ganji && (
