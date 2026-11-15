@@ -117,7 +117,7 @@ import {
 const HERO_SLIDES = [
   {
     id: 'slide-1',
-    image: '/images/sowonsa_hallasan_sunrise_aerial.jpg',
+    image: '/images/sowonsa_night_lanterns.jpg',
     badge: '대웅전 부처님 전 소원 축원 진행중',
     titlePrefix: '간절한 기도가 응답받는 곳,',
     titleHighlight: '제주 소원사',
