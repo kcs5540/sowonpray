@@ -618,8 +618,11 @@ export default function ProfileTab({
                                       오늘 {lanternInfo.currentCount}/1회
                                     </span>
                                   </div>
-                                  <div className="flex items-center justify-end mt-1">
-                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300">
+                                  <div className="flex items-center justify-between mt-1">
+                                    <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
+                                      (1,000 공덕)
+                                    </span>
+                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
                                       +{lanternInfo.currentPoints.toLocaleString()} 공덕
                                     </span>
                                   </div>
@@ -645,8 +648,11 @@ export default function ProfileTab({
                                       오늘 {sanctuaryInfo.currentCount}/1회
                                     </span>
                                   </div>
-                                  <div className="flex items-center justify-end mt-1">
-                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300">
+                                  <div className="flex items-center justify-between mt-1">
+                                    <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
+                                      (1,000 공덕)
+                                    </span>
+                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
                                       +{sanctuaryInfo.currentPoints.toLocaleString()} 공덕
                                     </span>
                                   </div>
@@ -673,8 +679,11 @@ export default function ProfileTab({
                                       오늘 {sutraInfo.currentCount}/1회
                                     </span>
                                   </div>
-                                  <div className="flex items-center justify-end mt-1">
-                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300">
+                                  <div className="flex items-center justify-between mt-1">
+                                    <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
+                                      (1,000 공덕)
+                                    </span>
+                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
                                       +{sutraInfo.currentPoints.toLocaleString()} 공덕
                                     </span>
                                   </div>
@@ -693,8 +702,11 @@ export default function ProfileTab({
                                       오늘 {inyeonGiverInfo.currentCount}/10회
                                     </span>
                                   </div>
-                                  <div className="flex items-center justify-end mt-1">
-                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300">
+                                  <div className="flex items-center justify-between mt-1">
+                                    <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
+                                      (1회 5,000 공덕)
+                                    </span>
+                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
                                       +{inyeonGiverInfo.currentPoints.toLocaleString()} 공덕
                                     </span>
                                   </div>
@@ -713,8 +725,11 @@ export default function ProfileTab({
                                       오늘 {inyeonReceiverInfo.currentCount}/1회
                                     </span>
                                   </div>
-                                  <div className="flex items-center justify-end mt-1">
-                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300">
+                                  <div className="flex items-center justify-between mt-1">
+                                    <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
+                                      (5,000 공덕)
+                                    </span>
+                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
                                       +{inyeonReceiverInfo.currentPoints.toLocaleString()} 공덕
                                     </span>
                                   </div>
