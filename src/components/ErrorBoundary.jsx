@@ -16,31 +16,33 @@ export default class ErrorBoundary extends React.Component {
 
   handleReload = (e) => {
     e?.preventDefault?.()
-    e?.stopPropagation?.()
     if (this.state.isReloading) return
     this.setState({ isReloading: true })
 
-    if (typeof window !== 'undefined') {
-      try {
-        // 1. 서비스워커 등록 해제 및 캐시 전면 정리
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.getRegistrations().then((registrations) => {
-            registrations.forEach((r) => r.unregister())
-          })
-        }
+    try {
+      if (typeof window !== 'undefined') {
+        // 1. 비상 세션 및 캐시 정리
+        try {
+          sessionStorage.clear()
+        } catch (e) {}
+
         if ('caches' in window) {
           caches.keys().then((names) => {
             names.forEach((name) => caches.delete(name))
-          })
+          }).catch(() => {})
         }
-      } catch (err) {
-        console.warn('Cache clear note:', err)
-      }
 
-      // 2. 홈으로 즉시 강제 하드 리다이렉트
-      setTimeout(() => {
-        window.location.href = `/?reload=${Date.now()}`
-      }, 100)
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then((registrations) => {
+            registrations.forEach((r) => r.unregister())
+          }).catch(() => {})
+        }
+
+        // 2. 모바일 브라우저 제스처 차단 방지: 즉시 강제 하드 리프레시 실행
+        window.location.replace(`/?reload=${Date.now()}`)
+      }
+    } catch (err) {
+      window.location.reload()
     }
   }
 
@@ -79,7 +81,6 @@ export default class ErrorBoundary extends React.Component {
               <button
                 type="button"
                 onClick={this.handleReload}
-                onTouchEnd={this.handleReload}
                 disabled={this.state.isReloading}
                 className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#F5D061] to-[#C59B27] hover:brightness-110 active:scale-95 text-[#1B1815] font-serif-kr font-bold text-sm shadow-md transition cursor-pointer disabled:opacity-75"
               >
