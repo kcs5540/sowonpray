@@ -208,7 +208,10 @@ export default function LanternTab({
                   </h1>
                   <p className="text-xs text-[#E8DFD1] max-w-xs mx-auto leading-relaxed mb-3 break-keep">
                     스님께서 매일 오전 10시 사시예불마다{' '}
-                    <strong className="text-[#F5D061]">{stripTargetFromName(lanternData?.believer_name)}</strong> 불자님의 소원을 정성껏 축원 올리고 있습니다.
+                    <strong className="text-[#F5D061]">
+                      {liveGanjiInfo.ganji ? `[${liveGanjiInfo.ganji}] ` : ''}
+                      {stripTargetFromName(lanternData?.believer_name)}
+                    </strong> 불자님의 소원을 정성껏 축원 올리고 있습니다.
                   </p>
                 </>
               ) : (
@@ -319,12 +322,36 @@ export default function LanternTab({
                     卍 제주 소원사 대웅전 축원 명패
                   </div>
                   {/* 만세력 사주 간지 실시간 자동 표기 뱃지 */}
-                  {liveGanjiInfo.ganji && (
+                  {liveGanjiInfo.ganji ? (
                     <div className="inline-flex items-center gap-1 px-2.5 py-0.5 mb-1.5 rounded-full bg-gradient-to-r from-[#D4AF37]/25 to-[#F5D061]/25 text-[#FFE899] border border-[#F5D061]/50 text-[11px] font-bold shadow-xs animate-fadeIn">
                       <Sparkles className="w-3 h-3 text-[#F5D061]" />
                       <span>{liveGanjiInfo.ganji} ({liveGanjiInfo.animal})</span>
                     </div>
-                  )}
+                  ) : isLanternLit ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const inputYear = window.prompt('부처님 전에 올릴 사주 간지 산출을 위해 생년(예: 1978 또는 780512)을 입력해 주세요:', '')
+                        if (inputYear && inputYear.trim()) {
+                          if (setWishBirthDate) setWishBirthDate(inputYear.trim())
+                          try {
+                            const raw = localStorage.getItem('sowonsa_7day_lantern')
+                            if (raw) {
+                              const parsed = JSON.parse(raw)
+                              parsed.birth_date = inputYear.trim()
+                              localStorage.setItem('sowonsa_7day_lantern', JSON.stringify(parsed))
+                            }
+                          } catch (e) {}
+                          if (showToast) showToast('사주 간지가 성공적으로 등록되었습니다.')
+                        }
+                      }}
+                      className="inline-flex items-center gap-1 px-2.5 py-0.5 mb-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FFE899] border border-[#D4AF37]/50 text-[10.5px] font-semibold cursor-pointer transition"
+                      title="생년을 입력하시면 만세력 사주 간지가 자동으로 명패에 등재됩니다"
+                    >
+                      <Sparkles className="w-3 h-3 text-[#F5D061]" />
+                      <span>사주간지(생년) 등록하기 ✎</span>
+                    </button>
+                  ) : null}
                   <div className="font-serif-kr text-sm sm:text-base font-bold text-white">
                     {isLanternLit
                       ? `${stripTargetFromName(lanternData?.believer_name)} 불자님`
