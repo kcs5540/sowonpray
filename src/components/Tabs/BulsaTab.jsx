@@ -37,13 +37,13 @@ export default function BulsaTab({
 <main className="flex-1 flex flex-col gap-4 px-2 py-3.5">
             {/* 상단 불사안내 헤더 */}
             <section className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-5 border border-[#C59B27]/50 shadow-md">
-              <span className="block text-[11px] text-[#F5D061] font-bold whitespace-nowrap">
+              <span className="block text-xs sm:text-sm text-[#F5D061] font-bold whitespace-nowrap">
                 제주 소원사 상시 기도 · 공덕 불사 · 위패 봉안 · 삼성각 건립
               </span>
-              <h1 className="font-serif-kr text-lg sm:text-xl font-bold mt-1 break-keep">
+              <h1 className="font-serif-kr text-xl sm:text-2xl font-bold mt-1.5 break-keep">
                 현세의 복덕과 자손만대 번창을 발원합니다
               </h1>
-              <p className="text-xs text-[#D6CEC2] mt-1.5 leading-relaxed break-keep">
+              <p className="text-sm sm:text-base text-[#E8DFD1] mt-2 leading-relaxed break-keep">
                 원하시는 불사 항목을 터치하여 선택하시고 아래 신청란에 남겨주시면 제주 소원사 종무소에서 정성껏 안내 및 축원을 도와드립니다.
               </p>
             </section>
