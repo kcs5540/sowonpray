@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { X, Volume2, VolumeX, Sparkles, DoorOpen, Share2, Award, ChevronRight, ChevronDown, Play, Pause, Check, Music } from 'lucide-react'
+import { X, Volume2, VolumeX, Sparkles, DoorOpen, Share2, Award, ChevronRight, ChevronDown, Play, Pause, Check, Music, Flame } from 'lucide-react'
 import { awardMerit, getDailyMeritInfo } from '../../lib/meritSystem'
 import { playMoktakSound } from '../../lib/moktakAudio'
 
@@ -141,7 +141,16 @@ function playYeomjuAcousticSynth() {
  * - 실시간 도량 온기(동행 불자님 3인 구도 + 라이브 정진 피드 + 호흡하는 접속자수)
  * - 전체화면 고요 멍스테이 모드 (화면 터치 시 복귀)
  */
-export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, currentUser, onAddMerit, handleShareSanctuary, showToast }) {
+export default function SowonsaSanctuaryModal({
+  isOpen = true,
+  isEmbeddedTab = false,
+  onClose,
+  onOpenLantern,
+  currentUser,
+  onAddMerit,
+  handleShareSanctuary,
+  showToast,
+}) {
   // 사운드 상태
   const [isPlayingSound, setIsPlayingSound] = useState(false)
   const [isPlayingChant, setIsPlayingChant] = useState(false)
@@ -434,6 +443,17 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
     }
   }, [isOpen])
 
+  // 탭 전환 또는 언마운트 시 오디오 정지 및 참배 회향 공덕 적립
+  useEffect(() => {
+    return () => {
+      try {
+        if (ambientAudioRef.current) ambientAudioRef.current.pause()
+        if (chantAudioRef.current) chantAudioRef.current.pause()
+      } catch {}
+      handleAwardSanctuaryMerit()
+    }
+  }, [])
+
   // 🏛️ 대웅전 참배 회향 공덕 적립 (들어갔다 나오면 1회 1,000 공덕 · 1일 한도 1,000)
   const handleAwardSanctuaryMerit = () => {
     const userCode = currentUser?.code || 'guest'
@@ -478,22 +498,22 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
 
   if (!isOpen) return null
 
-  return (
+  const modalInner = (
     <div 
-      onClick={triggerClose}
-      className="fixed inset-0 z-[100] bg-black/90 flex justify-center items-center overflow-hidden animate-fadeIn select-none"
+      onClick={(e) => {
+        if (!isEmbeddedTab) e.stopPropagation()
+        // 멍스테이 모드일 때 화면 터치 시 UI 복귀
+        if (isZenMode) {
+          setIsZenMode(false)
+          showActionToast('법당 메뉴가 다시 열렸습니다')
+        }
+      }}
+      className={`relative w-full max-w-[480px] bg-black flex flex-col justify-between overflow-hidden select-none ${
+        isEmbeddedTab
+          ? 'mx-auto min-h-[calc(100dvh-64px)] flex-1 shadow-[0_0_60px_rgba(0,0,0,0.95)] border-x border-[#C59B27]/30'
+          : 'h-full shadow-[0_0_60px_rgba(0,0,0,0.95)] border-x border-[#C59B27]/30 cursor-pointer'
+      }`}
     >
-      <div 
-        onClick={(e) => {
-          e.stopPropagation()
-          // 멍스테이 모드일 때 화면 터치 시 UI 복귀
-          if (isZenMode) {
-            setIsZenMode(false)
-            showActionToast('법당 메뉴가 다시 열렸습니다')
-          }
-        }}
-        className="relative w-full max-w-[480px] h-full bg-black flex flex-col justify-between overflow-hidden shadow-[0_0_60px_rgba(0,0,0,0.95)] border-x border-[#C59B27]/30 cursor-pointer"
-      >
       {/* 1. 배경 오디오 소스 */}
       <audio ref={ambientAudioRef} src="/audio/sowonsa_wind.mp3" loop preload="auto" />
       <audio ref={chantAudioRef} src={selectedTrack.audioUrl} loop preload="auto" />
@@ -621,15 +641,17 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
             <Sparkles className="w-3.5 h-3.5" />
           </button>
 
-          {/* 닫기 버튼 (부처님 전 하직 합장 반배 후 정갈한 퇴장) */}
-          <button
-            type="button"
-            onClick={handleExitWithBow}
-            className="p-2 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[#D6CEC2] hover:text-white transition active:scale-95"
-            title="법당 나가기"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
+          {/* 닫기 버튼 (모달 모드 전용) */}
+          {!isEmbeddedTab && (
+            <button
+              type="button"
+              onClick={handleExitWithBow}
+              className="p-2 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[#D6CEC2] hover:text-white transition active:scale-95 cursor-pointer"
+              title="법당 나가기"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </header>
 
@@ -1068,31 +1090,62 @@ export default function SowonsaSanctuaryModal({ isOpen, onClose, onOpenLantern, 
             </span>
           </button>
 
-          {/* 버튼 4: 법당 나가기 (부처님 전 하직 합장 반배 후 정갈한 퇴당) */}
-          <button
-            type="button"
-            onClick={handleExitWithBow}
-            className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl active:scale-95 border transition group ${
-              isExiting
-                ? 'bg-[#F5D061]/25 border-[#F5D061] shadow-[0_0_15px_rgba(245,208,97,0.4)]'
-                : 'bg-white/10 hover:bg-white/15 border-white/15 hover:border-[#F5D061]/50'
-            }`}
-            title="대웅전 나가기"
-          >
-            <div className="relative mb-0.5 flex items-center justify-center">
-              <DoorOpen className={`w-5 h-5 sm:w-6 sm:h-6 transition-transform filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.4)] ${
-                isExiting ? 'text-[#F5D061] animate-pulse' : 'text-[#F5D061] group-hover:scale-110'
-              }`} />
-            </div>
-            <span className={`text-[11px] sm:text-xs font-bold transition ${
-              isExiting ? 'text-[#F5D061]' : 'text-[#E8DFD1] group-hover:text-[#F5D061]'
-            }`}>
-              {isExiting ? '하직 중...' : '나가기'}
-            </span>
-          </button>
+          {/* 버튼 4: 소원등 밝히기 (탭 모드) vs 법당 나가기 (모달 모드) */}
+          {isEmbeddedTab ? (
+            <button
+              type="button"
+              onClick={() => {
+                handleAwardSanctuaryMerit()
+                if (onOpenLantern) onOpenLantern()
+              }}
+              className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-gradient-to-b from-[#F5D061]/25 to-[#C59B27]/15 hover:from-[#F5D061]/35 hover:to-[#C59B27]/25 active:scale-95 border border-[#F5D061]/50 shadow-[0_0_12px_rgba(245,208,97,0.3)] transition group cursor-pointer"
+              title="대웅전 부처님 전에 소원등 밝히기"
+            >
+              <div className="relative mb-0.5 flex items-center justify-center">
+                <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-[#F5D061] group-hover:scale-110 transition filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.6)]" />
+              </div>
+              <span className="text-[11px] sm:text-xs font-bold text-[#F5D061] group-hover:text-yellow-300 whitespace-nowrap">
+                소원등
+              </span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleExitWithBow}
+              className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl active:scale-95 border transition group ${
+                isExiting
+                  ? 'bg-[#F5D061]/25 border-[#F5D061] shadow-[0_0_15px_rgba(245,208,97,0.4)]'
+                  : 'bg-white/10 hover:bg-white/15 border-white/15 hover:border-[#F5D061]/50'
+              }`}
+              title="대웅전 나가기"
+            >
+              <div className="relative mb-0.5 flex items-center justify-center">
+                <DoorOpen className={`w-5 h-5 sm:w-6 sm:h-6 transition-transform filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.4)] ${
+                  isExiting ? 'text-[#F5D061] animate-pulse' : 'text-[#F5D061] group-hover:scale-110'
+                }`} />
+              </div>
+              <span className={`text-[11px] sm:text-xs font-bold transition ${
+                isExiting ? 'text-[#F5D061]' : 'text-[#E8DFD1] group-hover:text-[#F5D061]'
+              }`}>
+                {isExiting ? '하직 중...' : '나가기'}
+              </span>
+            </button>
+          )}
         </div>
       </footer>
     </div>
-  </div>
-)
+  )
+
+  if (isEmbeddedTab) {
+    return modalInner
+  }
+
+  return (
+    <div 
+      onClick={triggerClose}
+      className="fixed inset-0 z-[100] bg-black/90 flex justify-center items-center overflow-hidden animate-fadeIn select-none"
+    >
+      {modalInner}
+    </div>
+  )
 }

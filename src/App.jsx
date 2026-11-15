@@ -1631,16 +1631,18 @@ function SanctuaryNavIcon({ className = 'w-5 h-5' }) {
 }
 
 export default function App() {
-  // 탭 상태: 'home' | 'lantern' | 'sutra' | 'bulsa' | 'agent' | 'admin' | 'profile' (경로 /lantern·/bulsa·/sutra 및 ?tab= 모두 지원)
+  // 탭 상태: 'home' | 'lantern' | 'sanctuary' | 'sutra' | 'bulsa' | 'agent' | 'admin' | 'profile' (경로 /lantern·/bulsa·/sutra·/sanctuary 및 ?tab= 모두 지원)
   const [activeTab, setActiveTab] = useState(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search)
       const tabParam = params.get('tab')
-      if (tabParam && ['home', 'lantern', 'sutra', 'bulsa', 'agent', 'admin', 'profile', 'card'].includes(tabParam)) {
+      if (tabParam && ['home', 'lantern', 'sanctuary', 'sutra', 'bulsa', 'agent', 'admin', 'profile', 'card'].includes(tabParam)) {
         return tabParam
       }
+      if (params.get('sanctuary') === 'true') return 'sanctuary'
       const cleanPath = window.location.pathname.replace(/\/+$/, '') || '/'
       if (cleanPath === '/lantern') return 'lantern'
+      if (cleanPath === '/sanctuary') return 'sanctuary'
       if (cleanPath === '/bulsa') return 'bulsa'
       if (cleanPath === '/sutra') return 'sutra'
       if (cleanPath === '/card') return 'card'
@@ -1663,6 +1665,12 @@ export default function App() {
         title: '무료 소원등 켜기 & 대웅전 사시예불 축원 | 대한불교 조계종 제주 소원사',
         description:
           '제주 소원사 대웅전 부처님 전에 무료 디지털 소원등을 켜고 매일 오전 10시 사시예불 축원을 받으세요.',
+      },
+      sanctuary: {
+        path: '/sanctuary',
+        title: '제주 소원사 대웅전 참배 & 삼존불 108배·목탁·염주 수행 | 대한불교 조계종',
+        description:
+          '대한불교 조계종 제주 소원사 대웅전 실시간 참배, 삼존불 108배 정진, 박달목탁 타종, 108 침향목 단주 굴리기, 24시간 도량 명상음악.',
       },
       bulsa: {
         path: '/bulsa',
@@ -2703,13 +2711,14 @@ function formatRelativeOrDate(dateStr) {
   const [visitPurpose, setVisitPurpose] = useState('따뜻한 차 & 사찰 공양(식사) 대접 예약')
   const [visitMemo, setVisitMemo] = useState('')
   const [showVisitSuccessModal, setShowVisitSuccessModal] = useState(false)
-  const [showSanctuaryModal, setShowSanctuaryModal] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search)
-      return params.get('sanctuary') === 'true' || params.get('tab') === 'sanctuary'
+  // 대웅전 참배 탭 전환 헬퍼 (기존 모달 호출과 100% 호환)
+  const setShowSanctuaryModal = (show) => {
+    if (show) {
+      if (playSingingBowlSound) playSingingBowlSound()
+      setActiveTab('sanctuary')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
-    return false
-  })
+  }
   const pendingVisitDraftRef = useRef(null)
 
   // 로그인 계정이 바뀔 때마다 소원등 신청자 이름·연락처 및 내 정보 수정 폼 자동 세팅
@@ -7454,110 +7463,116 @@ function formatRelativeOrDate(dateStr) {
         </Suspense>
       )}
 
-      {/* 모바일 앱 컨테이너 (일반 탭: 480px, 관리자 탭: PC에서 최대 1280px 와이드 데스크톱 뷰) */}
-      <div className={`w-full min-h-screen bg-[#FAF8F5] text-[#231F1C] flex flex-col relative shadow-[0_0_50px_rgba(0,0,0,0.8)] border-x border-[#E8DFD1]/30 pb-24 overflow-x-clip transition-all duration-300 ${
+      {/* 모바일 앱 컨테이너 (일반 탭: 480px, 관리자 탭: PC에서 최대 1280px 와이드 데스크톱 뷰, 대웅전: 몰입형 블랙) */}
+      <div className={`w-full min-h-screen ${
+        activeTab === 'sanctuary' ? 'bg-black text-[#FAF8F5] pb-16' : 'bg-[#FAF8F5] text-[#231F1C] pb-24'
+      } flex flex-col relative shadow-[0_0_50px_rgba(0,0,0,0.8)] border-x border-[#E8DFD1]/30 overflow-x-clip transition-all duration-300 ${
         activeTab === 'admin' ? 'max-w-7xl sm:rounded-3xl sm:border border-[#C59B27]/40 sm:my-2' : 'max-w-[480px]'
       }`}>
         
-        {/* 상단 고정 헤더: 제주 소원사 공식 모바일 법당 */}
-        <header className="sticky top-0 z-40 bg-[#1B1815]/95 backdrop-blur-md text-[#FAF8F5] px-3.5 py-3 border-b-2 border-[#C59B27]/50 flex items-center justify-between gap-2 shadow-md">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#2D241C] via-[#221C16] to-[#17130F] flex items-center justify-center shadow-[0_0_15px_rgba(245,208,97,0.35)] border border-[#C59B27]/60 p-1 shrink-0" title="제주 소원사 공식 심볼 (황금 연꽃)">
-              <svg className="w-full h-full filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M20 5C20 5 15 14.5 15 21C15 23.8 17.2 26 20 26C22.8 26 25 23.8 25 21C25 14.5 20 5 20 5Z" fill="url(#headerGoldLotusGrad)" opacity="0.95" />
-                <path d="M14 12C14 12 7.5 18.5 7.5 23C7.5 26.2 10.2 28 13.2 28C16.2 28 17.8 25.5 17.8 24C17.8 18.5 14 12 14 12Z" fill="url(#headerGoldLotusGrad)" opacity="0.82" />
-                <path d="M26 12C26 12 32.5 18.5 32.5 23C32.5 26.2 29.8 28 26.8 28C23.8 28 22.2 25.5 22.2 24C22.2 18.5 26 12 26 12Z" fill="url(#headerGoldLotusGrad)" opacity="0.82" />
-                <path d="M6.5 22.5C6.5 22.5 2.5 26 2.5 29C2.5 31.2 4.5 33 7.8 33C11.8 33 14.8 29.8 14.8 28C14.8 25.2 6.5 22.5 6.5 22.5Z" fill="url(#headerGoldLotusGrad)" opacity="0.65" />
-                <path d="M33.5 22.5C33.5 22.5 37.5 26 37.5 29C37.5 31.2 35.5 33 32.2 33C28.2 33 25.2 29.8 25.2 28C25.2 25.2 33.5 22.5 33.5 22.5Z" fill="url(#headerGoldLotusGrad)" opacity="0.65" />
-                <path d="M11.5 32C15.2 34.8 24.8 34.8 28.5 32C26.5 34.8 23.5 35.8 20 35.8C16.5 35.8 13.5 34.8 11.5 32Z" fill="url(#headerGoldLotusGrad)" />
-                <defs>
-                  <linearGradient id="headerGoldLotusGrad" x1="5" y1="5" x2="35" y2="35" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#FDE68A" />
-                    <stop offset="0.5" stopColor="#F5D061" />
-                    <stop offset="1" stopColor="#B6861C" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="font-serif-kr font-extrabold text-base sm:text-lg tracking-tight text-[#F5D061] whitespace-nowrap">
-                  제주 소원사
-                </span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#C59B27]/25 text-[#FAF8F5] border border-[#C59B27]/50 font-semibold whitespace-nowrap">
-                  모바일 법당
-                </span>
+        {/* 상단 고정 헤더: 제주 소원사 공식 모바일 법당 (대웅전 참배 탭은 법당 자체 헤더 사용) */}
+        {activeTab !== 'sanctuary' && (
+          <header className="sticky top-0 z-40 bg-[#1B1815]/95 backdrop-blur-md text-[#FAF8F5] px-3.5 py-3 border-b-2 border-[#C59B27]/50 flex items-center justify-between gap-2 shadow-md">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#2D241C] via-[#221C16] to-[#17130F] flex items-center justify-center shadow-[0_0_15px_rgba(245,208,97,0.35)] border border-[#C59B27]/60 p-1 shrink-0" title="제주 소원사 공식 심볼 (황금 연꽃)">
+                <svg className="w-full h-full filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M20 5C20 5 15 14.5 15 21C15 23.8 17.2 26 20 26C22.8 26 25 23.8 25 21C25 14.5 20 5 20 5Z" fill="url(#headerGoldLotusGrad)" opacity="0.95" />
+                  <path d="M14 12C14 12 7.5 18.5 7.5 23C7.5 26.2 10.2 28 13.2 28C16.2 28 17.8 25.5 17.8 24C17.8 18.5 14 12 14 12Z" fill="url(#headerGoldLotusGrad)" opacity="0.82" />
+                  <path d="M26 12C26 12 32.5 18.5 32.5 23C32.5 26.2 29.8 28 26.8 28C23.8 28 22.2 25.5 22.2 24C22.2 18.5 26 12 26 12Z" fill="url(#headerGoldLotusGrad)" opacity="0.82" />
+                  <path d="M6.5 22.5C6.5 22.5 2.5 26 2.5 29C2.5 31.2 4.5 33 7.8 33C11.8 33 14.8 29.8 14.8 28C14.8 25.2 6.5 22.5 6.5 22.5Z" fill="url(#headerGoldLotusGrad)" opacity="0.65" />
+                  <path d="M33.5 22.5C33.5 22.5 37.5 26 37.5 29C37.5 31.2 35.5 33 32.2 33C28.2 33 25.2 29.8 25.2 28C25.2 25.2 33.5 22.5 33.5 22.5Z" fill="url(#headerGoldLotusGrad)" opacity="0.65" />
+                  <path d="M11.5 32C15.2 34.8 24.8 34.8 28.5 32C26.5 34.8 23.5 35.8 20 35.8C16.5 35.8 13.5 34.8 11.5 32Z" fill="url(#headerGoldLotusGrad)" />
+                  <defs>
+                    <linearGradient id="headerGoldLotusGrad" x1="5" y1="5" x2="35" y2="35" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#FDE68A" />
+                      <stop offset="0.5" stopColor="#F5D061" />
+                      <stop offset="1" stopColor="#B6861C" />
+                    </linearGradient>
+                  </defs>
+                </svg>
               </div>
-              <p className="text-[10.5px] text-[#D6CEC2] truncate">
-                간절한 소원이 이루어지는 기도·불공의 성지
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={() => {
-              playBeomjongSound()
-              showToast('🔔 장엄하고 깊은 제주 소원사 범종 소리로 도량을 맑히고 마음을 정화합니다.')
-            }}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-[#2A2520] hover:bg-[#38312A] border border-[#C59B27]/40 text-[#F5D061] text-[11px] font-semibold whitespace-nowrap shrink-0 transition shadow-sm active:scale-95"
-            title="제주 소원사 범종 소리 듣기"
-          >
-            <Volume2 className="w-3.5 h-3.5 shrink-0 text-[#F5D061]" />
-            <span>범종</span>
-          </button>
-        </header>
-
-        {/* 상단 본인 계정 접속 상태 바 (언제든 내 정보 확인 및 계정 전환 가능) */}
-        <div className="bg-gradient-to-r from-[#26211C] via-[#302922] to-[#26211C] px-3.5 py-2 text-xs text-[#E8DFD1] flex items-center justify-between gap-2 border-b border-[#C59B27]/25">
-          {currentUser ? (
-            <>
-              <div className="flex items-center gap-1.5 min-w-0">
-                <UserCheck className="w-3.5 h-3.5 text-[#F5D061] shrink-0" />
-                <span className="truncate text-[11.5px]">
-                  <strong className="text-[#F5D061]">
-                    {currentUser.name}
-                    {currentUser.dharma_name ? ` (${currentUser.dharma_name})` : ''}
-                  </strong>
-                  {currentUser.code === '22662207' || currentUser.name === '양형심'
-                    ? ' 사무장님'
-                    : currentUser.role === 'temple_admin'
-                    ? ' 신도회장님'
-                    : currentUser.role === 'master'
-                    ? ' 총괄위원장님'
-                    : currentUser.role === 'agent'
-                    ? ' 포교위원장님'
-                    : ' 불자님'}{' '}
-                  접속중
-                </span>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-serif-kr font-extrabold text-base sm:text-lg tracking-tight text-[#F5D061] whitespace-nowrap">
+                    제주 소원사
+                  </span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#C59B27]/25 text-[#FAF8F5] border border-[#C59B27]/50 font-semibold whitespace-nowrap">
+                    모바일 법당
+                  </span>
+                </div>
+                <p className="text-[10.5px] text-[#D6CEC2] truncate">
+                  간절한 소원이 이루어지는 기도·불공의 성지
+                </p>
               </div>
-              <div className="flex items-center gap-1.5 shrink-0">
+            </div>
+
+            <button
+              onClick={() => {
+                playBeomjongSound()
+                showToast('🔔 장엄하고 깊은 제주 소원사 범종 소리로 도량을 맑히고 마음을 정화합니다.')
+              }}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-[#2A2520] hover:bg-[#38312A] border border-[#C59B27]/40 text-[#F5D061] text-[11px] font-semibold whitespace-nowrap shrink-0 transition shadow-sm active:scale-95"
+              title="제주 소원사 범종 소리 듣기"
+            >
+              <Volume2 className="w-3.5 h-3.5 shrink-0 text-[#F5D061]" />
+              <span>범종</span>
+            </button>
+          </header>
+        )}
+
+        {/* 상단 본인 계정 접속 상태 바 (대웅전 탭 제외) */}
+        {activeTab !== 'sanctuary' && (
+          <div className="bg-gradient-to-r from-[#26211C] via-[#302922] to-[#26211C] px-3.5 py-2 text-xs text-[#E8DFD1] flex items-center justify-between gap-2 border-b border-[#C59B27]/25">
+            {currentUser ? (
+              <>
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <UserCheck className="w-3.5 h-3.5 text-[#F5D061] shrink-0" />
+                  <span className="truncate text-[11.5px]">
+                    <strong className="text-[#F5D061]">
+                      {currentUser.name}
+                      {currentUser.dharma_name ? ` (${currentUser.dharma_name})` : ''}
+                    </strong>
+                    {currentUser.code === '22662207' || currentUser.name === '양형심'
+                      ? ' 사무장님'
+                      : currentUser.role === 'temple_admin'
+                      ? ' 신도회장님'
+                      : currentUser.role === 'master'
+                      ? ' 총괄위원장님'
+                      : currentUser.role === 'agent'
+                      ? ' 포교위원장님'
+                      : ' 불자님'}{' '}
+                    접속중
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('profile')}
+                    className="text-[10.5px] bg-[#C59B27]/25 hover:bg-[#C59B27]/40 text-[#F5D061] border border-[#F5D061]/30 px-2.5 py-0.5 rounded-full font-semibold whitespace-nowrap shrink-0 transition cursor-pointer"
+                  >
+                    내정보 · 전환
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <Sparkles className="w-3.5 h-3.5 text-[#F5D061] shrink-0" />
+                  <span className="truncate text-[11.5px]">
+                    로그인하시면 소원등·사경 공덕이 내 계정에 기록됩니다
+                  </span>
+                </div>
                 <button
                   type="button"
                   onClick={() => setActiveTab('profile')}
-                  className="text-[10.5px] bg-[#C59B27]/25 hover:bg-[#C59B27]/40 text-[#F5D061] border border-[#F5D061]/30 px-2.5 py-0.5 rounded-full font-semibold whitespace-nowrap shrink-0 transition cursor-pointer"
+                  className="text-[10.5px] bg-[#F5D061] text-[#1B1815] px-2.5 py-0.5 rounded-full font-bold whitespace-nowrap shrink-0"
                 >
-                  내정보 · 전환
+                  로그인 / 가입
                 </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="flex items-center gap-1.5 min-w-0">
-                <Sparkles className="w-3.5 h-3.5 text-[#F5D061] shrink-0" />
-                <span className="truncate text-[11.5px]">
-                  로그인하시면 소원등·사경 공덕이 내 계정에 기록됩니다
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setActiveTab('profile')}
-                className="text-[10.5px] bg-[#F5D061] text-[#1B1815] px-2.5 py-0.5 rounded-full font-bold whitespace-nowrap shrink-0"
-              >
-                로그인 / 가입
-              </button>
-            </>
-          )}
-        </div>
+              </>
+            )}
+          </div>
+        )}
 
         {/* 알림 배너 (상단에 떴던 선명한 검정 바탕 그대로, 화면 중간에 위치) */}
         {toast && (
@@ -7730,6 +7745,26 @@ function formatRelativeOrDate(dateStr) {
             PRAYER_CATEGORY_TEMPLATES={PRAYER_CATEGORY_TEMPLATES}
             showToast={showToast}
             referralCode={referralCode}
+          />
+        )}
+
+        {/* ==================== 2-B. 대웅전 참배 (삼존불 108배·목탁·염주 수행) 탭 ==================== */}
+        {activeTab === 'sanctuary' && (
+          <SowonsaSanctuaryModal
+            isEmbeddedTab={true}
+            isOpen={true}
+            currentUser={currentUser}
+            onAddMerit={addMerit}
+            handleShareSanctuary={handleShareSanctuary}
+            showToast={showToast}
+            onClose={() => {
+              setActiveTab('home')
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }}
+            onOpenLantern={() => {
+              setActiveTab('lantern')
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }}
           />
         )}
 
@@ -11688,28 +11723,6 @@ function formatRelativeOrDate(dateStr) {
         )}
 
         
-        {/* 🍃 [산사 힐링 감성] 제주 소원사 고요 법당 (멍스테이) 독립 모달 */}
-        <SowonsaSanctuaryModal
-          isOpen={showSanctuaryModal}
-          onClose={() => {
-            const userCode = currentUser?.code || 'guest'
-            const meritRes = awardMerit('sanctuary', userCode, 1)
-            if (meritRes.earnedPoints > 0) {
-              addMerit(meritRes.earnedPoints)
-              showToast('🏛️ 대웅전 참배 회향! (+1,000 공덕 적립) 🙏')
-            }
-            setShowSanctuaryModal(false)
-          }}
-          currentUser={currentUser}
-          onAddMerit={addMerit}
-          handleShareSanctuary={handleShareSanctuary}
-          showToast={showToast}
-          onOpenLantern={() => {
-            setActiveTab('lantern')
-            window.scrollTo({ top: 0, behavior: 'smooth' })
-          }}
-        />
-
         {/* 하단 네비게이션 바 (제주 소원사 정통 신행 6대 메뉴 바 - 대웅전 참배 & 연등·사경·불사 통합) */}
         <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-[#14110E]/95 backdrop-blur-md border-t border-[#C59B27]/40 px-1.5 py-1.5 flex items-center justify-around shadow-[0_-4px_25px_rgba(0,0,0,0.65)]">
           {[
@@ -11722,24 +11735,18 @@ function formatRelativeOrDate(dateStr) {
           ].map((tab) => {
             const Icon = tab.icon
             const isActive =
-              (tab.id === 'sanctuary' && showSanctuaryModal) ||
-              (!showSanctuaryModal && (
-                activeTab === tab.id ||
-                (tab.id === 'profile' && (activeTab === 'agent' || activeTab === 'admin'))
-              ))
+              activeTab === tab.id ||
+              (tab.id === 'profile' && (activeTab === 'agent' || activeTab === 'admin'))
             return (
               <button
                 key={tab.id}
                 type="button"
                 onClick={() => {
-                  if (tab.id === 'sanctuary') {
-                    if (playSingingBowlSound) playSingingBowlSound()
-                    setShowSanctuaryModal(true)
-                  } else {
-                    if (showSanctuaryModal) setShowSanctuaryModal(false)
-                    setActiveTab(tab.id)
-                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  if (tab.id === 'sanctuary' && playSingingBowlSound) {
+                    playSingingBowlSound()
                   }
+                  setActiveTab(tab.id)
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
                 }}
                 className={`flex-1 min-w-0 flex flex-col items-center justify-center py-1 px-0.5 transition-all outline-none focus:outline-none focus:ring-0 select-none cursor-pointer relative group ${
                   isActive ? 'text-[#F5D061]' : 'text-[#8E8475] hover:text-[#D6CEC2]'
