@@ -87,25 +87,28 @@ export default function ProposalView({ onEnterTemple }) {
 
           <p className="text-sm md:text-base text-[#B8AA99] max-w-2xl mx-auto leading-relaxed">
             신도 고령화와 사찰 재정 정체의 위기를 돌파하는 <br className="hidden md:inline" />
-            <strong>대한민국 최초 신도 자가 접수 + AI 사주 변환 + 대웅전 명패 원터치 출력 솔루션</strong>
+            <strong>스마트폰 기도 접수 · AI 사주 변환 · 축원 명패 1초 인쇄 · 어디서나 실시간 종무</strong>
           </p>
 
           {/* 핵심 지표 뱃지 바 */}
           <div className="flex flex-wrap items-center justify-center gap-2 pt-2 text-[11px] md:text-xs">
             <span className="px-3 py-1 rounded-lg bg-[#241E19] border border-[#C59B27]/30 text-[#E8DFD5]">
-              ✍️ 신도 자가 모바일 접수
+              📱 스마트폰 기도·연등 24시간 접수
             </span>
             <span className="px-3 py-1 rounded-lg bg-[#241E19] border border-[#C59B27]/30 text-[#E8DFD5]">
-              🔮 AI 사주간지(갑자·을축) 자동 산출
+              📖 만세력 필요 없는 사주간지 자동 변환
             </span>
             <span className="px-3 py-1 rounded-lg bg-[#241E19] border border-[#C59B27]/30 text-[#E8DFD5]">
-              🖨️ 대웅전 명패 1초 무인 출력
+              🖨️ 대웅전 축원 명패 원터치 1초 인쇄
             </span>
             <span className="px-3 py-1 rounded-lg bg-[#241E19] border border-[#C59B27]/30 text-[#E8DFD5]">
-              🤝 카카오톡 전법 네트워크
+              ☁️ 언제 어디서나 PC · 핸드폰 실시간 종무
+            </span>
+            <span className="px-3 py-1 rounded-lg bg-[#241E19] border border-[#C59B27]/30 text-[#E8DFD5]">
+              🎁 카톡 소원등 선물로 전국 자동 포교
             </span>
             <span className="px-3 py-1 rounded-lg bg-[#C59B27]/20 border border-[#F5D061] text-[#FFE58F] font-bold">
-              💰 초기 구축비 0원 상생제
+              💰 사찰 부담금 0원 (전액 무료 구축)
             </span>
           </div>
 
