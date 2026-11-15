@@ -416,37 +416,37 @@ export default function ProposalView({ onEnterTemple }) {
           </div>
         </section>
 
-        {/* 🚀 7. 7일 쾌속 구축 로드맵 */}
+        {/* 🚀 7. 3주 완성 맞춤 구축 로드맵 */}
         <section className="bg-[#16120F] p-6 md:p-8 rounded-3xl border border-[#C59B27]/30 space-y-4">
           <div className="text-center">
             <span className="text-xs font-bold text-[#F5D061] tracking-wider uppercase block mb-1">
-              06. 7일 쾌속 구축 로드맵
+              06. 3주 완성 맞춤 구축 로드맵
             </span>
             <h3 className="text-xl md:text-2xl font-bold text-white">
-              신청 후 단 7일이면 스님 사찰의 이름으로 모바일법당이 열립니다
+              신청 후 3주면 귀 사찰만의 차세대 모바일법당과 종무 ERP가 완벽히 구축됩니다
             </h3>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2 text-xs">
             <div className="bg-[#1F1915] p-3.5 rounded-xl border border-white/5 space-y-1">
-              <span className="text-[#C59B27] font-bold block text-[11px]">1일차: 접수</span>
-              <strong className="text-white block">사찰 기본 정보</strong>
-              <p className="text-[#8C8071] text-[11px]">사찰명, 주지스님 인사말, 법당 전경 사진 전달</p>
+              <span className="text-[#C59B27] font-bold block text-[11px]">1주차: 기획 & 자료</span>
+              <strong className="text-white block">사찰 맞춤 설계</strong>
+              <p className="text-[#8C8071] text-[11px]">사찰 기본 정보, 주지스님 법문, 법당 전경 및 불상 고화질 촬영본 접수</p>
             </div>
             <div className="bg-[#1F1915] p-3.5 rounded-xl border border-white/5 space-y-1">
-              <span className="text-[#C59B27] font-bold block text-[11px]">3일차: 세팅</span>
-              <strong className="text-white block">맞춤형 도량 구축</strong>
-              <p className="text-[#8C8071] text-[11px]">사찰 전용 화면 디자인 및 결제/계좌 연동</p>
+              <span className="text-[#C59B27] font-bold block text-[11px]">2주차: 전산 구축</span>
+              <strong className="text-white block">법당 & 결제 연동</strong>
+              <p className="text-[#8C8071] text-[11px]">사찰 전용 화면 디자인, 계좌/온라인 결제 연동, 신도 DB 및 기도 서식 이관</p>
             </div>
             <div className="bg-[#1F1915] p-3.5 rounded-xl border border-white/5 space-y-1">
-              <span className="text-[#C59B27] font-bold block text-[11px]">5일차: 교육</span>
-              <strong className="text-white block">종무소 방문 교육</strong>
-              <p className="text-[#8C8071] text-[11px]">관리자 ERP 사용법 및 명패 출력 세팅 완료</p>
+              <span className="text-[#C59B27] font-bold block text-[11px]">3주차 초: 현장 교육</span>
+              <strong className="text-white block">종무소 실무 교육</strong>
+              <p className="text-[#8C8071] text-[11px]">종무소 관리자 1:1 방문 교육, 대웅전 명패 원터치 인쇄 테스트 완료</p>
             </div>
             <div className="bg-[#1F1915] p-3.5 rounded-xl border border-emerald-500/30 space-y-1">
-              <span className="text-emerald-400 font-bold block text-[11px]">7일차: 개원</span>
+              <span className="text-emerald-400 font-bold block text-[11px]">3주차 말: 개원 & 전법</span>
               <strong className="text-emerald-300 block">공식 오픈 및 홍보</strong>
-              <p className="text-[#8C8071] text-[11px]">기존 신도 안내 문자 및 카카오톡 배포</p>
+              <p className="text-[#8C8071] text-[11px]">모바일법당 정식 개원, 기존 신도 안내 문자 및 카카오톡 전법 발송</p>
             </div>
           </div>
         </section>
