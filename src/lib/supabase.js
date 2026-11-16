@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { getCurrentTempleId, DEFAULT_TEMPLE_ID as FALLBACK_TEMPLE_ID } from './templeConfig'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://vmaqsnijfiiymhqmmuic.supabase.co'
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_mqpyqG_37CW8lVIs4FDLXw_0ZzNvSHz'
@@ -48,8 +49,8 @@ export function parseNameAndDharmaName(input = '') {
   }
 }
 
-// 기본 사찰 식별자 (제주 소원사 단독 모드, 향후 전국 사찰 확장 호환)
-export const DEFAULT_TEMPLE_ID = 'sowonsa'
+// 기본 사찰 식별자 (접속 도메인/파라미터에 따라 자동 감지, 기본값: 제주 소원사)
+export const DEFAULT_TEMPLE_ID = getCurrentTempleId() || FALLBACK_TEMPLE_ID
 
 // 천간(10간) 및 지지(12지) 배열
 const CHEONGAN = ['갑', '을', '병', '정', '무', '기', '경', '신', '임', '계']

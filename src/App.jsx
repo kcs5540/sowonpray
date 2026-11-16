@@ -5560,7 +5560,7 @@ function formatRelativeOrDate(dateStr) {
           .from('prayers')
           .insert([
             {
-              temple_id: 'sowonsa',
+              temple_id: DEFAULT_TEMPLE_ID,
               member_code: writerCode,
               agent_code: assignedAgentCode,
               believer_name: formattedBelieverName,
@@ -5806,7 +5806,7 @@ function formatRelativeOrDate(dateStr) {
           .from('visits')
           .insert([
             {
-              temple_id: 'sowonsa',
+              temple_id: DEFAULT_TEMPLE_ID,
               member_code: writerCode,
               agent_code: assignedAgentCode,
               visitor_name: visitorName,

@@ -8,6 +8,7 @@
 // 5. (신규) 인연 받은 사람: 상대방이 소원등 켰을 경우 5,000 공덕 (1일 5,000)
 
 import { supabase } from './supabase'
+import { getCurrentTempleId } from './templeConfig'
 
 export const MERIT_RULES = {
   LANTERN: {
@@ -238,18 +239,30 @@ export const awardMerit = (activityKey, userCode = 'guest', customUnits = 1, clo
 // 🏦 공덕 거래 장부 방식 (회원 공덕의 유일한 적립 통로)
 // 점수 규정·중복 방지·하루 한도는 DB 함수 grant_merit 와 merit_ledger 표가 책임진다.
 // 앱은 호출만 하고, 응답으로 받은 balance(누적)만 화면에 반영한다.
+// SaaS 멀티테넌트(temple_id) 완벽 지원
 // =====================================================================
-export async function grantMerit(activity, memberCode, ref = '') {
+export async function grantMerit(activity, memberCode, ref = '', templeId = null) {
   if (!supabase || !memberCode || memberCode === 'guest') {
     return { earned: 0, reason: 'no_supabase' }
   }
+  const resolvedTempleId = templeId || getCurrentTempleId()
   try {
     const { data, error } = await supabase.rpc('grant_merit', {
       p_code: memberCode,
       p_activity: activity,
       p_ref: ref || '',
+      p_temple_id: resolvedTempleId,
     })
     if (error) {
+      // p_temple_id 파라미터가 아직 없는 구버전 RPC 함수 대비 안전 fallback
+      if (error.message && error.message.includes('p_temple_id')) {
+        const fallback = await supabase.rpc('grant_merit', {
+          p_code: memberCode,
+          p_activity: activity,
+          p_ref: ref || '',
+        })
+        return fallback.data || { earned: 0, reason: 'empty' }
+      }
       console.error('grant_merit error:', error)
       return { earned: 0, reason: 'error', error }
     }
@@ -261,14 +274,22 @@ export async function grantMerit(activity, memberCode, ref = '') {
 }
 
 // 오늘(한국시간) 장부 합계: { lantern: 1000, sanctuary: 1000, ... }
-export async function fetchTodayLedger(memberCode) {
+export async function fetchTodayLedger(memberCode, templeId = null) {
   if (!supabase || !memberCode) return {}
+  const resolvedTempleId = templeId || getCurrentTempleId()
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from('merit_ledger')
       .select('activity, points')
       .eq('member_code', memberCode)
       .eq('ledger_date', getTodayKey())
+
+    // temple_id 컬럼이 있는 경우 사찰별 격리 조회
+    if (resolvedTempleId) {
+      query = query.or(`temple_id.eq.${resolvedTempleId},temple_id.is.null`)
+    }
+
+    const { data, error } = await query
     if (error) return {}
     const sums = {}
     ;(data || []).forEach((r) => {

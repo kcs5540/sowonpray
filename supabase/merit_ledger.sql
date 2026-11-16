@@ -1,5 +1,5 @@
 -- =====================================================================
--- 제주 소원사 공덕 거래 장부(merit_ledger) 설치 SQL
+-- 제주 소원사 공덕 거래 장부(merit_ledger) 설치 및 SaaS 통합 SQL
 -- Supabase 대시보드 > SQL Editor 에 전체를 붙여넣고 [Run] 한 번만 실행하세요.
 -- 여러 번 실행해도 안전합니다(이미 있으면 건너뜀).
 -- =====================================================================
@@ -7,6 +7,7 @@
 -- 1) 거래 장부 표: 한 번 적은 줄은 고치거나 지우지 않고 덧붙이기만 합니다.
 create table if not exists public.merit_ledger (
   id          bigserial primary key,
+  temple_id   text        not null default 'sowonsa',
   member_code text        not null,
   activity    text        not null,   -- opening | lantern | sanctuary | sutra | inyeon_giver | inyeon_receiver
   points      integer     not null,
@@ -16,25 +17,32 @@ create table if not exists public.merit_ledger (
   created_at  timestamptz not null default now()
 );
 
-create index if not exists merit_ledger_member_idx on public.merit_ledger (member_code, ledger_date);
+-- temple_id 컬럼이 기존 테이블에 혹시 없을 경우 안전 추가
+alter table public.merit_ledger add column if not exists temple_id text not null default 'sowonsa';
 
--- 2) 중복 적립을 DB가 직접 막는 규칙 (버튼을 두 번 눌러도, 두 기기에서 눌러도 한 줄만 들어갑니다)
+create index if not exists merit_ledger_temple_member_idx on public.merit_ledger (temple_id, member_code, ledger_date);
+
+-- 2) 중복 적립을 DB가 직접 막는 규칙 (사찰별 격리 적용)
+drop index if exists public.merit_ledger_daily_uq;
 create unique index if not exists merit_ledger_daily_uq
-  on public.merit_ledger (member_code, activity, ledger_date)
+  on public.merit_ledger (temple_id, member_code, activity, ledger_date)
   where activity in ('lantern', 'sanctuary', 'sutra');
 
+drop index if exists public.merit_ledger_receiver_uq;
 create unique index if not exists merit_ledger_receiver_uq
-  on public.merit_ledger (member_code) where activity = 'inyeon_receiver';
+  on public.merit_ledger (temple_id, member_code) where activity = 'inyeon_receiver';
 
+drop index if exists public.merit_ledger_giver_uq;
 create unique index if not exists merit_ledger_giver_uq
-  on public.merit_ledger (member_code, ref) where activity = 'inyeon_giver';
+  on public.merit_ledger (temple_id, member_code, ref) where activity = 'inyeon_giver';
 
+drop index if exists public.merit_ledger_opening_uq;
 create unique index if not exists merit_ledger_opening_uq
-  on public.merit_ledger (member_code) where activity = 'opening';
+  on public.merit_ledger (temple_id, member_code) where activity = 'opening';
 
 -- 3) 기존 회원의 현재 누적 공덕을 '기존 이월' 한 줄로 옮깁니다. (트리거 만들기 전에 실행해야 이중 가산이 없습니다)
-insert into public.merit_ledger (member_code, activity, points, ref, note)
-select code, 'opening', coalesce(merit_count, 0), '', '기존 누적 이월'
+insert into public.merit_ledger (temple_id, member_code, activity, points, ref, note)
+select coalesce(temple_id, 'sowonsa'), code, 'opening', coalesce(merit_count, 0), '', '기존 누적 이월'
 from public.members
 where coalesce(merit_count, 0) <> 0
 on conflict do nothing;
@@ -46,7 +54,8 @@ begin
   if new.activity <> 'opening' then
     update public.members
        set merit_count = coalesce(merit_count, 0) + new.points
-     where code = new.member_code;
+     where code = new.member_code
+       and (temple_id = new.temple_id or temple_id is null);
   end if;
   return new;
 end;
@@ -57,21 +66,23 @@ create trigger merit_ledger_after_insert
 after insert on public.merit_ledger
 for each row execute function public.merit_ledger_apply();
 
--- 5) 공덕 적립 단일 통로: 점수 규정은 이 함수 안에만 있습니다.
+-- 5) 공덕 적립 단일 통로: 점수 규정은 이 함수 안에만 있습니다. (p_temple_id 지원)
 create or replace function public.grant_merit(
-  p_code     text,
-  p_activity text,
-  p_ref      text default ''
+  p_code      text,
+  p_activity  text,
+  p_ref       text default '',
+  p_temple_id text default 'sowonsa'
 ) returns jsonb
 language plpgsql security definer set search_path = public as $$
 declare
-  v_points  integer;
-  v_id      bigint;
-  v_today   date := (now() at time zone 'Asia/Seoul')::date;
+  v_points      integer;
+  v_id          bigint;
+  v_today       date := (now() at time zone 'Asia/Seoul')::date;
   v_giver_today integer;
-  v_balance integer;
+  v_balance     integer;
+  v_temple      text := coalesce(nullif(p_temple_id, ''), 'sowonsa');
 begin
-  if not exists (select 1 from public.members where code = p_code) then
+  if not exists (select 1 from public.members where code = p_code and (temple_id = v_temple or temple_id is null)) then
     return jsonb_build_object('earned', 0, 'reason', 'no_member');
   end if;
 
@@ -91,39 +102,28 @@ begin
   if p_activity = 'inyeon_giver' then
     select coalesce(sum(points), 0) into v_giver_today
       from public.merit_ledger
-     where member_code = p_code and activity = 'inyeon_giver' and ledger_date = v_today;
+     where temple_id = v_temple and member_code = p_code and activity = 'inyeon_giver' and ledger_date = v_today;
     if v_giver_today + v_points > 50000 then
       return jsonb_build_object('earned', 0, 'reason', 'daily_cap');
     end if;
   end if;
 
-  insert into public.merit_ledger (member_code, activity, points, ledger_date, ref)
-  values (p_code, p_activity, v_points, v_today, coalesce(p_ref, ''))
+  insert into public.merit_ledger (temple_id, member_code, activity, points, ledger_date, ref)
+  values (v_temple, p_code, p_activity, v_points, v_today, coalesce(p_ref, ''))
   on conflict do nothing
   returning id into v_id;
 
-  select coalesce(merit_count, 0) into v_balance from public.members where code = p_code;
+  if v_id is null then
+    select merit_count into v_balance from public.members where code = p_code and (temple_id = v_temple or temple_id is null);
+    return jsonb_build_object('earned', 0, 'reason', 'duplicate', 'balance', coalesce(v_balance, 0));
+  end if;
 
+  select merit_count into v_balance from public.members where code = p_code and (temple_id = v_temple or temple_id is null);
   return jsonb_build_object(
-    'earned', case when v_id is null then 0 else v_points end,
-    'balance', v_balance,
-    'reason', case when v_id is null then 'already_done' else 'ok' end
+    'earned', v_points,
+    'reason', 'success',
+    'id', v_id,
+    'balance', coalesce(v_balance, 0)
   );
 end;
 $$;
-
--- 6) 권한: 앱은 '읽기'와 grant_merit 호출만 가능, 장부에 직접 쓰기는 불가
-alter table public.merit_ledger enable row level security;
-
-drop policy if exists merit_ledger_read on public.merit_ledger;
-create policy merit_ledger_read on public.merit_ledger for select using (true);
-
-revoke insert, update, delete on public.merit_ledger from anon, authenticated;
-grant select on public.merit_ledger to anon, authenticated;
-grant execute on function public.grant_merit(text, text, text) to anon, authenticated;
-
--- 7) 점검용: 누적(members.merit_count)과 장부 합계가 다른 회원 조회 (결과가 0줄이면 정상)
--- select m.code, m.name, m.merit_count, coalesce(sum(l.points),0) as ledger_sum
---   from public.members m left join public.merit_ledger l on l.member_code = m.code
---  group by m.code, m.name, m.merit_count
--- having coalesce(m.merit_count,0) <> coalesce(sum(l.points),0);
