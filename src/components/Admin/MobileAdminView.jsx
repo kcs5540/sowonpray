@@ -966,22 +966,22 @@ export default function MobileAdminView({
                     }`}
                   >
                     {/* 상단 헤더: 성함 + 불사종목 뱃지 + 접수일시 (중복 상태 뱃지 제거 및 1줄 통합) */}
-                    <div className="flex items-center justify-between gap-1.5 border-b border-[#F5EFE6] pb-1.5">
-                      <div className="flex items-center gap-1.5 min-w-0 flex-wrap">
-                        <span className="text-sm font-black text-[#1F1710] truncate">
+                    <div className="flex items-center justify-between gap-1.5 border-b border-[#F5EFE6] pb-2">
+                      <div className="flex items-center gap-2 min-w-0 flex-wrap">
+                        <span className="text-[15px] sm:text-base font-black text-[#1F1710] truncate">
                           {p.believer_name || '신청 불자'}
                         </span>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] shrink-0">
+                        <span className="text-[11.5px] font-bold px-2.5 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] shrink-0">
                           {p.wish_category || '불사상담'}
                         </span>
-                        <span className="text-[10px] text-[#8C7D6B] font-mono shrink-0">
+                        <span className="text-[11px] text-[#8C7D6B] font-mono shrink-0">
                           #{p.member_code || cleanPhone.slice(-8) || '-'}
                         </span>
                       </div>
 
                       {p.created_at && (
-                        <span className="text-[#8C7D6B] flex items-center gap-0.5 text-[10px] font-mono shrink-0">
-                          <Clock className="w-2.5 h-2.5 text-[#A89885]" />
+                        <span className="text-[#8C7D6B] flex items-center gap-1 text-[11px] font-mono shrink-0">
+                          <Clock className="w-3 h-3 text-[#A89885]" />
                           {new Date(p.created_at).toLocaleDateString('ko-KR', {
                             month: 'numeric',
                             day: 'numeric',
@@ -993,23 +993,23 @@ export default function MobileAdminView({
                     </div>
 
                     {/* 발원 및 상담 메모 전문 (슬림 & 정갈한 크림 박스) */}
-                    <div className="px-2.5 py-1.5 rounded-lg bg-[#FAF7F0] border border-[#EBE1CD]">
-                      <p className="text-[11.5px] text-[#3D3328] leading-relaxed whitespace-pre-line break-keep font-serif-kr">
+                    <div className="px-3 py-2.5 rounded-xl bg-[#FAF7F0] border border-[#EBE1CD]">
+                      <p className="text-[13px] sm:text-[13.5px] text-[#2E2419] leading-relaxed whitespace-pre-line break-keep font-serif-kr">
                         {p.wish_text || '발원문 메모가 없습니다.'}
                       </p>
                     </div>
 
                     {/* 원터치 액션 버튼 바 (전화걸기, 문자하기, 번호복사 - 콤팩트 높이) */}
-                    <div className="grid grid-cols-3 gap-1.5 pt-0.5">
+                    <div className="grid grid-cols-3 gap-2 pt-0.5">
                       <a
                         href={cleanPhone ? `tel:${cleanPhone}` : '#'}
-                        className={`py-1.5 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1 shadow-2xs active:scale-95 transition ${
+                        className={`py-2 rounded-xl text-xs sm:text-[12.5px] font-bold flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 transition ${
                           cleanPhone
                             ? 'bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer'
                             : 'bg-[#EEE8DB] text-[#9E907E] pointer-events-none'
                         }`}
                       >
-                        <Phone className="w-3 h-3" />
+                        <Phone className="w-3.5 h-3.5" />
                         <span>전화걸기</span>
                       </a>
 
@@ -1021,29 +1021,29 @@ export default function MobileAdminView({
                               )}`
                             : '#'
                         }
-                        className={`py-1.5 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1 shadow-2xs active:scale-95 transition ${
+                        className={`py-2 rounded-xl text-xs sm:text-[12.5px] font-bold flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 transition ${
                           cleanPhone
                             ? 'bg-sky-600 hover:bg-sky-700 text-white cursor-pointer'
                             : 'bg-[#EEE8DB] text-[#9E907E] pointer-events-none'
                         }`}
                       >
-                        <MessageSquare className="w-3 h-3" />
+                        <MessageSquare className="w-3.5 h-3.5" />
                         <span>문자하기</span>
                       </a>
 
                       <button
                         type="button"
                         onClick={() => handleCopyPhone(phone)}
-                        className="py-1.5 rounded-lg bg-white hover:bg-[#F8F5ED] text-[#4A3D2D] text-[11px] font-bold flex items-center justify-center gap-1 active:scale-95 transition border border-[#D5C9B3] shadow-2xs cursor-pointer"
+                        className="py-2 rounded-xl bg-white hover:bg-[#F8F5ED] text-[#4A3D2D] text-xs sm:text-[12.5px] font-bold flex items-center justify-center gap-1.5 active:scale-95 transition border border-[#D5C9B3] shadow-2xs cursor-pointer"
                       >
                         {copiedPhone === phone ? (
                           <>
-                            <Check className="w-3 h-3 text-emerald-600" />
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
                             <span className="text-emerald-700">복사됨!</span>
                           </>
                         ) : (
                           <>
-                            <Copy className="w-3 h-3 text-[#7A6B58]" />
+                            <Copy className="w-3.5 h-3.5 text-[#7A6B58]" />
                             <span>번호복사</span>
                           </>
                         )}
@@ -1051,16 +1051,16 @@ export default function MobileAdminView({
                     </div>
 
                     {/* 상태 변경 버튼 바 (슬림 & 단정한 웜그레이 미선택, 원터치 즉시 반응) */}
-                    <div className="flex items-center justify-between gap-1 pt-1.5 border-t border-[#F0ECE1]">
-                      <span className="text-[10.5px] font-medium text-[#7A6B58]">진행 상태 변경:</span>
-                      <div className="flex items-center gap-1">
+                    <div className="flex items-center justify-between gap-1 pt-2 border-t border-[#F0ECE1]">
+                      <span className="text-xs font-bold text-[#7A6B58]">진행 상태 변경:</span>
+                      <div className="flex items-center gap-1.5">
                         <button
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation()
                             handleUpdatePrayerStatus(p.id || p.db_id, 'consulting')
                           }}
-                          className={`px-2.5 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer active:scale-95 ${
+                          className={`px-3 py-1.5 rounded-lg text-xs sm:text-[12.5px] font-bold border transition cursor-pointer active:scale-95 ${
                             isPending
                               ? 'bg-red-600 text-white border-red-600 shadow-2xs font-black'
                               : 'bg-white text-[#6E6455] border-[#DDD5C5] hover:bg-[#FAF8F3]'
@@ -1074,7 +1074,7 @@ export default function MobileAdminView({
                             e.stopPropagation()
                             handleUpdatePrayerStatus(p.id || p.db_id, 'in_progress')
                           }}
-                          className={`px-2.5 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer active:scale-95 ${
+                          className={`px-3 py-1.5 rounded-lg text-xs sm:text-[12.5px] font-bold border transition cursor-pointer active:scale-95 ${
                             isInProgress
                               ? 'bg-amber-600 text-white border-amber-600 shadow-2xs font-black'
                               : 'bg-white text-[#6E6455] border-[#DDD5C5] hover:bg-[#FAF8F3]'
@@ -1088,7 +1088,7 @@ export default function MobileAdminView({
                             e.stopPropagation()
                             handleUpdatePrayerStatus(p.id || p.db_id, 'completed')
                           }}
-                          className={`px-2.5 py-1 rounded-md text-[11px] font-bold border transition cursor-pointer active:scale-95 ${
+                          className={`px-3 py-1.5 rounded-lg text-xs sm:text-[12.5px] font-bold border transition cursor-pointer active:scale-95 ${
                             isDone
                               ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs font-black'
                               : 'bg-white text-[#6E6455] border-[#DDD5C5] hover:bg-[#FAF8F3]'
@@ -1433,29 +1433,29 @@ ${v.visitor_name} 불자님, ${v.visit_date} ${v.visit_time} 사찰 방문 및 �
                     className="rounded-2xl p-3.5 bg-white border border-[#E8DEC8] space-y-2 shadow-xs"
                   >
                     {/* 상단: 신청자 성함 + 접수 날짜 명기 + 기원 카테고리 배지 */}
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center justify-between gap-2 border-b border-[#F5EFE6] pb-1.5">
                       <div className="flex items-center gap-1.5 min-w-0">
-                        <span className="text-sm font-bold text-[#2E2214] truncate">
+                        <span className="text-[15px] sm:text-base font-black text-[#2E2214] truncate">
                           🕯️ {p.believer_name}
                         </span>
                         {p.created_at && (
-                          <span className="text-[10px] text-[#8C7D6B] font-mono shrink-0 px-1.5 py-0.2 rounded bg-[#F7F4EE] border border-[#EAE3D2]">
+                          <span className="text-[11px] text-[#8C7D6B] font-mono shrink-0 px-1.5 py-0.2 rounded bg-[#F7F4EE] border border-[#EAE3D2]">
                             {formatLanternDate(p.created_at)}
                           </span>
                         )}
                       </div>
-                      <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] shrink-0">
+                      <span className="text-[11.5px] font-bold px-2.5 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] border border-[#E5D399] shrink-0">
                         {p.wish_category || '가족건강'}
                       </span>
                     </div>
 
                     {/* 발원문 내용 */}
-                    <p className="text-xs text-[#524436] line-clamp-2 font-serif-kr leading-relaxed">
+                    <p className="text-[13px] sm:text-[13.5px] text-[#3D3328] line-clamp-3 font-serif-kr leading-relaxed px-1">
                       “{p.wish_text}”
                     </p>
 
                     {/* 하단: 실시간 축원 상태 (오늘 축원은 강조, 과거 지난 축원은 회향완료 표시) */}
-                    <div className="flex items-center justify-between pt-1.5 border-t border-[#F0ECE1] text-[11px] text-[#7A6B58]">
+                    <div className="flex items-center justify-between pt-1.5 border-t border-[#F0ECE1] text-xs sm:text-[12.5px] text-[#7A6B58]">
                       <span className="font-medium">
                         {p.wish_category?.includes('인등') || p.prayer_type === 'indeung_1yr' ? (
                           <span className="text-[#8A6510] font-bold">대웅전 1년 인등 (365일 사시예불 축원)</span>
@@ -1475,9 +1475,9 @@ ${v.visitor_name} 불자님, ${v.visit_date} ${v.visit_time} 사찰 방문 및 �
                       {cleanPhone && (
                         <a
                           href={`tel:${cleanPhone}`}
-                          className="text-[#8A6510] hover:underline flex items-center gap-1 font-bold"
+                          className="text-[#8A6510] hover:underline flex items-center gap-1 font-bold text-xs"
                         >
-                          <Phone className="w-3 h-3 inline text-emerald-600" />
+                          <Phone className="w-3.5 h-3.5 inline text-emerald-600" />
                           통화하기
                         </a>
                       )}
