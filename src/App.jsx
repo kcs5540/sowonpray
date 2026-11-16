@@ -4602,7 +4602,8 @@ function formatRelativeOrDate(dateStr) {
     }
     const dbInyeonReceiver = Number(dbDaily.inyeon_receiver) || Number(currentUser?.extra_data?.new_member_bonus) || 0
     const isSpecialFirstPrayer = currentUser.code === '99085540'
-    const inyeonReceiverReward = Math.min(5000, Math.max(dbInyeonReceiver, (isUserNewToday || isSpecialFirstPrayer) && isLanternLit ? 5000 : 0))
+    // 표시용 내역은 장부(daily_merits)에 실제 기록된 값만 사용 (가상 가산 제거)
+    const inyeonReceiverReward = Math.min(5000, dbInyeonReceiver)
     const inyeonReceiverCount = inyeonReceiverReward >= 5000 ? 1 : 0
 
     // 8) 목탁멍/108배/염주는 공덕 포인트 적립 대상에서 제외 (0 처리)
@@ -5674,6 +5675,18 @@ function formatRelativeOrDate(dateStr) {
         const targetCode = existingPrayerMember.code
         const meritRes = awardMerit('lantern', targetCode, 1)
         let addedMerit = meritRes.earnedPoints || 0
+
+        // 🌸 오늘 가입한 신규회원이 첫 소원등을 켠 경우: 신규회원공덕 5,000을 같은 장부 반영 단계에서 함께 적립 (화면 가상 가산 금지)
+        if (!isBulsa && referrerCode && existingPrayerMember.created_at) {
+          const c = new Date(existingPrayerMember.created_at)
+          const cKey = `${c.getFullYear()}-${String(c.getMonth() + 1).padStart(2, '0')}-${String(c.getDate()).padStart(2, '0')}`
+          const nowD = new Date()
+          const tKey = `${nowD.getFullYear()}-${String(nowD.getMonth() + 1).padStart(2, '0')}-${String(nowD.getDate()).padStart(2, '0')}`
+          if (cKey === tKey) {
+            const recRes2 = awardMerit('inyeon_receiver', targetCode, 1)
+            addedMerit += recRes2.earnedPoints || 0
+          }
+        }
 
         const nextMerit = (existingPrayerMember.merit_count || 0) + addedMerit
         const needsBirthUpdate = !existingPrayerMember.birth_date && formattedBirth
