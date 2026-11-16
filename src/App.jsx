@@ -4610,42 +4610,11 @@ function formatRelativeOrDate(dateStr) {
     const moktakReward = 0
     const todayMoktakRewardCount = 0
 
-    // 9) 실시간 자동 정산 총 합계
-    // 🌟 대표님 훈령 및 원장 불변성 대원칙:
-    // 과거에 획득한 포인트는 영구 보존하며, 오늘 진행하는 5대 일일 신행을 그 위에 실시간으로 '누적 가산'한다!
-    const todayDailyReward = lanternReward + sanctuaryReward + sutraReward + inyeonGiverReward + inyeonReceiverReward
-
-    // DB에 기록되어 있는 오늘의 5대 신행 공덕 총합
-    const todayDbMerits =
-      (Number(dbDaily.lantern) || 0) +
-      (Number(dbDaily.sanctuary) || 0) +
-      (Number(dbDaily.sutra) || 0) +
-      (Number(dbDaily.inyeon_giver) || 0) +
-      (Number(dbDaily.inyeon_receiver) || 0)
-
-    const currentDbMerit = Number(currentUser?.merit_count) || 0
-
-    // 오늘 신행 활동 이전의 순수 과거 보존 베이스 공덕 (단 1점도 훼손되지 않도록 보호)
-    let preservedBaseMerit = 0
-    if (currentUser?.code === '33065540') {
-      // 김철수 대표님: 기확인 공식 영구 보존 공덕 (35,100)
-      preservedBaseMerit = 35100
-    } else if (currentUser?.code === '83855838') {
-      // 오다혜 포교위원장님: 기확인 공식 영구 보존 공덕 (13,390)
-      preservedBaseMerit = 13390
-    } else {
-      // 일반 신도(김나현 등) 및 기타 포교위원: 과거 누적 공덕 안전 보존
-      preservedBaseMerit = Math.max(0, currentDbMerit - todayDbMerits)
-    }
-
-    // 법연(산하 신도 인연) 공덕과 과거 보존 베이스 중 유효한 공덕
-    const baseWithBelievers = Math.max(preservedBaseMerit, believersReward)
-
-    // 최종 총 공덕금 = [보존된 과거 공덕 & 법연 공덕] + [오늘 5대 신행 정진 공덕]
-    // 🌟 [절대적 하향 방지 방어벽]: 어떤 경우에도 기존 DB 공덕보다 숫자가 작아지지 않음!
-    const calculatedTotal = baseWithBelievers + todayDailyReward
-    const totalReward = Math.max(currentDbMerit, calculatedTotal)
-    const previousProtectedMerit = baseWithBelievers
+    // 9) 회원의 총 누적 공덕금
+    // 🌟 대표님 대원칙: 화면에서 임의로 점수를 재계산하거나 조작하지 않고,
+    // DB 원장(members.merit_count)에 공식 기록된 확정 공덕을 100% 그대로 안전하게 표출한다!
+    const totalReward = Number(currentUser?.merit_count) || 0
+    const previousProtectedMerit = totalReward
 
     return {
       isAgent,
@@ -4674,24 +4643,7 @@ function formatRelativeOrDate(dateStr) {
     }
   }, [currentUser, currentUserAffiliatedMembers, currentUserBelieversCount, userLanternStats, isLanternLit, lanternData, sutraDailyVersion, sanctuaryDailyVersion, lanternDailyVersion, moktakDailyVersion, prayers])
 
-  // 🌟 [공덕 DB 실시간 정산 동기화]: totalReward가 증가했을 때 Supabase DB의 merit_count와 실시간 일치 (절대 하향 불가 방어)
-  useEffect(() => {
-    if (!supabase || !currentUser?.code || typeof userMeritReward?.totalReward !== 'number') return
-    const dbMerit = Number(currentUser.merit_count) || 0
-    if (userMeritReward.totalReward > dbMerit) {
-      setMembers((prev) =>
-        prev.map((m) => (m.code === currentUser.code ? { ...m, merit_count: userMeritReward.totalReward } : m))
-      )
-      try {
-        localStorage.setItem(`sowonpray_merit_${currentUser.code}`, String(userMeritReward.totalReward))
-      } catch (e) {}
-      supabase
-        .from('members')
-        .update({ merit_count: userMeritReward.totalReward })
-        .eq('code', currentUser.code)
-        .then()
-    }
-  }, [userMeritReward?.totalReward, currentUser?.code])
+  // 🌟 (기존 위험한 프론트엔드 자동 덮어쓰기 useEffect 완전 제거 - 상용 원장 불변성 확립)
 
   // 🌿 현재 로그인 회원의 산하 인연 신도 최근 가입순(최신순) 정렬 목록 & 필터 상태
   const [infoAffiliatedMode, setInfoAffiliatedMode] = useState('list') // 'list' | 'tree'
