@@ -5717,6 +5717,9 @@ function formatRelativeOrDate(dateStr) {
                 if (supabase) {
                   supabase.from('members').update({ merit_count: nextGiverMerit }).eq('code', m.code).then()
                 }
+                if (currentUser && currentUser.code === referrerCode) {
+                  setCurrentUser((cur) => (cur ? { ...cur, merit_count: nextGiverMerit } : cur))
+                }
                 return { ...m, merit_count: nextGiverMerit }
               }
               return m
@@ -5994,6 +5997,7 @@ function formatRelativeOrDate(dateStr) {
     if (currentUser) {
       const baseCount = Number(currentUser.merit_count) || 0
       const newCount = baseCount + amount
+      setCurrentUser((prev) => (prev ? { ...prev, merit_count: newCount } : prev))
       setMembers((prev) =>
         prev.map((m) =>
           m.code === currentUser.code
