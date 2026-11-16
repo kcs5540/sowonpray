@@ -631,45 +631,29 @@ export default function SowonsaSanctuaryModal({
             {/* 1. 향로 및 선향 고정 앵커 (향탁 위에 단단히 안착, 미동 없음) */}
             <div className="relative flex flex-col items-center">
 
-              {/* 💨 하얀 연기만 모락모락 피어오르는 연기 레이어 (향로 상단 팁에서 위로만 분출, 레이아웃에 영향 0) */}
-              <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 w-32 h-44 flex justify-center items-end pointer-events-none overflow-visible">
-                
-                {/* [평상시 기본 은은한 순백 실연기] */}
-                {!isSmokingIncense && (
-                  <div className="relative w-16 h-36 flex justify-center items-end opacity-70">
-                    <div className="absolute bottom-0 w-2.5 h-20 rounded-full bg-gradient-to-t from-white/70 via-stone-200/40 to-transparent blur-[2px] anim-smoke-1" />
-                    <div className="absolute bottom-0 w-3.5 h-24 rounded-full bg-gradient-to-t from-stone-100/60 via-white/35 to-transparent blur-[2.5px] anim-smoke-2" />
-                    <div className="absolute bottom-0 w-2 h-18 rounded-full bg-gradient-to-t from-white/65 via-stone-200/35 to-transparent blur-[2px] anim-smoke-3" />
-                  </div>
-                )}
-
-                {/* [향올리기 터치 시: 풍성한 하얀 연기만 모락모락 피어오름] */}
+              {/* 💨 하얀 연기 레이어: 들어갔을 때는 연기 전혀 없음, [향올리기] 클릭 시에만 약하고 은은한 하얀 연기 모락모락 */}
+              <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 w-28 h-44 flex justify-center items-end pointer-events-none overflow-visible">
                 {isSmokingIncense && (
-                  <div className="relative w-28 h-44 flex justify-center items-end animate-in fade-in duration-300">
-                    {/* 은은한 청정 백색 연무 구름 */}
-                    <div className="absolute bottom-2 w-36 h-36 rounded-full bg-gradient-to-t from-white/30 via-neutral-100/15 to-transparent blur-2xl animate-pulse" />
-                    
-                    {/* 모락모락 피어오르는 순백 연기 레이어 1 */}
-                    <div className="absolute bottom-0 w-6 h-32 rounded-full bg-gradient-to-t from-white/90 via-neutral-100/70 to-transparent blur-[2.5px] anim-smoke-active-1" />
-                    {/* 모락모락 피어오르는 순백 연기 레이어 2 */}
-                    <div className="absolute bottom-0 w-8 h-36 rounded-full bg-gradient-to-t from-neutral-200/80 via-white/60 to-transparent blur-[3px] anim-smoke-active-2" />
-                    {/* 모락모락 피어오르는 순백 연기 레이어 3 */}
-                    <div className="absolute bottom-0 w-5 h-28 rounded-full bg-gradient-to-t from-white/85 via-neutral-200/60 to-transparent blur-[2.5px] anim-smoke-active-3" />
+                  <div className="relative w-20 h-40 flex justify-center items-end animate-in fade-in duration-500">
+                    {/* 은은하고 가벼운 하얀 실연기 줄기들 (과하지 않고 약하게 피어오름) */}
+                    <div className="absolute bottom-0 w-2 h-20 rounded-full bg-gradient-to-t from-white/70 via-white/30 to-transparent blur-[1.5px] anim-smoke-1" />
+                    <div className="absolute bottom-0 w-2.5 h-26 rounded-full bg-gradient-to-t from-white/60 via-stone-100/25 to-transparent blur-[2px] anim-smoke-2" />
+                    <div className="absolute bottom-0 w-1.5 h-16 rounded-full bg-gradient-to-t from-white/65 via-white/25 to-transparent blur-[1.5px] anim-smoke-3" />
 
-                    {/* 유려한 순백 물결 연기 곡선 SVG */}
-                    <svg viewBox="0 0 80 140" className="absolute bottom-0 w-24 h-36 opacity-85 drop-shadow-[0_0_8px_rgba(255,255,255,0.7)] pointer-events-none">
+                    {/* 가느다랗고 자연스러운 하얀 연기 곡선 */}
+                    <svg viewBox="0 0 60 120" className="absolute bottom-0 w-16 h-32 opacity-60 pointer-events-none">
                       <path
-                        d="M38 135 C30 105 52 75 36 40 C30 20 44 8 40 0"
-                        stroke="rgba(255, 255, 255, 0.85)"
-                        strokeWidth="3"
+                        d="M28 115 C22 90 38 65 26 35 C20 18 32 8 28 0"
+                        stroke="rgba(255, 255, 255, 0.7)"
+                        strokeWidth="1.8"
                         fill="none"
                         strokeLinecap="round"
                         className="animate-pulse"
                       />
                       <path
-                        d="M42 135 C50 110 32 80 46 45 C52 24 40 10 44 0"
-                        stroke="rgba(245, 245, 250, 0.95)"
-                        strokeWidth="3.5"
+                        d="M32 115 C38 95 24 70 34 40 C38 22 30 10 32 0"
+                        stroke="rgba(255, 255, 255, 0.8)"
+                        strokeWidth="2"
                         fill="none"
                         strokeLinecap="round"
                       />
