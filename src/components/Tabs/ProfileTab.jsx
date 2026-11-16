@@ -1115,12 +1115,12 @@ export default function ProfileTab({
                   <section className="bg-gradient-to-br from-[#231F1C] via-[#2A231C] to-[#171310] text-white rounded-3xl p-5 border border-[#C59B27]/40 shadow-sm space-y-3.5">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-1.5 min-w-0">
-                        <span className="text-sm shrink-0">🌱</span>
-                        <h3 className="font-serif-kr text-sm sm:text-base font-bold text-[#F5D061] whitespace-nowrap">
+                        <span className="text-base shrink-0">🌱</span>
+                        <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#F5D061] whitespace-nowrap">
                           나의 인연 공덕 현황
                         </h3>
                       </div>
-                      <span className="text-[10.5px] font-bold text-[#FFE58A] bg-[#C59B27]/25 px-2.5 py-0.5 rounded-full border border-[#F5D061]/40 shrink-0">
+                      <span className="text-xs font-bold text-[#FFE58A] bg-[#C59B27]/25 px-2.5 py-1 rounded-full border border-[#F5D061]/40 shrink-0">
                         {currentUserBelieversCount >= 30 ? '위촉 자격 달성' : '포교위원 승급 도전'}
                       </span>
                     </div>
@@ -1128,60 +1128,60 @@ export default function ProfileTab({
                     {/* 1. 3개 핵심 지표 (법연 신도 / 적립 공덕금 / 승급 D-Day) */}
                     <div className="grid grid-cols-3 gap-2 pt-0.5">
                       <div className="bg-white/5 border border-white/10 rounded-2xl p-2.5 text-center">
-                        <div className="text-[10px] sm:text-[10.5px] text-[#BFB6AA]">맺은 법연(신도)</div>
-                        <div className="text-base sm:text-lg font-extrabold text-[#F5D061] mt-0.5">
+                        <div className="text-xs sm:text-[13px] text-[#BFB6AA]">맺은 법연(신도)</div>
+                        <div className="text-lg sm:text-xl font-extrabold text-[#F5D061] mt-0.5">
                           {currentUserBelieversCount}명
                         </div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-2xl p-2.5 text-center">
-                        <div className="text-[10px] sm:text-[10.5px] text-[#BFB6AA]">신행 복덕 공덕금</div>
-                        <div className="text-base sm:text-lg font-extrabold text-[#FFE58A] mt-0.5">
+                        <div className="text-xs sm:text-[13px] text-[#BFB6AA]">신행 복덕 공덕금</div>
+                        <div className="text-lg sm:text-xl font-extrabold text-[#FFE58A] mt-0.5 whitespace-nowrap">
                           {userMeritReward.totalReward.toLocaleString()} 공덕
                         </div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-2xl p-2.5 text-center">
-                        <div className="text-[10px] sm:text-[10.5px] text-[#BFB6AA]">포교위원 승급</div>
-                        <div className="text-base sm:text-lg font-extrabold text-emerald-400 mt-0.5">
+                        <div className="text-xs sm:text-[13px] text-[#BFB6AA]">포교위원 승급</div>
+                        <div className="text-lg sm:text-xl font-extrabold text-emerald-400 mt-0.5">
                           {currentUserBelieversCount >= 30 ? '자격 획득' : `D-${Math.max(0, 30 - currentUserBelieversCount)}명`}
                         </div>
                       </div>
                     </div>
 
                     {/* 2. 🎁 1인 추천 보시 혜택 안내 (기념품 구입 및 불사 참여에 사용 가능) */}
-                    <div className="p-3 rounded-2xl bg-gradient-to-r from-[#C59B27]/15 via-[#F5D061]/10 to-transparent border border-[#F5D061]/30 flex items-start gap-2.5">
-                      <span className="text-lg shrink-0 mt-0.5">🎁</span>
+                    <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#C59B27]/15 via-[#F5D061]/10 to-transparent border border-[#F5D061]/30 flex items-start gap-2.5">
+                      <span className="text-xl shrink-0 mt-0.5">🎁</span>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-1 flex-wrap">
-                          <span className="text-xs font-bold text-[#F5D061]">
+                          <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
                             인연 전달 시 5,000 공덕 (1일 한도 50,000) · (신규) 인연 받은 분 5,000 공덕
                           </span>
-                          <span className="text-[10px] text-[#E5D7B5] bg-white/10 px-1.5 py-0.5 rounded font-medium">
+                          <span className="text-[11px] text-[#E5D7B5] bg-white/10 px-2 py-0.5 rounded font-medium">
                             기념품 구입 or 불사 참여 사용
                           </span>
                         </div>
-                        <p className="text-[11px] text-[#BFB6AA] mt-1 leading-relaxed break-keep">
+                        <p className="text-xs sm:text-[13px] text-[#BFB6AA] mt-1.5 leading-relaxed break-keep">
                           소원등 링크를 전달하여 상대방이 소원등을 켤 때마다 <strong className="text-white">인연 전달한 분께 5,000 공덕 (1일 한도 50,000 공덕)</strong>, <strong className="text-[#F5D061]">(신규) 인연 받은 분께도 5,000 공덕</strong>이 적립됩니다. 또한 매일 주요 3대 정진(대웅전 참배 1,000 · 소원등 1,000 · 한줄사경 1,000)으로도 풍성한 복덕을 쌓으실 수 있습니다.
                         </p>
                       </div>
                     </div>
 
                     {/* 3. 🏆 30명 달성 시 정식 포교위원 위촉 목표 게이지 */}
-                    <div className="p-3.5 rounded-2xl bg-black/35 border border-white/10 space-y-2.5">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-[#D6CEC2] font-semibold text-[11px]">
+                    <div className="p-4 rounded-2xl bg-black/35 border border-white/10 space-y-2.5">
+                      <div className="flex items-center justify-between text-xs sm:text-sm">
+                        <span className="text-[#D6CEC2] font-semibold text-xs sm:text-[13px]">
                           정식 포교위원 위촉 목표 (30명)
                         </span>
-                        <span className="font-mono font-bold text-[#F5D061] text-[11px]">
+                        <span className="font-mono font-bold text-[#F5D061] text-xs sm:text-[13px]">
                           {currentUserBelieversCount} / 30명 ({Math.min(100, Math.round((currentUserBelieversCount / 30) * 100))}%)
                         </span>
                       </div>
-                      <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                      <div className="w-full h-2.5 rounded-full bg-white/10 overflow-hidden">
                         <div
                           className="h-full bg-gradient-to-r from-[#C59B27] via-[#F5D061] to-[#FFE58A] transition-all duration-500 rounded-full"
                           style={{ width: `${Math.min(100, Math.max(currentUserBelieversCount > 0 ? 5 : 0, Math.round((currentUserBelieversCount / 30) * 100)))}%` }}
                         />
                       </div>
-                      <p className="text-[11px] text-[#A89880] leading-snug break-keep pt-0.5">
+                      <p className="text-xs sm:text-[13px] text-[#A89880] leading-relaxed break-keep pt-0.5">
                         법연을 맺은 인연이 <strong className="text-[#F5D061]">30명</strong>에 도달하면 제주 소원사 <strong className="text-white">정식 포교위원</strong>으로 명예 위촉되며 매월 포교 활동 공덕금이 보시 지원됩니다.
                       </p>
                     </div>
