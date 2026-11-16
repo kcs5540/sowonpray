@@ -628,39 +628,39 @@ export default function SowonsaSanctuaryModal({
               ══════════════════════════════════════════════════════════════ */}
           <div className="absolute bottom-1 sm:bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none z-10">
             
-            {/* 1. 향로에서 삼존불을 향해 피어오르는 부드러운 향 연기 (Smoke Layer) */}
+            {/* 1. 향로에서 삼존불을 향해 피어오르는 부드러운 청정 백색 향 연기 (Smoke Layer) */}
             <div className="relative w-32 h-36 -mb-6 flex justify-center items-end pointer-events-none overflow-visible">
               
-              {/* [평상시 기본 은은한 연기] */}
+              {/* [평상시 기본 은은한 순백 연기] */}
               {!isSmokingIncense && (
-                <div className="relative w-16 h-32 flex justify-center items-end opacity-60">
+                <div className="relative w-16 h-32 flex justify-center items-end opacity-70">
                   {/* 연기 줄기 1 */}
-                  <div className="absolute bottom-2 w-3 h-16 rounded-full bg-gradient-to-t from-amber-200/50 via-white/40 to-transparent blur-[2px] anim-smoke-1" />
+                  <div className="absolute bottom-2 w-2.5 h-16 rounded-full bg-gradient-to-t from-white/60 via-stone-200/40 to-transparent blur-[2px] anim-smoke-1" />
                   {/* 연기 줄기 2 */}
-                  <div className="absolute bottom-2 w-4 h-20 rounded-full bg-gradient-to-t from-yellow-100/40 via-white/30 to-transparent blur-[2.5px] anim-smoke-2" />
+                  <div className="absolute bottom-2 w-3.5 h-20 rounded-full bg-gradient-to-t from-stone-100/50 via-white/30 to-transparent blur-[2.5px] anim-smoke-2" />
                   {/* 연기 줄기 3 */}
-                  <div className="absolute bottom-2 w-2.5 h-14 rounded-full bg-gradient-to-t from-amber-100/45 via-white/35 to-transparent blur-[2px] anim-smoke-3" />
+                  <div className="absolute bottom-2 w-2 h-14 rounded-full bg-gradient-to-t from-white/55 via-stone-200/35 to-transparent blur-[2px] anim-smoke-3" />
                 </div>
               )}
 
-              {/* [향올리기 터치 시: 풍성하고 성스러운 황금빛 향 연기 & 서기] */}
+              {/* [향올리기 터치 시: 풍성하고 청정한 순백의 향 연기 구름] */}
               {isSmokingIncense && (
                 <div className="relative w-28 h-36 flex justify-center items-end animate-in fade-in zoom-in-95 duration-500">
-                  {/* 황금빛 서기 은은한 아우라 */}
-                  <div className="absolute -top-4 w-40 h-40 rounded-full bg-gradient-to-t from-amber-400/35 via-yellow-200/20 to-transparent blur-2xl animate-pulse" />
+                  {/* 은은한 백색 연무 오라 (붉은빛 전혀 없이 맑고 청정함) */}
+                  <div className="absolute -top-4 w-40 h-40 rounded-full bg-gradient-to-t from-white/25 via-neutral-100/15 to-transparent blur-2xl animate-pulse" />
                   
                   {/* 풍성한 활성 연기 레이어 1 */}
-                  <div className="absolute bottom-2 w-5 h-24 rounded-full bg-gradient-to-t from-amber-300/70 via-white/60 to-transparent blur-[2px] anim-smoke-active-1" />
+                  <div className="absolute bottom-2 w-5 h-24 rounded-full bg-gradient-to-t from-white/80 via-neutral-100/60 to-transparent blur-[2.5px] anim-smoke-active-1" />
                   {/* 풍성한 활성 연기 레이어 2 */}
-                  <div className="absolute bottom-2 w-7 h-28 rounded-full bg-gradient-to-t from-yellow-200/60 via-amber-100/50 to-transparent blur-[3px] anim-smoke-active-2" />
+                  <div className="absolute bottom-2 w-7 h-28 rounded-full bg-gradient-to-t from-neutral-200/70 via-white/50 to-transparent blur-[3px] anim-smoke-active-2" />
                   {/* 풍성한 활성 연기 레이어 3 */}
-                  <div className="absolute bottom-2 w-4 h-22 rounded-full bg-gradient-to-t from-amber-400/60 via-white/50 to-transparent blur-[2px] anim-smoke-active-3" />
+                  <div className="absolute bottom-2 w-4.5 h-22 rounded-full bg-gradient-to-t from-white/75 via-neutral-200/50 to-transparent blur-[2.5px] anim-smoke-active-3" />
 
-                  {/* 유려한 물결 연기 곡선 SVG */}
-                  <svg viewBox="0 0 80 120" className="absolute bottom-3 w-20 h-28 opacity-75 drop-shadow-[0_0_8px_rgba(255,230,150,0.8)] pointer-events-none">
+                  {/* 유려한 순백 물결 연기 곡선 SVG */}
+                  <svg viewBox="0 0 80 120" className="absolute bottom-3 w-20 h-28 opacity-80 drop-shadow-[0_0_6px_rgba(255,255,255,0.7)] pointer-events-none">
                     <path
                       d="M38 115 C32 90 52 65 38 35 C32 18 44 8 40 0"
-                      stroke="rgba(255, 245, 210, 0.75)"
+                      stroke="rgba(255, 255, 255, 0.75)"
                       strokeWidth="2.5"
                       fill="none"
                       strokeLinecap="round"
@@ -668,7 +668,7 @@ export default function SowonsaSanctuaryModal({
                     />
                     <path
                       d="M42 115 C48 95 34 70 46 40 C52 22 42 10 44 0"
-                      stroke="rgba(255, 235, 170, 0.85)"
+                      stroke="rgba(240, 240, 245, 0.85)"
                       strokeWidth="3"
                       fill="none"
                       strokeLinecap="round"
@@ -678,25 +678,25 @@ export default function SowonsaSanctuaryModal({
               )}
             </div>
 
-            {/* 2. 향탁 위에 놓인 3D 황금 향로 & 꽂혀 있는 3개의 선향 */}
+            {/* 2. 향탁 위에 놓인 3D 황금 향로 & 꽂혀 있는 3개의 선향 (붉은빛 완전 배제) */}
             <div className="relative flex flex-col items-center z-10">
               
-              {/* 향로에 꽂힌 3가닥 선향(線香) 및 빨간 불씨 */}
+              {/* 향로에 꽂힌 3가닥 단정한 선향(線香) - 붉은 불씨 없이 잿빛 팁으로 차분하고 청정함 */}
               <div className="relative w-8 h-4 flex justify-center items-end -mb-1">
                 {/* 왼쪽 향 */}
                 <div className="relative -mr-1 flex flex-col items-center origin-bottom -rotate-6">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF4500] anim-ember shadow-[0_0_4px_#FF4500]" />
-                  <span className="w-[1px] h-3.5 bg-amber-900/90" />
+                  <span className="w-1 h-1 rounded-full bg-stone-300/80" />
+                  <span className="w-[1px] h-3.5 bg-[#4A3222]" />
                 </div>
                 {/* 중앙 향 */}
                 <div className="relative z-10 flex flex-col items-center">
-                  <span className={`w-1.5 h-1.5 rounded-full bg-[#FF3300] anim-ember shadow-[0_0_5px_#FF5500] ${isSmokingIncense ? 'scale-150 !bg-[#FFD700]' : ''}`} />
-                  <span className="w-[1.2px] h-4 bg-amber-950" />
+                  <span className="w-1 h-1 rounded-full bg-stone-200/90" />
+                  <span className="w-[1.2px] h-4 bg-[#3B2618]" />
                 </div>
                 {/* 오른쪽 향 */}
                 <div className="relative -ml-1 flex flex-col items-center origin-bottom rotate-6">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF4500] anim-ember shadow-[0_0_4px_#FF4500]" />
-                  <span className="w-[1px] h-3.5 bg-amber-900/90" />
+                  <span className="w-1 h-1 rounded-full bg-stone-300/80" />
+                  <span className="w-[1px] h-3.5 bg-[#4A3222]" />
                 </div>
               </div>
 
@@ -706,7 +706,7 @@ export default function SowonsaSanctuaryModal({
                   src="/images/icon_incense_3d.png" 
                   alt="대웅전 수미단 향로" 
                   className={`w-9 sm:w-11 h-9 sm:h-11 object-contain drop-shadow-[0_3px_6px_rgba(0,0,0,0.85)] filter contrast-125 transition-all duration-300 ${
-                    isSmokingIncense ? 'brightness-125 drop-shadow-[0_0_12px_rgba(245,208,97,0.8)] scale-105' : 'brightness-110'
+                    isSmokingIncense ? 'scale-105 brightness-110 drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]' : 'brightness-105'
                   }`}
                 />
                 {/* 향로 밑 접지면 그림자 */}
