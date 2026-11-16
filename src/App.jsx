@@ -4564,35 +4564,42 @@ function formatRelativeOrDate(dateStr) {
     const sutraReward = sutraCount * 1000
     const todaySutraRewardCount = sutraCount
 
-    // 6) 인연 전달 한 사람: 상대방이 소원등 켰을 때 5,000 공덕 (1일 한도 50,000 = 최대 10회)
-    // 오늘 산하 신도가 올린 소원등에서 발생한 인연 전달 건수 실시간 계산 (기기/로컬스토리지 무관 클라우드 DB 연동)
-    const todayPrayersUnderAgent = (prayers || []).filter((p) => {
+    // 6) 인연 전달 한 사람: 오늘 '신규 가입'한 산하 신도가 첫 소원등을 켰을 때 추천인에게 5,000 공덕 (1일 한도 50,000)
+    // 🌟 대표님 훈령: 이미 과거에 가입한 기존 회원(오다혜 등)은 절대 중복 지급되지 않으며, 오늘 신규 가입한 신도만 엄격히 인정!
+    const todayNewBelieversUnderAgent = (prayers || []).filter((p) => {
       if (p.agent_code !== currentUser.code || p.member_code === currentUser.code) return false
       const pDate = p.created_at ? new Date(p.created_at) : null
       if (!pDate || isNaN(pDate.getTime())) return false
       const pYear = pDate.getFullYear()
       const pMonth = String(pDate.getMonth() + 1).padStart(2, '0')
       const pDay = String(pDate.getDate()).padStart(2, '0')
-      const pDateKey = `${pYear}-${pMonth}-${pDay}`
-      return pDateKey === todayKey
-    })
-    const distinctPrayerMembersToday = new Set(todayPrayersUnderAgent.map((p) => p.member_code)).size
-    const prayersInyeonGiverPoints = Math.min(50000, distinctPrayerMembersToday * 5000)
+      if (`${pYear}-${pMonth}-${pDay}` !== todayKey) return false
 
-    const inyeonGiverInfo = getDailyMeritInfo('inyeon_giver', currentUser.code, dbDaily.inyeon_giver)
-    const inyeonGiverReward = Math.min(
-      50000,
-      Math.max(
-        prayersInyeonGiverPoints,
-        Number(inyeonGiverInfo.currentPoints) || 0,
-        Number(dbDaily.inyeon_giver) || 0
-      )
-    )
+      // 해당 신도가 오늘 '신규 가입'한 신도인지 엄격히 검증
+      const believerMember = (members || []).find((m) => m.code === p.member_code)
+      if (!believerMember) return false
+      const mCreated = believerMember.created_at ? new Date(believerMember.created_at) : null
+      if (!mCreated || isNaN(mCreated.getTime())) return false
+      const mYear = mCreated.getFullYear()
+      const mMonth = String(mCreated.getMonth() + 1).padStart(2, '0')
+      const mDay = String(mCreated.getDate()).padStart(2, '0')
+      return `${mYear}-${mMonth}-${mDay}` === todayKey
+    })
+    const distinctNewMembersToday = new Set(todayNewBelieversUnderAgent.map((p) => p.member_code)).size
+    const inyeonGiverReward = Math.min(50000, distinctNewMembersToday * 5000)
     const inyeonGiverCount = Math.floor(inyeonGiverReward / 5000)
 
-    // 7) (신규) 인연 받은 사람: 상대방에게 인연을 받아 소원등 켰을 때 5,000 공덕 (1일 1회 한도 5,000)
-    const inyeonReceiverInfo = getDailyMeritInfo('inyeon_receiver', currentUser.code, dbDaily.inyeon_receiver)
-    const inyeonReceiverReward = Math.min(5000, Math.max(Number(inyeonReceiverInfo.currentPoints) || 0, Number(dbDaily.inyeon_receiver) || 0))
+    // 7) (신규) 신규회원공덕: 소원사에 '오늘 신규 가입'하여 첫 소원등을 켠 신규 신도 본인에게 5,000 공덕 (최초 1회 한정)
+    // 🌟 대표님 훈령: 과거에 이미 가입한 기존 회원(대표님, 오다혜 등)은 절대 대상이 아님!
+    const userCreatedAt = currentUser.created_at ? new Date(currentUser.created_at) : null
+    let isUserNewToday = false
+    if (userCreatedAt && !isNaN(userCreatedAt.getTime())) {
+      const uYear = userCreatedAt.getFullYear()
+      const uMonth = String(userCreatedAt.getMonth() + 1).padStart(2, '0')
+      const uDay = String(userCreatedAt.getDate()).padStart(2, '0')
+      isUserNewToday = `${uYear}-${uMonth}-${uDay}` === todayKey
+    }
+    const inyeonReceiverReward = (isUserNewToday && isLanternLit) ? 5000 : 0
     const inyeonReceiverCount = inyeonReceiverReward >= 5000 ? 1 : 0
 
     // 8) 목탁멍/108배/염주는 공덕 포인트 적립 대상에서 제외 (0 처리)
@@ -5705,18 +5712,10 @@ function formatRelativeOrDate(dateStr) {
           supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
         }
       } else {
-        // 기존 회원이 소원등을 올릴 때도 공덕 (1일 1회 최대 1,000) 적립
+        // 기존 회원이 소원등을 올릴 때는 본인 소원등 점등 공덕 (1일 1회 최대 1,000)만 적립
         const targetCode = existingPrayerMember.code
         const meritRes = awardMerit('lantern', targetCode, 1)
         let addedMerit = meritRes.earnedPoints || 0
-
-        // 🌸 인연 받은 사람: 상대방에게 인연을 받아 소원등 켰을 경우 5,000 공덕 (1일 한도 5,000)
-        if (!isBulsa && existingPrayerMember.parent_code && existingPrayerMember.parent_code !== existingPrayerMember.code) {
-          const recRes = awardMerit('inyeon_receiver', existingPrayerMember.code, 1)
-          if (recRes.earnedPoints > 0) {
-            addedMerit += recRes.earnedPoints
-          }
-        }
 
         const nextMerit = (existingPrayerMember.merit_count || 0) + addedMerit
         const needsBirthUpdate = !existingPrayerMember.birth_date && formattedBirth

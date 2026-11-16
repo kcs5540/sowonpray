@@ -574,7 +574,7 @@ export default function ProfileTab({
                               }
                           const sutraInfo = getDailyMeritInfo('sutra', uCode, dbDaily.sutra)
                           const inyeonGiverInfoRaw = getDailyMeritInfo('inyeon_giver', uCode, dbDaily.inyeon_giver)
-                          const effectiveInyeonGiverPoints = Math.max(inyeonGiverInfoRaw.currentPoints, userMeritReward?.inyeonGiverReward || 0)
+                          const effectiveInyeonGiverPoints = Number(userMeritReward?.inyeonGiverReward) || 0
                           const inyeonGiverInfo = {
                             ...inyeonGiverInfoRaw,
                             currentPoints: effectiveInyeonGiverPoints,
@@ -582,7 +582,7 @@ export default function ProfileTab({
                           }
 
                           const inyeonReceiverInfoRaw = getDailyMeritInfo('inyeon_receiver', uCode, dbDaily.inyeon_receiver)
-                          const effectiveInyeonReceiverPoints = Math.max(inyeonReceiverInfoRaw.currentPoints, userMeritReward?.inyeonReceiverReward || 0)
+                          const effectiveInyeonReceiverPoints = Number(userMeritReward?.inyeonReceiverReward) || 0
                           const inyeonReceiverInfo = {
                             ...inyeonReceiverInfoRaw,
                             currentPoints: effectiveInyeonReceiverPoints,
