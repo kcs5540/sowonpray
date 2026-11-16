@@ -4538,14 +4538,10 @@ function formatRelativeOrDate(dateStr) {
     const dbDaily = currentUser?.extra_data?.daily_merits?.[todayKey] || {}
 
     // 3) 소원등 점등: 공식 규격 1회 1,000 공덕 (1일 1회 한도)
-    const hasLanternRecord = Boolean(
-      (dbDaily.lantern && dbDaily.lantern >= 1000) ||
-      (userLanternStats?.prayersCount && userLanternStats.prayersCount > 0) ||
-      isLanternLit ||
-      (lanternData && lanternData.lit_at) ||
-      (Number(currentUser?.lantern_count) > 0)
-    )
-    const lanternCount = hasLanternRecord ? 1 : 0
+    // 🌟 대표님 훈령: 소원등 리셋 기준은 사시예불 회향 시각인 매일 오전 11:00!
+    // 오전 11시 사시예불 축원 회향(소등) 전까지 환하게 점등 유지(isLanternLit === true -> 1,000 공덕 달성 중)
+    // 오전 11시 소등 이후에는 0/1회로 리프레시되어 새로운 당일 소원등을 다시 밝힐 수 있음
+    const lanternCount = isLanternLit ? 1 : 0
     const lanternReward = lanternCount * 1000
 
     // 4) 대웅전 참배: 공식 규격 1회 1,000 공덕 (1일 1회 한도)

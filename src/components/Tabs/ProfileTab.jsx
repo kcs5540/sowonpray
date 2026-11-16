@@ -554,7 +554,9 @@ export default function ProfileTab({
                           const dbDaily = currentUser?.extra_data?.daily_merits?.[todayKey] || {}
                           const sanctuaryInfo = getDailyMeritInfo('sanctuary', uCode, dbDaily.sanctuary)
                           const rawLanternInfo = getDailyMeritInfo('lantern', uCode, dbDaily.lantern)
-                          const isUserLanternActive = Boolean(isLanternLit || rawLanternInfo.currentPoints >= 1000 || (dbDaily.lantern && dbDaily.lantern >= 1000))
+                          // 🌟 대표님 훈령: 소원등은 매일 오전 11:00 사시예불 축원 회향(소등)을 기준으로 리셋!
+                          // 점등 중(isLanternLit === true)이면 1회 1,000공덕 달성 중, 11시 소등(isLanternLit === false) 시 0/1회로 리프레시
+                          const isUserLanternActive = Boolean(isLanternLit)
                           const lanternInfo = isUserLanternActive
                             ? {
                                 ...rawLanternInfo,
@@ -563,7 +565,13 @@ export default function ProfileTab({
                                 remainingPoints: 0,
                                 isMax: true,
                               }
-                            : rawLanternInfo
+                            : {
+                                ...rawLanternInfo,
+                                currentPoints: 0,
+                                currentCount: 0,
+                                remainingPoints: 1000,
+                                isMax: false,
+                              }
                           const sutraInfo = getDailyMeritInfo('sutra', uCode, dbDaily.sutra)
                           const inyeonGiverInfoRaw = getDailyMeritInfo('inyeon_giver', uCode, dbDaily.inyeon_giver)
                           const effectiveInyeonGiverPoints = Math.max(inyeonGiverInfoRaw.currentPoints, userMeritReward?.inyeonGiverReward || 0)
@@ -619,7 +627,7 @@ export default function ProfileTab({
                                   </div>
                                   <div className="flex items-center justify-between mt-1">
                                     <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
-                                      (1,000 공덕)
+                                      {lanternInfo.currentCount > 0 ? '(1,000 공덕 · 오전 11시 회향)' : '(1,000 공덕 · 지금 점등 가능)'}
                                     </span>
                                     <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
                                       +{lanternInfo.currentPoints.toLocaleString()} 공덕
