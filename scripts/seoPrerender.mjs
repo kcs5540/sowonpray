@@ -114,6 +114,34 @@ const ROUTES = [
       },
     ],
   },
+  {
+    routePath: '/proposal',
+    outputRelative: 'proposal/index.html',
+    title: '차세대 사찰 모바일법당 & 스마트 종무 ERP 도입 제안서 | 제주소원사 · 제주AI파트너',
+    description:
+      '신도 고령화와 사찰 재정 위기를 돌파하는 스마트폰 기도 접수, AI 사주간지 1초 변환, 대웅전 축원 명패 즉시 출력, 실시간 스마트 종무 ERP 시스템 도입 제안서.',
+    ogTitle: '스마트 모바일법당 & 종무 ERP 도입 제안서',
+    ogDescription:
+      '신도 고령화와 사찰 재정 위기를 돌파하는 스마트폰 기도 접수 · AI 사주간지 1초 변환 · 대웅전 축원 명패 즉시 출력 · 실시간 스마트 종무 ERP 솔루션.',
+    ogImage: 'https://sowonpray.vercel.app/images/sowonpray_proposal_og.jpg?v=1',
+    eyebrow: '대한불교 조계종 제주 소원사 · 제주AI파트너',
+    h1: '차세대 사찰 모바일법당 & 스마트 종무 ERP 도입 제안서',
+    lead: '내 손안의 도량, 천년의 불심을 스마트폰으로 — 신도 고령화와 사찰 재정 정체의 위기를 돌파하는 디지털 불사 솔루션',
+    sections: [
+      {
+        title: '1. 24시간 스마트폰 기도·소원등 접수',
+        body: '전국 어디서나 신도들이 스마트폰으로 소원등과 기도를 24시간 간편하게 접수하고 결제까지 원스톱으로 처리합니다.',
+      },
+      {
+        title: '2. 만세력 필요 없는 AI 사주간지 1초 변환 & 축원 명패 출력',
+        body: '생년월일시 입력 시 1초 만에 사주간지와 간지나이가 자동 계산되며, 대웅전 법당 축원 명패를 클릭 한 번으로 즉시 인쇄합니다.',
+      },
+      {
+        title: '3. 어디서나 실시간 스마트 종무 행정 ERP',
+        body: 'PC와 스마트폰 어디서나 신도 명부, 기도 접수 내역, 위패 봉안 관리, 불사 회계 정산이 실시간 동기화되는 종무 전산망을 구축합니다.',
+      },
+    ],
+  },
 ]
 
 function escapeHtml(str) {
@@ -232,11 +260,40 @@ export function generateSeoPrerenderPages(distDir) {
       `<meta name="twitter:description" content="${escapeHtml(route.ogDescription)}" />`
     )
 
+    if (route.ogImage) {
+      html = replaceTag(
+        html,
+        /<meta\s+property="og:image"\s+content="[^"]*"\s*\/?>/,
+        `<meta property="og:image" content="${escapeHtml(route.ogImage)}" />`
+      )
+      html = replaceTag(
+        html,
+        /<meta\s+name="twitter:image"\s+content="[^"]*"\s*\/?>/,
+        `<meta name="twitter:image" content="${escapeHtml(route.ogImage)}" />`
+      )
+      html = replaceTag(
+        html,
+        /<meta\s+property="og:image:width"\s+content="[^"]*"\s*\/?>/,
+        `<meta property="og:image:width" content="1200" />`
+      )
+      html = replaceTag(
+        html,
+        /<meta\s+property="og:image:height"\s+content="[^"]*"\s*\/?>/,
+        `<meta property="og:image:height" content="630" />`
+      )
+    }
+
     const rootHtml = buildSemanticRootHtml(route)
     html = replaceTag(html, /<div id="root"><\/div>/, `<div id="root">${rootHtml}\n    </div>`)
 
     const outPath = path.join(distDir, route.outputRelative)
     fs.mkdirSync(path.dirname(outPath), { recursive: true })
     fs.writeFileSync(outPath, html, 'utf-8')
+
+    if (route.outputRelative.endsWith('/index.html') && route.outputRelative !== 'index.html') {
+      const flatName = route.outputRelative.replace(/\/index\.html$/, '.html')
+      const flatPath = path.join(distDir, flatName)
+      fs.writeFileSync(flatPath, html, 'utf-8')
+    }
   }
 }
