@@ -4905,6 +4905,7 @@ function formatRelativeOrDate(dateStr) {
       believers_count: 0,
       wipae_count: 0,
       extra_data: {},
+      created_at: new Date().toISOString(),
     }
 
     setMembers((prev) => [newMember, ...prev])
@@ -5593,18 +5594,22 @@ function formatRelativeOrDate(dateStr) {
 
       const formattedBirth = effectiveBirth ? (effectiveBirth.length === 4 ? `${effectiveBirth}-01-01` : effectiveBirth) : ''
 
-      if (!existingPrayerMember) {
-        const isBulsaReg = isBulsa
-        let initialMerit = isBulsaReg ? 0 : 1000
-
-        // 🌸 인연 받은 사람: 상대방에게 인연을 받아 소원등 켰을 경우 5,000 공덕
-        if (!isBulsaReg && referrerCode) {
-          const recRes = awardMerit('inyeon_receiver', prayerCode8, 1)
-          if (recRes.earnedPoints > 0) {
-            initialMerit += recRes.earnedPoints
+      // 🏦 공덕 적립은 서버 장부(grant_merit) 단일 통로로만 처리한다!
+      // 1) 소원등 점등 1,000 공덕
+      // 2) 신규회원공덕 5,000 (DB가 평생 1회만 허용하므로 첫 점등 시 자동 지급)
+      // 3) 추천인 인연 전달 5,000 (신규 회원의 첫 점등 시 추천인에게 자동 지급)
+      const grantLanternBundle = async (memberCode) => {
+        if (!isBulsa) {
+          await grantMeritFor('lantern', memberCode)
+          const recRes = await grantMeritFor('inyeon_receiver', memberCode)
+          if (recRes && recRes.earned > 0 && referrerCode) {
+            await grantMeritFor('inyeon_giver', referrerCode, memberCode)
           }
         }
+      }
 
+      if (!existingPrayerMember) {
+        const isBulsaReg = isBulsa
         const newBeliever = {
           code: prayerCode8,
           phone: formatPhone11(wishPhoneClean),
@@ -5622,47 +5627,24 @@ function formatRelativeOrDate(dateStr) {
           bank_name: '',
           bank_account: '',
           account_holder: '',
-          merit_count: initialMerit,
+          merit_count: 0,
           believers_count: 0,
           wipae_count: 0,
           extra_data: { registered_via: isBulsaReg ? 'bulsa_consultation' : 'wish_lantern' },
-        }
-        if (!isBulsaReg) {
-          awardMerit('lantern', newBeliever.code, 1)
+          created_at: new Date().toISOString(),
         }
         setMembers((prev) => [newBeliever, ...prev])
         setLanternDailyVersion((v) => v + 1)
-        try {
-          if (!isBulsaReg) {
-            localStorage.setItem(`sowonpray_merit_${newBeliever.code}`, String(initialMerit))
+        ;(async () => {
+          if (supabase) {
+            await supabase.from('members').upsert([newBeliever], { onConflict: 'code', ignoreDuplicates: true })
           }
-        } catch (e) {}
-        if (supabase) {
-          supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
-        }
+          await grantLanternBundle(newBeliever.code)
+        })().catch((err) => console.error('merit bundle error:', err))
       } else {
-        // 기존 회원이 소원등을 올릴 때는 본인 소원등 점등 공덕 (1일 1회 최대 1,000)만 적립
-        const targetCode = existingPrayerMember.code
-        const meritRes = awardMerit('lantern', targetCode, 1)
-        let addedMerit = meritRes.earnedPoints || 0
-
-        // 🌸 오늘 가입한 신규회원이 첫 소원등을 켠 경우: 신규회원공덕 5,000을 같은 장부 반영 단계에서 함께 적립 (화면 가상 가산 금지)
-        if (!isBulsa && referrerCode && existingPrayerMember.created_at) {
-          const c = new Date(existingPrayerMember.created_at)
-          const cKey = `${c.getFullYear()}-${String(c.getMonth() + 1).padStart(2, '0')}-${String(c.getDate()).padStart(2, '0')}`
-          const nowD = new Date()
-          const tKey = `${nowD.getFullYear()}-${String(nowD.getMonth() + 1).padStart(2, '0')}-${String(nowD.getDate()).padStart(2, '0')}`
-          if (cKey === tKey) {
-            const recRes2 = awardMerit('inyeon_receiver', targetCode, 1)
-            addedMerit += recRes2.earnedPoints || 0
-          }
-        }
-
-        const nextMerit = (existingPrayerMember.merit_count || 0) + addedMerit
         const needsBirthUpdate = !existingPrayerMember.birth_date && formattedBirth
         const updatedMember = {
           ...existingPrayerMember,
-          merit_count: nextMerit,
           dharma_name: (!existingPrayerMember.dharma_name && parsedDharma) ? parsedDharma : existingPrayerMember.dharma_name,
           birth_date: needsBirthUpdate ? formattedBirth : existingPrayerMember.birth_date,
           lunar_solar: needsBirthUpdate ? effectiveLunarSolar : (existingPrayerMember.lunar_solar || '음력'),
@@ -5671,42 +5653,15 @@ function formatRelativeOrDate(dateStr) {
           prev.map((m) => (m.code === existingPrayerMember.code ? updatedMember : m))
         )
         setLanternDailyVersion((v) => v + 1)
-        try {
-          localStorage.setItem(`sowonpray_merit_${existingPrayerMember.code}`, String(nextMerit))
-        } catch (e) {}
         if (supabase) {
-          const updatePayload = {
-            merit_count: nextMerit,
-            dharma_name: updatedMember.dharma_name,
-          }
+          const updatePayload = { dharma_name: updatedMember.dharma_name }
           if (needsBirthUpdate) {
             updatePayload.birth_date = formattedBirth
             updatePayload.lunar_solar = effectiveLunarSolar
           }
           supabase.from('members').update(updatePayload).eq('code', existingPrayerMember.code).then()
         }
-      }
-
-      // 🤝 인연 전달 한 사람: 상대방이 소원등 켰을 경우 5,000 공덕 (한도 1일 50,000)
-      if (!isBulsa && referrerCode) {
-        const giverRes = awardMerit('inyeon_giver', referrerCode, 1)
-        if (giverRes.earnedPoints > 0) {
-          setMembers((prev) =>
-            prev.map((m) => {
-              if (m.code === referrerCode) {
-                const nextGiverMerit = (m.merit_count || 0) + giverRes.earnedPoints
-                try {
-                  localStorage.setItem(`sowonpray_merit_${m.code}`, String(nextGiverMerit))
-                } catch (e) {}
-                if (supabase) {
-                  supabase.from('members').update({ merit_count: nextGiverMerit }).eq('code', m.code).then()
-                }
-                return { ...m, merit_count: nextGiverMerit }
-              }
-              return m
-            })
-          )
-        }
+        grantLanternBundle(existingPrayerMember.code).catch((err) => console.error('merit bundle error:', err))
       }
 
       // 신규 신청자가 비로그인 상태이거나 본인 계정이 아닌 경우 본인 계정으로 즉시 자동 로그인 처리
