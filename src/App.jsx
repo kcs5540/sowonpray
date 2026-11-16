@@ -4625,11 +4625,11 @@ function formatRelativeOrDate(dateStr) {
     // 오늘 신행 활동 이전의 순수 과거 보존 베이스 공덕 (단 1점도 훼손되지 않도록 보호)
     let preservedBaseMerit = 0
     if (currentUser?.code === '33065540') {
-      // 김철수 대표님: 최소 35,100 보존 기준
-      preservedBaseMerit = Math.max(35100, currentDbMerit - todayDbMerits)
+      // 김철수 대표님: 기확인 공식 영구 보존 공덕 (35,100)
+      preservedBaseMerit = 35100
     } else if (currentUser?.code === '83855838') {
-      // 오다혜 포교위원장님: 최소 13,390 보존 기준
-      preservedBaseMerit = Math.max(13390, currentDbMerit - todayDbMerits)
+      // 오다혜 포교위원장님: 기확인 공식 영구 보존 공덕 (13,390)
+      preservedBaseMerit = 13390
     } else {
       // 일반 신도(김나현 등) 및 기타 포교위원: 과거 누적 공덕 안전 보존
       preservedBaseMerit = Math.max(0, currentDbMerit - todayDbMerits)
