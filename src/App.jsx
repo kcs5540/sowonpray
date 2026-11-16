@@ -1630,6 +1630,8 @@ function SanctuaryNavIcon({ className = 'w-5 h-5' }) {
   )
 }
 
+const _latestMeritByCode = {}
+
 export default function App() {
   // 탭 상태: 'home' | 'lantern' | 'sanctuary' | 'sutra' | 'bulsa' | 'agent' | 'admin' | 'profile' (경로 /lantern·/bulsa·/sutra·/sanctuary 및 ?tab= 모두 지원)
   const [activeTab, setActiveTab] = useState(() => {
@@ -4062,15 +4064,8 @@ function formatRelativeOrDate(dateStr) {
   }, [currentUser, prayers, wishPhone, wishName])
 
   // 🪔 소원등이 현재 켜져 있는 상태(isLanternLit)라면 오늘의 소원등 공덕(1일 1회 1,000)을 즉시 자동 동기화/보장
-  useEffect(() => {
-    if (isLanternLit && currentUser?.code) {
-      const info = getDailyMeritInfo('lantern', currentUser.code)
-      if (info.currentPoints < 1000) {
-        awardMerit('lantern', currentUser.code, 1)
-        setLanternDailyVersion((v) => v + 1)
-      }
-    }
-  }, [isLanternLit, currentUser])
+  // (제거됨) 과거에는 여기서 장부(daily_merits)만 기록하고 누적(merit_count)은 올리지 않아 장부와 누적이 어긋났음.
+  // 이제 소원등 공덕은 점등 확인(handleConfirmSubmittedPrayer) 단 한 곳에서만 적립한다.
 
   // 사경/법문/경전공부/지혜퀴즈 탭 상태
   const [sutraSubTab, setSutraSubTab] = useState('copy') // 'copy' | 'wisdom' | 'study' | 'quiz'
@@ -4541,7 +4536,7 @@ function formatRelativeOrDate(dateStr) {
     // 🌟 대표님 훈령: 소원등 리셋 기준은 사시예불 회향 시각인 매일 오전 11:00!
     // 오전 11시 사시예불 축원 회향(소등) 전까지 환하게 점등 유지(isLanternLit === true -> 1,000 공덕 달성 중)
     // 오전 11시 소등 이후에는 0/1회로 리프레시되어 새로운 당일 소원등을 다시 밝힐 수 있음
-    const lanternCount = isLanternLit ? 1 : 0
+    const lanternCount = (Number(dbDaily.lantern) || 0) >= 1000 || getDailyMeritInfo('lantern', currentUser.code, dbDaily.lantern).currentCount > 0 ? 1 : 0
     const lanternReward = lanternCount * 1000
 
     // 4) 대웅전 참배: 공식 규격 1회 1,000 공덕 (1일 1회 한도)
@@ -6006,8 +6001,12 @@ function formatRelativeOrDate(dateStr) {
 
   const addMerit = (amount = 1) => {
     if (currentUser) {
-      const baseCount = Number(currentUser.merit_count) || 0
+      // 연속 호출(참배 퇴당 등) 시 React 상태가 아직 갱신되기 전이라도 직전 가산값을 잃지 않도록 최신값 캐시 사용
+      const stateCount = Number(currentUser.merit_count) || 0
+      const cached = _latestMeritByCode[currentUser.code]
+      const baseCount = cached !== undefined && cached > stateCount ? cached : stateCount
       const newCount = baseCount + amount
+      _latestMeritByCode[currentUser.code] = newCount
       setMembers((prev) =>
         prev.map((m) =>
           m.code === currentUser.code
