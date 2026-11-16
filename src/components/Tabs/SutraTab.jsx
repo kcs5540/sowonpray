@@ -284,7 +284,7 @@ export default function SutraTab({
                         <Sparkles className="w-5 h-5 text-[#F5D061] shrink-0" />
                         <div className="min-w-0">
                           <div className="text-xs font-bold text-[#F5D061]">
-                            사경 1독 회향 완료! (+1 공덕 적립)
+                            사경 1독 회향 완료! (+1,000 공덕 적립)
                           </div>
                           <div className="text-[11px] text-[#D6CEC2] break-keep">
                             이 공덕이 불자님과 온 가족의 평안으로 원만히 회향되기를 발원합니다.
@@ -321,14 +321,13 @@ export default function SutraTab({
                   <div className="min-w-0 flex-1">
                     <span className="inline-flex items-center gap-1 text-[10px] sm:text-[10.5px] px-2 py-0.5 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/30 font-bold mb-1 whitespace-nowrap">
                       <span>📿 온라인 목탁 정진</span>
-                      <span className="text-[#FFE898] font-normal">(9타당 +1공덕)</span>
+                      <span className="text-[#FFE898] font-normal">(108 목탁 힐링 명상)</span>
                     </span>
                     <h4 className="font-serif-kr text-[14.5px] sm:text-base font-bold text-white truncate">
                       “관세음보살” 부르며 목탁 치기
                     </h4>
                     <p className="text-[11px] text-[#D6CEC2] mt-0.5 truncate">
-                      오늘 친 목탁: <strong className="text-[#F5D061]">{moktakCount}타</strong> (다음 공덕까지{' '}
-                      <strong className="text-[#F5D061]">{9 - (moktakCount % 9)}타</strong>)
+                      오늘 친 목탁: <strong className="text-[#F5D061]">{moktakCount}타</strong> (108 염주 정진)
                     </p>
                     {/* 9타 황금 염주 알 시각화 */}
                     <div className="flex items-center gap-1.5 mt-2">
@@ -734,7 +733,7 @@ export default function SutraTab({
                       >
                         {isDone
                           ? '✓ 공부 완료됨 · 다음 강의로 이동 ▶'
-                          : '📖 오늘 경전 공부 완료 (+1 공덕 적립 후 다음 강의 ▶)'}
+                          : '📖 오늘 경전 공부 완료 (다음 강의로 이동 ▶)'}
                       </button>
                     </section>
                   )
@@ -753,7 +752,7 @@ export default function SutraTab({
                       <div className="flex items-center justify-between gap-2 border-b border-[#EFE9DD] pb-3">
                         <div>
                           <span className="text-[10.5px] font-bold text-[#9A7418]">
-                            재미로 배우는 불교 상식 · 정답 시 +1 공덕
+                            재미로 배우는 불교 상식 · 마음을 밝히는 지혜 퀴즈
                           </span>
                           <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] mt-0.5">
                             불교 지혜 퀴즈 ({quizIndex + 1} / {BUDDHIST_QUIZZES.length})
