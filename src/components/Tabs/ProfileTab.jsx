@@ -1147,22 +1147,19 @@ export default function ProfileTab({
                       </div>
                     </div>
 
-                    {/* 2. 🎁 1인 추천 보시 혜택 안내 (기념품 구입 및 불사 참여에 사용 가능) */}
-                    <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#C59B27]/15 via-[#F5D061]/10 to-transparent border border-[#F5D061]/30 flex items-start gap-2.5">
-                      <span className="text-xl shrink-0 mt-0.5">🎁</span>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between gap-1 flex-wrap">
-                          <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
-                            인연 전달 시 5,000 공덕 (1일 한도 50,000) · (신규) 인연 받은 분 5,000 공덕
-                          </span>
-                          <span className="text-[11px] text-[#E5D7B5] bg-white/10 px-2 py-0.5 rounded font-medium">
-                            기념품 구입 or 불사 참여 사용
-                          </span>
-                        </div>
-                        <p className="text-xs sm:text-[13px] text-[#BFB6AA] mt-1.5 leading-relaxed break-keep">
-                          소원등 링크를 전달하여 상대방이 소원등을 켤 때마다 <strong className="text-white">인연 전달한 분께 5,000 공덕 (1일 한도 50,000 공덕)</strong>, <strong className="text-[#F5D061]">(신규) 인연 받은 분께도 5,000 공덕</strong>이 적립됩니다. 또한 매일 주요 3대 정진(대웅전 참배 1,000 · 소원등 1,000 · 한줄사경 1,000)으로도 풍성한 복덕을 쌓으실 수 있습니다.
-                        </p>
+                    {/* 2. 1인 추천 보시 혜택 안내 (기념품 구입 및 불사 참여에 사용 가능) */}
+                    <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#C59B27]/15 via-[#F5D061]/10 to-transparent border border-[#F5D061]/30 space-y-1.5">
+                      <div className="flex items-center justify-between gap-1 flex-wrap">
+                        <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                          인연 전달 시 5,000 공덕 (1일 한도 50,000) · (신규) 인연 받은 분 5,000 공덕
+                        </span>
+                        <span className="text-[11px] text-[#E5D7B5] bg-white/10 px-2 py-0.5 rounded font-medium">
+                          기념품 구입 or 불사 참여 사용
+                        </span>
                       </div>
+                      <p className="text-xs sm:text-[13px] text-[#BFB6AA] leading-relaxed break-keep">
+                        소원등 링크를 전달하여 상대방이 소원등을 켤 때마다 <strong className="text-white">인연 전달한 분께 5,000 공덕 (1일 한도 50,000 공덕)</strong>, <strong className="text-[#F5D061]">(신규) 인연 받은 분께도 5,000 공덕</strong>이 적립됩니다. 또한 매일 주요 3대 정진(대웅전 참배 1,000 · 소원등 1,000 · 한줄사경 1,000)으로도 풍성한 복덕을 쌓으실 수 있습니다.
+                      </p>
                     </div>
 
                     {/* 3. 🏆 30명 달성 시 정식 포교위원 위촉 목표 게이지 */}
