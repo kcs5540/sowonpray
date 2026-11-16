@@ -709,14 +709,6 @@ export default function SowonsaSanctuaryModal({
               {/* 탁자 바닥 대청마루 접지 섀도우 */}
               <div className="w-28 sm:w-32 h-1.5 bg-black/85 rounded-full blur-[2px] -mt-0.5" />
             </div>
-
-            {/* 3. 청정한 향 공양 축원 슬림 배지 (absolute로 띄워 향탁/향로를 절대 밀어 올리지 않음) */}
-            {isSmokingIncense && (
-              <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1 rounded-full bg-black/85 backdrop-blur-md border border-[#F5D061]/80 text-[11px] font-serif-kr text-[#F5D061] shadow-2xl flex items-center gap-1.5 animate-in fade-in duration-300">
-                <span className="text-xs">🕯️</span>
-                <span className="font-bold tracking-tight">부처님 전에 청정한 향을 사릅니다</span>
-              </div>
-            )}
           </div>
         </div>
       </div>
