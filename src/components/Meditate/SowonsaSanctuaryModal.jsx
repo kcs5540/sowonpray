@@ -601,9 +601,10 @@ export default function SowonsaSanctuaryModal({
         <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none" />
       </div>
 
-      {/* 2-1. 대웅전 실제 전경 제단 뷰 (z-[1]: 수미단 목조 하단까지 원본 그대로 높고 웅장하게 전체 노출) */}
+      {/* 2-1. 대웅전 실제 전경 제단 뷰 & 제단 앞 전통 향탁/향로/향 연기 씬 */}
       <div className="absolute inset-x-0 top-12 sm:top-14 flex flex-col items-center pointer-events-none z-[1]">
-        <div className="relative w-full max-w-xl aspect-[4/3] overflow-hidden">
+        <div className="relative w-full max-w-xl aspect-[4/3]">
+          {/* 대웅전 실제 전경 삼존불 제단 원본 사진 */}
           <img 
             src="/images/sowonsa_daewoongjeon_altar_front.jpg" 
             alt="제주 소원사 대웅전 삼존불" 
@@ -612,8 +613,8 @@ export default function SowonsaSanctuaryModal({
           {/* 상단 단청 연결부 자연스러운 음영 */}
           <div className="absolute inset-x-0 top-0 h-3 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
           
-          {/* 하단 목조 수미단 바닥 접지면만 미세한 자연스러운 그림자 (수미단 본체 전체 온전히 노출) */}
-          <div className="absolute inset-x-0 bottom-0 h-3 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+          {/* 하단 목조 수미단 바닥 접지면 미세한 자연스러운 그림자 */}
+          <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
 
           {/* 좌우 은은한 비네팅 */}
           <div className="absolute inset-y-0 left-0 w-2.5 bg-gradient-to-r from-black/30 to-transparent pointer-events-none" />
@@ -621,55 +622,125 @@ export default function SowonsaSanctuaryModal({
           
           {/* 삼존불 황금빛 광배 은은한 후광 조명 효과 */}
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,_var(--tw-gradient-stops))] from-[#FFD700]/15 via-transparent to-transparent pointer-events-none" />
-        </div>
-      </div>
 
-      {/* 🕯️ 부처님 전 분향(향올리기) 실시간 연기 & 서기(瑞氣) 대형 시각 이펙트 */}
-      {isSmokingIncense && (
-        <div className="absolute inset-x-0 top-24 sm:top-28 z-20 flex flex-col items-center justify-center pointer-events-none animate-in fade-in zoom-in-90 duration-500">
-          {/* 황금빛 서기 후광 오라 */}
-          <div className="absolute w-56 h-56 rounded-full bg-gradient-to-t from-amber-400/30 via-yellow-300/20 to-transparent blur-3xl animate-pulse" />
-          
-          {/* 모락모락 피어오르는 청정한 3줄기 향 연기 애니메이션 */}
-          <div className="relative flex flex-col items-center">
-            <svg viewBox="0 0 120 140" className="w-32 h-40 sm:w-40 sm:h-48 drop-shadow-[0_0_20px_rgba(245,208,97,0.9)]">
-              <path
-                d="M50 130 C42 100 68 75 52 40 C44 20 58 8 55 0"
-                stroke="rgba(255, 248, 210, 0.85)"
-                strokeWidth="3.5"
-                fill="none"
-                strokeLinecap="round"
-                className="animate-pulse"
-              />
-              <path
-                d="M60 130 C68 105 48 80 64 45 C72 25 60 10 62 0"
-                stroke="rgba(255, 235, 160, 0.95)"
-                strokeWidth="4"
-                fill="none"
-                strokeLinecap="round"
-              />
-              <path
-                d="M70 130 C78 100 58 70 70 38 C76 18 64 5 66 0"
-                stroke="rgba(255, 248, 210, 0.8)"
-                strokeWidth="3"
-                fill="none"
-                strokeLinecap="round"
-                className="animate-pulse"
-              />
-              {/* 타오르는 붉은 불씨 */}
-              <circle cx="50" cy="132" r="3" fill="#FF5252" className="animate-ping" />
-              <circle cx="60" cy="132" r="3.5" fill="#FF7675" className="animate-pulse" />
-              <circle cx="70" cy="132" r="3" fill="#FF5252" className="animate-ping" />
-            </svg>
+          {/* ══════════════════════════════════════════════════════════════
+              🪔 수미단(제단) 앞 조그만 전통 목조 향탁 & 황금 향로 & 피어오르는 향 연기
+              ══════════════════════════════════════════════════════════════ */}
+          <div className="absolute bottom-1 sm:bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none z-10">
+            
+            {/* 1. 향로에서 삼존불을 향해 피어오르는 부드러운 향 연기 (Smoke Layer) */}
+            <div className="relative w-32 h-36 -mb-6 flex justify-center items-end pointer-events-none overflow-visible">
+              
+              {/* [평상시 기본 은은한 연기] */}
+              {!isSmokingIncense && (
+                <div className="relative w-16 h-32 flex justify-center items-end opacity-60">
+                  {/* 연기 줄기 1 */}
+                  <div className="absolute bottom-2 w-3 h-16 rounded-full bg-gradient-to-t from-amber-200/50 via-white/40 to-transparent blur-[2px] anim-smoke-1" />
+                  {/* 연기 줄기 2 */}
+                  <div className="absolute bottom-2 w-4 h-20 rounded-full bg-gradient-to-t from-yellow-100/40 via-white/30 to-transparent blur-[2.5px] anim-smoke-2" />
+                  {/* 연기 줄기 3 */}
+                  <div className="absolute bottom-2 w-2.5 h-14 rounded-full bg-gradient-to-t from-amber-100/45 via-white/35 to-transparent blur-[2px] anim-smoke-3" />
+                </div>
+              )}
 
-            {/* 청정한 향 공양 축원 플로팅 배지 */}
-            <div className="mt-1 px-4 py-1.5 rounded-full bg-black/85 border border-[#F5D061] text-xs font-serif-kr text-[#F5D061] shadow-2xl flex items-center gap-1.5 animate-in slide-in-from-bottom-3 duration-300">
-              <span className="text-sm">🕯️</span>
-              <span className="font-bold tracking-tight">부처님 전에 청정한 향을 사릅니다</span>
+              {/* [향올리기 터치 시: 풍성하고 성스러운 황금빛 향 연기 & 서기] */}
+              {isSmokingIncense && (
+                <div className="relative w-28 h-36 flex justify-center items-end animate-in fade-in zoom-in-95 duration-500">
+                  {/* 황금빛 서기 은은한 아우라 */}
+                  <div className="absolute -top-4 w-40 h-40 rounded-full bg-gradient-to-t from-amber-400/35 via-yellow-200/20 to-transparent blur-2xl animate-pulse" />
+                  
+                  {/* 풍성한 활성 연기 레이어 1 */}
+                  <div className="absolute bottom-2 w-5 h-24 rounded-full bg-gradient-to-t from-amber-300/70 via-white/60 to-transparent blur-[2px] anim-smoke-active-1" />
+                  {/* 풍성한 활성 연기 레이어 2 */}
+                  <div className="absolute bottom-2 w-7 h-28 rounded-full bg-gradient-to-t from-yellow-200/60 via-amber-100/50 to-transparent blur-[3px] anim-smoke-active-2" />
+                  {/* 풍성한 활성 연기 레이어 3 */}
+                  <div className="absolute bottom-2 w-4 h-22 rounded-full bg-gradient-to-t from-amber-400/60 via-white/50 to-transparent blur-[2px] anim-smoke-active-3" />
+
+                  {/* 유려한 물결 연기 곡선 SVG */}
+                  <svg viewBox="0 0 80 120" className="absolute bottom-3 w-20 h-28 opacity-75 drop-shadow-[0_0_8px_rgba(255,230,150,0.8)] pointer-events-none">
+                    <path
+                      d="M38 115 C32 90 52 65 38 35 C32 18 44 8 40 0"
+                      stroke="rgba(255, 245, 210, 0.75)"
+                      strokeWidth="2.5"
+                      fill="none"
+                      strokeLinecap="round"
+                      className="animate-pulse"
+                    />
+                    <path
+                      d="M42 115 C48 95 34 70 46 40 C52 22 42 10 44 0"
+                      stroke="rgba(255, 235, 170, 0.85)"
+                      strokeWidth="3"
+                      fill="none"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </div>
+              )}
             </div>
+
+            {/* 2. 향탁 위에 놓인 3D 황금 향로 & 꽂혀 있는 3개의 선향 */}
+            <div className="relative flex flex-col items-center z-10">
+              
+              {/* 향로에 꽂힌 3가닥 선향(線香) 및 빨간 불씨 */}
+              <div className="relative w-8 h-4 flex justify-center items-end -mb-1">
+                {/* 왼쪽 향 */}
+                <div className="relative -mr-1 flex flex-col items-center origin-bottom -rotate-6">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF4500] anim-ember shadow-[0_0_4px_#FF4500]" />
+                  <span className="w-[1px] h-3.5 bg-amber-900/90" />
+                </div>
+                {/* 중앙 향 */}
+                <div className="relative z-10 flex flex-col items-center">
+                  <span className={`w-1.5 h-1.5 rounded-full bg-[#FF3300] anim-ember shadow-[0_0_5px_#FF5500] ${isSmokingIncense ? 'scale-150 !bg-[#FFD700]' : ''}`} />
+                  <span className="w-[1.2px] h-4 bg-amber-950" />
+                </div>
+                {/* 오른쪽 향 */}
+                <div className="relative -ml-1 flex flex-col items-center origin-bottom rotate-6">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF4500] anim-ember shadow-[0_0_4px_#FF4500]" />
+                  <span className="w-[1px] h-3.5 bg-amber-900/90" />
+                </div>
+              </div>
+
+              {/* 3D 황금 향로 본체 (사찰 정통 삼족 향로) */}
+              <div className="relative">
+                <img 
+                  src="/images/icon_incense_3d.png" 
+                  alt="대웅전 수미단 향로" 
+                  className={`w-9 sm:w-11 h-9 sm:h-11 object-contain drop-shadow-[0_3px_6px_rgba(0,0,0,0.85)] filter contrast-125 transition-all duration-300 ${
+                    isSmokingIncense ? 'brightness-125 drop-shadow-[0_0_12px_rgba(245,208,97,0.8)] scale-105' : 'brightness-110'
+                  }`}
+                />
+                {/* 향로 밑 접지면 그림자 */}
+                <div className="absolute -bottom-0.5 inset-x-1 h-1.5 bg-black/80 rounded-full blur-[1px]" />
+              </div>
+            </div>
+
+            {/* 3. 조그만 전통 목조 향탁 (경상 스타일 탁자) */}
+            <div className="relative -mt-1 flex flex-col items-center">
+              {/* 탁자 상판 (짙은 옻칠 원목 + 황금 테두리 + 양끝 버선코 곡선) */}
+              <div className="relative w-24 sm:w-28 h-3 sm:h-3.5 bg-gradient-to-r from-[#1c0f0a] via-[#3d1f12] to-[#1c0f0a] rounded-sm border-t border-[#D4AF37]/50 shadow-md flex items-center justify-between px-1">
+                <div className="w-1 h-full border-l border-[#D4AF37]/40 rounded-l" />
+                <div className="text-[7px] text-[#D4AF37]/40 tracking-widest font-serif-kr">소원사</div>
+                <div className="w-1 h-full border-r border-[#D4AF37]/40 rounded-r" />
+              </div>
+              {/* 탁자 다리/받침대 (전통 목조 아치형) */}
+              <div className="w-20 sm:w-24 h-2 sm:h-2.5 bg-gradient-to-b from-[#1c0f0a] to-[#0f0704] rounded-b-sm border-x border-b border-black/40 flex justify-between px-2">
+                <span className="w-1.5 h-full bg-[#120804] border-l border-white/5" />
+                <span className="w-1.5 h-full bg-[#120804] border-r border-white/5" />
+              </div>
+              {/* 탁자 바닥 대청마루 접지 섀도우 */}
+              <div className="w-28 sm:w-32 h-1.5 bg-black/85 rounded-full blur-[2px] -mt-0.5" />
+            </div>
+
+            {/* 4. 청정한 향 공양 축원 슬림 배지 (수미단을 가리지 않고 탁자 바로 아래에 단정하게 표시) */}
+            {isSmokingIncense && (
+              <div className="mt-1.5 px-3 py-1 rounded-full bg-black/85 backdrop-blur-md border border-[#F5D061]/80 text-[11px] font-serif-kr text-[#F5D061] shadow-2xl flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1 duration-300">
+                <span className="text-xs">🕯️</span>
+                <span className="font-bold tracking-tight">부처님 전에 청정한 향을 사릅니다</span>
+              </div>
+            )}
           </div>
         </div>
-      )}
+      </div>
 
       {/* 멍스테이 모드 안내 플로팅 팁 */}
       {isZenMode && (
