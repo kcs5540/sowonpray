@@ -573,194 +573,181 @@ export default function ProfileTab({
                                 isMax: false,
                               }
                           const sutraInfo = getDailyMeritInfo('sutra', uCode, dbDaily.sutra)
-
-                          // 1) 매일 3대 정진 공덕 합계 (소원등 1,000 + 대웅전 1,000 + 사경 1,000 = 하루 최대 3,000 공덕)
-                          const daily3Total = lanternInfo.currentPoints + sanctuaryInfo.currentPoints + sutraInfo.currentPoints
-                          const isDaily3AllDone = lanternInfo.currentCount >= 1 && sanctuaryInfo.currentCount >= 1 && sutraInfo.currentCount >= 1
-
-                          // 2) 전법 및 인연 보너스 (엄격 검증)
+                          const inyeonGiverInfoRaw = getDailyMeritInfo('inyeon_giver', uCode, dbDaily.inyeon_giver)
                           const effectiveInyeonGiverPoints = Number(userMeritReward?.inyeonGiverReward) || 0
-                          const inyeonGiverCount = Math.floor(effectiveInyeonGiverPoints / 5000)
+                          const inyeonGiverInfo = {
+                            ...inyeonGiverInfoRaw,
+                            currentPoints: effectiveInyeonGiverPoints,
+                            currentCount: Math.floor(effectiveInyeonGiverPoints / 5000),
+                          }
 
+                          const inyeonReceiverInfoRaw = getDailyMeritInfo('inyeon_receiver', uCode, dbDaily.inyeon_receiver)
                           const effectiveInyeonReceiverPoints = Number(userMeritReward?.inyeonReceiverReward) || 0
-                          const isNewUserBonusActive = effectiveInyeonReceiverPoints > 0
+                          const inyeonReceiverInfo = {
+                            ...inyeonReceiverInfoRaw,
+                            currentPoints: effectiveInyeonReceiverPoints,
+                            currentCount: effectiveInyeonReceiverPoints >= 5000 ? 1 : 0,
+                          }
+
+                          const todayTotalDaily =
+                            sanctuaryInfo.currentPoints +
+                            lanternInfo.currentPoints +
+                            sutraInfo.currentPoints +
+                            inyeonGiverInfo.currentPoints +
+                            inyeonReceiverInfo.currentPoints
 
                           return (
-                            <div className="space-y-3">
-                              {/* 🪷 A. 매일 3대 신행 정진 (소원등 · 참배 · 사경 = 매일 최대 3,000 공덕) */}
-                              <div className="space-y-2 p-3 sm:p-3.5 rounded-2xl bg-gradient-to-b from-[#F5D061]/12 via-[#2A2013] to-black/40 border border-[#F5D061]/40 shadow-md">
-                                <div className="flex items-center justify-between pb-2 border-b border-[#F5D061]/25 px-0.5">
-                                  <div className="text-sm sm:text-base font-black text-[#FFE58A] flex items-center gap-1.5">
-                                    <span className="text-base">🪷</span>
-                                    <span>오늘의 3대 신행 정진</span>
-                                  </div>
-                                  <span
-                                    className={`text-xs sm:text-[13px] font-black px-2.5 py-0.5 rounded-full shrink-0 border ${
-                                      isDaily3AllDone
-                                        ? 'bg-amber-500/20 text-[#FFE58A] border-amber-400/50 shadow-[0_0_12px_rgba(245,208,97,0.3)]'
-                                        : 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40'
-                                    }`}
-                                  >
-                                    {isDaily3AllDone
-                                      ? '🎉 오늘 3대 정진 원만 회향!'
-                                      : `+${daily3Total.toLocaleString()} / 3,000 공덕`}
-                                  </span>
+                            <div className="space-y-1.5 p-2.5 sm:p-3 rounded-2xl bg-gradient-to-b from-[#F5D061]/10 to-black/30 border border-[#F5D061]/40 shadow-sm">
+                              <div className="flex items-center justify-between pb-1.5 border-b border-[#F5D061]/20 px-0.5">
+                                <div className="text-sm sm:text-base font-black text-[#FFE58A] flex items-center gap-1.5">
+                                  <span className="text-sm">✨</span>
+                                  <span>오늘의 신행 공덕</span>
                                 </div>
-
-                                <div className="space-y-1.5 pt-0.5">
-                                  {/* 신행 1) 소원등 점등 */}
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setActiveTab('lantern')
-                                      window.scrollTo({ top: 0, behavior: 'smooth' })
-                                    }}
-                                    className="w-full px-3 py-2.5 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
-                                    title="소원등 켜러 가기"
-                                  >
-                                    <div className="flex items-center justify-between">
-                                      <div className="flex items-center gap-2">
-                                        <span className="text-base shrink-0">🪔</span>
-                                        <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
-                                          소원등 점등
-                                        </span>
-                                      </div>
-                                      <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
-                                        오늘 {lanternInfo.currentCount}/1회
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center justify-between mt-1">
-                                      <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
-                                        {lanternInfo.currentCount > 0
-                                          ? '(1,000 공덕 · 오전 11시 회향)'
-                                          : '(1,000 공덕 · 지금 점등 가능)'}
-                                      </span>
-                                      <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
-                                        +{lanternInfo.currentPoints.toLocaleString()} 공덕
-                                      </span>
-                                    </div>
-                                  </button>
-
-                                  {/* 신행 2) 대웅전 참배 */}
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      if (onOpenSanctuary) onOpenSanctuary()
-                                    }}
-                                    className="w-full px-3 py-2.5 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
-                                    title="대웅전 참배하러 가기"
-                                  >
-                                    <div className="flex items-center justify-between">
-                                      <div className="flex items-center gap-2">
-                                        <span className="text-base shrink-0">🏛️</span>
-                                        <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
-                                          대웅전 참배
-                                        </span>
-                                      </div>
-                                      <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
-                                        오늘 {sanctuaryInfo.currentCount}/1회
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center justify-between mt-1">
-                                      <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
-                                        (1,000 공덕)
-                                      </span>
-                                      <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
-                                        +{sanctuaryInfo.currentPoints.toLocaleString()} 공덕
-                                      </span>
-                                    </div>
-                                  </button>
-
-                                  {/* 신행 3) 한줄사경 정진 */}
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setActiveTab('sutra')
-                                      window.scrollTo({ top: 0, behavior: 'smooth' })
-                                    }}
-                                    className="w-full px-3 py-2.5 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
-                                    title="사경 정진하러 가기"
-                                  >
-                                    <div className="flex items-center justify-between">
-                                      <div className="flex items-center gap-2">
-                                        <span className="text-base shrink-0">✍️</span>
-                                        <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
-                                          한줄사경 정진
-                                        </span>
-                                      </div>
-                                      <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
-                                        오늘 {sutraInfo.currentCount}/1회
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center justify-between mt-1">
-                                      <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
-                                        (1,000 공덕)
-                                      </span>
-                                      <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
-                                        +{sutraInfo.currentPoints.toLocaleString()} 공덕
-                                      </span>
-                                    </div>
-                                  </button>
-                                </div>
+                                <span className="text-xs sm:text-[13px] font-black text-emerald-300 bg-emerald-500/20 border border-emerald-400/40 px-2.5 py-0.5 rounded-full shrink-0">
+                                  +{todayTotalDaily.toLocaleString()} 공덕
+                                </span>
                               </div>
 
-                              {/* 🌸 B. 신규 가입 불자 전용 첫 환영 공덕 (신규 가입자 본인에게만 1회 노출) */}
-                              {isNewUserBonusActive && (
-                                <div className="p-3 rounded-2xl bg-gradient-to-r from-pink-950/40 via-[#2A1D1A] to-black/40 border border-pink-400/40 shadow-sm">
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-base">🌸</span>
-                                      <div>
-                                        <div className="text-xs sm:text-sm font-bold text-pink-300">
-                                          신규 회원 첫 인연 축하 공덕
-                                        </div>
-                                        <div className="text-[10.5px] text-[#A89C8E]">
-                                          소원사 첫 소원등 점등 환영 (생애 최초 1회)
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <span className="font-mono font-bold text-xs sm:text-sm text-pink-300 bg-pink-500/20 border border-pink-400/40 px-2 py-0.5 rounded-full shrink-0">
-                                      +5,000 공덕
-                                    </span>
-                                  </div>
-                                </div>
-                              )}
-
-                              {/* 🤝 C. 가족·지인 카톡 전법 보너스 (1인당 +5,000 공덕 · 하루 최대 50,000) */}
-                              <div className="p-3 rounded-2xl bg-gradient-to-b from-[#1C160F] to-black/40 border border-[#8C7A5B]/40 shadow-sm space-y-2">
-                                <div className="flex items-center justify-between pb-1.5 border-b border-white/10">
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-base shrink-0">🤝</span>
-                                    <div>
-                                      <div className="text-xs sm:text-sm font-bold text-[#F5D061]">
-                                        가족·지인 카톡 전법 보너스
-                                      </div>
-                                      <div className="text-[10.5px] text-[#A89C8E]">
-                                        초대받은 신규 신도가 첫 등을 켜면 추천인께 5,000 공덕 적립
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="text-right shrink-0">
-                                    <span className="text-xs font-bold text-[#FFE58A] block">
-                                      오늘 {inyeonGiverCount}/10회
-                                    </span>
-                                    <span className="font-mono font-bold text-xs text-emerald-300">
-                                      +{effectiveInyeonGiverPoints.toLocaleString()} 공덕
-                                    </span>
-                                  </div>
-                                </div>
-
+                              <div className="space-y-1.5 pt-0.5">
+                                {/* 신행 1) 소원등 점등 */}
                                 <button
                                   type="button"
                                   onClick={() => {
                                     setActiveTab('lantern')
                                     window.scrollTo({ top: 0, behavior: 'smooth' })
                                   }}
-                                  className="w-full py-1.5 px-3 rounded-xl bg-[#F5D061]/10 hover:bg-[#F5D061]/20 border border-[#F5D061]/30 text-[11px] font-bold text-[#FFE899] flex items-center justify-center gap-1.5 transition active:scale-[0.99] cursor-pointer"
+                                  className="w-full px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
+                                  title="소원등 켜러 가기"
                                 >
-                                  <span>소원등 선물하고 +5,000 공덕 받기</span>
-                                  <span>›</span>
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-base shrink-0">🪔</span>
+                                      <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                        소원등 점등
+                                      </span>
+                                    </div>
+                                    <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
+                                      오늘 {lanternInfo.currentCount}/1회
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center justify-between mt-1">
+                                    <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
+                                      {lanternInfo.currentCount > 0
+                                        ? '(1,000 공덕 · 오전 11시 회향)'
+                                        : '(1,000 공덕 · 지금 점등 가능)'}
+                                    </span>
+                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
+                                      +{lanternInfo.currentPoints.toLocaleString()} 공덕
+                                    </span>
+                                  </div>
                                 </button>
+
+                                {/* 신행 2) 대웅전 참배 */}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (onOpenSanctuary) onOpenSanctuary()
+                                  }}
+                                  className="w-full px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
+                                  title="대웅전 참배하러 가기"
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-base shrink-0">🏛️</span>
+                                      <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                        대웅전 참배
+                                      </span>
+                                    </div>
+                                    <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
+                                      오늘 {sanctuaryInfo.currentCount}/1회
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center justify-between mt-1">
+                                    <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
+                                      (1,000 공덕)
+                                    </span>
+                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
+                                      +{sanctuaryInfo.currentPoints.toLocaleString()} 공덕
+                                    </span>
+                                  </div>
+                                </button>
+
+                                {/* 신행 3) 한줄사경 정진 */}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setActiveTab('sutra')
+                                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                                  }}
+                                  className="w-full px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
+                                  title="사경 정진하러 가기"
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-base shrink-0">✍️</span>
+                                      <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                        한줄사경 정진
+                                      </span>
+                                    </div>
+                                    <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
+                                      오늘 {sutraInfo.currentCount}/1회
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center justify-between mt-1">
+                                    <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
+                                      (1,000 공덕)
+                                    </span>
+                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
+                                      +{sutraInfo.currentPoints.toLocaleString()} 공덕
+                                    </span>
+                                  </div>
+                                </button>
+
+                                {/* 신행 4) 인연 전달 공덕 */}
+                                <div className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-left">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-base shrink-0">🤝</span>
+                                      <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                        인연 전달 공덕
+                                      </span>
+                                    </div>
+                                    <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
+                                      오늘 {inyeonGiverInfo.currentCount}/10회
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center justify-between mt-1">
+                                    <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
+                                      (1회 5,000 공덕)
+                                    </span>
+                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
+                                      +{inyeonGiverInfo.currentPoints.toLocaleString()} 공덕
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {/* 신행 5) 신규회원공덕 */}
+                                <div className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-left">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-base shrink-0">🌸</span>
+                                      <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                        신규회원공덕
+                                      </span>
+                                    </div>
+                                    <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
+                                      오늘 {inyeonReceiverInfo.currentCount}/1회
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center justify-between mt-1">
+                                    <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
+                                      (5,000 공덕)
+                                    </span>
+                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
+                                      +{inyeonReceiverInfo.currentPoints.toLocaleString()} 공덕
+                                    </span>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           )
