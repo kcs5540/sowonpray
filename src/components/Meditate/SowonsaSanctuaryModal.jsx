@@ -301,12 +301,21 @@ export default function SowonsaSanctuaryModal({
   }
 
 
-  // 1) 부처님 전 청정한 향 올리기 (분향·헌향)
+  // 1) 부처님 전 청정한 향 올리기 / 향 끄기 토글 (향올리기 시 계속 피어나고, 향끄기 누르면 정지)
   const handleIncense = (e) => {
     e?.stopPropagation()
     setEntranceStep('seated')
+
+    // [향끄기]: 이미 피어오르고 있을 때 끄기
+    if (isSmokingIncense) {
+      setIsSmokingIncense(false)
+      triggerActionMotion('hapjang', 600)
+      showActionToast('부처님 전의 향을 정갈하게 거두었습니다')
+      return
+    }
+
+    // [향올리기]: 향 사르기 (계속 유지)
     setIsSmokingIncense(true)
-    setTimeout(() => setIsSmokingIncense(false), 3000)
     triggerActionMotion('hapjang', 800)
 
     const nextCount = incenseCount + 1
@@ -1185,20 +1194,30 @@ export default function SowonsaSanctuaryModal({
         isZenMode ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}>
         <div className="max-w-md mx-auto grid grid-cols-4 gap-1.5 sm:gap-2.5">
-          {/* 버튼 1: 향올리기 (3D 황금 향로 아이콘) - 대웅전 참배의 첫 번째 예법 */}
+          {/* 버튼 1: 향올리기 / 향끄기 (토글 방식 3D 황금 향로) */}
           <button
             type="button"
             onClick={handleIncense}
-            className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 hover:border-[#F5D061]/40 transition group cursor-pointer"
-            title="부처님 전에 청정한 향 사르기"
+            className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl active:scale-95 border transition group cursor-pointer ${
+              isSmokingIncense
+                ? 'bg-[#F5D061]/20 border-[#F5D061] text-[#F5D061] shadow-[0_0_12px_rgba(245,208,97,0.35)]'
+                : 'bg-white/10 hover:bg-white/15 border-white/15 hover:border-[#F5D061]/40'
+            }`}
+            title={isSmokingIncense ? '부처님 전 향 끄기' : '부처님 전에 청정한 향 사르기'}
           >
             <img 
               src="/images/icon_incense_3d.png" 
-              alt="3D 향올리기" 
-              className="h-6 sm:h-7 object-contain mb-0.5 group-hover:scale-110 group-active:translate-y-0.5 transition filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.5)]" 
+              alt={isSmokingIncense ? '향끄기' : '향올리기'} 
+              className={`h-6 sm:h-7 object-contain mb-0.5 group-hover:scale-110 group-active:translate-y-0.5 transition filter ${
+                isSmokingIncense
+                  ? 'drop-shadow-[0_2px_10px_rgba(245,208,97,0.85)] brightness-110'
+                  : 'drop-shadow-[0_2px_8px_rgba(245,208,97,0.5)]'
+              }`} 
             />
-            <span className="text-[11px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061] whitespace-nowrap">
-              향올리기
+            <span className={`text-[11px] sm:text-xs font-bold whitespace-nowrap ${
+              isSmokingIncense ? 'text-[#F5D061]' : 'text-[#E8DFD1] group-hover:text-[#F5D061]'
+            }`}>
+              {isSmokingIncense ? '향끄기' : '향올리기'}
             </span>
           </button>
 
