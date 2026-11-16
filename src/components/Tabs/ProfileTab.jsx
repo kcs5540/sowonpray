@@ -555,8 +555,8 @@ export default function ProfileTab({
                           const sanctuaryInfo = getDailyMeritInfo('sanctuary', uCode, dbDaily.sanctuary || 0)
                           const rawLanternInfo = getDailyMeritInfo('lantern', uCode, dbDaily.lantern || 0)
                           // 🌟 대표님 훈령: 소원등은 매일 오전 11:00 사시예불 축원 회향(소등)을 기준으로 리셋!
-                          // 점등 중(isLanternLit === true)이면 1회 1,000공덕 달성 중, 11시 소등(isLanternLit === false) 시 0/1회로 리프레시
-                          const isUserLanternActive = rawLanternInfo.currentPoints >= 1000
+                          // 점등 유효 시간 내(isLanternLit === true)이거나 당일 장부 적립이 있으면 1회 1,000공덕 달성 중, 오전 11시 소등 시 0/1회로 리프레시
+                          const isUserLanternActive = Boolean(isLanternLit) || rawLanternInfo.currentPoints >= 1000
                           const lanternInfo = isUserLanternActive
                             ? {
                                 ...rawLanternInfo,

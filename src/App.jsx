@@ -4561,7 +4561,9 @@ function formatRelativeOrDate(dateStr) {
     const todayKey = getTodayDateKey()
     // 🏦 오늘의 신행 공덕은 서버 거래 장부(merit_ledger) 합계(todayLedger)만 사용한다. 화면에서 임의 계산·가산 금지.
     const ledgerPts = (key) => Number(todayLedger?.[key]) || 0
-    const lanternCount = ledgerPts('lantern') >= 1000 ? 1 : 0
+    // 🌟 대표님 훈령: 소원등 리셋 기준은 사시예불 회향 시각인 매일 오전 11:00!
+    // 점등 유효 시간 내(isLanternLit === true)이거나 당일 장부 적립이 있으면 1회 1,000공덕 달성 중, 오전 11시 소등 시 0/1회로 리프레시
+    const lanternCount = (ledgerPts('lantern') >= 1000 || isLanternLit) ? 1 : 0
     const lanternReward = lanternCount * 1000
     const sanctuaryCount = ledgerPts('sanctuary') >= 1000 ? 1 : 0
     const sanctuaryReward = sanctuaryCount * 1000
