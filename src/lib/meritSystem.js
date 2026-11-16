@@ -316,15 +316,22 @@ export async function grantMerit(activity, memberCode, ref = '', templeId = null
 }
 
 // 오늘(한국시간) 장부 합계: { lantern: 1000, sanctuary: 1000, ... }
-// 🌟 전 회원 공통: DB에 temple_id 컬럼 유무와 상관없이 100% 안전하고 확실하게 오늘 장부 집계
+// 🌟 전국 사찰 멀티테넌트(temple_id) 완벽 연동: 사찰별 완벽 격리 장부 집계
 export async function fetchTodayLedger(memberCode, templeId = null) {
   if (!supabase || !memberCode) return {}
+  const resolvedTempleId = templeId || getCurrentTempleId()
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from('merit_ledger')
       .select('activity, points')
       .eq('member_code', memberCode)
       .eq('ledger_date', getTodayKey())
+
+    if (resolvedTempleId) {
+      query = query.or(`temple_id.eq.${resolvedTempleId},temple_id.is.null`)
+    }
+
+    const { data, error } = await query
 
     if (error) {
       console.warn('fetchTodayLedger query warning:', error)
