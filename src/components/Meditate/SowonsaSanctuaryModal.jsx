@@ -671,33 +671,33 @@ export default function SowonsaSanctuaryModal({
                 )}
               </div>
 
-              {/* 3D 황금 향로 본체 (버튼에 있는 바로 그 고품질 황금 향로 이미지 그대로 표시) */}
+              {/* 3D 전통 금동 향로 본체 (차분하고 묵직한 고풍스러운 놋쇠·청동 톤으로 톤다운하여 제단과 완벽 일체화) */}
               <div className="relative">
                 <img 
                   src="/images/icon_incense_3d.png" 
-                  alt="대웅전 수미단 황금 향로" 
-                  className="w-11 sm:w-13 h-11 sm:h-13 object-contain drop-shadow-[0_2px_10px_rgba(245,208,97,0.6)]"
+                  alt="대웅전 수미단 고색 향로" 
+                  className="w-9 sm:w-10.5 h-9 sm:h-10.5 object-contain filter brightness-[0.78] saturate-[0.75] contrast-[1.08] sepia-[0.15] drop-shadow-[0_3px_5px_rgba(0,0,0,0.85)]"
                 />
                 {/* 향로 밑 접지면 그림자 */}
-                <div className="absolute -bottom-0.5 inset-x-1 h-1.5 bg-black/80 rounded-full blur-[1px]" />
+                <div className="absolute -bottom-0.5 inset-x-1 h-1 bg-black/90 rounded-full blur-[1px]" />
               </div>
             </div>
 
-            {/* 2. 조그만 전통 목조 향탁 (경상 스타일 탁자, 미동 없이 고정) */}
+            {/* 2. 조그만 전통 목조 향탁 (제단 목조와 완벽히 녹아드는 짙은 옻칠 앤틱 경상) */}
             <div className="relative -mt-1 flex flex-col items-center">
               {/* 탁자 상판 */}
-              <div className="relative w-24 sm:w-28 h-3 sm:h-3.5 bg-gradient-to-r from-[#1c0f0a] via-[#3d1f12] to-[#1c0f0a] rounded-sm border-t border-[#D4AF37]/50 shadow-md flex items-center justify-between px-1">
-                <div className="w-1 h-full border-l border-[#D4AF37]/40 rounded-l" />
-                <div className="text-[7px] text-[#D4AF37]/40 tracking-widest font-serif-kr">소원사</div>
-                <div className="w-1 h-full border-r border-[#D4AF37]/40 rounded-r" />
+              <div className="relative w-22 sm:w-26 h-3 sm:h-3.5 bg-gradient-to-r from-[#180d09] via-[#2f160c] to-[#180d09] rounded-sm border-t border-[#8B5A2B]/35 shadow-md flex items-center justify-between px-1.5">
+                <div className="w-1 h-full border-l border-black/40 rounded-l" />
+                <div className="text-[6.5px] text-[#9E7A5A]/50 tracking-widest font-serif-kr">소원사</div>
+                <div className="w-1 h-full border-r border-black/40 rounded-r" />
               </div>
               {/* 탁자 다리/받침대 */}
-              <div className="w-20 sm:w-24 h-2 sm:h-2.5 bg-gradient-to-b from-[#1c0f0a] to-[#0f0704] rounded-b-sm border-x border-b border-black/40 flex justify-between px-2">
-                <span className="w-1.5 h-full bg-[#120804] border-l border-white/5" />
-                <span className="w-1.5 h-full bg-[#120804] border-r border-white/5" />
+              <div className="w-18 sm:w-22 h-2 sm:h-2.5 bg-gradient-to-b from-[#180d09] to-[#0d0604] rounded-b-sm border-x border-b border-black/50 flex justify-between px-2">
+                <span className="w-1 h-full bg-[#100603]" />
+                <span className="w-1 h-full bg-[#100603]" />
               </div>
               {/* 탁자 바닥 대청마루 접지 섀도우 */}
-              <div className="w-28 sm:w-32 h-1.5 bg-black/85 rounded-full blur-[2px] -mt-0.5" />
+              <div className="w-26 sm:w-30 h-1.5 bg-black/90 rounded-full blur-[2px] -mt-0.5" />
             </div>
           </div>
         </div>
