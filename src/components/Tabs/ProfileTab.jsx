@@ -554,24 +554,18 @@ export default function ProfileTab({
                           const dbDaily = userMeritReward?.todayLedger || {}
                           const sanctuaryInfo = getDailyMeritInfo('sanctuary', uCode, dbDaily.sanctuary || 0)
                           const rawLanternInfo = getDailyMeritInfo('lantern', uCode, dbDaily.lantern || 0)
-                          // 🌟 대표님 훈령: 소원등은 매일 오전 11:00 사시예불 축원 회향(소등)을 기준으로 리셋!
-                          // 점등 유효 시간 내(isLanternLit === true)이거나 당일 장부 적립이 있으면 1회 1,000공덕 달성 중, 오전 11시 소등 시 0/1회로 리프레시
-                          const isUserLanternActive = Boolean(isLanternLit) || rawLanternInfo.currentPoints >= 1000
-                          const lanternInfo = isUserLanternActive
-                            ? {
-                                ...rawLanternInfo,
-                                currentPoints: Math.max(1000, rawLanternInfo.currentPoints),
-                                currentCount: 1,
-                                remainingPoints: 0,
-                                isMax: true,
-                              }
-                            : {
-                                ...rawLanternInfo,
-                                currentPoints: 0,
-                                currentCount: 0,
-                                remainingPoints: 1000,
-                                isMax: false,
-                              }
+                          const todayLanternEarned = Number(dbDaily.lantern) || 0
+                          const hasEarnedLanternToday = todayLanternEarned >= 1000
+                          const isBurningFromYesterday = !hasEarnedLanternToday && Boolean(isLanternLit)
+
+                          const lanternInfo = {
+                            ...rawLanternInfo,
+                            currentPoints: hasEarnedLanternToday ? 1000 : 0,
+                            currentCount: hasEarnedLanternToday ? 1 : 0,
+                            isBurningFromYesterday,
+                            remainingPoints: hasEarnedLanternToday ? 0 : 1000,
+                            isMax: hasEarnedLanternToday,
+                          }
                           const sutraInfo = getDailyMeritInfo('sutra', uCode, dbDaily.sutra || 0)
                           const inyeonGiverInfoRaw = getDailyMeritInfo('inyeon_giver', uCode, dbDaily.inyeon_giver || 0)
                           const effectiveInyeonGiverPoints = Number(userMeritReward?.inyeonGiverReward) || 0
@@ -638,13 +632,19 @@ export default function ProfileTab({
                                       </span>
                                     </div>
                                     <span className="text-sm sm:text-base font-bold text-[#FFE58A]">
-                                      오늘 {lanternInfo.currentCount}/1회
+                                      {hasEarnedLanternToday
+                                        ? '오늘 1/1회'
+                                        : lanternInfo.isBurningFromYesterday
+                                        ? '축원 봉안 중'
+                                        : '오늘 0/1회'}
                                     </span>
                                   </div>
                                   <div className="flex items-center justify-between mt-1">
                                     <span className="text-xs text-[#BFB4A6] whitespace-nowrap">
-                                      {lanternInfo.currentCount > 0
+                                      {hasEarnedLanternToday
                                         ? '(1,000 공덕 · 오전 11시 회향)'
+                                        : lanternInfo.isBurningFromYesterday
+                                        ? '(오전 11시 회향 후 새 점등 가능)'
                                         : '(1,000 공덕 · 지금 점등 가능)'}
                                     </span>
                                     <span className="font-mono font-bold text-sm sm:text-base text-emerald-300 whitespace-nowrap">
