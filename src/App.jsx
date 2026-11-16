@@ -72,7 +72,7 @@ import AgentTab from './components/Tabs/AgentTab'
 import HomeTab from './components/Tabs/HomeTab'
 import SowonsaSanctuaryModal from './components/Meditate/SowonsaSanctuaryModal'
 import ProfileTab from './components/Tabs/ProfileTab'
-import { awardMerit, MERIT_RULES, getDailyMeritInfo, grantMerit, fetchTodayLedger } from './lib/meritSystem'
+import { awardMerit, MERIT_RULES, getDailyMeritInfo, grantMerit, fetchTodayLedger, getTodayKey } from './lib/meritSystem'
 import { playMoktakSound, preloadMoktakAudio, prefetchMoktakBytes } from './lib/moktakAudio'
 import {
   notifyPrayerSubmission,

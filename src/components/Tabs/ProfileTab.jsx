@@ -12,7 +12,7 @@ import {
   Save,
 } from 'lucide-react'
 import { extractPhone8Code, formatPhone11 } from '../../lib/supabase'
-import { MERIT_RULES, getDailyMeritInfo } from '../../lib/meritSystem'
+import { MERIT_RULES, getDailyMeritInfo, getTodayKey } from '../../lib/meritSystem'
 
 export default function ProfileTab({
   handleKakaoAuthLogin,
