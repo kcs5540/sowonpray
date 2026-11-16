@@ -5714,25 +5714,6 @@ function formatRelativeOrDate(dateStr) {
     if (closeModal) {
       pendingPrayerDraftRef.current = null
       setShowSuccessModal(false)
-
-      // 🪔 [김철수 대표님 표준 UX] 1번 접수 -> 2번 팝업에서 [합장하며 확인] 후 되돌아올 때:
-      // 소원등켜기 탭('lantern') 최상단으로 즉시 부드럽게 이동하여 내가 방금 밝힌 3D 소원등을 한눈에 확인하도록 보장
-      setActiveTab('lantern')
-      const scrollToLanternTop = () => {
-        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-        if (typeof document !== 'undefined') {
-          if (document.documentElement) document.documentElement.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-          if (document.body) document.body.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-          const topElem = document.getElementById('lantern-top-view')
-          if (topElem) {
-            topElem.scrollIntoView({ behavior: 'smooth', block: 'start' })
-          }
-        }
-      }
-      scrollToLanternTop()
-      setTimeout(scrollToLanternTop, 50)
-      setTimeout(scrollToLanternTop, 150)
-      setTimeout(scrollToLanternTop, 350)
     }
   }
 
@@ -5740,11 +5721,9 @@ function formatRelativeOrDate(dateStr) {
   const handleCancelSubmittedPrayer = () => {
     const draft = pendingPrayerDraftRef.current
     if (draft && draft.committed) {
-      // 이미 카톡 공유 등으로 접수 완료된 경우 취소가 아니라 정상 닫기 및 상단 소원등 이동 처리
+      // 이미 카톡 공유 등으로 접수 완료된 경우 취소가 아니라 정상 닫기만 처리
       pendingPrayerDraftRef.current = null
       setShowSuccessModal(false)
-      setActiveTab('lantern')
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
       return
     }
     pendingPrayerDraftRef.current = null
@@ -9180,10 +9159,6 @@ function formatRelativeOrDate(dateStr) {
                   type="button"
                   onClick={() => {
                     setAlreadyLitModalData(null)
-                    setActiveTab('lantern')
-                    setTimeout(() => {
-                      window.scrollTo({ top: 0, behavior: 'smooth' })
-                    }, 60)
                   }}
                   className="absolute top-3.5 right-3.5 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FAF8F5] transition cursor-pointer"
                   title="닫기"
@@ -9493,23 +9468,6 @@ function formatRelativeOrDate(dateStr) {
                     type="button"
                     onClick={() => {
                       handleConfirmSubmittedPrayer({ closeModal: true })
-                      if (!isBulsa) {
-                        setActiveTab('lantern')
-                        const scrollToTop = () => {
-                          window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-                          if (typeof document !== 'undefined') {
-                            if (document.documentElement) document.documentElement.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-                            if (document.body) document.body.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-                            const topElem = document.getElementById('lantern-top-view')
-                            if (topElem) topElem.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                          }
-                        }
-                        scrollToTop()
-                        setTimeout(scrollToTop, 60)
-                        setTimeout(scrollToTop, 200)
-                      } else {
-                        showToast(`🙏 [${wishCategory || '불사'}] 동참 접수가 정성껏 완료되었습니다.`)
-                      }
                     }}
                     className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F5D061] to-[#AA7C11] hover:brightness-110 text-[#1B1815] font-black text-xs sm:text-sm active:scale-95 transition cursor-pointer shadow-md flex items-center justify-center gap-1.5"
                   >
