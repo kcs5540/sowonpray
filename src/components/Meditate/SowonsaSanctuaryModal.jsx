@@ -132,80 +132,6 @@ function playYeomjuAcousticSynth() {
   } catch {}
 }
 
-// 🕯️ 불교 전통 황금 향로 및 피어오르는 청정한 향 연기 3D SVG 아이콘
-function IncenseIcon({ className = 'w-6 h-6', isSmoking = false }) {
-  return (
-    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-      {/* 피어오르는 청정한 3줄기 향 연기 */}
-      <path
-        d="M20 18C19 14.5 22 12.5 20 9.5C18.5 7 21 4.5 19 1.5"
-        stroke="#FFEAA7"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        className={isSmoking ? 'animate-pulse' : 'opacity-75'}
-      />
-      <path
-        d="M24 18C23 13.5 26 11.5 24 7.5C22.5 4.5 25 2.5 23 0.5"
-        stroke="#FFF9DB"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        className={isSmoking ? 'animate-bounce' : 'opacity-90'}
-      />
-      <path
-        d="M28 18C27 14.5 30 12.5 28 9.5C26.5 7 29 4.5 27 1.5"
-        stroke="#FFEAA7"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        className={isSmoking ? 'animate-pulse' : 'opacity-75'}
-      />
-
-      {/* 향대 3개 (Incense sticks) */}
-      <line x1="20" y1="18" x2="20" y2="28" stroke="#D63031" strokeWidth="1.8" strokeLinecap="round" />
-      <line x1="24" y1="18" x2="24" y2="28" stroke="#E17055" strokeWidth="2.0" strokeLinecap="round" />
-      <line x1="28" y1="18" x2="28" y2="28" stroke="#D63031" strokeWidth="1.8" strokeLinecap="round" />
-      
-      {/* 붉은 불씨 (Glowing Embers) */}
-      <circle cx="20" cy="18" r="1.5" fill="#FF7675" className="animate-ping" />
-      <circle cx="24" cy="18" r="1.8" fill="#FF7675" className="animate-pulse" />
-      <circle cx="28" cy="18" r="1.5" fill="#FF7675" className="animate-ping" />
-
-      {/* 향로 테두리 림 (Censer Rim) */}
-      <ellipse cx="24" cy="28" rx="14" ry="3.5" fill="url(#incenseRimGrad)" stroke="#F5D061" strokeWidth="1.2" />
-
-      {/* 향로 볼록한 몸체 (Censer Body) */}
-      <path
-        d="M10 28C10 37.5 15 41 24 41C33 41 38 37.5 38 28H10Z"
-        fill="url(#incenseBodyGrad)"
-        stroke="#C59B27"
-        strokeWidth="1.5"
-      />
-
-      {/* 삼발이 다리 (Tripod Legs) */}
-      <path d="M14 40.5L12 45.5" stroke="#8A6510" strokeWidth="2.5" strokeLinecap="round" />
-      <path d="M24 41L24 46" stroke="#8A6510" strokeWidth="2.5" strokeLinecap="round" />
-      <path d="M34 40.5L36 45.5" stroke="#8A6510" strokeWidth="2.5" strokeLinecap="round" />
-
-      {/* 좌우 귀 손잡이 */}
-      <path d="M10 31C7 31 6 34 8 36" stroke="#F5D061" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M38 31C41 31 42 34 40 36" stroke="#F5D061" strokeWidth="1.5" strokeLinecap="round" />
-
-      <defs>
-        <linearGradient id="incenseRimGrad" x1="10" y1="28" x2="38" y2="28" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#D4AF37" />
-          <stop offset="0.5" stopColor="#FFF2A3" />
-          <stop offset="1" stopColor="#AA7C11" />
-        </linearGradient>
-        <linearGradient id="incenseBodyGrad" x1="10" y1="28" x2="38" y2="41" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#F5D061" />
-          <stop offset="0.3" stopColor="#D4AF37" />
-          <stop offset="0.7" stopColor="#8A6510" />
-          <stop offset="1" stopColor="#4A3408" />
-        </linearGradient>
-      </defs>
-    </svg>
-  )
-}
-
 /**
  * 🪔 제주 소원사 고요 법당 (멍스테이 & 사찰 쉼터 뷰)
  * - 기존 앱 로직과 완전히 격리된 독립 힐링 컴포넌트
@@ -698,6 +624,53 @@ export default function SowonsaSanctuaryModal({
         </div>
       </div>
 
+      {/* 🕯️ 부처님 전 분향(향올리기) 실시간 연기 & 서기(瑞氣) 대형 시각 이펙트 */}
+      {isSmokingIncense && (
+        <div className="absolute inset-x-0 top-24 sm:top-28 z-20 flex flex-col items-center justify-center pointer-events-none animate-in fade-in zoom-in-90 duration-500">
+          {/* 황금빛 서기 후광 오라 */}
+          <div className="absolute w-56 h-56 rounded-full bg-gradient-to-t from-amber-400/30 via-yellow-300/20 to-transparent blur-3xl animate-pulse" />
+          
+          {/* 모락모락 피어오르는 청정한 3줄기 향 연기 애니메이션 */}
+          <div className="relative flex flex-col items-center">
+            <svg viewBox="0 0 120 140" className="w-32 h-40 sm:w-40 sm:h-48 drop-shadow-[0_0_20px_rgba(245,208,97,0.9)]">
+              <path
+                d="M50 130 C42 100 68 75 52 40 C44 20 58 8 55 0"
+                stroke="rgba(255, 248, 210, 0.85)"
+                strokeWidth="3.5"
+                fill="none"
+                strokeLinecap="round"
+                className="animate-pulse"
+              />
+              <path
+                d="M60 130 C68 105 48 80 64 45 C72 25 60 10 62 0"
+                stroke="rgba(255, 235, 160, 0.95)"
+                strokeWidth="4"
+                fill="none"
+                strokeLinecap="round"
+              />
+              <path
+                d="M70 130 C78 100 58 70 70 38 C76 18 64 5 66 0"
+                stroke="rgba(255, 248, 210, 0.8)"
+                strokeWidth="3"
+                fill="none"
+                strokeLinecap="round"
+                className="animate-pulse"
+              />
+              {/* 타오르는 붉은 불씨 */}
+              <circle cx="50" cy="132" r="3" fill="#FF5252" className="animate-ping" />
+              <circle cx="60" cy="132" r="3.5" fill="#FF7675" className="animate-pulse" />
+              <circle cx="70" cy="132" r="3" fill="#FF5252" className="animate-ping" />
+            </svg>
+
+            {/* 청정한 향 공양 축원 플로팅 배지 */}
+            <div className="mt-1 px-4 py-1.5 rounded-full bg-black/85 border border-[#F5D061] text-xs font-serif-kr text-[#F5D061] shadow-2xl flex items-center gap-1.5 animate-in slide-in-from-bottom-3 duration-300">
+              <span className="text-sm">🕯️</span>
+              <span className="font-bold tracking-tight">부처님 전에 청정한 향을 사릅니다</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 멍스테이 모드 안내 플로팅 팁 */}
       {isZenMode && (
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-30 flex justify-center pointer-events-none animate-pulse">
@@ -1189,16 +1162,20 @@ export default function SowonsaSanctuaryModal({
         isZenMode ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}>
         <div className="max-w-md mx-auto grid grid-cols-4 gap-1.5 sm:gap-2.5">
-          {/* 버튼 1: 향올리기 (분향/헌향) - 대웅전 참배의 첫 번째 예법 */}
+          {/* 버튼 1: 향올리기 (3D 황금 향로 아이콘) - 대웅전 참배의 첫 번째 예법 */}
           <button
             type="button"
             onClick={handleIncense}
             className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 hover:border-[#F5D061]/40 transition group cursor-pointer"
             title="부처님 전에 청정한 향 사르기"
           >
-            <div className="h-6 sm:h-7 flex items-center justify-center mb-0.5 group-hover:scale-110 transition filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.5)]">
-              <IncenseIcon className="w-6 h-6 sm:w-7 sm:h-7" isSmoking={isSmokingIncense} />
-            </div>
+            <img 
+              src="/images/icon_incense_3d.png" 
+              alt="3D 향올리기" 
+              className={`h-6 sm:h-7 object-contain mb-0.5 group-hover:scale-110 transition filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.5)] ${
+                isSmokingIncense ? 'scale-125 rotate-3' : 'group-active:scale-95'
+              }`} 
+            />
             <span className="text-[11px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061] whitespace-nowrap">
               향올리기
             </span>
