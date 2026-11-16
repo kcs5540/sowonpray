@@ -4504,13 +4504,9 @@ function formatRelativeOrDate(dateStr) {
     return Math.max(dynamicWipae, Number(currentUser?.wipae_count) || 0)
   }, [currentUserAffiliatedMembers, currentUser])
 
-  // 한국 기준(KST) 오늘 날짜 키 (자정 리셋 정확도 100% 보장: YYYY-MM-DD)
+  // 🇰🇷 한국 기준(KST / Asia/Seoul) 공식 오늘 날짜 키 (자정 00:00:00 리셋 정확도 100% 보장: YYYY-MM-DD)
   const getTodayDateKey = () => {
-    const d = new Date()
-    const year = d.getFullYear()
-    const month = String(d.getMonth() + 1).padStart(2, '0')
-    const date = String(d.getDate()).padStart(2, '0')
-    return `${year}-${month}-${date}`
+    return getTodayKey()
   }
 
   // 💰 실시간 신행 복덕 보시금 연산 (법연 1,000원 + 포교위원장 산하 1,000원 + [매일 3대 신행 최대 1,000원: 등 200원 + 사경 300원 + 목탁 500원])

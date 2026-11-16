@@ -63,12 +63,55 @@ export const MERIT_RULES = {
   },
 }
 
+// 🇰🇷 대한민국 표준시(KST / Asia/Seoul) 공식 시간 엔진
+// 사용자의 PC/스마트폰 로컬 시계 왜곡이나 해외 접속에 영향을 받지 않고,
+// 제주 소원사 본원 및 서버 DB(now() at time zone 'Asia/Seoul')와 100% 동일한 기준 적용
+export const getKoreaTime = (baseDate = new Date()) => {
+  try {
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Seoul',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    })
+    const parts = formatter.formatToParts(baseDate)
+    const map = {}
+    parts.forEach((p) => { map[p.type] = p.value })
+    return {
+      year: parseInt(map.year, 10),
+      month: parseInt(map.month, 10),
+      day: parseInt(map.day, 10),
+      hour: parseInt(map.hour, 10),
+      minute: parseInt(map.minute, 10),
+      second: parseInt(map.second, 10),
+      dateKey: `${map.year}-${map.month}-${map.day}`, // YYYY-MM-DD (KST)
+    }
+  } catch (e) {
+    // 구형 브라우저 안전 대비 UTC+9 오프셋 수동 계산 fallback
+    const utc = baseDate.getTime() + baseDate.getTimezoneOffset() * 60000
+    const kst = new Date(utc + 9 * 3600000)
+    const year = kst.getFullYear()
+    const month = String(kst.getMonth() + 1).padStart(2, '0')
+    const day = String(kst.getDate()).padStart(2, '0')
+    return {
+      year: kst.getFullYear(),
+      month: kst.getMonth() + 1,
+      day: kst.getDate(),
+      hour: kst.getHours(),
+      minute: kst.getMinutes(),
+      second: kst.getSeconds(),
+      dateKey: `${year}-${month}-${day}`,
+    }
+  }
+}
+
+// 🇰🇷 대한민국 표준시(KST) 오늘 날짜 키 (자정 00:00:00 정확 리셋)
 export const getTodayKey = () => {
-  const d = new Date()
-  const year = d.getFullYear()
-  const month = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
+  return getKoreaTime().dateKey
 }
 
 /**
