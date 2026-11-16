@@ -1388,7 +1388,7 @@ export default function HomeTab({
                               <div className="font-bold text-[11.5px] text-[#2B1F11]">
                                 <span className="text-[#B8325E] font-extrabold mr-1">(신규)</span>인연 받은 사람
                               </div>
-                              <div className="text-[10px] text-[#7A6B58]">상대방이 소원등 켰을 경우</div>
+                              <div className="text-[10px] text-[#7A6B58]">본인이 소원등 켰을 경우</div>
                             </div>
                           </div>
                           <span className="text-[11px] font-extrabold text-[#B8325E] shrink-0 bg-[#FFF0F5] px-2 py-1 rounded-lg border border-[#B8325E]/20">
