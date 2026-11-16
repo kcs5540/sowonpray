@@ -640,19 +640,26 @@ export default function SowonsaSanctuaryModal({
             {/* 1. 향로 고정 앵커 (버튼과 동일한 3D 황금 향로를 탁자 위에 그대로 안착) */}
             <div className="relative flex flex-col items-center">
 
-              {/* 💨 하얀 연기 레이어: [향올리기] 클릭 시 위로 치솟지 않고, 좌우로 부드럽게 맴돌며 낮게 피어나는 백색 향 연기 */}
-              <div className="absolute bottom-full mb-0.5 left-1/2 -translate-x-1/2 w-32 h-14 flex justify-center items-end pointer-events-none overflow-visible">
+              {/* 💨 하얀 연기 레이어: [향올리기] 시 향로 상단에서 부드럽고 은은하게 사방으로 퍼져나가는 백색 향 연무 */}
+              <div className="absolute bottom-full mb-0.5 left-1/2 -translate-x-1/2 w-48 sm:w-56 h-16 flex justify-center items-end pointer-events-none overflow-visible">
                 {isSmokingIncense && (
-                  <div className="relative w-28 h-12 flex justify-center items-end animate-in fade-in duration-700">
-                    {/* 은은하게 낮게 깔리며 좌우로 하늘하늘 맴도는 하얀 실연기 3가닥 */}
-                    <div className="absolute bottom-0 w-3 h-8 rounded-full bg-gradient-to-t from-white/70 via-white/30 to-transparent blur-[2px] anim-smoke-low-1" />
-                    <div className="absolute bottom-0 w-4 h-10 rounded-full bg-gradient-to-t from-white/60 via-stone-100/25 to-transparent blur-[2.5px] anim-smoke-low-2" />
-                    <div className="absolute bottom-0 w-2.5 h-7 rounded-full bg-gradient-to-t from-white/65 via-white/20 to-transparent blur-[2px] anim-smoke-low-3" />
+                  <div className="relative w-44 sm:w-52 h-14 flex justify-center items-end animate-in fade-in duration-700">
+                    {/* 1. 좌측으로 부드럽게 퍼져나가는 은은한 연무 구름 */}
+                    <div className="absolute bottom-0 w-6 h-6 rounded-full bg-gradient-to-t from-white/70 via-stone-100/40 to-transparent blur-[3px] anim-smoke-spread-left" />
 
-                    {/* 향로 상단에서 낮게 좌우로 흔들리는 완만한 하얀 연기 아지랑이 */}
-                    <svg viewBox="0 0 60 30" className="absolute bottom-0 w-20 h-9 opacity-50 pointer-events-none">
+                    {/* 2. 우측으로 부드럽게 퍼져나가는 은은한 연무 구름 */}
+                    <div className="absolute bottom-0 w-7 h-6 rounded-full bg-gradient-to-t from-white/65 via-stone-100/35 to-transparent blur-[3.5px] anim-smoke-spread-right" />
+
+                    {/* 3. 중앙에서 몽환적으로 부풀며 흩어지는 하얀 연기 */}
+                    <div className="absolute bottom-0 w-8 h-7 rounded-full bg-gradient-to-t from-white/60 via-stone-200/30 to-transparent blur-[4px] anim-smoke-spread-center" />
+
+                    {/* 4. 향로 중심에서 낮게 피어나는 아지랑이 실연기 */}
+                    <div className="absolute bottom-0 w-2.5 h-6 rounded-full bg-gradient-to-t from-white/80 to-transparent blur-[1.5px] animate-pulse" />
+
+                    {/* 5. 은은하게 좌우로 흩어지는 유려한 연기 결 */}
+                    <svg viewBox="0 0 80 30" className="absolute bottom-0 w-28 h-10 opacity-45 pointer-events-none">
                       <path
-                        d="M26 28 C20 22 36 14 28 4"
+                        d="M36 28 C24 22 18 14 10 6"
                         stroke="rgba(255, 255, 255, 0.7)"
                         strokeWidth="1.8"
                         fill="none"
@@ -660,11 +667,12 @@ export default function SowonsaSanctuaryModal({
                         className="animate-pulse"
                       />
                       <path
-                        d="M34 28 C40 20 24 12 32 2"
-                        stroke="rgba(255, 255, 255, 0.75)"
-                        strokeWidth="2"
+                        d="M44 28 C56 20 62 14 70 6"
+                        stroke="rgba(255, 255, 255, 0.7)"
+                        strokeWidth="1.8"
                         fill="none"
                         strokeLinecap="round"
+                        className="animate-pulse"
                       />
                     </svg>
                   </div>
