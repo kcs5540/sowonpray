@@ -498,25 +498,25 @@ export default function ProfileTab({
                     {/* 상단 라벨 & 실시간 적립 뱃지 */}
                     <div className="flex items-center justify-between gap-2 flex-wrap">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-base shrink-0">✨</span>
-                        <h3 className="font-serif-kr text-sm sm:text-base font-bold text-[#F5D061] tracking-wide">
+                        <span className="text-lg shrink-0">✨</span>
+                        <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#F5D061] tracking-wide">
                           나의 신행 복덕 공덕금
                         </h3>
                       </div>
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[10px] font-extrabold text-emerald-300 shrink-0">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[11px] font-extrabold text-emerald-300 shrink-0">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                         실시간 적립
                       </span>
                     </div>
 
                     {/* 메인 누적 공덕액 */}
-                    <div className="bg-black/30 rounded-xl p-3 border border-white/10 space-y-2">
+                    <div className="bg-black/30 rounded-xl p-3 sm:p-3.5 border border-white/10 space-y-2">
                       <div className="flex items-center justify-between gap-2">
                         <div>
-                          <div className="text-[10px] text-[#CFC5B6]">누적 신행 공덕 (실시간 합계)</div>
-                          <div className="font-serif-kr text-2xl sm:text-3xl font-black text-[#FFE58A] tracking-tight flex items-baseline gap-1.5 mt-0.5">
+                          <div className="text-xs text-[#CFC5B6]">누적 신행 공덕 (실시간 합계)</div>
+                          <div className="font-serif-kr text-3xl sm:text-4xl font-black text-[#FFE58A] tracking-tight flex items-baseline gap-1.5 mt-0.5">
                             <span>{userMeritReward.totalReward.toLocaleString()}</span>
-                            <span className="text-base sm:text-lg font-bold text-[#F5D061]">공덕</span>
+                            <span className="text-lg sm:text-xl font-bold text-[#F5D061]">공덕</span>
                           </div>
                         </div>
 
@@ -524,18 +524,18 @@ export default function ProfileTab({
                         <button
                           type="button"
                           onClick={() => setIsRewardDetailOpen((prev) => !prev)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F5D061]/15 hover:bg-[#F5D061]/25 border border-[#F5D061]/40 text-xs font-bold text-[#FFE58A] transition cursor-pointer active:scale-95 shadow-sm shrink-0"
+                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#F5D061]/15 hover:bg-[#F5D061]/25 border border-[#F5D061]/40 text-sm font-bold text-[#FFE58A] transition cursor-pointer active:scale-95 shadow-sm shrink-0"
                           title="세부 적립 내역 확인하기"
                         >
                           <span>{isRewardDetailOpen ? '접기' : '내역'}</span>
-                          <span className={`text-[9px] transition-transform duration-200 ${isRewardDetailOpen ? 'rotate-180' : ''}`}>
+                          <span className={`text-[10px] transition-transform duration-200 ${isRewardDetailOpen ? 'rotate-180' : ''}`}>
                             ▼
                           </span>
                         </button>
                       </div>
 
                       <div className="pt-1.5 border-t border-white/5">
-                        <span className="text-[10.5px] text-[#D6CEC2] block">
+                        <span className="text-xs text-[#D6CEC2] block">
                           ※ 제주 소원사 종무소에서 기념품 구입 및 불사 참여에 사용 가능
                         </span>
                       </div>
@@ -610,16 +610,16 @@ export default function ProfileTab({
                           return (
                             <div className="space-y-1.5 p-2.5 sm:p-3 rounded-2xl bg-gradient-to-b from-[#F5D061]/10 to-black/30 border border-[#F5D061]/40 shadow-sm">
                               <div className="flex items-center justify-between pb-1.5 border-b border-[#F5D061]/20 px-0.5">
-                                <div className="text-sm sm:text-base font-black text-[#FFE58A] flex items-center gap-1.5">
-                                  <span className="text-sm">✨</span>
+                                <div className="text-base sm:text-lg font-black text-[#FFE58A] flex items-center gap-1.5">
+                                  <span className="text-base">✨</span>
                                   <span>오늘의 신행 공덕</span>
                                 </div>
-                                <span className="text-xs sm:text-[13px] font-black text-emerald-300 bg-emerald-500/20 border border-emerald-400/40 px-2.5 py-0.5 rounded-full shrink-0">
+                                <span className="text-sm sm:text-base font-black text-emerald-300 bg-emerald-500/20 border border-emerald-400/40 px-3 py-0.5 rounded-full shrink-0">
                                   +{todayTotalDaily.toLocaleString()} 공덕
                                 </span>
                               </div>
 
-                              <div className="space-y-1.5 pt-0.5">
+                              <div className="space-y-2 pt-0.5">
                                 {/* 신행 1) 소원등 점등 */}
                                 <button
                                   type="button"
@@ -627,27 +627,27 @@ export default function ProfileTab({
                                     setActiveTab('lantern')
                                     window.scrollTo({ top: 0, behavior: 'smooth' })
                                   }}
-                                  className="w-full px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
+                                  className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
                                   title="소원등 켜러 가기"
                                 >
                                   <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
-                                      <span className="text-base shrink-0">🪔</span>
-                                      <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                      <span className="text-lg shrink-0">🪔</span>
+                                      <span className="text-sm sm:text-base font-bold text-[#F5D061]">
                                         소원등 점등
                                       </span>
                                     </div>
-                                    <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
+                                    <span className="text-sm sm:text-base font-bold text-[#FFE58A]">
                                       오늘 {lanternInfo.currentCount}/1회
                                     </span>
                                   </div>
                                   <div className="flex items-center justify-between mt-1">
-                                    <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
+                                    <span className="text-xs text-[#BFB4A6] whitespace-nowrap">
                                       {lanternInfo.currentCount > 0
                                         ? '(1,000 공덕 · 오전 11시 회향)'
                                         : '(1,000 공덕 · 지금 점등 가능)'}
                                     </span>
-                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
+                                    <span className="font-mono font-bold text-sm sm:text-base text-emerald-300 whitespace-nowrap">
                                       +{lanternInfo.currentPoints.toLocaleString()} 공덕
                                     </span>
                                   </div>
@@ -659,25 +659,25 @@ export default function ProfileTab({
                                   onClick={() => {
                                     if (onOpenSanctuary) onOpenSanctuary()
                                   }}
-                                  className="w-full px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
+                                  className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
                                   title="대웅전 참배하러 가기"
                                 >
                                   <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
-                                      <span className="text-base shrink-0">🏛️</span>
-                                      <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                      <span className="text-lg shrink-0">🏛️</span>
+                                      <span className="text-sm sm:text-base font-bold text-[#F5D061]">
                                         대웅전 참배
                                       </span>
                                     </div>
-                                    <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
+                                    <span className="text-sm sm:text-base font-bold text-[#FFE58A]">
                                       오늘 {sanctuaryInfo.currentCount}/1회
                                     </span>
                                   </div>
                                   <div className="flex items-center justify-between mt-1">
-                                    <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
+                                    <span className="text-xs text-[#BFB4A6] whitespace-nowrap">
                                       (1,000 공덕)
                                     </span>
-                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
+                                    <span className="font-mono font-bold text-sm sm:text-base text-emerald-300 whitespace-nowrap">
                                       +{sanctuaryInfo.currentPoints.toLocaleString()} 공덕
                                     </span>
                                   </div>
@@ -690,48 +690,48 @@ export default function ProfileTab({
                                     setActiveTab('sutra')
                                     window.scrollTo({ top: 0, behavior: 'smooth' })
                                   }}
-                                  className="w-full px-3 py-2 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
+                                  className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 hover:bg-[#F5D061]/10 border border-white/10 hover:border-[#F5D061]/40 transition cursor-pointer active:scale-[0.99] text-left"
                                   title="사경 정진하러 가기"
                                 >
                                   <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
-                                      <span className="text-base shrink-0">✍️</span>
-                                      <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                      <span className="text-lg shrink-0">✍️</span>
+                                      <span className="text-sm sm:text-base font-bold text-[#F5D061]">
                                         한줄사경 정진
                                       </span>
                                     </div>
-                                    <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
+                                    <span className="text-sm sm:text-base font-bold text-[#FFE58A]">
                                       오늘 {sutraInfo.currentCount}/1회
                                     </span>
                                   </div>
                                   <div className="flex items-center justify-between mt-1">
-                                    <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
+                                    <span className="text-xs text-[#BFB4A6] whitespace-nowrap">
                                       (1,000 공덕)
                                     </span>
-                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
+                                    <span className="font-mono font-bold text-sm sm:text-base text-emerald-300 whitespace-nowrap">
                                       +{sutraInfo.currentPoints.toLocaleString()} 공덕
                                     </span>
                                   </div>
                                 </button>
 
                                 {/* 신행 4) 인연 전달 공덕 */}
-                                <div className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-left">
+                                <div className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-left">
                                   <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
-                                      <span className="text-base shrink-0">🤝</span>
-                                      <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                      <span className="text-lg shrink-0">🤝</span>
+                                      <span className="text-sm sm:text-base font-bold text-[#F5D061]">
                                         인연 전달 공덕
                                       </span>
                                     </div>
-                                    <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
+                                    <span className="text-sm sm:text-base font-bold text-[#FFE58A]">
                                       오늘 {inyeonGiverInfo.currentCount}/10회
                                     </span>
                                   </div>
                                   <div className="flex items-center justify-between mt-1">
-                                    <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
+                                    <span className="text-xs text-[#BFB4A6] whitespace-nowrap">
                                       (1회 5,000 공덕)
                                     </span>
-                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
+                                    <span className="font-mono font-bold text-sm sm:text-base text-emerald-300 whitespace-nowrap">
                                       +{inyeonGiverInfo.currentPoints.toLocaleString()} 공덕
                                     </span>
                                   </div>
@@ -739,23 +739,23 @@ export default function ProfileTab({
 
                                 {/* 신행 5) 신규회원공덕: 당일 가입한 신규 회원에게만 노출, 하루 지난 기존 회원은 깔끔하게 제외 */}
                                 {showNewUserCard && (
-                                  <div className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-left">
+                                  <div className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-left">
                                     <div className="flex items-center justify-between">
                                       <div className="flex items-center gap-2">
-                                        <span className="text-base shrink-0">🌸</span>
-                                        <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                        <span className="text-lg shrink-0">🌸</span>
+                                        <span className="text-sm sm:text-base font-bold text-[#F5D061]">
                                           신규회원공덕
                                         </span>
                                       </div>
-                                      <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
+                                      <span className="text-sm sm:text-base font-bold text-[#FFE58A]">
                                         오늘 {inyeonReceiverInfo.currentCount}/1회
                                       </span>
                                     </div>
                                     <div className="flex items-center justify-between mt-1">
-                                      <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
+                                      <span className="text-xs text-[#BFB4A6] whitespace-nowrap">
                                         (5,000 공덕)
                                       </span>
-                                      <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
+                                      <span className="font-mono font-bold text-sm sm:text-base text-emerald-300 whitespace-nowrap">
                                         +{inyeonReceiverInfo.currentPoints.toLocaleString()} 공덕
                                       </span>
                                     </div>
