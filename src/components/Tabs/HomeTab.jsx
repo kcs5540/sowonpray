@@ -177,7 +177,7 @@ export default function HomeTab({
 
                   {/* 상단 배지 + 우측 슬라이드 인디케이터 점 (1/3) */}
                   <div className="relative z-10 flex justify-between items-center gap-2 mb-5">
-                    <span className="px-3 py-1 rounded-full bg-black/75 backdrop-blur-sm text-[#F5D061] text-[11px] font-semibold border border-[#F5D061]/45 flex items-center gap-2 whitespace-nowrap shadow-sm">
+                    <span className="px-3 py-1 rounded-full bg-black/75 backdrop-blur-sm text-[#F5D061] text-xs sm:text-[12.5px] font-semibold border border-[#F5D061]/45 flex items-center gap-2 whitespace-nowrap shadow-sm">
                       <span className="relative flex h-2 w-2 shrink-0">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#F5D061] opacity-60" />
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-[#F5D061]" />
@@ -204,13 +204,13 @@ export default function HomeTab({
 
                   {/* 하단 타이틀 & 설명 & 바로가기 버튼 */}
                   <div className="relative z-10 text-white pt-1 pb-0.5">
-                    <h1 className="font-serif-kr text-xl sm:text-2xl font-bold leading-tight mb-1.5 break-keep">
+                    <h1 className="font-serif-kr text-2xl sm:text-3xl font-bold leading-tight mb-1.5 break-keep">
                       {slide.titlePrefix}{' '}
                       <span className="text-[#F5D061] underline decoration-[#F5D061]/50 underline-offset-4 whitespace-nowrap">
                         {slide.titleHighlight}
                       </span>
                     </h1>
-                    <p className="text-[11px] sm:text-xs text-[#E8DFD1] leading-relaxed tracking-tight break-keep">
+                    <p className="text-xs sm:text-[13px] text-[#E8DFD1] leading-relaxed tracking-tight break-keep">
                       {slide.description}
                     </p>
                     <div className="mt-2.5 flex items-center justify-between gap-2">
@@ -225,7 +225,7 @@ export default function HomeTab({
                             setActiveTab(slide.targetTab)
                           }
                         }}
-                        className="px-3 py-1 rounded-lg bg-[#F5D061]/20 hover:bg-[#F5D061]/30 text-[#F5D061] border border-[#F5D061]/40 text-[11px] font-bold transition whitespace-nowrap"
+                        className="px-3.5 py-1.5 rounded-lg bg-[#F5D061]/20 hover:bg-[#F5D061]/30 text-[#F5D061] border border-[#F5D061]/40 text-xs sm:text-[13px] font-bold transition whitespace-nowrap"
                       >
                         {slide.ctaLabel}
                       </button>
@@ -237,7 +237,7 @@ export default function HomeTab({
                               (prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length
                             )
                           }
-                          className="w-6 h-6 rounded-full bg-black/55 text-[#F5D061] border border-[#F5D061]/30 text-xs font-bold flex items-center justify-center hover:bg-black/80 transition"
+                          className="w-7 h-7 rounded-full bg-black/55 text-[#F5D061] border border-[#F5D061]/30 text-sm font-bold flex items-center justify-center hover:bg-black/80 transition"
                           aria-label="이전 배너"
                         >
                           ‹
@@ -247,7 +247,7 @@ export default function HomeTab({
                           onClick={() =>
                             setHeroSlideIdx((prev) => (prev + 1) % HERO_SLIDES.length)
                           }
-                          className="w-6 h-6 rounded-full bg-black/55 text-[#F5D061] border border-[#F5D061]/30 text-xs font-bold flex items-center justify-center hover:bg-black/80 transition"
+                          className="w-7 h-7 rounded-full bg-black/55 text-[#F5D061] border border-[#F5D061]/30 text-sm font-bold flex items-center justify-center hover:bg-black/80 transition"
                           aria-label="다음 배너"
                         >
                           ›
@@ -265,8 +265,8 @@ export default function HomeTab({
               <div className="mb-2.5 px-0.5">
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1.5 shrink-0">
-                    <GoldenLotusIcon className="w-[20px] h-[20px] sm:w-[21px] sm:h-[21px] shrink-0" />
-                    <h3 className="font-sans text-[16px] sm:text-[17px] font-bold text-[#2B1F11] tracking-tight whitespace-nowrap">
+                    <GoldenLotusIcon className="w-[22px] h-[22px] sm:w-[24px] sm:h-[24px] shrink-0" />
+                    <h3 className="font-sans text-[17px] sm:text-[18px] font-bold text-[#2B1F11] tracking-tight whitespace-nowrap">
                       오늘의 공덕
                     </h3>
                   </div>
@@ -276,14 +276,14 @@ export default function HomeTab({
                       if (playSingingBowlSound) playSingingBowlSound()
                       setShowMeritInfoModal(true)
                     }}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FCFBF8] hover:bg-[#F5EEDC] border border-[#D4A024]/40 text-[#8C6D15] hover:text-[#5C4505] text-[11.5px] font-bold transition shrink-0 cursor-pointer shadow-2xs active:scale-95"
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FCFBF8] hover:bg-[#F5EEDC] border border-[#D4A024]/40 text-[#8C6D15] hover:text-[#5C4505] text-xs sm:text-[12.5px] font-bold transition shrink-0 cursor-pointer shadow-2xs active:scale-95"
                     title="신행 공덕이란? 안내 보기"
                   >
                     <Info className="w-3.5 h-3.5 text-[#D4A024] shrink-0" />
                     <span>공덕 안내</span>
                   </button>
                 </div>
-                <p className="text-[12.5px] sm:text-[13px] text-[#554A3D] font-medium mt-1 pl-[26px] tracking-tight">
+                <p className="text-[13.5px] sm:text-[14px] text-[#554A3D] font-medium mt-1 pl-[28px] tracking-tight">
                   작은 기도와 실천이 모여 큰 공덕이 됩니다
                 </p>
               </div>
@@ -303,11 +303,11 @@ export default function HomeTab({
                     <img src="/images/sowon_lantern_realistic.png" alt="소원등 켜기" className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform" />
                   </div>
                   <div className="flex items-center justify-center w-full px-0.5">
-                    <span className="font-serif-kr text-[12px] sm:text-[12.5px] font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
+                    <span className="font-serif-kr text-[13.5px] sm:text-[14px] font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
                       소원등 켜기
                     </span>
                   </div>
-                  <span className="text-[9px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block tracking-tight">
+                  <span className="text-[10.5px] sm:text-[11px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block tracking-tight">
                     1일 무료 소원등
                   </span>
                 </button>
@@ -325,11 +325,11 @@ export default function HomeTab({
                     <img src="/images/icon_monk_meditate_front.png" alt="대웅전 참배" className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform" />
                   </div>
                   <div className="flex items-center justify-center w-full px-0.5">
-                    <span className="font-serif-kr text-[12px] sm:text-[12.5px] font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
+                    <span className="font-serif-kr text-[13.5px] sm:text-[14px] font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
                       대웅전 참배
                     </span>
                   </div>
-                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
+                  <span className="text-[10.5px] sm:text-[11px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
                     마음 쉬어가기
                   </span>
                 </button>
@@ -348,11 +348,11 @@ export default function HomeTab({
                     <img src="/images/icon_sutra_brush_3d.png" alt="한줄 사경" className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform" />
                   </div>
                   <div className="flex items-center justify-center w-full px-0.5">
-                    <span className="font-serif-kr text-[12px] sm:text-[12.5px] font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
+                    <span className="font-serif-kr text-[13.5px] sm:text-[14px] font-black text-[#2B1F11] tracking-tight leading-tight text-center break-keep">
                       한줄 사경
                     </span>
                   </div>
-                  <span className="text-[9.5px] sm:text-[10px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
+                  <span className="text-[10.5px] sm:text-[11px] text-[#8C6D15] font-semibold mt-0.5 whitespace-nowrap block">
                     지혜 정진 사경
                   </span>
                 </button>
@@ -367,9 +367,9 @@ export default function HomeTab({
                   <div className="flex flex-wrap items-center justify-between gap-y-1.5 gap-x-2 pb-2.5 mb-3 border-b border-[#F0EAE0] text-xs">
                     <div className="flex items-center gap-1.5 text-[#6E5D45] font-bold shrink-0">
                       <Calendar className="w-4 h-4 text-[#C59B27] shrink-0" />
-                      <span className="text-[12px] sm:text-[12.5px] tracking-tight whitespace-nowrap">{lunarText}</span>
+                      <span className="text-xs sm:text-[13px] tracking-tight whitespace-nowrap">{lunarText}</span>
                     </div>
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] text-[11px] sm:text-[11.5px] font-extrabold border border-[#E5D399] whitespace-nowrap shrink-0">
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#FAF3DF] text-[#8A6510] text-xs font-extrabold border border-[#E5D399] whitespace-nowrap shrink-0">
                       {jaeilBadge}
                     </span>
                   </div>
@@ -377,7 +377,7 @@ export default function HomeTab({
               })()}
               <div className="flex items-center justify-between gap-1.5 mb-3">
                 <div className="flex items-center gap-1.5 min-w-0">
-                  <span className="text-xs font-bold text-[#9A7418] bg-[#FAF3DF] px-2.5 py-1 rounded-full border border-[#E5D399] whitespace-nowrap">
+                  <span className="text-xs sm:text-sm font-bold text-[#9A7418] bg-[#FAF3DF] px-2.5 py-1 rounded-full border border-[#E5D399] whitespace-nowrap">
                     오늘의 부처님 말씀
                   </span>
                   {/* 소리 아이콘 버튼 */}
@@ -426,7 +426,7 @@ export default function HomeTab({
                         playSingingBowlSound()
                       }
                     }}
-                    className="text-xs text-[#786E63] hover:text-[#231F1C] flex items-center gap-1 whitespace-nowrap shrink-0 px-2 py-1 rounded-lg hover:bg-black/5 transition"
+                    className="text-xs sm:text-[13px] text-[#786E63] hover:text-[#231F1C] flex items-center gap-1 whitespace-nowrap shrink-0 px-2 py-1 rounded-lg hover:bg-black/5 transition"
                   >
                     <RefreshCw className="w-3.5 h-3.5 shrink-0" />
                     <span>다른 말씀</span>
@@ -434,11 +434,11 @@ export default function HomeTab({
                 </div>
               </div>
 
-              <blockquote className="font-serif-kr text-[16px] sm:text-[17px] font-bold text-[#231F1C] leading-relaxed mb-2.5 break-keep">
+              <blockquote className="font-serif-kr text-[17px] sm:text-[18px] font-bold text-[#231F1C] leading-relaxed mb-2.5 break-keep">
                 “{currentQuote.verse}”
               </blockquote>
-              <p className="text-xs font-semibold text-[#8C7A5B] mb-2">— {currentQuote.source}</p>
-              <p className="text-xs text-[#575049] bg-[#FAF8F5] p-3 rounded-xl border border-[#EFE9DD] leading-relaxed break-keep">
+              <p className="text-xs sm:text-[13px] font-semibold text-[#8C7A5B] mb-2">— {currentQuote.source}</p>
+              <p className="text-xs sm:text-[13px] text-[#575049] bg-[#FAF8F5] p-3 rounded-xl border border-[#EFE9DD] leading-relaxed break-keep">
                 💡 {currentQuote.commentary}
               </p>
             </section>
@@ -465,17 +465,17 @@ export default function HomeTab({
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[11px] sm:text-[11.5px] font-black text-[#F5D061] bg-[#F5D061]/15 px-2 py-0.5 rounded border border-[#F5D061]/30 whitespace-nowrap">
+                      <span className="text-xs sm:text-[12.5px] font-black text-[#F5D061] bg-[#F5D061]/15 px-2 py-0.5 rounded border border-[#F5D061]/30 whitespace-nowrap">
                         24시간 법음 쉼터
                       </span>
                       {isHealingPlaying && (
-                        <span className="flex items-center gap-1 text-[10.5px] text-[#4ADE80] font-bold">
+                        <span className="flex items-center gap-1 text-[11px] text-[#4ADE80] font-bold">
                           <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-ping" />
                           치유중
                         </span>
                       )}
                     </div>
-                    <div className="text-[13px] sm:text-[14px] font-bold text-white truncate mt-0.5 flex items-center gap-1">
+                    <div className="text-[14px] sm:text-[15px] font-bold text-white truncate mt-0.5 flex items-center gap-1">
                       <span>{HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.icon}</span>
                       <span className="truncate">
                         {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.title}
@@ -520,7 +520,7 @@ export default function HomeTab({
                 <div className="px-3 pb-3.5 pt-1 space-y-2.5 border-t border-white/10 animate-in fade-in duration-200">
                   {/* 상단 간편 안내 */}
                   <div className="pt-1.5 pb-0.5">
-                    <span className="text-[11.5px] font-bold text-[#F5D061] flex items-center gap-1.5">
+                    <span className="text-xs sm:text-[13px] font-bold text-[#F5D061] flex items-center gap-1.5">
                       <span>📜</span>
                       <span>원하시는 독경 · 쉼터 트랙을 선택해 주세요</span>
                     </span>
@@ -554,31 +554,31 @@ export default function HomeTab({
                             </div>
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center gap-1.5 mb-0.5">
-                                <span className="text-[10px] text-[#F5D061] font-bold">
+                                <span className="text-[11px] text-[#F5D061] font-bold">
                                   {t.category}
                                 </span>
                                 {t.id === 'prajna_chanting' || t.id === 'sleep_meditation' || t.id === 'dhammapada_wisdom' ? (
-                                  <span className="bg-[#F5D061]/25 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/40">
+                                  <span className="bg-[#F5D061]/25 text-[#FFE58A] px-1.5 py-0.2 rounded text-[9.5px] font-bold border border-[#F5D061]/40">
                                     🎙️ 영인스님 실물 독경 원음
                                   </span>
                                 ) : t.id === 'sowonsa_prajna_meditation' ? (
-                                  <span className="bg-[#F5D061]/25 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/40">
+                                  <span className="bg-[#F5D061]/25 text-[#FFE58A] px-1.5 py-0.2 rounded text-[9.5px] font-bold border border-[#F5D061]/40">
                                     🧘 소원사 힐링 명상
                                   </span>
                                 ) : t.id === 'lotus_destiny' ? (
-                                  <span className="bg-[#F5D061]/25 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/40">
+                                  <span className="bg-[#F5D061]/25 text-[#FFE58A] px-1.5 py-0.2 rounded text-[9.5px] font-bold border border-[#F5D061]/40">
                                     🌸 소원사 찬불가
                                   </span>
                                 ) : t.id === 'jeju_sowonsa' ? (
-                                  <span className="bg-[#F5D061]/25 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/40">
+                                  <span className="bg-[#F5D061]/25 text-[#FFE58A] px-1.5 py-0.2 rounded text-[9.5px] font-bold border border-[#F5D061]/40">
                                     🍊 소원사 테마송
                                   </span>
                                 ) : t.id === 'rhythmic_moktak' ? (
-                                  <span className="bg-[#F5D061]/20 text-[#FFE58A] px-1.5 py-0.2 rounded text-[8.5px] font-bold border border-[#F5D061]/30">
+                                  <span className="bg-[#F5D061]/20 text-[#FFE58A] px-1.5 py-0.2 rounded text-[9.5px] font-bold border border-[#F5D061]/30">
                                     🪷 천년고찰 실물 목탁
                                   </span>
                                 ) : (
-                                  <span className="bg-white/10 text-[#C2B8AB] px-1.5 py-0.2 rounded text-[8.5px] font-medium border border-white/10">
+                                  <span className="bg-white/10 text-[#C2B8AB] px-1.5 py-0.2 rounded text-[9.5px] font-medium border border-white/10">
                                     🍃 사찰 자연 ASMR
                                   </span>
                                 )}
@@ -586,7 +586,7 @@ export default function HomeTab({
                               <div className="text-xs sm:text-sm font-bold text-white break-keep">
                                 {t.title}
                               </div>
-                              <div className="text-[11px] text-[#C2B8AB] break-keep mt-0.5 leading-snug">
+                              <div className="text-xs text-[#C2B8AB] break-keep mt-0.5 leading-snug">
                                 {t.subtitle}
                               </div>
                             </div>
@@ -595,7 +595,7 @@ export default function HomeTab({
                           {/* 우측 재생 상태 인디케이터 또는 버튼 */}
                           <div className="shrink-0 flex items-center">
                             {isThisPlaying ? (
-                              <div className="flex items-center gap-1 bg-[#F5D061] text-[#1B1815] px-2.5 py-1 rounded-full text-[10.5px] font-bold shadow-md">
+                              <div className="flex items-center gap-1 bg-[#F5D061] text-[#1B1815] px-2.5 py-1 rounded-full text-xs font-bold shadow-md">
                                 <span className="flex gap-0.5 items-end h-3">
                                   <span className="w-0.5 h-3 bg-[#1B1815] animate-pulse" />
                                   <span className="w-0.5 h-1.5 bg-[#1B1815] animate-pulse delay-75" />
@@ -619,12 +619,12 @@ export default function HomeTab({
                   </div>
 
                   {/* 스튜디오 마스터 음원 출처 및 안심 보증 배지 */}
-                  <div className="flex items-center justify-between text-[10px] sm:text-[11px] text-[#A89880] bg-white/5 px-3 py-2 rounded-xl border border-white/10 relative z-10">
+                  <div className="flex items-center justify-between text-[11px] sm:text-xs text-[#A89880] bg-white/5 px-3 py-2 rounded-xl border border-white/10 relative z-10">
                     <div className="flex items-center gap-1.5 min-w-0">
                       <ShieldCheck className="w-3.5 h-3.5 text-[#4ADE80] shrink-0" />
                       <span className="truncate">영인스님 독경 &amp; 대웅전 실물 목탁 · BBS 불교방송 마스터링본</span>
                     </div>
-                    <span className="text-[#F5D061] font-bold text-[9.5px] shrink-0 ml-1">사찰 포교 및 법공양</span>
+                    <span className="text-[#F5D061] font-bold text-[10.5px] shrink-0 ml-1">사찰 포교 및 법공양</span>
                   </div>
 
                   {/* 플레이어 조작 바 & 수면 타이머 */}
@@ -642,16 +642,16 @@ export default function HomeTab({
                         )}
                       </button>
                       <div className="min-w-0">
-                        <div className="text-xs font-extrabold text-[#F5D061] truncate flex items-center gap-1">
+                        <div className="text-xs sm:text-[13px] font-extrabold text-[#F5D061] truncate flex items-center gap-1">
                           <span>{HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.title}</span>
                           {HEALING_AUDIO_TRACKS.find((t) => t.id === healingAudioTrack)?.voiceText &&
                             isHealingVoiceOn && (
-                              <span className="text-[9px] text-[#4ADE80] font-normal shrink-0">
+                              <span className="text-[9.5px] text-[#4ADE80] font-normal shrink-0">
                                 (낭독중)
                               </span>
                             )}
                         </div>
-                        <div className="text-[10.5px] text-[#C2B8AB] truncate">
+                        <div className="text-[11px] sm:text-[11.5px] text-[#C2B8AB] truncate">
                           {isHealingPlaying
                             ? sleepTimerSecondsLeft > 0
                               ? `🌙 ${Math.floor(sleepTimerSecondsLeft / 60)}분 ${sleepTimerSecondsLeft % 60}초 후 자동종료`
@@ -668,7 +668,7 @@ export default function HomeTab({
                           key={m}
                           type="button"
                           onClick={() => handleSetSleepTimer(m)}
-                          className={`px-2 py-1 rounded-lg text-[10px] font-bold border transition ${
+                          className={`px-2 py-1 rounded-lg text-[11px] font-bold border transition ${
                             sleepTimerMinutes === m
                               ? 'bg-[#F5D061] text-[#1B1815] border-[#F5D061]'
                               : 'bg-white/5 text-[#D6CEC2] border-white/10 hover:bg-white/15'
@@ -685,7 +685,7 @@ export default function HomeTab({
                     <button
                       type="button"
                       onClick={() => setShowFullAudioModal(true)}
-                      className="hover:text-[#F5D061] flex items-center gap-1 text-[11px] font-medium transition"
+                      className="hover:text-[#F5D061] flex items-center gap-1 text-xs font-medium transition"
                     >
                       <Maximize2 className="w-3.5 h-3.5" />
                       <span>전체화면 감성 LP 모드</span>
@@ -693,7 +693,7 @@ export default function HomeTab({
                     <button
                       type="button"
                       onClick={() => setIsPlayerExpanded(false)}
-                      className="hover:text-white flex items-center gap-1 text-[11px] font-bold transition"
+                      className="hover:text-white flex items-center gap-1 text-xs font-bold transition"
                     >
                       <span>위로 접기</span>
                       <ChevronUp className="w-3.5 h-3.5" />
@@ -710,13 +710,13 @@ export default function HomeTab({
                   <Coffee className="w-5 h-5 text-[#F5D061]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="inline-block text-[10.5px] text-[#8A6510] bg-[#FAF0D7] px-2 py-0.5 rounded-full border border-[#E5D399] font-extrabold break-keep">
+                  <span className="inline-block text-xs text-[#8A6510] bg-[#FAF0D7] px-2 py-0.5 rounded-full border border-[#E5D399] font-extrabold break-keep">
                     🍵 도량 참배 · 스님과의 따뜻한 차담(茶談)
                   </span>
-                  <h3 className="font-serif-kr text-base sm:text-lg font-extrabold text-[#1F1A14] mt-1 break-keep">
+                  <h3 className="font-serif-kr text-lg sm:text-xl font-extrabold text-[#1F1A14] mt-1 break-keep">
                     “도량에서 따뜻한 차 한 잔 나누세요”
                   </h3>
-                  <p className="text-xs text-[#574E42] mt-1 leading-relaxed break-keep">
+                  <p className="text-xs sm:text-sm text-[#574E42] mt-1 leading-relaxed break-keep">
                     제주 소원사는 모든 불자님께 언제나 열려 있습니다.{' '}
                     <strong className="text-[#7A5608] font-bold">
                       도량 참배나 스님과의 편안한 신행 차담을 원하시는 불자님께서는 미리 방문 예약을 남겨주시면 정성껏 맞이해 드립니다.
@@ -735,18 +735,18 @@ export default function HomeTab({
                 >
                   <span className="flex items-center gap-2 whitespace-nowrap min-w-0">
                     <Calendar className="w-4 h-4 text-[#C59B27] shrink-0" />
-                    <span className="text-[#2B1F11] font-bold text-xs sm:text-[13px] truncate">
+                    <span className="text-[#2B1F11] font-bold text-sm sm:text-base truncate">
                       사찰 방문 · 차담 예약
                     </span>
                   </span>
-                  <span className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#F5D061] to-[#E5BD45] text-[#231A0E] text-[10.5px] font-black whitespace-nowrap shrink-0 shadow-xs">
+                  <span className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#F5D061] to-[#E5BD45] text-[#231A0E] text-xs font-black whitespace-nowrap shrink-0 shadow-xs">
                     {showVisitForm ? '창 닫기 ▲' : '창 열기 ▼'}
                   </span>
                 </button>
 
                 {/* 하단: 종무소 직통 전화 바로연결 (1줄 정돈, 군더더기 글자 없이 깔끔한 번호 안내) */}
-                <div className="py-2 px-3 bg-[#FAF7F0] flex items-center justify-center gap-1.5 text-[11px] sm:text-xs text-[#3D352B] font-bold whitespace-nowrap overflow-hidden">
-                  <Phone className="w-3 h-3 text-[#B8860B] fill-current shrink-0" />
+                <div className="py-2 px-3 bg-[#FAF7F0] flex items-center justify-center gap-1.5 text-xs sm:text-sm text-[#3D352B] font-bold whitespace-nowrap overflow-hidden">
+                  <Phone className="w-3.5 h-3.5 text-[#B8860B] fill-current shrink-0" />
                   <a
                     href="tel:064-805-2007"
                     className="text-[#231F1C] hover:text-[#7A5608] font-extrabold transition shrink-0"
@@ -977,14 +977,14 @@ export default function HomeTab({
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 mb-0.5">
-                        <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-[#C59B27]/30 text-[#F5D061] border border-[#F5D061]/30 whitespace-nowrap">
+                        <span className="text-xs font-bold px-2 py-0.5 rounded bg-[#C59B27]/30 text-[#F5D061] border border-[#F5D061]/30 whitespace-nowrap">
                           {curNotice.badge || curNotice.category || '도량소식'}
                         </span>
-                        <span className="text-[11px] text-[#A89D8E] font-mono whitespace-nowrap">
+                        <span className="text-xs text-[#A89D8E] font-mono whitespace-nowrap">
                           {curNotice.date}
                         </span>
                       </div>
-                      <p className="text-[13.5px] sm:text-[14px] font-bold text-[#FBF8F3] group-hover:text-[#F5D061] transition truncate">
+                      <p className="text-[14.5px] sm:text-base font-bold text-[#FBF8F3] group-hover:text-[#F5D061] transition truncate">
                         {curNotice.title}
                       </p>
                     </div>
@@ -997,7 +997,7 @@ export default function HomeTab({
                         playMoktakSound()
                         setShowNoticeListModal(true)
                       }}
-                      className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#F5D061] border border-[#F5D061]/30 text-[11.5px] font-bold transition whitespace-nowrap cursor-pointer active:scale-95"
+                      className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#F5D061] border border-[#F5D061]/30 text-xs sm:text-[13px] font-bold transition whitespace-nowrap cursor-pointer active:scale-95"
                     >
                       전체보기
                     </button>
@@ -1017,31 +1017,31 @@ export default function HomeTab({
                       <Flame className="w-4 h-4 fill-current text-[#FFF7CE]" />
                     </div>
                     <div className="min-w-0">
-                      <h2 className="font-serif-kr font-bold text-sm sm:text-base text-[#231F1C] whitespace-nowrap">
+                      <h2 className="font-serif-kr font-bold text-base sm:text-lg text-[#231F1C] whitespace-nowrap">
                         대웅전 사시예불 & 기도 재일
                       </h2>
-                      <p className="text-xs text-[#8C7A5B] truncate mt-0.5">
+                      <p className="text-xs sm:text-sm text-[#8C7A5B] truncate mt-0.5">
                         매일 오전 10:00 삼존불 전 육성 축원 봉행
                       </p>
                     </div>
                   </div>
 
                   {/* 사시예불 안내 박스 (핵심 1~2줄 요약) */}
-                  <div className="py-2 px-3 rounded-xl bg-[#FAF8F5] border border-[#EDE6D8] text-xs text-[#2B231A] leading-normal break-keep">
+                  <div className="py-2.5 px-3.5 rounded-xl bg-[#FAF8F5] border border-[#EDE6D8] text-xs sm:text-sm text-[#2B231A] leading-normal break-keep">
                     <span>올려주신 소원등은 매일 오전 10시 대웅전에서 스님의 육성으로 정성껏 축원됩니다.</span>
-                    <span className="text-[11px] text-[#9A7418] font-medium block mt-0.5">
+                    <span className="text-xs text-[#9A7418] font-medium block mt-0.5">
                       (지금 점등 시 내일 사시예불 자동 배정)
                     </span>
                   </div>
 
                   {/* 다가오는 사찰 5대 주요 재일 (가로 스와이프 캘린더 카드) */}
                   <div className="space-y-2 pt-0.5">
-                    <div className="text-[12px] font-bold text-[#6E5D45] flex items-center justify-between">
+                    <div className="text-xs sm:text-sm font-bold text-[#6E5D45] flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
                         <Calendar className="w-3.5 h-3.5 text-[#C59B27]" />
                         <span>다가오는 사찰 5대 재일</span>
                       </div>
-                      <span className="text-[10.5px] text-[#A89C8E] font-medium flex items-center gap-1">
+                      <span className="text-[11.5px] text-[#A89C8E] font-medium flex items-center gap-1">
                         <span>좌우 스와이프</span>
                         <span className="text-xs">↔</span>
                       </span>
@@ -1059,16 +1059,16 @@ export default function HomeTab({
                           }`}
                         >
                           <div className="w-full">
-                            <div className="text-[11.5px] sm:text-xs font-bold leading-tight break-keep text-[#231F1C] flex items-center justify-center gap-1">
+                            <div className="text-xs sm:text-sm font-bold leading-tight break-keep text-[#231F1C] flex items-center justify-center gap-1">
                               {j.isToday && <span className="text-xs">🔥</span>}
                               <span>{j.name}</span>
                             </div>
-                            <div className="text-[10.5px] text-[#8C7A5B] mt-1 font-medium font-mono">
+                            <div className="text-[11.5px] text-[#8C7A5B] mt-1 font-medium font-mono">
                               음력 {j.dateFormatted || `${j.day}일`}
                             </div>
                           </div>
                           <span
-                            className={`mt-2.5 text-[11px] font-black px-2.5 py-0.5 rounded-lg shrink-0 font-mono ${
+                            className={`mt-2.5 text-xs font-black px-2.5 py-0.5 rounded-lg shrink-0 font-mono ${
                               j.isToday
                                 ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xs'
                                 : 'bg-[#EFE7D6] text-[#7D6320] border border-[#DDD3BF]'
@@ -1089,7 +1089,7 @@ export default function HomeTab({
                       setActiveTab('lantern')
                       window.scrollTo({ top: 0, behavior: 'smooth' })
                     }}
-                    className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#2C231A] via-[#3A2F22] to-[#241C15] hover:from-[#382E22] hover:to-[#2C2219] border border-[#D4A024]/50 active:scale-[0.99] text-[#F5D061] font-serif-kr font-bold text-xs flex items-center justify-center gap-1.5 transition shadow-xs cursor-pointer"
+                    className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#2C231A] via-[#3A2F22] to-[#241C15] hover:from-[#382E22] hover:to-[#2C2219] border border-[#D4A024]/50 active:scale-[0.99] text-[#F5D061] font-serif-kr font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition shadow-xs cursor-pointer"
                   >
                     <Flame className="w-3.5 h-3.5 text-[#F5D061]" />
                     <span>사시예불 축원 소원등 올리기</span>
@@ -1108,10 +1108,10 @@ export default function HomeTab({
                     <MapPin className="w-4 h-4 text-[#F5D061]" />
                   </div>
                   <div className="min-w-0">
-                    <h2 className="font-serif-kr font-bold text-sm sm:text-base text-[#231F1C]">
+                    <h2 className="font-serif-kr font-bold text-base sm:text-lg text-[#231F1C]">
                       제주 소원사 오시는 길
                     </h2>
-                    <p className="text-xs font-semibold text-[#8C7A5B] truncate mt-0.5">
+                    <p className="text-xs sm:text-sm font-semibold text-[#8C7A5B] truncate mt-0.5">
                       제주시 죽성서길 75 (오등동 935)
                     </p>
                   </div>
@@ -1130,7 +1130,7 @@ export default function HomeTab({
                         showToast(addr)
                       }
                     }}
-                    className="py-2 px-3 rounded-xl bg-[#FAF8F5] hover:bg-[#F3EFE6] text-[#2B231A] border border-[#DCD3C3] font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow-xs cursor-pointer whitespace-nowrap"
+                    className="py-2.5 px-3 rounded-xl bg-[#FAF8F5] hover:bg-[#F3EFE6] text-[#2B231A] border border-[#DCD3C3] font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition active:scale-95 shadow-xs cursor-pointer whitespace-nowrap"
                     title="소원사 주소 클립보드 복사"
                   >
                     <Copy className="w-3.5 h-3.5 text-[#8A6510] shrink-0" />
@@ -1141,7 +1141,7 @@ export default function HomeTab({
                     href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%86%8C%EC%9B%90%EC%82%AC"
                     target="_blank"
                     rel="noreferrer"
-                    className="py-2 px-3 rounded-xl bg-[#03C75A] hover:bg-[#02B351] text-white font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow-xs whitespace-nowrap"
+                    className="py-2.5 px-3 rounded-xl bg-[#03C75A] hover:bg-[#02B351] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition active:scale-95 shadow-xs whitespace-nowrap"
                     title="네이버 지도로 소원사 길찾기 바로 연결"
                   >
                     <span className="text-xs">🧭</span>
@@ -1153,10 +1153,10 @@ export default function HomeTab({
               {/* 2. 구분선 & 공식 사이트 · 채널 (OFFICIAL CHANNELS) */}
               <div className="border-t border-[#F0EAE0] pt-2.5">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] sm:text-[10.5px] font-bold text-[#9A7418] tracking-wider uppercase">
+                  <span className="text-xs font-bold text-[#9A7418] tracking-wider uppercase">
                     Official Channels · 공식 채널
                   </span>
-                  <span className="text-[10px] text-[#A69B8D] font-medium hidden sm:inline-block">
+                  <span className="text-[11px] text-[#A69B8D] font-medium hidden sm:inline-block">
                     터치하여 바로가기
                   </span>
                 </div>
@@ -1244,7 +1244,7 @@ export default function HomeTab({
                       title={ch.name}
                     >
                       {ch.icon}
-                      <span className="text-[10px] sm:text-[10.5px] font-medium text-[#544B41] group-hover:text-[#9A7418] transition-colors whitespace-nowrap">
+                      <span className="text-xs font-medium text-[#544B41] group-hover:text-[#9A7418] transition-colors whitespace-nowrap">
                         {ch.name}
                       </span>
                     </a>
