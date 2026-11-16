@@ -317,6 +317,7 @@ export default function SowonsaSanctuaryModal({
     // [향올리기]: 향 사르기 (계속 유지)
     setIsSmokingIncense(true)
     triggerActionMotion('hapjang', 800)
+    handleAwardSanctuaryMerit()
 
     const nextCount = incenseCount + 1
     setIncenseCount(nextCount)
@@ -512,33 +513,35 @@ export default function SowonsaSanctuaryModal({
   }, [isOpen])
 
   // 탭 전환 또는 언마운트 시 오디오 정지 및 참배 회향 공덕 적립
+  // 🏛️ 대웅전 법당 입장 시 즉시 참배 공덕(+1,000점) 자동 적립 (나가기를 누르지 않아도 즉시 적립)
   useEffect(() => {
+    handleAwardSanctuaryMerit()
     return () => {
       try {
         if (ambientAudioRef.current) ambientAudioRef.current.pause()
         if (chantAudioRef.current) chantAudioRef.current.pause()
       } catch {}
-      handleAwardSanctuaryMerit()
     }
-  }, [])
+  }, [currentUser?.code])
 
-  // 🏛️ 대웅전 참배 회향 공덕 적립 (들어갔다 나오면 1회 1,000 공덕 · 1일 한도 1,000)
+  // 🏛️ 대웅전 참배 회향 공덕 적립 (1일 1회 한정 1,000 공덕)
   const isAwardingSanctuaryRef = useRef(false)
   const handleAwardSanctuaryMerit = async () => {
     if (isAwardingSanctuaryRef.current) return
-    isAwardingSanctuaryRef.current = true
     const userCode = currentUser?.code || 'guest'
     if (userCode && userCode !== 'guest') {
       try {
+        isAwardingSanctuaryRef.current = true
         const res = await grantMerit('sanctuary', userCode)
         if (res && res.earned > 0) {
           if (onAwardSanctuary) onAwardSanctuary(res)
           if (showToast) {
-            showToast('🏛️ 대웅전 참배 회향! (+1,000 공덕 적립 완료) 🙏')
+            showToast('🏛️ 대웅전 참배를 올렸습니다 (+1,000 공덕 적립) 🙏')
           }
         }
       } catch (e) {
         console.error('sanctuary grantMerit err:', e)
+        isAwardingSanctuaryRef.current = false
       }
     }
   }
