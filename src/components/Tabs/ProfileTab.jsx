@@ -589,12 +589,23 @@ export default function ProfileTab({
                             currentCount: effectiveInyeonReceiverPoints >= 5000 ? 1 : 0,
                           }
 
+                          // 🌸 신규회원공덕 노출 판별: 오늘 가입한 신규 불자에게만 1회 노출하고, 하루 지난 기존 회원은 완전히 제외
+                          const userCreatedAt = currentUser?.created_at ? new Date(currentUser.created_at) : null
+                          let isNewUserToday = false
+                          if (userCreatedAt && !isNaN(userCreatedAt.getTime())) {
+                            const uYear = userCreatedAt.getFullYear()
+                            const uMonth = String(userCreatedAt.getMonth() + 1).padStart(2, '0')
+                            const uDay = String(userCreatedAt.getDate()).padStart(2, '0')
+                            isNewUserToday = `${uYear}-${uMonth}-${uDay}` === todayKey
+                          }
+                          const showNewUserCard = isNewUserToday || inyeonReceiverInfo.currentPoints > 0
+
                           const todayTotalDaily =
                             sanctuaryInfo.currentPoints +
                             lanternInfo.currentPoints +
                             sutraInfo.currentPoints +
                             inyeonGiverInfo.currentPoints +
-                            inyeonReceiverInfo.currentPoints
+                            (showNewUserCard ? inyeonReceiverInfo.currentPoints : 0)
 
                           return (
                             <div className="space-y-1.5 p-2.5 sm:p-3 rounded-2xl bg-gradient-to-b from-[#F5D061]/10 to-black/30 border border-[#F5D061]/40 shadow-sm">
@@ -726,28 +737,30 @@ export default function ProfileTab({
                                   </div>
                                 </div>
 
-                                {/* 신행 5) 신규회원공덕 */}
-                                <div className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-left">
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-base shrink-0">🌸</span>
-                                      <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
-                                        신규회원공덕
+                                {/* 신행 5) 신규회원공덕: 당일 가입한 신규 회원에게만 노출, 하루 지난 기존 회원은 깔끔하게 제외 */}
+                                {showNewUserCard && (
+                                  <div className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-left">
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-base shrink-0">🌸</span>
+                                        <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
+                                          신규회원공덕
+                                        </span>
+                                      </div>
+                                      <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
+                                        오늘 {inyeonReceiverInfo.currentCount}/1회
                                       </span>
                                     </div>
-                                    <span className="text-xs sm:text-sm font-bold text-[#FFE58A]">
-                                      오늘 {inyeonReceiverInfo.currentCount}/1회
-                                    </span>
+                                    <div className="flex items-center justify-between mt-1">
+                                      <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
+                                        (5,000 공덕)
+                                      </span>
+                                      <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
+                                        +{inyeonReceiverInfo.currentPoints.toLocaleString()} 공덕
+                                      </span>
+                                    </div>
                                   </div>
-                                  <div className="flex items-center justify-between mt-1">
-                                    <span className="text-[11px] text-[#A89C8E] whitespace-nowrap">
-                                      (5,000 공덕)
-                                    </span>
-                                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-300 whitespace-nowrap">
-                                      +{inyeonReceiverInfo.currentPoints.toLocaleString()} 공덕
-                                    </span>
-                                  </div>
-                                </div>
+                                )}
                               </div>
                             </div>
                           )
