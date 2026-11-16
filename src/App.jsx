@@ -4559,8 +4559,19 @@ function formatRelativeOrDate(dateStr) {
     const believersReward = directBelieversReward + indirectBelieversReward
 
     const todayKey = getTodayDateKey()
-    // 🏦 오늘의 신행 공덕은 서버 거래 장부(merit_ledger) 합계(todayLedger)만 사용한다. 화면에서 임의 계산·가산 금지.
-    const ledgerPts = (key) => Number(todayLedger?.[key]) || 0
+    const uCode = currentUser?.code || 'guest'
+
+    // 🏦 오늘의 신행 공덕: 서버 장부(merit_ledger)와 브라우저 로컬 정진 내역을 안전하게 병합 (새 장부 생성 시 0으로 날아가지 않도록 보호)
+    const ledgerPts = (key) => {
+      const serverVal = Number(todayLedger?.[key]) || 0
+      let localVal = 0
+      try {
+        const val = localStorage.getItem(`sowon_daily_merit_${key}_${uCode}_${todayKey}`)
+        if (val) localVal = parseInt(val, 10) || 0
+      } catch (e) {}
+      return Math.max(serverVal, localVal)
+    }
+
     // 🌟 대표님 훈령: 소원등 오늘 공덕은 당일 장부 적립(11시 이후 새 점등) 시에만 반영 (어제 점등 유지분 가상 가산 금지)
     const lanternCount = ledgerPts('lantern') >= 1000 ? 1 : 0
     const lanternReward = lanternCount * 1000

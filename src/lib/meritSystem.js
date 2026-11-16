@@ -90,7 +90,7 @@ export const getDailyMeritInfo = (activityKey, userCode = 'guest', cloudPoints =
   const today = getTodayKey()
   const storageKey = `sowon_daily_merit_${activityKey}_${userCode || 'guest'}_${today}`
   
-  // 🌟 클라우드 DB 우선 원칙 (Single Source of Truth) + 로컬 즉시성 안전 병합
+  // 🌟 클라우드 DB와 로컬 정진 내역의 안전한 병합: DB가 방금 생성되어 비어있더라도 로컬에 기록된 오늘 정진 내역을 0으로 덮어쓰지 않음
   let currentPoints = 0
   let localPoints = 0
   try {
@@ -99,8 +99,7 @@ export const getDailyMeritInfo = (activityKey, userCode = 'guest', cloudPoints =
   } catch (e) {}
 
   if (cloudPoints !== null && cloudPoints !== undefined) {
-    // 장부(서버) 값이 주어지면 그 값만 신뢰 (기기별 localStorage 값과 섞지 않음)
-    currentPoints = Number(cloudPoints) || 0
+    currentPoints = Math.max(Number(cloudPoints) || 0, localPoints)
   } else {
     currentPoints = localPoints
   }
