@@ -5620,6 +5620,8 @@ function formatRelativeOrDate(dateStr) {
       const isBulsa = Boolean(paidFlag || cat.includes('49재') || cat.includes('위패') || cat.includes('천도재'))
       const referrerCode = assignedAgentCode && assignedAgentCode !== prayerCode8 ? assignedAgentCode : null
 
+      const formattedBirth = effectiveBirth ? (effectiveBirth.length === 4 ? `${effectiveBirth}-01-01` : effectiveBirth) : ''
+
       if (!existingPrayerMember) {
         const isBulsaReg = isBulsa
         let initialMerit = isBulsaReg ? 0 : 1000
@@ -5632,7 +5634,6 @@ function formatRelativeOrDate(dateStr) {
           }
         }
 
-        const formattedBirth = effectiveBirth ? (effectiveBirth.length === 4 ? `${effectiveBirth}-01-01` : effectiveBirth) : ''
         const newBeliever = {
           code: prayerCode8,
           phone: formatPhone11(wishPhoneClean),
