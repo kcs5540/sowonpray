@@ -640,41 +640,124 @@ export default function SowonsaSanctuaryModal({
             {/* 1. 향로 고정 앵커 (버튼과 동일한 3D 황금 향로를 탁자 위에 그대로 안착) */}
             <div className="relative flex flex-col items-center">
 
-              {/* 💨 하얀 연기 레이어: [향올리기] 시 향로 상단에서 부드럽고 은은하게 사방으로 퍼져나가는 백색 향 연무 */}
-              <div className="absolute bottom-full mb-0.5 left-1/2 -translate-x-1/2 w-48 sm:w-56 h-16 flex justify-center items-end pointer-events-none overflow-visible">
+              {/* 💨 백제금동대향로 스타일 실크 소용돌이 리본 향 연기 (Silk Ribbon Vortex Smoke) */}
+              <div className="absolute bottom-full mb-0.5 left-1/2 -translate-x-1/2 w-32 sm:w-36 h-28 sm:h-32 flex justify-center items-end pointer-events-none overflow-visible">
                 {isSmokingIncense && (
-                  <div className="relative w-44 sm:w-52 h-14 flex justify-center items-end animate-in fade-in duration-700">
-                    {/* 1. 좌측으로 부드럽게 퍼져나가는 은은한 연무 구름 */}
-                    <div className="absolute bottom-0 w-6 h-6 rounded-full bg-gradient-to-t from-white/70 via-stone-100/40 to-transparent blur-[3px] anim-smoke-spread-left" />
+                  <div className="relative w-full h-full flex justify-center items-end animate-in fade-in duration-700 anim-ribbon-sway">
+                    
+                    {/* 레이어 1: 메인 백제금동대향로 3줄기 소용돌이 실크 연기 SVG (사진의 실물 곡선 그대로 재현) */}
+                    <svg viewBox="0 0 100 120" className="absolute bottom-0 w-28 sm:w-32 h-28 sm:h-32 overflow-visible anim-ribbon-1 pointer-events-none drop-shadow-[0_0_4px_rgba(255,255,255,0.4)]">
+                      <defs>
+                        <linearGradient id="silkSmokeGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.85" />
+                          <stop offset="35%" stopColor="#f0f2f5" stopOpacity="0.7" />
+                          <stop offset="70%" stopColor="#e2e8f0" stopOpacity="0.5" />
+                          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+                        </linearGradient>
+                        <linearGradient id="silkSmokeThin" x1="0%" y1="100%" x2="0%" y2="0%">
+                          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
+                          <stop offset="50%" stopColor="#ffffff" stopOpacity="0.75" />
+                          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
 
-                    {/* 2. 우측으로 부드럽게 퍼져나가는 은은한 연무 구름 */}
-                    <div className="absolute bottom-0 w-7 h-6 rounded-full bg-gradient-to-t from-white/65 via-stone-100/35 to-transparent blur-[3.5px] anim-smoke-spread-right" />
-
-                    {/* 3. 중앙에서 몽환적으로 부풀며 흩어지는 하얀 연기 */}
-                    <div className="absolute bottom-0 w-8 h-7 rounded-full bg-gradient-to-t from-white/60 via-stone-200/30 to-transparent blur-[4px] anim-smoke-spread-center" />
-
-                    {/* 4. 향로 중심에서 낮게 피어나는 아지랑이 실연기 */}
-                    <div className="absolute bottom-0 w-2.5 h-6 rounded-full bg-gradient-to-t from-white/80 to-transparent blur-[1.5px] animate-pulse" />
-
-                    {/* 5. 은은하게 좌우로 흩어지는 유려한 연기 결 */}
-                    <svg viewBox="0 0 80 30" className="absolute bottom-0 w-28 h-10 opacity-45 pointer-events-none">
+                      {/* [좌측 줄기]: 아래는 곧게 솟구치다 중간에서 좌측으로 둥글게 도넛 루프를 그리며 흩어짐 */}
+                      {/* 외곽 부드러운 실크 리본 */}
                       <path
-                        d="M36 28 C24 22 18 14 10 6"
-                        stroke="rgba(255, 255, 255, 0.7)"
-                        strokeWidth="1.8"
+                        d="M32 118 C32 90 28 72 20 62 C10 50 14 36 26 32 C38 28 32 12 24 0"
+                        stroke="url(#silkSmokeGrad)"
+                        strokeWidth="3.2"
                         fill="none"
                         strokeLinecap="round"
-                        className="animate-pulse"
+                        className="opacity-70"
+                      />
+                      {/* 내부 섬세한 중심 실연기 결 */}
+                      <path
+                        d="M32 118 C32 90 28 72 20 62 C10 50 14 36 26 32 C38 28 32 12 24 0"
+                        stroke="url(#silkSmokeThin)"
+                        strokeWidth="1.2"
+                        fill="none"
+                        strokeLinecap="round"
+                        className="opacity-90"
+                      />
+                      {/* 좌측 소용돌이 고리(Vortex Curl) 입체감 */}
+                      <path
+                        d="M24 64 C16 56 18 42 28 40 C34 38 32 26 26 15"
+                        stroke="url(#silkSmokeGrad)"
+                        strokeWidth="2.2"
+                        fill="none"
+                        strokeLinecap="round"
+                        className="opacity-60"
+                      />
+
+                      {/* [중앙 줄기]: 봉황 뒤에서 곧게 솟아올라 상단에서 우아한 S자 물결을 그리는 중심 연기 */}
+                      <path
+                        d="M50 118 C50 85 46 65 52 45 C56 32 46 18 50 0"
+                        stroke="url(#silkSmokeGrad)"
+                        strokeWidth="3.5"
+                        fill="none"
+                        strokeLinecap="round"
+                        className="opacity-75"
                       />
                       <path
-                        d="M44 28 C56 20 62 14 70 6"
-                        stroke="rgba(255, 255, 255, 0.7)"
-                        strokeWidth="1.8"
+                        d="M50 118 C50 85 46 65 52 45 C56 32 46 18 50 0"
+                        stroke="url(#silkSmokeThin)"
+                        strokeWidth="1.4"
                         fill="none"
                         strokeLinecap="round"
-                        className="animate-pulse"
+                        className="opacity-95"
+                      />
+
+                      {/* [우측 줄기]: 아래는 곧게 솟구치다 우측으로 둥글게 소용돌이치며 피어오름 */}
+                      {/* 외곽 부드러운 실크 리본 */}
+                      <path
+                        d="M68 118 C68 92 72 74 80 62 C90 50 86 36 74 32 C62 28 68 12 76 0"
+                        stroke="url(#silkSmokeGrad)"
+                        strokeWidth="3.2"
+                        fill="none"
+                        strokeLinecap="round"
+                        className="opacity-70"
+                      />
+                      {/* 내부 섬세한 중심 실연기 결 */}
+                      <path
+                        d="M68 118 C68 92 72 74 80 62 C90 50 86 36 74 32 C62 28 68 12 76 0"
+                        stroke="url(#silkSmokeThin)"
+                        strokeWidth="1.2"
+                        fill="none"
+                        strokeLinecap="round"
+                        className="opacity-90"
+                      />
+                      {/* 우측 소용돌이 고리(Vortex Curl) 입체감 */}
+                      <path
+                        d="M76 64 C84 56 82 42 72 40 C66 38 68 26 74 15"
+                        stroke="url(#silkSmokeGrad)"
+                        strokeWidth="2.2"
+                        fill="none"
+                        strokeLinecap="round"
+                        className="opacity-60"
                       />
                     </svg>
+
+                    {/* 레이어 2: 시간차로 은은하게 교차하며 깊이를 더하는 보조 실크 연무 (반대 리듬) */}
+                    <svg viewBox="0 0 100 120" className="absolute bottom-0 w-28 sm:w-32 h-28 sm:h-32 overflow-visible anim-ribbon-2 pointer-events-none opacity-40 blur-[1px]">
+                      <path
+                        d="M34 118 C30 85 18 60 28 35 C34 22 26 10 30 0"
+                        stroke="rgba(255,255,255,0.6)"
+                        strokeWidth="2.5"
+                        fill="none"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M66 118 C70 85 82 60 72 35 C66 22 74 10 70 0"
+                        stroke="rgba(255,255,255,0.6)"
+                        strokeWidth="2.5"
+                        fill="none"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+
+                    {/* 향로 구멍 바로 위 미세한 시작 연무 */}
+                    <div className="absolute bottom-0 w-8 h-3 rounded-full bg-white/40 blur-[2px] pointer-events-none" />
                   </div>
                 )}
               </div>
