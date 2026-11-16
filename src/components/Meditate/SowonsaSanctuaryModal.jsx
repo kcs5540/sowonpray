@@ -132,6 +132,79 @@ function playYeomjuAcousticSynth() {
   } catch {}
 }
 
+// 🕯️ 불교 전통 황금 향로 및 피어오르는 청정한 향 연기 3D SVG 아이콘
+function IncenseIcon({ className = 'w-6 h-6', isSmoking = false }) {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      {/* 피어오르는 청정한 3줄기 향 연기 */}
+      <path
+        d="M20 18C19 14.5 22 12.5 20 9.5C18.5 7 21 4.5 19 1.5"
+        stroke="#FFEAA7"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        className={isSmoking ? 'animate-pulse' : 'opacity-75'}
+      />
+      <path
+        d="M24 18C23 13.5 26 11.5 24 7.5C22.5 4.5 25 2.5 23 0.5"
+        stroke="#FFF9DB"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        className={isSmoking ? 'animate-bounce' : 'opacity-90'}
+      />
+      <path
+        d="M28 18C27 14.5 30 12.5 28 9.5C26.5 7 29 4.5 27 1.5"
+        stroke="#FFEAA7"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        className={isSmoking ? 'animate-pulse' : 'opacity-75'}
+      />
+
+      {/* 향대 3개 (Incense sticks) */}
+      <line x1="20" y1="18" x2="20" y2="28" stroke="#D63031" strokeWidth="1.8" strokeLinecap="round" />
+      <line x1="24" y1="18" x2="24" y2="28" stroke="#E17055" strokeWidth="2.0" strokeLinecap="round" />
+      <line x1="28" y1="18" x2="28" y2="28" stroke="#D63031" strokeWidth="1.8" strokeLinecap="round" />
+      
+      {/* 붉은 불씨 (Glowing Embers) */}
+      <circle cx="20" cy="18" r="1.5" fill="#FF7675" className="animate-ping" />
+      <circle cx="24" cy="18" r="1.8" fill="#FF7675" className="animate-pulse" />
+      <circle cx="28" cy="18" r="1.5" fill="#FF7675" className="animate-ping" />
+
+      {/* 향로 테두리 림 (Censer Rim) */}
+      <ellipse cx="24" cy="28" rx="14" ry="3.5" fill="url(#incenseRimGrad)" stroke="#F5D061" strokeWidth="1.2" />
+
+      {/* 향로 볼록한 몸체 (Censer Body) */}
+      <path
+        d="M10 28C10 37.5 15 41 24 41C33 41 38 37.5 38 28H10Z"
+        fill="url(#incenseBodyGrad)"
+        stroke="#C59B27"
+        strokeWidth="1.5"
+      />
+
+      {/* 삼발이 다리 (Tripod Legs) */}
+      <path d="M14 40.5L12 45.5" stroke="#8A6510" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M24 41L24 46" stroke="#8A6510" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M34 40.5L36 45.5" stroke="#8A6510" strokeWidth="2.5" strokeLinecap="round" />
+
+      {/* 좌우 귀 손잡이 */}
+      <path d="M10 31C7 31 6 34 8 36" stroke="#F5D061" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M38 31C41 31 42 34 40 36" stroke="#F5D061" strokeWidth="1.5" strokeLinecap="round" />
+
+      <defs>
+        <linearGradient id="incenseRimGrad" x1="10" y1="28" x2="38" y2="28" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#D4AF37" />
+          <stop offset="0.5" stopColor="#FFF2A3" />
+          <stop offset="1" stopColor="#AA7C11" />
+        </linearGradient>
+        <linearGradient id="incenseBodyGrad" x1="10" y1="28" x2="38" y2="41" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#F5D061" />
+          <stop offset="0.3" stopColor="#D4AF37" />
+          <stop offset="0.7" stopColor="#8A6510" />
+          <stop offset="1" stopColor="#4A3408" />
+        </linearGradient>
+      </defs>
+    </svg>
+  )
+}
 
 /**
  * 🪔 제주 소원사 고요 법당 (멍스테이 & 사찰 쉼터 뷰)
@@ -163,6 +236,16 @@ export default function SowonsaSanctuaryModal({
   // 🎬 대웅전 시네마틱 시퀀스: 'entering'(걸어들어옴) -> 'hapjang'(합장반배) -> 'seated'(착석완료) -> 'exiting'(하직합장퇴장)
   const [entranceStep, setEntranceStep] = useState('entering')
   const [isExiting, setIsExiting] = useState(false)
+  const [incenseCount, setIncenseCount] = useState(() => {
+    try {
+      const stored = localStorage.getItem(`sowon_incense_${currentUser?.code || 'guest'}_${new Date().toISOString().slice(0, 10)}`)
+      return stored ? parseInt(stored, 10) || 0 : 0
+    } catch {
+      return 0
+    }
+  })
+  const [isSmokingIncense, setIsSmokingIncense] = useState(false)
+  const [sessionIncenses, setSessionIncenses] = useState(0)
   const [bowCount, setBowCount] = useState(() => {
     const info = getDailyMeritInfo('bow', currentUser?.code || 'guest')
     return info.currentCount || 0
@@ -292,7 +375,40 @@ export default function SowonsaSanctuaryModal({
   }
 
 
-  // 3) 1배 올리기 (108배 마일스톤 축하)
+  // 1) 부처님 전 청정한 향 올리기 (분향·헌향)
+  const handleIncense = (e) => {
+    e?.stopPropagation()
+    setEntranceStep('seated')
+    setIsSmokingIncense(true)
+    setTimeout(() => setIsSmokingIncense(false), 3000)
+    triggerActionMotion('hapjang', 800)
+
+    const nextCount = incenseCount + 1
+    setIncenseCount(nextCount)
+    setSessionIncenses((prev) => prev + 1)
+    try {
+      localStorage.setItem(
+        `sowon_incense_${currentUser?.code || 'guest'}_${new Date().toISOString().slice(0, 10)}`,
+        String(nextCount)
+      )
+    } catch {}
+
+    playYeomjuAcousticSynth()
+
+    let milestoneMsg = ''
+    if (nextCount === 1) milestoneMsg = '부처님 전에 청정한 지혜의 향을 사릅니다'
+    else if (nextCount === 3) milestoneMsg = '🎉 삼보통달: 계향·정향·혜향이 온 우주에 가득합니다'
+    else milestoneMsg = `부처님 전 ${nextCount}번째 청정한 향을 사릅니다`
+
+    showActionToast(`🕯️ ${milestoneMsg}`)
+    setLiveStreamMsg({
+      name: currentUser?.name || '나의 정진',
+      action: `삼존불 전에 마음의 번뇌를 씻는 청정한 향을 올렸습니다`,
+      icon: '🕯️',
+    })
+  }
+
+  // 2) 1배 올리기 (108배 마일스톤 축하)
   const handleBow = (e) => {
     e?.stopPropagation()
     setEntranceStep('seated')
@@ -1022,9 +1138,11 @@ export default function SowonsaSanctuaryModal({
           </div>
         )}
 
-        {/* 나의 실시간 정진 기록 가로형 바 (절 N배 · 목탁 N타 · 염주 N알) + 복 나눔 버튼 (대표님 지정 1번 위치에 품격 배치) */}
+        {/* 나의 실시간 정진 기록 가로형 바 (향 N공양 · 절 N배 · 목탁 N타 · 염주 N알) + 복 나눔 버튼 */}
         <div className="flex items-center justify-center gap-2 mt-1">
-          <div className="flex items-center gap-2.5 px-3.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-xs font-serif-kr shadow-sm">
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-xs font-serif-kr shadow-sm">
+            <span className="font-bold text-[#F5D061] text-[11px] sm:text-xs tracking-tight">{incenseCount}향</span>
+            <span className="w-px h-2.5 bg-white/20" />
             <span className="font-bold text-[#F5D061] text-[11px] sm:text-xs tracking-tight">{bowCount}배</span>
             <span className="w-px h-2.5 bg-white/20" />
             <span className="font-bold text-[#F5D061] text-[11px] sm:text-xs tracking-tight">{moktakTapCount}타</span>
@@ -1039,6 +1157,7 @@ export default function SowonsaSanctuaryModal({
               if (handleShareSanctuary) {
                 handleShareSanctuary({
                   believerName: currentUser?.name,
+                  incenseCount: incenseCount || sessionIncenses || 0,
                   bowCount: bowCount || sessionBows || 0,
                   moktakCount: moktakTapCount || sessionMoktaks || 0,
                   yeomjuCount: yeomjuCount || sessionYeomjus || 0,
@@ -1065,16 +1184,31 @@ export default function SowonsaSanctuaryModal({
         </div>
       </div>
 
-      {/* 5. 하단 4대 신행 인터랙션 바 (절하기 / 목탁 / 염주 / 나가기) */}
+      {/* 5. 하단 정통 참배 4대 신행 인터랙션 바: [1. 향올리기] ➔ [2. 절하기] ➔ [3. 목탁] ➔ [4. 염주] */}
       <footer className={`relative z-20 px-2 sm:px-3 pb-5 pt-2 bg-gradient-to-t from-black via-black/90 to-transparent transition-opacity duration-500 ${
         isZenMode ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}>
         <div className="max-w-md mx-auto grid grid-cols-4 gap-1.5 sm:gap-2.5">
-          {/* 버튼 1: 108배 (3D 절하는 동자승 아이콘) */}
+          {/* 버튼 1: 향올리기 (분향/헌향) - 대웅전 참배의 첫 번째 예법 */}
+          <button
+            type="button"
+            onClick={handleIncense}
+            className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 hover:border-[#F5D061]/40 transition group cursor-pointer"
+            title="부처님 전에 청정한 향 사르기"
+          >
+            <div className="h-6 sm:h-7 flex items-center justify-center mb-0.5 group-hover:scale-110 transition filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.5)]">
+              <IncenseIcon className="w-6 h-6 sm:w-7 sm:h-7" isSmoking={isSmokingIncense} />
+            </div>
+            <span className="text-[11px] sm:text-xs font-bold text-[#E8DFD1] group-hover:text-[#F5D061] whitespace-nowrap">
+              향올리기
+            </span>
+          </button>
+
+          {/* 버튼 2: 절하기 (108배 / 삼존불 1배 올리기) */}
           <button
             type="button"
             onClick={handleBow}
-            className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 hover:border-[#F5D061]/40 transition group"
+            className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 hover:border-[#F5D061]/40 transition group cursor-pointer"
             title="삼존불 1배 올리기"
           >
             <img 
@@ -1087,11 +1221,11 @@ export default function SowonsaSanctuaryModal({
             </span>
           </button>
 
-          {/* 버튼 2: 목탁 치기 */}
+          {/* 버튼 3: 목탁 치기 */}
           <button
             type="button"
             onClick={handleMoktak}
-            className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 hover:border-[#F5D061]/40 transition group"
+            className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 hover:border-[#F5D061]/40 transition group cursor-pointer"
             title="목탁 치기"
           >
             <img 
@@ -1104,11 +1238,11 @@ export default function SowonsaSanctuaryModal({
             </span>
           </button>
 
-          {/* 버튼 3: 108 염주 굴리기 */}
+          {/* 버튼 4: 108 염주 굴리기 */}
           <button
             type="button"
             onClick={handleYeomju}
-            className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 hover:border-[#F5D061]/40 transition group"
+            className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-white/10 hover:bg-white/15 active:scale-95 border border-white/15 hover:border-[#F5D061]/40 transition group cursor-pointer"
             title="108 염주알 굴리기"
           >
             <img 
@@ -1120,48 +1254,6 @@ export default function SowonsaSanctuaryModal({
               염주
             </span>
           </button>
-
-          {/* 버튼 4: 소원등 밝히기 (탭 모드) vs 법당 나가기 (모달 모드) */}
-          {isEmbeddedTab ? (
-            <button
-              type="button"
-              onClick={() => {
-                handleAwardSanctuaryMerit()
-                if (onOpenLantern) onOpenLantern()
-              }}
-              className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-gradient-to-b from-[#F5D061]/25 to-[#C59B27]/15 hover:from-[#F5D061]/35 hover:to-[#C59B27]/25 active:scale-95 border border-[#F5D061]/50 shadow-[0_0_12px_rgba(245,208,97,0.3)] transition group cursor-pointer"
-              title="대웅전 부처님 전에 소원등 밝히기"
-            >
-              <div className="relative mb-0.5 flex items-center justify-center">
-                <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-[#F5D061] group-hover:scale-110 transition filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.6)]" />
-              </div>
-              <span className="text-[11px] sm:text-xs font-bold text-[#F5D061] group-hover:text-yellow-300 whitespace-nowrap">
-                소원등
-              </span>
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={handleExitWithBow}
-              className={`flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl active:scale-95 border transition group ${
-                isExiting
-                  ? 'bg-[#F5D061]/25 border-[#F5D061] shadow-[0_0_15px_rgba(245,208,97,0.4)]'
-                  : 'bg-white/10 hover:bg-white/15 border-white/15 hover:border-[#F5D061]/50'
-              }`}
-              title="대웅전 나가기"
-            >
-              <div className="relative mb-0.5 flex items-center justify-center">
-                <DoorOpen className={`w-5 h-5 sm:w-6 sm:h-6 transition-transform filter drop-shadow-[0_2px_8px_rgba(245,208,97,0.4)] ${
-                  isExiting ? 'text-[#F5D061] animate-pulse' : 'text-[#F5D061] group-hover:scale-110'
-                }`} />
-              </div>
-              <span className={`text-[11px] sm:text-xs font-bold transition ${
-                isExiting ? 'text-[#F5D061]' : 'text-[#E8DFD1] group-hover:text-[#F5D061]'
-              }`}>
-                {isExiting ? '하직 중...' : '나가기'}
-              </span>
-            </button>
-          )}
         </div>
       </footer>
     </div>
