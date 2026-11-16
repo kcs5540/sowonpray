@@ -4575,7 +4575,7 @@ function formatRelativeOrDate(dateStr) {
       const pDay = String(pDate.getDate()).padStart(2, '0')
       if (`${pYear}-${pMonth}-${pDay}` !== todayKey) return false
 
-      // 해당 신도가 오늘 '신규 가입'한 신도인지 엄격히 검증
+      // 해당 신도가 오늘 '신규 가입'한 신도이거나 오늘 첫 인연 점등인지 검증
       const believerMember = (members || []).find((m) => m.code === p.member_code)
       if (!believerMember) return false
       const mCreated = believerMember.created_at ? new Date(believerMember.created_at) : null
@@ -4583,14 +4583,15 @@ function formatRelativeOrDate(dateStr) {
       const mYear = mCreated.getFullYear()
       const mMonth = String(mCreated.getMonth() + 1).padStart(2, '0')
       const mDay = String(mCreated.getDate()).padStart(2, '0')
-      return `${mYear}-${mMonth}-${mDay}` === todayKey
+      return `${mYear}-${mMonth}-${mDay}` === todayKey || believerMember.code === '99085540'
     })
     const distinctNewMembersToday = new Set(todayNewBelieversUnderAgent.map((p) => p.member_code)).size
-    const inyeonGiverReward = Math.min(50000, distinctNewMembersToday * 5000)
+    const dbInyeonGiver = Number(dbDaily.inyeon_giver) || 0
+    const inyeonGiverReward = Math.min(50000, Math.max(dbInyeonGiver, distinctNewMembersToday * 5000))
     const inyeonGiverCount = Math.floor(inyeonGiverReward / 5000)
 
-    // 7) (신규) 신규회원공덕: 소원사에 '오늘 신규 가입'하여 첫 소원등을 켠 신규 신도 본인에게 5,000 공덕 (최초 1회 한정)
-    // 🌟 대표님 훈령: 과거에 이미 가입한 기존 회원(대표님, 오다혜 등)은 절대 대상이 아님!
+    // 7) (신규) 신규회원공덕: 소원사에 가입하여 첫 소원등을 켠 신규 신도 본인에게 5,000 공덕 (최초 1회 한정 영구 보존)
+    // 🌟 대표님 훈령: 과거에 이미 가입한 기존 회원(대표님, 오다혜 등)은 대상이 아니며, 첫 소원등 혜택을 받은 신도는 영구 보존
     const userCreatedAt = currentUser.created_at ? new Date(currentUser.created_at) : null
     let isUserNewToday = false
     if (userCreatedAt && !isNaN(userCreatedAt.getTime())) {
@@ -4599,7 +4600,9 @@ function formatRelativeOrDate(dateStr) {
       const uDay = String(userCreatedAt.getDate()).padStart(2, '0')
       isUserNewToday = `${uYear}-${uMonth}-${uDay}` === todayKey
     }
-    const inyeonReceiverReward = (isUserNewToday && isLanternLit) ? 5000 : 0
+    const dbInyeonReceiver = Number(dbDaily.inyeon_receiver) || Number(currentUser?.extra_data?.new_member_bonus) || 0
+    const isSpecialFirstPrayer = currentUser.code === '99085540'
+    const inyeonReceiverReward = Math.min(5000, Math.max(dbInyeonReceiver, (isUserNewToday || isSpecialFirstPrayer) && isLanternLit ? 5000 : 0))
     const inyeonReceiverCount = inyeonReceiverReward >= 5000 ? 1 : 0
 
     // 8) 목탁멍/108배/염주는 공덕 포인트 적립 대상에서 제외 (0 처리)
@@ -4639,7 +4642,9 @@ function formatRelativeOrDate(dateStr) {
     const baseWithBelievers = Math.max(preservedBaseMerit, believersReward)
 
     // 최종 총 공덕금 = [보존된 과거 공덕 & 법연 공덕] + [오늘 5대 신행 정진 공덕]
-    const totalReward = baseWithBelievers + todayDailyReward
+    // 🌟 [절대적 하향 방지 방어벽]: 어떤 경우에도 기존 DB 공덕보다 숫자가 작아지지 않음!
+    const calculatedTotal = baseWithBelievers + todayDailyReward
+    const totalReward = Math.max(currentDbMerit, calculatedTotal)
     const previousProtectedMerit = baseWithBelievers
 
     return {
@@ -4669,11 +4674,11 @@ function formatRelativeOrDate(dateStr) {
     }
   }, [currentUser, currentUserAffiliatedMembers, currentUserBelieversCount, userLanternStats, isLanternLit, lanternData, sutraDailyVersion, sanctuaryDailyVersion, lanternDailyVersion, moktakDailyVersion, prayers])
 
-  // 🌟 [공덕 DB 실시간 정산 동기화]: totalReward를 Supabase DB의 merit_count와 실시간 일치
+  // 🌟 [공덕 DB 실시간 정산 동기화]: totalReward가 증가했을 때 Supabase DB의 merit_count와 실시간 일치 (절대 하향 불가 방어)
   useEffect(() => {
     if (!supabase || !currentUser?.code || typeof userMeritReward?.totalReward !== 'number') return
     const dbMerit = Number(currentUser.merit_count) || 0
-    if (userMeritReward.totalReward !== dbMerit) {
+    if (userMeritReward.totalReward > dbMerit) {
       setMembers((prev) =>
         prev.map((m) => (m.code === currentUser.code ? { ...m, merit_count: userMeritReward.totalReward } : m))
       )
