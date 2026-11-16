@@ -72,7 +72,7 @@ import AgentTab from './components/Tabs/AgentTab'
 import HomeTab from './components/Tabs/HomeTab'
 import SowonsaSanctuaryModal from './components/Meditate/SowonsaSanctuaryModal'
 import ProfileTab from './components/Tabs/ProfileTab'
-import { awardMerit, MERIT_RULES, getDailyMeritInfo } from './lib/meritSystem'
+import { awardMerit, MERIT_RULES, getDailyMeritInfo, grantMerit, fetchTodayLedger } from './lib/meritSystem'
 import { playMoktakSound, preloadMoktakAudio, prefetchMoktakBytes } from './lib/moktakAudio'
 import {
   notifyPrayerSubmission,
@@ -4076,6 +4076,35 @@ function formatRelativeOrDate(dateStr) {
   const [sanctuaryDailyVersion, setSanctuaryDailyVersion] = useState(0)
   const [lanternDailyVersion, setLanternDailyVersion] = useState(0)
   const [moktakDailyVersion, setMoktakDailyVersion] = useState(0)
+
+  // 🏦 오늘의 공덕 거래 장부 합계 (서버 merit_ledger 기준, 화면 "오늘의 신행 공덕"의 유일한 출처)
+  const [todayLedger, setTodayLedger] = useState({})
+  const todayLedgerCode = currentUser?.code || ''
+  useEffect(() => {
+    let cancelled = false
+    if (!todayLedgerCode) {
+      setTodayLedger({})
+      return undefined
+    }
+    fetchTodayLedger(todayLedgerCode).then((sums) => {
+      if (!cancelled) setTodayLedger(sums)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [todayLedgerCode])
+
+  // 모든 공덕 적립의 단일 통로: 서버 장부에 기록 → 응답 balance로 누적 화면 반영
+  const grantMeritFor = async (activity, memberCode, ref = '') => {
+    const res = await grantMerit(activity, memberCode, ref)
+    if (res && typeof res.balance === 'number') {
+      setMembers((prev) => prev.map((m) => (m.code === memberCode ? { ...m, merit_count: res.balance } : m)))
+    }
+    if (res && res.earned > 0 && memberCode === currentUser?.code) {
+      setTodayLedger((prev) => ({ ...prev, [activity]: (Number(prev[activity]) || 0) + res.earned }))
+    }
+    return res || { earned: 0 }
+  }
   const [showMeritCertModal, setShowMeritCertModal] = useState(false)
   const [meritCertType, setMeritCertType] = useState('lantern') // 'lantern' | 'sutra'
   const [isCapturingCert, setIsCapturingCert] = useState(false)
@@ -4530,75 +4559,18 @@ function formatRelativeOrDate(dateStr) {
     const believersReward = directBelieversReward + indirectBelieversReward
 
     const todayKey = getTodayDateKey()
-    const dbDaily = currentUser?.extra_data?.daily_merits?.[todayKey] || {}
-
-    // 3) 소원등 점등: 공식 규격 1회 1,000 공덕 (1일 1회 한도)
-    // 🌟 대표님 훈령: 소원등 리셋 기준은 사시예불 회향 시각인 매일 오전 11:00!
-    // 오전 11시 사시예불 축원 회향(소등) 전까지 환하게 점등 유지(isLanternLit === true -> 1,000 공덕 달성 중)
-    // 오전 11시 소등 이후에는 0/1회로 리프레시되어 새로운 당일 소원등을 다시 밝힐 수 있음
-    const lanternCount = (Number(dbDaily.lantern) || 0) >= 1000 || getDailyMeritInfo('lantern', currentUser.code, dbDaily.lantern).currentCount > 0 ? 1 : 0
+    // 🏦 오늘의 신행 공덕은 서버 거래 장부(merit_ledger) 합계(todayLedger)만 사용한다. 화면에서 임의 계산·가산 금지.
+    const ledgerPts = (key) => Number(todayLedger?.[key]) || 0
+    const lanternCount = ledgerPts('lantern') >= 1000 ? 1 : 0
     const lanternReward = lanternCount * 1000
-
-    // 4) 대웅전 참배: 공식 규격 1회 1,000 공덕 (1일 1회 한도)
-    const sanctuaryInfo = getDailyMeritInfo('sanctuary', currentUser.code, dbDaily.sanctuary)
-    const sanctuaryCount = (sanctuaryInfo.currentCount > 0 || (dbDaily.sanctuary && dbDaily.sanctuary >= 1000)) ? 1 : 0
+    const sanctuaryCount = ledgerPts('sanctuary') >= 1000 ? 1 : 0
     const sanctuaryReward = sanctuaryCount * 1000
-
-    // 5) 한줄사경: 공식 규격 1회 1,000 공덕 (1일 1회 한도)
-    const sutraInfo = getDailyMeritInfo('sutra', currentUser.code, dbDaily.sutra)
-    let storedSutra = 0
-    try {
-      storedSutra =
-        Number(localStorage.getItem(`sowonpray_sutra_reward_count_${currentUser.code}`)) ||
-        Number(localStorage.getItem(`sowonpray_sutra_count_${currentUser.code}`)) ||
-        0
-    } catch (e) {}
-    const dbSutra = Number(currentUser.sutra_reward_count || currentUser.sutra_count) || 0
-    const hasSutra = (dbDaily.sutra && dbDaily.sutra >= 1000) || dbSutra > 0 || storedSutra > 0 || (sutraInfo?.currentPoints && sutraInfo.currentPoints > 0)
-    const sutraCount = hasSutra ? 1 : 0
+    const sutraCount = ledgerPts('sutra') >= 1000 ? 1 : 0
     const sutraReward = sutraCount * 1000
     const todaySutraRewardCount = sutraCount
-
-    // 6) 인연 전달 한 사람: 오늘 '신규 가입'한 산하 신도가 첫 소원등을 켰을 때 추천인에게 5,000 공덕 (1일 한도 50,000)
-    // 🌟 대표님 훈령: 이미 과거에 가입한 기존 회원(오다혜 등)은 절대 중복 지급되지 않으며, 오늘 신규 가입한 신도만 엄격히 인정!
-    const todayNewBelieversUnderAgent = (prayers || []).filter((p) => {
-      if (p.agent_code !== currentUser.code || p.member_code === currentUser.code) return false
-      const pDate = p.created_at ? new Date(p.created_at) : null
-      if (!pDate || isNaN(pDate.getTime())) return false
-      const pYear = pDate.getFullYear()
-      const pMonth = String(pDate.getMonth() + 1).padStart(2, '0')
-      const pDay = String(pDate.getDate()).padStart(2, '0')
-      if (`${pYear}-${pMonth}-${pDay}` !== todayKey) return false
-
-      // 해당 신도가 오늘 '신규 가입'한 신도이거나 오늘 첫 인연 점등인지 검증
-      const believerMember = (members || []).find((m) => m.code === p.member_code)
-      if (!believerMember) return false
-      const mCreated = believerMember.created_at ? new Date(believerMember.created_at) : null
-      if (!mCreated || isNaN(mCreated.getTime())) return false
-      const mYear = mCreated.getFullYear()
-      const mMonth = String(mCreated.getMonth() + 1).padStart(2, '0')
-      const mDay = String(mCreated.getDate()).padStart(2, '0')
-      return `${mYear}-${mMonth}-${mDay}` === todayKey || believerMember.code === '99085540'
-    })
-    const distinctNewMembersToday = new Set(todayNewBelieversUnderAgent.map((p) => p.member_code)).size
-    const dbInyeonGiver = Number(dbDaily.inyeon_giver) || 0
-    const inyeonGiverReward = Math.min(50000, Math.max(dbInyeonGiver, distinctNewMembersToday * 5000))
+    const inyeonGiverReward = Math.min(50000, ledgerPts('inyeon_giver'))
     const inyeonGiverCount = Math.floor(inyeonGiverReward / 5000)
-
-    // 7) (신규) 신규회원공덕: 소원사에 가입하여 첫 소원등을 켠 신규 신도 본인에게 5,000 공덕 (최초 1회 한정 영구 보존)
-    // 🌟 대표님 훈령: 과거에 이미 가입한 기존 회원(대표님, 오다혜 등)은 대상이 아니며, 첫 소원등 혜택을 받은 신도는 영구 보존
-    const userCreatedAt = currentUser.created_at ? new Date(currentUser.created_at) : null
-    let isUserNewToday = false
-    if (userCreatedAt && !isNaN(userCreatedAt.getTime())) {
-      const uYear = userCreatedAt.getFullYear()
-      const uMonth = String(userCreatedAt.getMonth() + 1).padStart(2, '0')
-      const uDay = String(userCreatedAt.getDate()).padStart(2, '0')
-      isUserNewToday = `${uYear}-${uMonth}-${uDay}` === todayKey
-    }
-    const dbInyeonReceiver = Number(dbDaily.inyeon_receiver) || Number(currentUser?.extra_data?.new_member_bonus) || 0
-    const isSpecialFirstPrayer = currentUser.code === '99085540'
-    // 표시용 내역은 장부(daily_merits)에 실제 기록된 값만 사용 (가상 가산 제거)
-    const inyeonReceiverReward = Math.min(5000, dbInyeonReceiver)
+    const inyeonReceiverReward = Math.min(5000, ledgerPts('inyeon_receiver'))
     const inyeonReceiverCount = inyeonReceiverReward >= 5000 ? 1 : 0
 
     // 8) 목탁멍/108배/염주는 공덕 포인트 적립 대상에서 제외 (0 처리)
@@ -4636,8 +4608,9 @@ function formatRelativeOrDate(dateStr) {
       todayMoktakRewardCount,
       totalReward,
       previousProtectedMerit,
+      todayLedger,
     }
-  }, [currentUser, currentUserAffiliatedMembers, currentUserBelieversCount, userLanternStats, isLanternLit, lanternData, sutraDailyVersion, sanctuaryDailyVersion, lanternDailyVersion, moktakDailyVersion, prayers])
+  }, [currentUser, currentUserAffiliatedMembers, currentUserBelieversCount, userLanternStats, isLanternLit, lanternData, sutraDailyVersion, sanctuaryDailyVersion, lanternDailyVersion, moktakDailyVersion, prayers, todayLedger])
 
   // 🌟 (기존 위험한 프론트엔드 자동 덮어쓰기 useEffect 완전 제거 - 상용 원장 불변성 확립)
 
@@ -6036,146 +6009,25 @@ function formatRelativeOrDate(dateStr) {
     }
   }
 
-  const addSutraMerit = () => {
-    // 한줄사경: 1회 1,000 공덕 (1일 한도 1,000)
+  const addSutraMerit = async () => {
+    // 한줄사경: 1회 1,000 공덕 (1일 한도 1,000) - 거래 장부(grant_merit) 단일 통로
     const userCode = currentUser?.code || 'guest'
-    const meritRes = awardMerit('sutra', userCode, 1)
-
-    if (meritRes.earnedPoints > 0) {
-      addMerit(meritRes.earnedPoints)
-    }
-
-    if (currentUser) {
-      const todayKey = getTodayDateKey()
-      const dailyKey = `sowonpray_sutra_daily_${currentUser.code}_${todayKey}`
-      let todayCount = 0
-      try {
-        todayCount = Number(localStorage.getItem(dailyKey)) || 0
-      } catch (e) {}
-
-      const isEligible = todayCount < 1
-      const nextDaily = todayCount + 1
-      try {
-        localStorage.setItem(dailyKey, String(nextDaily))
-      } catch (e) {}
-      setSutraDailyVersion((v) => v + 1)
-
-      if (isEligible) {
-        let storedReward = 0
-        try {
-          storedReward =
-            Number(localStorage.getItem(`sowonpray_sutra_reward_count_${currentUser.code}`)) ||
-            Number(localStorage.getItem(`sowonpray_sutra_count_${currentUser.code}`)) ||
-            0
-        } catch (e) {}
-        const dbVal = Number(currentUser.sutra_reward_count || currentUser.sutra_count) || 0
-        const prev = Math.max(dbVal, storedReward)
-        const nextReward = prev + 1
-
-        setMembers((prevMembers) =>
-          prevMembers.map((m) =>
-            m.code === currentUser.code
-              ? {
-                  ...m,
-                  sutra_reward_count: nextReward,
-                  sutra_count: nextReward,
-                }
-              : m
-          )
-        )
-        try {
-          localStorage.setItem(`sowonpray_sutra_reward_count_${currentUser.code}`, String(nextReward))
-          localStorage.setItem(`sowonpray_sutra_count_${currentUser.code}`, String(nextReward))
-        } catch (e) {}
-
-        if (supabase) {
-          supabase
-            .from('members')
-            .update({
-              sutra_count: nextReward,
-            })
-            .eq('code', currentUser.code)
-            .then(({ error }) => {
-              if (error) console.log('Supabase sutra sync note:', error)
-            })
-        }
+    if (userCode && userCode !== 'guest') {
+      const res = await grantMeritFor('sutra', userCode)
+      if (res && res.earned > 0) {
+        showToast('✍️ 한줄사경 원만 회향! (+1,000 공덕 적립) 🙏')
+      } else {
+        showToast('✍️ 한줄사경 회향! (오늘 사경 공덕 1,000 공덕 달성 완료) 🙏')
       }
-    }
-
-    if (meritRes.earnedPoints > 0) {
-      showToast(`✍️ 한줄사경 원만 회향! (+1,000 공덕 적립) 🙏`)
     } else {
-      showToast('✍️ 한줄사경 회향! (오늘 사경 공덕 1,000 공덕 달성 완료) 🙏')
+      showToast('✍️ 한줄사경 정진을 원만 회향하셨습니다 🙏')
     }
+    setSutraDailyVersion((v) => v + 1)
   }
 
-  // 🪵 108 목탁멍 완주 회향 시 신행 복덕 보시금 적립 (정성 반영 1회 500원 · 1일 최대 1회)
+  // 🪵 108 목탁멍 완주 회향 (청정 마음 힐링 명상)
   const addMoktakMerit = () => {
-    addMerit(1)
-    if (currentUser) {
-      const todayKey = getTodayDateKey()
-      const dailyKey = `sowonpray_moktak_daily_${currentUser.code}_${todayKey}`
-      let todayCount = 0
-      try {
-        todayCount = Number(localStorage.getItem(dailyKey)) || 0
-      } catch (e) {}
-
-      const isEligible = todayCount < 1
-      const nextDaily = todayCount + 1
-      try {
-        localStorage.setItem(dailyKey, String(nextDaily))
-      } catch (e) {}
-      setMoktakDailyVersion((v) => v + 1)
-
-      if (isEligible) {
-        let storedReward = 0
-        try {
-          storedReward =
-            Number(localStorage.getItem(`sowonpray_moktak_reward_count_${currentUser.code}`)) ||
-            Number(localStorage.getItem(`sowonpray_moktak_count_${currentUser.code}`)) ||
-            0
-        } catch (e) {}
-        const dbVal = Number(currentUser.moktak_reward_count || currentUser.moktak_count) || 0
-        const prev = Math.max(dbVal, storedReward)
-        const nextReward = prev + 1
-
-        setMembers((prevMembers) =>
-          prevMembers.map((m) =>
-            m.code === currentUser.code
-              ? {
-                  ...m,
-                  moktak_reward_count: nextReward,
-                  moktak_count: nextReward,
-                  merit_count: (m.merit_count || 0) + 1,
-                }
-              : m
-          )
-        )
-        try {
-          localStorage.setItem(`sowonpray_moktak_reward_count_${currentUser.code}`, String(nextReward))
-          localStorage.setItem(`sowonpray_moktak_count_${currentUser.code}`, String(nextReward))
-        } catch (e) {}
-
-        if (supabase) {
-          supabase
-            .from('members')
-            .update({
-              moktak_count: nextReward,
-              merit_count: (currentUser.merit_count || 0) + 1,
-            })
-            .eq('code', currentUser.code)
-            .then(({ error }) => {
-              if (error) console.log('Supabase moktak sync note:', error)
-            })
-        }
-
-        showToast(`🎉 108 목탁 정진 회향! (신행 복덕 +500 공덕 적립)`)
-      } else {
-        showToast(`🙏 108 목탁 정진 회향! (오늘의 목탁 공덕 500 공덕 달성, 정진 공덕 +1)`)
-      }
-    } else {
-      showToast('🎉 제주 소원사 108 목탁 정진을 원만 회향하셨습니다!')
-    }
+    showToast('🎉 제주 소원사 108 목탁 정진을 원만 회향하셨습니다! 마음이 맑아집니다 🙏')
   }
 
   const handleSutraChange = (val) => {
@@ -6209,8 +6061,7 @@ function formatRelativeOrDate(dateStr) {
     setMoktakCount(next)
     if (next % 9 === 0) {
       playSingingBowlSound()
-      addMerit(1)
-      showToast(`📿 목탁 ${next}타 정진 회향! 청정 공덕이 +1회 적립되었습니다.`)
+      showToast(`📿 목탁 ${next}타 정진! 마음이 맑아집니다 🙏`)
     }
   }
 
@@ -6232,11 +6083,6 @@ function formatRelativeOrDate(dateStr) {
 
     const next = moktak108Count + 1
     setMoktak108Count(next)
-    const userCode = currentUser?.code || 'guest'
-    const meritRes = awardMerit('moktak', userCode, 1)
-    if (meritRes.earnedPoints > 0) {
-      addMerit(meritRes.earnedPoints)
-    }
 
     // 애니메이션 바운스
     setIsMoktakAnimating(true)
@@ -7975,7 +7821,13 @@ function formatRelativeOrDate(dateStr) {
             isOpen={true}
             currentUser={currentUser}
             onAddMerit={addMerit}
-            onAwardSanctuary={() => setSanctuaryDailyVersion((v) => v + 1)}
+            onAwardSanctuary={(res) => {
+              if (res && typeof res.balance === 'number' && currentUser?.code) {
+                setMembers((prev) => prev.map((m) => (m.code === currentUser.code ? { ...m, merit_count: res.balance } : m)))
+                setTodayLedger((prev) => ({ ...prev, sanctuary: (Number(prev.sanctuary) || 0) + (res.earned || 0) }))
+              }
+              setSanctuaryDailyVersion((v) => v + 1)
+            }}
             handleShareSanctuary={handleShareSanctuary}
             showToast={showToast}
             onClose={() => {

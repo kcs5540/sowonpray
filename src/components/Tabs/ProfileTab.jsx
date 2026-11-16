@@ -551,9 +551,9 @@ export default function ProfileTab({
                             const d = new Date()
                             return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
                           })()
-                          const dbDaily = currentUser?.extra_data?.daily_merits?.[todayKey] || {}
-                          const sanctuaryInfo = getDailyMeritInfo('sanctuary', uCode, dbDaily.sanctuary)
-                          const rawLanternInfo = getDailyMeritInfo('lantern', uCode, dbDaily.lantern)
+                          const dbDaily = userMeritReward?.todayLedger || {}
+                          const sanctuaryInfo = getDailyMeritInfo('sanctuary', uCode, dbDaily.sanctuary || 0)
+                          const rawLanternInfo = getDailyMeritInfo('lantern', uCode, dbDaily.lantern || 0)
                           // 🌟 대표님 훈령: 소원등은 매일 오전 11:00 사시예불 축원 회향(소등)을 기준으로 리셋!
                           // 점등 중(isLanternLit === true)이면 1회 1,000공덕 달성 중, 11시 소등(isLanternLit === false) 시 0/1회로 리프레시
                           const isUserLanternActive = rawLanternInfo.currentPoints >= 1000
@@ -572,8 +572,8 @@ export default function ProfileTab({
                                 remainingPoints: 1000,
                                 isMax: false,
                               }
-                          const sutraInfo = getDailyMeritInfo('sutra', uCode, dbDaily.sutra)
-                          const inyeonGiverInfoRaw = getDailyMeritInfo('inyeon_giver', uCode, dbDaily.inyeon_giver)
+                          const sutraInfo = getDailyMeritInfo('sutra', uCode, dbDaily.sutra || 0)
+                          const inyeonGiverInfoRaw = getDailyMeritInfo('inyeon_giver', uCode, dbDaily.inyeon_giver || 0)
                           const effectiveInyeonGiverPoints = Number(userMeritReward?.inyeonGiverReward) || 0
                           const inyeonGiverInfo = {
                             ...inyeonGiverInfoRaw,
@@ -581,7 +581,7 @@ export default function ProfileTab({
                             currentCount: Math.floor(effectiveInyeonGiverPoints / 5000),
                           }
 
-                          const inyeonReceiverInfoRaw = getDailyMeritInfo('inyeon_receiver', uCode, dbDaily.inyeon_receiver)
+                          const inyeonReceiverInfoRaw = getDailyMeritInfo('inyeon_receiver', uCode, dbDaily.inyeon_receiver || 0)
                           const effectiveInyeonReceiverPoints = Number(userMeritReward?.inyeonReceiverReward) || 0
                           const inyeonReceiverInfo = {
                             ...inyeonReceiverInfoRaw,

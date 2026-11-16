@@ -402,8 +402,7 @@ export default function SutraTab({
                             onClick={() => {
                               playSingingBowlSound()
                               setSelectedLotusIdx(idx)
-                              addMerit(1)
-                              showToast('🪷 오늘의 연꽃 법문이 열렸습니다! (+1 공덕)')
+                              showToast('🪷 오늘의 연꽃 법문이 열렸습니다! 성불하십시오 🙏')
                             }}
                             className="p-3 rounded-2xl bg-gradient-to-b from-[#332B22] to-[#1E1914] border border-[#F5D061]/50 hover:border-[#F5D061] flex flex-col items-center justify-center gap-1.5 shadow active:scale-95 transition"
                           >
@@ -716,10 +715,9 @@ export default function SutraTab({
                           playSingingBowlSound()
                           if (!isDone) {
                             setCompletedLessons((prev) => [...prev, lesson.id])
-                            addMerit(1)
-                            showToast('📖 경전 공부 1강을 완독하여 지혜 공덕이 +1회 적립되었습니다!')
+                            showToast('📖 경전 공부 1강을 완독하셨습니다! 성불하십시오 🙏')
                           } else {
-                            showToast('🙏 이미 공덕을 적립한 강의입니다. 다음 강의로 이동합니다!')
+                            showToast('🙏 이미 완독한 강의입니다. 다음 강의로 이동합니다!')
                           }
                           const nextIdx = (selectedLessonIdx + 1) % SUTRA_STUDY_LESSONS.length
                           setSelectedLessonIdx(nextIdx)
@@ -825,8 +823,7 @@ export default function SutraTab({
                                   playSingingBowlSound()
                                   if (!solvedQuizIds.includes(currentQuiz.id)) {
                                     setSolvedQuizIds((prev) => [...prev, currentQuiz.id])
-                                    addMerit(1)
-                                    showToast('⭕ 정답입니다! 지혜 공덕이 +1회 적립되었습니다.')
+                                    showToast('⭕ 정답입니다! 지혜가 한 층 밝아졌습니다 🙏')
                                   }
                                 } else {
                                   playMoktakSound()

@@ -98,10 +98,8 @@ export const getDailyMeritInfo = (activityKey, userCode = 'guest', cloudPoints =
   } catch (e) {}
 
   if (cloudPoints !== null && cloudPoints !== undefined) {
-    currentPoints = Math.max(Number(cloudPoints) || 0, localPoints)
-    try {
-      localStorage.setItem(storageKey, String(currentPoints))
-    } catch (e) {}
+    // 장부(서버) 값이 주어지면 그 값만 신뢰 (기기별 localStorage 값과 섞지 않음)
+    currentPoints = Number(cloudPoints) || 0
   } else {
     currentPoints = localPoints
   }
@@ -232,5 +230,53 @@ export const awardMerit = (activityKey, userCode = 'guest', customUnits = 1, clo
     isMax: isNowMax,
     isNewlyMax: isNowMax && currentPoints < maxPoints,
     message,
+  }
+}
+
+
+// =====================================================================
+// 🏦 공덕 거래 장부 방식 (회원 공덕의 유일한 적립 통로)
+// 점수 규정·중복 방지·하루 한도는 DB 함수 grant_merit 와 merit_ledger 표가 책임진다.
+// 앱은 호출만 하고, 응답으로 받은 balance(누적)만 화면에 반영한다.
+// =====================================================================
+export async function grantMerit(activity, memberCode, ref = '') {
+  if (!supabase || !memberCode || memberCode === 'guest') {
+    return { earned: 0, reason: 'no_supabase' }
+  }
+  try {
+    const { data, error } = await supabase.rpc('grant_merit', {
+      p_code: memberCode,
+      p_activity: activity,
+      p_ref: ref || '',
+    })
+    if (error) {
+      console.error('grant_merit error:', error)
+      return { earned: 0, reason: 'error', error }
+    }
+    return data || { earned: 0, reason: 'empty' }
+  } catch (err) {
+    console.error('grant_merit exception:', err)
+    return { earned: 0, reason: 'error', error: err }
+  }
+}
+
+// 오늘(한국시간) 장부 합계: { lantern: 1000, sanctuary: 1000, ... }
+export async function fetchTodayLedger(memberCode) {
+  if (!supabase || !memberCode) return {}
+  try {
+    const { data, error } = await supabase
+      .from('merit_ledger')
+      .select('activity, points')
+      .eq('member_code', memberCode)
+      .eq('ledger_date', getTodayKey())
+    if (error) return {}
+    const sums = {}
+    ;(data || []).forEach((r) => {
+      if (r.activity === 'opening') return
+      sums[r.activity] = (sums[r.activity] || 0) + (Number(r.points) || 0)
+    })
+    return sums
+  } catch (e) {
+    return {}
   }
 }

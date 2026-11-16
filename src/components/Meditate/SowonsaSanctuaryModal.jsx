@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { X, Volume2, VolumeX, Sparkles, DoorOpen, Share2, Award, ChevronRight, ChevronDown, Play, Pause, Check, Music, Flame } from 'lucide-react'
-import { awardMerit, getDailyMeritInfo } from '../../lib/meritSystem'
+import { awardMerit, getDailyMeritInfo, grantMerit } from '../../lib/meritSystem'
 import { playMoktakSound } from '../../lib/moktakAudio'
 
 // 📿 대웅전 8대 법음 & 염불 트랙 라이브러리 (앱 홈 24시간 힐링 오디오 정식 연동)
@@ -472,14 +472,22 @@ export default function SowonsaSanctuaryModal({
   }, [])
 
   // 🏛️ 대웅전 참배 회향 공덕 적립 (들어갔다 나오면 1회 1,000 공덕 · 1일 한도 1,000)
-  const handleAwardSanctuaryMerit = () => {
+  const isAwardingSanctuaryRef = useRef(false)
+  const handleAwardSanctuaryMerit = async () => {
+    if (isAwardingSanctuaryRef.current) return
+    isAwardingSanctuaryRef.current = true
     const userCode = currentUser?.code || 'guest'
-    const meritRes = awardMerit('sanctuary', userCode, 1)
-    if (meritRes.earnedPoints > 0) {
-      if (onAddMerit) onAddMerit(meritRes.earnedPoints)
-      if (onAwardSanctuary) onAwardSanctuary(meritRes.earnedPoints)
-      if (showToast) {
-        showToast('🏛️ 대웅전 참배 회향! (+1,000 공덕 적립 완료) 🙏')
+    if (userCode && userCode !== 'guest') {
+      try {
+        const res = await grantMerit('sanctuary', userCode)
+        if (res && res.earned > 0) {
+          if (onAwardSanctuary) onAwardSanctuary(res)
+          if (showToast) {
+            showToast('🏛️ 대웅전 참배 회향! (+1,000 공덕 적립 완료) 🙏')
+          }
+        }
+      } catch (e) {
+        console.error('sanctuary grantMerit err:', e)
       }
     }
   }
