@@ -148,6 +148,7 @@ export default function SowonsaSanctuaryModal({
   onOpenLantern,
   currentUser,
   onAddMerit,
+  onAwardSanctuary,
   handleShareSanctuary,
   showToast,
 }) {
@@ -476,6 +477,7 @@ export default function SowonsaSanctuaryModal({
     const meritRes = awardMerit('sanctuary', userCode, 1)
     if (meritRes.earnedPoints > 0) {
       if (onAddMerit) onAddMerit(meritRes.earnedPoints)
+      if (onAwardSanctuary) onAwardSanctuary(meritRes.earnedPoints)
       if (showToast) {
         showToast('🏛️ 대웅전 참배 회향! (+1,000 공덕 적립 완료) 🙏')
       }

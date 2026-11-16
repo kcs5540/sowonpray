@@ -4067,6 +4067,7 @@ function formatRelativeOrDate(dateStr) {
       const info = getDailyMeritInfo('lantern', currentUser.code)
       if (info.currentPoints < 1000) {
         awardMerit('lantern', currentUser.code, 1)
+        setLanternDailyVersion((v) => v + 1)
       }
     }
   }, [isLanternLit, currentUser])
@@ -4077,6 +4078,8 @@ function formatRelativeOrDate(dateStr) {
   const [sutraInput, setSutraInput] = useState('')
   const [sutraCompleted, setSutraCompleted] = useState(false)
   const [sutraDailyVersion, setSutraDailyVersion] = useState(0)
+  const [sanctuaryDailyVersion, setSanctuaryDailyVersion] = useState(0)
+  const [lanternDailyVersion, setLanternDailyVersion] = useState(0)
   const [moktakDailyVersion, setMoktakDailyVersion] = useState(0)
   const [showMeritCertModal, setShowMeritCertModal] = useState(false)
   const [meritCertType, setMeritCertType] = useState('lantern') // 'lantern' | 'sutra'
@@ -4602,27 +4605,39 @@ function formatRelativeOrDate(dateStr) {
     const todayMoktakRewardCount = 0
 
     // 9) 실시간 자동 정산 총 합계
-    // 🌟 대표님 지침: 기확인 공덕(김철수 35,100, 오다혜 13,390)을 영구 베이스로 온전히 보존하고,
-    // 오늘 진행하는 5대 일일 신행(소원등 1,000 + 대웅전 1,000 + 사경 1,000 + 인연전달 5,000~50,000 + 신규인연받음 5,000)을
-    // 그 위에 실시간으로 '누적 가산'한다!
+    // 🌟 대표님 훈령 및 원장 불변성 대원칙:
+    // 과거에 획득한 포인트는 영구 보존하며, 오늘 진행하는 5대 일일 신행을 그 위에 실시간으로 '누적 가산'한다!
     const todayDailyReward = lanternReward + sanctuaryReward + sutraReward + inyeonGiverReward + inyeonReceiverReward
 
-    let previousProtectedMerit = 0
-    let totalReward = 0
+    // DB에 기록되어 있는 오늘의 5대 신행 공덕 총합
+    const todayDbMerits =
+      (Number(dbDaily.lantern) || 0) +
+      (Number(dbDaily.sanctuary) || 0) +
+      (Number(dbDaily.sutra) || 0) +
+      (Number(dbDaily.inyeon_giver) || 0) +
+      (Number(dbDaily.inyeon_receiver) || 0)
 
+    const currentDbMerit = Number(currentUser?.merit_count) || 0
+
+    // 오늘 신행 활동 이전의 순수 과거 보존 베이스 공덕 (단 1점도 훼손되지 않도록 보호)
+    let preservedBaseMerit = 0
     if (currentUser?.code === '33065540') {
-      previousProtectedMerit = 35100
-      totalReward = previousProtectedMerit + todayDailyReward
+      // 김철수 대표님: 최소 35,100 보존 기준
+      preservedBaseMerit = Math.max(35100, currentDbMerit - todayDbMerits)
     } else if (currentUser?.code === '83855838') {
-      previousProtectedMerit = 13390
-      totalReward = previousProtectedMerit + todayDailyReward
+      // 오다혜 포교위원장님: 최소 13,390 보존 기준
+      preservedBaseMerit = Math.max(13390, currentDbMerit - todayDbMerits)
     } else {
-      // 일반 신도 및 기타 포교위원: 법연 공덕 + 오늘 5대 신행 활동
-      const calculatedReward = believersReward + todayDailyReward
-      const dbBase = Number(currentUser?.merit_count) || 0
-      totalReward = Math.max(dbBase, calculatedReward)
-      previousProtectedMerit = Math.max(0, totalReward - calculatedReward)
+      // 일반 신도(김나현 등) 및 기타 포교위원: 과거 누적 공덕 안전 보존
+      preservedBaseMerit = Math.max(0, currentDbMerit - todayDbMerits)
     }
+
+    // 법연(산하 신도 인연) 공덕과 과거 보존 베이스 중 유효한 공덕
+    const baseWithBelievers = Math.max(preservedBaseMerit, believersReward)
+
+    // 최종 총 공덕금 = [보존된 과거 공덕 & 법연 공덕] + [오늘 5대 신행 정진 공덕]
+    const totalReward = baseWithBelievers + todayDailyReward
+    const previousProtectedMerit = baseWithBelievers
 
     return {
       isAgent,
@@ -4649,7 +4664,7 @@ function formatRelativeOrDate(dateStr) {
       totalReward,
       previousProtectedMerit,
     }
-  }, [currentUser, currentUserAffiliatedMembers, currentUserBelieversCount, userLanternStats, isLanternLit, lanternData, sutraDailyVersion, moktakDailyVersion, prayers])
+  }, [currentUser, currentUserAffiliatedMembers, currentUserBelieversCount, userLanternStats, isLanternLit, lanternData, sutraDailyVersion, sanctuaryDailyVersion, lanternDailyVersion, moktakDailyVersion, prayers])
 
   // 🌟 [공덕 DB 실시간 정산 동기화]: totalReward를 Supabase DB의 merit_count와 실시간 일치
   useEffect(() => {
@@ -5684,6 +5699,7 @@ function formatRelativeOrDate(dateStr) {
           awardMerit('lantern', newBeliever.code, 1)
         }
         setMembers((prev) => [newBeliever, ...prev])
+        setLanternDailyVersion((v) => v + 1)
         try {
           if (!isBulsaReg) {
             localStorage.setItem(`sowonpray_merit_${newBeliever.code}`, String(initialMerit))
@@ -5718,6 +5734,7 @@ function formatRelativeOrDate(dateStr) {
         setMembers((prev) =>
           prev.map((m) => (m.code === existingPrayerMember.code ? updatedMember : m))
         )
+        setLanternDailyVersion((v) => v + 1)
         try {
           localStorage.setItem(`sowonpray_merit_${existingPrayerMember.code}`, String(nextMerit))
         } catch (e) {}
@@ -7993,6 +8010,7 @@ function formatRelativeOrDate(dateStr) {
             isOpen={true}
             currentUser={currentUser}
             onAddMerit={addMerit}
+            onAwardSanctuary={() => setSanctuaryDailyVersion((v) => v + 1)}
             handleShareSanctuary={handleShareSanctuary}
             showToast={showToast}
             onClose={() => {

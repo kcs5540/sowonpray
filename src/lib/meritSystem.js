@@ -89,18 +89,21 @@ export const getDailyMeritInfo = (activityKey, userCode = 'guest', cloudPoints =
   const today = getTodayKey()
   const storageKey = `sowon_daily_merit_${activityKey}_${userCode || 'guest'}_${today}`
   
-  // 🌟 클라우드 DB 우선 원칙 (Single Source of Truth): 클라우드 포인트가 있으면 무조건 우선 적용
+  // 🌟 클라우드 DB 우선 원칙 (Single Source of Truth) + 로컬 즉시성 안전 병합
   let currentPoints = 0
+  let localPoints = 0
+  try {
+    const val = localStorage.getItem(storageKey)
+    if (val) localPoints = parseInt(val, 10) || 0
+  } catch (e) {}
+
   if (cloudPoints !== null && cloudPoints !== undefined) {
-    currentPoints = Number(cloudPoints) || 0
+    currentPoints = Math.max(Number(cloudPoints) || 0, localPoints)
     try {
       localStorage.setItem(storageKey, String(currentPoints))
     } catch (e) {}
   } else {
-    try {
-      const val = localStorage.getItem(storageKey)
-      if (val) currentPoints = parseInt(val, 10) || 0
-    } catch (e) {}
+    currentPoints = localPoints
   }
 
   const currentCount = rule.pointsPerUnit > 0 ? Math.floor(currentPoints / rule.pointsPerUnit) : 0
@@ -173,13 +176,16 @@ export const awardMerit = (activityKey, userCode = 'guest', customUnits = 1, clo
   const code = userCode || 'guest'
   const storageKey = `sowon_daily_merit_${activityKey}_${code}_${today}`
   let currentPoints = 0
+  let localPoints = 0
+  try {
+    const val = localStorage.getItem(storageKey)
+    if (val) localPoints = parseInt(val, 10) || 0
+  } catch (e) {}
+
   if (cloudPoints !== null && cloudPoints !== undefined) {
-    currentPoints = Number(cloudPoints) || 0
+    currentPoints = Math.max(Number(cloudPoints) || 0, localPoints)
   } else {
-    try {
-      const val = localStorage.getItem(storageKey)
-      if (val) currentPoints = parseInt(val, 10) || 0
-    } catch (e) {}
+    currentPoints = localPoints
   }
 
   const maxPoints = rule.dailyMax
