@@ -551,18 +551,18 @@ export default function ProfileTab({
                           const dbDaily = userMeritReward?.todayLedger || {}
                           const sanctuaryInfo = getDailyMeritInfo('sanctuary', uCode, dbDaily.sanctuary || 0)
                           const rawLanternInfo = getDailyMeritInfo('lantern', uCode, dbDaily.lantern || 0)
-                          const todayLanternEarned = Number(dbDaily.lantern) || 0
-                          const hasEarnedLanternToday = todayLanternEarned >= 1000
-                          const isBurningFromYesterday = !hasEarnedLanternToday && Boolean(isLanternLit)
 
-                          // 🪔 소원등 당일 판정 (대표님 훈령): 불이 켜져 봉안 중인 동안은 오전 11시 회향 전까지 '오늘 1/1회 (+1,000 공덕)'으로 당당하게 유지
-                          const isCurrentlyLit = Boolean(isLanternLit) || hasEarnedLanternToday
+                          // 🪔 소원등 당일 판정 (대표님 훈령):
+                          // 소원등은 매일 오전 11시 사시마지 회향 주기 기준!
+                          // 현재 등이 켜져 봉안 중(isLanternLit === true)인 동안만 '오늘 1/1회 (+1,000 공덕)'으로 표시하고,
+                          // 오전 11시 회향을 마쳐 소등(isLanternLit === false)되었다면 '오늘 0/1회 (+0 공덕, 지금 점등 가능)'으로 즉시 리셋!
+                          const isCurrentlyLit = Boolean(isLanternLit)
 
                           const lanternInfo = {
                             ...rawLanternInfo,
                             currentPoints: isCurrentlyLit ? 1000 : 0,
                             currentCount: isCurrentlyLit ? 1 : 0,
-                            isBurningFromYesterday,
+                            isBurningFromYesterday: false,
                             remainingPoints: isCurrentlyLit ? 0 : 1000,
                             isMax: isCurrentlyLit,
                           }

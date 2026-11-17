@@ -4568,8 +4568,8 @@ function formatRelativeOrDate(dateStr) {
       return Math.max(serverVal, localVal)
     }
 
-    // 🌟 대표님 훈령: 소원등 오늘 공덕은 당일 장부 적립(11시 이후 새 점등) 시에만 반영 (어제 점등 유지분 가상 가산 금지)
-    const lanternCount = ledgerPts('lantern') >= 1000 ? 1 : 0
+    // 🌟 대표님 훈령: 소원등 오늘 공덕은 매일 오전 11시 사시예불 회향 주기 기준 (현재 점등 유효 상태인 경우에만 1,000 공덕 반영)
+    const lanternCount = isLanternLit ? 1 : 0
     const lanternReward = lanternCount * 1000
     const sanctuaryCount = ledgerPts('sanctuary') >= 1000 ? 1 : 0
     const sanctuaryReward = sanctuaryCount * 1000

@@ -98,6 +98,15 @@ begin
     return jsonb_build_object('earned', 0, 'reason', 'unknown_activity');
   end if;
 
+  -- 🌟 소원등(lantern)은 매일 오전 11시 사시마지 회향 주기 적용!
+  -- 오전 11시 이전 점등: 당일(v_today) 오전 11시 회향분
+  -- 오전 11시 이후 점등: 익일(v_today + 1) 오전 11시 회향분
+  if p_activity = 'lantern' then
+    if extract(hour from (now() at time zone 'Asia/Seoul')) >= 11 then
+      v_today := v_today + 1;
+    end if;
+  end if;
+
   -- 인연 전달은 하루 50,000 한도
   if p_activity = 'inyeon_giver' then
     select coalesce(sum(points), 0) into v_giver_today
