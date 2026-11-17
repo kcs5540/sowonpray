@@ -2488,16 +2488,11 @@ function formatRelativeOrDate(dateStr) {
     }
   }
 
-  // 1일 1소원등 축원 상태 (사시예불 회차 기준 연속 정진 일수 카운트)
+  // 1일 1소원등 축원 상태 (사시예불 회차 기준 연속 정진 일수 카운트 - 타인 캐시 오염 방지를 위해 1로 초기화 및 기존 공용 키 파기)
   const [lanternStreak, setLanternStreak] = useState(() => {
     try {
-      const raw = localStorage.getItem('sowonsa_lantern_streak_v2')
-      if (raw) {
-        const parsed = JSON.parse(raw)
-        if (parsed && Number(parsed.count) > 0) {
-          return Number(parsed.count)
-        }
-      }
+      localStorage.removeItem('sowonsa_lantern_streak_v2')
+      localStorage.removeItem('sowonsa_lantern_streak')
     } catch (e) {}
     return 1
   })
@@ -2628,21 +2623,10 @@ function formatRelativeOrDate(dateStr) {
        (userName && (lanternData.believer_name || '').includes(userName)))
     )
 
-    // 사용자 고유 키로 로컬 저장소 조회 (공용 sowonsa_lantern_streak_v2 로 인한 타인 데이터 오염 원천 차단)
-    let storedStreak = 0
-    if (userCode || cleanUserPhone) {
-      try {
-        const userSpecificKey = `sowonsa_streak_${userCode || cleanUserPhone}`
-        const raw = localStorage.getItem(userSpecificKey)
-        if (raw) {
-          const parsed = JSON.parse(raw)
-          if (parsed && Number(parsed.count) > 0) storedStreak = Number(parsed.count)
-        }
-      } catch (e) {}
-    }
-
-    const streak = Math.max(calculatedStreak, storedStreak, isMyActiveLantern ? (lanternData?.streak || 1) : 0)
-    const totalCount = Math.max(my1dPrayers.length, isMyActiveLantern ? (lanternData?.total_count || 1) : 0, streak > 0 ? streak : 0)
+    // 🌟 대표님 훈령: 연속 일수(Streak)와 총 점등 횟수는 타인/이전 계정의 캐시 오염을 100% 영구 차단하고,
+    // 오직 해당 불자님의 실제 DB 소원등 접수 장부(my1dPrayers)만으로 정직하게 연산한다!
+    const streak = calculatedStreak > 0 ? calculatedStreak : (isMyActiveLantern ? 1 : 0)
+    const totalCount = my1dPrayers.length > 0 ? my1dPrayers.length : (isMyActiveLantern ? 1 : 0)
 
     // 본인의 가장 최근 소원등
     const latestMyPrayer = my1dPrayers[0] || (isMyActiveLantern ? lanternData : null)
@@ -2650,6 +2634,7 @@ function formatRelativeOrDate(dateStr) {
     return {
       streak,
       totalCount,
+      uniqueSasiDates,
       prayersCount: my1dPrayers.length,
       latestCategory: latestMyPrayer?.wish_category || (isMyActiveLantern ? lanternData?.wish_category : null),
       latestWishText: latestMyPrayer?.wish_text || (isMyActiveLantern ? lanternData?.wish_text : null),
@@ -2658,20 +2643,15 @@ function formatRelativeOrDate(dateStr) {
   }, [prayers, currentUser, wishPhone, wishName, lanternData, isLanternLit])
 
   const previewNextStreakCount = (targetSasiDateKey, prevSasiDateKey) => {
-    try {
-      const baseStreak = userLanternStats?.streak || 1
-      const raw = localStorage.getItem('sowonsa_lantern_streak_v2')
-      if (raw) {
-        const parsed = JSON.parse(raw)
-        if (parsed && parsed.lastSasiDateKey === targetSasiDateKey) {
-          return Math.max(baseStreak, Number(parsed.count) || 1)
-        }
-        if (parsed && parsed.lastSasiDateKey === prevSasiDateKey) {
-          return Math.max(baseStreak + 1, (Number(parsed.count) || 1) + 1)
-        }
-      }
-      return baseStreak
-    } catch (e) {}
+    // 🌟 타인의 로컬스토리지 캐시 오염을 배제하고, 오직 본인의 실제 기도 기록(my1dPrayers) 기반으로만 다음 연속 일수 계산
+    const dates = userLanternStats?.uniqueSasiDates || []
+    if (dates.length === 0) return 1
+    if (dates.includes(targetSasiDateKey)) {
+      return userLanternStats?.streak || 1
+    }
+    if (dates.includes(prevSasiDateKey)) {
+      return (userLanternStats?.streak || 1) + 1
+    }
     return 1
   }
 
@@ -5507,17 +5487,21 @@ function formatRelativeOrDate(dateStr) {
         schedule.prevSasiDateKey
       )
       const nextTotal = (userLanternStats.totalCount || 0) + 1
+      const writerCode = currentUser?.code || extractPhone8Code(wishPhoneClean)
       setLanternStreak(nextStreak)
       try {
-        localStorage.setItem(
-          'sowonsa_lantern_streak_v2',
-          JSON.stringify({ count: nextStreak, lastSasiDateKey: schedule.sasiDateKey, total_count: nextTotal })
-        )
-        localStorage.setItem('sowonsa_lantern_streak', String(nextStreak))
+        if (writerCode) {
+          localStorage.setItem(
+            `sowonsa_streak_${writerCode}`,
+            JSON.stringify({ count: nextStreak, lastSasiDateKey: schedule.sasiDateKey, total_count: nextTotal })
+          )
+        }
+        localStorage.removeItem('sowonsa_lantern_streak_v2')
+        localStorage.removeItem('sowonsa_lantern_streak')
       } catch (e) {}
 
       const newLanternInfo = {
-        member_code: currentUser?.code || '',
+        member_code: writerCode,
         believer_name: formattedBelieverName,
         wish_target: finalTarget || '본인',
         believer_phone: wishPhoneClean,
@@ -5537,7 +5521,6 @@ function formatRelativeOrDate(dateStr) {
       } catch (err) {}
       setLanternData(newLanternInfo)
 
-      const writerCode = currentUser?.code || extractPhone8Code(wishPhoneClean)
       const matchedMember = members.find((m) => m.code === writerCode)
       const assignedAgentCode =
         currentUser?.parent_code || matchedMember?.parent_code || referralCode || '33065540'
