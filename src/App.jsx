@@ -1271,6 +1271,18 @@ const playSingingBowlSound = playBeomjongSound
 // 24시간 힐링 법음 & 수면 명상 5대 테마 트랙 (국보급 방송용 스튜디오 마스터 음원 전면 개편)
 const HEALING_AUDIO_TRACKS = [
   {
+    id: 'rhythmic_moktak',
+    category: '마음정진',
+    icon: '🪵',
+    title: '천년고찰 박달나무 실물 목탁 원음',
+    subtitle: '사찰 대웅전 실물 목탁 타격 원음 & 법당 자연 잔향 (108배·사경용 2분 루프)',
+    description: '천년고찰 대웅전 법당의 맑고 묵직한 박달나무 목탁 실물 소리와 공간 울림이 잡념을 씻어내고 호흡을 고요하게 합니다.',
+    type: 'moktak',
+    audioUrl: '/audio/muyeok_moktak.mp3',
+    voiceText: null,
+    attribution: '음원 출처: 천년고찰 대웅전 실물 박달나무 목탁 원음 (마음 정진)',
+  },
+  {
     id: 'sowonsa_prajna_meditation',
     category: '도량명상',
     icon: '🧘',
@@ -1341,18 +1353,6 @@ const HEALING_AUDIO_TRACKS = [
     audioUrl: '/audio/jeju_sowonsa.mp3',
     voiceText: null,
     attribution: '음원 출처: 제주 소원사 모바일 법당 공식 테마송 (도량 법공양)',
-  },
-  {
-    id: 'rhythmic_moktak',
-    category: '마음정진',
-    icon: '🪵',
-    title: '천년고찰 박달나무 실물 목탁 원음',
-    subtitle: '사찰 대웅전 실물 목탁 타격 원음 & 법당 자연 잔향 (108배·사경용 2분 루프)',
-    description: '천년고찰 대웅전 법당의 맑고 묵직한 박달나무 목탁 실물 소리와 공간 울림이 잡념을 씻어내고 호흡을 고요하게 합니다.',
-    type: 'moktak',
-    audioUrl: '/audio/muyeok_moktak.mp3',
-    voiceText: null,
-    attribution: '음원 출처: 천년고찰 대웅전 실물 박달나무 목탁 원음 (마음 정진)',
   },
   {
     id: 'temple_chime_nature',
@@ -1817,8 +1817,8 @@ export default function App() {
   const [showUnifiedAdminModal, setShowUnifiedAdminModal] = useState(false)
   const [adminModalTab, setAdminModalTab] = useState('common')
 
-  // 24시간 힐링 법음 & 수면 명상 오디오 플레이어 상태 (기본: 제주 소원사 반야심경 대웅전 힐링 명상)
-  const [healingAudioTrack, setHealingAudioTrack] = useState('sowonsa_prajna_meditation')
+  // 24시간 힐링 법음 & 수면 명상 오디오 플레이어 상태 (기본: 천년고찰 박달나무 실물 목탁 원음)
+  const [healingAudioTrack, setHealingAudioTrack] = useState('rhythmic_moktak')
   const [isHealingPlaying, setIsHealingPlaying] = useState(false)
   const [isHealingVoiceOn, setIsHealingVoiceOn] = useState(true) // 스님 음성 낭독 기본 켜짐
   const [isPlayerExpanded, setIsPlayerExpanded] = useState(false) // 홈 화면 대안1: 기본 슬림 바, 터치 시 펼침
