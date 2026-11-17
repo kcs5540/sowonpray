@@ -3143,10 +3143,11 @@ function formatRelativeOrDate(dateStr) {
       }
     }
 
-    // 2) 100일 특별기도 (100일)
-    const p100d = memberPrayers.find(
-      (p) => p.prayer_type === 'prayer_100d' || p.wish_category?.includes('100일')
-    )
+    // 2) 100일 특별기도 (100일 - 최초 입재 등록일시 기준 D-Day 지속 유지)
+    const p100dPrayers = memberPrayers
+      .filter((p) => (p.prayer_type === 'prayer_100d' || p.wish_category?.includes('100일')) && p.status !== 'consulting')
+      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+    const p100d = p100dPrayers[0] || memberPrayers.find((p) => p.prayer_type === 'prayer_100d' || p.wish_category?.includes('100일'))
     let active100d = false
     let daysLeft100d = 0
     // 📿 사시예불 11:00 회향 주기 기준 잔여 정진 일수(D-Day) 정밀 계산 엔진
@@ -3183,8 +3184,11 @@ function formatRelativeOrDate(dateStr) {
       }
     }
 
-    // 3) 대웅전 1년 인등 (365일)
-    const p1yr = memberPrayers.find(
+    // 3) 대웅전 1년 인등 (365일 - 최초 정식 입재일시 기준 D-Day 연속 유지)
+    const indeungPrayers = memberPrayers
+      .filter((p) => (p.prayer_type === 'indeung_1yr' || p.wish_category?.includes('인등')) && p.status !== 'consulting')
+      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+    const p1yr = indeungPrayers[0] || memberPrayers.find(
       (p) => p.prayer_type === 'indeung_1yr' || p.wish_category?.includes('인등')
     )
     let active1yr = false
