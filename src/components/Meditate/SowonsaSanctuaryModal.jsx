@@ -6,6 +6,15 @@ import { playMoktakSound } from '../../lib/moktakAudio'
 // 📿 대웅전 8대 법음 & 염불 트랙 라이브러리 (앱 홈 24시간 힐링 오디오 정식 연동)
 const SANCTUARY_AUDIO_TRACKS = [
   {
+    id: 'rhythmic_moktak',
+    shortTitle: '박달목탁',
+    title: '박달나무 실물 목탁 원음',
+    subtitle: '천년고찰 대웅전 목탁 소리 & 법당 자연 잔향 (108배용)',
+    icon: '🪵',
+    audioUrl: '/audio/muyeok_moktak.mp3',
+    tag: '108배 정진',
+  },
+  {
     id: 'sowonsa_prajna_meditation',
     shortTitle: '반야심경(명상)',
     title: '제주 소원사 반야심경',
@@ -58,15 +67,6 @@ const SANCTUARY_AUDIO_TRACKS = [
     icon: '🍊',
     audioUrl: '/audio/jeju_sowonsa.mp3',
     tag: '공식 찬가',
-  },
-  {
-    id: 'rhythmic_moktak',
-    shortTitle: '박달목탁',
-    title: '박달나무 실물 목탁 원음',
-    subtitle: '천년고찰 대웅전 목탁 소리 & 법당 자연 잔향 (108배용)',
-    icon: '🪵',
-    audioUrl: '/audio/muyeok_moktak.mp3',
-    tag: '108배 정진',
   },
   {
     id: 'temple_chime_nature',
@@ -205,6 +205,8 @@ export default function SowonsaSanctuaryModal({
   const ambientAudioRef = useRef(null)
   const chantAudioRef = useRef(null)
   const yeomjuAudioRef = useRef(null)
+  const hasUserPausedSoundRef = useRef(false)
+  const hasUserPausedChantRef = useRef(false)
   const toastTimerRef = useRef(null)
   const actionResetTimerRef = useRef(null)
 
@@ -250,10 +252,13 @@ export default function SowonsaSanctuaryModal({
     e?.stopPropagation()
     if (!ambientAudioRef.current) return
     if (isPlayingSound) {
+      hasUserPausedSoundRef.current = true
       ambientAudioRef.current.pause()
       setIsPlayingSound(false)
       showActionToast('바람소리가 잠시 멈췄습니다')
     } else {
+      hasUserPausedSoundRef.current = false
+      ambientAudioRef.current.volume = 0.4
       ambientAudioRef.current.play().then(() => {
         setIsPlayingSound(true)
         showActionToast('🍃 청아한 제주 소원사 도량의 바람 소리')
@@ -265,11 +270,13 @@ export default function SowonsaSanctuaryModal({
 
   // 2) 대웅전 법음 & 염불 트랙 선택 및 토글
   const handleSelectTrack = (track) => {
+    hasUserPausedChantRef.current = false
     setSelectedTrack(track)
     if (chantAudioRef.current) {
       chantAudioRef.current.pause()
       chantAudioRef.current.src = track.audioUrl
       chantAudioRef.current.currentTime = 0
+      chantAudioRef.current.volume = 0.75
       chantAudioRef.current.play().then(() => {
         setIsPlayingChant(true)
         if (showToast) showToast(`📿 [${track.title}] 봉독을 시작합니다`)
@@ -284,13 +291,16 @@ export default function SowonsaSanctuaryModal({
     e?.stopPropagation()
     if (!chantAudioRef.current) return
     if (isPlayingChant) {
+      hasUserPausedChantRef.current = true
       chantAudioRef.current.pause()
       setIsPlayingChant(false)
       if (showToast) showToast('법음 소리가 멈췄습니다')
     } else {
+      hasUserPausedChantRef.current = false
       if (!chantAudioRef.current.src || !chantAudioRef.current.src.includes(selectedTrack.audioUrl)) {
         chantAudioRef.current.src = selectedTrack.audioUrl
       }
+      chantAudioRef.current.volume = 0.75
       chantAudioRef.current.play().then(() => {
         setIsPlayingChant(true)
         if (showToast) showToast(`📿 [${selectedTrack.title}] 봉독을 시작합니다`)
@@ -481,10 +491,12 @@ export default function SowonsaSanctuaryModal({
     // 4.5s+: 비단 방석에 가부좌 틀고 착석 완료
     setIsExiting(false)
     setEntranceStep('entering')
+    hasUserPausedSoundRef.current = false
+    hasUserPausedChantRef.current = false
 
     // 🍃 대웅전 입장 시 청아한 도량 바람·은방울 풍경소리 ASMR 자동 활성화
     if (ambientAudioRef.current) {
-      ambientAudioRef.current.volume = 0.65
+      ambientAudioRef.current.volume = 0.4
       const playPromise = ambientAudioRef.current.play()
       if (playPromise !== undefined) {
         playPromise
@@ -494,6 +506,22 @@ export default function SowonsaSanctuaryModal({
           .catch(() => {
             // 브라우저 첫 진입 자동재생 정책으로 대기 시
             setIsPlayingSound(false)
+          })
+      }
+    }
+
+    // 🪵 대웅전 입장 시 박달나무 실물 목탁 원음 기본 자동 활성화
+    if (chantAudioRef.current) {
+      chantAudioRef.current.volume = 0.75
+      const chantPromise = chantAudioRef.current.play()
+      if (chantPromise !== undefined) {
+        chantPromise
+          .then(() => {
+            setIsPlayingChant(true)
+          })
+          .catch(() => {
+            // 브라우저 첫 진입 자동재생 정책으로 대기 시
+            setIsPlayingChant(false)
           })
       }
     }
@@ -588,9 +616,13 @@ export default function SowonsaSanctuaryModal({
           showActionToast('법당 메뉴가 다시 열렸습니다')
         }
         // 첫 진입 시 브라우저 정책으로 소리가 대기 중이었다면 터치 시 자동 재생
-        if (!isPlayingSound && ambientAudioRef.current) {
-          ambientAudioRef.current.volume = 0.65
+        if (!isPlayingSound && !hasUserPausedSoundRef.current && ambientAudioRef.current) {
+          ambientAudioRef.current.volume = 0.4
           ambientAudioRef.current.play().then(() => setIsPlayingSound(true)).catch(() => {})
+        }
+        if (!isPlayingChant && !hasUserPausedChantRef.current && chantAudioRef.current) {
+          chantAudioRef.current.volume = 0.75
+          chantAudioRef.current.play().then(() => setIsPlayingChant(true)).catch(() => {})
         }
       }}
       className={`relative w-full max-w-[480px] bg-black flex flex-col justify-between overflow-hidden select-none ${

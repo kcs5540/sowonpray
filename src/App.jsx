@@ -11852,8 +11852,16 @@ function formatRelativeOrDate(dateStr) {
                 key={tab.id}
                 type="button"
                 onClick={() => {
-                  if (tab.id === 'sanctuary' && playSingingBowlSound) {
-                    playSingingBowlSound()
+                  if (tab.id === 'sanctuary') {
+                    if (isHealingPlaying) {
+                      try {
+                        healingAudioEngine.stopAll()
+                        setIsHealingPlaying(false)
+                      } catch {}
+                    }
+                    if (playSingingBowlSound) {
+                      playSingingBowlSound()
+                    }
                   }
                   setActiveTab(tab.id)
                   window.scrollTo({ top: 0, behavior: 'smooth' })
