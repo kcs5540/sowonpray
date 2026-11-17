@@ -4059,6 +4059,12 @@ function formatRelativeOrDate(dateStr) {
         try {
           localStorage.setItem('sowonsa_7day_lantern', JSON.stringify(syncedLantern))
         } catch (e) {}
+      } else {
+        // 🌟 회향 만료(11시 지남) 시 소등 상태 확실히 보장 (캐시 및 상태 즉시 초기화)
+        setLanternData(null)
+        try {
+          localStorage.removeItem('sowonsa_7day_lantern')
+        } catch (e) {}
       }
     }
   }, [currentUser, prayers, wishPhone, wishName])

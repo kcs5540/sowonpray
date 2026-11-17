@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sowonpray-cache-v78'
+const CACHE_NAME = 'sowonpray-cache-v80'
 
 self.addEventListener('install', (event) => {
   self.skipWaiting()
@@ -37,9 +37,9 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // 기본 네트워크 우선 전략 (최신 콘텐츠 즉시 반영)
+  // JS/CSS 및 데이터 요청은 항상 최신 서버 리소스 우선 로드 (캐시 오염 방지)
   event.respondWith(
-    fetch(event.request).catch(() => {
+    fetch(event.request, { cache: 'no-cache' }).catch(() => {
       return caches.match(event.request)
     })
   )
