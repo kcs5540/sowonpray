@@ -391,8 +391,8 @@ export default function ProposalView({ onEnterTemple }) {
                 <div className="flex items-start justify-between border-b border-[#EAE4D8] pb-1.5 gap-2">
                   <span className="shrink-0 whitespace-nowrap text-[#6B5E51] pt-0.5">정산 방식</span>
                   <div className="text-right">
-                    <strong className="text-[#9A6708] font-bold block text-sm">사찰 70% : 운영사 30%</strong>
-                    <span className="text-[10px] text-[#8C8071] block">신규 온라인 보시금 기준 (PG수수료·서버비 일체 포함)</span>
+                    <strong className="text-[#9A6708] font-bold block text-sm">사찰 80% : 운영사 20%</strong>
+                    <span className="text-[10px] text-[#8C8071] block">신규 온라인 보시금 기준 (카드·PG수수료, 알림톡/문자비, 서버비 일체 포함)</span>
                   </div>
                 </div>
               </div>
