@@ -818,7 +818,7 @@ export default function ProfileTab({
                         dedicatedBulsaItems.push({
                           id: 'indeung_1yr',
                           title: '대웅전 1년 인등 (가족등)',
-                          rightText: isKcsTest ? 'D-365' : `D-${activeIndeung?.daysLeft || 365}`,
+                          rightText: `D-${activeIndeung?.daysLeft ?? 365}`,
                           location: '대웅전 봉안',
                           desc: '365일 24시간 상시 점등 · 사시예불 영구 축원',
                         })
