@@ -583,16 +583,17 @@ export default function ProfileTab({
                             currentCount: effectiveInyeonReceiverPoints >= 5000 ? 1 : 0,
                           }
 
-                          // 🌸 신규회원공덕 노출 판별: 오늘 가입한 신규 불자에게만 1회 노출하고, 하루 지난 기존 회원은 완전히 제외
+                          // 🌸 신규회원공덕 노출 판별: 오늘 가입한 신규 일반 불자에게만 1회 노출하고, 기존 회원 및 포교사/관리자는 원천 배제
+                          const isMasterOrAdmin = currentUser?.role === 'master' || currentUser?.role === 'agent' || currentUser?.role === 'temple_admin' || currentUser?.code === '33065540'
                           const userCreatedAt = currentUser?.created_at ? new Date(currentUser.created_at) : null
                           let isNewUserToday = false
-                          if (userCreatedAt && !isNaN(userCreatedAt.getTime())) {
+                          if (!isMasterOrAdmin && userCreatedAt && !isNaN(userCreatedAt.getTime())) {
                             const uYear = userCreatedAt.getFullYear()
                             const uMonth = String(userCreatedAt.getMonth() + 1).padStart(2, '0')
                             const uDay = String(userCreatedAt.getDate()).padStart(2, '0')
                             isNewUserToday = `${uYear}-${uMonth}-${uDay}` === todayKey
                           }
-                          const showNewUserCard = isNewUserToday || inyeonReceiverInfo.currentPoints > 0
+                          const showNewUserCard = isNewUserToday && inyeonReceiverInfo.currentPoints > 0
 
                           const todayTotalDaily =
                             sanctuaryInfo.currentPoints +

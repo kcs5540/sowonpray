@@ -4578,7 +4578,18 @@ function formatRelativeOrDate(dateStr) {
     const todaySutraRewardCount = sutraCount
     const inyeonGiverReward = Math.min(50000, ledgerPts('inyeon_giver'))
     const inyeonGiverCount = Math.floor(inyeonGiverReward / 5000)
-    const inyeonReceiverReward = Math.min(5000, ledgerPts('inyeon_receiver'))
+
+    // 🌸 신규회원공덕: 오늘 가입한 신규 일반 불자의 첫 점등 시에만 유효하며, 기존 회원 및 포교사/관리자는 원천 배제
+    const isMasterOrAdmin = currentUser?.role === 'master' || currentUser?.role === 'agent' || currentUser?.role === 'temple_admin' || currentUser?.code === '33065540'
+    const userCreatedAt = currentUser?.created_at ? new Date(currentUser.created_at) : null
+    let isNewUserToday = false
+    if (!isMasterOrAdmin && userCreatedAt && !isNaN(userCreatedAt.getTime())) {
+      const uYear = userCreatedAt.getFullYear()
+      const uMonth = String(userCreatedAt.getMonth() + 1).padStart(2, '0')
+      const uDay = String(userCreatedAt.getDate()).padStart(2, '0')
+      isNewUserToday = `${uYear}-${uMonth}-${uDay}` === todayKey
+    }
+    const inyeonReceiverReward = isNewUserToday ? Math.min(5000, ledgerPts('inyeon_receiver')) : 0
     const inyeonReceiverCount = inyeonReceiverReward >= 5000 ? 1 : 0
 
     // 8) 목탁멍/108배/염주는 공덕 포인트 적립 대상에서 제외 (0 처리)
@@ -5601,10 +5612,9 @@ function formatRelativeOrDate(dateStr) {
       const formattedBirth = effectiveBirth ? (effectiveBirth.length === 4 ? `${effectiveBirth}-01-01` : effectiveBirth) : ''
 
       // 🏦 공덕 적립은 서버 장부(grant_merit) 단일 통로로만 처리한다!
-      // 1) 소원등 점등 1,000 공덕
-      // 2) 신규회원공덕 5,000 (DB가 평생 1회만 허용하므로 첫 점등 시 자동 지급)
-      // 3) 추천인 인연 전달 5,000 (신규 회원의 첫 점등 시 추천인에게 자동 지급)
-      const grantLanternBundle = async (memberCode) => {
+      // 1) 신규 가입 불자의 첫 점등 시: 소원등(1,000) + 신규회원공덕(5,000) + 추천인 인연전달(5,000)
+      // 2) 기존 회원의 점등 시: 오직 소원등 점등(1,000)만 적립 (신규회원/추천인 공덕 절대 제외)
+      const grantNewBelieverLanternBundle = async (memberCode) => {
         if (!isBulsa) {
           await grantMeritFor('lantern', memberCode)
           const recRes = await grantMeritFor('inyeon_receiver', memberCode)
@@ -5645,7 +5655,7 @@ function formatRelativeOrDate(dateStr) {
           if (supabase) {
             await supabase.from('members').upsert([newBeliever], { onConflict: 'code', ignoreDuplicates: true })
           }
-          await grantLanternBundle(newBeliever.code)
+          await grantNewBelieverLanternBundle(newBeliever.code)
         })().catch((err) => console.error('merit bundle error:', err))
       } else {
         const needsBirthUpdate = !existingPrayerMember.birth_date && formattedBirth
@@ -5667,7 +5677,10 @@ function formatRelativeOrDate(dateStr) {
           }
           supabase.from('members').update(updatePayload).eq('code', existingPrayerMember.code).then()
         }
-        grantLanternBundle(existingPrayerMember.code).catch((err) => console.error('merit bundle error:', err))
+        // 🌟 기존 회원은 오직 소원등 점등 1,000 공덕만 적립! (신규회원공덕/인연전달공덕 절대 배제)
+        if (!isBulsa) {
+          grantMeritFor('lantern', existingPrayerMember.code).catch((err) => console.error('lantern merit error:', err))
+        }
       }
 
       // 신규 신청자가 비로그인 상태이거나 본인 계정이 아닌 경우 본인 계정으로 즉시 자동 로그인 처리
