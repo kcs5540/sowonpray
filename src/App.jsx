@@ -1633,7 +1633,7 @@ function SanctuaryNavIcon({ className = 'w-5 h-5' }) {
 const _latestMeritByCode = {}
 
 export default function App() {
-  // 탭 상태: 'home' | 'lantern' | 'sanctuary' | 'sutra' | 'bulsa' | 'agent' | 'admin' | 'profile' (경로 /lantern·/bulsa·/sutra·/sanctuary 및 ?tab= 모두 지원)
+  // 탭 상태: 'home' | 'lantern' | 'sanctuary' | 'sutra' | 'bulsa' | 'agent' | 'admin' | 'profile' | 'card' (경로 /lantern·/profile 등 및 ?tab= 및 새로고침 세션 복원 모두 지원)
   const [activeTab, setActiveTab] = useState(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search)
@@ -1647,7 +1647,17 @@ export default function App() {
       if (cleanPath === '/sanctuary') return 'sanctuary'
       if (cleanPath === '/bulsa') return 'bulsa'
       if (cleanPath === '/sutra') return 'sutra'
+      if (cleanPath === '/profile') return 'profile'
       if (cleanPath === '/card') return 'card'
+      if (cleanPath === '/agent') return 'agent'
+      if (cleanPath === '/admin') return 'admin'
+
+      try {
+        const savedTab = sessionStorage.getItem('sowonsa_active_tab')
+        if (savedTab && ['home', 'lantern', 'sanctuary', 'sutra', 'bulsa', 'agent', 'admin', 'profile', 'card'].includes(savedTab)) {
+          return savedTab
+        }
+      } catch (e) {}
     }
     return 'home'
   })
@@ -1686,7 +1696,37 @@ export default function App() {
         description:
           '반야심경 한 줄 사경, 108 목탁 명상, 오늘의 불교 명언과 경전 공부로 마음의 평안을 찾는 제주 소원사 수행 공간.',
       },
+      profile: {
+        path: '/profile',
+        title: '내 정보 & 공덕 확인 | 제주 소원사 모바일 법당',
+        description:
+          '제주 소원사 디지털 신도증, 나의 신행 복덕 공덕금, 소원등 점등 및 정진 기록 확인 공간입니다.',
+      },
+      card: {
+        path: '/card',
+        title: '소원사 모바일 전자명함 | 제주 소원사',
+        description:
+          '대한불교 조계종 제주 소원사 신도 모바일 전자명함 및 포교 안내.',
+      },
+      agent: {
+        path: '/agent',
+        title: '포교원 포교사 관리실 | 제주 소원사',
+        description:
+          '제주 소원사 포교사 전용 대시보드 및 인연 전법 현황.',
+      },
+      admin: {
+        path: '/admin',
+        title: '종무행정 관리실 | 제주 소원사',
+        description:
+          '제주 소원사 종무행정 및 사시예불 축원 관리 시스템.',
+      },
     }
+
+    // 세션스토리지에 현재 활성 탭 영구 동기화 (새로고침 시 탭 유지)
+    try {
+      sessionStorage.setItem('sowonsa_active_tab', activeTab)
+    } catch (e) {}
+
     const meta = TAB_META[activeTab]
     if (!meta) return
 
@@ -1723,9 +1763,26 @@ export default function App() {
   useEffect(() => {
     if (typeof window === 'undefined') return
     const handlePopState = () => {
-      const p = window.location.pathname.replace(/\/+$/, '')
+      const p = window.location.pathname.replace(/\/+$/, '') || '/'
       const s = window.location.search
       setIsProposalView(p === '/proposal' || p === '/b2b' || s.includes('tab=proposal') || s.includes('tab=b2b'))
+
+      // 브라우저 뒤로가기 / 앞으로가기 시 활성 탭 즉시 동기화
+      const params = new URLSearchParams(s)
+      const tabParam = params.get('tab')
+      if (tabParam && ['home', 'lantern', 'sanctuary', 'sutra', 'bulsa', 'agent', 'admin', 'profile', 'card'].includes(tabParam)) {
+        setActiveTab(tabParam)
+        return
+      }
+      if (p === '/lantern') setActiveTab('lantern')
+      else if (p === '/sanctuary') setActiveTab('sanctuary')
+      else if (p === '/bulsa') setActiveTab('bulsa')
+      else if (p === '/sutra') setActiveTab('sutra')
+      else if (p === '/profile') setActiveTab('profile')
+      else if (p === '/card') setActiveTab('card')
+      else if (p === '/agent') setActiveTab('agent')
+      else if (p === '/admin') setActiveTab('admin')
+      else if (p === '/') setActiveTab('home')
     }
     window.addEventListener('popstate', handlePopState)
     return () => window.removeEventListener('popstate', handlePopState)
