@@ -3149,6 +3149,26 @@ function formatRelativeOrDate(dateStr) {
     )
     let active100d = false
     let daysLeft100d = 0
+    // 📿 사시예불 11:00 회향 주기 기준 잔여 정진 일수(D-Day) 정밀 계산 엔진
+    const calculateSasiDaysLeft = (createdAt, durationDays) => {
+      if (!createdAt) return durationDays
+      const pTime = new Date(createdAt).getTime()
+      if (isNaN(pTime)) return durationDays
+      const pDate = new Date(pTime)
+      const firstSasiHoehang = new Date(pDate.getFullYear(), pDate.getMonth(), pDate.getDate(), 11, 0, 0, 0)
+      if (pDate.getHours() >= 11) {
+        firstSasiHoehang.setDate(firstSasiHoehang.getDate() + 1)
+      }
+      const expireTime = firstSasiHoehang.getTime() + (durationDays - 1) * 86400000
+      if (now > expireTime) return 0
+      let elapsedSasi = 0
+      if (now >= firstSasiHoehang.getTime()) {
+        const diffMs = now - firstSasiHoehang.getTime()
+        elapsedSasi = 1 + Math.floor(diffMs / 86400000)
+      }
+      return Math.max(1, durationDays - elapsedSasi)
+    }
+
     if (m.extra_data?.lantern_type?.includes('100일') && m.extra_data?.lantern_active_until) {
       const until = new Date(m.extra_data.lantern_active_until).getTime()
       if (until > now) {
@@ -3156,11 +3176,10 @@ function formatRelativeOrDate(dateStr) {
         daysLeft100d = Math.max(1, Math.ceil((until - now) / 86400000))
       }
     } else if (p100d) {
-      const start = new Date(p100d.created_at || m.created_at || '2026-10-22').getTime()
-      const end = start + (p100d.duration_days || 100) * 86400000
-      if (end > now) {
+      const daysLeft = calculateSasiDaysLeft(p100d.created_at || m.created_at, p100d.duration_days || 100)
+      if (daysLeft > 0) {
         active100d = true
-        daysLeft100d = Math.max(1, Math.ceil((end - now) / 86400000))
+        daysLeft100d = daysLeft
       }
     }
 
@@ -3177,11 +3196,10 @@ function formatRelativeOrDate(dateStr) {
         daysLeft1yr = Math.max(1, Math.ceil((until - now) / 86400000))
       }
     } else if (p1yr) {
-      const start = new Date(p1yr.created_at || m.created_at || '2026-10-22').getTime()
-      const end = start + (p1yr.duration_days || 365) * 86400000
-      if (end > now) {
+      const daysLeft = calculateSasiDaysLeft(p1yr.created_at || m.created_at, p1yr.duration_days || 365)
+      if (daysLeft > 0) {
         active1yr = true
-        daysLeft1yr = Math.max(1, Math.ceil((end - now) / 86400000))
+        daysLeft1yr = daysLeft
       }
     }
 
