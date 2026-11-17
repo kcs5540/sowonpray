@@ -388,9 +388,12 @@ export default function ProposalView({ onEnterTemple }) {
                     <span className="text-[10px] text-[#8C8071] ml-1">(고정비 없음)</span>
                   </div>
                 </div>
-                <div className="flex items-center justify-between border-b border-[#EAE4D8] pb-1.5 gap-2">
-                  <span className="shrink-0 whitespace-nowrap text-[#6B5E51]">정산 방식</span>
-                  <strong className="text-[#1B1815] font-bold text-right">신규 유입 온라인 보시금 배분</strong>
+                <div className="flex items-start justify-between border-b border-[#EAE4D8] pb-1.5 gap-2">
+                  <span className="shrink-0 whitespace-nowrap text-[#6B5E51] pt-0.5">정산 방식</span>
+                  <div className="text-right">
+                    <strong className="text-[#9A6708] font-bold block text-sm">사찰 70% : 운영사 30%</strong>
+                    <span className="text-[10px] text-[#8C8071] block">신규 온라인 보시금 기준 (PG수수료·서버비 일체 포함)</span>
+                  </div>
                 </div>
               </div>
               <p className="text-[11px] text-[#4A4036] leading-relaxed bg-[#F5F2EB] border border-[#E5DECF] p-3.5 rounded-xl font-medium">
@@ -408,20 +411,20 @@ export default function ProposalView({ onEnterTemple }) {
                 <div className="flex items-center justify-between border-b border-[#EAE4D8] pb-1.5 gap-2">
                   <span className="shrink-0 whitespace-nowrap text-[#6B5E51]">초기 구축비</span>
                   <div className="text-right">
-                    <strong className="text-[#1B1815] font-bold">300만 ~ 500만 원</strong>
+                    <strong className="text-[#1B1815] font-bold text-sm">500만 원</strong>
                     <span className="text-[10px] text-[#8C8071] ml-1">(1회)</span>
                   </div>
                 </div>
                 <div className="flex items-start justify-between border-b border-[#EAE4D8] pb-1.5 gap-2">
                   <span className="shrink-0 whitespace-nowrap text-[#6B5E51] pt-0.5">월 유지관리비</span>
                   <div className="text-right">
-                    <strong className="text-[#1B1815] font-bold block">월 30만 원</strong>
+                    <strong className="text-[#1B1815] font-bold block text-sm">월 50만 원</strong>
                     <span className="text-[10px] text-[#8C8071] block">전용 서버 · 보안 · 기술지원 포함</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between border-b border-[#EAE4D8] pb-1.5 gap-2">
                   <span className="shrink-0 whitespace-nowrap text-[#6B5E51]">정산 방식</span>
-                  <strong className="text-[#1B1815] font-bold text-right">온라인 보시금 100% 사찰 귀속</strong>
+                  <strong className="text-[#1B1815] font-bold text-right text-sm">온라인 보시금 100% 사찰 귀속</strong>
                 </div>
               </div>
               <p className="text-[11px] text-[#5C5247] leading-relaxed bg-[#F5F2EB] border border-[#E5DECF] p-3.5 rounded-xl">
