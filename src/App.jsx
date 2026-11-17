@@ -4641,11 +4641,15 @@ function formatRelativeOrDate(dateStr) {
     const isMasterOrAdmin = currentUser?.role === 'master' || currentUser?.role === 'agent' || currentUser?.role === 'temple_admin' || currentUser?.code === '33065540'
     const userCreatedAt = currentUser?.created_at ? new Date(currentUser.created_at) : null
     let isNewUserToday = false
-    if (!isMasterOrAdmin && userCreatedAt && !isNaN(userCreatedAt.getTime())) {
-      const uYear = userCreatedAt.getFullYear()
-      const uMonth = String(userCreatedAt.getMonth() + 1).padStart(2, '0')
-      const uDay = String(userCreatedAt.getDate()).padStart(2, '0')
-      isNewUserToday = `${uYear}-${uMonth}-${uDay}` === todayKey
+    if (!isMasterOrAdmin) {
+      if (userCreatedAt && !isNaN(userCreatedAt.getTime())) {
+        const kstDate = getKoreaTime(userCreatedAt).dateKey
+        isNewUserToday = kstDate === todayKey
+      }
+      // 🌟 안전망: 오늘 장부(merit_ledger 또는 localStorage)에 inyeon_receiver 내역이 있으면 신규 불자로 100% 확정!
+      if (!isNewUserToday && ledgerPts('inyeon_receiver') >= 5000) {
+        isNewUserToday = true
+      }
     }
     const inyeonReceiverReward = isNewUserToday ? Math.min(5000, ledgerPts('inyeon_receiver')) : 0
     const inyeonReceiverCount = inyeonReceiverReward >= 5000 ? 1 : 0
@@ -5682,6 +5686,18 @@ function formatRelativeOrDate(dateStr) {
           if (recRes && recRes.earned > 0 && referrerCode) {
             await grantMeritFor('inyeon_giver', referrerCode, memberCode)
           }
+          // 🌟 신규 회원 로컬 스토리지 및 todayLedger 즉시 선제 반영 (화면 깜빡임/지연 0% 방지)
+          const tKey = getTodayDateKey()
+          try {
+            localStorage.setItem(`sowon_daily_merit_lantern_${memberCode}_${tKey}`, '1000')
+            localStorage.setItem(`sowon_daily_merit_inyeon_receiver_${memberCode}_${tKey}`, '5000')
+          } catch (e) {}
+          setTodayLedger((prev) => ({
+            ...prev,
+            lantern: Math.max(Number(prev.lantern) || 0, 1000),
+            inyeon_receiver: Math.max(Number(prev.inyeon_receiver) || 0, 5000),
+          }))
+          setLanternDailyVersion((v) => v + 1)
         }
       }
 

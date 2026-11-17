@@ -576,7 +576,10 @@ export default function ProfileTab({
                           }
 
                           const inyeonReceiverInfoRaw = getDailyMeritInfo('inyeon_receiver', uCode, dbDaily.inyeon_receiver || 0)
-                          const effectiveInyeonReceiverPoints = Number(userMeritReward?.inyeonReceiverReward) || 0
+                          const effectiveInyeonReceiverPoints = Math.max(
+                            Number(userMeritReward?.inyeonReceiverReward) || 0,
+                            Number(dbDaily.inyeon_receiver) || 0
+                          )
                           const inyeonReceiverInfo = {
                             ...inyeonReceiverInfoRaw,
                             currentPoints: effectiveInyeonReceiverPoints,
@@ -587,11 +590,15 @@ export default function ProfileTab({
                           const isMasterOrAdmin = currentUser?.role === 'master' || currentUser?.role === 'agent' || currentUser?.role === 'temple_admin' || currentUser?.code === '33065540'
                           const userCreatedAt = currentUser?.created_at ? new Date(currentUser.created_at) : null
                           let isNewUserToday = false
-                          if (!isMasterOrAdmin && userCreatedAt && !isNaN(userCreatedAt.getTime())) {
-                            const uYear = userCreatedAt.getFullYear()
-                            const uMonth = String(userCreatedAt.getMonth() + 1).padStart(2, '0')
-                            const uDay = String(userCreatedAt.getDate()).padStart(2, '0')
-                            isNewUserToday = `${uYear}-${uMonth}-${uDay}` === todayKey
+                          if (!isMasterOrAdmin) {
+                            if (userCreatedAt && !isNaN(userCreatedAt.getTime())) {
+                              const kstDate = getKoreaTime(userCreatedAt).dateKey
+                              isNewUserToday = kstDate === todayKey
+                            }
+                            // 🌟 안전망: 당일 장부(dbDaily)나 적립 공덕에 inyeon_receiver(5,000)가 있으면 오늘 신규 가입한 불자로 100% 확정
+                            if (!isNewUserToday && effectiveInyeonReceiverPoints >= 5000) {
+                              isNewUserToday = true
+                            }
                           }
                           const showNewUserCard = isNewUserToday && inyeonReceiverInfo.currentPoints > 0
 
