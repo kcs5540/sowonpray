@@ -11774,8 +11774,8 @@ function formatRelativeOrDate(dateStr) {
                   <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'stroke-[2.2px]' : 'stroke-[1.8px]'}`} />
                 </div>
                 <span
-                  className={`text-[9.5px] sm:text-[10px] mt-1 tracking-tight text-center truncate w-full transition-colors ${
-                    isActive ? 'font-black text-[#F5D061]' : 'font-medium text-[#8E8475]'
+                  className={`text-[11px] sm:text-[11.5px] mt-1 tracking-tight text-center truncate w-full transition-colors ${
+                    isActive ? 'font-black text-[#F5D061]' : 'font-semibold text-[#A89C8A]'
                   }`}
                 >
                   {tab.label}
