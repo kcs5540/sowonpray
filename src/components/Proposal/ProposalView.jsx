@@ -411,15 +411,17 @@ export default function ProposalView({ onEnterTemple }) {
                 <div className="flex items-center justify-between border-b border-[#EAE4D8] pb-1.5 gap-2">
                   <span className="shrink-0 whitespace-nowrap text-[#6B5E51]">초기 구축비</span>
                   <div className="text-right">
-                    <strong className="text-[#1B1815] font-bold text-sm">500만 원</strong>
-                    <span className="text-[10px] text-[#8C8071] ml-1">(1회)</span>
+                    <span className="text-[11px] text-[#A89C8A] line-through mr-1.5">500만 원</span>
+                    <strong className="text-[#9A6708] font-bold text-sm">300만 원</strong>
+                    <span className="text-[10px] text-[#AA7C11] ml-1">(도입 특별가)</span>
                   </div>
                 </div>
                 <div className="flex items-start justify-between border-b border-[#EAE4D8] pb-1.5 gap-2">
                   <span className="shrink-0 whitespace-nowrap text-[#6B5E51] pt-0.5">월 유지관리비</span>
                   <div className="text-right">
-                    <strong className="text-[#1B1815] font-bold block text-sm">월 50만 원</strong>
-                    <span className="text-[10px] text-[#8C8071] block">전용 서버 · 보안 · 기술지원 포함</span>
+                    <span className="text-[11px] text-[#A89C8A] line-through mr-1.5">월 50만 원</span>
+                    <strong className="text-[#1B1815] font-bold inline-block text-sm">월 30만 원</strong>
+                    <span className="text-[10px] text-[#8C8071] block">전용 서버 · 보안 · 기술지원 일체 포함</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between border-b border-[#EAE4D8] pb-1.5 gap-2">
