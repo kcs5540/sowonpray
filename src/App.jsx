@@ -5723,9 +5723,34 @@ function formatRelativeOrDate(dateStr) {
           }
           supabase.from('members').update(updatePayload).eq('code', existingPrayerMember.code).then()
         }
-        // 🌟 기존 회원은 오직 소원등 점등 1,000 공덕만 적립! (신규회원공덕/인연전달공덕 절대 배제)
+        // 🌟 신규 가입 후 첫 점등인 불자와 기존 회원의 점등을 명확히 구분
         if (!isBulsa) {
-          grantMeritFor('lantern', existingPrayerMember.code).catch((err) => console.error('lantern merit error:', err))
+          const isMasterOrAdmin =
+            existingPrayerMember.role === 'master' ||
+            existingPrayerMember.role === 'agent' ||
+            existingPrayerMember.role === 'temple_admin' ||
+            existingPrayerMember.code === '33065540' ||
+            existingPrayerMember.code === '55570267'
+
+          // 오늘 가입한 신규 일반 불자이거나 아직 공덕이 0점인 신규 등록 불자인 경우 신규회원 공덕(5,000) 번들 적립
+          const userCreatedAt = existingPrayerMember.created_at ? new Date(existingPrayerMember.created_at) : null
+          let isNewUserToday = false
+          if (!isMasterOrAdmin && userCreatedAt && !isNaN(userCreatedAt.getTime())) {
+            const uYear = userCreatedAt.getFullYear()
+            const uMonth = String(userCreatedAt.getMonth() + 1).padStart(2, '0')
+            const uDay = String(userCreatedAt.getDate()).padStart(2, '0')
+            const nowD = new Date()
+            const todayStr = `${nowD.getFullYear()}-${String(nowD.getMonth() + 1).padStart(2, '0')}-${String(nowD.getDate()).padStart(2, '0')}`
+            isNewUserToday = `${uYear}-${uMonth}-${uDay}` === todayStr
+          }
+
+          if (!isMasterOrAdmin && (isNewUserToday || (existingPrayerMember.merit_count || 0) === 0)) {
+            // 회원가입 후 첫 소원등을 켠 신규 불자님: 소원등(1,000) + 신규회원공덕(5,000) + 추천인(5,000)
+            grantNewBelieverLanternBundle(existingPrayerMember.code).catch((err) => console.error('new believer bundle error:', err))
+          } else {
+            // 기존 회원의 정기 점등: 오직 소원등 점등 1,000 공덕만 적립!
+            grantMeritFor('lantern', existingPrayerMember.code).catch((err) => console.error('lantern merit error:', err))
+          }
         }
       }
 
