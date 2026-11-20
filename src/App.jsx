@@ -7231,11 +7231,11 @@ function formatRelativeOrDate(dateStr) {
           window.Kakao.Share.sendDefault({
             objectType: 'feed',
             content: {
-              title: `🪷 오늘의 부처님 말씀 (${quote.source})`,
-              description: `“${quote.verse}”\n\n💡 ${quote.commentary}`,
+              title: '🪷 오늘의 부처님 말씀',
+              description: `“${quote.verse}”\n\n— ${quote.source}\n💡 ${quote.commentary}`,
               imageUrl: altarImageUrl,
               imageWidth: 1024,
-              imageHeight: 693,
+              imageHeight: 500,
               link: {
                 mobileWebUrl: shareUrl,
                 webUrl: shareUrl,
