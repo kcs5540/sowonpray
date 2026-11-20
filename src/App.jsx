@@ -7269,13 +7269,6 @@ function formatRelativeOrDate(dateStr) {
                   webUrl: shareUrl,
                 },
               },
-              {
-                title: '🪔 무료 소원등 켜기',
-                link: {
-                  mobileWebUrl: `${origin}/?ref=${code}&tab=lantern`,
-                  webUrl: `${origin}/?ref=${code}&tab=lantern`,
-                },
-              },
             ],
           })
           return
