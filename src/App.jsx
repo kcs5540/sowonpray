@@ -7231,8 +7231,8 @@ function formatRelativeOrDate(dateStr) {
           window.Kakao.Share.sendDefault({
             objectType: 'feed',
             content: {
-              title: `🪷 [제주 소원사] 오늘의 부처님 말씀`,
-              description: `해설: "${quote.commentary}"`,
+              title: `🪷 오늘의 부처님 말씀 (${quote.source})`,
+              description: `“${quote.verse}”\n\n💡 ${quote.commentary}`,
               imageUrl: altarImageUrl,
               imageWidth: 1024,
               imageHeight: 693,
@@ -7240,17 +7240,6 @@ function formatRelativeOrDate(dateStr) {
                 mobileWebUrl: shareUrl,
                 webUrl: shareUrl,
               },
-            },
-            itemContent: {
-              profileText: '제주 소원사 모바일 법당 · 일일 법공양',
-              titleImageText: quote.source,
-              titleImageCategory: `${lunarText} · ${jaeilBadge}`,
-              items: [
-                { item: '보낸도반', itemOp: senderLabel },
-                { item: '경전출처', itemOp: quote.source },
-                { item: '핵심법문', itemOp: quote.verse.slice(0, 24) + (quote.verse.length > 24 ? '…' : '') },
-                { item: '종무소', itemOp: '010-4912-1083' },
-              ],
             },
             buttons: [
               {
