@@ -11194,7 +11194,7 @@ function formatRelativeOrDate(dateStr) {
         {activeTab === 'home' && (
           <footer className="px-4 py-5 text-center text-[11px] text-[#786E63] border-t border-[#EAE2D3] space-y-2">
             <div className="space-y-0.5 leading-relaxed">
-              <div className="font-serif-kr font-bold text-[#231F1C] text-xs">
+              <div className="font-serif-kr font-bold text-[#231F1C] text-sm tracking-wide">
                 제주 소원사
               </div>
               <p className="text-[11px] text-[#6E655C]">
