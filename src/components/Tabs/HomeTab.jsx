@@ -1138,11 +1138,11 @@ export default function HomeTab({
                   </button>
 
                   <a
-                    href="https://map.naver.com/p/search/%EC%A0%9C%EC%A3%BC%20%EC%86%8C%EC%9B%90%EC%82%AC"
+                    href="https://naver.me/5PWo9Z4I"
                     target="_blank"
                     rel="noreferrer"
                     className="py-2.5 px-3 rounded-xl bg-[#03C75A] hover:bg-[#02B351] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition active:scale-95 shadow-xs whitespace-nowrap"
-                    title="네이버 지도로 소원사 길찾기 바로 연결"
+                    title="네이버 지도로 제주 소원사 바로 연결"
                   >
                     <span className="text-xs">🧭</span>
                     <span>네이버 지도</span>
