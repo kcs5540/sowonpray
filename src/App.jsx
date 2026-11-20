@@ -2466,9 +2466,19 @@ function formatRelativeOrDate(dateStr) {
     }
   }, [])
 
-  // 오늘의 법문 선택: 마지막 읽은 구절을 localStorage에 기억하고, 처음 방문 시에는 오늘의 날짜(1~31일)에 맞춰 자동 매칭
+  // 오늘의 법문 선택: 공유 링크(?q=숫자) 우선 반영 -> 마지막 읽은 구절 -> 오늘의 날짜 순
   const [quoteIdx, setQuoteIdx] = useState(() => {
     try {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search)
+        const qParam = params.get('q')
+        if (qParam !== null) {
+          const parsed = parseInt(qParam, 10)
+          if (!isNaN(parsed) && parsed >= 0 && parsed < DAILY_QUOTES.length) {
+            return parsed
+          }
+        }
+      }
       const saved = localStorage.getItem('sowonpray_last_quote_idx_v1')
       if (saved !== null) {
         const parsed = parseInt(saved, 10)
@@ -2481,6 +2491,19 @@ function formatRelativeOrDate(dateStr) {
     const todayDate = new Date().getDate()
     return (todayDate - 1) % DAILY_QUOTES.length
   })
+
+  // URL 파라미터로 공유받은 구절 번호(?q=...) 실시간 반영
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    const qParam = params.get('q')
+    if (qParam !== null) {
+      const parsed = parseInt(qParam, 10)
+      if (!isNaN(parsed) && parsed >= 0 && parsed < DAILY_QUOTES.length) {
+        setQuoteIdx(parsed)
+      }
+    }
+  }, [])
 
   // 구절이 바뀔 때마다 브라우저에 저장하여 앱을 껐다 켜거나 다른 탭을 갔다 와도 마지막 구절 유지
   useEffect(() => {
@@ -7212,7 +7235,9 @@ function formatRelativeOrDate(dateStr) {
     playMoktakSound()
     const code = currentUser?.code || referralCode || '33065540'
     const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://sowonpray.vercel.app'
-    const shareUrl = `${origin}/?ref=${code}&tab=home`
+    const quoteIndex = DAILY_QUOTES.findIndex((q) => q.verse === quote.verse)
+    const qParam = quoteIndex !== -1 ? `&q=${quoteIndex}` : ''
+    const shareUrl = `${origin}/?ref=${code}&tab=home&section=quote${qParam}#daily-quote-section`
     const kakaoKey = import.meta.env.VITE_KAKAO_JS_KEY || '6e9a618a3862f884e3eece4bb6550922'
     const altarImageUrl = 'https://sowonpray.vercel.app/images/sowonsa_altar_card.jpg?v=3'
 

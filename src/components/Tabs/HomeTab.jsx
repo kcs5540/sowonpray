@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Megaphone,
   Calendar,
@@ -149,6 +149,21 @@ export default function HomeTab({
 }) {
   const [showMeritInfoModal, setShowMeritInfoModal] = useState(false)
   const currentQuote = DAILY_QUOTES[quoteIdx] || DAILY_QUOTES[0]
+
+  // 카카오톡 '오늘의 법문 마주하기' 버튼이나 공유 링크(?section=quote 또는 #daily-quote-section)로 접속 시 해당 위치로 즉시 자동 스크롤
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('section') === 'quote' || window.location.hash.includes('quote')) {
+      const scrollTimer = setTimeout(() => {
+        const el = document.getElementById('daily-quote-section')
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }, 400)
+      return () => clearTimeout(scrollTimer)
+    }
+  }, [])
 
   return (
 <main className="flex-1 flex flex-col gap-3.5 px-2 py-3.5">
@@ -360,7 +375,7 @@ export default function HomeTab({
             </section>
 
             {/* 오늘의 부처님 말씀 + 사찰 음력 일진·재일 법력 안내 */}
-            <section className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] relative overflow-hidden">
+            <section id="daily-quote-section" className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] relative overflow-hidden scroll-mt-20">
               {(() => {
                 const { lunarText, jaeilBadge } = getTodayLunarAndJaeil()
                 return (
