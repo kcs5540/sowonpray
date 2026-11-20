@@ -945,7 +945,7 @@ const SUTRA_STUDY_LESSONS = [
     summary: '다이아몬드(금강석)처럼 단단하여 어떤 시련에도 깨지지 않는 마음 공부입니다.',
     keyPhrase: '응무소주 이생기심 (應無所住 而生其心)',
     content: [
-      '조계종을 비롯한 한국 불교의 소의경전(가장 중심이 되는 경전)이 바로 《금강반야바라밀경》입니다.',
+      '한국 불교의 소의경전(가장 중심이 되는 경전)이 바로 《금강반야바라밀경》입니다.',
       '금강경의 핵심 구절인 “응무소주 이생기심”은 “마음을 어느 한 곳에 집착해 묶어두지 말고, 자유롭고 맑은 마음을 내라”는 뜻입니다.',
       '특히 남에게 베풀거나 기도를 올릴 때 ‘무주상보시(바라는 집착 없이 순수하게 베푸는 마음)’로 행하면, 그 복덕이 하늘과 땅처럼 헤아릴 수 없이 커진다고 부처님께서 약속하셨습니다.',
     ],
@@ -1670,25 +1670,25 @@ export default function App() {
         path: '/',
         title: '제주소원사 모바일 법당 | 소원등 켜기 & 사시예불 축원 기도도량',
         description:
-          '간절한 한 가지 소원이 이루어지는 소원성취 기도도량 대한불교 조계종 제주소원사 모바일 법당입니다. 무료 소원등 켜기, 매일 오전 10시 대웅전 사시예불 축원, 1년 인등, 영구위패봉안, 천도재, 생전예수재, 한 줄 사경, 108 목탁 명상.',
+          '간절한 한 가지 소원이 이루어지는 소원성취 기도도량 제주 소원사 모바일 법당입니다. 무료 소원등 켜기, 매일 오전 10시 대웅전 사시예불 축원, 1년 인등, 영구위패봉안, 천도재, 생전예수재, 한 줄 사경, 108 목탁 명상.',
       },
       lantern: {
         path: '/lantern',
-        title: '무료 소원등 켜기 & 대웅전 사시예불 축원 | 대한불교 조계종 제주 소원사',
+        title: '무료 소원등 켜기 & 대웅전 사시예불 축원 | 제주 소원사',
         description:
           '제주 소원사 대웅전 부처님 전에 무료 디지털 소원등을 켜고 매일 오전 10시 사시예불 축원을 받으세요.',
       },
       sanctuary: {
         path: '/sanctuary',
-        title: '제주 소원사 대웅전 참배 & 삼존불 108배·목탁·염주 수행 | 대한불교 조계종',
+        title: '제주 소원사 대웅전 참배 & 삼존불 108배·목탁·염주 수행 | 제주 소원사',
         description:
-          '대한불교 조계종 제주 소원사 대웅전 실시간 참배, 삼존불 108배 정진, 박달목탁 타종, 108 침향목 단주 굴리기, 24시간 도량 명상음악.',
+          '제주 소원사 대웅전 실시간 참배, 삼존불 108배 정진, 박달목탁 타종, 108 침향목 단주 굴리기, 24시간 도량 명상음악.',
       },
       bulsa: {
         path: '/bulsa',
         title: '상시 기도·공덕 불사(1년 인등·영구위패·천도재·생전예수재) | 제주 소원사',
         description:
-          '대한불교 조계종 제주 소원사 1년 가족 인등, 영구위패봉안, 49재, 천도재, 생전예수재, 백미 공양미 및 삼성각 불사 맞춤 상담 안내.',
+          '제주 소원사 1년 가족 인등, 영구위패봉안, 49재, 천도재, 생전예수재, 백미 공양미 및 삼성각 불사 맞춤 상담 안내.',
       },
       sutra: {
         path: '/sutra',
@@ -1706,7 +1706,7 @@ export default function App() {
         path: '/card',
         title: '소원사 모바일 전자명함 | 제주 소원사',
         description:
-          '대한불교 조계종 제주 소원사 신도 모바일 전자명함 및 포교 안내.',
+          '제주 소원사 신도 모바일 전자명함 및 포교 안내.',
       },
       agent: {
         path: '/agent',
@@ -11195,7 +11195,7 @@ function formatRelativeOrDate(dateStr) {
           <footer className="px-4 py-5 text-center text-[11px] text-[#786E63] border-t border-[#EAE2D3] space-y-2">
             <div className="space-y-0.5 leading-relaxed">
               <div className="font-serif-kr font-bold text-[#231F1C] text-xs">
-                대한불교 조계종 · 제주 소원사
+                제주 소원사
               </div>
               <p className="text-[11px] text-[#6E655C]">
                 제주특별자치도 제주시 죽성서길 75 (오등동 935)
@@ -11682,7 +11682,7 @@ function formatRelativeOrDate(dateStr) {
               {/* 주문 요약 */}
               <div className="px-5 py-3.5 bg-[#F2F4F6] flex items-center justify-between border-b border-[#E5E8EB]">
                 <div className="min-w-0">
-                  <div className="text-[11px] text-[#6B7684] font-semibold">대한불교 조계종 제주 소원사</div>
+                  <div className="text-[11px] text-[#6B7684] font-semibold">제주 소원사</div>
                   <div className="text-sm font-extrabold text-[#191F28] truncate">
                     {wishCategory || '대웅전 1년 인등(가족등)'} ({wishName || '홍길동 불자'})
                   </div>

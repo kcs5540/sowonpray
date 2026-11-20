@@ -44,7 +44,7 @@ export default function ProposalView({ onEnterTemple }) {
       <header className="sticky top-0 z-50 bg-[#1A1512]/95 backdrop-blur border-b border-[#C59B27]/40 px-3.5 sm:px-6 py-3 sm:py-3.5 shadow-xl">
         <div className="max-w-4xl mx-auto flex items-center gap-2.5 sm:gap-3.5">
           {/* 제주소원사 공식 황금 연꽃 엠블럼 마크 */}
-          <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-gradient-to-br from-[#2D241C] via-[#221C16] to-[#17130F] flex items-center justify-center shadow-[0_0_15px_rgba(245,208,97,0.4)] border border-[#C59B27]/70 p-1 shrink-0" title="대한불교 조계종 제주 소원사 공식 심볼">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-gradient-to-br from-[#2D241C] via-[#221C16] to-[#17130F] flex items-center justify-center shadow-[0_0_15px_rgba(245,208,97,0.4)] border border-[#C59B27]/70 p-1 shrink-0" title="제주 소원사 공식 심볼">
             <svg className="w-full h-full filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <path d="M20 5C20 5 15 14.5 15 21C15 23.8 17.2 26 20 26C22.8 26 25 23.8 25 21C25 14.5 20 5 20 5Z" fill="url(#proposalHeaderGoldLotus)" opacity="0.95" />
               <path d="M14 12C14 12 7.5 18.5 7.5 23C7.5 26.2 10.2 28 13.2 28C16.2 28 17.8 25.5 17.8 24C17.8 18.5 14 12 14 12Z" fill="url(#proposalHeaderGoldLotus)" opacity="0.82" />

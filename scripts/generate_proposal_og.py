@@ -52,7 +52,7 @@ font_item = ImageFont.truetype('C:/Windows/Fonts/malgun.ttf', 19)
 font_foot = ImageFont.truetype('C:/Windows/Fonts/malgunbd.ttf', 16)
 
 # 6. Badge
-badge_text = '대한불교 조계종 제주 소원사 · 제주AI파트너'
+badge_text = '제주 소원사 · 제주AI파트너'
 bx, by = 60, 52
 bw = int(draw.textlength(badge_text, font=font_badge)) + 30
 bh = 34

@@ -170,8 +170,8 @@ export async function notifyPrayerSubmission({
   // (2) 신청 신도님 휴대폰으로 접수 완료 & 축원/계좌 안내 문자 발송
   if (config.autoNotifyBeliever && believerPhone) {
     const believerMsg = isPaidPrayer
-      ? `[대한불교 조계종 제주 소원사]\n${believerName} 불자님, [${category}] 신청이 종무소에 정식 접수되었습니다.\n매일 오전 10시 대웅전 사시예불에 스님께서 정성껏 축원 올립니다.\n\n▶ 무통장 시주 계좌\n농협 301-0324-0024-41\n(예금주: 대한불교조계종소원사)\n▶ 종무소: 064-805-2007 · 010-4912-1083`
-      : `[대한불교 조계종 제주 소원사]\n${believerName} 불자님, 대웅전 소원등(${category})이 밝게 점등되었습니다.\n매일 오전 10시 대웅전 사시예불에서 가정의 평안과 소원성취를 정성껏 축원합니다.\n\n▶ 종무소: 064-805-2007 · 010-4912-1083`
+      ? `[제주 소원사]\n${believerName} 불자님, [${category}] 신청이 종무소에 정식 접수되었습니다.\n매일 오전 10시 대웅전 사시예불에 스님께서 정성껏 축원 올립니다.\n\n▶ 무통장 시주 계좌\n농협 301-0324-0024-41\n(예금주: 제주소원사)\n▶ 종무소: 064-805-2007 · 010-4912-1083`
+      : `[제주 소원사]\n${believerName} 불자님, 대웅전 소원등(${category})이 밝게 점등되었습니다.\n매일 오전 10시 대웅전 사시예불에서 가정의 평안과 소원성취를 정성껏 축원합니다.\n\n▶ 종무소: 064-805-2007 · 010-4912-1083`
 
     messages.push({
       to: believerPhone,
@@ -239,7 +239,7 @@ export async function notifyVisitReservation({
   }
 
   if (config.autoNotifyBeliever && visitorPhone) {
-    const believerMsg = `[대한불교 조계종 제주 소원사]\n${visitorName} 불자님, ${visitDate} ${visitTime} (총 ${headcount}명) 도량 방문 및 차담·공양 예약이 접수되었습니다.\n따뜻한 차와 공양을 정성껏 준비해 두겠습니다.\n\n▶ 종무소: 064-805-2007 · 010-4912-1083`
+    const believerMsg = `[제주 소원사]\n${visitorName} 불자님, ${visitDate} ${visitTime} (총 ${headcount}명) 도량 방문 및 차담·공양 예약이 접수되었습니다.\n따뜻한 차와 공양을 정성껏 준비해 두겠습니다.\n\n▶ 종무소: 064-805-2007 · 010-4912-1083`
     messages.push({
       to: visitorPhone,
       subject: '[제주 소원사 방문예약 확인]',

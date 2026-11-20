@@ -115,7 +115,7 @@ export default function DeskERPView({
   const [showSmsModal, setShowSmsModal] = useState(false)
   const [smsModalTab, setSmsModalTab] = useState('send') // 'send' | 'auto_config' | 'logs'
   const [smsTargetMode, setSmsTargetMode] = useState('filtered') // 'selected' | 'filtered'
-  const [smsText, setSmsText] = useState('[대한불교 조계종 제주 소원사] 부처님의 자비광명이 가정에 늘 함께하시기를 축원드립니다.')
+  const [smsText, setSmsText] = useState('[제주 소원사] 부처님의 자비광명이 가정에 늘 함께하시기를 축원드립니다.')
   const [smsConfig, setSmsConfig] = useState(() => getSmsConfig())
   const [smsLogs, setSmsLogs] = useState(() => getSmsLogs())
   const [isSendingSms, setIsSendingSms] = useState(false)
@@ -1826,7 +1826,7 @@ export default function DeskERPView({
               </div>
               <div className="flex justify-between">
                 <span className="text-[#7A6E5E]">영수 사찰:</span>
-                <span className="font-bold">대한불교 조계종 제주 소원사</span>
+                <span className="font-bold">제주 소원사</span>
               </div>
             </div>
 
@@ -1923,7 +1923,7 @@ export default function DeskERPView({
                     <tbody>
                       <tr>
                         <th className="border border-black bg-gray-50 p-2 w-24">단 체 명</th>
-                        <td className="border border-black p-2 font-bold">대한불교 조계종 제주 소원사</td>
+                        <td className="border border-black p-2 font-bold">제주 소원사</td>
                         <th className="border border-black bg-gray-50 p-2 w-28">고유번호</th>
                         <td className="border border-black p-2 font-mono">616-82-00000 (종교단체)</td>
                       </tr>
@@ -1969,7 +1969,7 @@ export default function DeskERPView({
                 <div className="text-center pt-3 space-y-2">
                   <p className="text-[11px]">위와 같이 종교단체 지정기부금(보시금)을 기부하였음을 증명합니다.</p>
                   <p className="font-mono text-xs">{new Date().toISOString().slice(0, 10)}</p>
-                  <p className="font-serif-kr text-base font-black pt-1">대한불교 조계종 제주 소원사 주지 (직인)</p>
+                  <p className="font-serif-kr text-base font-black pt-1">제주 소원사 주지 (직인)</p>
                 </div>
               </div>
 
@@ -2027,7 +2027,7 @@ export default function DeskERPView({
                       {m.name} {m.dharma_name ? `(${m.dharma_name})` : ''} 귀하
                     </div>
                     <div className="flex justify-between text-[10px] text-gray-400 font-mono border-t border-dashed border-gray-200 pt-1 mt-1">
-                      <span>대한불교 조계종 소원사</span>
+                      <span>제주 소원사</span>
                       <span>{m.code}</span>
                     </div>
                   </div>
@@ -2044,10 +2044,10 @@ export default function DeskERPView({
           ? [selectedMember]
           : householdsShown.filter((m) => m.sms_receive && m.phone)
         const templates = [
-          { label: '사시예불 축원', text: '[대한불교 조계종 제주 소원사] 금일 오전 10시 대웅전 사시예불에 가정의 생축 발원 축원을 여법히 올렸습니다. 성불하십시오.' },
-          { label: '초파일 연등 안내', text: '[대한불교 조계종 제주 소원사] 부처님오신날 봉축 연등 및 가족 인등 접수 안내드립니다. 종무소(064-805-2007 · 010-4912-1083)로 문의 바랍니다.' },
-          { label: '삼재 풀이 안내', text: `[대한불교 조계종 제주 소원사] ${samjaeYear}년 삼재(돼지·토끼·양띠) 소멸 특별기도 안내드립니다. 가내 평안을 축원합니다.` },
-          { label: '합동 천도재 안내', text: '[대한불교 조계종 제주 소원사] 선망 조상 영가 극락왕생 합동 천도재 법회 일정을 안내드립니다.' },
+          { label: '사시예불 축원', text: '[제주 소원사] 금일 오전 10시 대웅전 사시예불에 가정의 생축 발원 축원을 여법히 올렸습니다. 성불하십시오.' },
+          { label: '초파일 연등 안내', text: '[제주 소원사] 부처님오신날 봉축 연등 및 가족 인등 접수 안내드립니다. 종무소(064-805-2007 · 010-4912-1083)로 문의 바랍니다.' },
+          { label: '삼재 풀이 안내', text: `[제주 소원사] ${samjaeYear}년 삼재(돼지·토끼·양띠) 소멸 특별기도 안내드립니다. 가내 평안을 축원합니다.` },
+          { label: '합동 천도재 안내', text: '[제주 소원사] 선망 조상 영가 극락왕생 합동 천도재 법회 일정을 안내드립니다.' },
         ]
         return (
           <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4 overflow-y-auto">
