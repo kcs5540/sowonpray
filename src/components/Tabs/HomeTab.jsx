@@ -150,18 +150,34 @@ export default function HomeTab({
   const [showMeritInfoModal, setShowMeritInfoModal] = useState(false)
   const currentQuote = DAILY_QUOTES[quoteIdx] || DAILY_QUOTES[0]
 
-  // 카카오톡 '오늘의 법문 마주하기' 버튼이나 공유 링크(?section=quote 또는 #daily-quote-section)로 접속 시 해당 위치로 즉시 자동 스크롤
+  // 카카오톡 '오늘의 법문 마주하기' 버튼이나 공유 링크(?section=quote 또는 #daily-quote-section)로 접속 시
+  // 상단 헤더 바로 아래 '오늘의 부처님 말씀' 카드가 정확히 걸리도록 정밀 스크롤
   useEffect(() => {
     if (typeof window === 'undefined') return
     const params = new URLSearchParams(window.location.search)
     if (params.get('section') === 'quote' || window.location.hash.includes('quote')) {
-      const scrollTimer = setTimeout(() => {
+      const scrollToQuote = (smooth = true) => {
         const el = document.getElementById('daily-quote-section')
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          // 상단 고정 헤더(약 56~60px) + 여백(8px)을 감안하여 헤더 바로 아래에 정확히 밀착
+          const headerHeight = 60
+          const elementPosition = el.getBoundingClientRect().top + window.pageYOffset
+          const targetPosition = Math.max(0, elementPosition - headerHeight - 8)
+          window.scrollTo({
+            top: targetPosition,
+            behavior: smooth ? 'smooth' : 'auto',
+          })
         }
-      }, 400)
-      return () => clearTimeout(scrollTimer)
+      }
+
+      // 1차 즉시 이동 및 모바일 웹뷰 레이아웃 안착 후 2차 정밀 보정
+      const timer1 = setTimeout(() => scrollToQuote(true), 200)
+      const timer2 = setTimeout(() => scrollToQuote(false), 600)
+
+      return () => {
+        clearTimeout(timer1)
+        clearTimeout(timer2)
+      }
     }
   }, [])
 
