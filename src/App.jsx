@@ -7228,11 +7228,31 @@ function formatRelativeOrDate(dateStr) {
             ? `${currentUser.name}${currentUser.dharma_name ? ` (${currentUser.dharma_name})` : ''}`
             : '소원사 도반'
 
+          // 카카오톡 피드 카드의 본문(description)은 2줄 제한(-webkit-line-clamp: 2)이 있어 긴 말씀이 잘립니다.
+          // 따라서 부처님 말씀의 앞 구절을 제목(title: 굵은 글씨)에, 뒷 구절과 출처를 본문(description)에 배치하여
+          // 2개 영역이 하나로 자연스럽게 이어지며 단 1글자도 잘림 없이 전체 말씀이 100% 온전하게 노출되도록 구현합니다.
+          let cardTitle = '🪷 오늘의 부처님 말씀'
+          let cardDesc = `“${quote.verse}”\n— ${quote.source}`
+
+          if (quote.verse.length > 28) {
+            const commaIdx = quote.verse.indexOf(',')
+            if (commaIdx !== -1 && commaIdx >= 12 && commaIdx <= 35) {
+              cardTitle = '“' + quote.verse.slice(0, commaIdx + 1).trim()
+              cardDesc = quote.verse.slice(commaIdx + 1).trim() + '”\n— ' + quote.source
+            } else {
+              const half = Math.floor(quote.verse.length / 2)
+              let splitIdx = quote.verse.lastIndexOf(' ', half + 8)
+              if (splitIdx === -1 || splitIdx < 12) splitIdx = half
+              cardTitle = '“' + quote.verse.slice(0, splitIdx).trim()
+              cardDesc = quote.verse.slice(splitIdx).trim() + '”\n— ' + quote.source
+            }
+          }
+
           window.Kakao.Share.sendDefault({
             objectType: 'feed',
             content: {
-              title: '🪷 오늘의 부처님 말씀',
-              description: `“${quote.verse}”\n\n— ${quote.source}\n💡 ${quote.commentary}`,
+              title: cardTitle,
+              description: cardDesc,
               imageUrl: altarImageUrl,
               imageWidth: 1024,
               imageHeight: 500,
