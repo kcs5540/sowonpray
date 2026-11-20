@@ -538,39 +538,61 @@
       });
     }
 
-    // 2. 서식 포함 본문 복사
+    // 2. 서식 포함 본문 복사 (마우스 드래그와 100% 동일하게 브라우저 화면 서식을 강제 복사)
     function copyFormattedBlog() {
       const copyArea = document.getElementById('blog-copy-area');
-      const clone = copyArea.cloneNode(true);
 
-      // 제목 및 부제목은 본문 복사본에서 제외 (제목란에 별도 입력)
-      const titleElem = clone.querySelector('.blog-title');
-      const subtitleElem = clone.querySelector('.blog-subtitle');
+      // 실제 화면 DOM에 임시 복사 영역을 만들어 마우스 드래그 선택과 완전히 똑같이 처리
+      const tempDiv = copyArea.cloneNode(true);
+      tempDiv.style.position = 'fixed';
+      tempDiv.style.left = '-9999px';
+      tempDiv.style.top = '0';
+      tempDiv.style.width = '750px';
+      tempDiv.style.opacity = '0';
+      document.body.appendChild(tempDiv);
+
+      // 제목 및 부제목은 본문 복사본에서 제외
+      const titleElem = tempDiv.querySelector('.blog-title');
+      const subtitleElem = tempDiv.querySelector('.blog-subtitle');
       if (titleElem) titleElem.remove();
       if (subtitleElem) subtitleElem.remove();
 
       // [data-copy-skip="true"] 안내 박스들을 빈 2줄 단락으로 치환 (사진 자리 확보)
-      const skipElements = clone.querySelectorAll('[data-copy-skip="true"]');
+      const skipElements = tempDiv.querySelectorAll('[data-copy-skip="true"]');
       skipElements.forEach(el => {
         const p = document.createElement('p');
         p.innerHTML = '<br><br>';
         el.parentNode.replaceChild(p, el);
       });
 
-      const htmlContent = clone.innerHTML;
-      const plainContent = clone.innerText;
+      // 마우스로 전체를 긁은 것과 100% 똑같은 Range Selection 생성
+      const range = document.createRange();
+      range.selectNodeContents(tempDiv);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
 
-      // Clipboard API HTML + PlainText 복합 복사
-      const blobHtml = new Blob([htmlContent], { type: 'text/html' });
-      const blobText = new Blob([plainContent], { type: 'text/plain' });
-      const data = [new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })];
-
-      navigator.clipboard.write(data).then(() => {
-        showToast('✨ 서식 포함 본문이 복사되었습니다! 에디터에 Ctrl+V 하세요.');
-      }).catch(err => {
-        console.error(err);
-        showToast('복사 실패! 브라우저 권한을 확인해주세요.');
-      });
+      try {
+        const success = document.execCommand('copy');
+        if (success) {
+          showToast('✨ 마우스로 전체 긁은 것과 똑같이 서식이 100% 완벽 복사되었습니다! 에디터에 Ctrl+V 하세요.');
+        } else {
+          throw new Error('execCommand copy failed');
+        }
+      } catch (err) {
+        console.warn('execCommand 실패, Clipboard API로 재시도합니다.', err);
+        // 클립보드 API 폴백
+        const htmlContent = tempDiv.innerHTML;
+        const plainContent = tempDiv.innerText;
+        const blobHtml = new Blob([htmlContent], { type: 'text/html' });
+        const blobText = new Blob([plainContent], { type: 'text/plain' });
+        navigator.clipboard.write([new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })]).then(() => {
+          showToast('✨ 서식 포함 본문이 복사되었습니다! 에디터에 Ctrl+V 하세요.');
+        });
+      } finally {
+        selection.removeAllRanges();
+        document.body.removeChild(tempDiv);
+      }
     }
 
     // 3. 태그 복사 (네이버 스마트에디터 ONE 최대 한도 30개 풀 세팅 - '#' 포함)
