@@ -28,6 +28,7 @@ docs/sowonsa_legacy_erp_screens/
 !*.env.example
 shorts/
 *.mp4
+*.vrew
 media_library/
 youtube_assets/
 longform_intro/

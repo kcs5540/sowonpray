@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[제주 소원사] 위패 점안·봉안 대법회 - 네이버 블로그 스마트에디터 ONE 서식 복사기</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --primary: #b45309;
+      --primary-hover: #92400e;
+      --primary-light: #fef3c7;
+      --accent: #d97706;
+      --border: #e2e8f0;
+      --gold-dark: #78350f;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding-bottom: 80px;
+    }
+    /* 상단 고정 툴바 */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #111827;
+      color: #fff;
+      padding: 14px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border-bottom: 2px solid var(--accent);
+    }
+    .bar-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .bar-title {
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fde68a;
+    }
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: var(--primary);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: #374151;
+      color: #f3f4f6;
+    }
+    .btn-secondary:hover {
+      background: #4b5563;
+    }
+    .btn-tag {
+      background: #047857;
+      color: #fff;
+    }
+    .btn-tag:hover {
+      background: #065f46;
+    }
+    /* 메인 컨테이너 */
+    .container {
+      max-width: 860px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+    /* 가이드 카드 */
+    .guide-box {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 6px solid var(--accent);
+      padding: 18px 20px;
+      border-radius: 10px;
+      margin-bottom: 24px;
+    }
+    .guide-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--gold-dark);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .guide-list {
+      list-style: none;
+      font-size: 13.5px;
+      color: #451a03;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .guide-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .guide-badge {
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 700;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+    /* 복사 미리보기 영역 */
+    .blog-sheet {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px 36px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    }
+    /* 사진 슬롯 가이드 */
+    .photo-slot {
+      margin: 24px 0;
+      padding: 20px;
+      background: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 10px;
+      text-align: center;
+      color: #64748b;
+      font-size: 13.5px;
+    }
+    .photo-slot strong {
+      color: var(--primary);
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14.5px;
+    }
+    .photo-slot img {
+      max-width: 100%;
+      height: auto;
+      max-height: 380px;
+      border-radius: 8px;
+      margin-top: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+    /* 클립 비디오 슬롯 (특별 강조) */
+    .clip-slot {
+      margin: 28px 0;
+      padding: 22px;
+      background: #fff7ed;
+      border: 2px dashed #f97316;
+      border-radius: 12px;
+      text-align: center;
+      color: #9a3412;
+    }
+    .clip-slot strong {
+      color: #ea580c;
+      font-size: 16px;
+      display: block;
+      margin-bottom: 6px;
+    }
+    /* 서식 스타일 (스마트에디터에 그대로 들어갈 인라인 호환) */
+    .blog-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #111827;
+      line-height: 1.4;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .blog-subtitle {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .blog-h3 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #1f2937;
+      margin: 36px 0 16px 0;
+      border-left: 5px solid var(--accent);
+      padding-left: 12px;
+    }
+    .blog-p {
+      font-size: 16px;
+      color: #334155;
+      line-height: 1.85;
+      margin-bottom: 16px;
+    }
+    .highlight {
+      background-color: #fef08a;
+      padding: 2px 6px;
+      font-weight: 700;
+      border-radius: 3px;
+    }
+    .text-gold {
+      color: #b45309;
+      font-weight: 700;
+    }
+    .blockquote-temple {
+      border-left: 4px solid var(--accent);
+      background: #fffbeb;
+      padding: 16px 20px;
+      font-style: italic;
+      color: #78350f;
+      border-radius: 0 8px 8px 0;
+      margin: 24px 0;
+      line-height: 1.8;
+      font-size: 15.5px;
+    }
+    .temple-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14.5px;
+    }
+    .temple-table th {
+      background: #fef3c7;
+      color: #78350f;
+      border: 1px solid #fde68a;
+      padding: 12px 14px;
+      font-weight: 700;
+    }
+    .temple-table td {
+      border: 1px solid #e5e7eb;
+      padding: 12px 14px;
+      color: #374151;
+      text-align: left;
+    }
+    .temple-table tr:nth-child(even) td {
+      background: #fafaf9;
+    }
+    .info-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 22px;
+      margin: 28px 0;
+      text-align: center;
+    }
+    .info-card h4 {
+      font-size: 17px;
+      color: #0f172a;
+      margin-bottom: 10px;
+    }
+    .info-card p {
+      font-size: 15px;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+    /* 토스트 알림 */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #111827;
+      color: #fef08a;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      border: 1px solid var(--accent);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 상단 고정 툴바 -->
+  <div class="top-bar">
+    <div class="bar-inner">
+      <div class="bar-title">
+        <span>🪷 [제주 소원사] 위패 점안·봉안 특별대법회</span>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="copyTitle()">📋 1. 제목 복사</button>
+        <button class="btn btn-primary" onclick="copyFormattedBlog()">✨ 2. 서식 포함 본문 복사</button>
+        <button class="btn btn-tag" onclick="copyTags()">🏷️ 3. 태그 복사</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    <!-- 발행 전 6대 핵심 체크 가이드 -->
+    <div class="guide-box">
+      <div class="guide-title">
+        <span>💡 네이버 블로그 스마트에디터 ONE 원클릭 발행 공식</span>
+      </div>
+      <ul class="guide-list">
+        <li>
+          <span class="guide-badge">단계 1</span>
+          <span>상단 <strong>[2. 서식 포함 본문 복사]</strong> 버튼 1번 클릭 후, 블로그 에디터 본문에 <code>Ctrl + V</code> 붙여넣기</span>
+        </li>
+        <li>
+          <span class="guide-badge">단계 2 (핵심!)</span>
+          <span>에디터 오른쪽 상단(초록색 [발행] 바로 아래) <strong>🎬 [내 클립]</strong> 버튼 클릭 ➡️ '소원사 위패대법회' 영상 쏙 삽입!</span>
+        </li>
+        <li>
+          <span class="guide-badge">단계 3</span>
+          <span>함께 열린 <code>blog_photos/</code> 폴더에서 <code>00_대표썸네일.jpg</code>를 꼭 <strong>[대표] 사진</strong>으로 설정하고 순서대로 사진 첨부</span>
+        </li>
+        <li>
+          <span class="guide-badge">단계 4</span>
+          <span>에디터 상단 도구 모음의 <strong>🔗 [링크]</strong>를 눌러 모바일 법당(<code>https://sowonpray.vercel.app</code>) 카드 생성</span>
+        </li>
+        <li>
+          <span class="guide-badge">단계 5</span>
+          <span>상단 <strong>📍 [장소]</strong> 버튼 클릭 ➡️ <strong>'제주 소원사'</strong> (제주시 죽성서길 75) 지도 첨부</span>
+        </li>
+        <li>
+          <span class="guide-badge">단계 6</span>
+          <span>카테고리는 <strong>[제주 소원사]</strong> 지정 후 상단 <strong>[3. 태그 복사]</strong> 버튼으로 태그 12개 넣고 <strong>[발행]</strong>!</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 실제 복사 영역 -->
+    <div class="blog-sheet" id="blog-copy-area">
+      
+      <!-- 제목 영역 -->
+      <h1 class="blog-title" id="blog-title-text">절에 모셔둔 부모님 위패, 매일 축원 받고 계신가요? 제주 소원사 조상영가 위패 점안·봉안 대법회 현장</h1>
+      <h2 class="blog-subtitle">365일 사시예불 영구 축원으로 모시는 지극한 효도의 길</h2>
+
+      <hr style="border: 0; height: 1px; background: #e2e8f0; margin: 28px 0;">
+
+      <!-- 대표 사진 자리 (복사 시는 빈 줄로 치환) -->
+      <div class="photo-slot" data-copy-skip="true">
+        <strong>[사진 00: 00_대표썸네일.jpg - 반드시 블로그 '대표' 사진으로 지정해 주세요]</strong>
+        <p>1:1 정사각 카톡 공유 무잘림 안심 규격</p>
+        <img src="blog_photos/00_대표썸네일.jpg" alt="제주 소원사 위패 점안 봉안 대법회 대표 썸네일">
+      </div>
+
+      <p class="blog-p">바쁜 일상을 살아가다 보면 문득 가슴 한켠이 아려올 때가 있습니다.</p>
+      <p class="blog-p"><strong>"지금 우리 부모님은 좋은 곳에서 편안히 쉬고 계실까?"</strong><br>
+      <strong>"절에 위패를 모셔두긴 했는데, 스님들께서 잊지 않고 축원해 주고 계실까?"</strong></p>
+
+      <p class="blog-p">많은 불자님들이 조상님과 부모님의 위패를 사찰에 모시지만, 혹여나 위패만 봉안실 한구석에 덩그러니 남겨져 있는 것은 아닐까 마음 한편에 미안함과 걱정을 품고 계십니다.</p>
+
+      <!-- [내 클립] 삽입 가이드 박스 -->
+      <div class="clip-slot" data-copy-skip="true">
+        <strong>🎬 [여기에 네이버 클립 영상을 넣어주세요!]</strong>
+        <p>스마트에디터 오른쪽 상단 <strong>[내 클립]</strong> 버튼 클릭 ➡️ '소원사 위패대법회' 쇼츠 영상을 클릭하시면 이 자리에 멋진 영상 카드가 들어갑니다!</p>
+      </div>
+
+      <!-- 사진 01 -->
+      <div class="photo-slot" data-copy-skip="true">
+        <strong>[사진 01: 01_소원사_대웅전_법회맞이.jpg]</strong>
+        <img src="blog_photos/01_소원사_대웅전_법회맞이.jpg" alt="소원사 대웅전 법회 전경">
+      </div>
+
+      <p class="blog-p">지난 토요일, 한라산 자락의 맑고 영험한 기운이 감도는 <span class="highlight">대한불교 조계종 제주 소원사</span> 대웅전에서는 전국 불자님들의 지극한 효심과 정성을 모아 <span class="text-gold">'조상영가 위패 점안·봉안 특별대법회'</span>가 장엄하게 봉행되었습니다.</p>
+
+      <p class="blog-p">도량에 울려 퍼지는 청아한 풍경 소리와 법종 소리 속에서, 그리운 인연들의 넋을 기리고 극락왕생을 발원하는 뜻깊은 기도가 시작되었습니다.</p>
+
+      <!-- 사진 02 -->
+      <div class="photo-slot" data-copy-skip="true">
+        <strong>[사진 02: 02_조상영가_위패_점안의식_시작.jpg]</strong>
+        <img src="blog_photos/02_조상영가_위패_점안의식_시작.jpg" alt="위패 점안의식 시작">
+      </div>
+
+      <h3 class="blog-h3">1. 부처님의 자비광명을 불어넣는 점안(點眼) 의식</h3>
+
+      <p class="blog-p">위패는 단순한 나무패가 아닙니다. 부처님의 가피와 스님들의 지극한 원력이 더해져야만 영가님께서 머무실 수 있는 여법한 영단이 됩니다.</p>
+
+      <p class="blog-p">이날 대법회에서는 대덕 스님들의 엄숙한 집전 아래, 위패에 깃든 업장을 씻어내고 부처님의 밝은 자비광명을 밝히는 <span class="highlight">전통 점안 의식</span>이 여법하게 거행되었습니다.</p>
+
+      <!-- 사진 03 -->
+      <div class="photo-slot" data-copy-skip="true">
+        <strong>[사진 03: 03_스님들의_여법한_집전_바라작법.jpg]</strong>
+        <img src="blog_photos/03_스님들의_여법한_집전_바라작법.jpg" alt="스님들의 바라작법 집전">
+      </div>
+
+      <p class="blog-p">법당을 가득 채운 범음범패와 바라작법 소리는 영가들의 오랜 한과 응어리를 어루만지고, 모든 집착을 내려놓고 아미타부처님의 극락정토로 나아갈 수 있도록 환한 길을 열어주었습니다.</p>
+
+      <p class="blog-p">현장에 동참하신 불자님들은 두 손을 모아 합장하고 눈시울을 붉히며 부모님의 명복을 지심으로 빌었습니다.</p>
+
+      <!-- 사진 04 -->
+      <div class="photo-slot" data-copy-skip="true">
+        <strong>[사진 04: 04_지극한_효심_불자님_동참.jpg]</strong>
+        <img src="blog_photos/04_지극한_효심_불자님_동참.jpg" alt="불자님들의 정성 어린 동참">
+      </div>
+
+      <h3 class="blog-h3">2. 제주 소원사는 "위패만 모셔두지 않습니다"</h3>
+
+      <p class="blog-p">소원사가 전국의 많은 불자님들께 두터운 신뢰를 받는 가장 큰 이유는 바로 <span class="text-gold">'365일 사시예불 영구 축원의 약속'</span> 때문입니다.</p>
+
+      <p class="blog-p">일부 사찰에서는 위패를 모신 뒤 명절이나 기일에만 불공을 올리기도 하지만, <span class="highlight">제주 소원사는 1년 365일 매일 오전 10시 사시예불마다</span> 스님들께서 대웅전 영단에 정식으로 헌공하며, <strong>조상 영가님의 극락왕생과 살아있는 자손들의 무량복덕을 영구히 축원</strong>합니다.</p>
+
+      <!-- 사진 05 -->
+      <div class="photo-slot" data-copy-skip="true">
+        <strong>[사진 05: 05_정성으로_모신_영가위패_안치.jpg]</strong>
+        <img src="blog_photos/05_정성으로_모신_영가위패_안치.jpg" alt="영가위패 안치 모습">
+      </div>
+
+      <div class="blockquote-temple">
+        "부모님 위패를 모셔놓고도 늘 마음이 무거웠는데, 매일 아침 스님들께서 목탁을 치며 부모님 이름을 불러주신다니 이제야 자식 된 도리를 다한 것 같아 가슴이 벅찹니다."<br>
+        <span style="font-size: 13px; color: #92400e; font-weight: normal;">— 서울에서 동참하신 김OO 불자님</span>
+      </div>
+
+      <!-- 사진 06 -->
+      <div class="photo-slot" data-copy-skip="true">
+        <strong>[사진 06: 06_부처님_자비광명_축원의식.jpg]</strong>
+        <img src="blog_photos/06_부처님_자비광명_축원의식.jpg" alt="부처님 자비광명 축원의식">
+      </div>
+
+      <h3 class="blog-h3">3. 멀리 있어도 안심되는 '모바일 법당' 연동</h3>
+
+      <p class="blog-p">제주도까지 자주 찾아오기 힘든 육지 및 타지역 불자님들을 위해, 제주 소원사는 국내 사찰 최초로 <span class="highlight">'모바일 법당'</span> 시스템을 운영하고 있습니다.</p>
+
+      <p class="blog-p">스마트폰 하나만 있으면 전국 어디서든:<br>
+      • <strong>소원사 대웅전 실시간 24시간 참배</strong><br>
+      • <strong>부모님을 위한 온라인 소원등·인등 켜기</strong><br>
+      • <strong>영가 위패 봉안 상태 및 매일 축원 일정 확인</strong></p>
+
+      <p class="blog-p">바쁜 현대인의 일상 속에서도 언제든 부모님을 찾아뵙고 마음을 전할 수 있는 가장 현대적이고 따뜻한 효도의 장이 열려 있습니다.</p>
+
+      <!-- 사진 07 -->
+      <div class="photo-slot" data-copy-skip="true">
+        <strong>[사진 07: 07_소원사_영구_영단_완성.jpg]</strong>
+        <img src="blog_photos/07_소원사_영구_영단_완성.jpg" alt="소원사 영구 영단 완성">
+      </div>
+
+      <h3 class="blog-h3">4. 제주 소원사 영구 위패 봉안 안내</h3>
+
+      <table class="temple-table">
+        <thead>
+          <tr>
+            <th style="width: 25%;">구분</th>
+            <th>주요 봉안 및 축원 내용</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>봉안 도량</strong></td>
+            <td>대한불교 조계종 제주 소원사 대웅전 영구 영단</td>
+          </tr>
+          <tr>
+            <td><strong>축원 일정</strong></td>
+            <td><strong style="color: #b45309;">매일 오전 10시 사시예불 영구 축원 (365일 매일)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>봉행 의식</strong></td>
+            <td>여법한 전통 점안 의식, 헌향 및 극락왕생 천도 발원</td>
+          </tr>
+          <tr>
+            <td><strong>디지털 혜택</strong></td>
+            <td><strong>소원사 모바일 법당</strong> 24시간 실시간 참배 및 축원 확인</td>
+          </tr>
+          <tr>
+            <td><strong>동참 대상</strong></td>
+            <td>역대 선망 조상 영가, 작고하신 부모님, 유산 영가, 인연 영가 등</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 사진 08 -->
+      <div class="photo-slot" data-copy-skip="true">
+        <strong>[사진 08: 08_매일_사시예불_영구축원.jpg]</strong>
+        <img src="blog_photos/08_매일_사시예불_영구축원.jpg" alt="매일 사시예불 영구 축원">
+      </div>
+
+      <h3 class="blog-h3">조상님이 편안하셔야 자손이 번창합니다</h3>
+
+      <p class="blog-p">뿌리가 깊고 튼튼한 나무가 거센 바람에도 흔들리지 않고 풍성한 열매를 맺듯이, 조상 영가님께서 극락세계에서 평안을 얻으실 때 살아있는 자손들의 앞길에도 장애가 사라지고 복덕이 찾아옵니다.</p>
+
+      <p class="blog-p">그리운 부모님과 조상님께 올리는 가장 숭고한 효도, 제주 소원사 영구 위패 봉안으로 전해보세요.</p>
+
+      <hr style="border: 0; height: 1px; background: #e2e8f0; margin: 32px 0;">
+
+      <!-- 링크 카드 안내 -->
+      <div class="info-card">
+        <h4>🪷 제주 소원사 공식 모바일 법당 안내</h4>
+        <p>스마트폰으로 대웅전을 24시간 참배하고 부모님 위패를 확인하실 수 있습니다.</p>
+        <p style="margin-top: 12px;">
+          <a href="https://sowonpray.vercel.app" target="_blank" style="color: #b45309; font-weight: 700; text-decoration: underline; font-size: 16px;">
+            https://sowonpray.vercel.app
+          </a>
+        </p>
+        <p style="font-size: 13px; color: #94a3b8; margin-top: 6px;">(에디터 상단 🔗 [링크] 버튼을 누르고 위 주소를 넣으시면 네이버 미리보기 카드가 예쁘게 생성됩니다.)</p>
+      </div>
+
+      <!-- 지도 및 상담 안내 -->
+      <div class="info-card" style="background: #fffbeb; border-color: #fde68a;">
+        <h4 style="color: #78350f;">📍 대한불교 조계종 제주 소원사 오시는 길</h4>
+        <p><strong>주소</strong>: 제주특별자치도 제주시 죽성서길 75 (구주소: 오등동 935번지)</p>
+        <p><strong>종무소 위패 봉안·불사 상담</strong>: <strong style="color: #b45309; font-size: 17px;">(064) 805-2007 / 010-4912-1083</strong></p>
+        <p style="font-size: 13px; color: #b45309; margin-top: 8px;">※ 방문 전 종무소로 연락 주시면 스님과의 1:1 상담 및 법당 안내를 정성껏 도와드립니다.</p>
+        <p style="font-size: 13px; color: #94a3b8; margin-top: 4px;">(에디터 상단 📍 [장소] 버튼을 눌러 '제주 소원사' 지도를 함께 첨부해 주세요!)</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast-msg">복사되었습니다!</div>
+
+  <script>
+    function showToast(text) {
+      const toast = document.getElementById('toast-msg');
+      toast.innerText = text;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    // 1. 제목 복사
+    function copyTitle() {
+      const title = document.getElementById('blog-title-text').innerText.trim();
+      navigator.clipboard.writeText(title).then(() => {
+        showToast('✅ 제목이 복사되었습니다! 블로그 제목란에 붙여넣으세요.');
+      });
+    }
+
+    // 2. 서식 포함 본문 복사 (HTML clone을 떠서 안내 슬롯 제거 후 깨끗한 본문만 복사)
+    function copyFormattedBlog() {
+      const copyArea = document.getElementById('blog-copy-area');
+      const clone = copyArea.cloneNode(true);
+
+      // 제목 영역은 본문 복사본에서는 제외
+      const titleElem = clone.querySelector('.blog-title');
+      const subtitleElem = clone.querySelector('.blog-subtitle');
+      if (titleElem) titleElem.remove();
+      if (subtitleElem) subtitleElem.remove();
+
+      // [data-copy-skip="true"] 안내 박스들은 복사본에서 제거하고 빈 2줄로 처리
+      const skipElements = clone.querySelectorAll('[data-copy-skip="true"]');
+      skipElements.forEach(el => {
+        const p = document.createElement('p');
+        p.innerHTML = '<br><br>';
+        el.parentNode.replaceChild(p, el);
+      });
+
+      const htmlContent = clone.innerHTML;
+      const plainContent = clone.innerText;
+
+      // Clipboard API HTML + PlainText 복합 복사
+      const blobHtml = new Blob([htmlContent], { type: 'text/html' });
+      const blobText = new Blob([plainContent], { type: 'text/plain' });
+      const data = [new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })];
+
+      navigator.clipboard.write(data).then(() => {
+        showToast('✨ 서식 포함 본문이 복사되었습니다! 에디터에 Ctrl+V 하세요.');
+      }).catch(err => {
+        console.error(err);
+        showToast('복사 실패! 브라우저 권한을 확인해주세요.');
+      });
+    }
+
+    // 3. 태그 복사
+    function copyTags() {
+      const tags = '제주소원사, 소원사, 위패봉안, 조상위패, 영가위패, 사시예불, 영구축원, 제주사찰, 제주절, 제주도절, 천도재, 모바일법당, 대한불교조계종, 부모님효도';
+      navigator.clipboard.writeText(tags).then(() => {
+        showToast('🏷️ 태그 12개가 복사되었습니다! 에디터 태그란에 붙여넣으세요.');
+      });
+    }
+  </script>
+</body>
+</html>
