@@ -268,21 +268,28 @@ export default function SowonsaSanctuaryModal({
     }
   }
 
-  // 2) 대웅전 법음 & 염불 트랙 선택 및 토글
+  // 2) 대웅전 법음 & 염불 트랙 선택 및 즉시 재생
   const handleSelectTrack = (track) => {
     hasUserPausedChantRef.current = false
     setSelectedTrack(track)
     if (chantAudioRef.current) {
-      chantAudioRef.current.pause()
-      chantAudioRef.current.src = track.audioUrl
-      chantAudioRef.current.currentTime = 0
-      chantAudioRef.current.volume = 0.75
-      chantAudioRef.current.play().then(() => {
-        setIsPlayingChant(true)
-        if (showToast) showToast(`📿 [${track.title}] 봉독을 시작합니다`)
-      }).catch(() => {
-        setIsPlayingChant(false)
-      })
+      const audio = chantAudioRef.current
+      audio.pause()
+      if (audio.getAttribute('src') !== track.audioUrl) {
+        audio.src = track.audioUrl
+        audio.load()
+      }
+      audio.currentTime = 0
+      audio.volume = 0.75
+      const p = audio.play()
+      if (p !== undefined) {
+        p.then(() => {
+          setIsPlayingChant(true)
+          if (showToast) showToast(`📿 [${track.title}] 봉독을 시작합니다`)
+        }).catch(() => {
+          setIsPlayingChant(false)
+        })
+      }
     }
     setShowAudioDrawer(false)
   }
@@ -512,6 +519,9 @@ export default function SowonsaSanctuaryModal({
 
     // 🪵 대웅전 입장 시 박달나무 실물 목탁 원음 기본 자동 활성화
     if (chantAudioRef.current) {
+      if (!chantAudioRef.current.getAttribute('src')) {
+        chantAudioRef.current.src = selectedTrack.audioUrl
+      }
       chantAudioRef.current.volume = 0.75
       const chantPromise = chantAudioRef.current.play()
       if (chantPromise !== undefined) {
@@ -621,6 +631,9 @@ export default function SowonsaSanctuaryModal({
           ambientAudioRef.current.play().then(() => setIsPlayingSound(true)).catch(() => {})
         }
         if (!isPlayingChant && !hasUserPausedChantRef.current && chantAudioRef.current) {
+          if (!chantAudioRef.current.getAttribute('src')) {
+            chantAudioRef.current.src = selectedTrack.audioUrl
+          }
           chantAudioRef.current.volume = 0.75
           chantAudioRef.current.play().then(() => setIsPlayingChant(true)).catch(() => {})
         }
@@ -631,9 +644,9 @@ export default function SowonsaSanctuaryModal({
           : 'h-full shadow-[0_0_60px_rgba(0,0,0,0.95)] border-x border-[#C59B27]/30 cursor-pointer'
       }`}
     >
-      {/* 1. 배경 오디오 소스 */}
+      {/* 1. 배경 오디오 소스 (chantAudioRef는 React 리렌더 시 src 초기화로 인한 AbortError 방지를 위해 명령형 관리) */}
       <audio ref={ambientAudioRef} src="/audio/sowonsa_wind.mp3" loop preload="auto" />
-      <audio ref={chantAudioRef} src={selectedTrack.audioUrl} loop preload="auto" />
+      <audio ref={chantAudioRef} loop preload="auto" />
       <audio ref={yeomjuAudioRef} src="/audio/yeomju_click.wav" preload="auto" />
 
       {/* 2. 대웅전 옻칠 대청마루 바닥 레이어 (z-0: 제단 밑바닥과 바닥 전체에 자연스럽게 깔림) */}
