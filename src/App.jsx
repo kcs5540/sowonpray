@@ -4470,7 +4470,7 @@ function formatRelativeOrDate(dateStr) {
   // 신규 회원가입 입력 상태
   const [signupName, setSignupName] = useState('')
   const [signupPhone, setSignupPhone] = useState('')
-  const [signupPw, setSignupPw] = useState('')
+  const [signupPw, setSignupPw] = useState('0000')
   const [signupDharmaName, setSignupDharmaName] = useState('')
   const [signupBirthDate, setSignupBirthDate] = useState('')
   const [signupLunarSolar, setSignupLunarSolar] = useState('음력')
@@ -4973,12 +4973,13 @@ function formatRelativeOrDate(dateStr) {
     showToast('로그아웃되었습니다. 로그인/가입 화면으로 전환됩니다.')
   }
 
-  // 신규 회원가입 핸들러 (필수: 성함 + 전화번호 + 비밀번호 / 선택: 법명·생년월일·주소·가족메모)
+  // 신규 회원가입 핸들러 (필수: 성함 + 전화번호 / 비밀번호 미입력 시 자동 0000 / 선택: 법명·생년월일·주소·가족메모)
   const handleSignup = (e) => {
     e.preventDefault()
     const code8 = extractPhone8Code(signupPhone)
-    if (!signupName.trim() || code8.length !== 8 || !signupPw.trim()) {
-      showToast('성함, 휴대폰 번호, 비밀번호(4자리 이상)를 정확히 입력해 주세요.')
+    const finalPw = signupPw.trim() || '0000'
+    if (!signupName.trim() || code8.length !== 8) {
+      showToast('성함과 휴대폰 번호를 정확히 입력해 주세요.')
       return
     }
     if (members.some((m) => m.code === code8)) {
@@ -4988,10 +4989,11 @@ function formatRelativeOrDate(dateStr) {
       return
     }
 
+    const formattedPhone = formatPhone11(signupPhone)
     const newMember = {
       code: code8,
-      phone: formatPhone11(signupPhone),
-      password_pin: signupPw.trim(),
+      phone: formattedPhone,
+      password_pin: finalPw,
       name: signupName.trim(),
       dharma_name: signupDharmaName.trim(),
       birth_date: signupBirthDate.trim(),
@@ -5013,19 +5015,26 @@ function formatRelativeOrDate(dateStr) {
     setMembers((prev) => [newMember, ...prev])
     setCurrentUserCode(newMember.code)
     try {
-      if (rememberLogin) {
-        localStorage.setItem('sowonpray_remember_login', 'true')
-        localStorage.setItem('sowonpray_saved_login_id', signupPhone.trim())
-        localStorage.setItem('sowonpray_saved_login_pw', signupPw.trim())
-        setLoginIdInput(signupPhone.trim())
-        setLoginPwInput(signupPw.trim())
-      }
+      localStorage.setItem('sowonpray_remember_login', 'true')
+      localStorage.setItem('sowonpray_saved_login_id', formattedPhone)
+      localStorage.setItem('sowonpray_saved_login_pw', finalPw)
+      setRememberLogin(true)
+      setLoginIdInput(formattedPhone)
+      setLoginPwInput(finalPw)
+      setSavedLoginAccounts((prev) => {
+        const filtered = (prev || []).filter((acc) => acc.code !== newMember.code)
+        const updated = [{ code: newMember.code, name: newMember.name, phone: formattedPhone, pw: finalPw }, ...filtered]
+        try {
+          localStorage.setItem('sowonpray_saved_accounts_v2', JSON.stringify(updated))
+        } catch (err) {}
+        return updated
+      })
     } catch (e) {}
     if (supabase) {
       supabase.from('members').upsert([newMember], { onConflict: 'code' }).then()
     }
     playSingingBowlSound()
-    showToast(`🎉 환영합니다, ${newMember.name} 불자님! 본인 계정이 생성되어 자동 로그인되었습니다.`)
+    showToast(`🎉 환영합니다, ${newMember.name} 불자님! 계정(비번 ${finalPw})이 자동 기억되어 로그인되었습니다.`)
     setActiveTab('home')
   }
 
@@ -5063,25 +5072,31 @@ function formatRelativeOrDate(dateStr) {
     if (supabase) {
       supabase.from('members').upsert([updatedMember], { onConflict: 'code' }).then()
     }
-    // 비밀번호가 변경되었을 때 로컬 저장 비밀번호도 함께 즉시 동기화
+    // 비밀번호가 변경되었을 때 로컬 저장 비밀번호도 함께 즉시 자동 기억 동기화
     if (profileForm.password_pin.trim()) {
+      const nextPw = profileForm.password_pin.trim()
+      const nextId = currentUser.phone || currentUser.code
       try {
-        if (localStorage.getItem('sowonpray_remember_login') !== 'false') {
-          localStorage.setItem('sowonpray_saved_login_pw', profileForm.password_pin.trim())
-          if (currentUser.phone) {
-            localStorage.setItem('sowonpray_saved_login_id', currentUser.phone)
-          }
-          setLoginPwInput(profileForm.password_pin.trim())
-          setSavedLoginAccounts((prev) => {
-            const updated = (prev || []).map((acc) =>
-              acc.code === currentUser.code ? { ...acc, pw: profileForm.password_pin.trim() } : acc
-            )
-            try {
-              localStorage.setItem('sowonpray_saved_accounts_v2', JSON.stringify(updated))
-            } catch (e) {}
-            return updated
-          })
+        localStorage.setItem('sowonpray_remember_login', 'true')
+        localStorage.setItem('sowonpray_saved_login_pw', nextPw)
+        if (nextId) {
+          localStorage.setItem('sowonpray_saved_login_id', nextId)
+          setLoginIdInput(nextId)
         }
+        setRememberLogin(true)
+        setLoginPwInput(nextPw)
+        setSavedLoginAccounts((prev) => {
+          const exists = (prev || []).some((acc) => acc.code === currentUser.code)
+          const updated = exists
+            ? (prev || []).map((acc) =>
+                acc.code === currentUser.code ? { ...acc, name: updatedMember.name, phone: nextId, pw: nextPw } : acc
+              )
+            : [{ code: currentUser.code, name: updatedMember.name, phone: nextId, pw: nextPw }, ...(prev || [])]
+          try {
+            localStorage.setItem('sowonpray_saved_accounts_v2', JSON.stringify(updated))
+          } catch (e) {}
+          return updated
+        })
       } catch (e) {}
     }
     playSingingBowlSound()
@@ -5729,7 +5744,7 @@ function formatRelativeOrDate(dateStr) {
         const newBeliever = {
           code: prayerCode8,
           phone: formatPhone11(wishPhoneClean),
-          password_pin: prayerCode8.slice(-4) || '1234',
+          password_pin: '0000',
           name: parsedName,
           dharma_name: parsedDharma,
           birth_date: formattedBirth,
@@ -5750,6 +5765,14 @@ function formatRelativeOrDate(dateStr) {
           created_at: new Date().toISOString(),
         }
         setMembers((prev) => [newBeliever, ...prev])
+        try {
+          localStorage.setItem('sowonpray_remember_login', 'true')
+          localStorage.setItem('sowonpray_saved_login_id', newBeliever.phone)
+          localStorage.setItem('sowonpray_saved_login_pw', '0000')
+          setRememberLogin(true)
+          setLoginIdInput(newBeliever.phone)
+          setLoginPwInput('0000')
+        } catch (e) {}
         setLanternDailyVersion((v) => v + 1)
         ;(async () => {
           if (supabase) {
@@ -5977,7 +6000,7 @@ function formatRelativeOrDate(dateStr) {
         const newBeliever = {
           code: visitCode8,
           phone: formatPhone11(visitorPhone),
-          password_pin: visitCode8.slice(-4) || '1234',
+          password_pin: '0000',
           name: parsedVisitorName,
           dharma_name: parsedVisitorDharma,
           birth_date: '',
@@ -5995,6 +6018,14 @@ function formatRelativeOrDate(dateStr) {
           extra_data: { registered_via: 'visit_reservation' },
         }
         setMembers((prev) => [newBeliever, ...prev])
+        try {
+          localStorage.setItem('sowonpray_remember_login', 'true')
+          localStorage.setItem('sowonpray_saved_login_id', newBeliever.phone)
+          localStorage.setItem('sowonpray_saved_login_pw', '0000')
+          setRememberLogin(true)
+          setLoginIdInput(newBeliever.phone)
+          setLoginPwInput('0000')
+        } catch (e) {}
         if (supabase) {
           supabase.from('members').upsert([newBeliever], { onConflict: 'code' }).then()
         }
