@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🎬 제주 소원사 쇼츠 제작 & 6대 채널 발행 마스터 복사기 [1탄: 사찰 기일제사]</title>
+  <title>🎬 제주 소원사 쇼츠 제작 & 6대 채널 발행 마스터 복사기 [반려동물 천도재·49재]</title>
   <style>
     * { box-sizing: border-box; font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; }
     body { margin: 0; background: #0f172a; color: #f8fafc; line-height: 1.65; padding-bottom: 80px; }
@@ -33,10 +33,11 @@
       display: inline-flex; align-items: center; gap: 6px;
     }
     .btn:hover { background: #b45309; transform: translateY(-1px); }
-    .btn-sm { padding: 11px 16px; font-size: 13.5px; min-height: 44px; }
+    .btn-sm { padding: 10px 14px; font-size: 13px; min-height: 40px; }
     .btn-copied { background: #10b981 !important; color: #fff !important; }
     .btn-green { background: #059669; } .btn-green:hover { background: #047857; }
     .btn-blue { background: #2563eb; } .btn-blue:hover { background: #1d4ed8; }
+    .btn-indigo { background: #4f46e5; } .btn-indigo:hover { background: #4338ca; }
     .btn-pink { background: #db2777; } .btn-pink:hover { background: #be185d; }
     .btn-orange { background: #ea580c; } .btn-orange:hover { background: #c2410c; }
     .btn-yellow { background: #eab308; color: #111827; } .btn-yellow:hover { background: #ca8a04; }
@@ -52,7 +53,9 @@
     .scene-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
     .scene-tag { font-weight: bold; color: #38bdf8; font-size: 14px; }
     .real-badge { background: #059669; color: #fff; font-size: 11.5px; padding: 2px 8px; border-radius: 6px; font-weight: bold; }
-    .prompt-text { font-family: Consolas, monospace; font-size: 13px; color: #cbd5e1; margin: 6px 0 0 0; }
+    .ai-badge { background: #4f46e5; color: #fff; font-size: 11.5px; padding: 2px 8px; border-radius: 6px; font-weight: bold; }
+    .prompt-label { font-size: 12px; font-weight: bold; color: #fbbf24; margin-top: 8px; }
+    .prompt-text { font-family: Consolas, monospace; font-size: 12.8px; color: #cbd5e1; margin: 4px 0 0 0; background: #1e293b; padding: 10px 12px; border-radius: 8px; }
     .check-list { list-style: none; padding: 0; margin: 0; }
     .check-list li {
       display: flex; align-items: center; gap: 10px; padding: 10px 12px;
@@ -67,7 +70,7 @@
     .channel-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #334155; padding-bottom: 10px; }
     .channel-name { font-size: 15.5px; font-weight: bold; color: #f8fafc; display: flex; align-items: center; gap: 8px; }
     .channel-preview { font-size: 13px; color: #cbd5e1; white-space: pre-wrap; max-height: 180px; overflow-y: auto; background: #1e293b; padding: 12px; border-radius: 8px; }
-    .btn-group { display: flex; flex-wrap: wrap; gap: 12px; }
+    .btn-group { display: flex; flex-wrap: wrap; gap: 10px; }
     .toast {
       position: fixed; bottom: 24px; right: 24px; background: #10b981; color: #fff;
       padding: 14px 22px; border-radius: 12px; font-weight: bold; font-size: 14px;
@@ -83,9 +86,9 @@
   <div class="topbar">
     <div>
       <h1>🎬 제주 소원사 쇼츠 제작 & 6대 채널 원클릭 발행 마스터</h1>
-      <div style="font-size:12.5px; color:#cbd5e1; margin-top:3px;">[1탄 실수요 저격 🎯] 맞벌이·1인 가구 사찰 기일제사 · 제사 대행</div>
+      <div style="font-size:12.5px; color:#cbd5e1; margin-top:3px;">[정보+감동 밸런스형 🐾] 무지개다리 건넌 우리 아이, 49재 꼭 해줘야 할까? (반려동물 천도재)</div>
     </div>
-    <span class="badge">CMO 5:5 황금 균형 · 수익/접수형</span>
+    <span class="badge">반복(루프) 0% · 7씬+공용엔딩</span>
   </div>
 
   <div class="container">
@@ -94,32 +97,32 @@
     <div class="step-card">
       <div class="step-header">
         <div>
-          <h2 class="step-title">STEP 1. 브루(Vrew) 원스톱 나레이션 대본 (약 48초)</h2>
+          <h2 class="step-title">STEP 1. 브루(Vrew) 원스톱 나레이션 대본 (약 45초 · 260자)</h2>
           <div class="step-sub">브루 [텍스트로 비디오 만들기] 또는 [AI 음성 추가]에 그대로 붙여넣으세요. (추천 음성: 차분하고 따뜻한 중저음)</div>
         </div>
         <button class="btn" onclick="copyById('vrew-script', '브루(Vrew) 나레이션 대본이 복사되었습니다!')">📋 대본 원클릭 복사</button>
       </div>
-      <div id="vrew-script" class="code-box">부모님 제사, 집에서 못 모셔 늘 마음 한편이 무거우셨죠?
+      <div id="vrew-script" class="code-box">무지개다리를 건넌 우리 아이,
+49재 꼭 해줘야 할까요?
 
-맞벌이에 바쁜 일상,
-몸이 편찮으시거나 혼자 사시는 분들까지.
-정성을 다해 제사상을 차리기가 참 쉽지 않은 시대입니다.
+불교에서는 떠난 생명이
+49일간 새 인연을 준비한다고 봅니다.
 
-그렇다고 평생 나를 키워주신 부모님 기일을
-그냥 지나치기엔 너무 죄송하시잖아요.
+첫째, 지나친 죄책감 대신
+고마웠다는 인사를 꼭 전해 주세요.
 
-이제는 한라산 청정도량, 제주 소원사에 맡겨보세요.
+둘째, 반려동물도 부처님 전에
+천도재를 정성껏 올릴 수 있습니다.
 
-형식적인 대행이 아닙니다.
-정갈한 다기 공양과 함께,
-대웅전 부처님 전에 조상님 위패를 모시고
-주지스님께서 직접 축원 기도와 기일 제사를 정성껏 봉행해 드립니다.
+제주 소원사에서는 스님이 직접
+아이의 이름을 불러 축원해 드립니다.
 
-거리가 멀어 제주에 못 오셔도 괜찮습니다.
-스마트폰 모바일 법당에서 간편하게 신청하시면,
-제사 당일 여법하게 모신 현장 사진까지 보내드립니다.
+셋째, 멀리 계셔도 모바일 법당으로
+간편하게 접수하실 수 있어요.
 
-마음의 짐은 내려놓으시고, 효도의 정성만 올리세요.
+봉행 사진까지 전해드리니,
+아이에게 따뜻한 마지막 선물을 주세요.
+
 네이버에서 '제주 소원사'를 검색해 보세요.</div>
     </div>
 
@@ -127,51 +130,102 @@
     <div class="step-card">
       <div class="step-header">
         <div>
-          <h2 class="step-title">STEP 2. 구글 플로우(Google Flow) & 실제 현장 컷 (총 5씬)</h2>
-          <div class="step-sub">🚨 CMO 신뢰 철칙: 씬 1·2는 AI 감성 컷으로 시선을 끌고, 씬 3·4는 반드시 <b>소원사 실제 대웅전·스님 사진</b>을 넣으세요!</div>
+          <h2 class="step-title">STEP 2. 구글 플로우(Google Flow) 6초 7씬 + 공용 3초 엔딩</h2>
+          <div class="step-sub">🚨 반복 0% 규격: 모든 씬 <b>길이 6초</b> 고정! Scene 1~3은 AI 감성 연출, Scene 4~7은 <b>ref_photos 폴더의 실제 소원사 사진</b>을 Frames to Video에 올려 제작하세요.</div>
         </div>
       </div>
 
+      <!-- Scene 1 -->
       <div class="scene-item">
         <div class="scene-top">
-          <span class="scene-tag">Scene 1 (6초 세팅) — 도입 후킹: 저녁 퇴근 후 창밖을 보며 생각에 잠긴 현대인</span>
-          <button class="btn btn-sm btn-blue" onclick="copyById('prompt-1', 'Scene 1 (6초용) 영문 프롬프트 복사 완료!')">📋 프롬프트 복사</button>
+          <span class="scene-tag">Scene 1 (6초 · scene01_pet_memory.mp4) — 빈 쿠션과 강아지 액자 <span class="ai-badge">✨ AI 2단계</span></span>
+          <div class="btn-group">
+            <button class="btn btn-sm btn-indigo" onclick="copyById('p1-img', 'Scene 1 [1단계 이미지] 복사 완료!')">📋 1단계 이미지</button>
+            <button class="btn btn-sm btn-blue" onclick="copyById('p1-vid', 'Scene 1 [2단계 6초 모션] 복사 완료!')">📋 2단계 모션</button>
+          </div>
         </div>
-        <div id="prompt-1" class="prompt-text">Cinematic 6-second vertical 9:16 video, a Korean woman in her 40s sitting quietly near a living room window at dusk, slowly gazing at a framed photo of her elderly parents with a bittersweet and deeply respectful expression, warm soft evening lamp lighting, shallow depth of field, continuous steady slow camera push-in throughout the full 6 seconds, peaceful emotional documentary film style, photorealistic, 4k.</div>
+        <div class="prompt-label">[1단계 이미지 프롬프트]</div>
+        <div id="p1-img" class="prompt-text">Vertical 9:16 photorealistic cinematic photograph inside a quiet, warm Korean apartment living room in soft late-afternoon sunlight, a Korean woman in her late 30s gently touching a small wooden photo frame of a smiling golden dog placed next to an empty cozy pet cushion and a small collar, peaceful bittersweet emotion, shallow depth of field, warm natural window light, film grain, ultra detailed, 4k.</div>
+        <div class="prompt-label">[2단계 6초 모션 프롬프트]</div>
+        <div id="p1-vid" class="prompt-text">Cinematic 6-second vertical 9:16 video, very slow steady camera push-in toward the framed photo of the dog and the Korean woman's gentle hand resting beside it, warm dust motes softly floating in the afternoon sunbeam, subtle natural breathing movement, deeply touching and peaceful documentary atmosphere, natural room tone, strictly no dialogue, no speech, photorealistic 4k.</div>
       </div>
 
+      <!-- Scene 2 -->
       <div class="scene-item">
         <div class="scene-top">
-          <span class="scene-tag">Scene 2 (6초 세팅) — 전환: 안개 낀 한라산 아침, 고요한 제주 사찰 기와지붕</span>
-          <button class="btn btn-sm btn-blue" onclick="copyById('prompt-2', 'Scene 2 (6초용) 영문 프롬프트 복사 완료!')">📋 프롬프트 복사</button>
+          <span class="scene-tag">Scene 2 (6초 · scene02_49days_light.mp4) — 제주 새벽 숲길, 피어오르는 빛 <span class="ai-badge">✨ AI 2단계</span></span>
+          <div class="btn-group">
+            <button class="btn btn-sm btn-indigo" onclick="copyById('p2-img', 'Scene 2 [1단계 이미지] 복사 완료!')">📋 1단계 이미지</button>
+            <button class="btn btn-sm btn-blue" onclick="copyById('p2-vid', 'Scene 2 [2단계 6초 모션] 복사 완료!')">📋 2단계 모션</button>
+          </div>
         </div>
-        <div id="prompt-2" class="prompt-text">Cinematic 6-second vertical 9:16 aerial drone shot continuously and slowly gliding forward toward a serene traditional Korean Buddhist temple nestled at the foot of Hallasan mountain in Jeju Island at sunrise, soft golden morning mist drifting steadily over pine trees and curved tile roofs throughout the entire 6 seconds, peaceful sacred atmosphere, ultra realistic, 4k, smooth slow motion.</div>
+        <div class="prompt-label">[1단계 이미지 프롬프트]</div>
+        <div id="p2-img" class="prompt-text">Vertical 9:16 ethereal cinematic photograph of a peaceful sunlit pine forest trail in Jeju Island at dawn, soft white morning mist drifting between tall trees, delicate warm golden light orbs gently rising upward through beams of golden sunrise light symbolizing a pure soul's peaceful journey, serene spiritual Korean nature aesthetic, ultra realistic, 4k.</div>
+        <div class="prompt-label">[2단계 6초 모션 프롬프트]</div>
+        <div id="p2-vid" class="prompt-text">Cinematic 6-second vertical 9:16 video, continuous smooth slow upward tilt and gentle forward glide through the misty sunrise pine forest, warm golden light particles drifting calmly skyward throughout the full 6 seconds, soft morning breeze moving mist gently, tranquil sacred atmosphere, natural soft wind ambience, strictly no dialogue, no speech, photorealistic 4k.</div>
       </div>
 
+      <!-- Scene 3 -->
       <div class="scene-item">
         <div class="scene-top">
-          <span class="scene-tag">Scene 3 (6초 세팅) — 핵심 신뢰: 대웅전 스님 축원 & 정갈한 제사 공양 <span class="real-badge">✅ 실제 사진 Frames to Video</span></span>
-          <button class="btn btn-sm btn-blue" onclick="copyById('prompt-3', 'Scene 3 (6초용) 보조 영문 프롬프트 복사 완료!')">📋 보조 프롬프트 복사</button>
+          <span class="scene-tag">Scene 3 (6초 · scene03_grateful_prayer.mp4) — 노을 창가 감사 기도 <span class="ai-badge">✨ AI 2단계</span></span>
+          <div class="btn-group">
+            <button class="btn btn-sm btn-indigo" onclick="copyById('p3-img', 'Scene 3 [1단계 이미지] 복사 완료!')">📋 1단계 이미지</button>
+            <button class="btn btn-sm btn-blue" onclick="copyById('p3-vid', 'Scene 3 [2단계 6초 모션] 복사 완료!')">📋 2단계 모션</button>
+          </div>
         </div>
-        <div style="font-size:12.5px; color:#34d399; margin-bottom:6px;">👉 <b>blog_photos 폴더의 `00_대표썸네일_주지스님_축원기도.jpg` 또는 `02_대웅전_부처님_불단.jpg`를 플로우 Frames to Video에 올리고 6초로 설정 후 아래 프롬프트 입력!</b></div>
-        <div id="prompt-3" class="prompt-text">Cinematic 6-second vertical 9:16 video inside this traditional Korean Buddhist temple main hall, gentle golden candlelight softly flickering and delicate incense smoke rising steadily throughout the full 6 seconds, very slow subtle smooth camera push-in preserving the original people and Buddha statue naturally without distortion, deeply respectful and sacred atmosphere, warm golden lighting, photorealistic 4k.</div>
+        <div class="prompt-label">[1단계 이미지 프롬프트]</div>
+        <div id="p3-img" class="prompt-text">Vertical 9:16 photorealistic cinematic medium close-up of a Korean woman in her 30s sitting calmly by a window during golden hour sunset, hands gently clasped together in quiet prayer with eyes softly closed and a serene grateful faint smile, warm amber sunset light illuminating her face, peaceful emotional healing mood, shallow depth of field, 4k.</div>
+        <div class="prompt-label">[2단계 6초 모션 프롬프트]</div>
+        <div id="p3-vid" class="prompt-text">Cinematic 6-second vertical 9:16 video, very slow smooth subtle camera arc around the Korean woman quietly clasping her hands with a gentle comforting expression, soft golden sunset light shimmering warmly across her face and hair, calm peaceful breathing, heartfelt healing documentary style, natural quiet room tone, strictly no dialogue, no speech, 4k.</div>
       </div>
 
+      <!-- Scene 4 -->
       <div class="scene-item">
         <div class="scene-top">
-          <span class="scene-tag">Scene 4 (6초 세팅) — 모바일 법당: 스마트폰으로 간편 신청 & 축원 사진 수신 <span class="real-badge">✅ 실제 사진 Frames to Video</span></span>
-          <button class="btn btn-sm btn-blue" onclick="copyById('prompt-4', 'Scene 4 (6초용) 보조 영문 프롬프트 복사 완료!')">📋 보조 프롬프트 복사</button>
+          <span class="scene-tag">Scene 4 (6초 · scene04_sowonsa_hall.mp4) — 제주 소원사 대웅전 외관 <span class="real-badge">✅ 실제 사진 Frames to Video</span></span>
+          <button class="btn btn-sm btn-blue" onclick="copyById('p4-vid', 'Scene 4 모션 프롬프트 복사 완료!')">📋 모션 프롬프트 복사</button>
         </div>
-        <div style="font-size:12.5px; color:#34d399; margin-bottom:6px;">👉 <b>blog_photos 폴더의 `04_모바일법당_온라인접수.jpg` 또는 `03_조상영가_위패봉안단.jpg`를 6초로 설정해 활용!</b></div>
-        <div id="prompt-4" class="prompt-text">Close-up cinematic 6-second vertical 9:16 video of warm hands holding this smartphone in a calm cozy home setting, soft warm golden light glowing gently from the screen symbolizing peace of mind, continuous very slow subtle camera pan throughout the full 6 seconds preserving the screen naturally, warm natural lighting, photorealistic 4k.</div>
+        <div style="font-size:12.5px; color:#34d399; margin-bottom:6px;">👉 <b>ref_photos 폴더의 `01_소원사_대웅전_외관.jpg`를 플로우 Frames to Video에 올리고 6초 세팅!</b></div>
+        <div id="p4-vid" class="prompt-text">Cinematic 6-second vertical 9:16 video of this traditional Korean Buddhist temple hall in Jeju Island, continuous very slow smooth forward camera glide preserving the exact temple architecture and roof details naturally without distortion, gentle morning sunlight glowing warmly over the curved roof tiles and surrounding trees swaying softly in a light breeze, sacred peaceful atmosphere, soft natural outdoor temple ambience, strictly no dialogue, no speech, photorealistic 4k.</div>
       </div>
 
+      <!-- Scene 5 -->
       <div class="scene-item">
         <div class="scene-top">
-          <span class="scene-tag">Scene 5 (6초 세팅) — 엔딩 CTA: 따뜻한 연등 불빛 + 제주 소원사 검색 안내</span>
-          <button class="btn btn-sm btn-blue" onclick="copyById('prompt-5', 'Scene 5 (6초용) 영문 프롬프트 복사 완료!')">📋 프롬프트 복사</button>
+          <span class="scene-tag">Scene 5 (6초 · scene05_abbot_blessing.mp4) — 주지스님 직접 축원 기도 <span class="real-badge">✅ 실제 사진 Frames to Video</span></span>
+          <button class="btn btn-sm btn-blue" onclick="copyById('p5-vid', 'Scene 5 모션 프롬프트 복사 완료!')">📋 모션 프롬프트 복사</button>
         </div>
-        <div id="prompt-5" class="prompt-text">Cinematic 6-second vertical 9:16 video of hundreds of warm glowing golden lotus lanterns gently swaying in the evening breeze at a peaceful Korean Buddhist temple courtyard at twilight, serene sacred bokeh lights glowing softly, continuous smooth slow zoom-out throughout the full 6 seconds, calm hopeful ending atmosphere, ultra high quality 4k.</div>
+        <div style="font-size:12.5px; color:#34d399; margin-bottom:6px;">👉 <b>ref_photos 폴더의 `02_소원사_주지스님_축원.jpg`를 플로우 Frames to Video에 올리고 6초 세팅!</b></div>
+        <div id="p5-vid" class="prompt-text">Cinematic 6-second vertical 9:16 video inside this traditional Korean Buddhist temple hall, preserving the monk and sacred altar naturally without distortion, delicate incense smoke rising slowly and golden candlelight softly flickering throughout the full 6 seconds, very slow reverent camera push-in, deeply respectful and comforting spiritual atmosphere, subtle quiet temple ambience, strictly no dialogue, no speech, photorealistic 4k.</div>
+      </div>
+
+      <!-- Scene 6 -->
+      <div class="scene-item">
+        <div class="scene-top">
+          <span class="scene-tag">Scene 6 (6초 · scene06_wipae_hall.mp4) — 정갈한 위패봉안단 <span class="real-badge">✅ 실제 사진 Frames to Video</span></span>
+          <button class="btn btn-sm btn-blue" onclick="copyById('p6-vid', 'Scene 6 모션 프롬프트 복사 완료!')">📋 모션 프롬프트 복사</button>
+        </div>
+        <div style="font-size:12.5px; color:#34d399; margin-bottom:6px;">👉 <b>ref_photos 폴더의 `03_소원사_위패봉안단.jpg`를 플로우 Frames to Video에 올리고 6초 세팅!</b></div>
+        <div id="p6-vid" class="prompt-text">Cinematic 6-second vertical 9:16 video of this serene Korean Buddhist memorial tablet hall, preserving the rows of memorial tablets and golden lighting naturally without distortion, very slow smooth horizontal pan with warm soft golden light gently shimmering across the altar, calm dignified and reassuring atmosphere, quiet sacred ambience, strictly no dialogue, no speech, photorealistic 4k.</div>
+      </div>
+
+      <!-- Scene 7 -->
+      <div class="scene-item">
+        <div class="scene-top">
+          <span class="scene-tag">Scene 7 (6초 · scene07_buddha_blessing.mp4) — 대웅전 부처님과 따뜻한 불빛 <span class="real-badge">✅ 실제 사진 Frames to Video</span></span>
+          <button class="btn btn-sm btn-blue" onclick="copyById('p7-vid', 'Scene 7 모션 프롬프트 복사 완료!')">📋 모션 프롬프트 복사</button>
+        </div>
+        <div style="font-size:12.5px; color:#34d399; margin-bottom:6px;">👉 <b>ref_photos 폴더의 `04_소원사_대웅전_부처님.jpg`를 플로우 Frames to Video에 올리고 6초 세팅!</b></div>
+        <div id="p7-vid" class="prompt-text">Cinematic 6-second vertical 9:16 video of this sacred golden Buddha altar inside the Korean Buddhist temple hall, preserving the Buddha statue and offerings faithfully without distortion, warm candlelight and soft golden lantern glow gently flickering as the camera performs a very slow graceful zoom-out throughout the full 6 seconds, compassionate peaceful healing ending mood, subtle temple silence, strictly no dialogue, no speech, photorealistic 4k.</div>
+      </div>
+
+      <!-- Scene 8 -->
+      <div class="scene-item" style="border-color:#d97706;">
+        <div class="scene-top">
+          <span class="scene-tag" style="color:#fbbf24;">Scene 8 (3초 엔딩) — 공용 시그니처 엔딩 영상 자동 배치 완료!</span>
+        </div>
+        <div style="font-size:13px; color:#fef3c7;">👉 현재 폴더에 자동 복사된 <b>`소원사_공식엔딩_3초.mp4`</b>를 마지막 대사(“네이버에서 ‘제주 소원사’를 검색해 보세요.”)에 그대로 얹으시면 됩니다!</div>
       </div>
     </div>
 
@@ -179,43 +233,58 @@
     <div class="step-card" style="border: 1.5px solid #d97706;">
       <div class="step-header">
         <div>
-          <h2 class="step-title">🎯 [브루(Vrew) 편집 핵심] 자막 ↔ 영상 컷 1:1 배치 매칭표</h2>
-          <div class="step-sub">브루에서 아래 대사 구간(클립)을 드래그해 선택한 뒤, 오른쪽 해당 영상 파일을 딱 얹으시면 100% 칼싱크 완성!</div>
+          <h2 class="step-title">🎯 [브루(Vrew) 편집 핵심] 자막 ↔ 영상 컷 1:1 배치 매칭표 (반복 0%)</h2>
+          <div class="step-sub">각 씬이 딱 5~6초(1회 재생)로 끝나도록 설계되었습니다. 아래 대사 구간에 해당 영상 파일을 그대로 얹으세요!</div>
         </div>
       </div>
-      <table style="width:100%; border-collapse:collapse; font-size:13.5px;">
+      <table style="width:100%; border-collapse:collapse; font-size:13px;">
         <thead>
           <tr style="background:#0f172a; color:#fbbf24; text-align:left;">
-            <th style="padding:10px 12px; border:1px solid #334155; width:16%;">영상 파일</th>
-            <th style="padding:10px 12px; border:1px solid #334155; width:24%;">화면 내용</th>
-            <th style="padding:10px 12px; border:1px solid #334155;">브루(Vrew)에서 덮어씌울 자막(대사) 구간</th>
+            <th style="padding:10px 10px; border:1px solid #334155; width:14%;">영상 파일</th>
+            <th style="padding:10px 10px; border:1px solid #334155; width:46%;">브루(Vrew) 대사 구간</th>
+            <th style="padding:10px 10px; border:1px solid #334155; width:40%;">캡컷 1줄 황금 요약 자막 (10자 이내)</th>
           </tr>
         </thead>
         <tbody>
           <tr style="background:#1e293b;">
-            <td style="padding:10px 12px; border:1px solid #334155; font-weight:bold; color:#38bdf8;">Scene 1</td>
-            <td style="padding:10px 12px; border:1px solid #334155;">저녁 창가, 부모님 사진 보는 40대 여성</td>
-            <td style="padding:10px 12px; border:1px solid #334155;">“부모님 제사, 집에서 못 모셔 늘 마음 한편이 무거우셨죠? ~ <b>그냥 지나치기엔 너무 죄송하시잖아요.</b>”</td>
+            <td style="padding:10px; border:1px solid #334155; font-weight:bold; color:#38bdf8;">Scene 1 (6초)</td>
+            <td style="padding:10px; border:1px solid #334155;">무지개다리를 건넌 우리 아이, 49재 꼭 해줘야 할까요?</td>
+            <td style="padding:10px; border:1px solid #334155; color:#fde047;">무지개다리 건넌 아이 ➡️ 49재 꼭 해야 할까?</td>
           </tr>
           <tr style="background:#0f172a;">
-            <td style="padding:10px 12px; border:1px solid #334155; font-weight:bold; color:#38bdf8;">Scene 2</td>
-            <td style="padding:10px 12px; border:1px solid #334155;">한라산 아침 안개, 소원사 전경</td>
-            <td style="padding:10px 12px; border:1px solid #334155;">“<b>이제는 한라산 청정도량, 제주 소원사에 맡겨보세요.</b>”</td>
+            <td style="padding:10px; border:1px solid #334155; font-weight:bold; color:#38bdf8;">Scene 2 (6초)</td>
+            <td style="padding:10px; border:1px solid #334155;">불교에서는 떠난 생명이 49일간 새 인연을 준비한다고 봅니다.</td>
+            <td style="padding:10px; border:1px solid #334155; color:#fde047;">떠난 뒤 49일간 ➡️ 새 인연을 준비해요</td>
           </tr>
           <tr style="background:#1e293b;">
-            <td style="padding:10px 12px; border:1px solid #334155; font-weight:bold; color:#34d399;">Scene 3</td>
-            <td style="padding:10px 12px; border:1px solid #334155;">우리 소원사 주지스님 + 대웅전 삼존불 축원</td>
-            <td style="padding:10px 12px; border:1px solid #334155;">“형식적인 대행이 아닙니다. ~ <b>주지스님께서 직접 축원 기도와 기일 제사를 정성껏 봉행해 드립니다.</b>”</td>
+            <td style="padding:10px; border:1px solid #334155; font-weight:bold; color:#38bdf8;">Scene 3 (6초)</td>
+            <td style="padding:10px; border:1px solid #334155;">첫째, 지나친 죄책감 대신 고마웠다는 인사를 꼭 전해 주세요.</td>
+            <td style="padding:10px; border:1px solid #334155; color:#fde047;">① 죄책감 대신 ➡️ 고마웠다는 인사</td>
           </tr>
           <tr style="background:#0f172a;">
-            <td style="padding:10px 12px; border:1px solid #334155; font-weight:bold; color:#34d399;">Scene 4</td>
-            <td style="padding:10px 12px; border:1px solid #334155;">거실에서 스마트폰으로 위패단 현장 사진 보는 손</td>
-            <td style="padding:10px 12px; border:1px solid #334155;">“거리가 멀어 제주에 못 오셔도 괜찮습니다. ~ <b>제사 당일 여법하게 모신 현장 사진까지 보내드립니다.</b>”</td>
+            <td style="padding:10px; border:1px solid #334155; font-weight:bold; color:#34d399;">Scene 4 (6초)</td>
+            <td style="padding:10px; border:1px solid #334155;">둘째, 반려동물도 부처님 전에 천도재를 정성껏 올릴 수 있습니다.</td>
+            <td style="padding:10px; border:1px solid #334155; color:#fde047;">② 반려동물도 ➡️ 천도재 가능해요</td>
           </tr>
           <tr style="background:#1e293b;">
-            <td style="padding:10px 12px; border:1px solid #334155; font-weight:bold; color:#fbbf24;">Scene 5</td>
-            <td style="padding:10px 12px; border:1px solid #334155;">황금 연등 불빛 + 코트라 볼드체 엔딩</td>
-            <td style="padding:10px 12px; border:1px solid #334155;">“마음의 짐은 내려놓으시고, 효도의 정성만 올리세요. ~ <b>네이버에서 '제주 소원사'를 검색해 보세요.</b>”</td>
+            <td style="padding:10px; border:1px solid #334155; font-weight:bold; color:#34d399;">Scene 5 (6초)</td>
+            <td style="padding:10px; border:1px solid #334155;">제주 소원사에서는 스님이 직접 아이의 이름을 불러 축원해 드립니다.</td>
+            <td style="padding:10px; border:1px solid #334155; color:#fde047;">스님이 직접 ➡️ 이름 불러 축원</td>
+          </tr>
+          <tr style="background:#0f172a;">
+            <td style="padding:10px; border:1px solid #334155; font-weight:bold; color:#34d399;">Scene 6 (6초)</td>
+            <td style="padding:10px; border:1px solid #334155;">셋째, 멀리 계셔도 모바일 법당으로 간편하게 접수하실 수 있어요.</td>
+            <td style="padding:10px; border:1px solid #334155; color:#fde047;">③ 멀리 계셔도 ➡️ 모바일 법당 접수</td>
+          </tr>
+          <tr style="background:#1e293b;">
+            <td style="padding:10px; border:1px solid #334155; font-weight:bold; color:#34d399;">Scene 7 (6초)</td>
+            <td style="padding:10px; border:1px solid #334155;">봉행 사진까지 전해드리니, 아이에게 따뜻한 마지막 선물을 주세요.</td>
+            <td style="padding:10px; border:1px solid #334155; color:#fde047;">봉행 사진까지 전달 ➡️ 따뜻한 마지막 선물</td>
+          </tr>
+          <tr style="background:#0f172a;">
+            <td style="padding:10px; border:1px solid #334155; font-weight:bold; color:#fbbf24;">Scene 8 (3초)</td>
+            <td style="padding:10px; border:1px solid #334155;">네이버에서 '제주 소원사'를 검색해 보세요. (<b>소원사_공식엔딩_3초.mp4</b>)</td>
+            <td style="padding:10px; border:1px solid #334155; color:#fbbf24;">네이버 검색 : 제주 소원사 / 064-805-2007</td>
           </tr>
         </tbody>
       </table>
@@ -230,11 +299,11 @@
         </div>
       </div>
       <ul class="check-list">
-        <li><input type="checkbox" /> <span><b>자막 스타일</b>: 레몬 옐로우 + 얇은 검정 외곽선 (1줄 8~10자 황금 요약, 유치한 스티커 금지)</span></li>
-        <li><input type="checkbox" /> <span><b>효과음(SFX)</b>: 0초 첫 시작 <code>Whoosh</code> + 중간 강조 <code>Ding</code> + 엔딩 맑은 <code>Chime</code></span></li>
-        <li><input type="checkbox" /> <span><b>BGM 볼륨</b>: 잔잔한 불교 힐링/국악 BGM (-18dB ~ -20dB 수준으로 목소리 방해 금지)</span></li>
-        <li><input type="checkbox" /> <span><b>공식 엔딩 카드</b>: 폰트 <code>코트라 볼드체(KOTRA BOLD)</code> + 인(In) 애니메이션 <b><code>축소 2</code> (0.4초)</b></span></li>
-        <li><input type="checkbox" /> <span><b>엔딩 문구</b>: <code>네이버 검색 : 제주 소원사</code> / <code>상담 064-805-2007</code></span></li>
+        <li><input type="checkbox" /> <span><b>자막 스타일</b>: 레몬 옐로우 + 얇은 검정 외곽선 (1줄 8~10자 황금 요약, 세로 60~65% 위치, 유치한 스티커 금지)</span></li>
+        <li><input type="checkbox" /> <span><b>자막 모션</b>: [인(In)] <code>탄성 드롭(Spring Drop)</code> / [아웃(Out)] <code>없음(None)</code> 고정</span></li>
+        <li><input type="checkbox" /> <span><b>효과음(SFX)</b>: 0초 첫 시작 <code>Whoosh</code> + ①②③ 포인트 <code>Ding</code> + 엔딩 맑은 <code>Chime</code></span></li>
+        <li><input type="checkbox" /> <span><b>BGM & 전환</b>: 잔잔한 피아노·힐링 BGM (-18dB ~ -20dB) + 컷 전환 <code>블러 디졸브</code> 0.3초 모두 적용</span></li>
+        <li><input type="checkbox" /> <span><b>공식 엔딩 카드</b>: <code>소원사_공식엔딩_3초.mp4</code> + 폰트 <code>코트라 볼드체(KOTRA BOLD)</code> + 인(In) <b><code>축소 2</code> (0.4초)</b></span></li>
       </ul>
     </div>
 
@@ -243,7 +312,7 @@
       <div class="step-header">
         <div>
           <h2 class="step-title">STEP 4. 6대 채널 원클릭 발행 툴바 (버튼만 순서대로 톡톡!)</h2>
-          <div class="step-sub">완성된 영상 파일 1개로 아래 6곳에 10분 만에 동시 폭격합니다.</div>
+          <div class="step-sub">완성된 영상 파일 1개로 아래 6곳에 10분 만에 동시 발행합니다.</div>
         </div>
       </div>
 
@@ -255,15 +324,15 @@
             <span class="channel-name">🎬 1. 유튜브 쇼츠 (YouTube Shorts)</span>
             <label style="font-size:12.5px; color:#94a3b8; cursor:pointer;"><input type="checkbox" /> 발행완료</label>
           </div>
-          <div class="channel-preview"><b>[제목]</b> 부모님 제사 모시기 힘드시죠? 절에서 정성껏 모셔드리는 제주소원사 사찰 기일제사
+          <div class="channel-preview"><b>[제목]</b> 무지개다리 건넌 우리 아이 49재 꼭 해야 할까? 제주소원사 반려동물 천도재 안내
 
-<b>[설명]</b> 맞벌이·1인 가구로 집에서 제사상 차리기 어려우신 분들을 위해, 제주 소원사 대웅전에서 스님이 직접 조상님 기일제사와 축원을 정성껏 봉행해 드립니다.
+<b>[설명]</b> 무지개다리를 건넌 사랑하는 반려견·반려묘를 위해 49재와 천도재를 고민하시는 보호자분들을 위해, 제주 소원사에서 꼭 알아두시면 좋은 3가지 핵심 안내를 정리했습니다.
 
 🪷 제주 소원사 모바일 법당: https://sowonpray.vercel.app
 📞 종무소 상담: 064-805-2007 / 010-4912-1083
 📍 제주시 죽성서길 75 (구주소: 오등동 935번지)
 
-#제주소원사 #사찰제사 #기일제사 #제사대행 #제주사찰 #제주절 #위패봉안 #천도재</div>
+#제주소원사 #반려동물천도재 #강아지49재 #고양이49재 #반려견천도재 #펫로스증후군 #제주사찰 #모바일법당</div>
           <div class="btn-group">
             <button class="btn btn-sm" onclick="copyText(ytTitle, '유튜브 제목 복사 완료!')">📋 제목</button>
             <button class="btn btn-sm" onclick="copyText(ytDesc, '유튜브 설명 복사 완료!')">📋 설명</button>
@@ -278,12 +347,12 @@
             <span class="channel-name">🟢 2. 네이버 클립 (Naver Clip)</span>
             <label style="font-size:12.5px; color:#94a3b8; cursor:pointer;"><input type="checkbox" /> 발행완료</label>
           </div>
-          <div class="channel-preview">맞벌이·1인 가구로 부모님 제사 모시기 힘드셨죠?
-제주 소원사 대웅전에서 스님이 직접 정성껏 기일제사를 봉행해 드립니다 🙏
+          <div class="channel-preview">무지개다리 건넌 우리 아이, 49재 꼭 해줘야 할까요? 🐾
+제주 소원사에서 스님이 직접 아이의 이름을 불러 천도재를 정성껏 봉행해 드립니다 🙏
 📞 종무소 상담: 064-805-2007
 
-#제주소원사 #사찰제사 #기일제사 #제사대행 #제주사찰</div>
-          <div style="font-size:12px; color:#fbbf24;">⚠️ 업로드 시 [커버 선택] 밝은 장면 지정 + [장소 스티커: 제주 소원사] 연결 필수!</div>
+#제주소원사 #반려동물천도재 #강아지49재 #반려견천도재 #제주사찰</div>
+          <div style="font-size:12px; color:#fbbf24;">⚠️ [커버 편집] 밝은 장면 선택 + [장소 스티커: 제주 소원사] + 추후 블로그 글에 [내 클립] 삽입 필수!</div>
           <div class="btn-group">
             <button class="btn btn-sm btn-green" onclick="copyText(clipText, '네이버 클립 본문+5태그 복사 완료!')">📋 클립 본문 + 5태그 복사</button>
           </div>
@@ -295,30 +364,31 @@
             <span class="channel-name">📸 3. 인스타그램 릴스 (Reels)</span>
             <label style="font-size:12.5px; color:#94a3b8; cursor:pointer;"><input type="checkbox" /> 발행완료</label>
           </div>
-          <div class="channel-preview">부모님 제사, 집에서 못 모셔 늘 죄송하셨나요? 🙏
+          <div class="channel-preview">무지개다리 건넌 우리 아이, 49재 꼭 해줘야 할까요? 🐾🙏
 
-맞벌이에 바쁜 일상, 혼자 사시거나 몸이 편찮으셔서 제사상 차리기가 부담스러우신 분들을 위해 한라산 자락 제주 소원사가 정성껏 모셔드립니다.
+사랑하는 반려견·반려묘를 먼저 떠나보내고 마음 한편에 죄책감과 그리움이 남으신 보호자분들이 많습니다.
 
-대웅전 부처님 전에 위패를 모시고 스님이 직접 축원하며, 멀리 계신 분께는 봉행 사진까지 정성껏 보내드립니다.
+불교에서는 떠난 생명이 49일간 새 인연을 준비한다고 봅니다.
+한라산 자락 제주 소원사에서는 작은 생명도 부처님 전에 이름을 올리고, 스님이 직접 축원하는 반려동물 천도재를 정성껏 봉행해 드립니다.
 
 👉 프로필 링크(@jejusowonsa)에서 모바일 법당 바로가기
-📞 종무소 맞춤 상담: 064-805-2007 / 010-4912-1083
+📞 종무소 상담: 064-805-2007 / 010-4912-1083
 
-#제주소원사 #사찰제사 #기일제사 #제사대행 #절에서제사 #제주사찰 #제주절 #제주도절 #위패봉안 #천도재 #생전예수재 #모바일법당</div>
+#제주소원사 #반려동물천도재 #강아지49재 #고양이49재 #반려견천도재 #반려묘천도재 #펫로스 #펫로스증후군 #무지개다리 #강아지장례 #제주사찰 #제주절 #천도재 #위패봉안 #모바일법당</div>
           <div class="btn-group">
             <button class="btn btn-sm btn-pink" onclick="copyText(instaText, '인스타 릴스 캡션+해시태그 복사 완료!')">📋 릴스 캡션 + 해시태그 복사</button>
             <button class="btn btn-sm btn-dark" onclick="copyText(instaComment, '인스타 고정댓글 복사 완료!')">📌 인스타 고정댓글</button>
           </div>
         </div>
 
-        <!-- 4. 스레드 (5초 컷) -->
+        <!-- 4. 스레드 -->
         <div class="channel-box">
           <div class="channel-head">
             <span class="channel-name">🧵 4. 스레드 (Threads · 5초 컷!)</span>
             <label style="font-size:12.5px; color:#94a3b8; cursor:pointer;"><input type="checkbox" /> 발행완료</label>
           </div>
-          <div class="channel-preview">바쁜 일상 속 부모님 기일제사, 마음만 무거우셨죠?
-제주 소원사 대웅전에서 스님이 직접 정성껏 모셔드리고 축원 사진까지 보내드립니다 🙏
+          <div class="channel-preview">무지개다리 건넌 우리 아이, 49재 꼭 해줘야 할까요? 🐾
+제주 소원사에서 스님이 직접 아이의 이름을 불러 천도재를 봉행하고 봉행 사진까지 보내드립니다 🙏
 
 👉 모바일 법당 안내: https://sowonpray.vercel.app</div>
           <div style="font-size:12px; color:#38bdf8;">💡 스레드는 본문 링크 클릭이 바로 됩니다! 영상과 함께 5초 만에 툭 올려주세요.</div>
@@ -333,12 +403,12 @@
             <span class="channel-name">🥕 5. 당근 비즈프로필 · 당근 스토리</span>
             <label style="font-size:12.5px; color:#94a3b8; cursor:pointer;"><input type="checkbox" /> 발행완료</label>
           </div>
-          <div class="channel-preview">[제주시 오등동 제주 소원사] 부모님 기일제사 · 사찰 제사 안내 🙏
+          <div class="channel-preview">[제주시 오등동 제주 소원사] 반려동물 천도재 · 49재 안내 🐾🙏
 
 제주시민 여러분, 평안하신지요?
-맞벌이나 건강 문제로 집에서 제사 모시기 어려우신 분들을 위해, 한라산 자락 오등동 제주 소원사에서 스님이 직접 정갈하게 기일제사와 축원을 모셔드리고 있습니다.
+가족처럼 함께하던 반려견·반려묘를 먼저 떠나보내고 마음을 추스르기 어려우신 보호자분들이 많습니다.
 
-직접 오셔서 함께 절을 올리셔도 좋고, 바쁘신 날에는 절에 맡기시고 봉행 사진으로 확인하실 수도 있습니다.
+한라산 자락 오등동 제주 소원사에서는 소중한 아이의 이름을 부처님 전에 올리고, 스님이 직접 축원하는 반려동물 천도재와 49재를 정성껏 봉행해 드리고 있습니다.
 
 📍 위치: 제주시 죽성서길 75 (구주소: 오등동 935번지)
 📞 종무소 편안한 상담: 064-805-2007 / 010-4912-1083
@@ -356,11 +426,9 @@
           </div>
           <div class="channel-preview">귀의삼보하옵고, 제주 소원사입니다 🙏
 
-집에서 부모님·조상님 기일제사를 모시기 어려워 늘 죄송한 마음을 품고 계신 불자님들이 많습니다.
+오랜 시간 가족으로 함께해 준 반려견·반려묘를 먼저 떠나보내고, 아이가 좋은 곳으로 잘 갔을지 마음 쓰시는 분들이 많습니다.
 
-제주 소원사 대웅전에서는 바쁜 일상을 살아가는 자손들을 대신해, 정갈한 공양과 스님의 여법한 축원으로 기일제사를 정성껏 봉행해 드리고 있습니다.
-
-주변에 제사 문제로 고민하시는 가족·지인분들께 이 소식을 전해 주셔도 큰 공덕이 됩니다.
+제주 소원사 대웅전에서는 작은 생명 하나도 귀하게 여기는 부처님의 자비로, 스님이 직접 아이의 이름을 불러 축원하는 반려동물 천도재와 49재를 정성껏 봉행해 드리고 있습니다.
 
 🪷 온라인 안내 및 무료 소원등: https://sowonpray.vercel.app
 📞 종무소 상담: 064-805-2007 / 010-4912-1083</div>
@@ -377,21 +445,21 @@
   <div id="toast" class="toast">복사되었습니다!</div>
 
   <script>
-    const ytTitle = `부모님 제사 모시기 힘드시죠? 절에서 정성껏 모셔드리는 제주소원사 사찰 기일제사`;
-    const ytDesc = `맞벌이·1인 가구로 집에서 제사상 차리기 어려우신 분들을 위해, 제주 소원사 대웅전에서 스님이 직접 조상님 기일제사와 축원을 정성껏 봉행해 드립니다.\n\n거리가 멀어 방문이 어려우셔도 스마트폰 모바일 법당을 통해 간편히 상담·접수하실 수 있으며, 제사 당일 여법하게 모신 현장 사진도 함께 안내해 드립니다.\n\n🪷 제주 소원사 모바일 법당 바로가기:\nhttps://sowonpray.vercel.app\n\n📍 위치: 제주특별자치도 제주시 죽성서길 75 (구주소: 오등동 935번지)\n📞 종무소 제사·불사 상담: 064-805-2007 / 010-4912-1083\n\n#제주소원사 #사찰제사 #기일제사 #제사대행 #제주사찰 #제주절 #위패봉안 #천도재`;
-    const ytTags = `소원사, 제주소원사, 제주 소원사, 모바일법당, 온라인법당, 소원등, 인등, 연등, 천도재, 제사, 기일제사, 제사대행, 사찰제사, 사찰 기일제사, 제사 모셔주는 절, 절에서 제사, 위패, 위패봉안, 예수재, 생전예수재, 사시예불, 108목탁, 제주사찰, 제주 사찰, 제주절, 제주 절, 제주도절, 제주도 절, 제주도사찰, 제주도 사찰, 불교, 석가모니, 불교쇼츠, 불교명상, 소원성취`;
-    const ytComment = `🙏 [제주 소원사 기일제사 · 사찰 제사 안내]\n맞벌이·1인 가구·원거리 거주 등으로 집에서 제사 모시기 힘드신 분들을 위해, 대웅전 부처님 전에 정성껏 기일제사를 봉행해 드립니다.\n\n👉 네이버 검색: 제주 소원사\n👉 모바일 법당 바로가기: https://sowonpray.vercel.app\n📞 종무소 직통 상담: 064-805-2007 / 010-4912-1083`;
+    const ytTitle = `무지개다리 건넌 우리 아이 49재 꼭 해야 할까? 제주소원사 반려동물 천도재 안내`;
+    const ytDesc = `무지개다리를 건넌 사랑하는 반려견·반려묘를 위해 49재와 천도재를 고민하시는 보호자분들을 위해, 제주 소원사에서 꼭 알아두시면 좋은 3가지 핵심 안내를 정리했습니다.\n\n작은 생명도 부처님 전에 이름을 올리고 스님이 직접 축원하는 반려동물 천도재를 정성껏 봉행할 수 있으며, 거리가 멀어 제주에 방문하기 어려우셔도 스마트폰 모바일 법당을 통해 간편히 접수하고 봉행 사진까지 받아보실 수 있습니다.\n\n🪷 제주 소원사 모바일 법당 바로가기:\nhttps://sowonpray.vercel.app\n\n📍 위치: 제주특별자치도 제주시 죽성서길 75 (구주소: 오등동 935번지)\n📞 종무소 반려동물 천도재 상담: 064-805-2007 / 010-4912-1083\n\n#제주소원사 #반려동물천도재 #강아지49재 #고양이49재 #반려견천도재 #펫로스증후군 #제주사찰 #모바일법당`;
+    const ytTags = `소원사, 제주소원사, 제주 소원사, 반려동물천도재, 반려동물 천도재, 강아지천도재, 강아지 천도재, 고양이천도재, 고양이 천도재, 강아지49재, 고양이49재, 반려동물49재, 펫로스, 펫로스증후군, 무지개다리, 모바일법당, 온라인법당, 소원등, 인등, 연등, 천도재, 제사, 기일제사, 위패, 위패봉안, 예수재, 생전예수재, 사시예불, 108목탁, 제주사찰, 제주 사찰, 제주절, 제주 절, 제주도절, 제주도 절, 제주도사찰, 제주도 사찰, 불교, 석가모니, 불교쇼츠, 불교명상, 소원성취`;
+    const ytComment = `🙏 [제주 소원사 반려동물 천도재 · 49재 안내]\n무지개다리를 건넌 소중한 아이를 위해, 대웅전 부처님 전에 이름을 올리고 스님이 직접 정성껏 축원해 드립니다.\n멀리 계셔도 비대면 모바일 법당 접수가 가능하며, 봉행 사진까지 정성껏 전해드립니다.\n\n👉 네이버 검색: 제주 소원사\n👉 모바일 법당 바로가기: https://sowonpray.vercel.app\n📞 종무소 편안한 상담: 064-805-2007 / 010-4912-1083`;
 
-    const clipText = `맞벌이·1인 가구로 부모님 제사 모시기 힘드셨죠?\n제주 소원사 대웅전에서 스님이 직접 정성껏 기일제사를 봉행해 드립니다 🙏\n📞 종무소 상담: 064-805-2007\n\n#제주소원사 #사찰제사 #기일제사 #제사대행 #제주사찰`;
+    const clipText = `무지개다리 건넌 우리 아이, 49재 꼭 해줘야 할까요? 🐾\n제주 소원사에서 스님이 직접 아이의 이름을 불러 천도재를 정성껏 봉행해 드립니다 🙏\n📞 종무소 상담: 064-805-2007\n\n#제주소원사 #반려동물천도재 #강아지49재 #반려견천도재 #제주사찰`;
 
-    const instaText = `부모님 제사, 집에서 못 모셔 늘 죄송하셨나요? 🙏\n\n맞벌이에 바쁜 일상, 혼자 사시거나 몸이 편찮으셔서 제사상 차리기가 부담스러우신 분들을 위해 한라산 자락 제주 소원사가 정성껏 모셔드립니다.\n\n대웅전 부처님 전에 위패를 모시고 스님이 직접 축원하며, 멀리 계신 분께는 봉행 사진까지 정성껏 보내드립니다.\n\n👉 프로필 링크(@jejusowonsa)에서 모바일 법당 바로가기\n📞 종무소 맞춤 상담: 064-805-2007 / 010-4912-1083\n\n#제주소원사 #사찰제사 #기일제사 #제사대행 #절에서제사 #제주사찰 #제주절 #제주도절 #위패봉안 #천도재 #생전예수재 #모바일법당`;
-    const instaComment = `🙏 [제주 소원사 사찰 기일제사 · 제사 대행 안내]\n집에서 모시기 어려운 부모님·조상님 제사, 대웅전에서 스님이 직접 축원하고 봉행 사진까지 보내드립니다.\n\n👉 프로필 링크(@jejusowonsa)에서 모바일 법당 바로가기\n👉 네이버 검색: 제주 소원사\n📞 종무소 상담: 064-805-2007 / 010-4912-1083`;
+    const instaText = `무지개다리 건넌 우리 아이, 49재 꼭 해줘야 할까요? 🐾🙏\n\n사랑하는 반려견·반려묘를 먼저 떠나보내고 마음 한편에 죄책감과 그리움이 남으신 보호자분들이 많습니다.\n\n불교에서는 떠난 생명이 49일간 새 인연을 준비한다고 봅니다.\n한라산 자락 제주 소원사에서는 작은 생명도 부처님 전에 이름을 올리고, 스님이 직접 축원하는 반려동물 천도재를 정성껏 봉행해 드립니다.\n\n멀리 계셔도 모바일 법당으로 간편하게 접수하실 수 있으며, 봉행 사진까지 따뜻하게 전해드립니다.\n\n👉 프로필 링크(@jejusowonsa)에서 모바일 법당 바로가기\n📞 종무소 상담: 064-805-2007 / 010-4912-1083\n\n#제주소원사 #반려동물천도재 #강아지49재 #고양이49재 #반려견천도재 #반려묘천도재 #펫로스 #펫로스증후군 #무지개다리 #강아지장례 #제주사찰 #제주절 #천도재 #위패봉안 #모바일법당`;
+    const instaComment = `🙏 [제주 소원사 반려동물 천도재 · 49재 안내]\n멀리 계셔도 모바일 법당에서 간편하게 접수하실 수 있고, 스님의 축원 봉행 사진까지 보내드립니다.\n\n👉 프로필 링크(@jejusowonsa)에서 모바일 법당 바로가기\n👉 네이버 검색: 제주 소원사\n📞 종무소 상담: 064-805-2007 / 010-4912-1083`;
 
-    const threadsText = `바쁜 일상 속 부모님 기일제사, 마음만 무거우셨죠?\n제주 소원사 대웅전에서 스님이 직접 정성껏 모셔드리고 축원 사진까지 보내드립니다 🙏\n\n👉 모바일 법당 안내: https://sowonpray.vercel.app`;
+    const threadsText = `무지개다리 건넌 우리 아이, 49재 꼭 해줘야 할까요? 🐾\n제주 소원사에서 스님이 직접 아이의 이름을 불러 천도재를 봉행하고 봉행 사진까지 보내드립니다 🙏\n\n👉 모바일 법당 안내: https://sowonpray.vercel.app`;
 
-    const danggeunText = `[제주시 오등동 제주 소원사] 부모님 기일제사 · 사찰 제사 안내 🙏\n\n제주시민 여러분, 평안하신지요?\n맞벌이나 건강 문제로 집에서 제사 모시기 어려우신 분들을 위해, 한라산 자락 오등동 제주 소원사에서 스님이 직접 정갈하게 기일제사와 축원을 모셔드리고 있습니다.\n\n직접 오셔서 함께 절을 올리셔도 좋고, 바쁘신 날에는 절에 맡기시고 봉행 사진으로 확인하실 수도 있습니다.\n\n📍 위치: 제주시 죽성서길 75 (구주소: 오등동 935번지)\n📞 종무소 편안한 상담: 064-805-2007 / 010-4912-1083\n🪷 모바일 법당: https://sowonpray.vercel.app`;
+    const danggeunText = `[제주시 오등동 제주 소원사] 반려동물 천도재 · 49재 안내 🐾🙏\n\n제주시민 여러분, 평안하신지요?\n가족처럼 함께하던 반려견·반려묘를 먼저 떠나보내고 마음을 추스르기 어려우신 보호자분들이 많습니다.\n\n한라산 자락 오등동 제주 소원사에서는 소중한 아이의 이름을 부처님 전에 올리고, 스님이 직접 축원하는 반려동물 천도재와 49재를 정성껏 봉행해 드리고 있습니다.\n직접 방문하셔도 좋고, 바쁘시거나 멀리 계신 경우 모바일 법당으로 접수하시고 봉행 사진으로 확인하실 수 있습니다.\n\n📍 위치: 제주시 죽성서길 75 (구주소: 오등동 935번지)\n📞 종무소 편안한 상담: 064-805-2007 / 010-4912-1083\n🪷 모바일 법당: https://sowonpray.vercel.app`;
 
-    const kakaoText = `귀의삼보하옵고, 제주 소원사입니다 🙏\n\n집에서 부모님·조상님 기일제사를 모시기 어려워 늘 죄송한 마음을 품고 계신 불자님들이 많습니다.\n\n제주 소원사 대웅전에서는 바쁜 일상을 살아가는 자손들을 대신해, 정갈한 공양과 스님의 여법한 축원으로 기일제사를 정성껏 봉행해 드리고 있습니다.\n\n주변에 제사 문제로 고민하시는 가족·지인분들께 이 소식을 전해 주셔도 큰 공덕이 됩니다.\n\n🪷 온라인 안내 및 무료 소원등: https://sowonpray.vercel.app\n📞 종무소 상담: 064-805-2007 / 010-4912-1083`;
+    const kakaoText = `귀의삼보하옵고, 제주 소원사입니다 🙏\n\n오랜 시간 가족으로 함께해 준 반려견·반려묘를 먼저 떠나보내고, 아이가 좋은 곳으로 잘 갔을지 마음 쓰시는 분들이 많습니다.\n\n제주 소원사 대웅전에서는 작은 생명 하나도 귀하게 여기는 부처님의 자비로, 스님이 직접 아이의 이름을 불러 축원하는 반려동물 천도재와 49재를 정성껏 봉행해 드리고 있습니다.\n\n주변에 반려동물을 떠나보내고 힘들어하시는 지인분께 이 소식을 전해 주셔도 따뜻한 위로와 큰 공덕이 됩니다.\n\n🪷 온라인 안내 및 무료 소원등: https://sowonpray.vercel.app\n📞 종무소 상담: 064-805-2007 / 010-4912-1083`;
 
     function showToast(msg) {
       const t = document.getElementById('toast');
