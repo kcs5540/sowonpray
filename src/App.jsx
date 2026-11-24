@@ -73,6 +73,7 @@ import HomeTab from './components/Tabs/HomeTab'
 import SowonsaSanctuaryModal from './components/Meditate/SowonsaSanctuaryModal'
 import ProfileTab from './components/Tabs/ProfileTab'
 import { awardMerit, MERIT_RULES, getDailyMeritInfo, grantMerit, fetchTodayLedger, getTodayKey, getKoreaTime } from './lib/meritSystem'
+import { recordAnonymousVisit } from './lib/visitTracker'
 import { playMoktakSound, preloadMoktakAudio, prefetchMoktakBytes } from './lib/moktakAudio'
 import {
   notifyPrayerSubmission,
@@ -1633,6 +1634,11 @@ function SanctuaryNavIcon({ className = 'w-5 h-5' }) {
 const _latestMeritByCode = {}
 
 export default function App() {
+  // 📊 익명 방문자(비로그인 포함) 1일 1회 고유 집계 + 유입 경로 자동 기록
+  useEffect(() => {
+    recordAnonymousVisit()
+  }, [])
+
   // 탭 상태: 'home' | 'lantern' | 'sanctuary' | 'sutra' | 'bulsa' | 'agent' | 'admin' | 'profile' | 'card' (경로 /lantern·/profile 등 및 ?tab= 및 새로고침 세션 복원 모두 지원)
   const [activeTab, setActiveTab] = useState(() => {
     if (typeof window !== 'undefined') {

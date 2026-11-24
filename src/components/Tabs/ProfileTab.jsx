@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import {
   LogOut,
   EyeOff,
@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { extractPhone8Code, formatPhone11 } from '../../lib/supabase'
 import { MERIT_RULES, getDailyMeritInfo, getTodayKey, getKoreaTime } from '../../lib/meritSystem'
+import { fetchSiteVisitStats, SOURCE_LABELS } from '../../lib/visitTracker'
 
 export default function ProfileTab({
   handleKakaoAuthLogin,
@@ -96,6 +97,21 @@ export default function ProfileTab({
   recentAffiliatedMembers,
 }) {
   const lastSyncedCodeRef = useRef('')
+  const [visitStats, setVisitStats] = useState(null)
+  const [visitStatsLoading, setVisitStatsLoading] = useState(false)
+
+  const loadVisitStats = async () => {
+    setVisitStatsLoading(true)
+    const stats = await fetchSiteVisitStats()
+    if (stats) setVisitStats(stats)
+    setVisitStatsLoading(false)
+  }
+
+  useEffect(() => {
+    if (isMasterOrTempleAdmin) {
+      loadVisitStats()
+    }
+  }, [isMasterOrTempleAdmin])
 
   return (
 <main className="flex-1 flex flex-col gap-4 px-2 py-3.5">
@@ -1186,6 +1202,82 @@ export default function ProfileTab({
                         법연을 맺은 인연이 <strong className="text-[#F5D061]">30명</strong>에 도달하면 제주 소원사 <strong className="text-white">정식 포교위원</strong>으로 명예 위촉되며 매월 포교 활동 공덕금이 보시 지원됩니다.
                       </p>
                     </div>
+                  </section>
+                )}
+
+                {/* 2.5 📊 관리자 전용: 실시간 익명 방문자 & 유입 경로 집계 */}
+                {isMasterOrTempleAdmin && (
+                  <section className="rounded-3xl bg-gradient-to-br from-[#1C1917] to-[#29231E] text-[#FAF7F2] p-5 shadow-md border border-[#C59B27]/40 space-y-3.5">
+                    <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2.5">
+                      <div>
+                        <span className="text-[11px] font-bold text-[#F5D061] block">
+                          📊 관리자 전용 · 비로그인 포함 실시간 집계
+                        </span>
+                        <h3 className="font-serif-kr text-base sm:text-lg font-bold text-white mt-0.5">
+                          익명 방문자 &amp; 유입 경로 현황
+                        </h3>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={loadVisitStats}
+                        disabled={visitStatsLoading}
+                        className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#FFE58A] text-xs font-bold border border-[#F5D061]/30 transition cursor-pointer disabled:opacity-50"
+                      >
+                        {visitStatsLoading ? '조회 중...' : '새로고침'}
+                      </button>
+                    </div>
+
+                    {visitStats ? (
+                      <>
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className="rounded-2xl bg-black/35 border border-[#F5D061]/30 p-3 text-center">
+                            <div className="text-[11px] text-[#BFB6AA]">오늘 방문자</div>
+                            <div className="text-xl sm:text-2xl font-extrabold text-[#FFE58A] mt-0.5">
+                              {visitStats.todayCount.toLocaleString()}<span className="text-xs font-normal ml-0.5">명</span>
+                            </div>
+                          </div>
+                          <div className="rounded-2xl bg-black/35 border border-white/10 p-3 text-center">
+                            <div className="text-[11px] text-[#BFB6AA]">최근 7일</div>
+                            <div className="text-xl sm:text-2xl font-extrabold text-emerald-300 mt-0.5">
+                              {visitStats.weekCount.toLocaleString()}<span className="text-xs font-normal ml-0.5">명</span>
+                            </div>
+                          </div>
+                          <div className="rounded-2xl bg-black/35 border border-white/10 p-3 text-center">
+                            <div className="text-[11px] text-[#BFB6AA]">누적 방문자</div>
+                            <div className="text-xl sm:text-2xl font-extrabold text-white mt-0.5">
+                              {visitStats.totalCount.toLocaleString()}<span className="text-xs font-normal ml-0.5">명</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="rounded-2xl bg-black/30 border border-white/10 p-3 space-y-2">
+                          <div className="text-[11.5px] font-bold text-[#F5D061]">
+                            최근 30일 유입 경로 TOP
+                          </div>
+                          {visitStats.topSources.length > 0 ? (
+                            <div className="flex flex-wrap gap-1.5">
+                              {visitStats.topSources.map((s) => (
+                                <span
+                                  key={s.source}
+                                  className="px-2.5 py-1 rounded-lg bg-white/10 border border-white/15 text-xs text-[#FAF7F2] font-semibold"
+                                >
+                                  {SOURCE_LABELS[s.source] || s.source}{' '}
+                                  <strong className="text-[#FFE58A] ml-0.5">{s.count}명</strong>
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="text-xs text-[#A89D8E]">
+                              집계가 시작되었습니다. 신규 방문자가 들어오면 유입 경로가 자동으로 표시됩니다.
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-xs text-[#BFB6AA] bg-black/30 rounded-xl p-3 border border-white/10">
+                        Supabase SQL(<code>create_site_visits.sql</code>) 실행 후 실시간 익명 방문자 집계가 표시됩니다.
+                      </div>
+                    )}
                   </section>
                 )}
 
