@@ -4,8 +4,8 @@
 // 1. 소원등 켜기: 1회 점등 시 1,000 공덕 (한도 1일 1,000)
 // 2. 대웅전 참배: 들어갔다 나오면 1,000 공덕 (한도 1일 1,000)
 // 3. 한줄 사경: 1회 사경 시 1,000 공덕 (한도 1일 1,000)
-// 4. 인연 전달 한 사람: 상대방이 소원등 켰을 경우 5,000 공덕 (한도 1일 50,000)
-// 5. (신규) 인연 받은 사람: 상대방이 소원등 켰을 경우 5,000 공덕 (1일 5,000)
+// 4. 인연 전달 한 사람: 상대방이 소원등 켰을 경우 1,000 공덕 (한도 1일 10,000)
+// 5. (신규) 인연 받은 사람: 상대방이 소원등 켰을 경우 1,000 공덕 (1일 1,000)
 
 import { supabase } from './supabase'
 import { getCurrentTempleId } from './templeConfig'
@@ -46,20 +46,20 @@ export const MERIT_RULES = {
     name: '인연 전달 한 사람',
     shortName: '인연 전달',
     icon: '🤝',
-    pointsPerUnit: 5000,
-    dailyMax: 50000, // 상대방이 소원등 켰을 경우 5,000 (한도 1일 50,000 = 최대 10회)
+    pointsPerUnit: 1000,
+    dailyMax: 10000, // 상대방이 소원등 켰을 경우 1,000 (한도 1일 10,000 = 최대 10회)
     unitName: '회',
-    desc: '상대방이 소원등 켰을 경우 5,000 공덕 (한도 1일 50,000)',
+    desc: '상대방이 소원등 켰을 경우 1,000 공덕 (한도 1일 10,000)',
   },
   INYEON_RECEIVER: {
     key: 'inyeon_receiver',
     name: '신규회원공덕',
     shortName: '신규회원공덕',
     icon: '🌸',
-    pointsPerUnit: 5000,
-    dailyMax: 5000, // 신규 가입 후 점등 시 5,000 공덕
+    pointsPerUnit: 1000,
+    dailyMax: 1000, // 신규 가입 후 점등 시 1,000 공덕
     unitName: '회',
-    desc: '신규 가입 후 점등 시 5,000 공덕',
+    desc: '신규 가입 후 점등 시 1,000 공덕',
   },
 }
 
@@ -342,6 +342,7 @@ export async function fetchTodayLedger(memberCode, templeId = null) {
     ;(data || []).forEach((r) => {
       if (r.activity === 'opening') return
       sums[r.activity] = (sums[r.activity] || 0) + (Number(r.points) || 0)
+      sums[`${r.activity}_count`] = (sums[`${r.activity}_count`] || 0) + 1
     })
     return sums
   } catch (e) {

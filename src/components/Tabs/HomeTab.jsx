@@ -1403,9 +1403,9 @@ export default function HomeTab({
                           </div>
                           <div className="flex flex-col items-end shrink-0">
                             <span className="text-[11px] font-extrabold text-[#1B7E43] bg-[#EAF7EE] px-2 py-0.5 rounded-lg border border-[#1B7E43]/20">
-                              +5,000
+                              +1,000
                             </span>
-                            <span className="text-[9.5px] text-[#8C7A68] mt-0.5">한도 1일 50,000</span>
+                            <span className="text-[9.5px] text-[#8C7A68] mt-0.5">한도 1일 10,000</span>
                           </div>
                         </div>
 
@@ -1423,7 +1423,7 @@ export default function HomeTab({
                             </div>
                           </div>
                           <span className="text-[11px] font-extrabold text-[#B8325E] shrink-0 bg-[#FFF0F5] px-2 py-1 rounded-lg border border-[#B8325E]/20">
-                            +5,000
+                            +1,000
                           </span>
                         </div>
                       </div>

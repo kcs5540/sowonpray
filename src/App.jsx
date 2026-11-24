@@ -4183,7 +4183,11 @@ function formatRelativeOrDate(dateStr) {
       setMembers((prev) => prev.map((m) => (m.code === memberCode ? { ...m, merit_count: res.balance } : m)))
     }
     if (res && res.earned > 0 && memberCode === currentUser?.code) {
-      setTodayLedger((prev) => ({ ...prev, [activity]: (Number(prev[activity]) || 0) + res.earned }))
+      setTodayLedger((prev) => ({
+        ...prev,
+        [activity]: (Number(prev[activity]) || 0) + res.earned,
+        [`${activity}_count`]: (Number(prev[`${activity}_count`]) || 0) + 1,
+      }))
     }
     return res || { earned: 0 }
   }
@@ -4658,8 +4662,11 @@ function formatRelativeOrDate(dateStr) {
     const sutraCount = ledgerPts('sutra') >= 1000 ? 1 : 0
     const sutraReward = sutraCount * 1000
     const todaySutraRewardCount = sutraCount
-    const inyeonGiverReward = Math.min(50000, ledgerPts('inyeon_giver'))
-    const inyeonGiverCount = Math.floor(inyeonGiverReward / 5000)
+    const inyeonGiverReward = ledgerPts('inyeon_giver')
+    const inyeonGiverCount =
+      Number(todayLedger?.inyeon_giver_count) > 0
+        ? Math.min(10, Number(todayLedger.inyeon_giver_count))
+        : Math.min(10, Math.floor(inyeonGiverReward / 1000))
 
     // 🌸 신규회원공덕: 오늘 가입한 신규 일반 불자의 첫 점등 시에만 유효하며, 기존 회원 및 포교사/관리자는 원천 배제
     const isMasterOrAdmin = currentUser?.role === 'master' || currentUser?.role === 'agent' || currentUser?.role === 'temple_admin' || currentUser?.code === '33065540'
@@ -4671,12 +4678,12 @@ function formatRelativeOrDate(dateStr) {
         isNewUserToday = kstDate === todayKey
       }
       // 🌟 안전망: 오늘 장부(merit_ledger 또는 localStorage)에 inyeon_receiver 내역이 있으면 신규 불자로 100% 확정!
-      if (!isNewUserToday && ledgerPts('inyeon_receiver') >= 5000) {
+      if (!isNewUserToday && ledgerPts('inyeon_receiver') >= 1000) {
         isNewUserToday = true
       }
     }
-    const inyeonReceiverReward = isNewUserToday ? Math.min(5000, ledgerPts('inyeon_receiver')) : 0
-    const inyeonReceiverCount = inyeonReceiverReward >= 5000 ? 1 : 0
+    const inyeonReceiverReward = isNewUserToday ? ledgerPts('inyeon_receiver') : 0
+    const inyeonReceiverCount = inyeonReceiverReward >= 1000 ? 1 : 0
 
     // 8) 목탁멍/108배/염주는 공덕 포인트 적립 대상에서 제외 (0 처리)
     const moktakCount = 0
@@ -5729,12 +5736,13 @@ function formatRelativeOrDate(dateStr) {
           const tKey = getTodayDateKey()
           try {
             localStorage.setItem(`sowon_daily_merit_lantern_${memberCode}_${tKey}`, '1000')
-            localStorage.setItem(`sowon_daily_merit_inyeon_receiver_${memberCode}_${tKey}`, '5000')
+            localStorage.setItem(`sowon_daily_merit_inyeon_receiver_${memberCode}_${tKey}`, '1000')
           } catch (e) {}
           setTodayLedger((prev) => ({
             ...prev,
             lantern: Math.max(Number(prev.lantern) || 0, 1000),
-            inyeon_receiver: Math.max(Number(prev.inyeon_receiver) || 0, 5000),
+            inyeon_receiver: Math.max(Number(prev.inyeon_receiver) || 0, 1000),
+            inyeon_receiver_count: Math.max(Number(prev.inyeon_receiver_count) || 0, 1),
           }))
           setLanternDailyVersion((v) => v + 1)
         }
@@ -5870,7 +5878,7 @@ function formatRelativeOrDate(dateStr) {
         : isIndeungToast
         ? '🪔 [대웅전 1년 인등 불사]가 정식 접수되어 종무소로 알림이 전송되었습니다.'
         : referrerCode
-        ? '🙏 소원등 점등 완료! (+1,000 공덕)\n🌸 복덕 인연 맞이 (+5,000 공덕)가 함께 적립되었습니다!'
+        ? '🙏 소원등 점등 완료! (+1,000 공덕)\n🌸 복덕 인연 맞이 (+1,000 공덕)가 함께 적립되었습니다!'
         : '🙏 소원등 점등 완료! (+1,000 공덕 적립) 사시예불 축원 명부에 등재되었습니다.'
       showToast(toastMsg, 5000)
     }

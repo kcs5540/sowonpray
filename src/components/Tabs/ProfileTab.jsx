@@ -572,7 +572,9 @@ export default function ProfileTab({
                           const inyeonGiverInfo = {
                             ...inyeonGiverInfoRaw,
                             currentPoints: effectiveInyeonGiverPoints,
-                            currentCount: Math.floor(effectiveInyeonGiverPoints / 5000),
+                            currentCount:
+                              Number(userMeritReward?.inyeonGiverCount) ||
+                              Math.floor(effectiveInyeonGiverPoints / 1000),
                           }
 
                           const inyeonReceiverInfoRaw = getDailyMeritInfo('inyeon_receiver', uCode, dbDaily.inyeon_receiver || 0)
@@ -583,7 +585,7 @@ export default function ProfileTab({
                           const inyeonReceiverInfo = {
                             ...inyeonReceiverInfoRaw,
                             currentPoints: effectiveInyeonReceiverPoints,
-                            currentCount: effectiveInyeonReceiverPoints >= 5000 ? 1 : 0,
+                            currentCount: effectiveInyeonReceiverPoints >= 1000 ? 1 : 0,
                           }
 
                           // 🌸 신규회원공덕 노출 판별: 오늘 가입한 신규 일반 불자에게만 1회 노출하고, 기존 회원 및 포교사/관리자는 원천 배제
@@ -595,8 +597,8 @@ export default function ProfileTab({
                               const kstDate = getKoreaTime(userCreatedAt).dateKey
                               isNewUserToday = kstDate === todayKey
                             }
-                            // 🌟 안전망: 당일 장부(dbDaily)나 적립 공덕에 inyeon_receiver(5,000)가 있으면 오늘 신규 가입한 불자로 100% 확정
-                            if (!isNewUserToday && effectiveInyeonReceiverPoints >= 5000) {
+                            // 🌟 안전망: 당일 장부(dbDaily)나 적립 공덕에 inyeon_receiver(1,000+)가 있으면 오늘 신규 가입한 불자로 100% 확정
+                            if (!isNewUserToday && effectiveInyeonReceiverPoints >= 1000) {
                               isNewUserToday = true
                             }
                           }
@@ -731,7 +733,7 @@ export default function ProfileTab({
                                   </div>
                                   <div className="flex items-center justify-between mt-1">
                                     <span className="text-xs text-[#BFB4A6] whitespace-nowrap">
-                                      (1회 5,000 공덕)
+                                      (1회 1,000 공덕)
                                     </span>
                                     <span className="font-mono font-bold text-sm sm:text-base text-emerald-300 whitespace-nowrap">
                                       +{inyeonGiverInfo.currentPoints.toLocaleString()} 공덕
@@ -755,7 +757,7 @@ export default function ProfileTab({
                                     </div>
                                     <div className="flex items-center justify-between mt-1">
                                       <span className="text-xs text-[#BFB4A6] whitespace-nowrap">
-                                        (5,000 공덕)
+                                        (1,000 공덕)
                                       </span>
                                       <span className="font-mono font-bold text-sm sm:text-base text-emerald-300 whitespace-nowrap">
                                         +{inyeonReceiverInfo.currentPoints.toLocaleString()} 공덕
@@ -1153,14 +1155,14 @@ export default function ProfileTab({
                     <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#C59B27]/15 via-[#F5D061]/10 to-transparent border border-[#F5D061]/30 space-y-1.5">
                       <div className="flex items-center justify-between gap-1 flex-wrap">
                         <span className="text-xs sm:text-sm font-bold text-[#F5D061]">
-                          인연 전달 시 5,000 공덕 (1일 한도 50,000) · (신규) 인연 받은 분 5,000 공덕
+                          인연 전달 시 1,000 공덕 (1일 한도 10,000) · (신규) 인연 받은 분 1,000 공덕
                         </span>
                         <span className="text-[11px] text-[#E5D7B5] bg-white/10 px-2 py-0.5 rounded font-medium">
                           기념품 구입 or 불사 참여 사용
                         </span>
                       </div>
                       <p className="text-xs sm:text-[13px] text-[#BFB6AA] leading-relaxed break-keep">
-                        소원등 링크를 전달하여 상대방이 소원등을 켤 때마다 <strong className="text-white">인연 전달한 분께 5,000 공덕 (1일 한도 50,000 공덕)</strong>, <strong className="text-[#F5D061]">(신규) 인연 받은 분께도 5,000 공덕</strong>이 적립됩니다. 또한 매일 주요 3대 정진(대웅전 참배 1,000 · 소원등 1,000 · 한줄사경 1,000)으로도 풍성한 복덕을 쌓으실 수 있습니다.
+                        소원등 링크를 전달하여 상대방이 소원등을 켤 때마다 <strong className="text-white">인연 전달한 분께 1,000 공덕 (1일 한도 10,000 공덕)</strong>, <strong className="text-[#F5D061]">(신규) 인연 받은 분께도 1,000 공덕</strong>이 적립됩니다. 또한 매일 주요 3대 정진(대웅전 참배 1,000 · 소원등 1,000 · 한줄사경 1,000)으로도 풍성한 복덕을 쌓으실 수 있습니다.
                       </p>
                     </div>
 
