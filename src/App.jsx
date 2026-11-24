@@ -2299,6 +2299,7 @@ function formatRelativeOrDate(dateStr) {
       believers_count: 0,
       wipae_count: 0,
       extra_data: { kakao_id: kakaoId, profile_image: profileImg, is_kakao_user: true },
+      created_at: new Date().toISOString(),
     }
 
     setMembers((prev) => [newMember, ...prev])
@@ -5809,16 +5810,11 @@ function formatRelativeOrDate(dateStr) {
             existingPrayerMember.code === '33065540' ||
             existingPrayerMember.code === '55570267'
 
-          // 오늘 가입한 신규 일반 불자이거나 아직 공덕이 0점인 신규 등록 불자인 경우 신규회원 공덕(5,000) 번들 적립
+          // 오늘(KST) 가입한 신규 일반 불자이거나 아직 공덕이 0점인 신규 등록 불자인 경우 신규회원 공덕(5,000) 번들 적립
           const userCreatedAt = existingPrayerMember.created_at ? new Date(existingPrayerMember.created_at) : null
           let isNewUserToday = false
           if (!isMasterOrAdmin && userCreatedAt && !isNaN(userCreatedAt.getTime())) {
-            const uYear = userCreatedAt.getFullYear()
-            const uMonth = String(userCreatedAt.getMonth() + 1).padStart(2, '0')
-            const uDay = String(userCreatedAt.getDate()).padStart(2, '0')
-            const nowD = new Date()
-            const todayStr = `${nowD.getFullYear()}-${String(nowD.getMonth() + 1).padStart(2, '0')}-${String(nowD.getDate()).padStart(2, '0')}`
-            isNewUserToday = `${uYear}-${uMonth}-${uDay}` === todayStr
+            isNewUserToday = getKoreaTime(userCreatedAt).dateKey === getTodayDateKey()
           }
 
           if (!isMasterOrAdmin && (isNewUserToday || (existingPrayerMember.merit_count || 0) === 0)) {
@@ -6016,6 +6012,7 @@ function formatRelativeOrDate(dateStr) {
           believers_count: 0,
           wipae_count: 0,
           extra_data: { registered_via: 'visit_reservation' },
+          created_at: new Date().toISOString(),
         }
         setMembers((prev) => [newBeliever, ...prev])
         try {
