@@ -1438,7 +1438,7 @@ export default function HomeTab({
                         </span>
                       </div>
                       <p className="text-[11px] text-[#E8DFD1] leading-relaxed break-keep">
-                        제주 소원사 종무소 방문 시 <strong className="text-[#F5D061]">기념품 구입</strong> 및 삼성각·기와·인등 등 영험한 <strong className="text-[#F5D061]">불사 참여</strong>에 정성껏 차감하여 사용하실 수 있습니다.
+                        제주 소원사 종무소에서 <strong className="text-[#F5D061]">1년 가족연등, 49재 봉행, 조상 천도재, 위패봉안, 삼성각</strong> 등 영험한 <strong className="text-[#F5D061]">불사 참여</strong>에 정성껏 차감하여 사용하실 수 있습니다.
                       </p>
                       <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-[#A89D8E]">
                         <span>※ 도량 내 신행 활동에 영구 보존됩니다.</span>

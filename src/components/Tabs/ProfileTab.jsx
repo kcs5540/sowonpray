@@ -536,7 +536,7 @@ export default function ProfileTab({
 
                       <div className="pt-1.5 border-t border-white/5">
                         <span className="text-xs text-[#D6CEC2] block">
-                          ※ 제주 소원사 종무소에서 기념품 구입 및 불사 참여에 사용 가능
+                          ※ 1년 가족연등 · 49재 봉행 · 조상 천도재 · 위패봉안 · 삼성각 등 불사 참여에 사용 가능
                         </span>
                       </div>
                     </div>
@@ -1158,7 +1158,7 @@ export default function ProfileTab({
                           인연 전달 시 1,000 공덕 (1일 한도 10,000) · (신규) 인연 받은 분 1,000 공덕
                         </span>
                         <span className="text-[11px] text-[#E5D7B5] bg-white/10 px-2 py-0.5 rounded font-medium">
-                          기념품 구입 or 불사 참여 사용
+                          1년 가족연등 · 49재 · 천도재 · 위패봉안 · 삼성각 등 불사 참여 사용
                         </span>
                       </div>
                       <p className="text-xs sm:text-[13px] text-[#BFB6AA] leading-relaxed break-keep">
