@@ -83,22 +83,32 @@ export default function TodayChugwonPrintModal({
           @media print {
             @page {
               size: A4 portrait;
-              margin: 12mm 14mm !important;
+              margin: 10mm 12mm !important;
             }
             #printable-sasi-sheet {
               font-size: ${fontScalePercent}% !important;
+              width: 100% !important;
+              max-width: 100% !important;
+              box-sizing: border-box !important;
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
             }
             .chugwon-cover-page {
               page-break-after: always !important;
               break-after: page !important;
-              min-height: 268mm !important;
-              height: 268mm !important;
+              min-height: 262mm !important;
+              height: 262mm !important;
+              width: 100% !important;
               box-sizing: border-box !important;
             }
             .chugwon-roster-page {
               page-break-before: auto !important;
+              width: 100% !important;
+              box-sizing: border-box !important;
+            }
+            .chugwon-roster-table {
+              width: 100% !important;
+              table-layout: fixed !important;
             }
           }
         `}
@@ -297,14 +307,21 @@ export default function TodayChugwonPrintModal({
                 오늘 오전 10시 사시예불에 배정된 축원 명부가 없습니다.
               </div>
             ) : (
-              <table className="w-full border-collapse border-t-2 border-b-2 border-[#1E1914] text-left">
+              <table className="chugwon-roster-table w-full table-fixed border-collapse border-t-2 border-b-2 border-[#1E1914] text-left">
+                <colgroup>
+                  <col style={{ width: '6%' }} />
+                  <col style={{ width: '24%' }} />
+                  <col style={{ width: '15%' }} />
+                  <col style={{ width: '48%' }} />
+                  <col style={{ width: '7%' }} />
+                </colgroup>
                 <thead>
                   <tr className="bg-[#F4EFE4] border-b border-[#1E1914] text-[#1A1612] text-[12px] font-bold">
-                    <th className="py-2.5 px-2 border-r border-[#C8BEA8] w-11 text-center">연번</th>
-                    <th className="py-2.5 px-2.5 border-r border-[#C8BEA8] w-40">축원 불자 (성함·대상)</th>
-                    <th className="py-2.5 px-2 border-r border-[#C8BEA8] w-24 text-center">기원 분야</th>
-                    <th className="py-2.5 px-3 border-r border-[#C8BEA8]">지극지성 발원 내용</th>
-                    <th className="py-2.5 px-2 w-14 text-center">축원</th>
+                    <th className="py-2 px-1 border-r border-[#C8BEA8] text-center whitespace-nowrap">연번</th>
+                    <th className="py-2 px-2.5 border-r border-[#C8BEA8]">축원 불자 (성함·대상)</th>
+                    <th className="py-2 px-1.5 border-r border-[#C8BEA8] text-center whitespace-nowrap">기원 분야</th>
+                    <th className="py-2 px-3 border-r border-[#C8BEA8]">지극지성 발원 내용</th>
+                    <th className="py-2 px-1 text-center whitespace-nowrap">축원</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -315,29 +332,29 @@ export default function TodayChugwonPrintModal({
                         idx % 2 === 1 ? 'bg-[#FCFBF8]' : 'bg-white'
                       }`}
                     >
-                      <td className="py-3 px-2 border-r border-[#D5CCBC] text-center font-mono font-bold text-[13px] text-[#3B3226]">
+                      <td className="py-2.5 px-1 border-r border-[#D5CCBC] text-center font-mono font-bold text-[12.5px] text-[#3B3226]">
                         {idx + 1}
                       </td>
-                      <td className="py-3 px-2.5 border-r border-[#D5CCBC]">
-                        <div className="font-black text-[14.5px] text-[#111111] leading-snug break-keep">
+                      <td className="py-2.5 px-2.5 border-r border-[#D5CCBC]">
+                        <div className="font-black text-[13.5px] text-[#111111] leading-snug break-keep">
                           {p.believer_name || '불자'}
                         </div>
                         {p.created_at && (
-                          <div className="text-[10.5px] text-[#7A6F60] font-mono mt-1">
+                          <div className="text-[10px] text-[#7A6F60] font-mono mt-0.5">
                             접수 {formatShortReceiptDate(p.created_at)}
                           </div>
                         )}
                       </td>
-                      <td className="py-3 px-2 border-r border-[#D5CCBC] text-center">
-                        <span className="inline-block px-2 py-0.5 rounded border border-[#C9B37E] bg-[#FAF4E3] text-[#6E4F0A] text-[11px] font-bold break-keep">
+                      <td className="py-2.5 px-1.5 border-r border-[#D5CCBC] text-center">
+                        <span className="inline-block px-1.5 py-0.5 rounded border border-[#C9B37E] bg-[#FAF4E3] text-[#6E4F0A] text-[10.5px] font-bold break-keep leading-tight">
                           {p.wish_category || '소원성취'}
                         </span>
                       </td>
-                      <td className="py-3 px-3 border-r border-[#D5CCBC] text-[13px] text-[#1E1A15] leading-relaxed break-keep">
+                      <td className="py-2.5 px-3 border-r border-[#D5CCBC] text-[12.5px] text-[#1E1A15] leading-relaxed break-keep">
                         {p.wish_text ? `“${p.wish_text}”` : '가정평안 및 소원성취 발원'}
                       </td>
-                      <td className="py-3 px-2 text-center align-middle">
-                        <div className="w-5 h-5 border-[1.5px] border-[#5C5244] rounded-xs mx-auto" />
+                      <td className="py-2.5 px-1 text-center align-middle">
+                        <div className="w-4 h-4 border-[1.5px] border-[#5C5244] rounded-xs mx-auto" />
                       </td>
                     </tr>
                   ))}
