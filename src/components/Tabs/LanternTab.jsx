@@ -602,7 +602,7 @@ export default function LanternTab({
                           }}
                           className="text-[10.5px] text-[#B8860B] hover:text-[#8A6510] font-bold underline flex items-center gap-0.5 cursor-pointer shrink-0"
                         >
-                          <span>내정보에서 수정</span>
+                          <span>내정보 수정</span>
                           <ChevronRight className="w-3 h-3" />
                         </button>
                       )}
