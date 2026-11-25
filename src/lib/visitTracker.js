@@ -10,11 +10,14 @@ const VISITOR_ID_KEY = 'sowonpray_anon_visitor_id_v1'
 export const SOURCE_LABELS = {
   naver_blog: '네이버 블로그',
   naver_clip: '네이버 클립',
+  naver_cafe: '네이버 카페',
+  naver_band: '네이버 밴드',
   naver_search: '네이버 검색',
   threads: '스레드(Threads)',
   instagram: '인스타그램',
   youtube: '유튜브',
   kakao: '카카오톡',
+  sms: '문자(SMS)',
   danggeun: '당근',
   google: '구글 검색',
   direct: '직접 접속 · 공유링크',
@@ -41,11 +44,14 @@ export function detectTrafficSource() {
     if (rawParam) {
       if (rawParam.includes('blog')) return 'naver_blog'
       if (rawParam.includes('clip')) return 'naver_clip'
+      if (rawParam.includes('cafe')) return 'naver_cafe'
+      if (rawParam.includes('band')) return 'naver_band'
       if (rawParam.includes('naver')) return 'naver_search'
       if (rawParam.includes('thread')) return 'threads'
       if (rawParam.includes('insta')) return 'instagram'
       if (rawParam.includes('youtu') || rawParam === 'yt') return 'youtube'
       if (rawParam.includes('kakao')) return 'kakao'
+      if (rawParam === 'sms' || rawParam.includes('msg') || rawParam.includes('text')) return 'sms'
       if (rawParam.includes('danggeun') || rawParam.includes('karrot')) return 'danggeun'
       return rawParam.slice(0, 30)
     }
@@ -57,6 +63,8 @@ export function detectTrafficSource() {
       return ref.includes('/clip/') ? 'naver_clip' : 'naver_blog'
     }
     if (ref.includes('clip.naver.com')) return 'naver_clip'
+    if (ref.includes('cafe.naver.com')) return 'naver_cafe'
+    if (ref.includes('band.us') || ua.includes('band')) return 'naver_band'
     if (ref.includes('naver.com')) return 'naver_search'
     if (ref.includes('threads.net') || ref.includes('threads.com')) return 'threads'
     if (ref.includes('instagram.com') || ua.includes('instagram')) return 'instagram'

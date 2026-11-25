@@ -99,6 +99,23 @@ export default function ProfileTab({
   const lastSyncedCodeRef = useRef('')
   const [visitStats, setVisitStats] = useState(null)
   const [visitStatsLoading, setVisitStatsLoading] = useState(false)
+  const [copiedChannel, setCopiedChannel] = useState('')
+
+  const handleCopyChannelLink = async (srcCode) => {
+    const url = `${window.location.origin}/?src=${srcCode}`
+    try {
+      await navigator.clipboard.writeText(url)
+    } catch {
+      const ta = document.createElement('textarea')
+      ta.value = url
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand('copy')
+      document.body.removeChild(ta)
+    }
+    setCopiedChannel(srcCode)
+    setTimeout(() => setCopiedChannel((prev) => (prev === srcCode ? '' : prev)), 2000)
+  }
 
   const loadVisitStats = async () => {
     setVisitStatsLoading(true)
@@ -1271,6 +1288,42 @@ export default function ProfileTab({
                               집계가 시작되었습니다. 신규 방문자가 들어오면 유입 경로가 자동으로 표시됩니다.
                             </div>
                           )}
+                        </div>
+
+                        {/* 채널별 추적 홍보 링크 원클릭 복사 */}
+                        <div className="rounded-2xl bg-black/30 border border-white/10 p-3 space-y-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[11.5px] font-bold text-[#F5D061]">
+                              채널별 추적 홍보 링크 복사
+                            </span>
+                            <span className="text-[10px] text-[#A89D8E]">
+                              신규 유입 시 자동 대표님 추천 적용
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {[
+                              { code: 'threads', label: '스레드' },
+                              { code: 'blog', label: '블로그' },
+                              { code: 'clip', label: '클립' },
+                              { code: 'kakao', label: '카톡' },
+                              { code: 'sms', label: '문자' },
+                              { code: 'insta', label: '인스타' },
+                              { code: 'yt', label: '유튜브' },
+                            ].map((ch) => (
+                              <button
+                                key={ch.code}
+                                type="button"
+                                onClick={() => handleCopyChannelLink(ch.code)}
+                                className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition cursor-pointer active:scale-95 ${
+                                  copiedChannel === ch.code
+                                    ? 'bg-emerald-500/25 border-emerald-400 text-emerald-200'
+                                    : 'bg-white/10 hover:bg-white/20 border-white/15 text-[#FAF7F2]'
+                                }`}
+                              >
+                                {copiedChannel === ch.code ? `${ch.label} 복사됨 ✓` : `${ch.label} 링크`}
+                              </button>
+                            ))}
+                          </div>
                         </div>
                       </>
                     ) : (
