@@ -579,11 +579,11 @@ export default function LanternTab({
                     />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block text-xs font-bold text-[#3D3630] mb-1 flex items-center justify-between">
-                      <span className="flex items-center gap-1">
+                    <div className="text-xs font-bold text-[#3D3630] mb-1 flex items-center justify-between">
+                      <label htmlFor="lantern-birth-input" className="flex items-center gap-1">
                         <span className="w-1.5 h-3.5 rounded-full bg-[#C59B27]" />
                         <span>생년월일 (사주간지)</span>
-                      </span>
+                      </label>
                       {hasDbBirth ? (
                         <button
                           type="button"
@@ -606,7 +606,7 @@ export default function LanternTab({
                           선택사항 · 자동간지계산
                         </span>
                       )}
-                    </label>
+                    </div>
 
                     {/* 양력/음력 토글 + 생년월일 + 만세력 사주 간지 (단일 1줄 컴팩트 구성) */}
                     <div className="flex flex-wrap sm:flex-nowrap items-center gap-1.5">
