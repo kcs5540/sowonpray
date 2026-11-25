@@ -40,7 +40,7 @@ export default function MobileAdminView({
   onClose,
   showToast = () => {},
 }) {
-  const [activeTab, setActiveTab] = useState('bulsa') // 'bulsa' | 'visits' | 'lanterns' | 'members'
+  const [activeTab, setActiveTab] = useState('lanterns') // 기본 첫화면: 소원등 (오늘 축원 명부 우선)
   const [bulsaStatusFilter, setBulsaStatusFilter] = useState('consulting') // 기본 첫화면: 대기 ('consulting') 목록
   const [visitDateFilter, setVisitDateFilter] = useState('today') // 기본 첫화면: 오늘 예약 우선
   const [lanternFilter, setLanternFilter] = useState('today') // 기본 첫화면: 오늘 축원 명부 우선
@@ -774,7 +774,26 @@ export default function MobileAdminView({
       {/* 2. 현대적 세그먼트 컨트롤 탭 (슬림 콤팩트 높이 & 하단 본문과의 확실한 시각적 분리) */}
       <nav className="bg-[#DDD5C5] p-1.5 border-b-2 border-[#C5BBA7] shadow-[0_2px_5px_rgba(0,0,0,0.04)] shrink-0">
         <div className="grid grid-cols-5 gap-1">
-          {/* 1) 불사·상담 탭 */}
+          {/* 1) 소원등 탭 (매일 아침 축원 명부 최우선) */}
+          <button
+            type="button"
+            onClick={() => setActiveTab('lanterns')}
+            className={`py-1.5 px-0.5 text-center rounded-lg transition cursor-pointer flex flex-col items-center justify-center ${
+              activeTab === 'lanterns'
+                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_6px_rgba(0,0,0,0.12)] border border-[#C5BBA7]'
+                : 'text-[#5C5346] hover:text-[#1E1914] hover:bg-black/5 font-bold'
+            }`}
+          >
+            <div className="flex items-center gap-1 text-[11px] sm:text-xs font-bold leading-tight">
+              <Flame className={`w-3.5 h-3.5 ${activeTab === 'lanterns' ? 'text-amber-600' : 'text-[#7A6F5D]'}`} />
+              <span className="truncate">소원등</span>
+            </div>
+            <div className="text-[13px] sm:text-sm font-black leading-tight mt-0.5 text-amber-800">
+              오늘 {todayLanterns.length}위
+            </div>
+          </button>
+
+          {/* 2) 불사·상담 탭 */}
           <button
             type="button"
             onClick={() => setActiveTab('bulsa')}
@@ -793,7 +812,7 @@ export default function MobileAdminView({
             </div>
           </button>
 
-          {/* 2) 방문·공양 탭 */}
+          {/* 3) 방문·공양 탭 */}
           <button
             type="button"
             onClick={() => setActiveTab('visits')}
@@ -809,25 +828,6 @@ export default function MobileAdminView({
             </div>
             <div className="text-[13.5px] sm:text-sm font-black leading-tight mt-0.5">
               {visits.length}건
-            </div>
-          </button>
-
-          {/* 3) 소원등 탭 */}
-          <button
-            type="button"
-            onClick={() => setActiveTab('lanterns')}
-            className={`py-1.5 px-0.5 text-center rounded-lg transition cursor-pointer flex flex-col items-center justify-center ${
-              activeTab === 'lanterns'
-                ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_6px_rgba(0,0,0,0.12)] border border-[#C5BBA7]'
-                : 'text-[#5C5346] hover:text-[#1E1914] hover:bg-black/5 font-bold'
-            }`}
-          >
-            <div className="flex items-center gap-1 text-[11px] sm:text-xs font-bold leading-tight">
-              <Flame className={`w-3.5 h-3.5 ${activeTab === 'lanterns' ? 'text-amber-600' : 'text-[#7A6F5D]'}`} />
-              <span className="truncate">소원등</span>
-            </div>
-            <div className="text-[13.5px] sm:text-sm font-black leading-tight mt-0.5">
-              {regularLanterns.length}위
             </div>
           </button>
 
