@@ -588,7 +588,7 @@ export default function LanternTab({
                           (사주간지를 넣으면 축원이 더욱 깊어집니다)
                         </span>
                       </label>
-                      {hasDbBirth && (
+                      {hasDbBirth ? (
                         <button
                           type="button"
                           onClick={() => {
@@ -605,6 +605,10 @@ export default function LanternTab({
                           <span>내정보 수정</span>
                           <ChevronRight className="w-3 h-3" />
                         </button>
+                      ) : (
+                        <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399] shrink-0">
+                          선택사항
+                        </span>
                       )}
                     </div>
 
