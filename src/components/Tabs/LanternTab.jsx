@@ -482,11 +482,6 @@ export default function LanternTab({
                     >
                       {showLanternGuide ? '안내 닫기 ▲' : 'ⓘ 소원등 안내'}
                     </button>
-                    {currentUser && (
-                      <span className="text-[10.5px] px-2 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] font-bold border border-[#E5D399]">
-                        내 계정 연동됨
-                      </span>
-                    )}
                   </div>
                 </div>
 
