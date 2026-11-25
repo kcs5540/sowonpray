@@ -96,10 +96,11 @@ export default function TodayChugwonPrintModal({
             .chugwon-cover-page {
               page-break-after: always !important;
               break-after: page !important;
-              min-height: 262mm !important;
-              height: 262mm !important;
+              min-height: 254mm !important;
+              height: 254mm !important;
               width: 100% !important;
               box-sizing: border-box !important;
+              overflow: hidden !important;
             }
             .chugwon-roster-page {
               page-break-before: auto !important;
@@ -201,39 +202,39 @@ export default function TodayChugwonPrintModal({
           {/* [1페이지] 대웅전 사시예불 축원 명부 격식 표지 */}
           {/* ============================================================ */}
           {includeCover && (
-            <section className="chugwon-cover-page bg-white mx-auto max-w-[210mm] print:max-w-none shadow-md print:shadow-none border-[3px] border-[#1E1914] p-3 sm:p-4 print:p-3 flex flex-col justify-between min-h-[760px]">
+            <section className="chugwon-cover-page bg-white mx-auto max-w-[210mm] print:max-w-none shadow-md print:shadow-none border-[3px] border-[#1E1914] p-2.5 sm:p-3.5 print:p-2.5 flex flex-col justify-between min-h-[720px]">
               {/* 내부 금선 이중 테두리 */}
-              <div className="flex-1 border border-[#B8922E] p-6 sm:p-10 print:p-9 flex flex-col justify-between relative">
+              <div className="flex-1 border border-[#B8922E] p-5 sm:p-8 print:p-7 flex flex-col justify-between relative">
                 {/* 네 모서리 전통 장식 코너 */}
-                <span className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#1E1914]" />
-                <span className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#1E1914]" />
-                <span className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#1E1914]" />
-                <span className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#1E1914]" />
+                <span className="absolute top-2.5 left-2.5 w-4 h-4 border-t-2 border-l-2 border-[#1E1914]" />
+                <span className="absolute top-2.5 right-2.5 w-4 h-4 border-t-2 border-r-2 border-[#1E1914]" />
+                <span className="absolute bottom-2.5 left-2.5 w-4 h-4 border-b-2 border-l-2 border-[#1E1914]" />
+                <span className="absolute bottom-2.5 right-2.5 w-4 h-4 border-b-2 border-r-2 border-[#1E1914]" />
 
                 {/* 표지 상단: 사찰 격식 헤더 */}
-                <div className="text-center space-y-2 pt-4">
-                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-full border-2 border-[#8A6510] bg-[#FAF5E8] text-[#6B4B08] text-2xl font-black mx-auto">
+                <div className="text-center space-y-2 pt-2">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full border-2 border-[#8A6510] bg-[#FAF5E8] text-[#6B4B08] text-2xl font-black mx-auto">
                     卍
                   </div>
-                  <p className="text-xs tracking-[0.35em] text-[#6B5B45] font-semibold pt-2">
+                  <p className="text-xs tracking-[0.35em] text-[#6B5B45] font-semibold pt-1">
                     한라산 영험 기도도량
                   </p>
-                  <p className="text-lg sm:text-xl font-bold tracking-[0.25em] text-[#1E1914]">
-                    濟 州 所 願 寺 · 제 주 소 원 사
+                  <p className="text-lg sm:text-xl font-bold tracking-[0.22em] text-[#1E1914]">
+                    濟州 所願寺 · 제주 소원사
                   </p>
-                  <div className="w-24 h-[1.5px] bg-[#B8922E] mx-auto mt-3" />
+                  <div className="w-24 h-[1px] bg-[#C5A447] mx-auto mt-4" />
                 </div>
 
                 {/* 표지 중앙: 대제목 + 봉행 일시 */}
-                <div className="text-center my-8 space-y-5">
-                  <div className="space-y-2.5">
+                <div className="text-center my-4 space-y-4">
+                  <div className="space-y-2">
                     <div className="inline-block px-4 py-1 rounded-full border border-[#B8922E] bg-[#FAF4E3] text-[#7A5608] text-xs sm:text-sm font-extrabold tracking-[0.2em]">
                       모바일 법당 소원등
                     </div>
                     <p className="text-sm sm:text-base tracking-[0.3em] text-[#7A5B14] font-bold pt-1">
                       大雄殿 巳時禮佛 祝願名簿
                     </p>
-                    <h1 className="text-3xl sm:text-4xl print:text-[34px] font-black tracking-[0.18em] text-[#111111] leading-snug">
+                    <h1 className="text-3xl sm:text-4xl print:text-[32px] font-black tracking-[0.18em] text-[#111111] leading-snug">
                       대웅전 사시예불
                       <br />
                       축 원 명 부
@@ -241,14 +242,14 @@ export default function TodayChugwonPrintModal({
                   </div>
 
                   {/* 봉행 일시 및 위수 격식 박스 */}
-                  <div className="max-w-md mx-auto bg-[#FAF7F0] border-y-2 border-[#1E1914] py-4 px-5 space-y-2">
+                  <div className="max-w-md mx-auto bg-[#FAF7F0] border-y-2 border-[#1E1914] py-3.5 px-5 space-y-1.5">
                     <div className="text-sm sm:text-base font-bold text-[#1E1914] tracking-wide">
                       {dateInfo.fullLabel}
                     </div>
                     <div className="text-xs sm:text-sm text-[#4A3F31] font-semibold">
                       오전 10시 사시마지(巳時摩旨) 대웅전 봉행
                     </div>
-                    <div className="pt-2 mt-2 border-t border-[#D8CBB3] flex items-center justify-center gap-4 text-sm">
+                    <div className="pt-2 mt-1.5 border-t border-[#D8CBB3] flex items-center justify-center gap-4 text-sm">
                       <span className="text-[#5C5040]">금일 축원 위수</span>
                       <strong className="text-lg font-black text-[#8A5A00] tracking-wider">
                         총 {todayLanterns.length} 위 (位)
@@ -257,7 +258,7 @@ export default function TodayChugwonPrintModal({
                   </div>
 
                   {/* 전통 축원 서문 */}
-                  <p className="max-w-md mx-auto text-xs sm:text-[13px] text-[#3D342A] leading-7 pt-2 break-keep">
+                  <p className="max-w-md mx-auto text-xs sm:text-[13px] text-[#3D342A] leading-7 pt-1 break-keep">
                     지극한 정성으로 부처님 전에 소원등을 밝힌 불자님들의
                     <br />
                     간절한 발원이 대웅전 사시예불의 청정한 축원 속에
@@ -267,7 +268,7 @@ export default function TodayChugwonPrintModal({
                 </div>
 
                 {/* 표지 하단: 봉정 및 종무원 확인 */}
-                <div className="text-center space-y-3 pb-3">
+                <div className="text-center space-y-2.5 pb-2">
                   <div className="w-16 h-[1px] bg-[#C5B392] mx-auto" />
                   <p className="text-sm sm:text-base font-bold tracking-[0.2em] text-[#1E1914]">
                     대웅전 법당 주지스님 전 봉정
@@ -275,7 +276,7 @@ export default function TodayChugwonPrintModal({
                   <div className="text-xs text-[#5E5345] space-y-0.5">
                     <p className="font-bold text-[#2E2418]">제주 소원사 종무원</p>
                     <p>제주특별자치도 제주시 죽성서길 75 (오등동)</p>
-                    <p className="text-[11px] text-[#7A6F60] pt-1 font-mono">
+                    <p className="text-[11px] text-[#7A6F60] pt-0.5 font-mono">
                       출력일시 : {printTimeStr}
                     </p>
                   </div>
