@@ -1516,7 +1516,7 @@ export default function ProfileTab({
                 })()}
 
                 {/* 5. ⚙️ 내 기본정보 및 대웅전 축원 관리 (스마트 요약 & 접이식 수정 폼) */}
-                <section className="bg-white rounded-3xl p-5 shadow-sm border border-[#E6DEC8] space-y-4">
+                <section id="profile-basic-info-section" className="bg-white rounded-3xl p-5 shadow-sm border border-[#E6DEC8] space-y-4 scroll-mt-6">
                   <div className="flex items-center justify-between border-b border-[#EFE9DD] pb-3">
                     <div>
                       <span className="text-[11px] font-bold text-[#9A7418]">

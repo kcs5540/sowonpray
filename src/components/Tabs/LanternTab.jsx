@@ -587,7 +587,15 @@ export default function LanternTab({
                       {hasDbBirth ? (
                         <button
                           type="button"
-                          onClick={() => setActiveTab && setActiveTab('profile')}
+                          onClick={() => {
+                            if (setActiveTab) setActiveTab('profile')
+                            const scrollToProfileInfo = () => {
+                              const el = document.getElementById('profile-basic-info-section')
+                              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                            }
+                            setTimeout(scrollToProfileInfo, 120)
+                            setTimeout(scrollToProfileInfo, 380)
+                          }}
                           className="text-[10.5px] text-[#B8860B] hover:text-[#8A6510] font-bold underline flex items-center gap-0.5 cursor-pointer"
                         >
                           <span>내정보에서 수정</span>
