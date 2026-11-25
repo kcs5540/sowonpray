@@ -485,10 +485,11 @@ export default function LanternTab({
                   </div>
                 </div>
 
-                {/* 1줄 핵심 안심 배지 (무료 · 스님 직접 축원 · 스팸 없음) */}
-                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-50/80 border border-emerald-200/80 text-[11px] font-bold text-emerald-900">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                  <span>100% 무료 · 매일 사시예불 스님 직접 축원 · 광고 전화 없음</span>
+                {/* 사찰 원력 안내 문구 (방문이 어려운 분들을 위한 무료 사시예불 축원) */}
+                <div className="px-3 py-2.5 rounded-xl bg-[#FAF5E8] border border-[#DFC994] text-[11.5px] sm:text-xs text-[#3B3022] leading-relaxed break-keep font-serif-kr">
+                  제주 소원사에서는 거리와 일상으로 사찰 방문이 어려운 분들을 위해, 올려주신 간절한 발원을 매일{' '}
+                  <strong className="text-[#8A5A00]">오전 10시 대웅전 사시예불</strong>에서 주지스님께서{' '}
+                  <strong className="text-[#8A5A00]">무료로 정성껏 축원</strong>해 드립니다.
                 </div>
 
                 {/* 접이식 상세 안내 (궁금한 분만 터치해서 확인) */}

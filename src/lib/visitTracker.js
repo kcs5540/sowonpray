@@ -79,8 +79,23 @@ export function detectTrafficSource() {
   }
 }
 
+function isAutomatedBot() {
+  try {
+    if (typeof navigator === 'undefined') return true
+    if (navigator.webdriver) return true
+    const ua = (navigator.userAgent || '').toLowerCase()
+    if (!ua) return true
+    const botPattern =
+      /bot|crawl|spider|slurp|yeti|mediapartners|facebookexternalhit|facebot|kakaotalk-scrap|kakaostory|twitterbot|linkedinbot|telegrambot|whatsapp|discordbot|bingpreview|headlesschrome|lighthouse|pagespeed|vercel|pingdom|uptimerobot|curl|wget|python-requests/
+    return botPattern.test(ua)
+  } catch {
+    return false
+  }
+}
+
 export async function recordAnonymousVisit() {
   if (!supabase) return
+  if (isAutomatedBot()) return
   try {
     const todayKey = getTodayKey()
     const sentKey = `sowonpray_visit_logged_${todayKey}`
