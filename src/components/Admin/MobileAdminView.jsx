@@ -45,6 +45,41 @@ export default function MobileAdminView({
   const [visitDateFilter, setVisitDateFilter] = useState('today') // 기본 첫화면: 오늘 예약 우선
   const [lanternFilter, setLanternFilter] = useState('today') // 기본 첫화면: 오늘 축원 명부 우선
   const [isChugwonPrintOpen, setIsChugwonPrintOpen] = useState(false)
+  const [copiedKakaoRoster, setCopiedKakaoRoster] = useState(false)
+
+  // 오늘 축원 명부 스님 카톡 전달용 텍스트 복사
+  const handleCopyTodayRosterForKakao = async () => {
+    const now = new Date()
+    const weekdays = ['일', '월', '화', '수', '목', '금', '토']
+    const dateLabel = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 (${weekdays[now.getDay()]})`
+    const lines = [
+      `卍 제주 소원사 대웅전 사시예불 축원 명부`,
+      `📅 ${dateLabel} 오전 10시 사시예불`,
+      `🕯️ 모바일 법당 소원등 총 ${todayLanterns.length}위`,
+      ``,
+      ...todayLanterns.map((p, idx) => {
+        const cat = p.wish_category || '소원성취'
+        const wish = (p.wish_text || '가정평안 및 소원성취 발원').trim()
+        return `${idx + 1}. ${p.believer_name || '불자'} [${cat}]\n   “${wish}”`
+      }),
+      ``,
+      `🙏 대웅전 법당 주지스님께 삼가 올림`,
+    ]
+    const text = lines.join('\n')
+    try {
+      await navigator.clipboard.writeText(text)
+    } catch {
+      const ta = document.createElement('textarea')
+      ta.value = text
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand('copy')
+      document.body.removeChild(ta)
+    }
+    setCopiedKakaoRoster(true)
+    showToast(`오늘 축원 명부(${todayLanterns.length}위)가 카톡 전달용으로 복사되었습니다.`)
+    setTimeout(() => setCopiedKakaoRoster(false), 2000)
+  }
   const [memberSort, setMemberSort] = useState('recent') // 'recent' | 'name' | 'family' | 'merit'
   const [searchTerm, setSearchTerm] = useState('')
   const [copiedPhone, setCopiedPhone] = useState(null)
@@ -803,6 +838,14 @@ export default function MobileAdminView({
                 : 'text-[#5C5346] hover:text-[#1E1914] hover:bg-black/5 font-bold'
             }`}
           >
+            {pendingBulsaCount > 0 && (
+              <span
+                className="absolute -top-1 -right-0.5 min-w-[17px] h-[17px] px-1 rounded-full bg-red-600 text-white text-[10px] font-black flex items-center justify-center shadow-sm ring-2 ring-[#DDD5C5]"
+                title={`미처리 대기 불사상담 ${pendingBulsaCount}건`}
+              >
+                {pendingBulsaCount}
+              </span>
+            )}
             <div className="flex items-center gap-1 text-[11px] sm:text-xs font-bold leading-tight">
               <AlertCircle className={`w-3.5 h-3.5 ${activeTab === 'bulsa' ? 'text-red-600' : 'text-[#7A6F5D]'}`} />
               <span className="truncate">불사상담</span>
@@ -816,12 +859,20 @@ export default function MobileAdminView({
           <button
             type="button"
             onClick={() => setActiveTab('visits')}
-            className={`py-1.5 px-0.5 text-center rounded-lg transition cursor-pointer flex flex-col items-center justify-center ${
+            className={`py-1.5 px-0.5 text-center rounded-lg transition cursor-pointer flex flex-col items-center justify-center relative ${
               activeTab === 'visits'
                 ? 'bg-white text-[#1E1914] font-black shadow-[0_2px_6px_rgba(0,0,0,0.12)] border border-[#C5BBA7]'
                 : 'text-[#5C5346] hover:text-[#1E1914] hover:bg-black/5 font-bold'
             }`}
           >
+            {visitGroups.today.length > 0 && (
+              <span
+                className="absolute -top-1 -right-0.5 min-w-[17px] h-[17px] px-1 rounded-full bg-sky-600 text-white text-[10px] font-black flex items-center justify-center shadow-sm ring-2 ring-[#DDD5C5]"
+                title={`오늘 방문 예약 ${visitGroups.today.length}건`}
+              >
+                {visitGroups.today.length}
+              </span>
+            )}
             <div className="flex items-center gap-1 text-[11px] sm:text-xs font-bold leading-tight">
               <Calendar className={`w-3.5 h-3.5 ${activeTab === 'visits' ? 'text-sky-600' : 'text-[#7A6F5D]'}`} />
               <span className="truncate">방문차담</span>
@@ -1398,16 +1449,40 @@ ${v.visitor_name} 불자님, ${v.visit_date} ${v.visit_time} 사찰 방문 및 �
               </button>
             </div>
 
-            {/* 오늘 축원 명부 A4 격식 출력 버튼 (대웅전 법당 스님 전달용 표지 + 명부) */}
+            {/* 오늘 축원 명부 A4 격식 출력 버튼 + 스님 카톡 전달용 복사 버튼 */}
             {lanternFilter === 'today' && (
-              <button
-                type="button"
-                onClick={() => setIsChugwonPrintOpen(true)}
-                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#2A2218] via-[#1E1914] to-[#2A2218] hover:brightness-110 text-[#F5D061] border border-[#D4AF37]/60 shadow-sm flex items-center justify-center gap-2 text-xs sm:text-[13px] font-extrabold active:scale-[0.99] transition cursor-pointer"
-              >
-                <Printer className="w-4 h-4 text-[#F5D061] shrink-0" />
-                <span>오늘 축원 명부 출력 (표지 + 명부 {todayLanterns.length}위)</span>
-              </button>
+              <div className="flex items-stretch gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsChugwonPrintOpen(true)}
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#2A2218] via-[#1E1914] to-[#2A2218] hover:brightness-110 text-[#F5D061] border border-[#D4AF37]/60 shadow-sm flex items-center justify-center gap-1.5 text-xs sm:text-[13px] font-extrabold active:scale-[0.99] transition cursor-pointer"
+                >
+                  <Printer className="w-4 h-4 text-[#F5D061] shrink-0" />
+                  <span className="truncate">오늘 축원 명부 출력 (표지+{todayLanterns.length}위)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopyTodayRosterForKakao}
+                  className={`px-3 py-2.5 rounded-xl border text-xs font-extrabold flex items-center justify-center gap-1.5 shrink-0 active:scale-95 transition cursor-pointer shadow-xs whitespace-nowrap ${
+                    copiedKakaoRoster
+                      ? 'bg-emerald-600 text-white border-emerald-700'
+                      : 'bg-[#FEE500] hover:brightness-95 text-[#191919] border-[#E5CE00]'
+                  }`}
+                  title="스님·종무소 카톡방 전달용 명부 텍스트 복사"
+                >
+                  {copiedKakaoRoster ? (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>복사됨</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>카톡 복사</span>
+                    </>
+                  )}
+                </button>
+              </div>
             )}
 
             {currentLanterns.length === 0 ? (
@@ -1487,15 +1562,32 @@ ${v.visitor_name} 불자님, ${v.visit_date} ${v.visit_time} 사찰 방문 및 �
                           </span>
                         )}
                       </span>
-                      {cleanPhone && (
-                        <a
-                          href={`tel:${cleanPhone}`}
-                          className="text-[#8A6510] hover:underline flex items-center gap-1 font-bold text-xs"
-                        >
-                          <Phone className="w-3.5 h-3.5 inline text-emerald-600" />
-                          통화하기
-                        </a>
-                      )}
+                      {cleanPhone && (() => {
+                        const cleanName = (p.believer_name || '불자')
+                          .replace(/\s*\((?:기원)?대상\s*:[^)]*\)/gi, '')
+                          .trim()
+                        const catLabel = p.wish_category || '소원성취'
+                        const smsBody = `[제주 소원사] ${cleanName} 불자님, 오늘 오전 10시 대웅전 사시예불에서 ${catLabel} 발원이 원만히 축원 회향되었습니다. 부처님의 자비 가피가 늘 함께하시기를 기원합니다. 🙏`
+                        return (
+                          <div className="flex items-center gap-2.5 shrink-0">
+                            <a
+                              href={`sms:${cleanPhone}?body=${encodeURIComponent(smsBody)}`}
+                              className="text-sky-700 hover:underline flex items-center gap-1 font-bold text-xs"
+                              title="사시예불 회향 감사 문자 보내기"
+                            >
+                              <MessageSquare className="w-3.5 h-3.5 inline text-sky-600" />
+                              문자
+                            </a>
+                            <a
+                              href={`tel:${cleanPhone}`}
+                              className="text-[#8A6510] hover:underline flex items-center gap-1 font-bold text-xs"
+                            >
+                              <Phone className="w-3.5 h-3.5 inline text-emerald-600" />
+                              통화
+                            </a>
+                          </div>
+                        )
+                      })()}
                     </div>
                   </div>
                 )
