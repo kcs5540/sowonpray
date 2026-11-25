@@ -580,12 +580,15 @@ export default function LanternTab({
                     />
                   </div>
                   <div className="sm:col-span-2">
-                    <div className="text-xs font-bold text-[#3D3630] mb-1 flex items-center justify-between">
-                      <label htmlFor="lantern-birth-input" className="flex items-center gap-1">
-                        <span className="w-1.5 h-3.5 rounded-full bg-[#C59B27]" />
-                        <span>생년월일 (사주간지)</span>
+                    <div className="text-xs font-bold text-[#3D3630] mb-1.5 flex items-center justify-between gap-2 flex-wrap">
+                      <label htmlFor="lantern-birth-input" className="flex items-center gap-1 flex-wrap">
+                        <span className="w-1.5 h-3.5 rounded-full bg-[#C59B27] shrink-0" />
+                        <span>생년월일</span>
+                        <span className="text-[11px] font-semibold text-[#8A6510]">
+                          (선택 · 사주간지를 넣으면 축원이 더욱 깊어집니다)
+                        </span>
                       </label>
-                      {hasDbBirth ? (
+                      {hasDbBirth && (
                         <button
                           type="button"
                           onClick={() => {
@@ -597,15 +600,11 @@ export default function LanternTab({
                             setTimeout(scrollToProfileInfo, 120)
                             setTimeout(scrollToProfileInfo, 380)
                           }}
-                          className="text-[10.5px] text-[#B8860B] hover:text-[#8A6510] font-bold underline flex items-center gap-0.5 cursor-pointer"
+                          className="text-[10.5px] text-[#B8860B] hover:text-[#8A6510] font-bold underline flex items-center gap-0.5 cursor-pointer shrink-0"
                         >
                           <span>내정보에서 수정</span>
                           <ChevronRight className="w-3 h-3" />
                         </button>
-                      ) : (
-                        <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
-                          선택사항 · 자동간지계산
-                        </span>
                       )}
                     </div>
 
