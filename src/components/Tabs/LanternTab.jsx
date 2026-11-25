@@ -585,7 +585,7 @@ export default function LanternTab({
                         <span className="w-1.5 h-3.5 rounded-full bg-[#C59B27] shrink-0" />
                         <span>생년월일</span>
                         <span className="text-[11px] font-semibold text-[#8A6510]">
-                          (선택 · 사주간지를 넣으면 축원이 더욱 깊어집니다)
+                          (사주간지를 넣으면 축원이 더욱 깊어집니다)
                         </span>
                       </label>
                       {hasDbBirth && (
