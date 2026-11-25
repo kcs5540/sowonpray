@@ -585,23 +585,23 @@ export default function LanternTab({
                         <span>생년월일 (사주간지)</span>
                       </span>
                       {hasDbBirth ? (
-                        <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-300">
-                          회원 연동됨
-                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab && setActiveTab('profile')}
+                          className="text-[10.5px] text-[#B8860B] hover:text-[#8A6510] font-bold underline flex items-center gap-0.5 cursor-pointer"
+                        >
+                          <span>내정보에서 수정</span>
+                          <ChevronRight className="w-3 h-3" />
+                        </button>
                       ) : (
-                        <div className="flex items-center gap-1">
-                          <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
-                            선택사항
-                          </span>
-                          <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
-                            자동간지계산
-                          </span>
-                        </div>
+                        <span className="text-[10px] font-semibold text-[#8A6510] bg-[#FAF3DF] px-1.5 py-0.5 rounded border border-[#E5D399]">
+                          선택사항 · 자동간지계산
+                        </span>
                       )}
                     </label>
 
-                    {/* 양력/음력 토글 선택 + 생년월일 입력 복합 필드 */}
-                    <div className="flex items-center gap-1.5">
+                    {/* 양력/음력 토글 + 생년월일 + 만세력 사주 간지 (단일 1줄 컴팩트 구성) */}
+                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-1.5">
                       {/* 음력/양력 토글 버튼 */}
                       <div className="shrink-0 flex rounded-xl border-2 border-[#D5C59B] bg-[#FAF8F5] p-0.5 overflow-hidden">
                         <button
@@ -640,7 +640,7 @@ export default function LanternTab({
                         </button>
                       </div>
 
-                      {/* 생년월일 입력창 (숫자만 치면 0000-00-00 자동 하이픈 연동) */}
+                      {/* 생년월일 입력창 */}
                       <input
                         id="lantern-birth-input"
                         type="text"
@@ -653,45 +653,25 @@ export default function LanternTab({
                         maxLength={10}
                         readOnly={hasDbBirth}
                         placeholder={hasDbBirth ? currentUser.birth_date : "0000-00-00"}
-                        className={`flex-1 min-w-0 px-3 py-2 rounded-xl border-2 text-xs sm:text-sm font-bold shadow-inner transition ${
+                        className={`${liveGanjiInfo.ganji ? 'w-[116px] sm:w-[126px] shrink-0' : 'flex-1 min-w-0'} px-2.5 py-2 rounded-xl border-2 text-xs sm:text-sm font-bold shadow-inner transition ${
                           hasDbBirth
                             ? 'bg-[#F3EFE6] border-[#D5C59B]/70 text-[#5A5046] cursor-not-allowed'
                             : 'bg-[#FAF8F5] border-[#D5C59B] focus:bg-white focus:border-[#C59B27] focus:outline-none text-[#231F1C]'
                         }`}
                       />
-                    </div>
 
-                    {hasDbBirth && (
-                      <div className="flex items-center justify-between text-[10.5px] text-[#8A7552] mt-1 px-0.5">
-                        <span>회원 정보 기준 자동 잠금 ({activeLunarSolar})</span>
-                        <button
-                          type="button"
-                          onClick={() => setActiveTab && setActiveTab('profile')}
-                          className="text-[#B8860B] hover:text-[#8A6510] font-bold underline flex items-center gap-0.5 cursor-pointer"
-                        >
-                          <span>내정보에서 수정</span>
-                          <ChevronRight className="w-3 h-3" />
-                        </button>
-                      </div>
-                    )}
+                      {/* 만세력 사주 간지 인라인 1줄 배지 */}
+                      {liveGanjiInfo.ganji && (
+                        <div className="flex-1 min-w-[140px] px-2.5 py-2 rounded-xl bg-gradient-to-r from-[#FAF3DF] via-[#FFF9E6] to-[#FAF3DF] border border-[#E5D399] flex items-center justify-center gap-1 text-xs font-extrabold text-[#8A6510] whitespace-nowrap">
+                          <Sparkles className="w-3.5 h-3.5 text-[#C59B27] shrink-0" />
+                          <span>
+                            {liveGanjiInfo.ganji} ({liveGanjiInfo.animal}) · {activeLunarSolar}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-
-                {/* AI 사주 간지 실시간 자동 산출 알림 뱃지 */}
-                {liveGanjiInfo.ganji && (
-                  <div className="p-2.5 rounded-xl bg-gradient-to-r from-[#FAF3DF] via-[#FFF9E6] to-[#FAF3DF] border border-[#E5D399] flex items-center justify-between text-xs animate-fadeIn shadow-xs">
-                    <div className="flex items-center gap-1.5 text-[#8A6510] font-bold">
-                      <Sparkles className="w-4 h-4 text-[#C59B27] shrink-0" />
-                      <span>만세력 사주 간지:</span>
-                      <span className="px-2 py-0.5 rounded-md bg-[#8A6510] text-[#FFF9E6] font-extrabold shadow-xs">
-                        {liveGanjiInfo.ganji} ({liveGanjiInfo.animal}) · {activeLunarSolar}
-                      </span>
-                    </div>
-                    <span className="text-[11px] text-[#A68020] font-medium hidden sm:inline">
-                      소원등 축원 명패에 자동 반영됨
-                    </span>
-                  </div>
-                )}
 
                 {/* 3. 축원 대상란 (소원발원 대상) */}
                 <div>
