@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Flame,
   Sparkles,
@@ -109,6 +109,7 @@ export default function LanternTab({
   referralCode,
 }) {
   // 🪷 AI 사주 간지 단일 진실 공급원(Single Source of Truth) 연산
+  const [showLanternGuide, setShowLanternGuide] = useState(false)
   // 1) 로그인 회원의 생년월일이 DB에 이미 있으면 -> DB 생년월일 & 양력/음력 기준 고정
   // 2) 로그인 회원인데 DB에 생년월일이 없거나 비회원이면 -> 입력창(wishBirthDate, wishLunarSolar) 실시간 반영
   const hasDbBirth = Boolean(currentUser?.birth_date && String(currentUser.birth_date).trim())
@@ -230,7 +231,7 @@ export default function LanternTab({
                   <div className="flex items-center justify-center mb-2">
                     <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#F5D061]/15 border border-[#F5D061]/35 text-[11px] sm:text-xs font-semibold text-[#FFE58A] shadow-xs">
                       <span>🙏</span>
-                      <span>매일 오전 10시 사시예불 축원 정진 중</span>
+                      <span>매일 오전 10시 사시예불 축원 (11시 회향)</span>
                     </span>
                   </div>
                 </>
@@ -241,7 +242,7 @@ export default function LanternTab({
                     <span className="block sm:inline">간절한 소원을 올려보세요</span>
                   </h1>
                   <p className="text-xs text-[#D6CEC2] max-w-xs mx-auto leading-relaxed mb-4 break-keep">
-                    정성으로 발원문을 올리시면 대웅전에 소원등이 밝혀지고 매일 오전 10시 사시예불에서 축원해 드립니다.
+                    정성으로 발원문을 올리시면 대웅전에 소원등이 밝혀지고 매일 오전 10시 사시예불(11시 회향)에서 축원해 드립니다.
                   </p>
                 </>
               )}
@@ -463,19 +464,45 @@ export default function LanternTab({
               onSubmit={handlePrayerSubmit}
               className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-[#E6DEC8] space-y-4"
             >
-              <div className="border-b border-[#EFE9DD] pb-3 flex flex-wrap items-center justify-between gap-2">
-                <div className="min-w-0">
-                  <span className="block text-[10.5px] font-bold text-[#9A7418]">
-                    매일 올리는 사시예불 축원
-                  </span>
-                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] mt-0.5 break-keep">
-                    대웅전 소원등 신청
-                  </h3>
+              <div className="border-b border-[#EFE9DD] pb-3 space-y-2">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <span className="block text-[10.5px] font-bold text-[#9A7418]">
+                      매일 오전 10시 사시예불 공동 축원 (11시 회향)
+                    </span>
+                    <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] mt-0.5 break-keep">
+                      대웅전 소원등 신청
+                    </h3>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setShowLanternGuide((prev) => !prev)}
+                      className="text-[10.5px] px-2.5 py-1 rounded-full bg-[#FAF8F5] hover:bg-[#FAF3DF] text-[#7A6B58] font-bold border border-[#E6DEC8] transition cursor-pointer"
+                    >
+                      {showLanternGuide ? '안내 닫기 ▲' : 'ⓘ 소원등 안내'}
+                    </button>
+                    {currentUser && (
+                      <span className="text-[10.5px] px-2 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] font-bold border border-[#E5D399]">
+                        내 계정 연동됨
+                      </span>
+                    )}
+                  </div>
                 </div>
-                {currentUser && (
-                  <span className="text-[10.5px] px-2 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] font-bold border border-[#E5D399] shrink-0">
-                    내 계정 연동됨
-                  </span>
+
+                {/* 1줄 핵심 안심 배지 (무료 · 스님 직접 축원 · 스팸 없음) */}
+                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-50/80 border border-emerald-200/80 text-[11px] font-bold text-emerald-900">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                  <span>100% 무료 · 매일 사시예불 스님 직접 축원 · 광고 전화 없음</span>
+                </div>
+
+                {/* 접이식 상세 안내 (궁금한 분만 터치해서 확인) */}
+                {showLanternGuide && (
+                  <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E6DEC8] text-[11.5px] text-[#4A423A] space-y-1.5 leading-relaxed break-keep">
+                    <p>• <strong className="text-[#231F1C]">무료 공동 축원:</strong> 접수하신 소원은 명부로 출력되어 매일 <strong>오전 10시 사시예불(11시 회향)</strong> 때 스님이 대웅전 부처님 전에 직접 축원해 드립니다.</p>
+                    <p>• <strong className="text-[#231F1C]">안심 보호:</strong> 입력하신 연락처는 본인 축원 확인 및 공덕 적립용이며, 광고·스팸 전화는 절대 하지 않습니다.</p>
+                    <p>• <strong className="text-[#231F1C]">실물 연등·정식 불사:</strong> 대웅전 1년 가족연등·인등·49재·천도재·위패봉안 등은 하단 <strong>[불사 안내]</strong> 탭에서 별도 신청하실 수 있습니다.</p>
+                  </div>
                 )}
               </div>
 
@@ -526,8 +553,8 @@ export default function LanternTab({
                   </div>
                 </div>
 
-                {/* 2. 성함 & 연락처 & 생년월일(사주간지) (3열 반응형 그리드) */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-0.5">
+                {/* 2. 성함 & 연락처 (2열) + 생년월일(사주간지) 전용 넓이 행 (숫자 잘림 방지) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-0.5">
                   <div>
                     <label className="block text-xs font-bold text-[#3D3630] mb-1 flex items-center gap-1">
                       <span className="w-1.5 h-3.5 rounded-full bg-[#C59B27]" />
@@ -556,7 +583,7 @@ export default function LanternTab({
                       className="w-full px-3 py-2.5 rounded-xl bg-[#FAF8F5] border-2 border-[#D5C59B] focus:bg-white focus:border-[#C59B27] focus:outline-none text-xs sm:text-sm font-bold text-[#231F1C] shadow-inner transition"
                     />
                   </div>
-                  <div>
+                  <div className="sm:col-span-2">
                     <label className="block text-xs font-bold text-[#3D3630] mb-1 flex items-center justify-between">
                       <span className="flex items-center gap-1">
                         <span className="w-1.5 h-3.5 rounded-full bg-[#C59B27]" />
@@ -735,7 +762,7 @@ export default function LanternTab({
               <div className="p-3 rounded-xl bg-[#FAF3DF] border border-[#E5D399] text-[11px] text-[#6E5617] flex items-start gap-2">
                 <Sparkles className="w-4 h-4 text-[#9A7418] shrink-0 mt-0.5" />
                 <div className="break-keep">
-                  <strong>제주 소원사 대웅전 매일 축원:</strong> 소원등을 밝히고 남겨주신 발원문은 매일 오전 10시 사시예불마다 부처님 전에 정성껏 축원 올립니다.
+                  <strong>제주 소원사 대웅전 매일 축원:</strong> 소원등을 밝히고 남겨주신 발원문은 매일 오전 10시 사시예불(11시 회향)마다 부처님 전에 정성껏 축원 올립니다.
                 </div>
               </div>
 
