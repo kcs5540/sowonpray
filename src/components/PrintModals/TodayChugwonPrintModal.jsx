@@ -90,7 +90,7 @@ export default function TodayChugwonPrintModal({
             date: 'text-[11px]',
             badge: 'text-[11.5px]',
             wish: 'text-[14.5px] leading-[1.6]',
-            box: 'w-4.5 h-4.5',
+            box: 'w-[18px] h-[18px]',
             py: 'py-3',
           }
         : {
