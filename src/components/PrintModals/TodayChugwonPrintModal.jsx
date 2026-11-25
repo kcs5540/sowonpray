@@ -271,7 +271,7 @@ export default function TodayChugwonPrintModal({
                 <div className="text-center space-y-2.5 pb-2">
                   <div className="w-16 h-[1px] bg-[#C5B392] mx-auto" />
                   <p className="text-sm sm:text-base font-bold tracking-[0.2em] text-[#1E1914]">
-                    대웅전 법당 주지스님 전 봉정
+                    대웅전 법당 주지스님께 삼가 올림
                   </p>
                   <div className="text-xs text-[#5E5345] space-y-0.5">
                     <p className="font-bold text-[#2E2418]">제주 소원사 종무원</p>
