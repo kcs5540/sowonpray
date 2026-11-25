@@ -70,8 +70,39 @@ export default function TodayChugwonPrintModal({
   const dateInfo = formatKoreanFullDate(now)
   const printTimeStr = formatPrintTimestamp(now)
 
-  const fontScalePercent =
-    textScale === 'xlarge' ? 120 : textScale === 'large' ? 110 : 100
+  const rosterSize =
+    textScale === 'xlarge'
+      ? {
+          th: 'text-[14px]',
+          num: 'text-[16px]',
+          name: 'text-[19px]',
+          date: 'text-[12px]',
+          badge: 'text-[13px]',
+          wish: 'text-[17px] leading-[1.65]',
+          box: 'w-5 h-5',
+          py: 'py-3.5',
+        }
+      : textScale === 'large'
+        ? {
+            th: 'text-[13px]',
+            num: 'text-[14px]',
+            name: 'text-[16px]',
+            date: 'text-[11px]',
+            badge: 'text-[11.5px]',
+            wish: 'text-[14.5px] leading-[1.6]',
+            box: 'w-4.5 h-4.5',
+            py: 'py-3',
+          }
+        : {
+            th: 'text-[12px]',
+            num: 'text-[12.5px]',
+            name: 'text-[13.5px]',
+            date: 'text-[10px]',
+            badge: 'text-[10.5px]',
+            wish: 'text-[12.5px] leading-relaxed',
+            box: 'w-4 h-4',
+            py: 'py-2.5',
+          }
 
   return createPortal(
     <div
@@ -86,7 +117,6 @@ export default function TodayChugwonPrintModal({
               margin: 10mm 12mm !important;
             }
             #printable-sasi-sheet {
-              font-size: ${fontScalePercent}% !important;
               width: 100% !important;
               max-width: 100% !important;
               box-sizing: border-box !important;
@@ -195,7 +225,6 @@ export default function TodayChugwonPrintModal({
         {/* ==================== A4 인쇄 본문 (id="printable-sasi-sheet") ==================== */}
         <div
           id="printable-sasi-sheet"
-          style={{ fontSize: `${fontScalePercent}%` }}
           className="flex-1 overflow-y-auto print:overflow-visible bg-[#EFECE6] print:bg-white p-3 sm:p-6 print:p-0 space-y-6 print:space-y-0 font-serif-kr"
         >
           {/* ============================================================ */}
@@ -325,7 +354,7 @@ export default function TodayChugwonPrintModal({
                   <col style={{ width: '7%' }} />
                 </colgroup>
                 <thead>
-                  <tr className="bg-[#F4EFE4] border-b border-[#1E1914] text-[#1A1612] text-[12px] font-bold">
+                  <tr className={`bg-[#F4EFE4] border-b border-[#1E1914] text-[#1A1612] font-bold ${rosterSize.th}`}>
                     <th className="py-2 px-1 border-r border-[#C8BEA8] text-center whitespace-nowrap">연번</th>
                     <th className="py-2 px-2.5 border-r border-[#C8BEA8]">축원 불자 (성함·대상)</th>
                     <th className="py-2 px-1.5 border-r border-[#C8BEA8] text-center whitespace-nowrap">기원 분야</th>
@@ -341,29 +370,29 @@ export default function TodayChugwonPrintModal({
                         idx % 2 === 1 ? 'bg-[#FCFBF8]' : 'bg-white'
                       }`}
                     >
-                      <td className="py-2.5 px-1 border-r border-[#D5CCBC] text-center font-mono font-bold text-[12.5px] text-[#3B3226]">
+                      <td className={`${rosterSize.py} px-1 border-r border-[#D5CCBC] text-center font-mono font-bold text-[#3B3226] ${rosterSize.num}`}>
                         {idx + 1}
                       </td>
-                      <td className="py-2.5 px-2.5 border-r border-[#D5CCBC]">
-                        <div className="font-black text-[13.5px] text-[#111111] leading-snug break-keep">
+                      <td className={`${rosterSize.py} px-2.5 border-r border-[#D5CCBC]`}>
+                        <div className={`font-black text-[#111111] leading-snug break-keep ${rosterSize.name}`}>
                           {p.believer_name || '불자'}
                         </div>
                         {p.created_at && (
-                          <div className="text-[10px] text-[#7A6F60] font-mono mt-0.5">
+                          <div className={`text-[#7A6F60] font-mono mt-0.5 ${rosterSize.date}`}>
                             접수 {formatShortReceiptDate(p.created_at)}
                           </div>
                         )}
                       </td>
-                      <td className="py-2.5 px-1.5 border-r border-[#D5CCBC] text-center">
-                        <span className="inline-block px-1.5 py-0.5 rounded border border-[#C9B37E] bg-[#FAF4E3] text-[#6E4F0A] text-[10.5px] font-bold break-keep leading-tight">
+                      <td className={`${rosterSize.py} px-1.5 border-r border-[#D5CCBC] text-center`}>
+                        <span className={`inline-block px-1.5 py-0.5 rounded border border-[#C9B37E] bg-[#FAF4E3] text-[#6E4F0A] font-bold break-keep leading-tight ${rosterSize.badge}`}>
                           {p.wish_category || '소원성취'}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 border-r border-[#D5CCBC] text-[12.5px] text-[#1E1A15] leading-relaxed break-keep">
+                      <td className={`${rosterSize.py} px-3 border-r border-[#D5CCBC] text-[#1E1A15] break-keep ${rosterSize.wish}`}>
                         {p.wish_text ? `“${p.wish_text}”` : '가정평안 및 소원성취 발원'}
                       </td>
-                      <td className="py-2.5 px-1 text-center align-middle">
-                        <div className="w-4 h-4 border-[1.5px] border-[#5C5244] rounded-xs mx-auto" />
+                      <td className={`${rosterSize.py} px-1 text-center align-middle`}>
+                        <div className={`${rosterSize.box} border-[1.5px] border-[#5C5244] rounded-xs mx-auto`} />
                       </td>
                     </tr>
                   ))}
