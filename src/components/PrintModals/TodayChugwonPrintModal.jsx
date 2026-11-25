@@ -226,8 +226,11 @@ export default function TodayChugwonPrintModal({
 
                 {/* 표지 중앙: 대제목 + 봉행 일시 */}
                 <div className="text-center my-8 space-y-5">
-                  <div className="space-y-2">
-                    <p className="text-sm sm:text-base tracking-[0.3em] text-[#7A5B14] font-bold">
+                  <div className="space-y-2.5">
+                    <div className="inline-block px-4 py-1 rounded-full border border-[#B8922E] bg-[#FAF4E3] text-[#7A5608] text-xs sm:text-sm font-extrabold tracking-[0.2em]">
+                      모바일 법당 소원등
+                    </div>
+                    <p className="text-sm sm:text-base tracking-[0.3em] text-[#7A5B14] font-bold pt-1">
                       大雄殿 巳時禮佛 祝願名簿
                     </p>
                     <h1 className="text-3xl sm:text-4xl print:text-[34px] font-black tracking-[0.18em] text-[#111111] leading-snug">
@@ -293,10 +296,15 @@ export default function TodayChugwonPrintModal({
                 <span className="font-bold text-[#1E1914]">총 {todayLanterns.length}위</span>
               </div>
               <div className="flex items-end justify-between gap-2">
-                <h2 className="text-xl sm:text-2xl font-black tracking-[0.12em] text-[#111111]">
-                  금일 사시예불 축원 명부
-                </h2>
-                <span className="text-[11px] text-[#6B5E4E] font-mono">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <h2 className="text-xl sm:text-2xl font-black tracking-[0.12em] text-[#111111]">
+                    금일 사시예불 축원 명부
+                  </h2>
+                  <span className="text-xs font-bold text-[#7A5608] px-2 py-0.5 rounded bg-[#FAF4E3] border border-[#C9B37E]">
+                    모바일 법당 소원등
+                  </span>
+                </div>
+                <span className="text-[11px] text-[#6B5E4E] font-mono shrink-0">
                   출력: {printTimeStr}
                 </span>
               </div>
