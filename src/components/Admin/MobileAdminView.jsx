@@ -20,7 +20,9 @@ import {
   Trash2,
   Plus,
   Eye,
+  Printer,
 } from 'lucide-react'
+import TodayChugwonPrintModal from '../PrintModals/TodayChugwonPrintModal'
 
 export default function MobileAdminView({
   currentUser,
@@ -42,6 +44,7 @@ export default function MobileAdminView({
   const [bulsaStatusFilter, setBulsaStatusFilter] = useState('consulting') // 기본 첫화면: 대기 ('consulting') 목록
   const [visitDateFilter, setVisitDateFilter] = useState('today') // 기본 첫화면: 오늘 예약 우선
   const [lanternFilter, setLanternFilter] = useState('today') // 기본 첫화면: 오늘 축원 명부 우선
+  const [isChugwonPrintOpen, setIsChugwonPrintOpen] = useState(false)
   const [memberSort, setMemberSort] = useState('recent') // 'recent' | 'name' | 'family' | 'merit'
   const [searchTerm, setSearchTerm] = useState('')
   const [copiedPhone, setCopiedPhone] = useState(null)
@@ -1395,6 +1398,18 @@ ${v.visitor_name} 불자님, ${v.visit_date} ${v.visit_time} 사찰 방문 및 �
               </button>
             </div>
 
+            {/* 오늘 축원 명부 A4 격식 출력 버튼 (대웅전 법당 스님 전달용 표지 + 명부) */}
+            {lanternFilter === 'today' && (
+              <button
+                type="button"
+                onClick={() => setIsChugwonPrintOpen(true)}
+                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#2A2218] via-[#1E1914] to-[#2A2218] hover:brightness-110 text-[#F5D061] border border-[#D4AF37]/60 shadow-sm flex items-center justify-center gap-2 text-xs sm:text-[13px] font-extrabold active:scale-[0.99] transition cursor-pointer"
+              >
+                <Printer className="w-4 h-4 text-[#F5D061] shrink-0" />
+                <span>오늘 축원 명부 출력 (표지 + 명부 {todayLanterns.length}위)</span>
+              </button>
+            )}
+
             {currentLanterns.length === 0 ? (
               <div className="p-8 text-center bg-white rounded-2xl border border-[#E5DCB9] text-[#7A6B58] text-xs space-y-2 shadow-xs">
                 <Flame className="w-7 h-7 mx-auto text-amber-600" />
@@ -2114,6 +2129,13 @@ ${m.name} 불자님, 안녕하십니까.`
           </div>
         </div>
       )}
+
+      {/* 오늘 대웅전 사시예불 축원 명부 A4 격식 출력 모달 (표지 + 명부) */}
+      <TodayChugwonPrintModal
+        isOpen={isChugwonPrintOpen}
+        onClose={() => setIsChugwonPrintOpen(false)}
+        todayLanterns={todayLanterns}
+      />
     </div>
   )
 }
