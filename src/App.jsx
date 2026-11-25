@@ -4006,16 +4006,50 @@ function formatRelativeOrDate(dateStr) {
   }, [currentUser])
 
   // 🪷 [오전 11시 사시예불 축원 원만회향 알림 팝업 감지 엔진]
-  // 소원등을 켰던 신도님이 11:00 예불 회향 이후 접속 시 감동의 회향 팝업 1회만 노출
+  // 소원등을 켰던 신도님이 11:00 예불 회향 이후 접속 시 감동의 회향 팝업 하루 1회만 노출
   useEffect(() => {
     const now = new Date()
     const todayKey = formatLocalDateKey(now)
     const seenKey = `sowonsa_hoehang_seen_${todayKey}`
 
-    // 1) 이번 세션에서 이미 닫았거나, 오늘 이미 본 경우 절대 재노출 안 함
+    const hasSeenCookie = () => {
+      try {
+        return document.cookie.split(';').some((c) => c.trim().startsWith(`${seenKey}=true`))
+      } catch (e) {
+        return false
+      }
+    }
+
+    const markHoehangSeenToday = () => {
+      hoehangDismissedRef.current = true
+      try {
+        localStorage.setItem(seenKey, 'true')
+        sessionStorage.setItem(seenKey, 'true')
+      } catch (e) {}
+      try {
+        const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999)
+        document.cookie = `${seenKey}=true; expires=${endOfDay.toUTCString()}; path=/; SameSite=Lax`
+      } catch (e) {}
+      try {
+        const raw = localStorage.getItem('sowonsa_7day_lantern')
+        if (raw) {
+          const parsed = JSON.parse(raw)
+          if (parsed.sasi_date_key === todayKey && !parsed.hoehang_seen) {
+            parsed.hoehang_seen = true
+            localStorage.setItem('sowonsa_7day_lantern', JSON.stringify(parsed))
+          }
+        }
+      } catch (e) {}
+    }
+
+    // 1) 이번 세션에서 이미 노출/닫았거나, 오늘 이미 본 경우 절대 재노출 안 함
     if (hoehangDismissedRef.current) return
     try {
-      if (localStorage.getItem(seenKey) === 'true' || sessionStorage.getItem(seenKey) === 'true') {
+      if (
+        localStorage.getItem(seenKey) === 'true' ||
+        sessionStorage.getItem(seenKey) === 'true' ||
+        hasSeenCookie()
+      ) {
         hoehangDismissedRef.current = true
         return
       }
@@ -4074,6 +4108,8 @@ function formatRelativeOrDate(dateStr) {
     }
 
     if (candidate) {
+      // 팝업이 노출되는 즉시 오늘 확인 처리하여 하루 1회만 표시되도록 보장
+      markHoehangSeenToday()
       setHoehangModalData(candidate)
     }
   }, [currentUser, prayers, wishPhone, wishName, lanternData])
@@ -9229,11 +9265,16 @@ function formatRelativeOrDate(dateStr) {
         {hoehangModalData && (() => {
           const dismissHoehang = () => {
             hoehangDismissedRef.current = true
-            const todayKey = formatLocalDateKey(new Date())
+            const now = new Date()
+            const todayKey = formatLocalDateKey(now)
             const seenKey = `sowonsa_hoehang_seen_${todayKey}`
             try {
               localStorage.setItem(seenKey, 'true')
               sessionStorage.setItem(seenKey, 'true')
+            } catch (e) {}
+            try {
+              const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999)
+              document.cookie = `${seenKey}=true; expires=${endOfDay.toUTCString()}; path=/; SameSite=Lax`
             } catch (e) {}
             try {
               const raw = localStorage.getItem('sowonsa_7day_lantern')
