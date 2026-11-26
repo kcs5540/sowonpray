@@ -1964,6 +1964,10 @@ function normalizeMemberHierarchy(m) {
   if (m.code === '22662207' || m.name === '양형심') {
     return { ...m, role: 'temple_admin', parent_code: '55570267' }
   }
+  // 김태관: 소원사 종무소 관리자 (사찰 행정 및 관제센터 관리자)
+  if (m.code === '58337177' || m.name === '김태관') {
+    return { ...m, role: 'temple_admin', parent_code: '55570267' }
+  }
   if (m.role === 'temple_admin') {
     return { ...m, role: 'temple_admin', parent_code: null }
   }
@@ -7703,6 +7707,8 @@ function formatRelativeOrDate(dateStr) {
                     </strong>
                     {currentUser.code === '22662207' || currentUser.name === '양형심'
                       ? ' 사무장님'
+                      : currentUser.code === '58337177' || currentUser.name === '김태관'
+                      ? ' 관리자님'
                       : currentUser.role === 'temple_admin'
                       ? ' 신도회장님'
                       : currentUser.role === 'master'
@@ -9707,6 +9713,17 @@ function formatRelativeOrDate(dateStr) {
                     <span>합장하며 확인</span>
                   </button>
                 </div>
+
+                {/* 💬 제주 소원사 공식 카카오 비즈니스 채널 추가 연동 */}
+                <a
+                  href="https://pf.kakao.com/_dNdmX/friend"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2.5 px-3 rounded-xl bg-[#FEE500] hover:brightness-95 text-[#191919] font-extrabold text-[11.5px] flex items-center justify-center gap-1.5 transition shadow-sm"
+                >
+                  <span>💬</span>
+                  <span>제주 소원사 공식 카톡 채널 추가 · 법회 알림 받기</span>
+                </a>
               </div>
             </div>
           )
@@ -11313,6 +11330,26 @@ function formatRelativeOrDate(dateStr) {
               <p className="text-[11px] text-[#5C5349]">
                 종무소 <a href="tel:064-805-2007" className="hover:text-[#8A6510]">064-805-2007</a> · <a href="tel:010-4912-1083" className="hover:text-[#8A6510]">010-4912-1083</a>
               </p>
+            </div>
+            <div className="flex items-center justify-center gap-2 pt-1 flex-wrap">
+              <a
+                href="https://pf.kakao.com/_dNdmX/friend"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#FEE500] hover:brightness-95 text-[#191919] font-extrabold text-[11px] shadow-xs transition"
+              >
+                <span>💬</span>
+                <span>카톡 채널 추가</span>
+              </a>
+              <a
+                href="https://pf.kakao.com/_dNdmX/chat"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white hover:bg-[#FAF6EE] text-[#3B3228] border border-[#DDD4C4] font-bold text-[11px] shadow-xs transition"
+              >
+                <span>🙏</span>
+                <span>1:1 종무소 카톡 문의</span>
+              </a>
             </div>
             <div className="space-y-0.5 pt-1">
               <p className="text-[10.5px] font-semibold text-[#5C5349]">

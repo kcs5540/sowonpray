@@ -477,6 +477,8 @@ export default function ProfileTab({
                       <span className="text-[10.5px] px-2.5 py-1 rounded-full bg-[#C59B27]/25 text-[#F5D061] border border-[#F5D061]/50 font-bold whitespace-nowrap shadow-sm">
                         {currentUser.code === '22662207' || currentUser.name === '양형심'
                           ? '종무소 사무장'
+                          : currentUser.code === '58337177' || currentUser.name === '김태관'
+                          ? '종무소 관리자'
                           : currentUser.role === 'temple_admin'
                           ? '창건주 · 신도회장'
                           : currentUser.role === 'master'
@@ -507,6 +509,13 @@ export default function ProfileTab({
                             <span className="text-base sm:text-lg text-[#F5D061] font-bold">({currentUser.dharma_name})</span>
                           )}
                           <span className="text-base sm:text-lg text-[#F5D061] font-bold">사무장님</span>
+                        </>
+                      ) : currentUser.code === '58337177' || currentUser.name === '김태관' ? (
+                        <>
+                          {currentUser.dharma_name && (
+                            <span className="text-base sm:text-lg text-[#F5D061] font-bold">({currentUser.dharma_name})</span>
+                          )}
+                          <span className="text-base sm:text-lg text-[#F5D061] font-bold">관리자님</span>
                         </>
                       ) : currentUser.role === 'temple_admin' ? (
                         <span className="text-base sm:text-lg text-[#F5D061] font-bold">(창건주) 회장님</span>
@@ -1798,6 +1807,41 @@ export default function ProfileTab({
                       </div>
                     </form>
                   )}
+                </section>
+
+                {/* 💬 제주 소원사 공식 카카오 비즈니스 채널 연결 카드 */}
+                <section className="rounded-3xl bg-white border border-[#EAE2D3] p-4 shadow-sm space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <div>
+                      <h3 className="font-serif-kr font-bold text-sm text-[#231F1C] flex items-center gap-1.5">
+                        <span>💬</span>
+                        <span>제주 소원사 공식 카카오톡 채널</span>
+                      </h3>
+                      <p className="text-[11px] text-[#6E655C] mt-0.5">
+                        초하루·보름 법회 소식과 1:1 종무소 문의를 카톡으로 편하게 받아보세요.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <a
+                      href="https://pf.kakao.com/_dNdmX/friend"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="py-2.5 px-3 rounded-xl bg-[#FEE500] hover:brightness-95 text-[#191919] font-extrabold text-xs flex items-center justify-center gap-1 transition shadow-xs"
+                    >
+                      <span>💬</span>
+                      <span>카톡 채널 추가</span>
+                    </a>
+                    <a
+                      href="https://pf.kakao.com/_dNdmX/chat"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="py-2.5 px-3 rounded-xl bg-[#231F1C] hover:bg-[#322C27] text-[#F5D061] border border-[#C59B27]/50 font-bold text-xs flex items-center justify-center gap-1 transition shadow-xs"
+                    >
+                      <span>🙏</span>
+                      <span>1:1 카톡 문의</span>
+                    </a>
+                  </div>
                 </section>
 
               </>

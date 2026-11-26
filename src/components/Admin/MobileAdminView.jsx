@@ -779,7 +779,7 @@ export default function MobileAdminView({
               </span>
             </div>
             <p className="text-[10.5px] text-[#D6CEC2] truncate">
-              {currentUser?.name || '관리자'} ({currentUser?.code === '22662207' || currentUser?.name === '양형심' ? '종무소 사무장' : currentUser?.role === 'master' ? '총괄대표' : currentUser?.role === 'temple_admin' ? '신도회장' : '사찰본부'})
+              {currentUser?.name || '관리자'} ({currentUser?.code === '22662207' || currentUser?.name === '양형심' ? '종무소 사무장' : currentUser?.code === '58337177' || currentUser?.name === '김태관' ? '종무소 관리자' : currentUser?.role === 'master' ? '총괄대표' : currentUser?.role === 'temple_admin' ? '신도회장' : '사찰본부'})
             </p>
           </div>
         </div>
