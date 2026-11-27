@@ -1276,6 +1276,42 @@ export default function ProfileTab({
                           </div>
                         </div>
 
+                        {(() => {
+                          const todayKst = getTodayKey()
+                          const toKstDateKey = (iso) => {
+                            if (!iso) return ''
+                            const d = new Date(iso)
+                            if (isNaN(d.getTime())) return ''
+                            const kst = new Date(d.getTime() + 9 * 60 * 60 * 1000)
+                            return kst.toISOString().slice(0, 10)
+                          }
+                          const todayNewMembers = (members || []).filter((m) => toKstDateKey(m.created_at) === todayKst).length
+                          const todayNewPrayers = (prayers || []).filter((p) => toKstDateKey(p.created_at) === todayKst).length
+                          const totalRealMembers = (members || []).length
+                          return (
+                            <div className="grid grid-cols-3 gap-2">
+                              <div className="rounded-2xl bg-black/35 border border-amber-400/35 p-3 text-center">
+                                <div className="text-[11px] text-[#BFB6AA]">오늘 신규가입</div>
+                                <div className="text-xl sm:text-2xl font-extrabold text-amber-300 mt-0.5">
+                                  {todayNewMembers.toLocaleString()}<span className="text-xs font-normal ml-0.5">명</span>
+                                </div>
+                              </div>
+                              <div className="rounded-2xl bg-black/35 border border-rose-400/30 p-3 text-center">
+                                <div className="text-[11px] text-[#BFB6AA]">오늘 소원등</div>
+                                <div className="text-xl sm:text-2xl font-extrabold text-rose-300 mt-0.5">
+                                  {todayNewPrayers.toLocaleString()}<span className="text-xs font-normal ml-0.5">건</span>
+                                </div>
+                              </div>
+                              <div className="rounded-2xl bg-black/35 border border-sky-400/30 p-3 text-center">
+                                <div className="text-[11px] text-[#BFB6AA]">누적 실회원</div>
+                                <div className="text-xl sm:text-2xl font-extrabold text-sky-300 mt-0.5">
+                                  {totalRealMembers.toLocaleString()}<span className="text-xs font-normal ml-0.5">명</span>
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        })()}
+
                         <div className="rounded-2xl bg-black/30 border border-white/10 p-3 space-y-2">
                           <div className="text-[11.5px] font-bold text-[#F5D061]">
                             최근 30일 유입 경로 TOP
