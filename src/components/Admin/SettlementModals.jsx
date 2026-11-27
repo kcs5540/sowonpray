@@ -295,11 +295,8 @@ export function SettlementEditModal({
                       <option value="조상 영가 품격 흑색 영구위패">② 조상 영가 품격 흑색 영구위패 (맞춤상담)</option>
                       <option value="조상 영가 부부 영구위패 2기">③ 조상 영가 부부 영구위패 2기 (맞춤상담)</option>
                     </optgroup>
-                    <optgroup label="🏔️ 3. 삼성각 성전 건립 대작불사">
-                      <option value="삼성각 건립 소원 기와 불사 (1장)">① 삼성각 건립 소원 기와 불사 (1장) (맞춤상담)</option>
-                      <option value="삼성각 대들보 · 기둥 · 오색단청 불사">② 삼성각 대들보 · 기둥 · 오색단청 불사 (맞춤상담)</option>
-                      <option value="삼성각 가족 영구축원 명패 · 주춧돌">③ 삼성각 가족 영구축원 명패 · 주춧돌 (맞춤상담)</option>
-                      <option value="기타 특별기도 및 맞춤 불사 상담">④ 기타 특별기도 및 맞춤 불사 상담 (맞춤상담)</option>
+                    <optgroup label="🙏 3. 기타 특별기도 및 맞춤 불사">
+                      <option value="기타 특별기도 및 맞춤 불사 상담">① 기타 특별기도 및 맞춤 불사 상담 (맞춤상담)</option>
                     </optgroup>
                   </select>
                 </div>
@@ -664,11 +661,8 @@ export function SettlementModal({
                       <option value="조상 영가 품격 흑색 영구위패">② 조상 영가 품격 흑색 영구위패 (맞춤상담)</option>
                       <option value="조상 영가 부부 영구위패 2기">③ 조상 영가 부부 영구위패 2기 (맞춤상담)</option>
                     </optgroup>
-                    <optgroup label="🏔️ 3. 삼성각 성전 건립 대작불사">
-                      <option value="삼성각 건립 소원 기와 불사 (1장)">① 삼성각 건립 소원 기와 불사 (1장) (맞춤상담)</option>
-                      <option value="삼성각 대들보 · 기둥 · 오색단청 불사">② 삼성각 대들보 · 기둥 · 오색단청 불사 (맞춤상담)</option>
-                      <option value="삼성각 가족 영구축원 명패 · 주춧돌">③ 삼성각 가족 영구축원 명패 · 주춧돌 (맞춤상담)</option>
-                      <option value="기타 특별기도 및 맞춤 불사 상담">④ 기타 특별기도 및 맞춤 불사 상담 (맞춤상담)</option>
+                    <optgroup label="🙏 3. 기타 특별기도 및 맞춤 불사">
+                      <option value="기타 특별기도 및 맞춤 불사 상담">① 기타 특별기도 및 맞춤 불사 상담 (맞춤상담)</option>
                     </optgroup>
                   </select>
                 </div>

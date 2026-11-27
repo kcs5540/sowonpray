@@ -302,7 +302,7 @@ export default function BusinessCardModal({
         >
           <span className="flex items-center gap-2 min-w-0">
             <Award className="w-4 h-4 text-[#F5D061] shrink-0" />
-            <span className="truncate">기도 · 위패 · 삼성각 대작불사 동참 안내</span>
+            <span className="truncate">상시 기도 · 영구 위패 불사 동참 안내</span>
           </span>
           <span className="text-[11px] font-bold text-[#A89D8E] underline shrink-0 ml-2">상세보기 &gt;</span>
         </button>

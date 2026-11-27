@@ -578,7 +578,7 @@ export default function ProfileTab({
 
                       <div className="pt-1.5 border-t border-white/5">
                         <span className="text-xs text-[#D6CEC2] block">
-                          ※ 1년 가족연등 · 49재 봉행 · 조상 천도재 · 위패봉안 · 삼성각 등 불사 참여에 사용 가능
+                          ※ 1년 가족연등 · 49재 봉행 · 조상 천도재 · 위패봉안 · 생전예수재 등 불사 참여에 사용 가능
                         </span>
                       </div>
                     </div>
@@ -894,14 +894,14 @@ export default function ProfileTab({
                         })
                       }
 
-                      // 3) 특별 불사 (소원사 실제 불사: 삼성각 원불 봉안 불사)
-                      if (hasRealBulsa || isKcsTest) {
+                      // 3) 특별 불사 (실제 특별 불사 동참자만 표시)
+                      if (hasRealBulsa) {
                         dedicatedBulsaItems.push({
-                          id: 'bulsa_samsunggak',
-                          title: '삼성각 원불(願佛) 봉안 불사',
-                          rightText: '영구 봉안',
-                          location: '삼성각 봉안',
-                          desc: '칠성·독성·산신전 자손번창과 가문 번영 영구축원',
+                          id: 'bulsa_special',
+                          title: '대웅전 특별 기도 · 공덕 불사',
+                          rightText: '동참 중',
+                          location: '대웅전 축원',
+                          desc: '매일 사시예불 가내 평안과 자손 번창 축원',
                         })
                       }
 
@@ -1200,7 +1200,7 @@ export default function ProfileTab({
                           인연 전달 시 1,000 공덕 (1일 한도 10,000) · (신규) 인연 받은 분 1,000 공덕
                         </span>
                         <span className="text-[11px] text-[#E5D7B5] bg-white/10 px-2 py-0.5 rounded font-medium">
-                          1년 가족연등 · 49재 · 천도재 · 위패봉안 · 삼성각 등 불사 참여 사용
+                          1년 가족연등 · 49재 · 천도재 · 위패봉안 · 생전예수재 등 불사 참여 사용
                         </span>
                       </div>
                       <p className="text-xs sm:text-[13px] text-[#BFB6AA] leading-relaxed break-keep">

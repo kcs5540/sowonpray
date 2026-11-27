@@ -38,7 +38,7 @@ export default function BulsaTab({
             {/* 상단 불사안내 헤더 */}
             <section className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-5 border border-[#C59B27]/50 shadow-md">
               <span className="block text-xs sm:text-sm text-[#F5D061] font-bold whitespace-nowrap">
-                제주 소원사 상시 기도 · 공덕 불사 · 위패 봉안 · 삼성각 건립
+                제주 소원사 상시 기도 · 공덕 불사 · 영구 위패 봉안
               </span>
               <h1 className="font-serif-kr text-xl sm:text-2xl font-bold mt-1.5 break-keep">
                 현세의 복덕과 자손만대 번창을 발원합니다
@@ -48,37 +48,27 @@ export default function BulsaTab({
               </p>
             </section>
 
-            {/* 3대 불사 바로가기 퀵 탭 (원터치 앵커 이동) */}
-            <div className="grid grid-cols-3 gap-2">
+            {/* 2대 불사 바로가기 퀵 탭 (원터치 앵커 이동) */}
+            <div className="grid grid-cols-2 gap-2.5">
               <button
                 type="button"
                 onClick={() => {
                   document.getElementById('bulsa-section-1')?.scrollIntoView({ behavior: 'smooth' })
                 }}
-                className="py-2.5 px-1.5 rounded-xl bg-white border border-[#E6DEC8] text-center shadow-sm hover:border-[#C59B27] transition active:scale-95"
+                className="py-2.5 px-2 rounded-xl bg-white border border-[#E6DEC8] text-center shadow-sm hover:border-[#C59B27] transition active:scale-95"
               >
                 <span className="block text-[10px] text-[#8A6510] font-bold">1. 상시 기도</span>
-                <span className="block text-xs font-black text-[#231F1C] mt-0.5 truncate">공양미 · 인등</span>
+                <span className="block text-xs font-black text-[#231F1C] mt-0.5 truncate">공양미 · 인등 · 천도재</span>
               </button>
               <button
                 type="button"
                 onClick={() => {
                   document.getElementById('bulsa-section-2')?.scrollIntoView({ behavior: 'smooth' })
                 }}
-                className="py-2.5 px-1.5 rounded-xl bg-white border border-[#E6DEC8] text-center shadow-sm hover:border-[#C59B27] transition active:scale-95"
+                className="py-2.5 px-2 rounded-xl bg-white border border-[#E6DEC8] text-center shadow-sm hover:border-[#C59B27] transition active:scale-95"
               >
                 <span className="block text-[10px] text-[#8A6510] font-bold">2. 영구 위패</span>
-                <span className="block text-xs font-black text-[#231F1C] mt-0.5 truncate">황금 · 흑색</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  document.getElementById('bulsa-section-3')?.scrollIntoView({ behavior: 'smooth' })
-                }}
-                className="py-2.5 px-1.5 rounded-xl bg-white border border-[#E6DEC8] text-center shadow-sm hover:border-[#C59B27] transition active:scale-95"
-              >
-                <span className="block text-[10px] text-[#8A6510] font-bold">3. 성전 건립</span>
-                <span className="block text-xs font-black text-[#231F1C] mt-0.5 truncate">삼성각 불사</span>
+                <span className="block text-xs font-black text-[#231F1C] mt-0.5 truncate">황금위패 · 조상위패</span>
               </button>
             </div>
 
@@ -262,113 +252,6 @@ export default function BulsaTab({
               </div>
             </section>
 
-            {/* [큰 항목 3] 삼성각(三聖閣) 성전 건립 대작불사 (3종) - 가벼운 소원기와부터 배치 */}
-            <section
-              id="bulsa-section-3"
-              className="bg-white rounded-2xl p-5 shadow-md border-2 border-[#C59B27] space-y-3.5 scroll-mt-20"
-            >
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#FAF3DF] text-[#7A5707] border-2 border-[#C59B27] text-[11.5px] font-black whitespace-nowrap shadow-sm mb-1.5">
-                    3. 천년 도량 성전 건립 대작불사 (3종)
-                  </span>
-                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
-                    제주 소원사 ‘삼성각(三聖閣)’ 건립 불사
-                  </h3>
-                  <p className="text-xs text-[#575049] mt-1 leading-relaxed break-keep">
-                    성전을 짓는 불사에 한 번 이름을 올리는 공덕은 전각이 도량에 서 있는 한{' '}
-                    <strong className="text-[#8A6510]">자손만대 복밭(福田)</strong>으로 이어집니다.
-                  </p>
-                </div>
-                <Sparkles className="w-5 h-5 text-[#C59B27] shrink-0 mt-0.5" />
-              </div>
-
-              {/* 삼성각에 모시는 세 분 성인(三聖) 가피 요약 (정갈한 베이지 골드 톤) */}
-              <div className="grid grid-cols-3 gap-2">
-                <div className="p-2.5 rounded-xl bg-[#FAF5E6] border border-[#E5D399] text-center">
-                  <div className="text-[11px] font-extrabold text-[#8A6510] whitespace-nowrap">
-                    칠성님
-                  </div>
-                  <div className="text-[10px] text-[#575049] mt-0.5 break-keep">
-                    무병장수·자손번창
-                  </div>
-                </div>
-                <div className="p-2.5 rounded-xl bg-[#FAF5E6] border border-[#E5D399] text-center">
-                  <div className="text-[11px] font-extrabold text-[#8A6510] whitespace-nowrap">
-                    산신님
-                  </div>
-                  <div className="text-[10px] text-[#575049] mt-0.5 break-keep">
-                    재물성취·사업번창
-                  </div>
-                </div>
-                <div className="p-2.5 rounded-xl bg-[#FAF5E6] border border-[#E5D399] text-center">
-                  <div className="text-[11px] font-extrabold text-[#8A6510] whitespace-nowrap">
-                    독성(나반존자)
-                  </div>
-                  <div className="text-[10px] text-[#575049] mt-0.5 break-keep">
-                    빠른소원·시험합격
-                  </div>
-                </div>
-              </div>
-
-              {/* 삼성각 건립 3단계 동참 항목 (가벼운 소원기와부터 정갈한 카드 스타일) */}
-              <div className="grid grid-cols-1 gap-2.5">
-                {[
-                  {
-                    key: '삼성각 소원기와불사',
-                    badge: '가족 소원 기재',
-                    title: '① 삼성각 건립 소원 기와 불사 (1장)',
-                    desc: '한식 기와 뒷면에 온 가족의 성함과 간절한 소원을 직접 적어 삼성각 지붕 위에 영구히 올리는 정성 어린 대중 불사입니다.',
-                  },
-                  {
-                    key: '삼성각 기둥·단청불사',
-                    badge: '가문 공덕 각인',
-                    title: '② 삼성각 대들보 · 기둥 · 오색단청 불사',
-                    desc: '성전을 떠받치는 기둥·서까래와 장엄한 오색 단청에 시주자 가문의 이름을 영구히 각인하여 가내 평안과 자손 번창의 기틀을 세웁니다.',
-                  },
-                  {
-                    key: '삼성각 영구축원명패',
-                    badge: '가족 영구 봉안',
-                    title: '③ 삼성각 가족 영구축원 명패 · 주춧돌 불사',
-                    desc: '삼성각 내부에 온 가족의 이름과 발원을 담은 영구 축원 명패를 모셔 대대로 칠성·산신·독성 세 분 성인의 크신 가피를 받습니다.',
-                  },
-                ].map((item) => {
-                  const isSelected = wishCategory === item.key
-                  return (
-                    <div
-                      key={item.key}
-                      onClick={() => {
-                        playMoktakSound()
-                        setWishCategory(item.key)
-                        document.getElementById('bulsa-application-form')?.scrollIntoView({ behavior: 'smooth' })
-                      }}
-                      className={`p-3.5 rounded-xl border transition cursor-pointer ${
-                        isSelected
-                          ? 'bg-[#FAF3DF] border-[#C59B27] ring-1 ring-[#C59B27]'
-                          : 'bg-[#FAF8F5] border-[#EAE2D3] hover:border-[#C59B27]'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <span className="text-xs font-bold text-[#231F1C] break-keep">
-                          {item.title}
-                        </span>
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold whitespace-nowrap shrink-0 ${
-                          isSelected
-                            ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
-                            : 'bg-white text-[#8A6510] border-[#E5D399]'
-                        }`}>
-                          {isSelected ? `✓ 선택됨 · ${item.badge}` : item.badge}
-                        </span>
-                      </div>
-                      <p className="text-xs text-[#575049] leading-relaxed break-keep">
-                        {item.desc}
-                      </p>
-                    </div>
-                  )
-                })}
-              </div>
-            </section>
-
             {/* 기도·위패·불사 통합 신청란 */}
             <form
               id="bulsa-application-form"
@@ -432,14 +315,8 @@ export default function BulsaTab({
                           ? '⑥ 사찰 기일제사'
                           : wishCategory === '49재/천도재/기일제사'
                           ? '④ 49재 / 천도재 / 기일제사'
-                          : wishCategory === '삼성각 소원기와불사'
-                          ? '① 삼성각 건립 소원 기와 불사 (1장)'
-                          : wishCategory === '삼성각 기둥·단청불사'
-                          ? '② 삼성각 대들보 · 기둥 · 오색단청 불사'
-                          : wishCategory === '삼성각 영구축원명패'
-                          ? '③ 삼성각 가족 영구축원 명패 · 주춧돌'
                           : wishCategory === '기타 특별기도 상담'
-                          ? '④ 기타 특별기도 및 맞춤 불사 상담'
+                          ? '⑦ 기타 특별기도 및 맞춤 불사 상담'
                           : wishCategory
                       ) : (
                         '동참하실 종목을 선택해 주세요 (눌러서 선택) ▾'
@@ -464,9 +341,6 @@ export default function BulsaTab({
                   '49재/천도재/기일제사',
                   '생전예수재(황금위패)',
                   '조상영구위패(흑색)',
-                  '삼성각 소원기와불사',
-                  '삼성각 기둥·단청불사',
-                  '삼성각 영구축원명패',
                   '기타 특별기도 상담',
                 ].includes(wishCategory) ? (
                   <div className="flex items-center justify-between gap-2 px-3 py-1.5 rounded-lg bg-white/80 border border-[#E5D399] text-xs">
@@ -480,7 +354,7 @@ export default function BulsaTab({
                   </div>
                 ) : (
                   <p className="text-[11px] text-[#8A7456] leading-tight pl-1">
-                    ※ 위 1·2·3번 안내 카드를 터치하셔도 해당 종목이 자동 선택됩니다.
+                    ※ 위 1·2번 안내 카드를 터치하셔도 해당 종목이 자동 선택됩니다.
                   </p>
                 )}
               </div>
