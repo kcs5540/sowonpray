@@ -38,7 +38,7 @@ export default function BulsaTab({
             {/* 상단 불사안내 헤더 */}
             <section className="rounded-2xl bg-gradient-to-br from-[#231F1C] to-[#151210] text-white p-5 border border-[#C59B27]/50 shadow-md">
               <span className="block text-xs sm:text-sm text-[#F5D061] font-bold whitespace-nowrap">
-                제주 소원사 상시 기도 · 공덕 불사 · 영구 위패 봉안
+                제주 소원사 상시 기도 · 영구 위패 · 반려동물 천도
               </span>
               <h1 className="font-serif-kr text-xl sm:text-2xl font-bold mt-1.5 break-keep">
                 현세의 복덕과 자손만대 번창을 발원합니다
@@ -48,27 +48,37 @@ export default function BulsaTab({
               </p>
             </section>
 
-            {/* 2대 불사 바로가기 퀵 탭 (원터치 앵커 이동) */}
-            <div className="grid grid-cols-2 gap-2.5">
+            {/* 3대 불사 바로가기 퀵 탭 (원터치 앵커 이동) */}
+            <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => {
                   document.getElementById('bulsa-section-1')?.scrollIntoView({ behavior: 'smooth' })
                 }}
-                className="py-2.5 px-2 rounded-xl bg-white border border-[#E6DEC8] text-center shadow-sm hover:border-[#C59B27] transition active:scale-95"
+                className="py-2.5 px-1.5 rounded-xl bg-white border border-[#E6DEC8] text-center shadow-sm hover:border-[#C59B27] transition active:scale-95"
               >
                 <span className="block text-[10px] text-[#8A6510] font-bold">1. 상시 기도</span>
-                <span className="block text-xs font-black text-[#231F1C] mt-0.5 truncate">공양미 · 인등 · 천도재</span>
+                <span className="block text-xs font-black text-[#231F1C] mt-0.5 truncate">공양미 · 인등</span>
               </button>
               <button
                 type="button"
                 onClick={() => {
                   document.getElementById('bulsa-section-2')?.scrollIntoView({ behavior: 'smooth' })
                 }}
-                className="py-2.5 px-2 rounded-xl bg-white border border-[#E6DEC8] text-center shadow-sm hover:border-[#C59B27] transition active:scale-95"
+                className="py-2.5 px-1.5 rounded-xl bg-white border border-[#E6DEC8] text-center shadow-sm hover:border-[#C59B27] transition active:scale-95"
               >
                 <span className="block text-[10px] text-[#8A6510] font-bold">2. 영구 위패</span>
-                <span className="block text-xs font-black text-[#231F1C] mt-0.5 truncate">황금위패 · 조상위패</span>
+                <span className="block text-xs font-black text-[#231F1C] mt-0.5 truncate">황금 · 흑색</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  document.getElementById('bulsa-section-3')?.scrollIntoView({ behavior: 'smooth' })
+                }}
+                className="py-2.5 px-1.5 rounded-xl bg-white border border-[#E6DEC8] text-center shadow-sm hover:border-[#C59B27] transition active:scale-95"
+              >
+                <span className="block text-[10px] text-[#8A6510] font-bold">3. 반려동물</span>
+                <span className="block text-xs font-black text-[#231F1C] mt-0.5 truncate">천도재 · 위패</span>
               </button>
             </div>
 
@@ -252,6 +262,86 @@ export default function BulsaTab({
               </div>
             </section>
 
+            {/* [큰 항목 3] 무지개다리 반려동물 천도 · 추모 위패 (3종) */}
+            <section
+              id="bulsa-section-3"
+              className="bg-white rounded-2xl p-5 shadow-md border-2 border-[#C59B27] space-y-3.5 scroll-mt-20"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#FAF3DF] text-[#7A5707] border-2 border-[#C59B27] text-[11.5px] font-black whitespace-nowrap shadow-sm mb-1.5">
+                    3. 무지개다리 반려동물 천도 · 추모 위패 (3종)
+                  </span>
+                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
+                    소중한 가족, 반려동물 극락왕생 · 무병장수 기도
+                  </h3>
+                  <p className="text-xs text-[#575049] mt-1 leading-relaxed break-keep">
+                    무지개다리를 건넌 아이의 평안한 극락왕생과 지금 곁에 있는 아이의 무병장수를 부처님 전에 정성껏 발원합니다.{' '}
+                    <span className="text-[#8A6510] font-semibold">
+                      (천도재·위패 동시 봉안도 종무소 맞춤 상담 가능)
+                    </span>
+                  </p>
+                </div>
+                <Sparkles className="w-5 h-5 text-[#C59B27] shrink-0 mt-0.5" />
+              </div>
+
+              <div className="grid grid-cols-1 gap-2.5">
+                {[
+                  {
+                    key: '반려동물 49재·천도재',
+                    badge: '극락왕생 천도',
+                    title: '① 반려동물 49재 · 천도재',
+                    desc: '무지개다리를 건넌 소중한 반려견·반려묘가 모든 고통을 여의고 평안한 극락세계로 나아가기를 스님 집전으로 정성껏 천도합니다.',
+                  },
+                  {
+                    key: '반려동물 영구 추모 위패',
+                    badge: '법당 영구 봉안',
+                    title: '② 반려동물 영구 추모 위패',
+                    desc: '먼저 떠난 아이의 이름을 제주 소원사 법당에 영구히 봉안하여, 매일 사시예불과 명절 합동 천도 축원으로 오래도록 기억합니다.',
+                  },
+                  {
+                    key: '반려동물 무병장수 기도·인등',
+                    badge: '건강·장수 발원',
+                    title: '③ 반려동물 무병장수 기도 · 인등',
+                    desc: '지금 곁에서 함께하는 소중한 반려동물이 아픔 없이 건강하고 오래오래 가족 곁을 지켜주기를 부처님 전에 등불을 밝혀 발원합니다.',
+                  },
+                ].map((item) => {
+                  const isSelected = wishCategory === item.key
+                  return (
+                    <div
+                      key={item.key}
+                      onClick={() => {
+                        playMoktakSound()
+                        setWishCategory(item.key)
+                        document.getElementById('bulsa-application-form')?.scrollIntoView({ behavior: 'smooth' })
+                      }}
+                      className={`p-3.5 rounded-xl border transition cursor-pointer ${
+                        isSelected
+                          ? 'bg-[#FAF3DF] border-[#C59B27] ring-1 ring-[#C59B27]'
+                          : 'bg-[#FAF8F5] border-[#EAE2D3] hover:border-[#C59B27]'
+                      }`}
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-1.5 mb-1">
+                        <span className="text-xs font-bold text-[#231F1C] break-keep">
+                          {item.title}
+                        </span>
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold whitespace-nowrap shrink-0 ${
+                          isSelected
+                            ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27]'
+                            : 'bg-white text-[#8A6510] border-[#E5D399]'
+                        }`}>
+                          {isSelected ? `✓ 선택됨 · ${item.badge}` : item.badge}
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#575049] leading-relaxed break-keep">
+                        {item.desc}
+                      </p>
+                    </div>
+                  )
+                })}
+              </div>
+            </section>
+
             {/* 기도·위패·불사 통합 신청란 */}
             <form
               id="bulsa-application-form"
@@ -315,6 +405,12 @@ export default function BulsaTab({
                           ? '⑥ 사찰 기일제사'
                           : wishCategory === '49재/천도재/기일제사'
                           ? '④ 49재 / 천도재 / 기일제사'
+                          : wishCategory === '반려동물 49재·천도재'
+                          ? '① 반려동물 49재 · 천도재'
+                          : wishCategory === '반려동물 영구 추모 위패'
+                          ? '② 반려동물 영구 추모 위패'
+                          : wishCategory === '반려동물 무병장수 기도·인등'
+                          ? '③ 반려동물 무병장수 기도 · 인등'
                           : wishCategory === '기타 특별기도 상담'
                           ? '⑦ 기타 특별기도 및 맞춤 불사 상담'
                           : wishCategory
@@ -341,6 +437,9 @@ export default function BulsaTab({
                   '49재/천도재/기일제사',
                   '생전예수재(황금위패)',
                   '조상영구위패(흑색)',
+                  '반려동물 49재·천도재',
+                  '반려동물 영구 추모 위패',
+                  '반려동물 무병장수 기도·인등',
                   '기타 특별기도 상담',
                 ].includes(wishCategory) ? (
                   <div className="flex items-center justify-between gap-2 px-3 py-1.5 rounded-lg bg-white/80 border border-[#E5D399] text-xs">
@@ -354,7 +453,7 @@ export default function BulsaTab({
                   </div>
                 ) : (
                   <p className="text-[11px] text-[#8A7456] leading-tight pl-1">
-                    ※ 위 1·2번 안내 카드를 터치하셔도 해당 종목이 자동 선택됩니다.
+                    ※ 위 1·2·3번 안내 카드를 터치하셔도 해당 종목이 자동 선택됩니다.
                   </p>
                 )}
               </div>

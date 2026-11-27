@@ -295,7 +295,12 @@ export function SettlementEditModal({
                       <option value="조상 영가 품격 흑색 영구위패">② 조상 영가 품격 흑색 영구위패 (맞춤상담)</option>
                       <option value="조상 영가 부부 영구위패 2기">③ 조상 영가 부부 영구위패 2기 (맞춤상담)</option>
                     </optgroup>
-                    <optgroup label="🙏 3. 기타 특별기도 및 맞춤 불사">
+                    <optgroup label="🌈 3. 무지개다리 반려동물 천도 · 추모 위패">
+                      <option value="반려동물 49재 · 천도재">① 반려동물 49재 · 천도재 (맞춤상담)</option>
+                      <option value="반려동물 영구 추모 위패">② 반려동물 영구 추모 위패 (맞춤상담)</option>
+                      <option value="반려동물 무병장수 기도 · 인등">③ 반려동물 무병장수 기도 · 인등 (맞춤상담)</option>
+                    </optgroup>
+                    <optgroup label="🙏 4. 기타 특별기도 및 맞춤 불사">
                       <option value="기타 특별기도 및 맞춤 불사 상담">① 기타 특별기도 및 맞춤 불사 상담 (맞춤상담)</option>
                     </optgroup>
                   </select>
@@ -661,7 +666,12 @@ export function SettlementModal({
                       <option value="조상 영가 품격 흑색 영구위패">② 조상 영가 품격 흑색 영구위패 (맞춤상담)</option>
                       <option value="조상 영가 부부 영구위패 2기">③ 조상 영가 부부 영구위패 2기 (맞춤상담)</option>
                     </optgroup>
-                    <optgroup label="🙏 3. 기타 특별기도 및 맞춤 불사">
+                    <optgroup label="🌈 3. 무지개다리 반려동물 천도 · 추모 위패">
+                      <option value="반려동물 49재 · 천도재">① 반려동물 49재 · 천도재 (맞춤상담)</option>
+                      <option value="반려동물 영구 추모 위패">② 반려동물 영구 추모 위패 (맞춤상담)</option>
+                      <option value="반려동물 무병장수 기도 · 인등">③ 반려동물 무병장수 기도 · 인등 (맞춤상담)</option>
+                    </optgroup>
+                    <optgroup label="🙏 4. 기타 특별기도 및 맞춤 불사">
                       <option value="기타 특별기도 및 맞춤 불사 상담">① 기타 특별기도 및 맞춤 불사 상담 (맞춤상담)</option>
                     </optgroup>
                   </select>
