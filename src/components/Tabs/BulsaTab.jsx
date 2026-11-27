@@ -588,7 +588,7 @@ export default function BulsaTab({
                 </span>
               </div>
               <p className="text-[11.5px] text-[#D6CEC2] leading-relaxed break-keep">
-                불사 및 상시기도 신청 후 아래 사찰 공식 계좌로 시주금을 입금해 주시면, 입금 확인 즉시 종무소 대웅전 축원 대장에 등재되어 매일 오전 10시 사시예불 축원이 정성껏 봉행됩니다.
+                불사 및 상시기도 신청·상담 후 아래 사찰 공식 계좌로 시주금을 입금해 주시면, 입금 확인 즉시 종무소 대웅전 축원 대장에 등재되어 매일 오전 10시 사시예불 축원이 정성껏 봉행됩니다.
               </p>
               <div className="p-3 rounded-xl bg-[#28221C] border border-[#C59B27]/40 flex items-center justify-between gap-2">
                 <div className="min-w-0 flex-1">
