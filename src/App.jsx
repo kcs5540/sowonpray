@@ -2424,15 +2424,16 @@ function formatRelativeOrDate(dateStr) {
             })
           setMembers(finalMembers)
 
-          // Supabase 클라우드 DB 역할 동기화 (김철수, 양영문, 유광수, 오다혜, 임평종 제외한 전원 believer)
+          // Supabase 클라우드 DB 역할 동기화 (김철수, 양영문, 양형심, 김태관, 유광수, 오다혜, 임평종 제외한 전원 believer)
           try {
             await supabase
               .from('members')
               .update({ role: 'believer' })
-              .not('code', 'in', '("33065540","55570267","53872248","83855838","35651669")')
+              .not('code', 'in', '("33065540","55570267","22662207","58337177","53872248","83855838","35651669")')
             await supabase.from('members').update({ role: 'agent', parent_code: '33065540' }).in('code', ['53872248', '83855838', '35651669'])
             await supabase.from('members').update({ role: 'master', parent_code: '55570267' }).eq('code', '33065540')
             await supabase.from('members').update({ role: 'temple_admin', parent_code: null }).eq('code', '55570267')
+            await supabase.from('members').update({ role: 'temple_admin', parent_code: '55570267' }).in('code', ['22662207', '58337177'])
           } catch (syncErr) {
             console.log('Supabase role sync note:', syncErr)
           }
