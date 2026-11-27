@@ -346,11 +346,11 @@ export default function BulsaTab({
             <form
               id="bulsa-application-form"
               onSubmit={handlePrayerSubmit}
-              className="bg-white rounded-2xl p-4 sm:p-5 shadow-md border-2 border-[#C59B27] space-y-4 scroll-mt-20"
+              className="bg-gradient-to-b from-[#F7EED8] via-[#FAF3E1] to-[#F4E9CE] rounded-2xl p-4 sm:p-5 shadow-lg border-2 border-[#B8860B] ring-1 ring-[#C59B27]/30 space-y-4 scroll-mt-20"
             >
-              <div className="border-b border-[#EFE9DD] pb-3 flex flex-wrap items-center justify-between gap-2">
+              <div className="border-b border-[#DFCEAA] pb-3 flex flex-wrap items-center justify-between gap-2">
                 <div className="min-w-0">
-                  <span className="block text-[10.5px] font-bold text-[#9A7418]">
+                  <span className="block text-[10.5px] font-extrabold text-[#8A6510] tracking-wide">
                     ONLINE APPLICATION
                   </span>
                   <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
@@ -358,14 +358,14 @@ export default function BulsaTab({
                   </h3>
                 </div>
                 {currentUser && (
-                  <span className="text-[10.5px] px-2 py-1 rounded-full bg-[#FAF3DF] text-[#8A6510] font-bold border border-[#E5D399] shrink-0">
+                  <span className="text-[10.5px] px-2.5 py-1 rounded-full bg-white/90 text-[#8A6510] font-bold border border-[#D9BE7D] shadow-xs shrink-0">
                     내 계정 연동됨
                   </span>
                 )}
               </div>
 
               {/* STEP 1. 종목 선택 영역 (세련된 콤보박스 / 드롭다운) */}
-              <div className="p-3 sm:p-3.5 rounded-2xl bg-[#FAF5E6] border border-[#E5D399] space-y-2.5">
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-[#FFFDF7] border border-[#E2CFA2] shadow-sm space-y-2.5">
                 <div className="flex flex-wrap items-center justify-between gap-1.5">
                   <label htmlFor="bulsa-category-select" className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C]">
                     <span className="px-2 py-0.5 rounded-md bg-[#231F1C] text-[#F5D061] text-[10px] font-extrabold shrink-0">
@@ -459,10 +459,10 @@ export default function BulsaTab({
               </div>
 
               {/* 구분선 */}
-              <div className="border-t border-dashed border-[#DFD6C7]" />
+              <div className="border-t border-dashed border-[#D6C39A]" />
 
               {/* STEP 2. 신청자 정보 및 발원 내용 입력 영역 */}
-              <div className="p-3.5 sm:p-4 rounded-2xl bg-[#F4F1EA] border border-[#DDD4C4] space-y-3.5">
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-[#FFFDF7] border border-[#DFD2B8] shadow-sm space-y-3.5">
                 <div className="flex flex-wrap items-center justify-between gap-1.5">
                   <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#231F1C]">
                     <span className="px-2 py-0.5 rounded-md bg-[#8A6510] text-white text-[10px] font-extrabold shrink-0">
