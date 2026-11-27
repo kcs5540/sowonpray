@@ -348,20 +348,13 @@ export default function BulsaTab({
               onSubmit={handlePrayerSubmit}
               className="bg-gradient-to-b from-[#F7EED8] via-[#FAF3E1] to-[#F4E9CE] rounded-2xl p-4 sm:p-5 shadow-lg border-2 border-[#B8860B] ring-1 ring-[#C59B27]/30 space-y-4 scroll-mt-20"
             >
-              <div className="border-b border-[#DFCEAA] pb-3 flex flex-wrap items-center justify-between gap-2">
-                <div className="min-w-0">
-                  <span className="block text-[10.5px] font-extrabold text-[#8A6510] tracking-wide">
-                    ONLINE APPLICATION
-                  </span>
-                  <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
-                    기도 · 위패 · 불사 동참 신청란
-                  </h3>
-                </div>
-                {currentUser && (
-                  <span className="text-[10.5px] px-2.5 py-1 rounded-full bg-white/90 text-[#8A6510] font-bold border border-[#D9BE7D] shadow-xs shrink-0">
-                    내 계정 연동됨
-                  </span>
-                )}
+              <div className="border-b border-[#DFCEAA] pb-3">
+                <span className="block text-[10.5px] font-extrabold text-[#8A6510] tracking-wide">
+                  ONLINE APPLICATION
+                </span>
+                <h3 className="font-serif-kr text-base sm:text-lg font-bold text-[#231F1C] break-keep">
+                  기도 · 위패 · 불사 동참 신청란
+                </h3>
               </div>
 
               {/* STEP 1. 종목 선택 영역 (세련된 콤보박스 / 드롭다운) */}
