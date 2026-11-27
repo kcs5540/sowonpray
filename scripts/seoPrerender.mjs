@@ -173,38 +173,43 @@ function buildSemanticRootHtml(route) {
     .join('\n')
 
   return `
-      <div class="min-h-screen bg-[#23211E] text-[#211F1C] flex flex-col items-center">
-        <div class="w-full max-w-[480px] min-h-screen bg-[#FAF8F5] text-[#231F1C] flex flex-col shadow-2xl border-x border-[#E8DFD1]/30">
-          <header class="bg-[#1B1815] text-[#FAF8F5] px-4 py-3.5 border-b-2 border-[#C59B27]/50 flex items-center justify-between gap-2">
-            <div>
-              <div class="font-serif-kr font-extrabold text-base text-[#F5D061]">대한불교 조계종 · 제주 소원사</div>
-              <p class="text-[11px] text-[#D6CEC2]">간절한 소원이 이루어지는 기도·불공의 성지 모바일 법당</p>
+      <div class="min-h-screen bg-[#23211E] flex flex-col items-center">
+        <div class="w-full max-w-[480px] min-h-screen bg-[#FAF8F5] flex flex-col shadow-2xl border-x border-[#E8DFD1]/30">
+          <header class="bg-[#1B1815] text-[#FAF8F5] px-4 py-3 border-b border-[#C59B27]/40 flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-full bg-[#2A241D] border border-[#C59B27]/60 flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 5C20 5 15 14.5 15 21C15 23.8 17.2 26 20 26C22.8 26 25 23.8 25 21C25 14.5 20 5 20 5Z" fill="#F5D061" />
+                <path d="M14 12C14 12 7.5 18.5 7.5 23C7.5 26.2 10.2 28 13.2 28C16.2 28 17.8 25.5 17.8 24C17.8 18.5 14 12 14 12Z" fill="#F5D061" opacity="0.8" />
+                <path d="M26 12C26 12 32.5 18.5 32.5 23C32.5 26.2 29.8 28 26.8 28C23.8 28 22.2 25.5 22.2 24C22.2 18.5 26 12 26 12Z" fill="#F5D061" opacity="0.8" />
+                <path d="M11.5 32C15.2 34.8 24.8 34.8 28.5 32C26.5 34.8 23.5 35.8 20 35.8C16.5 35.8 13.5 34.8 11.5 32Z" fill="#F5D061" />
+              </svg>
             </div>
-            <a href="tel:064-805-2007" class="text-xs font-bold text-[#F5D061] border border-[#C59B27]/50 rounded-full px-3 py-1 whitespace-nowrap">종무소 안내</a>
+            <div>
+              <div class="font-serif-kr font-extrabold text-base text-[#F5D061] leading-tight">제주 소원사 <span class="text-[10px] font-bold bg-[#C59B27]/20 border border-[#C59B27]/40 px-1.5 py-0.5 rounded ml-1">모바일 법당</span></div>
+              <p class="text-[10.5px] text-[#BFB6AA] mt-0.5">간절한 소원이 이루어지는 기도·불공의 성지</p>
+            </div>
           </header>
-
-          <nav aria-label="모바일 법당 주요 메뉴" class="bg-[#26211C] text-[#E8DFD1] px-3 py-2 flex items-center justify-around text-xs font-semibold border-b border-[#C59B27]/25">
-            <a href="/" class="hover:text-[#F5D061] px-2 py-1">신행홈</a>
-            <a href="/lantern" class="hover:text-[#F5D061] px-2 py-1">소원등 켜기</a>
-            <a href="/bulsa" class="hover:text-[#F5D061] px-2 py-1">불사안내</a>
-            <a href="/sutra" class="hover:text-[#F5D061] px-2 py-1">사경·108목탁</a>
-          </nav>
-
-          <main class="flex-1 flex flex-col gap-4 px-3 py-5">
-            <section class="rounded-2xl bg-[#161310] text-white p-5 border border-[#C59B27]/50 shadow-lg space-y-2">
-              <p class="text-[11px] font-bold text-[#F5D061]">${escapeHtml(route.eyebrow)}</p>
-              <h1 class="font-serif-kr text-xl sm:text-2xl font-bold leading-tight break-keep">${escapeHtml(route.h1)}</h1>
-              <p class="text-xs text-[#E8DFD1] leading-relaxed break-keep">${escapeHtml(route.lead)}</p>
-            </section>
-            ${sectionsHtml}
-          </main>
-
-          <footer class="px-4 py-5 text-center text-[11px] text-[#786E63] border-t border-[#EAE2D3] space-y-1.5">
-            <div class="font-serif-kr font-bold text-[#231F1C] text-xs">대한불교 조계종 · 제주 소원사</div>
-            <p>제주특별자치도 제주시 죽성서길 75 (오등동 935)</p>
-            <p>종무소 <a href="tel:064-805-2007">064-805-2007</a> · <a href="tel:010-4912-1083">010-4912-1083</a></p>
-            <p class="text-[10px] text-[#9A8F82]">전산 개발 및 총괄: 제주AI파트너 · Platform © Jeju AI Partner.</p>
-          </footer>
+          <div class="flex-1 flex flex-col items-center justify-center gap-3 p-6 text-center">
+            <div class="w-12 h-12 rounded-full bg-[#1B1815] border border-[#C59B27]/60 flex items-center justify-center shadow-md">
+              <svg class="w-7 h-7" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 5C20 5 15 14.5 15 21C15 23.8 17.2 26 20 26C22.8 26 25 23.8 25 21C25 14.5 20 5 20 5Z" fill="#F5D061" />
+                <path d="M14 12C14 12 7.5 18.5 7.5 23C7.5 26.2 10.2 28 13.2 28C16.2 28 17.8 25.5 17.8 24C17.8 18.5 14 12 14 12Z" fill="#F5D061" opacity="0.8" />
+                <path d="M26 12C26 12 32.5 18.5 32.5 23C32.5 26.2 29.8 28 26.8 28C23.8 28 22.2 25.5 22.2 24C22.2 18.5 26 12 26 12Z" fill="#F5D061" opacity="0.8" />
+                <path d="M11.5 32C15.2 34.8 24.8 34.8 28.5 32C26.5 34.8 23.5 35.8 20 35.8C16.5 35.8 13.5 34.8 11.5 32Z" fill="#F5D061" />
+              </svg>
+            </div>
+            <p class="font-serif-kr text-sm font-bold text-[#3B3228]">제주 소원사 모바일 법당을 열고 있습니다...</p>
+          </div>
+          <noscript>
+            <main class="flex flex-col gap-4 px-3 py-5">
+              <section class="rounded-2xl bg-[#161310] text-white p-5 border border-[#C59B27]/50 space-y-2">
+                <p class="text-[11px] font-bold text-[#F5D061]">${escapeHtml(route.eyebrow)}</p>
+                <h1 class="font-serif-kr text-xl font-bold leading-tight">${escapeHtml(route.h1)}</h1>
+                <p class="text-xs text-[#E8DFD1] leading-relaxed">${escapeHtml(route.lead)}</p>
+              </section>
+              ${sectionsHtml}
+            </main>
+          </noscript>
         </div>
       </div>`
 }
