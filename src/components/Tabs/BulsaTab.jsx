@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Award,
   Sparkles,
@@ -33,6 +33,8 @@ export default function BulsaTab({
   handlePrayerSubmit,
   PRAYER_CATEGORY_TEMPLATES,
 }) {
+  const [isOnlinePayOpen, setIsOnlinePayOpen] = useState(false)
+
   return (
 <main className="flex-1 flex flex-col gap-4 px-2 py-3.5">
             {/* 상단 불사안내 헤더 */}
@@ -558,7 +560,7 @@ export default function BulsaTab({
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <button
                   type="submit"
                   className="w-full py-3.5 px-3 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#AA8010] text-[#1B1815] font-extrabold text-xs sm:text-sm shadow-md hover:brightness-105 transition flex items-center justify-center gap-1.5 cursor-pointer overflow-hidden"
@@ -566,95 +568,9 @@ export default function BulsaTab({
                   <Award className="w-4 h-4 shrink-0" />
                   <span className="truncate">기도 · 위패 · 불사 신청 접수하기</span>
                 </button>
-
-                {/* 💳 간편 온라인 시주 · 보시 결제 (카카오페이 · 신용카드 · 계좌이체) */}
-                <div className="p-3.5 sm:p-4 rounded-2xl bg-[#FAF6EC] border border-[#DFCFA8] space-y-2.5">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 min-w-0">
-                      <CreditCard className="w-4 h-4 text-[#8A6510] shrink-0" />
-                      <span className="text-xs font-extrabold text-[#231F1C] truncate">
-                        간편 온라인 시주 · 보시 결제
-                      </span>
-                    </div>
-                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#231F1C] text-[#F5D061] border border-[#C59B27]/50 shrink-0 whitespace-nowrap">
-                      종무소 자동 등재
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-1.5 text-[11px] sm:text-xs">
-                    {['카드', '계좌이체', '가상계좌'].map((m) => (
-                      <button
-                        key={m}
-                        type="button"
-                        onClick={() => setTossPayMethod(m)}
-                        className={`py-2 px-1 rounded-lg font-bold border transition cursor-pointer whitespace-nowrap truncate ${
-                          tossPayMethod === m
-                            ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-sm'
-                            : 'bg-white text-[#5C5349] border-[#DDD4C4] hover:bg-[#FAF8F5]'
-                        }`}
-                      >
-                        {m === '카드' ? '카드·간편결제' : m === '계좌이체' ? '계좌이체' : '가상계좌'}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* 빠른 금액 선택 칩 + 잘림 없는 천단위 콤마 금액 입력란 */}
-                  <div className="space-y-2">
-                    <div className="grid grid-cols-5 gap-1">
-                      {[
-                        { label: '3만', val: '30000' },
-                        { label: '5만', val: '50000' },
-                        { label: '10만', val: '100000' },
-                        { label: '30만', val: '300000' },
-                        { label: '50만', val: '500000' },
-                      ].map((chip) => {
-                        const active = String(customPayAmount) === chip.val
-                        return (
-                          <button
-                            key={chip.val}
-                            type="button"
-                            onClick={() => setCustomPayAmount(chip.val)}
-                            className={`py-1.5 rounded-lg text-[11px] font-extrabold border transition cursor-pointer ${
-                              active
-                                ? 'bg-[#FAF0D7] text-[#8A6510] border-[#C59B27]'
-                                : 'bg-white text-[#6E655C] border-[#E4DDD0] hover:bg-[#FAF8F5]'
-                            }`}
-                          >
-                            +{chip.label}
-                          </button>
-                        )
-                      })}
-                    </div>
-                    <div className="flex items-center justify-between bg-white rounded-xl border-2 border-[#D5C59B] focus-within:border-[#C59B27] px-3.5 py-2.5">
-                      <span className="text-xs font-bold text-[#6E655C] shrink-0">보시금액 입력</span>
-                      <div className="flex items-center gap-1 flex-1 justify-end min-w-0">
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          value={customPayAmount ? Number(customPayAmount).toLocaleString() : ''}
-                          onChange={(e) => {
-                            const raw = e.target.value.replace(/[^0-9]/g, '')
-                            setCustomPayAmount(raw)
-                          }}
-                          placeholder="100,000"
-                          className="w-full text-right font-mono font-extrabold text-base text-[#231F1C] focus:outline-none min-w-0"
-                        />
-                        <span className="text-xs font-extrabold text-[#231F1C] shrink-0">원</span>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleTossTestPayment}
-                      className="w-full py-3 rounded-xl bg-[#231F1C] hover:bg-[#322C26] text-[#F5D061] border border-[#C59B27] font-extrabold text-xs sm:text-sm shadow flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer transition active:scale-98"
-                    >
-                      <CreditCard className="w-4 h-4 shrink-0" />
-                      <span>{Number(customPayAmount || 0).toLocaleString()}원 온라인 보시 결제하기</span>
-                    </button>
-                  </div>
-                  <p className="text-[10.5px] text-[#7A6E5D] leading-snug">
-                    ※ 결제 완료 즉시 대웅전 사시예불 축원 명부와 종무소 전산에 자동 등재됩니다.
-                  </p>
-                </div>
+                <p className="text-[11px] text-[#7A6338] text-center font-medium leading-snug break-keep">
+                  ※ 비용 결제 없이 먼저 신청·상담만 접수되며, 종무소에서 친절히 안내해 드립니다.
+                </p>
               </div>
             </form>
 
@@ -699,6 +615,113 @@ export default function BulsaTab({
                 <HelpCircle className="w-3.5 h-3.5 text-[#C59B27] shrink-0" />
                 <span>입금 시 신청자 성함(또는 법명)으로 입금해 주시면 종무소 확인이 가장 빠릅니다.</span>
               </div>
+            </section>
+
+            {/* 💳 (선택) 간편 온라인 시주 · 보시 결제 — 기본 접힘(아코디언) */}
+            <section className="rounded-2xl bg-[#FAF6EC] border border-[#DFCFA8] shadow-sm overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setIsOnlinePayOpen((prev) => !prev)}
+                className="w-full px-4 py-3.5 flex items-center justify-between gap-2 text-left hover:bg-[#F5EEDB] transition cursor-pointer"
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  <CreditCard className="w-4 h-4 text-[#8A6510] shrink-0" />
+                  <div className="min-w-0">
+                    <span className="block text-xs font-extrabold text-[#231F1C] truncate">
+                      (선택) 소액 공양미 · 간편 온라인 시주 결제
+                    </span>
+                    <span className="block text-[10.5px] text-[#7A6E5D] truncate">
+                      카드 · 간편결제로 소액 시주를 올리실 때 펼쳐서 이용하세요
+                    </span>
+                  </div>
+                </div>
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#8A6510] shrink-0 whitespace-nowrap">
+                  <span>{isOnlinePayOpen ? '접기' : '펼치기'}</span>
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      isOnlinePayOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </span>
+              </button>
+
+              {isOnlinePayOpen && (
+                <div className="px-4 pb-4 pt-1 border-t border-[#E6DAC0] space-y-2.5">
+                  <div className="grid grid-cols-3 gap-1.5 text-[11px] sm:text-xs pt-2">
+                    {['카드', '계좌이체', '가상계좌'].map((m) => (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => setTossPayMethod(m)}
+                        className={`py-2 px-1 rounded-lg font-bold border transition cursor-pointer whitespace-nowrap truncate ${
+                          tossPayMethod === m
+                            ? 'bg-[#231F1C] text-[#F5D061] border-[#C59B27] shadow-sm'
+                            : 'bg-white text-[#5C5349] border-[#DDD4C4] hover:bg-[#FAF8F5]'
+                        }`}
+                      >
+                        {m === '카드' ? '카드·간편결제' : m === '계좌이체' ? '계좌이체' : '가상계좌'}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* 빠른 금액 선택 칩 (소액 시주 중심) + 천단위 콤마 금액 입력란 */}
+                  <div className="space-y-2">
+                    <div className="grid grid-cols-5 gap-1">
+                      {[
+                        { label: '1만', val: '10000' },
+                        { label: '3만', val: '30000' },
+                        { label: '5만', val: '50000' },
+                        { label: '10만', val: '100000' },
+                        { label: '30만', val: '300000' },
+                      ].map((chip) => {
+                        const active = String(customPayAmount) === chip.val
+                        return (
+                          <button
+                            key={chip.val}
+                            type="button"
+                            onClick={() => setCustomPayAmount(chip.val)}
+                            className={`py-1.5 rounded-lg text-[11px] font-extrabold border transition cursor-pointer ${
+                              active
+                                ? 'bg-[#FAF0D7] text-[#8A6510] border-[#C59B27]'
+                                : 'bg-white text-[#6E655C] border-[#E4DDD0] hover:bg-[#FAF8F5]'
+                            }`}
+                          >
+                            +{chip.label}
+                          </button>
+                        )
+                      })}
+                    </div>
+                    <div className="flex items-center justify-between bg-white rounded-xl border-2 border-[#D5C59B] focus-within:border-[#C59B27] px-3.5 py-2.5">
+                      <span className="text-xs font-bold text-[#6E655C] shrink-0">보시금액 입력</span>
+                      <div className="flex items-center gap-1 flex-1 justify-end min-w-0">
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          value={customPayAmount ? Number(customPayAmount).toLocaleString() : ''}
+                          onChange={(e) => {
+                            const raw = e.target.value.replace(/[^0-9]/g, '')
+                            setCustomPayAmount(raw)
+                          }}
+                          placeholder="30,000"
+                          className="w-full text-right font-mono font-extrabold text-base text-[#231F1C] focus:outline-none min-w-0"
+                        />
+                        <span className="text-xs font-extrabold text-[#231F1C] shrink-0">원</span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleTossTestPayment}
+                      className="w-full py-3 rounded-xl bg-[#231F1C] hover:bg-[#322C26] text-[#F5D061] border border-[#C59B27] font-extrabold text-xs sm:text-sm shadow flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer transition active:scale-98"
+                    >
+                      <CreditCard className="w-4 h-4 shrink-0" />
+                      <span>{Number(customPayAmount || 0).toLocaleString()}원 온라인 보시 결제하기</span>
+                    </button>
+                  </div>
+                  <p className="text-[10.5px] text-[#7A6E5D] leading-snug">
+                    ※ 결제 완료 즉시 대웅전 사시예불 축원 명부와 종무소 전산에 자동 등재됩니다.
+                  </p>
+                </div>
+              )}
             </section>
           </main>
   )
